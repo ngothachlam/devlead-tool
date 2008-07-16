@@ -1,5 +1,7 @@
 package com.jonas.agile.devleadtool.component.table;
 
+import java.util.Vector;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -9,15 +11,28 @@ public class BoardTableModel extends DefaultTableModel {
 	private static Object[] tableContents = { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
 			Boolean.FALSE, Boolean.FALSE, new String("") };
 
-	public BoardTableModel() {
-		this(new Object[][] { tableContents }, tableHeader);
-	}
+	// public BoardTableModel() {
+	// this(new Object[][] { tableContents }, tableHeader);
+	// }
+	//
+	// public BoardTableModel(Object[][] contents, String[] tableHeader) {
+	// super(contents, tableHeader);
+	// }
 
-	public BoardTableModel(Object[][] contents, String[] tableHeader) {
-		super(contents, tableHeader);
+	public BoardTableModel() {
+		super(new Object[][] { tableContents }, tableHeader);
 	}
 
 	private Object[] getEmptyRow() {
+		// Vector<Object> vector = new Vector<Object>();
+		// vector.add(new String(""));
+		// vector.add(Boolean.FALSE);
+		// vector.add(Boolean.FALSE);
+		// vector.add(Boolean.FALSE);
+		// vector.add(Boolean.FALSE);
+		// vector.add(Boolean.FALSE);
+		// vector.add(new String(""));
+		// return vector;
 		return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
 				Boolean.FALSE, new String("") };
 	}

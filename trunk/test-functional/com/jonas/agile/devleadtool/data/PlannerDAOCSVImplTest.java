@@ -21,17 +21,24 @@ public class PlannerDAOCSVImplTest extends TestCase {
 
 	public void testSouldSaveFromCSVCorrectly() throws IOException {
 		PlannerDAO dao = new PlannerDAOExcelImpl(xlsFile);
+		save(dao);
+		System.out.println(xlsFile.getAbsolutePath());
+	}
+
+	private void save(PlannerDAO dao) throws IOException {
 		BoardTableModel model = new BoardTableModel();
 		dao.saveModel(model);
-		System.out.println(xlsFile.getAbsolutePath());
 	}
 
 	public void testSouldLoadFromCSVCorrectly() throws IOException {
 		PlannerDAO dao = new PlannerDAOExcelImpl(xlsFile);
 
+		save(dao);
+		
+		BoardTableModel model = dao.loadModel();
 		System.out.println(xlsFile.getAbsolutePath());
 
-		assertTrue(false);
+		assertEquals(1, model.getRowCount());
 	}
 
 }

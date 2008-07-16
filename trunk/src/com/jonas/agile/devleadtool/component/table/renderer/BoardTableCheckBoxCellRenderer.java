@@ -22,11 +22,6 @@ public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellR
 	private final BoardTableModel model;
 
 	private JCheckBox checkbox;
-	private Color backgroundUnselected = null;
-	private Color backgroundSelected = null;
-	private Color backgroundFocused = null;
-
-	protected static Border noFocusBorder = new MatteBorder(3, 3, 3, 3, Color.blue);
 
 	public BoardTableCheckBoxCellRenderer(BoardTableModel model) {
 		super(new BorderLayout());
@@ -39,36 +34,6 @@ public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellR
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 			int row, int column) {
 
-		// originalBorder(table, value, isSelected, hasFocus, row, column);
-		testBorder(table, value, isSelected, hasFocus, row);
-
-		setSelected(((Boolean) value).booleanValue() ? true : false);
-		return this;
-	}
-
-	private void originalBorder(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-		setFont(table.getFont());
-		if (doesProgressCellNeedToBeRed(value, row)) {
-			setBackground(Color.red);
-		} else if (isSelected) {
-			setForeground(table.getSelectionForeground());
-			setBackground(table.getSelectionBackground());
-		} else {
-			setForeground(table.getForeground());
-			setBackground(table.getBackground());
-		}
-		if (!hasFocus) {
-			setBorder(new EmptyBorder(1, 1, 1, 1));
-		} else {
-			setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-			if (table.isCellEditable(row, column)) {
-				super.setForeground(UIManager.getColor("Table.focusCellForeground"));
-				super.setBackground(UIManager.getColor("Table.focusCellBackground"));
-			}
-		}
-	}
-
-	private void testBorder(JTable table, Object value, boolean isSelected, boolean hasFocus, int row) {
 		if (doesProgressCellNeedToBeRed(value, row)) {
 			setBackground(Color.red);
 			if (hasFocus && isSelected) {
@@ -93,54 +58,10 @@ public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellR
 			}
 			setBorder(border);
 		}
-	}
 
-	// public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-	// int row, int column) {
-	// JComponent cell = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
-	// column);
-	// if (value instanceof Boolean) {
-	// // cell = (JComponent) createNewCheckBoxIfRequired(value, cell);
-	// if (doesProgressCellNeedToBeRed(value, row)) {
-	// cell.setBackground(Color.red);
-	// if (hasFocus && isSelected) {
-	// cell.setBorder(UIManager.getBorder("Table.focusSelectedCellHighlightBorder"));
-	// } else if (hasFocus) {
-	// cell.setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-	// }
-	// } else {
-	// Border border = null;
-	// if (isSelected) {
-	// cell.setForeground(table.getSelectionForeground());
-	// cell.setBackground(table.getSelectionBackground());
-	// if (hasFocus) {
-	// border = UIManager.getBorder("Table.focusSelectedCellHighlightBorder");
-	// }
-	// } else {
-	// cell.setForeground(table.getForeground());
-	// cell.setBackground(table.getBackground());
-	// if (hasFocus) {
-	// border = UIManager.getBorder("Table.focusCellHighlightBorder");
-	// }
-	// }
-	// // border = noFocusBorder;
-	// cell.setBorder(border);
-	// }
-	// } else if (column == 0) {
-	// if (model.countOfSameValueInColumn(value, column) > 1) {
-	// cell.setBackground(Color.red);
-	// } else {
-	// if (isSelected) {
-	// setForeground(table.getSelectionForeground());
-	// super.setBackground(table.getSelectionBackground());
-	// } else {
-	// setForeground(table.getForeground());
-	// setBackground(table.getBackground());
-	// }
-	// }
-	// }
-	// return cell;
-	// }
+		setSelected(((Boolean) value).booleanValue() ? true : false);
+		return this;
+	}
 
 	private void setSelected(boolean b) {
 		checkbox.setSelected(b);
