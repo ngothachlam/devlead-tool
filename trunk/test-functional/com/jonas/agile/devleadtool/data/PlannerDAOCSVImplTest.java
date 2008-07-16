@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 import com.jonas.agile.devleadtool.component.table.BoardTableModel;
 
 public class PlannerDAOCSVImplTest extends TestCase {
-	File xlsFile = new File("test-functional\\test.xls");
+	File xlsFile = new File("bin\\test.xls");
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -16,7 +16,7 @@ public class PlannerDAOCSVImplTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		xlsFile.delete();
+//		xlsFile.delete();
 	}
 
 	public void testSouldSaveFromCSVCorrectly() throws IOException {
