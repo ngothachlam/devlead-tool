@@ -10,7 +10,11 @@ public class BoardTableModel extends DefaultTableModel {
 			Boolean.FALSE, Boolean.FALSE, new String("") };
 
 	public BoardTableModel() {
-		super(new Object[][] { tableContents }, tableHeader);
+		this(new Object[][] { tableContents }, tableHeader);
+	}
+
+	public BoardTableModel(Object[][] contents, String[] tableHeader) {
+		super(contents, tableHeader);
 	}
 
 	private Object[] getEmptyRow() {
