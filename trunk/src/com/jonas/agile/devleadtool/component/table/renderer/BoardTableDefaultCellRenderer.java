@@ -38,14 +38,20 @@ public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 				cell.setBackground(Color.red);
 			} else {
 				if (hasFocus) {
-					setBackground(SwingUtil.getTableCellFocusBackground(table));
+					cell.setBackground(Color.green);
+					setBackground(Color.blue);
+					cell.setBackground(SwingUtil.getTableCellFocusBackground(table));
 				}
 				if (isSelected) {
-					setForeground(table.getSelectionForeground());
-					setBackground(table.getSelectionBackground());
+					cell.setBackground(Color.black);
+					setBackground(Color.orange);
+					cell.setForeground(table.getSelectionForeground());
+					cell.setBackground(table.getSelectionBackground());
 				} else {
-					setForeground(table.getForeground());
-					setBackground(table.getBackground());
+					cell.setBackground(Color.pink);
+					setBackground(Color.yellow);
+					cell.setForeground(table.getForeground());
+					cell.setBackground(table.getBackground());
 				}
 			}
 		} 
