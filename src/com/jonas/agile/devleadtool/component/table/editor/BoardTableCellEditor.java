@@ -22,9 +22,9 @@ public class BoardTableCellEditor extends DefaultCellEditor {
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 		Component cell = super.getTableCellEditorComponent(table, value, isSelected, row, column);
 		((JCheckBox) getComponent()).setHorizontalAlignment(JLabel.CENTER);
-		if (model.isOneCheckboxTickedNext(row, column)) {
+		if (model.shouldBeRedBackground(value, row, column)) {
 			cell.setBackground(Color.red);
-		}else{
+		} else {
 			cell.setBackground(table.getSelectionBackground());
 		}
 		return cell;

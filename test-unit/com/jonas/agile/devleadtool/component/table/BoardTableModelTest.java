@@ -65,27 +65,28 @@ public class BoardTableModelTest extends TestCase {
 	
 	public void testShouldCalculateRedBooleanColsNextCorrectly() {
 		
-		assertTrue(model.isOneCheckboxTickedNext(0,1));
-		model.setValueAt(Boolean.TRUE, 0, 1);
-		assertFalse(model.isOneCheckboxTickedNext(0,1));
-		model.setValueAt(Boolean.FALSE, 0, 1);
-		assertTrue(model.isOneCheckboxTickedNext(0,1));
-		model.setValueAt(Boolean.TRUE, 0, 1);
-		assertFalse(model.isOneCheckboxTickedNext(0,1));
-		model.setValueAt(Boolean.TRUE, 0, 2);
-		assertTrue(model.isOneCheckboxTickedNext(0,2));
-		assertTrue(model.isOneCheckboxTickedNext(0,1));
+		assertEquals(1,model.noOfCheckboxesTickedNext(0,1));
+		model.setValueAt(Boolean.TRUE, 0, 1); // checked col 1
+		assertEquals(0,model.noOfCheckboxesTickedNext(0,1));
+		model.setValueAt(Boolean.FALSE, 0, 1);// none checked
+		assertEquals(1,model.noOfCheckboxesTickedNext(0,1));
+		model.setValueAt(Boolean.TRUE, 0, 1);// checked col 1
+		assertEquals(0,model.noOfCheckboxesTickedNext(0,1));
+		model.setValueAt(Boolean.TRUE, 0, 2);// checked col 1,2
+		assertEquals(1,model.noOfCheckboxesTickedNext(0,1));
+		assertEquals(1,model.noOfCheckboxesTickedNext(0,2));
+		assertEquals(3,model.noOfCheckboxesTickedNext(0,3));
 	}
 	
-	public void testShouldCalculateRedBooleanColsCorrectly() {
-		assertFalse(model.isOneCheckboxTicked(0));
-		model.setValueAt(Boolean.TRUE, 0, 2);
-		assertTrue(model.isOneCheckboxTicked(0));
-		model.setValueAt(Boolean.TRUE, 0, 3);
-		assertFalse(model.isOneCheckboxTicked(0));
-		model.setValueAt(Boolean.FALSE, 0, 2);
-		assertTrue(model.isOneCheckboxTicked(0));
-	}
+//	public void testShouldCalculateRedBooleanColsCorrectly() {
+//		assertFalse(model.isOneCheckboxTicked(0));
+//		model.setValueAt(Boolean.TRUE, 0, 2);
+//		assertTrue(model.isOneCheckboxTicked(0));
+//		model.setValueAt(Boolean.TRUE, 0, 3);
+//		assertFalse(model.isOneCheckboxTicked(0));
+//		model.setValueAt(Boolean.FALSE, 0, 2);
+//		assertTrue(model.isOneCheckboxTicked(0));
+//	}
 
 	private Object[] getEmptyRow() {
 		Object[] newRow = { "", Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE };

@@ -12,6 +12,7 @@ import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import com.jonas.agile.devleadtool.component.table.BoardTableModel;
+import com.jonas.common.SwingUtil;
 
 public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 
@@ -33,9 +34,12 @@ public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 		JComponent cell = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		debug(new Boolean(cell instanceof JTextField).toString());
 		if (column == 0) {
-			if (isCellToBecomeRed(value, column)) {
+			if (model.shouldBeRedBackground(value, 0, column)) {
 				cell.setBackground(Color.red);
 			} else {
+				if (hasFocus) {
+					setBackground(SwingUtil.getTableCellFocusBackground(table));
+				}
 				if (isSelected) {
 					setForeground(table.getSelectionForeground());
 					setBackground(table.getSelectionBackground());
@@ -46,10 +50,6 @@ public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 			}
 		} 
 		return cell;
-	}
-
-	private boolean isCellToBecomeRed(Object value, int column) {
-		return model.countOfSameValueInColumn(value, column) > 1;
 	}
 
 	private void debug(String string) {
