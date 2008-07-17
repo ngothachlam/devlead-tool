@@ -39,7 +39,7 @@ public class BoardTableModel extends DefaultTableModel {
 
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		return !(column == getColumnCount() - 1);
+		return column < 6;
 	}
 
 	// Only required if the table is updated by the app so that it becomes visible to the user.
