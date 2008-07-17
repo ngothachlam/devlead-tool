@@ -8,8 +8,9 @@ import javax.swing.table.DefaultTableModel;
 public class BoardTableModel extends DefaultTableModel {
 
 	private static String[] tableHeader = { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete", "URL" };
-	private static Object[] tableContents = { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
-			Boolean.FALSE, Boolean.FALSE, new String("") };
+
+	private static Object[] tableContents = { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
+	new String("") };
 
 	// public BoardTableModel() {
 	// this(new Object[][] { tableContents }, tableHeader);
@@ -33,8 +34,7 @@ public class BoardTableModel extends DefaultTableModel {
 		// vector.add(Boolean.FALSE);
 		// vector.add(new String(""));
 		// return vector;
-		return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
-				Boolean.FALSE, new String("") };
+		return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, new String("") };
 	}
 
 	@Override
@@ -66,10 +66,6 @@ public class BoardTableModel extends DefaultTableModel {
 		return getValueAt(0, columnIndex).getClass();
 	}
 
-	public boolean isOneCheckboxTicked(int row) {
-		return noOfCheckboxesTicked(row) == 1;
-	}
-
 	public int noOfCheckboxesTicked(int row) {
 		int numberTicks = 0;
 		for (int i = 1; i < getColumnCount(); i++) {
@@ -81,7 +77,7 @@ public class BoardTableModel extends DefaultTableModel {
 		return numberTicks;
 	}
 
-	public boolean isOneCheckboxTickedNext(int row, int col) {
+	public int noOfCheckboxesTickedNext(int row, int col) {
 		int numberTicks = 0;
 		for (int i = 1; i < getColumnCount(); i++) {
 			Object valueAt = getValueAt(row, i);
@@ -91,7 +87,7 @@ public class BoardTableModel extends DefaultTableModel {
 				numberTicks++;
 			}
 		}
-		return numberTicks == 1;
+		return numberTicks;
 	}
 
 	public void addEmptyRow() {
@@ -112,4 +108,21 @@ public class BoardTableModel extends DefaultTableModel {
 		}
 		return countOfSimilar;
 	}
+
+	public boolean shouldBeRedBackground(Object value, int row, int column) {
+		boolean theValue = false;
+		switch (column) {
+		case 0:
+			theValue = countOfSameValueInColumn(value, column) > 1;
+			break;
+		case 6:
+			theValue = false;
+			break;
+		default:
+			theValue = noOfCheckboxesTicked(row) == 0 || (noOfCheckboxesTicked(row) > 1 && value.equals(Boolean.TRUE));
+			break;
+		}
+		return theValue;
+	}
+
 }

@@ -20,6 +20,7 @@ import javax.swing.table.TableCellRenderer;
 import sun.util.calendar.CalendarUtils;
 
 import com.jonas.agile.devleadtool.component.table.BoardTableModel;
+import com.jonas.common.SwingUtil;
 
 public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellRenderer {
 
@@ -43,23 +44,20 @@ public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellR
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
 		if (hasFocus) {
-			if (doesProgressCellNeedToBeRed(value, row)) {
+			if (model.shouldBeRedBackground(value, row, column)) {
 				checkbox.setBackground(COLOR_FOCUS_ERROR);
 			} else {
-				Color selectionBackground = table.getSelectionBackground();
-				// checkbox.setForeground(table.getForeground());
-				selectionBackground.getBlue();
-				checkbox.setBackground(new Color(selectionBackground.getRed(), selectionBackground.getGreen(), selectionBackground.getBlue()));
+				checkbox.setBackground(SwingUtil.getTableCellFocusBackground(table));
 			}
 		} else if (isSelected) {
-			if (doesProgressCellNeedToBeRed(value, row)) {
+			if (model.shouldBeRedBackground(value, row, column)) {
 				checkbox.setBackground(COLOR_SELECTION_ERROR);
 			} else {
 				// checkbox.setForeground(table.getSelectionForeground());
 				checkbox.setBackground(table.getSelectionBackground());
 			}
 		} else {
-			if (doesProgressCellNeedToBeRed(value, row)) {
+			if (model.shouldBeRedBackground(value, row, column)) {
 				checkbox.setBackground(COLOR_NONSELECT_ERROR);
 			} else {
 				checkbox.setBackground(table.getBackground());
@@ -80,9 +78,8 @@ public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellR
 		}
 		if (!table.isCellEditable(row, column)) {
 			checkbox.setEnabled(false);
-		}else
+		} else
 			checkbox.setEnabled(true);
-			
 
 		setSelected(((Boolean) value).booleanValue() ? true : false);
 		return this;
@@ -99,10 +96,4 @@ public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellR
 	private void debug(String string) {
 		System.out.println(Calendar.getInstance().getTime() + " ~ " + string);
 	}
-
-	private boolean doesProgressCellNeedToBeRed(Object value, int row) {
-		return (!model.isOneCheckboxTicked(row) && model.noOfCheckboxesTicked(row) == 0)
-			|| (model.noOfCheckboxesTicked(row) > 1 && value.equals(Boolean.TRUE));
-	}
-
 }
