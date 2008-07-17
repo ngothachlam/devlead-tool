@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import org.apache.poi.hssf.extractor.ExcelExtractor;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -42,7 +43,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 			if (valueAt instanceof Boolean)
 				cell.setCellValue(((Boolean) valueAt).booleanValue());
 			if (valueAt instanceof String)
-				cell.setCellValue(((String) valueAt));
+				cell.setCellValue(new HSSFRichTextString((String) valueAt));
 		}
 		// Create a row and put some cells in it. Rows are 0 based.
 		for (int rowCount = 0; rowCount < model.getRowCount(); rowCount++) {
@@ -54,7 +55,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 				if (valueAt instanceof Boolean)
 					cell.setCellValue(((Boolean) valueAt).booleanValue());
 				if (valueAt instanceof String)
-					cell.setCellValue(((String) valueAt));
+					cell.setCellValue(new HSSFRichTextString((String) valueAt));
 			}
 		}
 
@@ -86,6 +87,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 				// Do something here
 			}
 		}
+		return null;
 
 	}
 
