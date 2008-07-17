@@ -3,11 +3,10 @@ package com.jonas.agile.devleadtool.component.table.renderer;
 import java.awt.Color;
 import java.awt.Component;
 
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.UIManager;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -19,7 +18,9 @@ public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 	private final BoardTableModel model;
 
 	private Color backgroundUnselected = null;
+
 	private Color backgroundSelected = null;
+
 	private Color backgroundFocused = null;
 
 	protected static Border noFocusBorder = new MatteBorder(3, 3, 3, 3, Color.blue);
@@ -28,10 +29,9 @@ public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 		this.model = model;
 	}
 
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
-		JComponent cell = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
-				column);
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		JComponent cell = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		debug(new Boolean(cell instanceof JTextField).toString());
 		if (column == 0) {
 			if (isCellToBecomeRed(value, column)) {
 				cell.setBackground(Color.red);
@@ -44,7 +44,7 @@ public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 					setBackground(table.getBackground());
 				}
 			}
-		}
+		} 
 		return cell;
 	}
 
