@@ -32,7 +32,6 @@ public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		JComponent cell = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		debug(new Boolean(cell instanceof JTextField).toString());
 		if (column == 0) {
 			if (model.shouldBeRedBackground(value, 0, column)) {
 				cell.setBackground(Color.red);
