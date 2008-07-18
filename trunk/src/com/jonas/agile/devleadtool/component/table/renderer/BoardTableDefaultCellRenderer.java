@@ -40,9 +40,8 @@ public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 
 		} else {
 			if (hasFocus) {
-				cell.setBackground(SwingUtil.getTableCellFocusBackground(table));
-			}
-			if (isSelected) {
+				cell.setBackground(SwingUtil.getTableCellFocusBackground());
+			} else if (isSelected) {
 				cell.setForeground(table.getSelectionForeground());
 				cell.setBackground(table.getSelectionBackground());
 			} else {

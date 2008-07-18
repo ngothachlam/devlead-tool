@@ -42,7 +42,8 @@ public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellR
 			if (model.shouldBeRedBackground(value, row, column)) {
 				checkbox.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
 			} else {
-				checkbox.setBackground(SwingUtil.getTableCellFocusBackground(table));
+//				checkbox.setBackground(UIManager.getColor("Table.focusCellBackground"));
+				checkbox.setBackground(SwingUtil.getTableCellFocusBackground());
 			}
 		} else if (isSelected) {
 			if (model.shouldBeRedBackground(value, row, column)) {
@@ -56,6 +57,7 @@ public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellR
 				checkbox.setBackground(SwingUtil.COLOR_NONSELECT_ERROR);
 			} else {
 				checkbox.setBackground(table.getBackground());
+				checkbox.setBackground(UIManager.getColor("Table.focusCellBackground"));
 			}
 		}
 		setFont(table.getFont());
@@ -64,7 +66,6 @@ public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellR
 		} else {
 			setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
 			// setTheForeground(UIManager.getColor("Table.focusCellForeground"));
-			// setTheBackground(UIManager.getColor("Table.focusCellBackground"));
 			// if (doesProgressCellNeedToBeRed(value, row)) {
 			// setTheBackground(COLOR_FOCUS_ERROR);
 			// } else {

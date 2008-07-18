@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 
 import javax.swing.JTable;
+import javax.swing.UIManager;
 
 public class SwingUtil {
 	
@@ -41,11 +42,11 @@ public class SwingUtil {
 		return new MyPanel(new GridLayout(rows, cols, hgap, vgap));
 	}
 
-	public static Color getTableCellFocusBackground(JTable table) {
+	public static Color getTableCellFocusBackground() {
 		if (selectionBackground == null) {
 			synchronized (lock) {
 				if (selectionBackground == null) {
-					Color color = table.getSelectionBackground();
+					Color color = UIManager.getColor("Table.selectionBackground");
 					selectionBackground = new Color(color.getRed() + 25, color.getGreen() + 25, color.getBlue() + 25);
 				}
 			}
