@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
@@ -17,8 +18,9 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.BoardTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.renderer.BoardTableCheckBoxCellRenderer;
-import com.jonas.agile.devleadtool.component.table.renderer.BoardTableDefaultCellRenderer;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.component.table.renderer.TableCheckBoxCellRenderer;
+import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.BoardTableJiraCellRenderer;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
@@ -50,13 +52,16 @@ public class BoardPanel extends MyComponentPanel {
 		}
 	}
 
-	private BoardTableModel model;
+	private MyTableModel model;
+
 	public String jira_url = "http://10.155.38.105/jira/browse/";
+
 	private MyTable table;
 
 	public BoardPanel(PlannerHelper client) {
 		super(new BorderLayout());
 		initialise();
+		initialiseTableHeader();
 	}
 
 	@Override
@@ -64,8 +69,8 @@ public class BoardPanel extends MyComponentPanel {
 		model = new BoardTableModel();
 		table = new MyTable(model);
 
-		table.setColumnRenderer(0, new BoardTableDefaultCellRenderer(model));
-		table.setDefaultRenderer(Boolean.class, new BoardTableCheckBoxCellRenderer(model));
+		table.setColumnRenderer(0, new StringTableCellRenderer(model));
+		table.setDefaultRenderer(Boolean.class, new TableCheckBoxCellRenderer(model));
 		table.setColumnRenderer(6, new BoardTableJiraCellRenderer(model));
 
 		table.setDefaultEditor(Boolean.class, new BoardTableCellEditor(model));
@@ -79,8 +84,6 @@ public class BoardPanel extends MyComponentPanel {
 		addCenter(scrollPane);
 	}
 
-
-
 	private void initialiseTableHeader() {
 		JTableHeader header = table.getTableHeader();
 		header.setUpdateTableInRealTime(true);
@@ -91,28 +94,18 @@ public class BoardPanel extends MyComponentPanel {
 	protected void setButtons() {
 		MyPanel buttonPanel = SwingUtil.getGridPanel(0, 2, 5, 5).bordered();
 
-		JButton addRowButton = new JButton("Add");
-		JButton removeRowButton = new JButton("Remove");
-
-		addRowButton.addActionListener(new ActionListener() {
+		addButton(buttonPanel, "Add", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				model.addEmptyRow();
 			}
 		});
 
-		removeRowButton.addActionListener(new ActionListener() {
+		addButton(buttonPanel, "Remove", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				model.removeSelectedRows(table);
 			}
 		});
 
-		buttonPanel.add(addRowButton);
-		buttonPanel.add(removeRowButton);
 		addSouth(buttonPanel);
-	}
-
-	@Override
-	protected void wireUpListeners() {
-		super.wireUpListeners();
 	}
 }

@@ -9,11 +9,12 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 
 public class BoardTableCellEditor extends DefaultCellEditor {
-	private final BoardTableModel model;
+	private final MyTableModel model;
 
-	public BoardTableCellEditor(BoardTableModel model) {
+	public BoardTableCellEditor(MyTableModel model) {
 		super(new JCheckBox());
 		this.model = model;
 	}
