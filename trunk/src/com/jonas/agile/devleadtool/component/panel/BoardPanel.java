@@ -14,11 +14,12 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.table.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.BoardTableCellEditor;
+import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.BoardTableCheckBoxCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.BoardTableDefaultCellRenderer;
+import com.jonas.agile.devleadtool.component.table.renderer.BoardTableJiraCellRenderer;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
@@ -65,12 +66,14 @@ public class BoardPanel extends MyComponentPanel {
 
 		table.setColumnRenderer(0, new BoardTableDefaultCellRenderer(model));
 		table.setDefaultRenderer(Boolean.class, new BoardTableCheckBoxCellRenderer(model));
+		table.setColumnRenderer(6, new BoardTableJiraCellRenderer(model));
 
 		table.setDefaultEditor(Boolean.class, new BoardTableCellEditor(model));
-
 		table.addMouseListener(new BoardTableMouseListener());
 
-		initialiseTableHeader();
+		JTableHeader header = table.getTableHeader();
+		header.setUpdateTableInRealTime(true);
+		header.setReorderingAllowed(true);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		addCenter(scrollPane);
@@ -81,7 +84,6 @@ public class BoardPanel extends MyComponentPanel {
 	private void initialiseTableHeader() {
 		JTableHeader header = table.getTableHeader();
 		header.setUpdateTableInRealTime(true);
-
 		header.setReorderingAllowed(true);
 	}
 

@@ -8,7 +8,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 
-import com.jonas.agile.devleadtool.component.table.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 
 public class BoardTableCellEditor extends DefaultCellEditor {
 	private final BoardTableModel model;
@@ -22,7 +22,7 @@ public class BoardTableCellEditor extends DefaultCellEditor {
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 		Component cell = super.getTableCellEditorComponent(table, value, isSelected, row, column);
 		((JCheckBox) getComponent()).setHorizontalAlignment(JLabel.CENTER);
-		if (model.shouldBeRedBackground(value, row, column)) {
+		if (model.shouldBackgroundBeRed(value, row, column)) {
 			cell.setBackground(Color.red);
 		} else {
 			cell.setBackground(table.getSelectionBackground());

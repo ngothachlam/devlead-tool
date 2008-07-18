@@ -1,6 +1,6 @@
 package com.jonas.agile.devleadtool.component.table;
 
-import com.jonas.agile.devleadtool.component.table.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 
 import junit.framework.TestCase;
 

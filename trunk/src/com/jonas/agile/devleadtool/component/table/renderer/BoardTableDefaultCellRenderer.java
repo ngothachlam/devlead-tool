@@ -5,18 +5,14 @@ import java.awt.Component;
 
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import com.jonas.agile.devleadtool.component.table.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.SwingUtil;
 
 public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 
-	private final BoardTableModel model;
+	private final MyTableModel model;
 
 	private Color backgroundUnselected = null;
 
@@ -24,13 +20,13 @@ public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 
 	private Color backgroundFocused = null;
 
-	public BoardTableDefaultCellRenderer(BoardTableModel model) {
+	public BoardTableDefaultCellRenderer(MyTableModel model) {
 		this.model = model;
 	}
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		JComponent cell = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		if (model.shouldBeRedBackground(value, row, column)) {
+		if (model.shouldBackgroundBeRed(value, row, column)) {
 			if (hasFocus)
 				cell.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
 			else if (isSelected)
