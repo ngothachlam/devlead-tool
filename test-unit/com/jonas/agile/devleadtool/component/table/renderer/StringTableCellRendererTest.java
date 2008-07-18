@@ -4,7 +4,7 @@ import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 
 import junit.framework.TestCase;
 
-public class BoardTableDefaultCellRendererTest extends TestCase {
+public class StringTableCellRendererTest extends TestCase {
 
 	private StringTableCellRenderer board;
 
