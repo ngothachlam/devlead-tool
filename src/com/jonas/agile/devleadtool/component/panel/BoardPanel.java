@@ -15,6 +15,7 @@ import javax.swing.table.TableColumnModel;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.table.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.BoardTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.renderer.BoardTableCheckBoxCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.BoardTableDefaultCellRenderer;
@@ -50,7 +51,7 @@ public class BoardPanel extends MyComponentPanel {
 
 	private BoardTableModel model;
 	public String jira_url = "http://10.155.38.105/jira/browse/";
-	private JTable table;
+	private MyTable table;
 
 	public BoardPanel(PlannerHelper client) {
 		super(new BorderLayout());
@@ -60,16 +61,11 @@ public class BoardPanel extends MyComponentPanel {
 	@Override
 	protected void makeContent() {
 		model = new BoardTableModel();
-		table = new JTable(model);
+		table = new MyTable(model);
 
-		table.setDefaultRenderer(Object.class, new BoardTableCheckBoxCellRenderer(model));
-
-//		TableColumnModel tcm = table.getColumnModel();
-//		TableColumn tc = tcm.getColumn(0);
-//		tc.setCellRenderer(new BoardTableCheckBoxCellRenderer(model));
-
+//		table.setDefaultRenderer(Object.class, new BoardTableCheckBoxCellRenderer(model));
+		table.setColumnRenderer(0, new BoardTableDefaultCellRenderer(model));
 		table.setDefaultRenderer(Boolean.class, new BoardTableCheckBoxCellRenderer(model));
-		table.setDefaultRenderer(String.class, new BoardTableDefaultCellRenderer(model));
 
 		table.setDefaultEditor(Boolean.class, new BoardTableCellEditor(model));
 
@@ -80,6 +76,8 @@ public class BoardPanel extends MyComponentPanel {
 		JScrollPane scrollPane = new JScrollPane(table);
 		addCenter(scrollPane);
 	}
+
+
 
 	private void initialiseTableHeader() {
 		JTableHeader header = table.getTableHeader();

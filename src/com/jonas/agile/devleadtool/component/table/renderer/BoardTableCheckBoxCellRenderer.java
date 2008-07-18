@@ -24,11 +24,6 @@ import com.jonas.common.SwingUtil;
 
 public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellRenderer {
 
-	private static final Color COLOR_NONSELECT_ERROR = new Color(200, 0, 0);
-
-	private static final Color COLOR_SELECTION_ERROR = new Color(225, 0, 0);
-
-	private static final Color COLOR_FOCUS_ERROR = new Color(250, 0, 0);
 
 	private final BoardTableModel model;
 
@@ -45,20 +40,20 @@ public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellR
 
 		if (hasFocus) {
 			if (model.shouldBeRedBackground(value, row, column)) {
-				checkbox.setBackground(COLOR_FOCUS_ERROR);
+				checkbox.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
 			} else {
 				checkbox.setBackground(SwingUtil.getTableCellFocusBackground(table));
 			}
 		} else if (isSelected) {
 			if (model.shouldBeRedBackground(value, row, column)) {
-				checkbox.setBackground(COLOR_SELECTION_ERROR);
+				checkbox.setBackground(SwingUtil.COLOR_SELECTION_ERROR);
 			} else {
 				// checkbox.setForeground(table.getSelectionForeground());
 				checkbox.setBackground(table.getSelectionBackground());
 			}
 		} else {
 			if (model.shouldBeRedBackground(value, row, column)) {
-				checkbox.setBackground(COLOR_NONSELECT_ERROR);
+				checkbox.setBackground(SwingUtil.COLOR_NONSELECT_ERROR);
 			} else {
 				checkbox.setBackground(table.getBackground());
 			}
