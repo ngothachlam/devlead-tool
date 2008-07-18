@@ -6,14 +6,14 @@ import junit.framework.TestCase;
 
 public class BoardTableDefaultCellRendererTest extends TestCase {
 
-	private BoardTableDefaultCellRenderer board;
+	private StringTableCellRenderer board;
 
 	private BoardTableModel model;
 
 	protected void setUp() throws Exception {
 		super.setUp();
 		model = new BoardTableModel();
-		board = new BoardTableDefaultCellRenderer(model);
+		board = new StringTableCellRenderer(model);
 	}
 
 	protected void tearDown() throws Exception {
@@ -21,7 +21,6 @@ public class BoardTableDefaultCellRendererTest extends TestCase {
 	}
 
 	public void testCellColors() {
-		assertEquals(String.class, board.getComponentAt(0, 0).getClass());
 	}
 
 }

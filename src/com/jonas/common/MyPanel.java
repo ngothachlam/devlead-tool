@@ -3,8 +3,10 @@ package com.jonas.common;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.LayoutManager;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
@@ -47,5 +49,11 @@ public class MyPanel extends JPanel {
 	public final MyPanel bordered(Border border) {
 		setBorder(border);
 		return this;
+	}
+	
+	public void addButton(JPanel buttonPanel, String string, ActionListener listener) {
+		JButton button = new JButton(string);
+		button.addActionListener(listener);
+		buttonPanel.add(button);
 	}
 }

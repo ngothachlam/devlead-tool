@@ -4,6 +4,6 @@ import junit.framework.TestCase;
 
 public class BoardTableCheckBoxCellRendererTest extends TestCase {
 	
-	BoardTableCheckBoxCellRenderer renderer = new BoardTableCheckBoxCellRenderer(null);
+	TableCheckBoxCellRenderer renderer = new TableCheckBoxCellRenderer(null);
 
 }

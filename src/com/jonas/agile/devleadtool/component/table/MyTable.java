@@ -8,7 +8,7 @@ import javax.swing.table.TableColumnModel;
 
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.component.table.renderer.BoardTableDefaultCellRenderer;
+import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 
 public class MyTable extends JTable {
 

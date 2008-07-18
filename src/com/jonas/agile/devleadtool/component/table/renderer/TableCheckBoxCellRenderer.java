@@ -23,13 +23,13 @@ import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.SwingUtil;
 
-public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellRenderer {
+public class TableCheckBoxCellRenderer extends JPanel implements TableCellRenderer {
 
 	private final MyTableModel model;
 
 	private JCheckBox checkbox = new JCheckBox();
 
-	public BoardTableCheckBoxCellRenderer(MyTableModel model) {
+	public TableCheckBoxCellRenderer(MyTableModel model) {
 		super(new BorderLayout());
 		this.model = model;
 		checkbox.setHorizontalAlignment(JLabel.CENTER);
@@ -39,33 +39,29 @@ public class BoardTableCheckBoxCellRenderer extends JPanel implements TableCellR
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
 		setFont(table.getFont());
-		
-		if (hasFocus) {
-			if (model.shouldBackgroundBeRed(value, row, column)) {
+
+		if (model.shouldBackgroundBeRed(value, row, column)) {
+			if (hasFocus)
 				checkbox.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
-			} else {
-				checkbox.setBackground(SwingUtil.getTableCellFocusBackground());
-			}
-		} else if (isSelected) {
-			if (model.shouldBackgroundBeRed(value, row, column)) {
+			else if (isSelected)
 				checkbox.setBackground(SwingUtil.COLOR_SELECTION_ERROR);
-			} else {
-				checkbox.setBackground(table.getSelectionBackground());
-			}
-		} else {
-			if (model.shouldBackgroundBeRed(value, row, column)) {
+			else
 				checkbox.setBackground(SwingUtil.COLOR_NONSELECT_ERROR);
-			} else {
+		} else {
+			if (hasFocus)
+				checkbox.setBackground(SwingUtil.getTableCellFocusBackground());
+			else if (isSelected)
+				checkbox.setBackground(table.getSelectionBackground());
+			else
 				checkbox.setBackground(table.getBackground());
-			}
 		}
-		
+
 		if (hasFocus) {
 			setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
 		} else {
 			setBorder(UIManager.getBorder("Table.focusSelectedCellHighlightBorder"));
 		}
-		
+
 		if (!table.isCellEditable(row, column)) {
 			checkbox.setEnabled(false);
 		} else

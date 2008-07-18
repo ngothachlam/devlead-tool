@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.SwingUtil;
 
-public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
+public class StringTableCellRenderer extends DefaultTableCellRenderer {
 
 	private final MyTableModel model;
 
@@ -20,7 +20,7 @@ public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 
 	private Color backgroundFocused = null;
 
-	public BoardTableDefaultCellRenderer(MyTableModel model) {
+	public StringTableCellRenderer(MyTableModel model) {
 		this.model = model;
 	}
 
