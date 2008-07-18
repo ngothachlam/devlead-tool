@@ -78,6 +78,10 @@ public class BoardTableModelTest extends TestCase {
 		assertEquals(3,model.noOfCheckboxesTickedNext(0,3));
 	}
 	
+	public void testShouldReturnShouldBeRedCorrectly() {
+		assertFalse(true);
+	}
+	
 //	public void testShouldCalculateRedBooleanColsCorrectly() {
 //		assertFalse(model.isOneCheckboxTicked(0));
 //		model.setValueAt(Boolean.TRUE, 0, 2);
@@ -92,5 +96,5 @@ public class BoardTableModelTest extends TestCase {
 		Object[] newRow = { "", Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE };
 		return newRow;
 	}
-
+	
 }
