@@ -16,7 +16,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
-import com.jonas.agile.devleadtool.component.table.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 
 public class PlannerDAOExcelImpl implements PlannerDAO {
 

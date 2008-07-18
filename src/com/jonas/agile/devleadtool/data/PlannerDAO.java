@@ -3,7 +3,7 @@ package com.jonas.agile.devleadtool.data;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import com.jonas.agile.devleadtool.component.table.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 
 public interface PlannerDAO {
 

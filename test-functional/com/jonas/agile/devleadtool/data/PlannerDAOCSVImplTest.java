@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import com.jonas.agile.devleadtool.component.table.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 
 public class PlannerDAOCSVImplTest extends TestCase {
 	File xlsFile = new File("bin\\test.xls");
