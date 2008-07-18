@@ -45,8 +45,8 @@ public class BoardTableModel extends DefaultTableModel {
 	// Only required if the table is updated by the app so that it becomes visible to the user.
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
 		super.setValueAt(value, rowIndex, columnIndex);
+		fireTableRowsUpdated(0, this.getRowCount());
 		if (value instanceof Boolean) {
-			fireTableRowsUpdated(0, this.getRowCount());
 		} else if (columnIndex == 0) {
 			setValueAt("LLU-" + value.toString(), rowIndex, 6);
 			if (rowIndex + 1 == this.getRowCount()) {

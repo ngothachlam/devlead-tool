@@ -24,36 +24,32 @@ public class BoardTableDefaultCellRenderer extends DefaultTableCellRenderer {
 
 	private Color backgroundFocused = null;
 
-	protected static Border noFocusBorder = new MatteBorder(3, 3, 3, 3, Color.blue);
-
 	public BoardTableDefaultCellRenderer(BoardTableModel model) {
 		this.model = model;
 	}
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		JComponent cell = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		if (column == 0) {
-			if (model.shouldBeRedBackground(value, 0, column)) {
-				cell.setBackground(Color.red);
-			} else {
-				if (hasFocus) {
-					cell.setBackground(Color.green);
-					setBackground(Color.blue);
-					cell.setBackground(SwingUtil.getTableCellFocusBackground(table));
-				}
-				if (isSelected) {
-					cell.setBackground(Color.black);
-					setBackground(Color.orange);
-					cell.setForeground(table.getSelectionForeground());
-					cell.setBackground(table.getSelectionBackground());
-				} else {
-					cell.setBackground(Color.pink);
-					setBackground(Color.yellow);
-					cell.setForeground(table.getForeground());
-					cell.setBackground(table.getBackground());
-				}
+		if (model.shouldBeRedBackground(value, row, column)) {
+			if (hasFocus)
+				cell.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
+			else if (isSelected)
+				cell.setBackground(SwingUtil.COLOR_SELECTION_ERROR);
+			else
+				cell.setBackground(SwingUtil.COLOR_NONSELECT_ERROR);
+
+		} else {
+			if (hasFocus) {
+				cell.setBackground(SwingUtil.getTableCellFocusBackground(table));
 			}
-		} 
+			if (isSelected) {
+				cell.setForeground(table.getSelectionForeground());
+				cell.setBackground(table.getSelectionBackground());
+			} else {
+				cell.setForeground(table.getForeground());
+				cell.setBackground(table.getBackground());
+			}
+		}
 		return cell;
 	}
 
