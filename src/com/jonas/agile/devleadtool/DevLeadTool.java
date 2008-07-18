@@ -43,7 +43,7 @@ public class DevLeadTool {
 
 //		frame.setSize(new Dimension(1200, 660));
 		frame.setSize(new Dimension(1200, 360));
-		SwingUtil.centreWindow(frame);
+//		SwingUtil.centreWindow(frame);
 		frame.setVisible(true);
 		frame.addWindowListener(new MainFrameListener(frame));
 

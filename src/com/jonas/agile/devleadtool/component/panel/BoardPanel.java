@@ -63,7 +63,6 @@ public class BoardPanel extends MyComponentPanel {
 		model = new BoardTableModel();
 		table = new MyTable(model);
 
-//		table.setDefaultRenderer(Object.class, new BoardTableCheckBoxCellRenderer(model));
 		table.setColumnRenderer(0, new BoardTableDefaultCellRenderer(model));
 		table.setDefaultRenderer(Boolean.class, new BoardTableCheckBoxCellRenderer(model));
 
