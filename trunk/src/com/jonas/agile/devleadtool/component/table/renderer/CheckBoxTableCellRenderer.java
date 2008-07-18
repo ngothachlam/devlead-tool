@@ -82,4 +82,8 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 	private void debug(String string) {
 		System.out.println(Calendar.getInstance().getTime() + " ~ " + string);
 	}
+	
+	protected Color getBackgroundColor() {
+		return checkbox.getBackground();
+	}
 }
