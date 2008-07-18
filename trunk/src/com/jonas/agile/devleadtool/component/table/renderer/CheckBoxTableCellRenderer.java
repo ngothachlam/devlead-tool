@@ -23,13 +23,13 @@ import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.SwingUtil;
 
-public class TableCheckBoxCellRenderer extends JPanel implements TableCellRenderer {
+public class CheckBoxTableCellRenderer extends JPanel implements TableCellRenderer {
 
 	private final MyTableModel model;
 
 	private JCheckBox checkbox = new JCheckBox();
 
-	public TableCheckBoxCellRenderer(MyTableModel model) {
+	public CheckBoxTableCellRenderer(MyTableModel model) {
 		super(new BorderLayout());
 		this.model = model;
 		checkbox.setHorizontalAlignment(JLabel.CENTER);

@@ -19,9 +19,9 @@ import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.BoardTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.component.table.renderer.TableCheckBoxCellRenderer;
+import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
-import com.jonas.agile.devleadtool.component.table.renderer.BoardTableJiraCellRenderer;
+import com.jonas.agile.devleadtool.component.table.renderer.ButtonTableCellRenderer;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
@@ -70,8 +70,8 @@ public class BoardPanel extends MyComponentPanel {
 		table = new MyTable(model);
 
 		table.setColumnRenderer(0, new StringTableCellRenderer(model));
-		table.setDefaultRenderer(Boolean.class, new TableCheckBoxCellRenderer(model));
-		table.setColumnRenderer(6, new BoardTableJiraCellRenderer(model));
+		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(model));
+		table.setColumnRenderer(6, new ButtonTableCellRenderer(model));
 
 		table.setDefaultEditor(Boolean.class, new BoardTableCellEditor(model));
 		table.addMouseListener(new BoardTableMouseListener());
