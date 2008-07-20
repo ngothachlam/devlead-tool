@@ -21,7 +21,7 @@ import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
-import com.jonas.agile.devleadtool.component.table.renderer.ButtonTableCellRenderer;
+import com.jonas.agile.devleadtool.component.table.renderer.HyperlinkTableCellRenderer;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
@@ -71,7 +71,7 @@ public class BoardPanel extends MyComponentPanel {
 
 		table.setColumnRenderer(0, new StringTableCellRenderer(model));
 		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(model));
-		table.setColumnRenderer(6, new ButtonTableCellRenderer(model));
+		table.setColumnRenderer(6, new HyperlinkTableCellRenderer(model));
 
 		table.setDefaultEditor(Boolean.class, new BoardTableCellEditor(model));
 		table.addMouseListener(new BoardTableMouseListener());

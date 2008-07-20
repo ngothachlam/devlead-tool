@@ -79,7 +79,14 @@ public class BoardTableModelTest extends TestCase {
 	}
 	
 	public void testShouldReturnShouldBeRedCorrectly() {
-		assertFalse(true);
+		assertEquals(false,model.shouldBackgroundBeRed(Boolean.TRUE,0,0));
+		assertEquals(true,model.shouldBackgroundBeRed(Boolean.TRUE,0,1));
+		assertEquals(true,model.shouldBackgroundBeRed(Boolean.TRUE,0,2));
+		assertEquals(true,model.shouldBackgroundBeRed(Boolean.TRUE,0,3));
+		assertEquals(true,model.shouldBackgroundBeRed(Boolean.TRUE,0,4));
+		assertEquals(true,model.shouldBackgroundBeRed(Boolean.TRUE,0,5));
+		assertEquals(false,model.shouldBackgroundBeRed(Boolean.TRUE,0,6));
+		assertEquals(true,model.shouldBackgroundBeRed(Boolean.TRUE,0,7));
 	}
 	
 //	public void testShouldCalculateRedBooleanColsCorrectly() {
