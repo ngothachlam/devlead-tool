@@ -12,8 +12,8 @@ import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRende
 
 public class MyTable extends JTable {
 
-	public MyTable(MyTableModel model) {
-		super(model);
+	public MyTable() {
+		super();
 	}
 
 	public void setColumnRenderer(int i, TableCellRenderer renderer) {

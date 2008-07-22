@@ -26,7 +26,7 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 		initialise();
 	}
 
-	public void makeContent() {
+	public void makeNewContent() {
 		tabbedPane = new JTabbedPane(JTabbedPane.VERTICAL);
 		tabbedPane.add(boardPanel, "Board");
 		tabbedPane.add(planPanel, "Plan");

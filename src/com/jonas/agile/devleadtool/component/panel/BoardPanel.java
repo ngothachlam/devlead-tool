@@ -58,16 +58,20 @@ public class BoardPanel extends MyComponentPanel {
 
 	private MyTable table;
 
+	private final PlannerHelper client;
+
 	public BoardPanel(PlannerHelper client) {
 		super(new BorderLayout());
+		this.client = client;
 		initialise();
 		initialiseTableHeader();
 	}
 
-	@Override
-	protected void makeContent() {
+	protected void makeNewContent() {
 		model = new BoardTableModel();
-		table = new MyTable(model);
+	
+		table = new MyTable();
+		setModel(model);
 
 		table.setColumnRenderer(0, new StringTableCellRenderer(model));
 		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(model));
@@ -107,5 +111,10 @@ public class BoardPanel extends MyComponentPanel {
 		});
 
 		addSouth(buttonPanel);
+	}
+
+	public void setModel(MyTableModel model) {
+		table.setModel(model);
+		client.setBoardModel(model);
 	}
 }

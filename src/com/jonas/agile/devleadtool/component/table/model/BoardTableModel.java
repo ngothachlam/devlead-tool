@@ -15,6 +15,10 @@ public class BoardTableModel extends DefaultTableModel implements MyTableModel {
 	public BoardTableModel() {
 		super(new Object[][] { tableContents }, tableHeader);
 	}
+	
+	public BoardTableModel(Vector contents, Vector headers) {
+		super(contents, headers);
+	}
 
 	private Object[] getEmptyRow() {
 		return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, new String("") };

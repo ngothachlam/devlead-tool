@@ -7,12 +7,9 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.InternalFrame;
 
-public class PlannerDialog extends JDialog {
-	public PlannerDialog(JFrame parent, DesktopPane desktopPane) {
-		PlannerHelper plannerHolder = new PlannerHelper("Planner");
-		desktopPane.addInternalFrame(new InternalFrame(plannerHolder));
-
-		setVisible(false);
+public class PlannerDialog {
+	public PlannerDialog(JFrame parent, DesktopPane desktopPane, PlannerHelper plannerHelper) {
+		desktopPane.addInternalFrame(new InternalFrame(plannerHelper));
 	}
 
 }

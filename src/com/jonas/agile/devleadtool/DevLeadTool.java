@@ -3,20 +3,21 @@ package com.jonas.agile.devleadtool;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.dialog.ClosingDialog;
 import com.jonas.agile.devleadtool.component.dialog.PlannerDialog;
 import com.jonas.agile.devleadtool.component.listener.MainFrameListener;
+import com.jonas.agile.devleadtool.component.panel.LoadDialog;
+import com.jonas.agile.devleadtool.component.panel.SaveDialog;
+import com.jonas.agile.devleadtool.data.PlannerDAO;
+import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.common.SwingUtil;
 
 public class DevLeadTool {
@@ -41,9 +42,7 @@ public class DevLeadTool {
 		frame.setJMenuBar(createMenuBar(frame, desktop));
 		frame.setContentPane(contentPane);
 
-//		frame.setSize(new Dimension(1200, 660));
 		frame.setSize(new Dimension(1200, 360));
-//		SwingUtil.centreWindow(frame);
 		frame.setVisible(true);
 		frame.addWindowListener(new MainFrameListener(frame));
 
@@ -56,9 +55,22 @@ public class DevLeadTool {
 	}
 
 	private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
-		JMenuItem planner = createMenuItem("Planner", new ActionListener() {
+		final PlannerHelper plannerHelper = new PlannerHelper("Planner");
+		final PlannerDAO plannerDAO = new PlannerDAOExcelImpl();
+		
+		JMenuItem planner = createMenuItem("New Planner", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new PlannerDialog(frame, desktop);
+				PlannerDialog plannerDialog = new PlannerDialog(frame, desktop, plannerHelper);
+			}
+		});
+		JMenuItem open = createMenuItem("Open Planner", new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new LoadDialog(plannerDAO, frame, plannerHelper);
+			}
+		});
+		JMenuItem save = createMenuItem("Save Planner", new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new SaveDialog(plannerDAO, frame, plannerHelper);
 			}
 		});
 		JMenuItem exit = createMenuItem("Exit", new ActionListener() {
@@ -66,7 +78,7 @@ public class DevLeadTool {
 				new ClosingDialog(frame);
 			}
 		});
-		return new JMenuItem[] { planner, exit };
+		return new JMenuItem[] { planner, open, save, exit };
 	}
 
 	private JMenu createFileMenu(String title, JMenuItem[] menuItemList) {
