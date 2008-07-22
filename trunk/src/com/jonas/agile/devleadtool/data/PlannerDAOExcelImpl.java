@@ -26,7 +26,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 		super();
 	}
 
-	public void saveModel(File xlsFile, MyTableModel model) throws IOException {
+	public void saveBoardModel(File xlsFile, BoardTableModel model) throws IOException {
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet("board");
 
@@ -60,7 +60,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
 	}
 
-	public BoardTableModel loadModel(File xlsFile) throws IOException {
+	public BoardTableModel loadBoardModel(File xlsFile) throws IOException {
 		// HSSFWorkbook wb = new HSSFWorkbook();
 		// HSSFSheet sheet = wb.createSheet("board");
 		

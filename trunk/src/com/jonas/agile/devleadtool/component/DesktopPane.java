@@ -17,6 +17,8 @@ public class DesktopPane extends JDesktopPane {
 		int xLocation = (internalFrame.getInternalFramesCount() - 1) * 20;
 		int yLocation = (internalFrame.getInternalFramesCount() - 1) * 25;
 
+		this.putClientProperty("JDesktopPane.dragMode", "outline");
+
 		internalFrame.setLocation(xLocation, yLocation);
 		internalFrame.moveToFront();
 		internalFrame.setVisible(true);

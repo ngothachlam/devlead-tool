@@ -1,12 +1,14 @@
 package com.jonas.agile.devleadtool;
 
+import com.jonas.agile.devleadtool.component.InternalFrame;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 
 public class PlannerHelper {
 
 	private String title;
-	private MyTableModel model;
+
+	private BoardTableModel model;
 
 	public PlannerHelper(String title) {
 		super();
@@ -17,12 +19,17 @@ public class PlannerHelper {
 		return title;
 	}
 
-	public MyTableModel getBoardModel() {
+	public BoardTableModel getBoardModel() {
 		return model;
 	}
 
-	public void setBoardModel(MyTableModel model) {
+	private void setBoardModel(BoardTableModel model) {
 		this.model = model;
+	}
+
+	public void setPlanner(InternalFrame internalFrame) {
+		System.out.println("focusing " + internalFrame.getTitle());
+		this.setBoardModel(internalFrame.getBoardPanel().getBoardModel());
 	}
 
 }

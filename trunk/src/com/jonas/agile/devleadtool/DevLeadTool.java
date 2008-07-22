@@ -65,7 +65,7 @@ public class DevLeadTool {
 		});
 		JMenuItem open = createMenuItem("Open Planner", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new LoadDialog(plannerDAO, frame, plannerHelper);
+				new LoadDialog(desktop, plannerDAO, frame, plannerHelper);
 			}
 		});
 		JMenuItem save = createMenuItem("Save Planner", new ActionListener() {

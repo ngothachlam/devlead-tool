@@ -8,7 +8,7 @@ import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 
 public interface PlannerDAO {
 
-	public void saveModel(File file, MyTableModel modelToSaveFrom) throws IOException;
-	public BoardTableModel loadModel(File xlsFile) throws IOException;
+	public void saveBoardModel(File file, BoardTableModel modelToSaveFrom) throws IOException;
+	public BoardTableModel loadBoardModel(File xlsFile) throws IOException;
 
 }
