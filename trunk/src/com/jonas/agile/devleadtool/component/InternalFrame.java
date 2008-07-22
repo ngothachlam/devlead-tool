@@ -78,6 +78,8 @@ public class InternalFrame extends JInternalFrame {
 		setContentPane(content);
 		client.setPlanner(this);
 		this.addInternalFrameListener(new MyInternalFrameListener(client, this));
+		
+		//TODO merge two constructors!!
 	}
 
 	protected void wireUpListeners() {
