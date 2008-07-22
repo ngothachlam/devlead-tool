@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.Vector;
 
 import org.apache.poi.hssf.extractor.ExcelExtractor;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -17,22 +18,15 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 
 public class PlannerDAOExcelImpl implements PlannerDAO {
 
-	private File xlsFile;
-
-	public PlannerDAOExcelImpl(File xlsFile) throws IOException {
+	public PlannerDAOExcelImpl() {
 		super();
-		this.xlsFile = xlsFile;
 	}
 
-	public BoardTableModel getModel() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void saveModel(BoardTableModel model) throws IOException {
+	public void saveModel(File xlsFile, MyTableModel model) throws IOException {
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet("board");
 
@@ -66,11 +60,10 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
 	}
 
-	public BoardTableModel loadModel() throws IOException {
-		// TODO Auto-generated method stub
+	public BoardTableModel loadModel(File xlsFile) throws IOException {
 		// HSSFWorkbook wb = new HSSFWorkbook();
 		// HSSFSheet sheet = wb.createSheet("board");
-
+		
 		InputStream inp = new FileInputStream(xlsFile);
 		HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(inp));
 		ExcelExtractor extractor = new ExcelExtractor(wb);
@@ -80,14 +73,45 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 		String text = extractor.getText();
 
 		HSSFSheet sheet = wb.getSheet("board");
+		Vector contents = new Vector();
+		Vector<Object> header = new Vector<Object>();
+		int rowCount = -1;
 		for (Iterator rit = sheet.rowIterator(); rit.hasNext();) {
+			rowCount++;
+			Vector<Object> rowData = new Vector<Object>();
 			HSSFRow row = (HSSFRow) rit.next();
 			for (Iterator cit = row.cellIterator(); cit.hasNext();) {
 				HSSFCell cell = (HSSFCell) cit.next();
-				// Do something here
+				switch (cell.getCellType()) {
+				case HSSFCell.CELL_TYPE_BOOLEAN:
+					if (rowCount == 0)
+						header.add(new Boolean(cell.getBooleanCellValue()));
+					else
+						rowData.add(new Boolean(cell.getBooleanCellValue()));
+					break;
+				case HSSFCell.CELL_TYPE_NUMERIC:
+					if (rowCount == 0)
+						header.add(new Double(cell.getNumericCellValue()));
+					else
+						rowData.add(new Double(cell.getNumericCellValue()));
+					break;
+				case HSSFCell.CELL_TYPE_STRING:
+					HSSFRichTextString string = cell.getRichStringCellValue();
+					String tempString = (string == null ? new String("") : string.getString());
+					if (rowCount == 0)
+						header.add(tempString);
+					else
+						rowData.add(tempString);
+					break;
+				default:
+					break;
+				}
 			}
+			if (rowCount != 0)
+				contents.add(rowData);
 		}
-		return null;
+		BoardTableModel model = new BoardTableModel(contents, header);
+		return model;
 
 	}
 

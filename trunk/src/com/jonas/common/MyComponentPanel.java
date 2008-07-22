@@ -15,13 +15,13 @@ public class MyComponentPanel extends MyPanel {
 	}
 	
 	protected final void initialise() {
-		makeContent();
+		makeNewContent();
 		wireUpListeners();
 		loadPreferences();
 		setButtons();		
 	}
 	
-	protected void makeContent() {
+	protected void makeNewContent() {
 		// override as needed
 	}
 
