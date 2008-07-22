@@ -58,12 +58,12 @@ public class InternalFrame extends JInternalFrame {
 
 	public InternalFrame(final PlannerHelper client) {
 		super("", true, true, true, true);
-		client.setPlanner(this);
 		this.setTitle(createTitle(client));
 		internalFrames.add(this);
 		content = new InternalFrameTabPanel(this, client);
 		wireUpListeners();
 		setContentPane(content);
+		client.setPlanner(this);
 		
 		this.addInternalFrameListener(new MyInternalFrameListener(client, this));
 	}
@@ -76,6 +76,8 @@ public class InternalFrame extends JInternalFrame {
 		content = new InternalFrameTabPanel(this, client, model);
 		wireUpListeners();
 		setContentPane(content);
+		client.setPlanner(this);
+		this.addInternalFrameListener(new MyInternalFrameListener(client, this));
 	}
 
 	protected void wireUpListeners() {
