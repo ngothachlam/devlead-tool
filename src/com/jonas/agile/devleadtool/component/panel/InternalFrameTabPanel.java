@@ -9,24 +9,39 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI.TabbedPaneLayout;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.InternalFrame;
+import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.MyComponentPanel;
 
 public class InternalFrameTabPanel extends MyComponentPanel {
 
-	private JPanel boardPanel;
+	private BoardPanel boardPanel;
+
 	private JPanel planPanel;
+
 	private JPanel jiraPanel;
+
 	private JTabbedPane tabbedPane;
 
 	public InternalFrameTabPanel(InternalFrame parent, PlannerHelper client) {
-		super(new BorderLayout());
-		boardPanel = new BoardPanel(client);
-		planPanel = new PlanPanel(client);
-		jiraPanel = new JiraPanel(client);
-		initialise();
+		this(parent, client, null);
 	}
 
-	public void makeNewContent() {
+	public InternalFrameTabPanel(InternalFrame frame, PlannerHelper client, BoardTableModel model) {
+		super(new BorderLayout());
+		if (model == null)
+			model = new BoardTableModel();
+		boardPanel = new BoardPanel(client, model);
+		planPanel = new PlanPanel(client);
+		jiraPanel = new JiraPanel(client);
+
+		makeContent(model);
+		wireUpListeners();
+		loadPreferences();
+		setButtons();
+	}
+
+	public void makeContent(BoardTableModel boardTableModel) {
 		tabbedPane = new JTabbedPane(JTabbedPane.VERTICAL);
 		tabbedPane.add(boardPanel, "Board");
 		tabbedPane.add(planPanel, "Plan");
@@ -41,5 +56,9 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 
 	protected void closing() {
 		// client.disconnect();
+	}
+
+	public BoardPanel getBoardPanel() {
+		return boardPanel;
 	}
 }

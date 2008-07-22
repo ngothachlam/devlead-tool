@@ -23,9 +23,9 @@ public class PlannerDAOCSVImplTest extends TestCase {
 		PlannerDAO dao = new PlannerDAOExcelImpl();
 
 		BoardTableModel model_original = getTestModel();
-		dao.saveModel(xlsFile, model_original);
+		dao.saveBoardModel(xlsFile, model_original);
 
-		BoardTableModel model_loaded = dao.loadModel(xlsFile);
+		BoardTableModel model_loaded = dao.loadBoardModel(xlsFile);
 
 		assertEquals(1, model_loaded.getRowCount());
 		assertEquals(7, model_loaded.getColumnCount());
@@ -36,9 +36,9 @@ public class PlannerDAOCSVImplTest extends TestCase {
 		model_loaded.addRow(new Object[] { "123", Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "LLU-123" });
 		xlsFile.delete();
 		
-		dao.saveModel(xlsFile, model_loaded);
+		dao.saveBoardModel(xlsFile, model_loaded);
 		
-		model_loaded = dao.loadModel(xlsFile);
+		model_loaded = dao.loadBoardModel(xlsFile);
 		
 		assertEquals(2, model_loaded.getRowCount());
 		assertEquals(7, model_loaded.getColumnCount());

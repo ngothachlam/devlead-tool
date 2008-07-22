@@ -52,7 +52,7 @@ public class BoardPanel extends MyComponentPanel {
 		}
 	}
 
-	private MyTableModel model;
+	private BoardTableModel model;
 
 	public String jira_url = "http://10.155.38.105/jira/browse/";
 
@@ -61,17 +61,24 @@ public class BoardPanel extends MyComponentPanel {
 	private final PlannerHelper client;
 
 	public BoardPanel(PlannerHelper client) {
+		this(client, new BoardTableModel());
+	}
+
+	public BoardPanel(PlannerHelper client, BoardTableModel boardModel) {
 		super(new BorderLayout());
 		this.client = client;
-		initialise();
+		makeContent(boardModel);
+		wireUpListeners();
+		loadPreferences();
+		setButtons();
 		initialiseTableHeader();
 	}
 
-	protected void makeNewContent() {
-		model = new BoardTableModel();
-	
+	protected void makeContent(BoardTableModel boardTableModel) {
+		model = boardTableModel;
+
 		table = new MyTable();
-		setModel(model);
+		table.setModel(model);
 
 		table.setColumnRenderer(0, new StringTableCellRenderer(model));
 		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(model));
@@ -113,8 +120,11 @@ public class BoardPanel extends MyComponentPanel {
 		addSouth(buttonPanel);
 	}
 
-	public void setModel(MyTableModel model) {
-		table.setModel(model);
-		client.setBoardModel(model);
+//	public void setModel(BoardTableModel model) {
+//		table.setModel(model);
+//	}
+
+	public BoardTableModel getBoardModel() {
+		return model;
 	}
 }
