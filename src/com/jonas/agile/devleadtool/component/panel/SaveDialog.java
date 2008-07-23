@@ -11,11 +11,8 @@ import com.jonas.agile.devleadtool.data.PlannerDAO;
 
 public class SaveDialog extends JFileChooser {
 
-	PlannerDAO dao;
-	
 	public SaveDialog(PlannerDAO dao, Component frame, PlannerHelper plannerHelper) {
 		super(new File("."));
-		this.dao = dao;
 		
 		// TODO : Ensure only focused planner is being saved if several open!!
 		// http://java.sun.com/docs/books/tutorial/uiswing/events/internalframelistener.html
