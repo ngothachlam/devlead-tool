@@ -10,5 +10,7 @@ public interface PlannerDAO {
 
 	public void saveBoardModel(File file, BoardTableModel modelToSaveFrom) throws IOException;
 	public BoardTableModel loadBoardModel(File xlsFile) throws IOException;
+	public void savePlanModel(File selFile, Object planModel);
+	public void saveJiraModel(File selFile, Object jiraModel);
 
 }

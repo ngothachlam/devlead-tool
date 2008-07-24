@@ -13,18 +13,11 @@ public class SaveDialog extends JFileChooser {
 
 	public SaveDialog(PlannerDAO dao, Component frame, PlannerHelper plannerHelper) {
 		super(new File("."));
-		
-		// TODO : Ensure only focused planner is being saved if several open!!
-		// http://java.sun.com/docs/books/tutorial/uiswing/events/internalframelistener.html
 
 		showSaveDialog(frame);
 		File selFile = getSelectedFile();
 
-		try {
-			dao.saveBoardModel(selFile, plannerHelper.getBoardModel());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		plannerHelper.saveModels(selFile, dao);
 	}
 
 }

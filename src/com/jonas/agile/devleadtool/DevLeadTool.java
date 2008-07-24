@@ -21,20 +21,20 @@ import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.common.SwingUtil;
 
 public class DevLeadTool {
-	
+
 	DevLeadTool() {
 	}
 
 	public void start() {
-//		SwingUtilities.invokeLater(new Runnable() {
-//			public void run() {
-				makeUI();
+		// SwingUtilities.invokeLater(new Runnable() {
+		// public void run() {
+		makeUI();
 		// }
 		// });
 	}
 
 	private void makeUI() {
-		JFrame frame = new JFrame("Jonas' Agile Dev Lead Tool");
+		JFrame frame = new JFrame("Jonas' Dev Lead Tool");
 
 		DesktopPane desktop = new DesktopPane();
 		JPanel contentPane = createPanel(desktop);
@@ -57,7 +57,7 @@ public class DevLeadTool {
 	private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
 		final PlannerHelper plannerHelper = new PlannerHelper("Planner");
 		final PlannerDAO plannerDAO = new PlannerDAOExcelImpl();
-		
+
 		JMenuItem planner = createMenuItem("New Planner", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				PlannerDialog plannerDialog = new PlannerDialog(frame, desktop, plannerHelper);
@@ -73,9 +73,9 @@ public class DevLeadTool {
 				new SaveDialog(plannerDAO, frame, plannerHelper);
 			}
 		});
-		JMenuItem exit = createMenuItem("Exit", new ActionListener() {
+		JMenuItem exit = createMenuItem("Exit All", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ClosingDialog(frame);
+				new ClosingDialog(frame, plannerHelper);
 			}
 		});
 		return new JMenuItem[] { planner, open, save, exit };
