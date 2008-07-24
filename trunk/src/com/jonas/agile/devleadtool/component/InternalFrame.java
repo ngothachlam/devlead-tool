@@ -1,7 +1,5 @@
 package com.jonas.agile.devleadtool.component;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,17 +7,17 @@ import java.util.List;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.panel.BoardPanel;
 import com.jonas.agile.devleadtool.component.panel.InternalFrameTabPanel;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
+import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 
 public class InternalFrame extends JInternalFrame {
-	private final class MyInternalFrameListener implements InternalFrameListener {
+	private final class MyInternalFrameListener extends InternalFrameAdapter {
 		private final PlannerHelper client;
+
 		private final InternalFrame frame;
 
 		private MyInternalFrameListener(PlannerHelper client, InternalFrame frame) {
@@ -28,25 +26,11 @@ public class InternalFrame extends JInternalFrame {
 		}
 
 		public void internalFrameActivated(InternalFrameEvent e) {
-			client.setPlanner(frame);
+			client.setActiveInternalFrame(frame);
 		}
 
-		public void internalFrameClosed(InternalFrameEvent e) {
-		}
-
-		public void internalFrameClosing(InternalFrameEvent e) {
-		}
-
-		public void internalFrameDeactivated(InternalFrameEvent e) {
-		}
-
-		public void internalFrameDeiconified(InternalFrameEvent e) {
-		}
-
-		public void internalFrameIconified(InternalFrameEvent e) {
-		}
-
-		public void internalFrameOpened(InternalFrameEvent e) {
+		public void internalFrameClosing(InternalFrameEvent ife) {
+			close();
 		}
 	}
 
@@ -56,52 +40,34 @@ public class InternalFrame extends JInternalFrame {
 
 	private String realTitle;
 
+	private final PlannerHelper client;
+
 	public InternalFrame(final PlannerHelper client) {
-		super("", true, true, true, true);
-		this.setTitle(createTitle(client));
-		internalFrames.add(this);
-		content = new InternalFrameTabPanel(this, client);
-		wireUpListeners();
-		setContentPane(content);
-		client.setPlanner(this);
-		
-		this.addInternalFrameListener(new MyInternalFrameListener(client, this));
+		this(client, null);
 	}
 
 	public InternalFrame(PlannerHelper client, BoardTableModel model) {
 		super("", true, true, true, true);
+		this.client = client;
 		this.setTitle(createTitle(client));
+
 		internalFrames.add(this);
-		System.out.println("Creating Internal Frame with new Model!");
+
 		content = new InternalFrameTabPanel(this, client, model);
-		wireUpListeners();
-		setContentPane(content);
-		client.setPlanner(this);
+
 		this.addInternalFrameListener(new MyInternalFrameListener(client, this));
-		
-		//TODO merge two constructors!!
+		setContentPane(content);
+		client.setActiveInternalFrame(this);
 	}
 
-	protected void wireUpListeners() {
-		addInternalFrameListener(new InternalFrameAdapter() {
-			public void internalFrameClosing(InternalFrameEvent ife) {
-				closing();
-				remove();
-			}
-		});
-	}
-
-	private void closing() {
+	private void close() {
 		content.close();
-	}
-
-	private void remove() {
 		internalFrames.remove(this);
 	}
 
 	public static void closeAll() {
 		for (Iterator<InternalFrame> iterator = internalFrames.iterator(); iterator.hasNext();) {
-			iterator.next().closing();
+			iterator.next().close();
 			iterator.remove();
 		}
 	}
@@ -113,7 +79,7 @@ public class InternalFrame extends JInternalFrame {
 	private int getCountWithSameTitle(String title) {
 		int count = 0;
 		for (Iterator<InternalFrame> iterator = internalFrames.iterator(); iterator.hasNext();) {
-			if (title.equalsIgnoreCase(iterator.next().getRealTitle())) {
+			if (title.equalsIgnoreCase(iterator.next().realTitle)) {
 				count++;
 			}
 		}
@@ -126,11 +92,15 @@ public class InternalFrame extends JInternalFrame {
 		return realTitle + (countOfSameTitles > 0 ? " (" + countOfSameTitles + ")" : "");
 	}
 
-	public String getRealTitle() {
-		return realTitle;
+	public BoardTableModel getBoardModel() {
+		return content.getBoardPanel().getBoardModel();
 	}
 
-	public BoardPanel getBoardPanel() {
-		return content.getBoardPanel();
+	public JiraTableModel getJiraModel() {
+		return null;
+	}
+
+	public PlanTableModel getPlanModel() {
+		return null;
 	}
 }

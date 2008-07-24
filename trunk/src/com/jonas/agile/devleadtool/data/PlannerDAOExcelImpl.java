@@ -115,4 +115,10 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
 	}
 
+	public void saveJiraModel(File selFile, Object jiraModel) {
+	}
+
+	public void savePlanModel(File selFile, Object planModel) {
+	}
+
 }

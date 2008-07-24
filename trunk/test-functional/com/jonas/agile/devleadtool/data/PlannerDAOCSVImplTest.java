@@ -16,47 +16,56 @@ public class PlannerDAOCSVImplTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		// xlsFile.delete();
 	}
 
-	public void testSouldSaveAndLoadFromCSVCorrectly() throws IOException {
+	public void testSouldSaveAndLoadBoardFromCSVCorrectly() throws IOException {
 		PlannerDAO dao = new PlannerDAOExcelImpl();
+		BoardTableModel model_original = new BoardTableModel();
 
-		BoardTableModel model_original = getTestModel();
+		// Save and Load on new file
 		dao.saveBoardModel(xlsFile, model_original);
-
 		BoardTableModel model_loaded = dao.loadBoardModel(xlsFile);
 
 		assertEquals(1, model_loaded.getRowCount());
 		assertEquals(7, model_loaded.getColumnCount());
-		assertHeaderInModel(model_loaded, new Object[] { "", Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "" }, 0);
-		assertRowInModel(model_loaded, new Object[] { "", Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "" }, 0);
-		
-		//Test to amend and save
+		assertHeaderInModel(model_loaded, new Object[] { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete", "URL" });
+		assertRowInModel(0, model_loaded, new Object[] { "", Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "" });
+
+		// Modify,  
 		model_loaded.addRow(new Object[] { "123", Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "LLU-123" });
-		xlsFile.delete();
+		model_loaded.addRow(new Object[] { "1234", Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, "LLU-1234" });
 		
+		//Save and Load on the existing file
 		dao.saveBoardModel(xlsFile, model_loaded);
-		
 		model_loaded = dao.loadBoardModel(xlsFile);
-		
-		assertEquals(2, model_loaded.getRowCount());
+
+		assertEquals(3, model_loaded.getRowCount());
 		assertEquals(7, model_loaded.getColumnCount());
-		assertRowInModel(model_loaded, new Object[] { "", Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "" }, 0);
-		assertRowInModel(model_loaded, new Object[] { "123", Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "LLU-123" }, 1);
+		assertHeaderInModel(model_loaded, new Object[] { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete", "URL" });
+		assertRowInModel(0, model_loaded, new Object[] { "", Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "" });
+		assertRowInModel(1, model_loaded, new Object[] { "123", Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "LLU-123" });
+		assertRowInModel(2, model_loaded, new Object[] { "1234", Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, "LLU-1234" });
 	}
 
-	private void assertHeaderInModel(BoardTableModel model_loaded, Object[] objects, int i) {
+	public void testSouldSaveAndLoadPlanFromCSVCorrectly() throws IOException {
+		PlannerDAO dao = new PlannerDAOExcelImpl();
+		assertTrue(false);
 	}
 
-	private void assertRowInModel(BoardTableModel model_loaded, Object[] expected, int row) {
+	public void testSouldSaveAndLoadJiraFromCSVCorrectly() throws IOException {
+		PlannerDAO dao = new PlannerDAOExcelImpl();
+		assertTrue(false);
+	}
+
+	private void assertHeaderInModel(BoardTableModel model_loaded, Object[] expected) {
 		for (int j = 0; j < expected.length; j++) {
-			assertEquals(expected[j], model_loaded.getValueAt(row, j));
+			assertEquals(expected[j], model_loaded.getColumnName(j));
 		}
 	}
 
-	private BoardTableModel getTestModel() {
-		BoardTableModel boardTableModel = new BoardTableModel();
-		return boardTableModel;
+	private void assertRowInModel(int row, BoardTableModel model_loaded, Object[] expected) {
+		for (int j = 0; j < expected.length; j++) {
+			assertEquals(expected[j], model_loaded.getValueAt(row, j));
+		}
 	}
 }

@@ -7,7 +7,6 @@ public class Main {
 		tool.start();
 	}
 
-	// TODO add saveDialog to only save the focused "planner" 
 	// TODO add checkboxes to renderer
 	// TODO add other colors and make this OO - Jira status vs. Status code (inprogress should be mapped to blue (focus, selected, editable)
 	// TODO add a xml file to save what save location for each planner opened.

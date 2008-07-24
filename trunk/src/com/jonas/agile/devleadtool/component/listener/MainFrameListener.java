@@ -1,13 +1,13 @@
 package com.jonas.agile.devleadtool.component.listener;
 
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
 import com.jonas.agile.devleadtool.component.dialog.ClosingDialog;
 
-	public final class MainFrameListener implements WindowListener {
+	public final class MainFrameListener extends WindowAdapter {
 		private JFrame frame;
 
 		public MainFrameListener(JFrame frame) {
@@ -17,24 +17,6 @@ import com.jonas.agile.devleadtool.component.dialog.ClosingDialog;
 
 		public void windowClosing(WindowEvent e) {
 			new ClosingDialog(frame);				
-		}
-
-		public void windowActivated(WindowEvent e) {
-		}
-
-		public void windowClosed(WindowEvent e) {
-		}
-
-		public void windowDeactivated(WindowEvent e) {
-		}
-
-		public void windowDeiconified(WindowEvent e) {
-		}
-
-		public void windowIconified(WindowEvent e) {
-		}
-
-		public void windowOpened(WindowEvent e) {
 		}
 	}
 

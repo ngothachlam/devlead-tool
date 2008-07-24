@@ -29,7 +29,6 @@ public class LoadDialog extends JFileChooser {
 
 		try {
 			BoardTableModel model = dao.loadBoardModel(selFile);
-			// TODO load to internal frame;
 			desktopPane.addInternalFrame(new InternalFrame(plannerHelper, model));
 
 		} catch (IOException e) {
