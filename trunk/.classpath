@@ -8,5 +8,11 @@
 	<classpathentry kind="lib" path="lib/poi-3.1-FINAL/poi-3.1-FINAL-20080629.jar"/>
 	<classpathentry kind="lib" path="lib/easymock2.4/easymock.jar"/>
 	<classpathentry kind="lib" path="lib/easymockclassextension2.3/easymockclassextension.jar"/>
+	<classpathentry kind="lib" path="lib/axis-1_4/axis.jar"/>
+	<classpathentry kind="lib" path="lib/axis-1_4/commons-discovery-0.2.jar"/>
+	<classpathentry kind="lib" path="lib/axis-1_4/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/axis-1_4/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="lib/axis-1_4/saaj.jar"/>
+	<classpathentry kind="lib" path="lib/axis-1_4/wsdl4j-1.5.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
