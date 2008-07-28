@@ -1,4 +1,4 @@
-package com.jonas.JiraAccess;
+package com.jonas.jira.access;
 
 import java.util.Date;
 
