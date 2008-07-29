@@ -8,6 +8,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 
+import javax.xml.rpc.ServiceException;
+
 import org.apache.log4j.Logger;
 
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
@@ -68,12 +70,17 @@ public class JiraSoapClient {
 
 	}
 
-	private final JiraSoapService jiraSoapService;
+	private JiraSoapService jiraSoapService = null;
 	private String token;
 
-	public JiraSoapClient() throws Exception {
-		JiraSoapServiceService jiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
-		this.jiraSoapService = jiraSoapServiceGetter.getJirasoapserviceV2();
+	public JiraSoapClient() {
+		try {
+			JiraSoapServiceService jiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
+			this.jiraSoapService = jiraSoapServiceGetter.getJirasoapserviceV2();
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	// To edit the constants, see the ClientConstants interface
