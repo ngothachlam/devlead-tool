@@ -8,7 +8,8 @@ import junit.framework.TestCase;
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
 
-import com.jonas.jira.Jira;
+import com.jonas.jira.JiraVersion;
+import com.jonas.jira.JiraIssue;
 
 public class JiraHttpClientTest extends TestCase {
 
@@ -18,7 +19,7 @@ public class JiraHttpClientTest extends TestCase {
 	public void testApacheCommonsAttempt() throws IOException, HttpException, JDOMException {
 		JiraHttpClient client = new JiraHttpClient();
 		client.loginToJira();
-		List<Jira> jiras = client.getJiras();
+		List<JiraIssue> jiras = client.getJiras(JiraVersion.Version11);
 		
 		assertTrue(jiras.size() > 1);
 	}
