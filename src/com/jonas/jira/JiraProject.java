@@ -7,15 +7,18 @@ import java.util.List;
 public class JiraProject {
 	private static List<JiraProject> PROJECTS = new ArrayList<JiraProject>();
 
-	public static final JiraProject LLU_SYSTEMS_PROVISIONING = new JiraProject("LLU Systems Provisioning", "10070");
-	public static final JiraProject LLU_DEV_SUPPORT = new JiraProject("LLU Dev Support", "10192");
+	public static final JiraProject LLU_SYSTEMS_PROVISIONING = new JiraProject("LLU Systems Provisioning", "LLU", "10070");
+	public static final JiraProject LLU_DEV_SUPPORT = new JiraProject("LLU Dev Support", "LLUDEVSUP", "10192");
 
-	private final String jiraKey;
+	private final String selectId;
 	private final String name;
 
-	private JiraProject(String name, String jiraKey) {
+	private final String jiraKey;
+
+	private JiraProject(String name, String jiraKey, String selectId) {
 		this.name = name;
 		this.jiraKey = jiraKey;
+		this.selectId = selectId;
 		PROJECTS.add(this);
 	}
 
@@ -30,6 +33,10 @@ public class JiraProject {
 
 	public String getJiraKey() {
 		return jiraKey;
+	}
+
+	public String getSelectId() {
+		return selectId;
 	}
 
 	public String getName() {

@@ -8,6 +8,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 
+import org.apache.log4j.Logger;
+
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceService;
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
@@ -16,6 +18,7 @@ import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
+import com.jonas.jira.JiraProject;
 import com.jonas.logging.MyLogger;
 
 /**
@@ -23,19 +26,18 @@ import com.jonas.logging.MyLogger;
  */
 public class JiraSoapClient {
 
-	private static final String PROJECT_LLU = "LLU";
+	private static final Logger LOGGER = MyLogger.getLogger(JiraSoapClient.class);
 	private static final String LOGIN_NAME = "soaptester";
 	private static final String LOGIN_PASSWORD = "soaptester";
 
 	interface JiraAccessAction {
-
 		Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, RemoteException,
 				java.rmi.RemoteException;
-
 	}
 
 	class JiraTokenCommand {
 
+		private final Logger LOGGER = MyLogger.getLogger(JiraTokenCommand.class);
 		private final JiraAccessAction action;
 
 		public JiraTokenCommand(JiraAccessAction action) {
@@ -45,18 +47,18 @@ public class JiraSoapClient {
 		public Object execute() throws Exception {
 			Object issue;
 			try {
-				MyLogger.getLogger(JiraSoapClient.class).trace("Conducting Action");
+				LOGGER.trace("Conducting Action");
 				issue = action.accessJiraAndReturn();
-				MyLogger.getLogger(JiraSoapClient.class).trace("Conducting Action Done!");
+				LOGGER.trace("Conducting Action Done!");
 			} catch (RemotePermissionException e) {
-				MyLogger.getLogger(JiraSoapClient.class).error(e);
+				LOGGER.error(e);
 			} catch (RemoteAuthenticationException e) {
-				MyLogger.getLogger(JiraSoapClient.class).error(e);
+				LOGGER.error(e);
 			} catch (com.atlassian.jira.rpc.exception.RemoteException e) {
-				MyLogger.getLogger(JiraSoapClient.class).warn(e);
+				LOGGER.warn(e);
 				renewToken();
 			} catch (RemoteException e) {
-				MyLogger.getLogger(JiraSoapClient.class).warn(e);
+				LOGGER.warn(e);
 				renewToken();
 			}
 			issue = action.accessJiraAndReturn();
@@ -76,15 +78,14 @@ public class JiraSoapClient {
 
 	// To edit the constants, see the ClientConstants interface
 	public static void main(String[] args) throws Exception {
-		MyLogger.getLogger(JiraSoapClient.class).debug("Running test SOAP client...");
+		LOGGER.debug("Running test SOAP client...");
 		JiraSoapClient client = new JiraSoapClient();
-//		client.test("LLU-1234");
-//		client.test("LLU-1235");
-		
+		// client.test("LLU-1234");
+		// client.test("LLU-1235");
+
 		RemoteVersion fixVersion = client.getFixVersion("Version 11");
-		
-		
-		MyLogger.getLogger(JiraSoapClient.class).debug("Closing test SOAP client...");
+
+		LOGGER.debug("Closing test SOAP client...");
 	}
 
 	private void test(String jira) throws Exception {
@@ -98,11 +99,11 @@ public class JiraSoapClient {
 	}
 
 	private String getToken() {
-		MyLogger.getLogger(JiraSoapClient.class).debug("Getting Token");
+		LOGGER.debug("Getting Token");
 		if (token == null) {
-			MyLogger.getLogger(JiraSoapClient.class).trace("Syncing Token Block");
+			LOGGER.trace("Syncing Token Block");
 			synchronized (this) {
-				MyLogger.getLogger(JiraSoapClient.class).trace("Syncing Token Block has been synced");
+				LOGGER.trace("Syncing Token Block has been synced");
 				if (token == null) {
 					try {
 						renewToken();
@@ -110,26 +111,26 @@ public class JiraSoapClient {
 						e.printStackTrace();
 					}
 				}
-				MyLogger.getLogger(JiraSoapClient.class).trace("Block Synced Done!");
+				LOGGER.trace("Block Synced Done!");
 			}
 		}
-		MyLogger.getLogger(JiraSoapClient.class).trace("Getting Token Done!");
+		LOGGER.trace("Getting Token Done!");
 		return token;
 	}
 
 	private void renewToken() {
-		MyLogger.getLogger(JiraSoapClient.class).debug("Renewing Token");
+		LOGGER.debug("Renewing Token");
 		try {
 			token = jiraSoapService.login(LOGIN_NAME, LOGIN_PASSWORD);
 		} catch (Exception e) {
 			e.printStackTrace();
-			MyLogger.getLogger(JiraSoapClient.class).error(e);
+			LOGGER.error(e);
 		}
-		MyLogger.getLogger(JiraSoapClient.class).trace("Renewing Token Done!");
+		LOGGER.trace("Renewing Token Done!");
 	}
 
 	public RemoteIssue getJira(final String jiraName) throws Exception {
-		MyLogger.getLogger(JiraSoapClient.class).debug("Getting Jira");
+		LOGGER.debug("Getting Jira");
 
 		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
 
@@ -139,32 +140,35 @@ public class JiraSoapClient {
 			}
 
 		});
-		MyLogger.getLogger(JiraSoapClient.class).trace("Getting Jira Done!");
+		LOGGER.trace("Getting Jira Done!");
 		return (RemoteIssue) command.execute();
 	}
 
 	public RemoteVersion getFixVersion(final String fixName) throws Exception {
-		MyLogger.getLogger(JiraSoapClient.class).debug("Getting FixVersion");
-		
-		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
-			
-			public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
-			com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
-				return jiraSoapService.getVersions(getToken(), PROJECT_LLU);
-			}
-			
-		});
-		MyLogger.getLogger(JiraSoapClient.class).trace("Getting Jira Done!");
-		RemoteVersion[] versions = (RemoteVersion[]) command.execute();
+		LOGGER.debug("Getting FixVersion");
+
+		RemoteVersion[] versions = getFixVersions();
 		for (int i = 0; i < versions.length; i++) {
-			if(fixName.trim().equals(versions[i].getName().trim())){
+			if (fixName.trim().equals(versions[i].getName().trim())) {
 				return versions[i];
 			}
 		}
 		return null;
-		
 	}
-	
+
+	public RemoteVersion[] getFixVersions() throws Exception {
+		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
+			public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
+					com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+				return jiraSoapService.getVersions(getToken(), JiraProject.LLU_SYSTEMS_PROVISIONING.getJiraKey());
+			}
+
+		});
+		LOGGER.trace("Getting Jira Done!");
+		RemoteVersion[] versions = (RemoteVersion[]) command.execute();
+		return versions;
+	}
+
 	private void printIssueDetails(RemoteIssue issue) {
 		System.out.println("Issue Details");
 		Method[] declaredMethods = issue.getClass().getDeclaredMethods();
