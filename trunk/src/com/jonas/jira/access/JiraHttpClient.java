@@ -53,7 +53,8 @@ public class JiraHttpClient extends HttpClient {
 	}
 
 	public JiraHttpClient() {
-		this.baseUrl = "http://10.155.38.105";
+//		this.baseUrl = "http://10.155.38.105/jira";
+		this.baseUrl = "http://jira.atlassian.com";
 	}
 
 	public void loginToJira() throws IOException, HttpException {
@@ -61,7 +62,7 @@ public class JiraHttpClient extends HttpClient {
 		// TODO how long will the session stay as logged in? Will it require a timeout before automatically logging in (in the
 		// background)again?
 		LOGGER.debug("Logging onto Jira");
-		PostMethod loginMethod = new PostMethod(baseUrl + "/jira/login.jsp");
+		PostMethod loginMethod = new PostMethod(baseUrl + "/login.jsp");
 		loginMethod.addParameter("os_username", "soaptester");
 		loginMethod.addParameter("os_password", "soaptester");
 		executeMethod(loginMethod);
@@ -70,7 +71,7 @@ public class JiraHttpClient extends HttpClient {
 
 	public List<JiraIssue> getJiras(JiraVersion fixVersion) {
 		LOGGER.debug("getting Jiras");
-		String url = "/jira/secure/IssueNavigator.jspa?view=rss&&fixfor=" + fixVersion.getJiraKey()
+		String url = "/secure/IssueNavigator.jspa?view=rss&&fixfor=" + fixVersion.getJiraKey()
 				+ "&pid=10070&sorter/field=issuekey&sorter/order=DESC&reset=true&decorator=none";
 		GetMethod method = new GetMethod(baseUrl + url);
 		List<JiraIssue> jiras = null;
