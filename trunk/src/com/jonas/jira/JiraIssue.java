@@ -21,7 +21,7 @@ public class JiraIssue {
 		return name;
 	}
 
-	public String getFixVersion() {
+	public String getFixVersionName() {
 		return fixVersion;
 	}
 
