@@ -11,7 +11,7 @@ public class JiraProjectTest extends TestCase {
 
 	private void assertJiraProject(String string, String key) {
 		assertEquals( string, JiraProject.getProject(string).getName() );
-		assertEquals( key, JiraProject.getProject(string).getJiraKey() );
+		assertEquals( key, JiraProject.getProject(string).getSelectId() );
 	}
 
 }

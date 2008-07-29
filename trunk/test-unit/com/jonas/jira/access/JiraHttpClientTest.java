@@ -19,7 +19,6 @@ public class JiraHttpClientTest extends TestCase {
 	public void testApacheCommonsAttempt() throws IOException, HttpException, JDOMException {
 		JiraHttpClient client = new JiraHttpClient();
 		client.loginToJira();
-		
 		asserFixVersionExistsAndHasJirasAgainstIt(client, JiraVersion.Version10);
 	}
 
