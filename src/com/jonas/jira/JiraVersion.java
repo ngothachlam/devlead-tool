@@ -7,26 +7,29 @@ import java.util.logging.Logger;
 
 public class JiraVersion {
 
-	public static JiraVersion Version10 = new JiraVersion("Version 10", "11382");
-	public static JiraVersion Version11 = new JiraVersion("Version 11", "11432");
-	public static JiraVersion Version11Next = new JiraVersion("Version 11 - Next Sprint (3)", "11449");
-	public static JiraVersion Backlog = new JiraVersion("Backlog", "11388");
-	public static JiraVersion PamsBacklog = new JiraVersion("Pam's Backlog", "11458");
-	public static JiraVersion Version9 = new JiraVersion("Version 9", "11264");
-
 	private static List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
+	public static JiraVersion Version10 = new JiraVersion("Version 10", "11382", JiraProject.LLU_SYSTEMS_PROVISIONING);
+	public static JiraVersion Version11 = new JiraVersion("Version 11", "11432", JiraProject.LLU_SYSTEMS_PROVISIONING);
+	public static JiraVersion Version11Next = new JiraVersion("Version 11 - Next Sprint (3)", "11449", JiraProject.LLU_SYSTEMS_PROVISIONING);
+	public static JiraVersion Backlog = new JiraVersion("Backlog", "11388", JiraProject.LLU_SYSTEMS_PROVISIONING);
+	public static JiraVersion PamsBacklog = new JiraVersion("Pam's Backlog", "11458", JiraProject.LLU_SYSTEMS_PROVISIONING);
+	public static JiraVersion Version9 = new JiraVersion("Version 9", "11264", JiraProject.LLU_SYSTEMS_PROVISIONING);
+
 
 	private static String SELECT_NAME = "fixfor";
 	private String name;
-	private String selectId;
+	private String jiraKey;
+	private final JiraProject jiraProject;
 
-	private JiraVersion(String name, String selectId) {
+	private JiraVersion(String name, String jiraKey, JiraProject jiraProject) {
 		this.name = name;
-		this.selectId = selectId;
+		this.jiraKey = jiraKey;
+		this.jiraProject = jiraProject;
+		fixVersions.add(this);
 	}
 
-	public String getSelectId() {
-		return selectId;
+	public String getJiraKey() {
+		return jiraKey;
 	}
 
 	public String getName() {
@@ -34,7 +37,6 @@ public class JiraVersion {
 	}
 
 	public static JiraVersion getVersion(String name) {
-		
 		for (Iterator iterator = fixVersions.iterator(); iterator.hasNext();) {
 			JiraVersion fixVersion = (JiraVersion) iterator.next();
 			if (fixVersion.getName().equals(name))
@@ -44,6 +46,6 @@ public class JiraVersion {
 	}
 
 	public JiraProject getProject() {
-		return null;
+		return jiraProject;
 	}
 }

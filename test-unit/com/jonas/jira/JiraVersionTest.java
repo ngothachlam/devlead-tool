@@ -5,10 +5,17 @@ import junit.framework.TestCase;
 public class JiraVersionTest extends TestCase {
 
 	public void testJiraVersion(){
-		JiraVersion version10 = JiraVersion.getVersion("Version 10");
-		assertEquals("Version 10", version10.getName());
-		assertEquals("Version 10", version10.getSelectId());
-		assertEquals(JiraProject.LLU_SYSTEMS_PROVISIONING, version10.getProject());
+		assertVersion("Backlog", "11388", JiraProject.LLU_SYSTEMS_PROVISIONING);
+		assertVersion("Version 9", "11264", JiraProject.LLU_SYSTEMS_PROVISIONING);
+		assertVersion("Version 10", "11382", JiraProject.LLU_SYSTEMS_PROVISIONING);
+		assertVersion("Version 11", "11432", JiraProject.LLU_SYSTEMS_PROVISIONING);
+	}
+
+	private void assertVersion(String string, String string2, JiraProject lluSystemsProvisioning) {
+		JiraVersion version10 = JiraVersion.getVersion(string);
+		assertEquals(string, version10.getName());
+		assertEquals(string2, version10.getJiraKey());
+		assertEquals(lluSystemsProvisioning, version10.getProject());
 	}
 	
 }

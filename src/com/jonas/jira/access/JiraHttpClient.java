@@ -26,6 +26,7 @@ public class JiraHttpClient extends HttpClient {
 	}
 
 	public void loginToJira() throws IOException, HttpException {
+		// TODO make this work as cached!!
 		PostMethod loginMethod = new PostMethod(baseUrl + "/jira/login.jsp");
 		loginMethod.addParameter("os_username", "soaptester");
 		loginMethod.addParameter("os_password", "soaptester");
@@ -34,7 +35,7 @@ public class JiraHttpClient extends HttpClient {
 
 	public List<JiraIssue> getJiras(JiraVersion fixVersion) {
 		// TODO use fixversion in url
-		String url = "/jira/secure/IssueNavigator.jspa?view=rss&&fixfor="+fixVersion.getSelectId()+"&pid=10070&sorter/field=issuekey&sorter/order=DESC&reset=true&decorator=none";
+		String url = "/jira/secure/IssueNavigator.jspa?view=rss&&fixfor="+fixVersion.getJiraKey()+"&pid=10070&sorter/field=issuekey&sorter/order=DESC&reset=true&decorator=none";
 		GetMethod method = new GetMethod(baseUrl + url);
 		List<JiraIssue> jiras = null;
 		try {
