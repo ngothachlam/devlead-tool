@@ -6,14 +6,14 @@ import java.util.List;
 
 import org.jdom.Element;
 
-public class Jira {
+public class JiraIssue {
 
 	private final String name;
 	private final String fixVersion;
 	private final String status;
 	private final String resolution;
 
-	private Jira(Element e) {
+	private JiraIssue(Element e) {
 		this(get(e, "key"), get(e, "fixVersion"), get(e, "status"), get(e, "resolution"));
 	}
 
@@ -33,18 +33,18 @@ public class Jira {
 		return resolution;
 	}
 
-	public Jira(String name, String fixVersion, String status, String resolution) {
+	public JiraIssue(String name, String fixVersion, String status, String resolution) {
 		this.name = name;
 		this.fixVersion = fixVersion;
 		this.status = status;
 		this.resolution = resolution;
 	}
 
-	public static List<Jira> buildJiras(List<Element> list) {
-		List<Jira> jiras = new ArrayList();
+	public static List<JiraIssue> buildJiras(List<Element> list) {
+		List<JiraIssue> jiras = new ArrayList();
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 			Element e = (Element) iterator.next();
-			jiras.add(new Jira(e));
+			jiras.add(new JiraIssue(e));
 		}
 		return jiras;
 	}

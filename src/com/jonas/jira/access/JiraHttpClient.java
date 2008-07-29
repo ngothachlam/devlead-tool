@@ -15,7 +15,8 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
-import com.jonas.jira.Jira;
+import com.jonas.jira.JiraVersion;
+import com.jonas.jira.JiraIssue;
 
 public class JiraHttpClient extends HttpClient {
 	private final String baseUrl;
@@ -31,11 +32,11 @@ public class JiraHttpClient extends HttpClient {
 		executeMethod(loginMethod);
 	}
 
-	public List<Jira> getJiras() {
-		// String url = "/jira/secure/IssueNavigator.jspa?view=rss&&fixfor=11382&pid=10070&reset=true&decorator=none";
-		String url = "/jira/secure/IssueNavigator.jspa?view=rss&&fixfor=11382&pid=10070&sorter/field=issuekey&sorter/order=DESC&reset=true&decorator=none";
+	public List<JiraIssue> getJiras(JiraVersion fixVersion) {
+		// TODO use fixversion in url
+		String url = "/jira/secure/IssueNavigator.jspa?view=rss&&fixfor="+fixVersion.getSelectId()+"&pid=10070&sorter/field=issuekey&sorter/order=DESC&reset=true&decorator=none";
 		GetMethod method = new GetMethod(baseUrl + url);
-		List<Jira> jiras = null;
+		List<JiraIssue> jiras = null;
 		try {
 			executeMethod(method);
 			byte[] responseAsBytes = method.getResponseBody();
@@ -46,8 +47,8 @@ public class JiraHttpClient extends HttpClient {
 
 			jiras = getXPath(doc, "/rss/channel/item");
 
-			for (Iterator<Jira> iterator = jiras.iterator(); iterator.hasNext();) {
-				Jira jira = iterator.next();
+			for (Iterator<JiraIssue> iterator = jiras.iterator(); iterator.hasNext();) {
+				JiraIssue jira = iterator.next();
 				System.out.println(jira);
 			}
 		} catch (HttpException e) {
@@ -63,10 +64,10 @@ public class JiraHttpClient extends HttpClient {
 		return jiras;
 	}
 
-	private List<Jira> getXPath(Document doc, String xPath) throws JDOMException {
+	private List<JiraIssue> getXPath(Document doc, String xPath) throws JDOMException {
 		XPath xpath = XPath.newInstance(xPath);
 		List<Element> list = xpath.selectNodes(doc);
-		return Jira.buildJiras(list);
+		return JiraIssue.buildJiras(list);
 	}
 
 }
