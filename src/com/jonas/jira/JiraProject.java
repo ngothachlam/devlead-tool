@@ -42,5 +42,9 @@ public class JiraProject {
 	public String getName() {
 		return name;
 	}
+	
+	public String toString(){
+		return jiraKey;
+	}
 
 }

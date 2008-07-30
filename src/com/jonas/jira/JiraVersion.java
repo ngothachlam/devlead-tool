@@ -48,4 +48,8 @@ public class JiraVersion {
 	public JiraProject getProject() {
 		return jiraProject;
 	}
+	
+	public String toString(){
+		return name;
+	}
 }
