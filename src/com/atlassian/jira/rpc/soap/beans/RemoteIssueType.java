@@ -8,8 +8,6 @@
 package com.atlassian.jira.rpc.soap.beans;
 
 public class RemoteIssueType  extends com.atlassian.jira.rpc.soap.beans.AbstractRemoteConstant  implements java.io.Serializable {
-    private boolean subTask;
-
     public RemoteIssueType() {
     }
 
@@ -17,34 +15,12 @@ public class RemoteIssueType  extends com.atlassian.jira.rpc.soap.beans.Abstract
            java.lang.String id,
            java.lang.String name,
            java.lang.String description,
-           java.lang.String icon,
-           boolean subTask) {
+           java.lang.String icon) {
         super(
             id,
             name,
             description,
             icon);
-        this.subTask = subTask;
-    }
-
-
-    /**
-     * Gets the subTask value for this RemoteIssueType.
-     * 
-     * @return subTask
-     */
-    public boolean isSubTask() {
-        return subTask;
-    }
-
-
-    /**
-     * Sets the subTask value for this RemoteIssueType.
-     * 
-     * @param subTask
-     */
-    public void setSubTask(boolean subTask) {
-        this.subTask = subTask;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -58,8 +34,7 @@ public class RemoteIssueType  extends com.atlassian.jira.rpc.soap.beans.Abstract
         }
         __equalsCalc = obj;
         boolean _equals;
-        _equals = super.equals(obj) && 
-            this.subTask == other.isSubTask();
+        _equals = super.equals(obj);
         __equalsCalc = null;
         return _equals;
     }
@@ -71,7 +46,6 @@ public class RemoteIssueType  extends com.atlassian.jira.rpc.soap.beans.Abstract
         }
         __hashCodeCalc = true;
         int _hashCode = super.hashCode();
-        _hashCode += (isSubTask() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -82,12 +56,6 @@ public class RemoteIssueType  extends com.atlassian.jira.rpc.soap.beans.Abstract
 
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteIssueType"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("subTask");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "subTask"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
     }
 
     /**
