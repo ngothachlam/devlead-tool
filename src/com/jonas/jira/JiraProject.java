@@ -9,6 +9,7 @@ public class JiraProject {
 
 	public static final JiraProject LLU_SYSTEMS_PROVISIONING = new JiraProject("LLU Systems Provisioning", "LLU", "10070");
 	public static final JiraProject LLU_DEV_SUPPORT = new JiraProject("LLU Dev Support", "LLUDEVSUP", "10192");
+	public static final JiraProject ATLASSIN_TST = new JiraProject("Atlassin", "TST", "10420");
 
 	private final String selectId;
 	private final String name;

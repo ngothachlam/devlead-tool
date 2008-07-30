@@ -4,7 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.rpc.ServiceException;
+
 import org.apache.commons.httpclient.HttpException;
+
+import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
+import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceService;
+import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
 
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.jira.JiraIssue;
@@ -16,12 +22,12 @@ public class JiraClient {
 	private JiraHttpClient httpClient;
 	private JiraSoapClient soapClient;
 
-	public JiraClient() {
-		this(new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB), new JiraSoapClient());
+	public JiraClient(JiraSoapService jirasoapserviceV2)  {
+		this(new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB), new JiraSoapClient(jirasoapserviceV2));
 	}
 
-	public JiraClient(String jiraUrl) {
-		this(new JiraHttpClient(jiraUrl), new JiraSoapClient());
+	public JiraClient(JiraSoapService jirasoapserviceV2, String jiraUrl) {
+		this(new JiraHttpClient(jiraUrl), new JiraSoapClient(jirasoapserviceV2));
 	}
 
 	public JiraClient(JiraHttpClient httpClient, JiraSoapClient soapClient) {
@@ -47,9 +53,9 @@ public class JiraClient {
 
 	}
 
-	public JiraVersion[] getFixVersionsFromProject(JiraProject selectedItem) {
+	public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject) {
 		try {
-			RemoteVersion[] fixVersions = soapClient.getFixVersions(JiraProject.LLU_SYSTEMS_PROVISIONING);
+			RemoteVersion[] fixVersions = soapClient.getFixVersions(jiraProject);
 			return buildJiraVersions(fixVersions);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

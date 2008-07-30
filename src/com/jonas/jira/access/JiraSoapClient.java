@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.rpc.ServiceException;
 
@@ -71,14 +73,8 @@ public class JiraSoapClient {
 	private JiraSoapService jiraSoapService = null;
 	private String token;
 
-	public JiraSoapClient() {
-		try {
-			JiraSoapServiceService jiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
-			this.jiraSoapService = jiraSoapServiceGetter.getJirasoapserviceV2();
-		} catch (ServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public JiraSoapClient(JiraSoapService jiraSoapService) {
+		this.jiraSoapService = jiraSoapService;
 	}
 
 	private String getToken() {
@@ -144,7 +140,8 @@ public class JiraSoapClient {
 		return null;
 	}
 
-	public RemoteVersion[] getFixVersions(final JiraProject jiraProject) throws Exception {
+	public RemoteVersion[] getFixVersions(final JiraProject jiraProject) throws RemotePermissionException,
+			RemoteAuthenticationException, RemoteException {
 		Log.debug("Getting Fix Versions!");
 		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
 			public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
@@ -156,6 +153,17 @@ public class JiraSoapClient {
 		RemoteVersion[] versions = (RemoteVersion[]) command.execute();
 		Log.debug("Getting Fix Versions Done!");
 		return versions;
+	}
+
+	public RemoteVersion[] getFixVersionsNonArchived(JiraProject jiraProject) throws RemotePermissionException,
+			RemoteAuthenticationException, RemoteException {
+		RemoteVersion[] versions = getFixVersions(jiraProject);
+		List<RemoteVersion> versionList = new ArrayList<RemoteVersion>();
+		for (int i = 0; i < versions.length; i++) {
+			if (!versions[i].isArchived())
+				versionList.add(versions[i]);
+		}
+		return (RemoteVersion[]) versionList.toArray();
 	}
 
 	private void printIssueDetails(RemoteIssue issue) {

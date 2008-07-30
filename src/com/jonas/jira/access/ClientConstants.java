@@ -2,7 +2,7 @@ package com.jonas.jira.access;
 
 import java.util.Date;
 
-interface ClientConstants
+public interface ClientConstants
 {
     // Login details
     static final String LOGIN_NAME = "soaptester";
