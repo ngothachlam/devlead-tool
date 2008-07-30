@@ -2,7 +2,14 @@ package com.jonas.common;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
+import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
+import com.jonas.common.logging.MyLogger;
+
 public class HyperLinker {
+
+	private static final Logger LOGGER = MyLogger.getLogger(HyperLinker.class);
 
 	public static boolean displayURL(String url) {
 
@@ -10,7 +17,7 @@ public class HyperLinker {
 		boolean windows = isWindowsPlatform();
 		String cmd = null;
 		try {
-			System.out.println("Opening Hyperlink!!");
+			LOGGER.debug("Opening Hyperlink!!");
 			if (windows) {
 				cmd = WIN_PATH + " " + WIN_FLAG + " " + url;
 				Process p = Runtime.getRuntime().exec(cmd);

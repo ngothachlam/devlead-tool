@@ -2,7 +2,6 @@ package com.jonas.jira.access;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.rmi.RemoteException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,12 +16,9 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
-import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
-import com.atlassian.jira.rpc.exception.RemotePermissionException;
-import com.jonas.jira.JiraVersion;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
-import com.jonas.jira.access.JiraSoapClient.JiraAccessAction;
-import com.jonas.logging.MyLogger;
+import com.jonas.jira.JiraVersion;
 
 public class JiraHttpClient extends HttpClient {
 	private final String baseUrl;
@@ -88,7 +84,7 @@ public class JiraHttpClient extends HttpClient {
 
 			for (Iterator<JiraIssue> iterator = jiras.iterator(); iterator.hasNext();) {
 				JiraIssue jira = iterator.next();
-				System.out.println(jira);
+				LOGGER.debug(jira);
 			}
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block

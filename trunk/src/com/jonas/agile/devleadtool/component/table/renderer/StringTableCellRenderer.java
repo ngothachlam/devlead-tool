@@ -7,11 +7,15 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.apache.log4j.Logger;
+
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.SwingUtil;
+import com.jonas.common.logging.MyLogger;
 
 public class StringTableCellRenderer extends DefaultTableCellRenderer {
 
+	private static final Logger LOGGER = MyLogger.getLogger(StringTableCellRenderer.class);
 	private final MyTableModel model;
 
 	private Color backgroundUnselected = null;
@@ -49,7 +53,7 @@ public class StringTableCellRenderer extends DefaultTableCellRenderer {
 	}
 
 	private void debug(String string) {
-		System.out.println(System.currentTimeMillis() + " ~ " + string);
+		LOGGER.debug(System.currentTimeMillis() + " ~ " + string);
 	}
 
 }
