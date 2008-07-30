@@ -12,13 +12,14 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.log4j.Logger;
 
+import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
+import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceService;
+import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
+
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
-import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
-import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceService;
-import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
 

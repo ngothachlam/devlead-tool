@@ -8,62 +8,30 @@
 package com.atlassian.jira.rpc.soap.beans;
 
 public class RemoteComment  implements java.io.Serializable {
-    private java.lang.String author;
-
     private java.lang.String body;
-
-    private java.util.Calendar created;
-
-    private java.lang.String groupLevel;
 
     private java.lang.String id;
 
-    private java.lang.String roleLevel;
+    private java.lang.String level;
 
-    private java.lang.String updateAuthor;
+    private java.util.Calendar timePerformed;
 
-    private java.util.Calendar updated;
+    private java.lang.String username;
 
     public RemoteComment() {
     }
 
     public RemoteComment(
-           java.lang.String author,
            java.lang.String body,
-           java.util.Calendar created,
-           java.lang.String groupLevel,
            java.lang.String id,
-           java.lang.String roleLevel,
-           java.lang.String updateAuthor,
-           java.util.Calendar updated) {
-           this.author = author;
+           java.lang.String level,
+           java.util.Calendar timePerformed,
+           java.lang.String username) {
            this.body = body;
-           this.created = created;
-           this.groupLevel = groupLevel;
            this.id = id;
-           this.roleLevel = roleLevel;
-           this.updateAuthor = updateAuthor;
-           this.updated = updated;
-    }
-
-
-    /**
-     * Gets the author value for this RemoteComment.
-     * 
-     * @return author
-     */
-    public java.lang.String getAuthor() {
-        return author;
-    }
-
-
-    /**
-     * Sets the author value for this RemoteComment.
-     * 
-     * @param author
-     */
-    public void setAuthor(java.lang.String author) {
-        this.author = author;
+           this.level = level;
+           this.timePerformed = timePerformed;
+           this.username = username;
     }
 
 
@@ -88,46 +56,6 @@ public class RemoteComment  implements java.io.Serializable {
 
 
     /**
-     * Gets the created value for this RemoteComment.
-     * 
-     * @return created
-     */
-    public java.util.Calendar getCreated() {
-        return created;
-    }
-
-
-    /**
-     * Sets the created value for this RemoteComment.
-     * 
-     * @param created
-     */
-    public void setCreated(java.util.Calendar created) {
-        this.created = created;
-    }
-
-
-    /**
-     * Gets the groupLevel value for this RemoteComment.
-     * 
-     * @return groupLevel
-     */
-    public java.lang.String getGroupLevel() {
-        return groupLevel;
-    }
-
-
-    /**
-     * Sets the groupLevel value for this RemoteComment.
-     * 
-     * @param groupLevel
-     */
-    public void setGroupLevel(java.lang.String groupLevel) {
-        this.groupLevel = groupLevel;
-    }
-
-
-    /**
      * Gets the id value for this RemoteComment.
      * 
      * @return id
@@ -148,62 +76,62 @@ public class RemoteComment  implements java.io.Serializable {
 
 
     /**
-     * Gets the roleLevel value for this RemoteComment.
+     * Gets the level value for this RemoteComment.
      * 
-     * @return roleLevel
+     * @return level
      */
-    public java.lang.String getRoleLevel() {
-        return roleLevel;
+    public java.lang.String getLevel() {
+        return level;
     }
 
 
     /**
-     * Sets the roleLevel value for this RemoteComment.
+     * Sets the level value for this RemoteComment.
      * 
-     * @param roleLevel
+     * @param level
      */
-    public void setRoleLevel(java.lang.String roleLevel) {
-        this.roleLevel = roleLevel;
+    public void setLevel(java.lang.String level) {
+        this.level = level;
     }
 
 
     /**
-     * Gets the updateAuthor value for this RemoteComment.
+     * Gets the timePerformed value for this RemoteComment.
      * 
-     * @return updateAuthor
+     * @return timePerformed
      */
-    public java.lang.String getUpdateAuthor() {
-        return updateAuthor;
+    public java.util.Calendar getTimePerformed() {
+        return timePerformed;
     }
 
 
     /**
-     * Sets the updateAuthor value for this RemoteComment.
+     * Sets the timePerformed value for this RemoteComment.
      * 
-     * @param updateAuthor
+     * @param timePerformed
      */
-    public void setUpdateAuthor(java.lang.String updateAuthor) {
-        this.updateAuthor = updateAuthor;
+    public void setTimePerformed(java.util.Calendar timePerformed) {
+        this.timePerformed = timePerformed;
     }
 
 
     /**
-     * Gets the updated value for this RemoteComment.
+     * Gets the username value for this RemoteComment.
      * 
-     * @return updated
+     * @return username
      */
-    public java.util.Calendar getUpdated() {
-        return updated;
+    public java.lang.String getUsername() {
+        return username;
     }
 
 
     /**
-     * Sets the updated value for this RemoteComment.
+     * Sets the username value for this RemoteComment.
      * 
-     * @param updated
+     * @param username
      */
-    public void setUpdated(java.util.Calendar updated) {
-        this.updated = updated;
+    public void setUsername(java.lang.String username) {
+        this.username = username;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -218,30 +146,21 @@ public class RemoteComment  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            ((this.author==null && other.getAuthor()==null) || 
-             (this.author!=null &&
-              this.author.equals(other.getAuthor()))) &&
             ((this.body==null && other.getBody()==null) || 
              (this.body!=null &&
               this.body.equals(other.getBody()))) &&
-            ((this.created==null && other.getCreated()==null) || 
-             (this.created!=null &&
-              this.created.equals(other.getCreated()))) &&
-            ((this.groupLevel==null && other.getGroupLevel()==null) || 
-             (this.groupLevel!=null &&
-              this.groupLevel.equals(other.getGroupLevel()))) &&
             ((this.id==null && other.getId()==null) || 
              (this.id!=null &&
               this.id.equals(other.getId()))) &&
-            ((this.roleLevel==null && other.getRoleLevel()==null) || 
-             (this.roleLevel!=null &&
-              this.roleLevel.equals(other.getRoleLevel()))) &&
-            ((this.updateAuthor==null && other.getUpdateAuthor()==null) || 
-             (this.updateAuthor!=null &&
-              this.updateAuthor.equals(other.getUpdateAuthor()))) &&
-            ((this.updated==null && other.getUpdated()==null) || 
-             (this.updated!=null &&
-              this.updated.equals(other.getUpdated())));
+            ((this.level==null && other.getLevel()==null) || 
+             (this.level!=null &&
+              this.level.equals(other.getLevel()))) &&
+            ((this.timePerformed==null && other.getTimePerformed()==null) || 
+             (this.timePerformed!=null &&
+              this.timePerformed.equals(other.getTimePerformed()))) &&
+            ((this.username==null && other.getUsername()==null) || 
+             (this.username!=null &&
+              this.username.equals(other.getUsername())));
         __equalsCalc = null;
         return _equals;
     }
@@ -253,29 +172,20 @@ public class RemoteComment  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        if (getAuthor() != null) {
-            _hashCode += getAuthor().hashCode();
-        }
         if (getBody() != null) {
             _hashCode += getBody().hashCode();
-        }
-        if (getCreated() != null) {
-            _hashCode += getCreated().hashCode();
-        }
-        if (getGroupLevel() != null) {
-            _hashCode += getGroupLevel().hashCode();
         }
         if (getId() != null) {
             _hashCode += getId().hashCode();
         }
-        if (getRoleLevel() != null) {
-            _hashCode += getRoleLevel().hashCode();
+        if (getLevel() != null) {
+            _hashCode += getLevel().hashCode();
         }
-        if (getUpdateAuthor() != null) {
-            _hashCode += getUpdateAuthor().hashCode();
+        if (getTimePerformed() != null) {
+            _hashCode += getTimePerformed().hashCode();
         }
-        if (getUpdated() != null) {
-            _hashCode += getUpdated().hashCode();
+        if (getUsername() != null) {
+            _hashCode += getUsername().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -288,26 +198,8 @@ public class RemoteComment  implements java.io.Serializable {
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteComment"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("author");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "author"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("body");
         elemField.setXmlName(new javax.xml.namespace.QName("", "body"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("created");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "created"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "dateTime"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("groupLevel");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "groupLevel"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
@@ -318,21 +210,21 @@ public class RemoteComment  implements java.io.Serializable {
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("roleLevel");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "roleLevel"));
+        elemField.setFieldName("level");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "level"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("updateAuthor");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "updateAuthor"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("updated");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "updated"));
+        elemField.setFieldName("timePerformed");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "timePerformed"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "dateTime"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("username");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "username"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }
