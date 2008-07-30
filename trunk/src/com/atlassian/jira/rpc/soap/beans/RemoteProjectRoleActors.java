@@ -1,5 +1,5 @@
 /**
- * RemoteIssueType.java
+ * RemoteProjectRoleActors.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
@@ -7,50 +7,48 @@
 
 package com.atlassian.jira.rpc.soap.beans;
 
-public class RemoteIssueType  extends com.atlassian.jira.rpc.soap.beans.AbstractRemoteConstant  implements java.io.Serializable {
-    private boolean subTask;
+public class RemoteProjectRoleActors  extends com.atlassian.jira.rpc.soap.beans.RemoteRoleActors  implements java.io.Serializable {
+    private com.atlassian.jira.rpc.soap.beans.RemoteProject project;
 
-    public RemoteIssueType() {
+    public RemoteProjectRoleActors() {
     }
 
-    public RemoteIssueType(
-           java.lang.String id,
-           java.lang.String name,
-           java.lang.String description,
-           java.lang.String icon,
-           boolean subTask) {
+    public RemoteProjectRoleActors(
+           com.atlassian.jira.rpc.soap.beans.RemoteProjectRole projectRole,
+           com.atlassian.jira.rpc.soap.beans.RemoteRoleActor[] roleActors,
+           com.atlassian.jira.rpc.soap.beans.RemoteUser[] users,
+           com.atlassian.jira.rpc.soap.beans.RemoteProject project) {
         super(
-            id,
-            name,
-            description,
-            icon);
-        this.subTask = subTask;
+            projectRole,
+            roleActors,
+            users);
+        this.project = project;
     }
 
 
     /**
-     * Gets the subTask value for this RemoteIssueType.
+     * Gets the project value for this RemoteProjectRoleActors.
      * 
-     * @return subTask
+     * @return project
      */
-    public boolean isSubTask() {
-        return subTask;
+    public com.atlassian.jira.rpc.soap.beans.RemoteProject getProject() {
+        return project;
     }
 
 
     /**
-     * Sets the subTask value for this RemoteIssueType.
+     * Sets the project value for this RemoteProjectRoleActors.
      * 
-     * @param subTask
+     * @param project
      */
-    public void setSubTask(boolean subTask) {
-        this.subTask = subTask;
+    public void setProject(com.atlassian.jira.rpc.soap.beans.RemoteProject project) {
+        this.project = project;
     }
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof RemoteIssueType)) return false;
-        RemoteIssueType other = (RemoteIssueType) obj;
+        if (!(obj instanceof RemoteProjectRoleActors)) return false;
+        RemoteProjectRoleActors other = (RemoteProjectRoleActors) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -59,7 +57,9 @@ public class RemoteIssueType  extends com.atlassian.jira.rpc.soap.beans.Abstract
         __equalsCalc = obj;
         boolean _equals;
         _equals = super.equals(obj) && 
-            this.subTask == other.isSubTask();
+            ((this.project==null && other.getProject()==null) || 
+             (this.project!=null &&
+              this.project.equals(other.getProject())));
         __equalsCalc = null;
         return _equals;
     }
@@ -71,22 +71,24 @@ public class RemoteIssueType  extends com.atlassian.jira.rpc.soap.beans.Abstract
         }
         __hashCodeCalc = true;
         int _hashCode = super.hashCode();
-        _hashCode += (isSubTask() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        if (getProject() != null) {
+            _hashCode += getProject().hashCode();
+        }
         __hashCodeCalc = false;
         return _hashCode;
     }
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(RemoteIssueType.class, true);
+        new org.apache.axis.description.TypeDesc(RemoteProjectRoleActors.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteIssueType"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteProjectRoleActors"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("subTask");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "subTask"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
+        elemField.setFieldName("project");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "project"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteProject"));
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }
 
