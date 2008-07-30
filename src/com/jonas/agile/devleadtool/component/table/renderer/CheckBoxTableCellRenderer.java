@@ -17,15 +17,20 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.TableCellRenderer;
 
+import org.apache.log4j.Logger;
+
 import sun.util.calendar.CalendarUtils;
 
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.SwingUtil;
+import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.access.JiraSoapClient;
 
 public class CheckBoxTableCellRenderer extends JPanel implements TableCellRenderer {
 
 	private final MyTableModel model;
+	private static final Logger LOGGER = MyLogger.getLogger(CheckBoxTableCellRenderer.class);
 
 	private JCheckBox checkbox = new JCheckBox();
 
@@ -36,7 +41,8 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 		this.add(checkbox, SwingUtilities.CENTER);
 	}
 
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+			int column) {
 
 		setFont(table.getFont());
 
@@ -80,9 +86,9 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 	}
 
 	private void debug(String string) {
-		System.out.println(Calendar.getInstance().getTime() + " ~ " + string);
+		LOGGER.debug(Calendar.getInstance().getTime() + " ~ " + string);
 	}
-	
+
 	protected Color getBackgroundColor() {
 		return checkbox.getBackground();
 	}

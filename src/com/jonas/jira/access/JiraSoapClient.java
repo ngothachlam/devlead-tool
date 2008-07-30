@@ -20,8 +20,8 @@ import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
-import com.jonas.logging.MyLogger;
 
 /**
  * Sample JIRA SOAP client. Note that the constants sit in the {@link ClientConstants} interface
@@ -101,7 +101,7 @@ public class JiraSoapClient {
 
 		RemoteVersion[] fixVersions = issue.getFixVersions();
 		for (int i = 0; i < fixVersions.length; i++) {
-			System.out.println(fixVersions[i].getName());
+			LOGGER.debug(fixVersions[i].getName());
 		}
 	}
 
@@ -177,18 +177,18 @@ public class JiraSoapClient {
 	}
 
 	private void printIssueDetails(RemoteIssue issue) {
-		System.out.println("Issue Details");
+		LOGGER.debug("Issue Details");
 		Method[] declaredMethods = issue.getClass().getDeclaredMethods();
 		for (int i = 0; i < declaredMethods.length; i++) {
 			Method declaredMethod = declaredMethods[i];
 			if (declaredMethod.getName().startsWith("get") && declaredMethod.getParameterTypes().length == 0) {
-				System.out.print("Issue." + declaredMethod.getName() + "() -> ");
+				LOGGER.debug("Issue." + declaredMethod.getName() + "() -> ");
 				try {
 					Object o = declaredMethod.invoke(issue, new Object[] {});
 					if (o instanceof Object[])
-						System.out.println(printArray((Object[]) o));
+						LOGGER.debug(printArray((Object[]) o));
 					else
-						System.out.println(o);
+						LOGGER.debug(o);
 				} catch (IllegalAccessException e) {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
@@ -238,7 +238,7 @@ public class JiraSoapClient {
 			is.close();
 			return bytes;
 		} else {
-			System.out.println("File is too large");
+			LOGGER.debug("File is too large");
 			return null;
 		}
 

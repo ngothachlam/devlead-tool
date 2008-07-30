@@ -44,7 +44,6 @@ public class JiraWebUnitTest extends TestCase {
 	 final HtmlPage page = loginToJira();
 	 // Page page2 = webClient.getPage(url);
 	 // Page page2 = webClient.getPage("http://10.155.38.105" + url);
-	 // System.out.println(page2);
 	 }
 
 	 public void tesHtsdfmlUnitTester() throws FailingHttpStatusCodeException, MalformedURLException, IOException {

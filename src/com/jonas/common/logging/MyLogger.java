@@ -1,4 +1,4 @@
-package com.jonas.logging;
+package com.jonas.common.logging;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
