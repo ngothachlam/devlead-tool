@@ -52,9 +52,8 @@ public class JiraHttpClient extends HttpClient {
 
 	}
 
-	public JiraHttpClient() {
-//		this.baseUrl = "http://10.155.38.105/jira";
-		this.baseUrl = "http://jira.atlassian.com";
+	public JiraHttpClient(String url) {
+		this.baseUrl = url;
 	}
 
 	public void loginToJira() throws IOException, HttpException {
