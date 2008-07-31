@@ -67,7 +67,7 @@ public class JiraHttpClient extends HttpClient {
 	public List<JiraIssue> getJiras(JiraVersion fixVersion) {
 		LOGGER.debug("getting Jiras");
 		String url = "/secure/IssueNavigator.jspa?view=rss&&fixfor=" + fixVersion.getId()
-				+ "&pid=10070&sorter/field=issuekey&sorter/order=DESC&reset=true&decorator=none";
+				+ "&pid="+fixVersion.getProject().getId()+"&sorter/field=issuekey&sorter/order=DESC&reset=true&decorator=none";
 		GetMethod method = new GetMethod(baseUrl + url);
 		List<JiraIssue> jiras = null;
 		try {
@@ -80,7 +80,7 @@ public class JiraHttpClient extends HttpClient {
 			LOGGER.debug("RSS feed responded with \"" + string + "\"");
 			Document doc = sb.build(new StringReader(string));
 
-			jiras = getXPath(doc, "/rss/channel/item");
+			jiras = getXPath(doc, "/rss/channel/item", fixVersion);
 
 			for (Iterator<JiraIssue> iterator = jiras.iterator(); iterator.hasNext();) {
 				JiraIssue jira = iterator.next();
@@ -99,10 +99,10 @@ public class JiraHttpClient extends HttpClient {
 		return jiras;
 	}
 
-	private List<JiraIssue> getXPath(Document doc, String xPath) throws JDOMException {
+	private List<JiraIssue> getXPath(Document doc, String xPath, JiraVersion fixVersion) throws JDOMException {
 		XPath xpath = XPath.newInstance(xPath);
 		List<Element> list = xpath.selectNodes(doc);
-		return JiraIssue.buildJiras(list);
+		return JiraIssue.buildJiras(list, fixVersion);
 	}
 
 	public void setJiraUrl(String jiraUrl) {

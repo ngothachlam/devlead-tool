@@ -4,24 +4,28 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.jdom.Element;
+
+import com.jonas.common.logging.MyLogger;
 
 public class JiraIssue {
 
+	private static Logger log = MyLogger.getLogger(JiraIssue.class);
 	private final String name;
-	private final String fixVersion;
+	private final JiraVersion fixVersion;
 	private final String status;
 	private final String resolution;
 
-	private JiraIssue(Element e) {
-		this(get(e, "key"), get(e, "fixVersion"), get(e, "status"), get(e, "resolution"));
+	private JiraIssue(Element e, JiraVersion fixVersion) {
+		this(get(e, "key"), get(e, "status"), get(e, "resolution"), fixVersion);
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public String getFixVersionName() {
+	public JiraVersion getFixVersion() {
 		return fixVersion;
 	}
 
@@ -33,18 +37,22 @@ public class JiraIssue {
 		return resolution;
 	}
 
-	public JiraIssue(String name, String fixVersion, String status, String resolution) {
+	public JiraIssue(String name, String status, String resolution, JiraVersion fixVersion) {
 		this.name = name;
 		this.fixVersion = fixVersion;
 		this.status = status;
 		this.resolution = resolution;
 	}
 
-	public static List<JiraIssue> buildJiras(List<Element> list) {
+	public static List<JiraIssue> buildJiras(List<Element> list, JiraVersion fixVersion2) {
 		List<JiraIssue> jiras = new ArrayList();
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 			Element e = (Element) iterator.next();
-			jiras.add(new JiraIssue(e));
+			String fixVersionName = e.getChildText("fixVersion");
+			log.debug("fixVersionName: " + fixVersionName);
+			JiraVersion versionByName = JiraVersion.getVersionByName(fixVersionName);
+			log.debug("versionByName: " + versionByName);
+			jiras.add(new JiraIssue(e, versionByName));
 		}
 		return jiras;
 	}

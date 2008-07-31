@@ -25,7 +25,10 @@ public class JiraHttpClientTest extends TestCase {
 	private void asserFixVersionExistsAndHasJirasAgainstIt(JiraHttpClient client, JiraVersion version10) {
 		List<JiraIssue> jiras = client.getJiras(version10);
 		assertTrue(jiras.size() > 1);
-		String fixVersionName = jiras.get(0).getFixVersionName();
-		assertEquals(version10, JiraVersion.getVersion(fixVersionName));
+		for (int i = 0; i < jiras.size(); i++) {
+			System.out.println(jiras.get(i));
+		}
+		JiraVersion fixVersion = jiras.get(0).getFixVersion();
+		assertEquals(version10, JiraVersion.getVersionById(fixVersion.getId()));
 	}
 }
