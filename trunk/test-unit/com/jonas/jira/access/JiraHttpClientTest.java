@@ -28,7 +28,7 @@ public class JiraHttpClientTest extends TestCase {
 		for (int i = 0; i < jiras.size(); i++) {
 			System.out.println(jiras.get(i));
 		}
-		JiraVersion fixVersion = jiras.get(0).getFixVersion();
+		JiraVersion fixVersion = jiras.get(0).getFixVersions().get(0);
 		assertEquals(version10, JiraVersion.getVersionById(fixVersion.getId()));
 	}
 }
