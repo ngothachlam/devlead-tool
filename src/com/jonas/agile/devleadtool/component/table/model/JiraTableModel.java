@@ -26,7 +26,7 @@ public class JiraTableModel extends DefaultTableModel implements MyTableModel {
 	}
 	
 	public void addRow(JiraIssue jiraIssue) {
-		Object[] objects = new Object[]{jiraIssue.getName(),jiraIssue.getFixVersion(), jiraIssue.getStatus(), jiraIssue.getResolution()};
+		Object[] objects = new Object[]{jiraIssue.getName(),jiraIssue.getFixVersions(), jiraIssue.getStatus(), jiraIssue.getResolution()};
 		this.addRow(objects);
 	}
 
