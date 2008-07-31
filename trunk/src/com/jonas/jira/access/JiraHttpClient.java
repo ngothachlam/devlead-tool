@@ -21,7 +21,7 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
 
 public class JiraHttpClient extends HttpClient {
-	private final String baseUrl;
+	private String baseUrl;
 
 	private static final Logger LOGGER = MyLogger.getLogger(JiraHttpClient.class);
 
@@ -48,8 +48,8 @@ public class JiraHttpClient extends HttpClient {
 
 	}
 
-	public JiraHttpClient(String url) {
-		this.baseUrl = url;
+	public JiraHttpClient(String jiraUrl) {
+		setJiraUrl(jiraUrl);
 	}
 
 	public void loginToJira() throws IOException, HttpException {
@@ -66,7 +66,7 @@ public class JiraHttpClient extends HttpClient {
 
 	public List<JiraIssue> getJiras(JiraVersion fixVersion) {
 		LOGGER.debug("getting Jiras");
-		String url = "/secure/IssueNavigator.jspa?view=rss&&fixfor=" + fixVersion.getJiraKey()
+		String url = "/secure/IssueNavigator.jspa?view=rss&&fixfor=" + fixVersion.getId()
 				+ "&pid=10070&sorter/field=issuekey&sorter/order=DESC&reset=true&decorator=none";
 		GetMethod method = new GetMethod(baseUrl + url);
 		List<JiraIssue> jiras = null;
@@ -103,6 +103,10 @@ public class JiraHttpClient extends HttpClient {
 		XPath xpath = XPath.newInstance(xPath);
 		List<Element> list = xpath.selectNodes(doc);
 		return JiraIssue.buildJiras(list);
+	}
+
+	public void setJiraUrl(String jiraUrl) {
+		this.baseUrl = jiraUrl;
 	}
 
 }

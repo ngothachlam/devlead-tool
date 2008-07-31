@@ -1,55 +1,87 @@
 package com.jonas.jira;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
+import com.jonas.common.logging.MyLogger;
 
 public class JiraVersion {
 
-	private static List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
-	public static JiraVersion Version10 = new JiraVersion("Version 10", "11382", JiraProject.LLU_SYSTEMS_PROVISIONING);
-	public static JiraVersion Version11 = new JiraVersion("Version 11", "11432", JiraProject.LLU_SYSTEMS_PROVISIONING);
-	public static JiraVersion Version11Next = new JiraVersion("Version 11 - Next Sprint (3)", "11449", JiraProject.LLU_SYSTEMS_PROVISIONING);
-	public static JiraVersion Backlog = new JiraVersion("Backlog", "11388", JiraProject.LLU_SYSTEMS_PROVISIONING);
-	public static JiraVersion PamsBacklog = new JiraVersion("Pam's Backlog", "11458", JiraProject.LLU_SYSTEMS_PROVISIONING);
-	public static JiraVersion Version9 = new JiraVersion("Version 9", "11264", JiraProject.LLU_SYSTEMS_PROVISIONING);
+	private static Map<String, JiraVersion> fixVersions = new HashMap<String, JiraVersion>();
+	private static Logger log = MyLogger.getLogger(JiraVersion.class);
 
+	public static JiraVersion Version10 = new JiraVersion("Version 10", "11382", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
+	public static JiraVersion Version11 = new JiraVersion("Version 11", "11432", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
+	public static JiraVersion Version11Next = new JiraVersion("Version 11 - Next Sprint (3)", "11449", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
+	public static JiraVersion Backlog = new JiraVersion("Backlog", "11388", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
+	public static JiraVersion PamsBacklog = new JiraVersion("Pam's Backlog", "11458", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
+	public static JiraVersion Version9 = new JiraVersion("Version 9", "11264", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
 
 	private static String SELECT_NAME = "fixfor";
+	private boolean archived;
 	private String name;
-	private String jiraKey;
-	private final JiraProject jiraProject;
+	private String id;
+	private JiraProject jiraProject;
 
-	private JiraVersion(String name, String jiraKey, JiraProject jiraProject) {
+	public JiraVersion(String name, String id, boolean archived, JiraProject jiraProject) {
 		this.name = name;
-		this.jiraKey = jiraKey;
+		this.id = id;
+		this.archived = archived;
 		this.jiraProject = jiraProject;
-		fixVersions.add(this);
+		addVersion(this);
 	}
 
-	public String getJiraKey() {
-		return jiraKey;
+	public JiraVersion(RemoteVersion remoteVersion, JiraProject jiraProject) {
+		this(remoteVersion.getName(), remoteVersion.getId(), remoteVersion.isArchived(), jiraProject);
+	}
+
+	public String getId() {
+		return id;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public static JiraVersion getVersion(String name) {
-		for (Iterator iterator = fixVersions.iterator(); iterator.hasNext();) {
-			JiraVersion fixVersion = (JiraVersion) iterator.next();
-			if (fixVersion.getName().equals(name))
-				return fixVersion;
+	public static void addVersion(JiraVersion version) {
+		JiraVersion jiraVersion = fixVersions.get(version.getId());
+		if (jiraVersion != null){
+			log.warn("version " + version + "(with id=" + version.getId() + ") already exists - not adding it, but overwriting values!");
+			jiraVersion.setArchived(version.isArchived());
 		}
-		return null;
+		else
+			fixVersions.put(version.getId(), version);
+	}
+
+	public static JiraVersion getVersion(String id) {
+		return fixVersions.get(id);
 	}
 
 	public JiraProject getProject() {
 		return jiraProject;
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		return name;
 	}
+
+	class VersionAlreadysExistsException extends Exception {
+
+		public VersionAlreadysExistsException(String string) {
+			super(string);
+		}
+	}
+
+	public boolean isArchived() {
+		return archived;
+	}
+
+	public void setArchived(boolean archived) {
+		this.archived = archived;
+	}
+
 }
