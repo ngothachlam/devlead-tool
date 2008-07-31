@@ -69,13 +69,10 @@ public class JiraClient {
 		try {
 			httpClient.loginToJira();
 		} catch (HttpException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean isArchived) {
@@ -84,7 +81,6 @@ public class JiraClient {
 			buildJiraVersions(fixVersions, jiraProject);
 			return jiraProject.getFixVersions(isArchived);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

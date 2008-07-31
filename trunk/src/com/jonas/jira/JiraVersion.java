@@ -57,10 +57,21 @@ public class JiraVersion {
 			fixVersions.put(version.getId(), version);
 	}
 
-	public static JiraVersion getVersion(String id) {
+	public static JiraVersion getVersionById(String id) {
 		return fixVersions.get(id);
 	}
 
+	public static JiraVersion getVersionByName(String name) {
+		for (Iterator iterator = fixVersions.values().iterator(); iterator.hasNext();) {
+			JiraVersion version = (JiraVersion) iterator.next();
+			if(version.getName().equals(name)){
+				return version;
+			}
+		}
+		log.error("Version: \"" + name + "\" doesn't exist!");
+		return null;
+	}
+	
 	public JiraProject getProject() {
 		return jiraProject;
 	}

@@ -6,21 +6,27 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.jonas.jira.access.JiraClient;
+
 public class JiraProject {
 	private static List<JiraProject> PROJECTS = new ArrayList<JiraProject>();
 
-	public static final JiraProject LLU_SYSTEMS_PROVISIONING = new JiraProject("LLU Systems Provisioning", "LLU", "10070");
-	public static final JiraProject LLU_DEV_SUPPORT = new JiraProject("LLU Dev Support", "LLUDEVSUP", "10192");
-	public static final JiraProject ATLASSIN_TST = new JiraProject("Atlassin - TST", "TST", "10420");
+	public static final JiraProject LLU_SYSTEMS_PROVISIONING = new JiraProject(JiraClient.JiraClientAolBB, "LLU Systems Provisioning",
+			"LLU", "10070");
+	public static final JiraProject LLU_DEV_SUPPORT = new JiraProject(JiraClient.JiraClientAolBB, "LLU Dev Support", "LLUDEVSUP", "10192");
+	public static final JiraProject ATLASSIN_TST = new JiraProject(JiraClient.JiraClientAtlassin, "Atlassin - TST", "TST", "10420");
 
 	private final Map<String, JiraVersion> fixVersions = new HashMap<String, JiraVersion>();
-	
+
 	private final String id;
 	private final String name;
 
 	private final String jiraKey;
 
-	protected JiraProject(String name, String jiraKey, String id) {
+	private JiraClient client;
+
+	protected JiraProject(JiraClient client, String name, String jiraKey, String id) {
+		this.client = client;
 		this.name = name;
 		this.jiraKey = jiraKey;
 		this.id = id;
@@ -47,8 +53,8 @@ public class JiraProject {
 	public String getName() {
 		return name;
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		return jiraKey;
 	}
 
@@ -64,11 +70,15 @@ public class JiraProject {
 		List<JiraVersion> tempFixVersions = new ArrayList<JiraVersion>();
 		for (Iterator iterator = fixVersions.values().iterator(); iterator.hasNext();) {
 			JiraVersion version = (JiraVersion) iterator.next();
-			if(version.isArchived() == isArchived){
+			if (version.isArchived() == isArchived) {
 				tempFixVersions.add(version);
 			}
 		}
 		return (JiraVersion[]) tempFixVersions.toArray(new JiraVersion[tempFixVersions.size()]);
+	}
+
+	public JiraClient getClient() {
+		return client;
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.jonas.jira;
 
+import com.jonas.jira.access.JiraClient;
+
 import junit.framework.TestCase;
 
 public class JiraProjectTest extends TestCase {
@@ -15,7 +17,7 @@ public class JiraProjectTest extends TestCase {
 	}
 
 	public void testJiraProjectAndFixVersion(){
-		JiraProject jiraProject = new JiraProject("test", "1234", "4321");
+		JiraProject jiraProject = new JiraProject(JiraClient.JiraClientAolBB, "test", "1234", "4321");
 		assertEquals(0, jiraProject.getFixVersions(false).length);
 		assertEquals(0, jiraProject.getFixVersions(true).length);
 		jiraProject.addFixVersion(new JiraVersion("test", "1234", false, JiraProject.LLU_SYSTEMS_PROVISIONING));
