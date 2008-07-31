@@ -39,33 +39,19 @@ public class JiraPanel extends MyComponentPanel {
 
 	public JiraPanel(PlannerHelper client) {
 		super(new BorderLayout());
-		try {
-			URL url = new URL(ClientConstants.JIRA_URL_AOLBB);
-			// TODO change this to be generic so you can choose Jira!!!!
-			JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
-			log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
-			jiraSoapServiceServiceLocator.setJirasoapserviceV2EndpointAddress(ClientConstants.jIRA_URL_ATLASSIN
-					+ "/rpc/soap/jirasoapservice-v2");
-			log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
-			JiraSoapService jirasoapserviceV2 = jiraSoapServiceServiceLocator.getJirasoapserviceV2();
-			jiraClient = new JiraClient(jirasoapserviceV2);
-			JScrollPane scrollpane = new JScrollPane();
-			this.addCenter(scrollpane);
-			this.addSouth(getButtonPanel());
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+		jiraClient = JiraClient.JiraClientAolBB;
+		JScrollPane scrollpane = new JScrollPane();
+		this.addCenter(scrollpane);
+		this.addSouth(getButtonPanel());
 	}
 
 	private Component getButtonPanel() {
 		JPanel buttons = new JPanel();
 
-		List<JiraProject> projects = new ArrayList<JiraProject>();
-		projects.add(JiraProject.LLU_DEV_SUPPORT);
-		projects.add(JiraProject.LLU_SYSTEMS_PROVISIONING);
-		projects.add(JiraProject.ATLASSIN_TST);
+		List<PanelProject> projects = new ArrayList<PanelProject>();
+		projects.add(new PanelProject(JiraProject.LLU_DEV_SUPPORT, JiraClient.JiraClientAolBB));
+		projects.add(new PanelProject(JiraProject.LLU_SYSTEMS_PROVISIONING, JiraClient.JiraClientAolBB));
+		projects.add(new PanelProject(JiraProject.ATLASSIN_TST, JiraClient.JiraClientAtlassin));
 		final JComboBox jiraProjects = new JComboBox(projects.toArray());
 		final JComboBox jiraProjectFixVersion = new JComboBox();
 
@@ -75,7 +61,8 @@ public class JiraPanel extends MyComponentPanel {
 			public void actionPerformed(ActionEvent e) {
 				log.debug("getting fixVersion : " + jiraProjects.getSelectedItem());
 				jiraProjectFixVersion.removeAllItems();
-				JiraVersion[] fixVersions = jiraClient.getFixVersionsFromProject((JiraProject) jiraProjects.getSelectedItem());
+				PanelProject selectedItem = (PanelProject) jiraProjects.getSelectedItem();
+				JiraVersion[] fixVersions = selectedItem.getClient().getFixVersionsFromProject(selectedItem.getProject(), false);
 				for (int i = 0; i < fixVersions.length; i++) {
 					jiraProjectFixVersion.addItem(fixVersions[i]);
 				}
@@ -103,6 +90,33 @@ public class JiraPanel extends MyComponentPanel {
 			}
 
 		});
+	}
+
+	class PanelProject {
+
+		private final JiraProject project;
+		private final JiraClient client;
+
+		public PanelProject(JiraProject project, JiraClient client) {
+			this.project = project;
+			this.client = client;
+		}
+
+		public JiraClient getClient() {
+			return client;
+		}
+
+		@Override
+		public String toString() {
+			return project.getName();
+		}
+
+		private JiraProject getProject() {
+			return project;
+		}
+		
+		
+
 	}
 
 }

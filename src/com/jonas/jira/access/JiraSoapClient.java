@@ -140,8 +140,8 @@ public class JiraSoapClient {
 		return null;
 	}
 
-	public RemoteVersion[] getFixVersions(final JiraProject jiraProject) throws RemotePermissionException,
-			RemoteAuthenticationException, RemoteException {
+	public RemoteVersion[] getFixVersions(final JiraProject jiraProject) throws RemotePermissionException, RemoteAuthenticationException,
+			RemoteException {
 		Log.debug("Getting Fix Versions!");
 		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
 			public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
@@ -151,19 +151,20 @@ public class JiraSoapClient {
 
 		});
 		RemoteVersion[] versions = (RemoteVersion[]) command.execute();
-		Log.debug("Getting Fix Versions Done!");
-		return versions;
-	}
-
-	public RemoteVersion[] getFixVersionsNonArchived(JiraProject jiraProject) throws RemotePermissionException,
-			RemoteAuthenticationException, RemoteException {
-		RemoteVersion[] versions = getFixVersions(jiraProject);
-		List<RemoteVersion> versionList = new ArrayList<RemoteVersion>();
-		for (int i = 0; i < versions.length; i++) {
-			if (!versions[i].isArchived())
-				versionList.add(versions[i]);
+		if (Log.isDebugEnabled()) {
+			Log.debug("Getting Fix Versions Done!");
+			for (int i = 0; i < versions.length; i++) {
+				StringBuffer sb = new StringBuffer();
+				sb.append("Fix Version[").append(i).append("] {");
+				sb.append("name=").append(versions[i].getName());
+				sb.append(", id=").append(versions[i].getId());
+				sb.append("}");
+				Log.debug(sb.toString());
+				
+			}
 		}
-		return (RemoteVersion[]) versionList.toArray();
+
+		return versions;
 	}
 
 	private void printIssueDetails(RemoteIssue issue) {

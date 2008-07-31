@@ -11,7 +11,18 @@ public class JiraProjectTest extends TestCase {
 
 	private void assertJiraProject(String string, String key) {
 		assertEquals( string, JiraProject.getProject(string).getName() );
-		assertEquals( key, JiraProject.getProject(string).getSelectId() );
+		assertEquals( key, JiraProject.getProject(string).getId() );
 	}
 
+	public void testJiraProjectAndFixVersion(){
+		JiraProject jiraProject = new JiraProject("test", "1234", "4321");
+		assertEquals(0, jiraProject.getFixVersions(false).length);
+		assertEquals(0, jiraProject.getFixVersions(true).length);
+		jiraProject.addFixVersion(new JiraVersion("test", "1234", false, JiraProject.LLU_SYSTEMS_PROVISIONING));
+		assertEquals(1, jiraProject.getFixVersions(false).length);
+		assertEquals(0, jiraProject.getFixVersions(true).length);
+		jiraProject.addFixVersion(new JiraVersion("test", "1234", true, JiraProject.LLU_SYSTEMS_PROVISIONING));
+		assertEquals(0, jiraProject.getFixVersions(false).length);
+		assertEquals(1, jiraProject.getFixVersions(true).length);
+	}
 }
