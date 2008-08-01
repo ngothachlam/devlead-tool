@@ -6,11 +6,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.jonas.common.logging.MyLogger;
+import org.apache.log4j.Logger;
+
 import com.jonas.jira.access.JiraClient;
 
 public class JiraProject {
 	private static List<JiraProject> PROJECTS = new ArrayList<JiraProject>();
-
+	private static Logger log = MyLogger.getLogger(JiraProject.class);
+	
 	public static final JiraProject LLU_SYSTEMS_PROVISIONING = new JiraProject(JiraClient.JiraClientAolBB, "LLU Systems Provisioning",
 			"LLU", "10070");
 	public static final JiraProject LLU_DEV_SUPPORT = new JiraProject(JiraClient.JiraClientAolBB, "LLU Dev Support", "LLUDEVSUP", "10192");
@@ -63,6 +67,7 @@ public class JiraProject {
 	}
 
 	public void addFixVersion(JiraVersion jiraVersion) {
+		log.debug("Adding fixVersion " + jiraVersion.getName());
 		fixVersions.put(jiraVersion.getId(), jiraVersion);
 	}
 
