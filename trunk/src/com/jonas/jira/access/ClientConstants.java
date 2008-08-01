@@ -12,5 +12,6 @@ public interface ClientConstants
     static final String PROJECT_KEY = "LLU";
 	static final String JIRA_URL_AOLBB = "http://10.155.38.105/jira";
 	static final String jIRA_URL_ATLASSIN = "http://jira.atlassian.com";
-
+	
+	static final String WS_LOCATION = "/rpc/soap/jirasoapservice-v2";
 }

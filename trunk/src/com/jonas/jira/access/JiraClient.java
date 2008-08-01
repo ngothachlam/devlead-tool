@@ -23,11 +23,13 @@ public class JiraClient {
 	private JiraHttpClient httpClient;
 	private JiraSoapClient soapClient;
 
-	public static final JiraClient JiraClientAolBB = new JiraClient(ClientConstants.JIRA_URL_AOLBB + "/rpc/soap/jirasoapservice-v2", ClientConstants.JIRA_URL_AOLBB);
-	public static final JiraClient JiraClientAtlassin = new JiraClient(ClientConstants.jIRA_URL_ATLASSIN + "/rpc/soap/jirasoapservice-v2", ClientConstants.jIRA_URL_ATLASSIN);
+	public static final JiraClient JiraClientAolBB = new JiraClient(ClientConstants.JIRA_URL_AOLBB + ClientConstants.WS_LOCATION,
+			ClientConstants.JIRA_URL_AOLBB);
+	public static final JiraClient JiraClientAtlassin = new JiraClient(ClientConstants.jIRA_URL_ATLASSIN + ClientConstants.WS_LOCATION,
+			ClientConstants.jIRA_URL_ATLASSIN);
 
 	private JiraClient(String address) {
-		JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = setAddress(address);
+		JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = getLocator(address);
 		JiraSoapService jirasoapserviceV2;
 		try {
 			jirasoapserviceV2 = jiraSoapServiceServiceLocator.getJirasoapserviceV2();
@@ -41,12 +43,11 @@ public class JiraClient {
 	public JiraClient(String address, String jiraUrl) {
 		this(address);
 		this.setHttpClient(new JiraHttpClient(jiraUrl));
-//		httpClient.setJiraUrl(jiraUrl);
+		// httpClient.setJiraUrl(jiraUrl);
 	}
 
-	private JiraSoapServiceServiceLocator setAddress(String address) {
+	private JiraSoapServiceServiceLocator getLocator(String address) {
 		JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
-		log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
 		jiraSoapServiceServiceLocator.setJirasoapserviceV2EndpointAddress(address);
 		log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
 		return jiraSoapServiceServiceLocator;

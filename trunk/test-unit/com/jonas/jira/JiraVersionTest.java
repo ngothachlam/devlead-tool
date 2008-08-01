@@ -18,10 +18,24 @@ public class JiraVersionTest extends TestCase {
 
 	public void testAddingJiraVersion() {
 		assertTrue(JiraVersion.getVersionById("1") == null);
-		new JiraVersion("Version 1", "1", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
+		new JiraVersion("1", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 1", false);
 		assertVersion("Version 1", "1", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
-		new JiraVersion("Version 2", "1", true, JiraProject.LLU_SYSTEMS_PROVISIONING);
-		assertVersion("Version 1", "1", true, JiraProject.LLU_SYSTEMS_PROVISIONING);
+	}
+	
+	public void testAddingJiraVersionShouldOverwriteAllValues() {
+		String id = "1";
+		
+		JiraVersion.removeVersion(id);
+		assertTrue(JiraVersion.getVersionById(id) == null);
+		
+		String name = "Version 1";
+		boolean isArchived = false;
+		new JiraVersion(id, JiraProject.LLU_SYSTEMS_PROVISIONING, name, isArchived);
+		assertVersion(name, id, isArchived, JiraProject.LLU_SYSTEMS_PROVISIONING);
+		
+		String newName = name + " new";
+		new JiraVersion(id, JiraProject.LLU_SYSTEMS_PROVISIONING, newName, !isArchived);
+		assertVersion(newName, id, !isArchived, JiraProject.LLU_SYSTEMS_PROVISIONING);
 	}
 
 	private void assertVersionById(String name, String id, boolean isArchived, JiraProject lluSystemsProvisioning) {

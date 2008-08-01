@@ -14,12 +14,12 @@ public class JiraVersion {
 	private static Map<String, JiraVersion> fixVersions = new HashMap<String, JiraVersion>();
 	private static Logger log = MyLogger.getLogger(JiraVersion.class);
 
-	public static JiraVersion Version10 = new JiraVersion("Version 10", "11382", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
-	public static JiraVersion Version11 = new JiraVersion("Version 11", "11432", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
-	public static JiraVersion Version11Next = new JiraVersion("Version 11 - Next Sprint (3)", "11449", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
-	public static JiraVersion Backlog = new JiraVersion("Backlog", "11388", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
-	public static JiraVersion PamsBacklog = new JiraVersion("Pam's Backlog", "11458", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
-	public static JiraVersion Version9 = new JiraVersion("Version 9", "11264", false, JiraProject.LLU_SYSTEMS_PROVISIONING);
+	public static JiraVersion Version10 = new JiraVersion("11382", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 10", false);
+	public static JiraVersion Version11 = new JiraVersion("11432", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 11", false);
+	public static JiraVersion Version11Next = new JiraVersion("11449", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 11 - Next Sprint (3)", false);
+	public static JiraVersion Backlog = new JiraVersion("11388", JiraProject.LLU_SYSTEMS_PROVISIONING, "Backlog", false);
+	public static JiraVersion PamsBacklog = new JiraVersion("11458", JiraProject.LLU_SYSTEMS_PROVISIONING, "Pam's Backlog", false);
+	public static JiraVersion Version9 = new JiraVersion("11264", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 9", false);
 
 	private static String SELECT_NAME = "fixfor";
 	private boolean archived;
@@ -27,7 +27,7 @@ public class JiraVersion {
 	private String id;
 	private JiraProject jiraProject;
 
-	public JiraVersion(String name, String id, boolean archived, JiraProject jiraProject) {
+	public JiraVersion(String id, JiraProject jiraProject, String name, boolean archived) {
 		this.name = name;
 		this.id = id;
 		this.archived = archived;
@@ -36,7 +36,7 @@ public class JiraVersion {
 	}
 
 	public JiraVersion(RemoteVersion remoteVersion, JiraProject jiraProject) {
-		this(remoteVersion.getName(), remoteVersion.getId(), remoteVersion.isArchived(), jiraProject);
+		this(remoteVersion.getId(), jiraProject, remoteVersion.getName(), remoteVersion.isArchived());
 	}
 
 	public String getId() {
@@ -52,9 +52,15 @@ public class JiraVersion {
 		if (jiraVersion != null){
 			log.warn("version " + version + "(with id=" + version.getId() + ") already exists - not adding it, but overwriting values!");
 			jiraVersion.setArchived(version.isArchived());
+			jiraVersion.setName(version.getName());
 		}
 		else
 			fixVersions.put(version.getId(), version);
+	}
+
+	private void setName(String name) {
+		this.name = name;
+		
 	}
 
 	public static JiraVersion getVersionById(String id) {
@@ -94,5 +100,10 @@ public class JiraVersion {
 	public void setArchived(boolean archived) {
 		this.archived = archived;
 	}
+
+	public static void removeVersion(String id) {
+		fixVersions.remove(id);
+	}
+
 
 }
