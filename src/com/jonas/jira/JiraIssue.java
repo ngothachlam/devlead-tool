@@ -15,11 +15,6 @@ public class JiraIssue {
 	private String status;
 	private String resolution;
 
-	private JiraIssue(Element e, JiraVersion fixVersion) {
-		this(e);
-		this.addFixVersion(fixVersion);
-	}
-
 	private JiraIssue(Element e) {
 		this(get(e, "key"), get(e, "status"), get(e, "resolution"));
 	}
@@ -39,12 +34,12 @@ public class JiraIssue {
 		return name;
 	}
 
-	private void clearFixVersion() {
+	private void clearFixVersions() {
 		fixVersions.clear();
 	}
 
-	private void addFixVersion(JiraVersion fixVersion2) {
-		fixVersions.add(fixVersion2);
+	private void addFixVersions(JiraVersion fixVersion) {
+		fixVersions.add(fixVersion);
 	}
 
 	public List<JiraVersion> getFixVersions() {

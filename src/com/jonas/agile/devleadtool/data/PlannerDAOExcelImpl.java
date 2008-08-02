@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.extractor.ExcelExtractor;
@@ -18,20 +20,25 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.logging.MyLogger;
 
 public class PlannerDAOExcelImpl implements PlannerDAO {
 
    private Logger log = MyLogger.getLogger(PlannerDAOExcelImpl.class);
+   private static Map<File, HSSFWorkbook> fileOrganiser = new HashMap<File, HSSFWorkbook>();
 
    public PlannerDAOExcelImpl() {
       super();
    }
 
-   public void saveBoardModel(File xlsFile, BoardTableModel model) throws IOException {
-      HSSFWorkbook wb = new HSSFWorkbook();
-      HSSFSheet sheet = wb.createSheet("board");
+   public void saveBoardModel(File xlsFile, MyTableModel model) throws IOException {
+      saveModel(xlsFile, model, "board");
+   }
 
+   private void saveModel(File xlsFile, MyTableModel model, String sheetName) throws IOException {
+      HSSFWorkbook wb = getWorkBook(xlsFile);
+      HSSFSheet sheet = getSheet(sheetName, wb);
       HSSFRow row = sheet.createRow((short) 0);
 
       HSSFCellStyle style_red_background = wb.createCellStyle();
@@ -70,7 +77,21 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       FileOutputStream fileOut = new FileOutputStream(xlsFile);
       wb.write(fileOut);
       fileOut.close();
+   }
 
+   protected HSSFSheet getSheet(String sheetName, HSSFWorkbook wb) {
+      HSSFSheet sheet = wb.getSheet(sheetName);
+      sheet = sheet == null ? wb.createSheet(sheetName) : sheet;
+      return sheet;
+   }
+
+   protected HSSFWorkbook getWorkBook(File xlsFile) {
+      HSSFWorkbook workbook = fileOrganiser.get(xlsFile);
+      if (workbook == null) {
+         workbook = new HSSFWorkbook();
+         fileOrganiser.put(xlsFile, workbook);
+      }
+      return workbook;
    }
 
    public BoardTableModel loadBoardModel(File xlsFile) throws IOException {
@@ -122,10 +143,12 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    }
 
-   public void saveJiraModel(File selFile, Object jiraModel) {
+   public void saveJiraModel(File xlsFile, MyTableModel model) throws IOException {
+      saveModel(xlsFile, model, "jira");
    }
 
-   public void savePlanModel(File selFile, Object planModel) {
+   public void savePlanModel(File xlsFile, MyTableModel model) throws IOException {
+      saveModel(xlsFile, model, "plan");
    }
 
 }
