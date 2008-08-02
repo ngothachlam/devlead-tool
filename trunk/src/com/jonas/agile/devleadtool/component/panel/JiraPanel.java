@@ -31,12 +31,10 @@ import com.jonas.jira.access.JiraClient;
 public class JiraPanel extends MyComponentPanel {
 
 	private Logger log = MyLogger.getLogger(JiraPanel.class);
-	private JiraClient jiraClient = null;
 	private JiraTableModel jiraTableModel;
 
 	public JiraPanel(PlannerHelper client) {
 		super(new BorderLayout());
-		jiraClient = JiraClient.JiraClientAolBB;
 
 		MyTable list = new MyTable();
 		jiraTableModel = new JiraTableModel();
@@ -68,9 +66,7 @@ public class JiraPanel extends MyComponentPanel {
 				jiraProjectFixVersionCombo.setEditable(false);
 			}
 		});
-		
 		fixVersionButton.addActionListener(new ActionListener() {
-
 			public void actionPerformed(ActionEvent e) {
 				log.debug("getting fixVersion : " + jiraProjectsCombo.getSelectedItem());
 				jiraProjectFixVersionCombo.removeAllItems();

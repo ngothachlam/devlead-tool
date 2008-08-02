@@ -7,9 +7,11 @@ import junit.framework.TestCase;
 
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 
-public class PlannerDAOCSVImplTest extends TestCase {
+public class PlannerDAOExcelImplTest extends TestCase {
 	File xlsFile = new File("bin\\test.xls");
 
+	//TODO assert on saving cell background colors.
+	
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -18,7 +20,7 @@ public class PlannerDAOCSVImplTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void testSouldSaveAndLoadBoardFromCSVCorrectly() throws IOException {
+	public void testSouldSaveAndLoadBoardCorrectly() throws IOException {
 		PlannerDAO dao = new PlannerDAOExcelImpl();
 		BoardTableModel model_original = new BoardTableModel();
 

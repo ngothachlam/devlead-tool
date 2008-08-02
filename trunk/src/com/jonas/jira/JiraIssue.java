@@ -60,13 +60,13 @@ public class JiraIssue {
 	}
 
 	public static List<JiraIssue> buildJiras(List<Element> list, JiraVersion fixVersion2) {
-		List<JiraIssue> jiras = new ArrayList();
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-			Element e = (Element) iterator.next();
+		List<JiraIssue> jiras = new ArrayList<JiraIssue>();
+		for (Iterator<Element> iterator = list.iterator(); iterator.hasNext();) {
+			Element e = iterator.next();
 			List<Element> fixVersionStrings = e.getChildren("fixVersion");
 			List<JiraVersion> versions = new ArrayList<JiraVersion>();
-			for (Iterator iterator2 = fixVersionStrings.iterator(); iterator2.hasNext();) {
-				Element element = (Element) iterator2.next();
+			for (Iterator<Element> iterator2 = fixVersionStrings.iterator(); iterator2.hasNext();) {
+				Element element = iterator2.next();
 				JiraVersion versionByName = JiraVersion.getVersionByName(element.getText());
 				log.debug("Getting version byName: \""+element.getText()+"\" is \""+versionByName+"\"");
 				versions.add(versionByName);
