@@ -30,7 +30,7 @@ public class StringTableCellRenderer extends DefaultTableCellRenderer {
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		JComponent cell = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		if (model.shouldBackgroundBeRed(value, row, column)) {
+		if (model.isRed(value, row, column)) {
 			if (hasFocus)
 				cell.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
 			else if (isSelected)

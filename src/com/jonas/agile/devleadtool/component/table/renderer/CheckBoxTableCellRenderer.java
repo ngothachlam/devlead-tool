@@ -46,7 +46,7 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 
 		setFont(table.getFont());
 
-		if (model.shouldBackgroundBeRed(value, row, column)) {
+		if (model.isRed(value, row, column)) {
 			if (hasFocus)
 				checkbox.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
 			else if (isSelected)

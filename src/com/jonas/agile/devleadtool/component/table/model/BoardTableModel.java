@@ -2,10 +2,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.Vector;
 
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-
-public class BoardTableModel extends DefaultTableModel implements MyTableModel {
+public class BoardTableModel extends MyTableModel {
 
 	private static String[] tableHeader = { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete", "URL" };
 
@@ -16,8 +13,8 @@ public class BoardTableModel extends DefaultTableModel implements MyTableModel {
 		super(new Object[][] { tableContents }, tableHeader);
 	}
 	
-	public BoardTableModel(Vector contents, Vector headers) {
-		super(contents, headers);
+	public BoardTableModel(Vector<Vector<Object>> contents, Vector<Object> header) {
+		super(contents, header);
 	}
 
 	private Object[] getEmptyRow() {
@@ -39,12 +36,6 @@ public class BoardTableModel extends DefaultTableModel implements MyTableModel {
 			if (rowIndex + 1 == this.getRowCount()) {
 				this.addEmptyRow();
 			}
-		}
-	}
-
-	public void removeSelectedRows(JTable table) {
-		while (table.getSelectedRowCount() > 0) {
-			this.removeRow(table.getSelectedRow());
 		}
 	}
 
@@ -96,7 +87,7 @@ public class BoardTableModel extends DefaultTableModel implements MyTableModel {
 		return countOfSimilar;
 	}
 
-	public boolean shouldBackgroundBeRed(Object value, int row, int column) {
+	public boolean isRed(Object value, int row, int column) {
 		boolean theValue = false;
 		switch (column) {
 		case 0:

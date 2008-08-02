@@ -29,7 +29,7 @@ public class CheckBoxTableCellRendererTest extends TestCase {
 	}
 
 	public void testShouldSetCorrectColor() {
-		EasyMock.expect(myTableModel_Mock.shouldBackgroundBeRed(true, 0, 0)).andReturn(false);
+		EasyMock.expect(myTableModel_Mock.isRed(true, 0, 0)).andReturn(false);
 
 		EasyMock.replay(myTableModel_Mock);
 
