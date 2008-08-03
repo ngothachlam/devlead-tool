@@ -39,11 +39,9 @@ public class PlannerHelper {
    public void saveModels(File selFile, PlannerDAO dao) {
       try {
          InternalFrame activeInternalFrame = this.getActiveInternalFrame();
-         // TODO
          dao.saveBoardModel(selFile, activeInternalFrame.getBoardModel());
          dao.saveJiraModel(selFile, activeInternalFrame.getJiraModel());
          dao.savePlanModel(selFile, activeInternalFrame.getPlanModel());
-         // TODO add save for plan and Jira
       } catch (IOException e) {
          e.printStackTrace();
       }

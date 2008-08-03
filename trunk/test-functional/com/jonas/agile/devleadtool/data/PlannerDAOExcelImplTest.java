@@ -83,12 +83,12 @@ public class PlannerDAOExcelImplTest extends TestCase {
 
       // Save and Load on new file
       dao.saveJiraModel(xlsFile, model_original);
-      // JiraTableModel model_loaded = dao.loadJiraModel(xlsFile);
-      //
-      // assertEquals(1, model_loaded.getRowCount());
-      // assertEquals(7, model_loaded.getColumnCount());
-      // assertHeaderInModel(model_loaded, new Object[] { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete", "URL" });
-      // assertRowInModel(0, model_loaded, new Object[] { "", Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "" });
+       JiraTableModel model_loaded = dao.loadJiraModel(xlsFile);
+      
+       assertEquals(1, model_loaded.getRowCount());
+       assertEquals(4, model_loaded.getColumnCount());
+       assertHeaderInModel(model_loaded, new Object[] { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete", "URL" });
+       assertRowInModel(0, model_loaded, new Object[] { "", Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "" });
       //
       // // Modify,
       // model_loaded.addRow(new Object[] { "123", Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "LLU-123" });

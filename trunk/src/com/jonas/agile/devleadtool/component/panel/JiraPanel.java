@@ -35,13 +35,17 @@ public class JiraPanel extends MyComponentPanel {
 	private JiraTableModel jiraTableModel;
 
 	public JiraPanel(PlannerHelper client) {
-		super(new BorderLayout());
+		this(client, new JiraTableModel());
+	}
 
+	public JiraPanel(PlannerHelper client, JiraTableModel jiraModel) {
+		super(new BorderLayout());
+		
 		MyTable list = new MyTable();
-		jiraTableModel = new JiraTableModel();
+		jiraTableModel = jiraModel;
 		list.setModel(jiraTableModel);
 		JScrollPane scrollpane = new JScrollPane(list);
-
+		
 		this.addCenter(scrollpane);
 		this.addSouth(getButtonPanel());
 	}

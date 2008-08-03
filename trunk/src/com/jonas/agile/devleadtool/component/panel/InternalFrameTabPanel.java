@@ -8,6 +8,8 @@ import javax.swing.JTextField;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.InternalFrame;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
+import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyComponentPanel;
 
 public class InternalFrameTabPanel extends MyComponentPanel {
@@ -23,16 +25,17 @@ public class InternalFrameTabPanel extends MyComponentPanel {
    private JTextField excelFile = new JTextField(35);
 
 	public InternalFrameTabPanel(InternalFrame parent, PlannerHelper client) {
-		this(parent, client, null);
+		this(parent, client, null, null, null);
 	}
 
-	public InternalFrameTabPanel(InternalFrame frame, PlannerHelper client, BoardTableModel model) {
+	public InternalFrameTabPanel(InternalFrame frame, PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel, JiraTableModel jiraModel) {
 		super(new BorderLayout());
-		if (model == null)
-			model = new BoardTableModel();
-		boardPanel = new BoardPanel(client, model);
-		planPanel = new PlanPanel(client);
-		jiraPanel = new JiraPanel(client);
+		boardModel = (boardModel == null) ?  new BoardTableModel() : boardModel;
+		planModel = (planModel == null) ?  new PlanTableModel() : planModel;
+		jiraModel = (jiraModel == null) ?  new JiraTableModel() : jiraModel;
+		boardPanel = new BoardPanel(client, boardModel);
+		planPanel = new PlanPanel(client, planModel);
+		jiraPanel = new JiraPanel(client, jiraModel);
 
 		JPanel panel = new JPanel();
 		panel.add(new JLabel("File:"));
@@ -40,7 +43,7 @@ public class InternalFrameTabPanel extends MyComponentPanel {
       panel.add(excelFile);
       addNorth(panel);
       
-		makeContent(model);
+		makeContent(boardModel);
 		wireUpListeners();
 	}
 
