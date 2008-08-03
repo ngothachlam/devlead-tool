@@ -1,19 +1,18 @@
 package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.BorderLayout;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
-import org.apache.commons.httpclient.HttpException;
-
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.InternalFrame;
-import com.jonas.agile.devleadtool.data.SystemProperties;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
+import com.jonas.testHelpers.TryoutTester;
 
 public class AlertDialog extends JDialog {
 	private final PlannerHelper plannerHelper;
@@ -33,7 +32,21 @@ public class AlertDialog extends JDialog {
 		setVisible(true);
 	}
 
-	public AlertDialog(JFrame parent, PlannerHelper plannerHelper, Exception e) {
-		this(parent, plannerHelper, e.getStackTrace().toString());
+	public static void alertException(Exception e){
+		StringWriter sw = new StringWriter();
+		e.printStackTrace(new PrintWriter(sw));
+		String stacktrace = sw.toString();
+		System.out.println(sw.toString());
+		e.printStackTrace();
+		AlertDialog alertDialog = new AlertDialog(TryoutTester.getFrame(), new PlannerHelper("test"), stacktrace);
 	}
+	
+	// public static void AlertDialog(JFrame parent, PlannerHelper plannerHelper, Exception e) {
+	// this(parent, plannerHelper, stacktrace);
+	// }
+
+	public static void main(String[] args) {
+		AlertDialog.alertException(TryoutTester.getTestException());
+	}
+
 }

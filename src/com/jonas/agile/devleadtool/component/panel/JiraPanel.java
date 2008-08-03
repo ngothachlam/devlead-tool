@@ -22,7 +22,7 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraClient;
-import com.jonas.testHelpers.PanelTryoutTester;
+import com.jonas.testHelpers.TryoutTester;
 
 public class JiraPanel extends MyComponentPanel {
 
@@ -111,7 +111,7 @@ public class JiraPanel extends MyComponentPanel {
 
 	public static void main(String[] args) {
 		JiraPanel panel = new JiraPanel(new PlannerHelper("test"));
-		PanelTryoutTester.viewPanel(panel);
+		TryoutTester.viewPanel(panel);
 	}
 
    public JiraTableModel getJiraModel() {
