@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import junit.framework.TestCase;
 
 import com.jonas.common.logging.MyLogger;
 import org.apache.log4j.Logger;
@@ -37,7 +38,7 @@ public class JiraProject {
 		PROJECTS.add(this);
 	}
 
-	public static JiraProject getProject(String name) {
+	public static JiraProject getProjectByName(String name) {
 		for (Iterator<JiraProject> iterator = PROJECTS.iterator(); iterator.hasNext();) {
 			JiraProject jiraProject = iterator.next();
 			if (jiraProject.getName().equals(name))
@@ -82,8 +83,21 @@ public class JiraProject {
 		return (JiraVersion[]) tempFixVersions.toArray(new JiraVersion[tempFixVersions.size()]);
 	}
 
-	public JiraClient getClient() {
+	public JiraClient getJiraClient() {
 		return client;
 	}
 
+   public static List<JiraProject> getProjects() {
+      return PROJECTS;
+   }
+
+   public static JiraProject getProjectByKey(String key) {
+      //TODO optimise by changing PROJECTS to become a map with "key" as the keyobject
+      for (Iterator<JiraProject> iterator = PROJECTS.iterator(); iterator.hasNext();) {
+         JiraProject jiraProject = iterator.next();
+         if (jiraProject.getJiraKey().equals(key))
+            return jiraProject;
+      }
+      return null;
+   }
 }

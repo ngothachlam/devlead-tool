@@ -1,27 +1,26 @@
 package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
-import java.awt.event.KeyEvent;
-
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.plaf.basic.BasicTabbedPaneUI.TabbedPaneLayout;
-
+import javax.swing.JTextField;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.InternalFrame;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.MyComponentPanel;
 
 public class InternalFrameTabPanel extends MyComponentPanel {
 
 	private BoardPanel boardPanel;
 
-	private JPanel planPanel;
+	private PlanPanel planPanel;
 
-	private JPanel jiraPanel;
+	private JiraPanel jiraPanel;
 
 	private JTabbedPane tabbedPane;
+
+   private JTextField excelFile = new JTextField(35);
 
 	public InternalFrameTabPanel(InternalFrame parent, PlannerHelper client) {
 		this(parent, client, null);
@@ -35,10 +34,14 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 		planPanel = new PlanPanel(client);
 		jiraPanel = new JiraPanel(client);
 
+		JPanel panel = new JPanel();
+		panel.add(new JLabel("File:"));
+		excelFile.setEditable(false);
+      panel.add(excelFile);
+      addNorth(panel);
+      
 		makeContent(model);
 		wireUpListeners();
-		loadPreferences();
-		setButtons();
 	}
 
 	public void makeContent(BoardTableModel boardTableModel) {
@@ -61,4 +64,20 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 	public BoardPanel getBoardPanel() {
 		return boardPanel;
 	}
+
+   public void setExcelFile(String fileName) {
+      excelFile.setText(fileName);
+   }
+
+   public String getExcelFile() {
+      return excelFile.getText();
+   }
+
+   public JiraPanel getJiraPanel() {
+      return jiraPanel;
+   }
+   
+   public PlanPanel getPlanPanel() {
+      return planPanel;
+   }
 }

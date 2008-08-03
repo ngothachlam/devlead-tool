@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.component.dialog;
 
+import java.awt.BorderLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,7 +22,7 @@ public class ClosingDialog extends JDialog {
 		this.plannerHelper = plannerHelper;
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-		MyPanel panel = SwingUtil.getBorderPanel().bordered(15, 15, 15, 15);
+		MyPanel panel = new MyPanel(new BorderLayout()).bordered(15, 15, 15, 15);
 		panel.addCenter(new JLabel("Closing all connections ... ", JLabel.CENTER));
 		setContentPane(panel);
 		pack();

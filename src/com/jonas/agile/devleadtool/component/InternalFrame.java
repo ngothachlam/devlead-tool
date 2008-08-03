@@ -95,12 +95,20 @@ public class InternalFrame extends JInternalFrame {
 	public BoardTableModel getBoardModel() {
 		return content.getBoardPanel().getBoardModel();
 	}
+	
+	public void setExcelFile(String name) {
+	   content.setExcelFile(name);
+	}
+	
+	public String getExcelFile() {
+	   return content.getExcelFile();
+	}
 
 	public JiraTableModel getJiraModel() {
-		return null;
+		return content.getJiraPanel().getJiraModel();
+	}
+	public PlanTableModel getPlanModel() {
+	   return content.getPlanPanel().getPlanModel();
 	}
 
-	public PlanTableModel getPlanModel() {
-		return null;
-	}
 }

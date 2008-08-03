@@ -94,4 +94,8 @@ public class JiraClient {
 		}
 	}
 
+   public JiraIssue getJira(String jira) {
+      throw new UnsupportedOperationException("Not Implemented yet!");
+   }
+
 }

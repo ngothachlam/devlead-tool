@@ -27,6 +27,7 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraClient;
+import com.jonas.testHelpers.PanelTryoutTester;
 
 public class JiraPanel extends MyComponentPanel {
 
@@ -48,11 +49,8 @@ public class JiraPanel extends MyComponentPanel {
 	private Component getButtonPanel() {
 		JPanel buttons = new JPanel();
 
-		List<JiraProject> projects = new ArrayList<JiraProject>();
-
-		projects.add(JiraProject.LLU_DEV_SUPPORT);
-		projects.add(JiraProject.LLU_SYSTEMS_PROVISIONING);
-		projects.add(JiraProject.ATLASSIN_TST);
+		
+		List<JiraProject> projects = JiraProject.getProjects();
 
 		final JComboBox jiraProjectsCombo = new JComboBox(projects.toArray());
 		final JComboBox jiraProjectFixVersionCombo = new JComboBox();
@@ -73,7 +71,7 @@ public class JiraPanel extends MyComponentPanel {
 				Object[] selectedObjects = jiraProjectsCombo.getSelectedObjects();
 				for (int i = 0; i < selectedObjects.length; i++) {
 					JiraProject selectedProject = (JiraProject) selectedObjects[i];
-					JiraVersion[] fixVersions = selectedProject.getClient().getFixVersionsFromProject(selectedProject, false);
+					JiraVersion[] fixVersions = selectedProject.getJiraClient().getFixVersionsFromProject(selectedProject, false);
 					for (int j = 0; j < fixVersions.length; j++) {
 						jiraProjectFixVersionCombo.addItem(fixVersions[j]);
 					}
@@ -85,7 +83,7 @@ public class JiraPanel extends MyComponentPanel {
 				Object[] selects = jiraProjectFixVersionCombo.getSelectedObjects();
 				for (int i = 0; i < selects.length; i++) {
 					JiraVersion version = (JiraVersion) selects[i];
-					JiraClient client = version.getProject().getClient();
+					JiraClient client = version.getProject().getJiraClient();
 					client.login();
 					JiraIssue[] jiras = client.getJirasFromFixVersion(version);
 					for (int j = 0; j < jiras.length; j++) {
@@ -114,19 +112,11 @@ public class JiraPanel extends MyComponentPanel {
 
 	public static void main(String[] args) {
 		JiraPanel panel = new JiraPanel(new PlannerHelper("test"));
-		JFrame frame = new JFrame();
-		frame.setContentPane(panel);
-		frame.setSize(800, 400);
-		frame.setVisible(true);
-		frame.addWindowListener(new WindowAdapter() {
-
-			public void windowClosing(WindowEvent e) {
-				super.windowClosing(e);
-				SystemProperties.close();
-				System.exit(0);
-			}
-
-		});
+		PanelTryoutTester.viewPanel(panel);
 	}
+
+   public JiraTableModel getJiraModel() {
+     return jiraTableModel;
+   }
 
 }
