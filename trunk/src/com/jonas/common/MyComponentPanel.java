@@ -16,29 +16,6 @@ public class MyComponentPanel extends MyPanel {
 		super(layoutManager);
 	}
 	
-	protected final void initialise() {
-		makeContent(new BoardTableModel());
-		wireUpListeners();
-		loadPreferences();
-		setButtons();		
-	}
-	
-	protected void makeContent(BoardTableModel boardTableModel) {
-		// override as needed
-	}
-
-	protected void wireUpListeners() {
-		// override as needed
-	}
-	
-	protected void setButtons() {
-		// override as needed
-	}
-	
-	protected void loadPreferences() {
-		// override as needed
-	}
-	
 	protected void savePreferences() {
 		// override as needed
 	}

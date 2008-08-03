@@ -1,15 +1,15 @@
 package com.jonas.agile.devleadtool;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-
 import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.dialog.ClosingDialog;
 import com.jonas.agile.devleadtool.component.dialog.PlannerDialog;
@@ -18,7 +18,7 @@ import com.jonas.agile.devleadtool.component.panel.LoadDialog;
 import com.jonas.agile.devleadtool.component.panel.SaveDialog;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
-import com.jonas.common.SwingUtil;
+import com.jonas.common.MyPanel;
 
 public class DevLeadTool {
 
@@ -37,21 +37,15 @@ public class DevLeadTool {
 		JFrame frame = new JFrame("Jonas' Dev Lead Tool");
 
 		DesktopPane desktop = new DesktopPane();
-		JPanel contentPane = createPanel(desktop);
-
+      JPanel contentPanel = new MyPanel(new BorderLayout());
+      contentPanel.add(desktop);
 		frame.setJMenuBar(createMenuBar(frame, desktop));
-		frame.setContentPane(contentPane);
+		frame.setContentPane(contentPanel);
 
 		frame.setSize(new Dimension(1200, 360));
 		frame.setVisible(true);
 		frame.addWindowListener(new MainFrameListener(frame));
 
-	}
-
-	private JPanel createPanel(DesktopPane desktop) {
-		JPanel contentPane = SwingUtil.getBorderPanel();
-		contentPane.add(desktop);
-		return contentPane;
 	}
 
 	private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
@@ -60,7 +54,7 @@ public class DevLeadTool {
 
 		JMenuItem planner = createMenuItem("New Planner", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				PlannerDialog plannerDialog = new PlannerDialog(frame, desktop, plannerHelper);
+				new PlannerDialog(frame, desktop, plannerHelper);
 			}
 		});
 		JMenuItem open = createMenuItem("Open Planner", new ActionListener() {

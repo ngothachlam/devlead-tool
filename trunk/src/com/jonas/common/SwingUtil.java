@@ -34,10 +34,6 @@ public class SwingUtil {
 			+ (parentWindow.getHeight() - window.getHeight()) / 2);
 	}
 
-	public static MyPanel getBorderPanel() {
-		return new MyPanel(new BorderLayout());
-	}
-
 	public static MyPanel getGridPanel(int rows, int cols, int hgap, int vgap) {
 		return new MyPanel(new GridLayout(rows, cols, hgap, vgap));
 	}

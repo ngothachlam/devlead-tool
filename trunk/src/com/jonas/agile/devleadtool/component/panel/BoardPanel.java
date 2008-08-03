@@ -68,8 +68,6 @@ public class BoardPanel extends MyComponentPanel {
 		super(new BorderLayout());
 		this.client = client;
 		makeContent(boardModel);
-		wireUpListeners();
-		loadPreferences();
 		setButtons();
 		initialiseTableHeader();
 	}
@@ -101,7 +99,6 @@ public class BoardPanel extends MyComponentPanel {
 		header.setReorderingAllowed(true);
 	}
 
-	@Override
 	protected void setButtons() {
 		MyPanel buttonPanel = SwingUtil.getGridPanel(0, 2, 5, 5).bordered();
 
