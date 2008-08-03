@@ -37,8 +37,8 @@ public class DevLeadTool {
 		JFrame frame = new JFrame("Jonas' Dev Lead Tool");
 
 		DesktopPane desktop = new DesktopPane();
-      JPanel contentPanel = new MyPanel(new BorderLayout());
-      contentPanel.add(desktop);
+		JPanel contentPanel = new MyPanel(new BorderLayout());
+		contentPanel.add(desktop);
 		frame.setJMenuBar(createMenuBar(frame, desktop));
 		frame.setContentPane(contentPanel);
 

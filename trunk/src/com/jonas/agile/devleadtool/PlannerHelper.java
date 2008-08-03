@@ -73,7 +73,7 @@ public class PlannerHelper {
 			return client.getJira(jira, project);
 		} catch (Exception e) {
 			//TODO get AlertDialog To work!!!
-			new AlertDialog(null, this, e);
+			AlertDialog.alertException(e);
 		}
 		return null;
 	}
