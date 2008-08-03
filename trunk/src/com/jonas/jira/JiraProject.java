@@ -95,7 +95,7 @@ public class JiraProject {
       //TODO optimise by changing PROJECTS to become a map with "key" as the keyobject
       for (Iterator<JiraProject> iterator = PROJECTS.iterator(); iterator.hasNext();) {
          JiraProject jiraProject = iterator.next();
-         if (jiraProject.getJiraKey().equals(key))
+         if (jiraProject.getJiraKey().equalsIgnoreCase(key))
             return jiraProject;
       }
       return null;

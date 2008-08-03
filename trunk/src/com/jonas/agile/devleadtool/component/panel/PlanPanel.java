@@ -12,11 +12,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+
+import org.apache.log4j.Logger;
+
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyComponentPanel;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
@@ -26,15 +30,15 @@ import com.jonas.testHelpers.PanelTryoutTester;
 public class PlanPanel extends MyComponentPanel {
 
 	private PlanTableModel model;
-	private final PlannerHelper client;
+	private final PlannerHelper helper;
 
 	public PlanPanel(PlannerHelper client) {
 		this(client, new PlanTableModel());
 	}
 
-	public PlanPanel(PlannerHelper client, PlanTableModel planModel) {
+	public PlanPanel(PlannerHelper helper, PlanTableModel planModel) {
 		super(new BorderLayout());
-		this.client = client;
+		this.helper = helper;
 		model = planModel;
 
 		MyTable list = new MyTable();
@@ -53,8 +57,13 @@ public class PlanPanel extends MyComponentPanel {
 		final JButton addJira = new JButton("Add");
 
 		addJira.addActionListener(new ActionListener() {
+			private Logger log = MyLogger.getLogger(this.getClass());
+
 			public void actionPerformed(ActionEvent e) {
-				client.addJiraToPlan(field.getText());
+				String text = field.getText();
+				JiraIssue jira = helper.getJiraClientForIssue(text);
+				log.debug("getting JIraClient " + jira + " ForIssue: " + text);
+				model.addRow(jira);
 			}
 		});
 

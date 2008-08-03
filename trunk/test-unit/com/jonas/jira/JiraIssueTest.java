@@ -29,7 +29,7 @@ public class JiraIssueTest extends TestCase {
 			}
 		});
 		EasyMock.replay(mockList);
-		List<JiraIssue> jiras = JiraIssue.buildJiras(mockList, JiraVersion.Version10);
+		List<JiraIssue> jiras = JiraIssue.buildJiras(mockList);
 		EasyMock.verify(mockList);
 
 		JiraIssue jiraIssue = jiras.get(0);

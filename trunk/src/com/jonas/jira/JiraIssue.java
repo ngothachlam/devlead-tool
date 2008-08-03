@@ -3,8 +3,12 @@ package com.jonas.jira;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.jdom.Element;
+
+import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
+import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.common.logging.MyLogger;
 
 public class JiraIssue {
@@ -28,6 +32,19 @@ public class JiraIssue {
 	public JiraIssue(Element e, List<JiraVersion> fixVersions) {
 		this(e);
 		this.fixVersions = fixVersions;
+	}
+
+	public JiraIssue(RemoteIssue jira, JiraProject project) {
+		this(jira.getKey(), jira.getStatus(), jira.getResolution());
+		RemoteVersion[] tempFixVersions = jira.getFixVersions();
+		for (int i = 0; i < tempFixVersions.length; i++) {
+			RemoteVersion remoteVersion = tempFixVersions[i];
+			JiraVersion fixVers = JiraVersion.getVersionById(remoteVersion.getId());
+			if(fixVers == null){
+				fixVers = new JiraVersion(remoteVersion, project);
+			}
+			addFixVersions(fixVers);
+		}
 	}
 
 	public String getName() {
@@ -54,7 +71,7 @@ public class JiraIssue {
 		return resolution;
 	}
 
-	public static List<JiraIssue> buildJiras(List<Element> list, JiraVersion fixVersion2) {
+	public static List<JiraIssue> buildJiras(List<Element> list) {
 		List<JiraIssue> jiras = new ArrayList<JiraIssue>();
 		for (Iterator<Element> iterator = list.iterator(); iterator.hasNext();) {
 			Element e = iterator.next();
@@ -63,7 +80,7 @@ public class JiraIssue {
 			for (Iterator<Element> iterator2 = fixVersionStrings.iterator(); iterator2.hasNext();) {
 				Element element = iterator2.next();
 				JiraVersion versionByName = JiraVersion.getVersionByName(element.getText());
-				log.debug("Getting version byName: \""+element.getText()+"\" is \""+versionByName+"\"");
+				log.debug("Getting version byName: \"" + element.getText() + "\" is \"" + versionByName + "\"");
 				versions.add(versionByName);
 			}
 			jiras.add(new JiraIssue(e, versions));

@@ -18,5 +18,4 @@ public class PlannerHelperTest extends TestCase {
       assertEquals("LLU", helper.getProjectKey("LLU-"));
       assertEquals("LLUDEVSUP", helper.getProjectKey("LLUDEVSUP-1234"));
    }
-   
 }
