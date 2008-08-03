@@ -22,7 +22,7 @@ public class JiraHttpClientTest extends TestCase {
 		asserFixVersionExistsAndHasJirasAgainstIt(client, JiraVersion.Version10);
 	}
 
-	private void asserFixVersionExistsAndHasJirasAgainstIt(JiraHttpClient client, JiraVersion version10) {
+	private void asserFixVersionExistsAndHasJirasAgainstIt(JiraHttpClient client, JiraVersion version10) throws HttpException, IOException, JDOMException {
 		List<JiraIssue> jiras = client.getJiras(version10);
 		assertTrue(jiras.size() > 1);
 		for (int i = 0; i < jiras.size(); i++) {

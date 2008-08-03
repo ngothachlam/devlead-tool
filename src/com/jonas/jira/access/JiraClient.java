@@ -3,10 +3,12 @@ package com.jonas.jira.access;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
+import org.jdom.JDOMException;
 
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
@@ -64,7 +66,7 @@ public class JiraClient {
 		this.soapClient = soapClient;
 	}
 
-	public JiraIssue[] getJirasFromFixVersion(JiraVersion version) {
+	public JiraIssue[] getJirasFromFixVersion(JiraVersion version) throws HttpException, IOException, JDOMException {
 		List<JiraIssue> jiras = httpClient.getJiras(version);
 		return (JiraIssue[]) jiras.toArray(new JiraIssue[jiras.size()]);
 	}
@@ -92,5 +94,6 @@ public class JiraClient {
 		return new JiraIssue(soapClient.getJira(jira.toUpperCase()), project);
 	}
 	// TODO when an error add it as an alert to the window!!
+
 
 }
