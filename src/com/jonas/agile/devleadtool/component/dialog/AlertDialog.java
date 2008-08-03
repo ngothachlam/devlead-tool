@@ -28,21 +28,23 @@ public class AlertDialog extends JDialog {
 		MyPanel panel = new MyPanel(new BorderLayout()).bordered(15, 15, 15, 15);
 		textArea = new JTextArea(alertMessage);
 		textArea.setEditable(false);
-		panel.addNorth(new JLabel("Message:"));
-		JScrollPane scrollPane = new JScrollPane(textArea);
-		// scrollPane.setMaximumSize(new Dimension(300,300));
-		panel.addCenter(scrollPane);
 		JButton button = new JButton("Close");
-		panel.addSouth(button);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		});
+		
+		panel.addNorth(new JLabel("Message:"));
+		panel.addCenter(new JScrollPane(textArea));
+		panel.addSouth(button);
+		
 		setContentPane(panel);
+		
 		pack();
 		setSize(new Dimension(700, 350));
 		SwingUtil.centreWindowWithinWindow(this, parent);
+		
 		setVisible(true);
 	}
 
@@ -50,7 +52,7 @@ public class AlertDialog extends JDialog {
 		StringWriter sw = new StringWriter();
 		e.printStackTrace(new PrintWriter(sw));
 		String stacktrace = sw.toString();
-		AlertDialog alertDialog = new AlertDialog(parentFrame, stacktrace);
+		new AlertDialog(parentFrame, stacktrace);
 	}
 
 	public static void main(String[] args) {

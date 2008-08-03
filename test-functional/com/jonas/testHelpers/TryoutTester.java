@@ -42,7 +42,13 @@ public class TryoutTester {
 	}
 
 	public static Exception getTestException() {
-		return new RuntimeException("testException");
+		return getTestExceptionThatHasAVeryLongNameAndThatMightNotFitWellInAWindow(25);
+	}
+
+	private static Exception getTestExceptionThatHasAVeryLongNameAndThatMightNotFitWellInAWindow(int i) {
+		if (i < 1)
+			return new RuntimeException("testException");
+		return getTestExceptionThatHasAVeryLongNameAndThatMightNotFitWellInAWindow(--i);
 	}
 
 }
