@@ -13,7 +13,7 @@ public class PlannerHelperTest extends TestCase {
    }
 
    public void testShouldExtractProjectnameFromJiraNameok(){
-      PlannerHelper helper = new PlannerHelper("test");
+      PlannerHelper helper = new PlannerHelper(null, "test");
       assertEquals("LLU", helper.getProjectKey("LLU"));
       assertEquals("LLU", helper.getProjectKey("LLU-"));
       assertEquals("LLUDEVSUP", helper.getProjectKey("LLUDEVSUP-1234"));

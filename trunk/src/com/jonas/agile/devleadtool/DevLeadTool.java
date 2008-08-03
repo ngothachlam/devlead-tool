@@ -49,7 +49,7 @@ public class DevLeadTool {
 	}
 
 	private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
-		final PlannerHelper plannerHelper = new PlannerHelper("Planner");
+		final PlannerHelper plannerHelper = new PlannerHelper(frame, "Planner");
 		final PlannerDAO plannerDAO = new PlannerDAOExcelImpl();
 
 		JMenuItem planner = createMenuItem("New Planner", new ActionListener() {

@@ -3,6 +3,8 @@ package com.jonas.agile.devleadtool;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JFrame;
+
 import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 
@@ -27,8 +29,10 @@ public class PlannerHelper {
 
 	private Logger log = MyLogger.getLogger(PlannerHelper.class);
 
-	public PlannerHelper(String title) {
-		super();
+	private JFrame frame;
+
+	public PlannerHelper(JFrame frame, String title) {
+		this.frame = frame;
 		this.title = title;
 	}
 
@@ -73,7 +77,7 @@ public class PlannerHelper {
 			return client.getJira(jira, project);
 		} catch (Exception e) {
 			//TODO get AlertDialog To work!!!
-			AlertDialog.alertException(e);
+			AlertDialog.alertException(frame, e);
 		}
 		return null;
 	}
@@ -83,6 +87,10 @@ public class PlannerHelper {
 			return jira.substring(0, jira.indexOf("-"));
 		}
 		return jira;
+	}
+
+	public JFrame getParentFrame() {
+		return frame;
 	}
 
 }

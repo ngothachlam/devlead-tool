@@ -145,7 +145,7 @@ public class PlanPanel extends MyComponentPanel {
 	}
 
 	public static void main(String[] args) {
-		JPanel panel = new PlanPanel(new PlannerHelper("test"));
+		JPanel panel = new PlanPanel(new PlannerHelper(null, "test"));
 		TryoutTester.viewPanel(panel);
 	}
 

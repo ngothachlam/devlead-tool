@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.commons.httpclient.HttpException;
+import org.jdom.JDOMException;
 
 import junit.framework.TestCase;
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
@@ -22,7 +23,7 @@ public class JiraClientTest extends TestCase {
 		jiraClient = JiraClient.JiraClientAolBB;
 	}
 
-	public void testShouldGetJirasForFixVersionOk() throws HttpException, IOException {
+	public void testShouldGetJirasForFixVersionOk() throws HttpException, IOException, JDOMException {
 		jiraClient.login();
 		JiraIssue[] jiras = jiraClient.getJirasFromFixVersion(JiraVersion.Version10);
 		assertTrue(jiras.length > 0);

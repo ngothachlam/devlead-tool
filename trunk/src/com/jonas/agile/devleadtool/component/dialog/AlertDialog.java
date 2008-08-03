@@ -1,12 +1,17 @@
 package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
@@ -15,38 +20,48 @@ import com.jonas.common.SwingUtil;
 import com.jonas.testHelpers.TryoutTester;
 
 public class AlertDialog extends JDialog {
-	private final PlannerHelper plannerHelper;
 	private JTextArea textArea;
 
-	public AlertDialog(JFrame parent, PlannerHelper plannerHelper, String alertMessage) {
+	private AlertDialog(JFrame parent, String alertMessage) {
 		super(parent, "Alert ...", true);
-		this.plannerHelper = plannerHelper;
 
 		MyPanel panel = new MyPanel(new BorderLayout()).bordered(15, 15, 15, 15);
 		textArea = new JTextArea(alertMessage);
+		textArea.setEditable(false);
 		panel.addNorth(new JLabel("Message:"));
-		panel.addCenter(textArea);
+		JScrollPane scrollPane = new JScrollPane(textArea);
+		// scrollPane.setMaximumSize(new Dimension(300,300));
+		panel.addCenter(scrollPane);
+		JButton button = new JButton("Close");
+		panel.addSouth(button);
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
 		setContentPane(panel);
 		pack();
+		setSize(new Dimension(700, 350));
 		SwingUtil.centreWindowWithinWindow(this, parent);
 		setVisible(true);
 	}
 
-	public static void alertException(Exception e){
+	public static void alertException(JFrame parentFrame, Exception e) {
 		StringWriter sw = new StringWriter();
 		e.printStackTrace(new PrintWriter(sw));
 		String stacktrace = sw.toString();
-		System.out.println(sw.toString());
-		e.printStackTrace();
-		AlertDialog alertDialog = new AlertDialog(TryoutTester.getFrame(), new PlannerHelper("test"), stacktrace);
+		AlertDialog alertDialog = new AlertDialog(parentFrame, stacktrace);
 	}
-	
-	// public static void AlertDialog(JFrame parent, PlannerHelper plannerHelper, Exception e) {
-	// this(parent, plannerHelper, stacktrace);
-	// }
 
 	public static void main(String[] args) {
-		AlertDialog.alertException(TryoutTester.getTestException());
+		JFrame frame = TryoutTester.getFrame();
+		frame.setLocation(100, 100);
+		frame.setVisible(true);
+		AlertDialog.alertException(frame, TryoutTester.getTestException());
+	}
+
+	public static void alertException(PlannerHelper helper, Exception e) {
+		alertException(helper.getParentFrame(), e);
 	}
 
 }
