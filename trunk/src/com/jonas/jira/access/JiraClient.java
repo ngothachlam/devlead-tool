@@ -11,6 +11,9 @@ import org.apache.log4j.Logger;
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
 
+import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
+import com.atlassian.jira.rpc.exception.RemoteException;
+import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -25,8 +28,8 @@ public class JiraClient {
 
 	public static final JiraClient JiraClientAolBB = new JiraClient(ClientConstants.JIRA_URL_AOLBB + ClientConstants.WS_LOCATION,
 			ClientConstants.JIRA_URL_AOLBB);
-	public static final JiraClient JiraClientAtlassin = new JiraClient(ClientConstants.jIRA_URL_ATLASSIN + ClientConstants.WS_LOCATION,
-			ClientConstants.jIRA_URL_ATLASSIN);
+	public static final JiraClient JiraClientAtlassin = new JiraClient(ClientConstants.jIRA_URL_ATLASSIN
+			+ ClientConstants.WS_LOCATION, ClientConstants.jIRA_URL_ATLASSIN);
 
 	private JiraClient(String address) {
 		JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = getLocator(address);
@@ -66,25 +69,15 @@ public class JiraClient {
 		return (JiraIssue[]) jiras.toArray(new JiraIssue[jiras.size()]);
 	}
 
-	public void login() {
-		try {
-			httpClient.loginToJira();
-		} catch (HttpException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void login() throws HttpException, IOException {
+		httpClient.loginToJira();
 	}
 
-	public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean isArchived) {
-		try {
-			RemoteVersion[] fixVersions = soapClient.getFixVersions(jiraProject);
-			buildJiraVersions(fixVersions, jiraProject);
-			return jiraProject.getFixVersions(isArchived);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+	public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean isArchived) throws RemotePermissionException,
+			RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
+		RemoteVersion[] fixVersions = soapClient.getFixVersions(jiraProject);
+		buildJiraVersions(fixVersions, jiraProject);
+		return jiraProject.getFixVersions(isArchived);
 	}
 
 	private void buildJiraVersions(RemoteVersion[] fixVersions, JiraProject jiraProject) {
@@ -94,8 +87,10 @@ public class JiraClient {
 		}
 	}
 
-   public JiraIssue getJira(String jira, JiraProject project) {
-      return new JiraIssue(soapClient.getJira(jira.toUpperCase()), project);
-   }
+	public JiraIssue getJira(String jira, JiraProject project) throws RemotePermissionException, RemoteAuthenticationException,
+			RemoteException, java.rmi.RemoteException {
+		return new JiraIssue(soapClient.getJira(jira.toUpperCase()), project);
+	}
+	// TODO when an error add it as an alert to the window!!
 
 }

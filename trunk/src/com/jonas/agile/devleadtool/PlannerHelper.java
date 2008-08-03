@@ -3,9 +3,11 @@ package com.jonas.agile.devleadtool;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 
 import com.jonas.agile.devleadtool.component.InternalFrame;
+import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.panel.SaveDialog;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -65,9 +67,15 @@ public class PlannerHelper {
 		JiraProject project = JiraProject.getProjectByKey(getProjectKey(jira));
 		log.debug("Project: " + project);
 		JiraClient client = project.getJiraClient();
-		client.login();
-		log.debug("Client: " + client);
-		return client.getJira(jira, project);
+		try {
+			client.login();
+			log.debug("Client: " + client);
+			return client.getJira(jira, project);
+		} catch (Exception e) {
+			//TODO get AlertDialog To work!!!
+			new AlertDialog(null, this, e);
+		}
+		return null;
 	}
 
 	protected String getProjectKey(String jira) {

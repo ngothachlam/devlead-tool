@@ -5,6 +5,9 @@ import org.apache.axis.client.Stub;
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
 
+import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
+import com.atlassian.jira.rpc.exception.RemoteException;
+import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.jira.JiraProject;
@@ -35,7 +38,7 @@ public class JiraSoapClientTest extends TestCase {
 		assertTrue(fixVersion != null);
 	}
 	
-	public void testGetJira() throws InterruptedException {
+	public void testGetJira() throws InterruptedException, RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
 		assertEquals("LLU-1", client.getJira("LLU-1").getKey());
 		System.out.println("####");
 		((Stub)jiraSoapService).setTimeout(500);

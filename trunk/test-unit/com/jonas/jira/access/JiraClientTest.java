@@ -1,6 +1,10 @@
 package com.jonas.jira.access;
 
+import java.io.IOException;
+
 import javax.xml.rpc.ServiceException;
+
+import org.apache.commons.httpclient.HttpException;
 
 import junit.framework.TestCase;
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
@@ -18,13 +22,13 @@ public class JiraClientTest extends TestCase {
 		jiraClient = JiraClient.JiraClientAolBB;
 	}
 
-	public void testShouldGetJirasForFixVersionOk() {
+	public void testShouldGetJirasForFixVersionOk() throws HttpException, IOException {
 		jiraClient.login();
 		JiraIssue[] jiras = jiraClient.getJirasFromFixVersion(JiraVersion.Version10);
 		assertTrue(jiras.length > 0);
 	}
 
-	public void testShouldGetFixVersionsOk() {
+	public void testShouldGetFixVersionsOk() throws HttpException, IOException {
 		jiraClient.login();
 		JiraVersion[] fixVersions = jiraClient.getFixVersionsFromProject(JiraProject.LLU_SYSTEMS_PROVISIONING, false);
 		assertEquals(5, fixVersions.length);
