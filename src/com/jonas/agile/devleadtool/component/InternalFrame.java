@@ -43,17 +43,17 @@ public class InternalFrame extends JInternalFrame {
 	private final PlannerHelper client;
 
 	public InternalFrame(final PlannerHelper client) {
-		this(client, null);
+		this(client, null, null, null);
 	}
 
-	public InternalFrame(PlannerHelper client, BoardTableModel model) {
+	public InternalFrame(PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel, JiraTableModel jiraModel) {
 		super("", true, true, true, true);
 		this.client = client;
 		this.setTitle(createTitle(client));
 
 		internalFrames.add(this);
 
-		content = new InternalFrameTabPanel(this, client, model);
+		content = new InternalFrameTabPanel(this, client, boardModel, planModel, jiraModel);
 
 		this.addInternalFrameListener(new MyInternalFrameListener(client, this));
 		setContentPane(content);
