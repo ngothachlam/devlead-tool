@@ -86,13 +86,6 @@ public class JiraVersion {
 		return name;
 	}
 
-	class VersionAlreadysExistsException extends Exception {
-
-		public VersionAlreadysExistsException(String string) {
-			super(string);
-		}
-	}
-
 	public boolean isArchived() {
 		return archived;
 	}

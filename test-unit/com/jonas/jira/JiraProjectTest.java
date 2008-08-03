@@ -9,15 +9,17 @@ public class JiraProjectTest extends TestCase {
 	public void testJiraProject(){
 		assertJiraProject("LLU Systems Provisioning", "LLU", "10070");
 		assertJiraProject("LLU Dev Support", "LLUDEVSUP", "10192");
+		assertJiraProject("Atlassin - TST", "TST", "10420");
+		assertJiraProject("Atlassin - TST", "tst", "10420");
 	}
 
 	private void assertJiraProject(String name, String key, String id) {
-		assertEquals( name, JiraProject.getProjectByName(name).getName() );
-		assertEquals( key, JiraProject.getProjectByName(name).getJiraKey() );
-		assertEquals( id, JiraProject.getProjectByName(name).getId() );
+		assertEquals( key.toUpperCase(), JiraProject.getProjectByKey(key).getJiraKey() );
 		assertEquals( name, JiraProject.getProjectByKey(key).getName() );
-		assertEquals( key, JiraProject.getProjectByKey(key).getJiraKey() );
 		assertEquals( id, JiraProject.getProjectByKey(key).getId() );
+		assertEquals( key.toUpperCase(), JiraProject.getProjectByName(name).getJiraKey() );
+		assertEquals( name, JiraProject.getProjectByName(name).getName() );
+		assertEquals( id, JiraProject.getProjectByName(name).getId() );
 	}
 
 	public void testJiraProjectAndFixVersion(){

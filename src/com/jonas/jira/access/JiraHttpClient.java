@@ -103,7 +103,7 @@ public class JiraHttpClient extends HttpClient {
    private List<JiraIssue> getXPath(Document doc, String xPath, JiraVersion fixVersion) throws JDOMException {
       XPath xpath = XPath.newInstance(xPath);
       List<Element> list = xpath.selectNodes(doc);
-      return JiraIssue.buildJiras(list, fixVersion);
+      return JiraIssue.buildJiras(list);
    }
 
    public void setJiraUrl(String jiraUrl) {

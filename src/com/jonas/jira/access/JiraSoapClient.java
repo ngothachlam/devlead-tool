@@ -116,7 +116,6 @@ public class JiraSoapClient {
 
 	public RemoteIssue getJira(final String jiraName) {
 		log.debug("Getting Jira " + jiraName);
-
 		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
 
 			public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
