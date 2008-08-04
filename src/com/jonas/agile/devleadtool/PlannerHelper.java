@@ -67,7 +67,7 @@ public class PlannerHelper {
 		this.getActiveInternalFrame().setExcelFile(file.getAbsolutePath());
 	}
 
-	public JiraIssue getJiraClientForIssue(String jira) {
+	public JiraIssue getJiraIssueFromName(String jira) {
 		JiraProject project = JiraProject.getProjectByKey(getProjectKey(jira));
 		log.debug("Project: " + project);
 		JiraClient client = project.getJiraClient();
@@ -76,7 +76,6 @@ public class PlannerHelper {
 			log.debug("Client: " + client);
 			return client.getJira(jira, project);
 		} catch (Exception e) {
-			//TODO get AlertDialog To work!!!
 			AlertDialog.alertException(frame, e);
 		}
 		return null;
@@ -91,6 +90,11 @@ public class PlannerHelper {
 
 	public JFrame getParentFrame() {
 		return frame;
+	}
+
+	public void addToPlan(String jira) {
+		JiraIssue jiraIssue = getJiraIssueFromName(jira);
+		getActiveInternalFrame().addToPlan(jiraIssue);
 	}
 
 }

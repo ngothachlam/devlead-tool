@@ -14,7 +14,10 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.apache.log4j.Logger;
+
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.BoardTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -26,6 +29,7 @@ import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
+import com.jonas.common.logging.MyLogger;
 
 public class BoardPanel extends MyComponentPanel {
 
@@ -58,15 +62,15 @@ public class BoardPanel extends MyComponentPanel {
 
 	private MyTable table;
 
-	private final PlannerHelper client;
+	private final PlannerHelper helper;
 
 	public BoardPanel(PlannerHelper client) {
 		this(client, new BoardTableModel());
 	}
 
-	public BoardPanel(PlannerHelper client, BoardTableModel boardModel) {
+	public BoardPanel(PlannerHelper helper, BoardTableModel boardModel) {
 		super(new BorderLayout());
-		this.client = client;
+		this.helper = helper;
 		makeContent(boardModel);
 		setButtons();
 		initialiseTableHeader();
@@ -114,12 +118,31 @@ public class BoardPanel extends MyComponentPanel {
 			}
 		});
 
+		addButton(buttonPanel, "Copy to Plan", new ActionListener() {
+			private Logger log = MyLogger.getLogger(this.getClass());
+
+			public void actionPerformed(ActionEvent e) {
+				Thread thread = new Thread(new Runnable() {
+					public void run() {
+						AlertDialog messageDialog = AlertDialog.message(helper, "Copying... ");
+						final int[] selectedRows = table.getSelectedRows();
+						for (int i = 0; i < selectedRows.length; i++) {
+							log.debug(table.getValueAt(selectedRows[i], 0) + " and " + table.getValueAt(selectedRows[i], 6));
+							helper.addToPlan((String) table.getValueAt(selectedRows[i], 6));
+						}
+						messageDialog.addText("Done!");
+					}
+				});
+				thread.start();
+			}
+		});
+
 		addSouth(buttonPanel);
 	}
 
-//	public void setModel(BoardTableModel model) {
-//		table.setModel(model);
-//	}
+	// public void setModel(BoardTableModel model) {
+	// table.setModel(model);
+	// }
 
 	public BoardTableModel getBoardModel() {
 		return model;

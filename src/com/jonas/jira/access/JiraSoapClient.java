@@ -57,13 +57,12 @@ public class JiraSoapClient {
 				log.debug("ConductingAction : " + action);
 				return action.accessJiraAndReturn();
 			} catch (RemoteAuthenticationException e) {
-				log.error(e);
+				log.info(e);
+				log.info("Session timed out. Renewing token again!");
+				renewToken();
 			}
-			log.info("2nd renew within Action!!");
-			renewToken();
 			return action.accessJiraAndReturn();
 		}
-
 	}
 
 	public JiraSoapClient(JiraSoapService jiraSoapService) {
@@ -87,13 +86,11 @@ public class JiraSoapClient {
 		return token;
 	}
 
-	private void renewToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
-			RemoteException {
-		synchronized (this) {
-			log.debug("Renewing Token");
-			token = jiraSoapService.login(LOGIN_NAME, LOGIN_PASSWORD);
-			log.debug("Renewing Token Done!");
-		}
+	private synchronized void renewToken() throws RemoteAuthenticationException,
+			com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+		log.debug("Renewing Token");
+		token = jiraSoapService.login(LOGIN_NAME, LOGIN_PASSWORD);
+		log.debug("Renewing Token Done!");
 	}
 
 	public RemoteIssue getJira(final String jiraName) throws RemotePermissionException, RemoteAuthenticationException,

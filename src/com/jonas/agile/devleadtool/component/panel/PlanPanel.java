@@ -61,7 +61,7 @@ public class PlanPanel extends MyComponentPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				String text = field.getText();
-				JiraIssue jira = helper.getJiraClientForIssue(text);
+				JiraIssue jira = helper.getJiraIssueFromName(text);
 				log.debug("getting JIraClient " + jira + " ForIssue: " + text);
 				model.addRow(jira);
 			}
