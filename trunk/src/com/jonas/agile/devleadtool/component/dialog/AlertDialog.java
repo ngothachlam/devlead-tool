@@ -65,5 +65,12 @@ public class AlertDialog extends JDialog {
 	public static void alertException(PlannerHelper helper, Exception e) {
 		alertException(helper.getParentFrame(), e);
 	}
+	public static AlertDialog message(PlannerHelper helper, String e) {
+		return new AlertDialog(helper.getParentFrame(), e);
+	}
+
+	public void addText(String string) {
+		textArea.setText(textArea.getText() + string);
+	}
 
 }

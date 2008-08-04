@@ -13,6 +13,7 @@ import com.jonas.agile.devleadtool.component.panel.InternalFrameTabPanel;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
+import com.jonas.jira.JiraIssue;
 
 public class InternalFrame extends JInternalFrame {
 	private final class MyInternalFrameListener extends InternalFrameAdapter {
@@ -109,6 +110,10 @@ public class InternalFrame extends JInternalFrame {
 	}
 	public PlanTableModel getPlanModel() {
 	   return content.getPlanPanel().getPlanModel();
+	}
+
+	public void addToPlan(JiraIssue jiraIssue) {
+		getPlanModel().addRow(jiraIssue);
 	}
 
 }

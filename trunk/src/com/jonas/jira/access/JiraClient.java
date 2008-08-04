@@ -16,6 +16,7 @@ import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceService
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
+import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -90,10 +91,14 @@ public class JiraClient {
 	}
 
 	public JiraIssue getJira(String jira, JiraProject project) throws RemotePermissionException, RemoteAuthenticationException,
-			RemoteException, java.rmi.RemoteException {
-		return new JiraIssue(soapClient.getJira(jira.toUpperCase()), project);
+			RemoteException, java.rmi.RemoteException, JiraIssueNotFoundException {
+		//TODO thread this!!
+		RemoteIssue remoteJira = soapClient.getJira(jira.toUpperCase());
+		JiraIssue jiraIssue = new JiraIssue(remoteJira, project);
+		if(jiraIssue == null){
+			throw new JiraIssueNotFoundException("Jira ["+jira+"] doesn't exist in " + project.getJiraKey());
+		}
+		return jiraIssue;
 	}
-	// TODO when an error add it as an alert to the window!!
-
 
 }

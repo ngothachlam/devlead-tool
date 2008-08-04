@@ -22,6 +22,8 @@ import com.jonas.common.MyPanel;
 
 public class DevLeadTool {
 
+	private PlannerHelper plannerHelper;
+
 	DevLeadTool() {
 	}
 
@@ -42,14 +44,14 @@ public class DevLeadTool {
 		frame.setJMenuBar(createMenuBar(frame, desktop));
 		frame.setContentPane(contentPanel);
 
-		frame.setSize(new Dimension(1200, 360));
+		frame.setSize(new Dimension(1000, 500));
 		frame.setVisible(true);
 		frame.addWindowListener(new MainFrameListener(frame));
 
 	}
 
 	private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
-		final PlannerHelper plannerHelper = new PlannerHelper(frame, "Planner");
+		plannerHelper = new PlannerHelper(frame, "Planner");
 		final PlannerDAO plannerDAO = new PlannerDAOExcelImpl();
 
 		JMenuItem planner = createMenuItem("New Planner", new ActionListener() {
@@ -94,6 +96,10 @@ public class DevLeadTool {
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(fileMenuFile);
 		return menuBar;
+	}
+
+	public PlannerHelper getHelper() {
+		return plannerHelper;
 	}
 
 }
