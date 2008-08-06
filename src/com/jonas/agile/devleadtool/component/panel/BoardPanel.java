@@ -16,6 +16,7 @@ import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
 
+import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -29,7 +30,9 @@ import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
+import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.JiraIssue;
 
 public class BoardPanel extends MyComponentPanel {
 
@@ -124,13 +127,28 @@ public class BoardPanel extends MyComponentPanel {
 			public void actionPerformed(ActionEvent e) {
 				Thread thread = new Thread(new Runnable() {
 					public void run() {
-						AlertDialog messageDialog = AlertDialog.message(helper, "Copying... ");
+						// AlertDialog messageDialog = AlertDialog.message(helper, "Copying... ");
+
 						final int[] selectedRows = table.getSelectedRows();
-						for (int i = 0; i < selectedRows.length; i++) {
-							log.debug(table.getValueAt(selectedRows[i], 0) + " and " + table.getValueAt(selectedRows[i], 6));
-							helper.addToPlan((String) table.getValueAt(selectedRows[i], 6));
-						}
-						messageDialog.addText("Done!");
+						final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Copying...",
+								"Copying selected messages from Board to Plan...", selectedRows.length);
+						SwingWorker worker = new SwingWorker() {
+							public Object construct() {
+								for (int i = 0; i < selectedRows.length; i++) {
+									Object valueAt = table.getValueAt(selectedRows[i], 6);
+									helper.addToPlan((String) valueAt);
+									dialog.increseProgress();
+								}
+								return null;
+							}
+							@Override
+							public void finished() {
+								dialog.setComplete();
+							}
+							
+						};
+						worker.start();
+						// messageDialog.addText("Done!");
 					}
 				});
 				thread.start();

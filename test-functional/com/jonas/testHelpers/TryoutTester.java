@@ -27,7 +27,7 @@ public class TryoutTester {
 	}
 
 	public static JFrame getFrame() {
-		JFrame frame = new JFrame();
+		frame = new JFrame();
 		JPanel contentPanel = new JPanel();
 		frame.setContentPane(contentPanel);
 		frame.setSize(800, 400);

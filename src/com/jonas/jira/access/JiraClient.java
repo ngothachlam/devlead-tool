@@ -1,6 +1,9 @@
 package com.jonas.jira.access;
 
+import java.awt.Container;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -73,11 +76,13 @@ public class JiraClient {
 	}
 
 	public void login() throws HttpException, IOException {
+		JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.LOGGING_IN);
 		httpClient.loginToJira();
 	}
 
 	public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean isArchived) throws RemotePermissionException,
 			RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
+		JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_FIXVERSION);
 		RemoteVersion[] fixVersions = soapClient.getFixVersions(jiraProject);
 		buildJiraVersions(fixVersions, jiraProject);
 		return jiraProject.getFixVersions(isArchived);
@@ -93,6 +98,7 @@ public class JiraClient {
 	public JiraIssue getJira(String jira, JiraProject project) throws RemotePermissionException, RemoteAuthenticationException,
 			RemoteException, java.rmi.RemoteException, JiraIssueNotFoundException {
 		//TODO thread this!!
+		JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_JIRA);
 		RemoteIssue remoteJira = soapClient.getJira(jira.toUpperCase());
 		JiraIssue jiraIssue = new JiraIssue(remoteJira, project);
 		if(jiraIssue == null){
@@ -100,5 +106,4 @@ public class JiraClient {
 		}
 		return jiraIssue;
 	}
-
 }

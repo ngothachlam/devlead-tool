@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -15,16 +16,19 @@ import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
 
+import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyComponentPanel;
+import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraClient;
+import com.jonas.jira.access.JiraListener;
 import com.jonas.testHelpers.TryoutTester;
 
 public class PlanPanel extends MyComponentPanel {
@@ -60,10 +64,41 @@ public class PlanPanel extends MyComponentPanel {
 			private Logger log = MyLogger.getLogger(this.getClass());
 
 			public void actionPerformed(ActionEvent e) {
-				String text = field.getText();
-				JiraIssue jira = helper.getJiraIssueFromName(text);
-				log.debug("getting JIraClient " + jira + " ForIssue: " + text);
-				model.addRow(jira);
+				final String text = field.getText();
+				final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Copying Jira to Plan...",
+						"Getting information from Jira", 0);
+				dialog.setIndeterminate(false);
+				SwingWorker worker = new SwingWorker() {
+					public Object construct() {
+						log.debug("getting Jira" + text);
+						// TODO make jiraListener for login, etc work.
+						return helper.getJiraIssueFromName(text, new JiraListener() {
+							public void notifyOfAccess(JiraAccessUpdate accessUpdate) {
+								switch (accessUpdate) {
+								case LOGGING_IN:
+									dialog.setNote("Logging in!");
+									break;
+								case GETTING_FIXVERSION:
+									dialog.setNote("Getting FixVersion!");
+									break;
+								case GETTING_JIRA:
+									dialog.setNote("Getting Jira!");
+									break;
+								default:
+									break;
+								}
+							}
+						});
+					}
+
+					@Override
+					public void finished() {
+						log.debug("got jira response!");
+						model.addRow((JiraIssue) get());
+						dialog.setComplete();
+					}
+				};
+				worker.start();
 			}
 		});
 
@@ -145,8 +180,10 @@ public class PlanPanel extends MyComponentPanel {
 	}
 
 	public static void main(String[] args) {
-		JPanel panel = new PlanPanel(new PlannerHelper(null, "test"));
-		TryoutTester.viewPanel(panel);
+		JFrame frame = TryoutTester.getFrame();
+		JPanel panel = new PlanPanel(new PlannerHelper(frame, "test"));
+		frame.setContentPane(panel);
+		frame.setVisible(true);
 	}
 
 }
