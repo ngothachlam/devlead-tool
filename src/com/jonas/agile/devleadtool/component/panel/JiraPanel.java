@@ -34,7 +34,7 @@ import com.jonas.testHelpers.TryoutTester;
 public class JiraPanel extends MyComponentPanel {
 
 	private Logger log = MyLogger.getLogger(JiraPanel.class);
-	private JiraTableModel jiraTableModel;
+	private JiraTableModel model;
 	private final PlannerHelper helper;
 
 	public JiraPanel(PlannerHelper helper) {
@@ -46,8 +46,8 @@ public class JiraPanel extends MyComponentPanel {
 		this.helper = helper;
 
 		MyTable list = new MyTable();
-		jiraTableModel = jiraModel;
-		list.setModel(jiraTableModel);
+		model = jiraModel;
+		list.setModel(model);
 		JScrollPane scrollpane = new JScrollPane(list);
 
 		this.addCenter(scrollpane);
@@ -125,7 +125,7 @@ public class JiraPanel extends MyComponentPanel {
 								for (int j = 0; j < jiras.length; j++) {
 									log.debug(jiras[j]);
 									dialog.increseProgress();
-									jiraTableModel.addRow(jiras[j]);
+									model.addRow(jiras[j]);
 								}
 							} catch (IOException e1) {
 								AlertDialog.alertException(helper, e1);
@@ -146,8 +146,8 @@ public class JiraPanel extends MyComponentPanel {
 		});
 		clearJirasButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				while (jiraTableModel.getRowCount() > 0) {
-					jiraTableModel.removeRow(0);
+				while (model.getRowCount() > 0) {
+					model.removeRow(0);
 				}
 			}
 		});
@@ -170,7 +170,11 @@ public class JiraPanel extends MyComponentPanel {
 	}
 
 	public JiraTableModel getJiraModel() {
-		return jiraTableModel;
+		return model;
+	}
+
+	public void setEditable(boolean selected) {
+		model.setEditable(selected);
 	}
 
 }

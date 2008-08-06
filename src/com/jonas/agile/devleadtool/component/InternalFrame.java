@@ -12,6 +12,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.panel.InternalFrameTabPanel;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.jira.JiraIssue;
 
@@ -95,7 +96,7 @@ public class InternalFrame extends JInternalFrame {
 		return title + (countOfSameTitles > 0 ? " (" + countOfSameTitles + ")" : "");
 	}
 
-	public BoardTableModel getBoardModel() {
+	public MyTableModel getBoardModel() {
 		return content.getBoardPanel().getBoardModel();
 	}
 

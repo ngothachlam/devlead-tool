@@ -57,7 +57,7 @@ public class JiraTableModel extends MyTableModel {
 
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		return false;
+		return isEditable() ? false : false;
 	}
 
 	public void removeSelectedRows(JTable table) {

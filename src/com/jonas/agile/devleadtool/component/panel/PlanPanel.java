@@ -189,4 +189,8 @@ public class PlanPanel extends MyComponentPanel {
 		frame.setVisible(true);
 	}
 
+	public void setEditable(boolean selected) {
+		model.setEditable(selected);
+	}
+
 }
