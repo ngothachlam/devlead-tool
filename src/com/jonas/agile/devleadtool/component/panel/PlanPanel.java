@@ -45,9 +45,12 @@ public class PlanPanel extends MyComponentPanel {
 		this.helper = helper;
 		model = planModel;
 
-		MyTable list = new MyTable();
-		list.setModel(model);
-		JScrollPane scrollpane = new JScrollPane(list);
+		MyTable table = new MyTable();
+		table.setModel(model);
+		JScrollPane scrollpane = new JScrollPane(table);
+		
+		table.setAutoCreateRowSorter(true);
+
 
 		this.addNorth(getTopButtonPanel());
 		this.addCenter(scrollpane);
