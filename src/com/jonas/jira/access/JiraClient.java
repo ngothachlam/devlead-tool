@@ -34,8 +34,8 @@ public class JiraClient {
 
 	public static final JiraClient JiraClientAolBB = new JiraClient(ClientConstants.JIRA_URL_AOLBB + ClientConstants.WS_LOCATION,
 			ClientConstants.JIRA_URL_AOLBB);
-	public static final JiraClient JiraClientAtlassin = new JiraClient(ClientConstants.jIRA_URL_ATLASSIN
-			+ ClientConstants.WS_LOCATION, ClientConstants.jIRA_URL_ATLASSIN);
+	public static final JiraClient JiraClientAtlassin = new JiraClient(ClientConstants.JIRA_URL_ATLASSIN
+			+ ClientConstants.WS_LOCATION, ClientConstants.JIRA_URL_ATLASSIN);
 
 	private JiraClient(String address) {
 		JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = getLocator(address);

@@ -20,6 +20,7 @@ public class JiraVersion {
 	public static JiraVersion Backlog = new JiraVersion("11388", JiraProject.LLU_SYSTEMS_PROVISIONING, "Backlog", false);
 	public static JiraVersion PamsBacklog = new JiraVersion("11458", JiraProject.LLU_SYSTEMS_PROVISIONING, "Pam's Backlog", false);
 	public static JiraVersion Version9 = new JiraVersion("11264", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 9", false);
+	public static JiraVersion Atlassain_TST = new JiraVersion("13187", JiraProject.ATLASSIN_TST, "Dev Version", false);
 
 	private static String SELECT_NAME = "fixfor";
 	private boolean archived;

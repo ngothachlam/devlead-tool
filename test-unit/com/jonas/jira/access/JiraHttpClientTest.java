@@ -17,18 +17,18 @@ public class JiraHttpClientTest extends TestCase {
 	}
 
 	public void testApacheCommonsAttempt() throws IOException, HttpException, JDOMException {
-		JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB);
+		JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
 		client.loginToJira();
-		asserFixVersionExistsAndHasJirasAgainstIt(client, JiraVersion.Version10);
+		asserFixVersionExistsAndHasJirasAgainstIt(client, JiraVersion.Atlassain_TST);
 	}
 
-	private void asserFixVersionExistsAndHasJirasAgainstIt(JiraHttpClient client, JiraVersion version10) throws HttpException, IOException, JDOMException {
-		List<JiraIssue> jiras = client.getJiras(version10);
+	private void asserFixVersionExistsAndHasJirasAgainstIt(JiraHttpClient client, JiraVersion version) throws HttpException, IOException, JDOMException {
+		List<JiraIssue> jiras = client.getJiras(version);
 		assertTrue(jiras.size() > 1);
 		for (int i = 0; i < jiras.size(); i++) {
 			System.out.println(jiras.get(i));
 		}
 		JiraVersion fixVersion = jiras.get(0).getFixVersions().get(0);
-		assertEquals(version10, JiraVersion.getVersionById(fixVersion.getId()));
+		assertEquals(version, JiraVersion.getVersionById(fixVersion.getId()));
 	}
 }

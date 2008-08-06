@@ -39,18 +39,21 @@ public class InternalFrame extends JInternalFrame {
 
 	private InternalFrameTabPanel content;
 
-	private String realTitle;
+	private String title;
 
 	private final PlannerHelper client;
 
-	public InternalFrame(final PlannerHelper client) {
-		this(client, null, null, null);
+	public InternalFrame(final PlannerHelper client, String title) {
+		this(client, title, null, null, null);
 	}
 
-	public InternalFrame(PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel, JiraTableModel jiraModel) {
+	public InternalFrame(PlannerHelper client, String title, BoardTableModel boardModel, PlanTableModel planModel,
+			JiraTableModel jiraModel) {
 		super("", true, true, true, true);
 		this.client = client;
-		this.setTitle(createTitle(client));
+		this.title = title;
+
+		this.setTitle(createTitle());
 
 		internalFrames.add(this);
 
@@ -80,40 +83,47 @@ public class InternalFrame extends JInternalFrame {
 	private int getCountWithSameTitle(String title) {
 		int count = 0;
 		for (Iterator<InternalFrame> iterator = internalFrames.iterator(); iterator.hasNext();) {
-			if (title.equalsIgnoreCase(iterator.next().realTitle)) {
+			if (title.equalsIgnoreCase(iterator.next().title)) {
 				count++;
 			}
 		}
 		return count;
 	}
 
-	private String createTitle(final PlannerHelper panel) {
-		realTitle = panel.getTitle();
-		int countOfSameTitles = getCountWithSameTitle(realTitle);
-		return realTitle + (countOfSameTitles > 0 ? " (" + countOfSameTitles + ")" : "");
+	protected String createTitle() {
+		int countOfSameTitles = getCountWithSameTitle(title);
+		return title + (countOfSameTitles > 0 ? " (" + countOfSameTitles + ")" : "");
 	}
 
 	public BoardTableModel getBoardModel() {
 		return content.getBoardPanel().getBoardModel();
 	}
-	
+
 	public void setExcelFile(String name) {
-	   content.setExcelFile(name);
+		content.setExcelFile(name);
 	}
-	
+
 	public String getExcelFile() {
-	   return content.getExcelFile();
+		return content.getExcelFile();
 	}
 
 	public JiraTableModel getJiraModel() {
 		return content.getJiraPanel().getJiraModel();
 	}
+
 	public PlanTableModel getPlanModel() {
-	   return content.getPlanPanel().getPlanModel();
+		return content.getPlanPanel().getPlanModel();
 	}
 
 	public void addToPlan(JiraIssue jiraIssue) {
 		getPlanModel().addRow(jiraIssue);
 	}
 
+	public void setFileName(String fileName) {
+		this.setTitle(this.getTitle() + " - ..." + getRightMostFromString(fileName, 35));
+	}
+
+	public String getRightMostFromString(String string, int i) {
+		return string.length() > i ? string.substring(string.length() - i, string.length()) : string;
+	}
 }
