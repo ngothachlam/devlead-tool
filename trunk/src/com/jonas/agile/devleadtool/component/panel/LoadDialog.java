@@ -38,7 +38,8 @@ public class LoadDialog extends JFileChooser {
 				BoardTableModel boardModel = dao.loadBoardModel(xlsFile);
 				PlanTableModel planModel = dao.loadPlanModel(xlsFile);
 				JiraTableModel jiraModel = dao.loadJiraModel(xlsFile);
-				InternalFrame internalFrame = new InternalFrame(plannerHelper, boardModel, planModel, jiraModel);
+				//TODO remove plannerHelper.getTitle?
+				InternalFrame internalFrame = new InternalFrame(plannerHelper, plannerHelper.getTitle(), boardModel, planModel, jiraModel);
 				desktopPane.addInternalFrame(internalFrame);
 				internalFrame.setExcelFile(xlsFile.getAbsolutePath());
 

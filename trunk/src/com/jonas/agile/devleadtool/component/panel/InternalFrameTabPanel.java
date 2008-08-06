@@ -22,27 +22,31 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 
 	private JTabbedPane tabbedPane;
 
-   private JTextField excelFile = new JTextField(35);
+	private String excelFile = new String();
+
+	private final InternalFrame frame;
 
 	public InternalFrameTabPanel(InternalFrame parent, PlannerHelper client) {
 		this(parent, client, null, null, null);
 	}
 
-	public InternalFrameTabPanel(InternalFrame frame, PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel, JiraTableModel jiraModel) {
+	public InternalFrameTabPanel(InternalFrame frame, PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel,
+			JiraTableModel jiraModel) {
 		super(new BorderLayout());
-		boardModel = (boardModel == null) ?  new BoardTableModel() : boardModel;
-		planModel = (planModel == null) ?  new PlanTableModel() : planModel;
-		jiraModel = (jiraModel == null) ?  new JiraTableModel() : jiraModel;
+		this.frame = frame;
+		boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
+		planModel = (planModel == null) ? new PlanTableModel() : planModel;
+		jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 		boardPanel = new BoardPanel(client, boardModel);
 		planPanel = new PlanPanel(client, planModel);
 		jiraPanel = new JiraPanel(client, jiraModel);
 
 		JPanel panel = new JPanel();
 		panel.add(new JLabel("File:"));
-		excelFile.setEditable(false);
-      panel.add(excelFile);
-      addNorth(panel);
-      
+//		excelFile.setEditable(false);
+//		panel.add(excelFile);
+		addNorth(panel);
+
 		makeContent(boardModel);
 		wireUpListeners();
 	}
@@ -68,19 +72,20 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 		return boardPanel;
 	}
 
-   public void setExcelFile(String fileName) {
-      excelFile.setText(fileName);
-   }
+	public void setExcelFile(String fileName) {
+		excelFile=fileName;
+		frame.setFileName(fileName);
+	}
 
-   public String getExcelFile() {
-      return excelFile.getText();
-   }
+	public String getExcelFile() {
+		return excelFile;
+	}
 
-   public JiraPanel getJiraPanel() {
-      return jiraPanel;
-   }
-   
-   public PlanPanel getPlanPanel() {
-      return planPanel;
-   }
+	public JiraPanel getJiraPanel() {
+		return jiraPanel;
+	}
+
+	public PlanPanel getPlanPanel() {
+		return planPanel;
+	}
 }

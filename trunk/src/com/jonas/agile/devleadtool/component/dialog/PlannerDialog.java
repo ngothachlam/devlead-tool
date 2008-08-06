@@ -12,7 +12,7 @@ import com.jonas.agile.devleadtool.component.InternalFrame;
 
 public class PlannerDialog {
 	public PlannerDialog(JFrame parent, DesktopPane desktopPane, final PlannerHelper plannerHelper) {
-		final InternalFrame internalFrame = new InternalFrame(plannerHelper);
+		final InternalFrame internalFrame = new InternalFrame(plannerHelper, plannerHelper.getTitle());
 		desktopPane.addInternalFrame(internalFrame);
 	}
 
