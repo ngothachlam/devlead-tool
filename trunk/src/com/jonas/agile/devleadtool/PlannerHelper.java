@@ -18,6 +18,7 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraClient;
+import com.jonas.jira.access.JiraListener;
 
 public class PlannerHelper {
 
@@ -67,10 +68,12 @@ public class PlannerHelper {
 		this.getActiveInternalFrame().setExcelFile(file.getAbsolutePath());
 	}
 
-	public JiraIssue getJiraIssueFromName(String jira) {
+	public JiraIssue getJiraIssueFromName(String jira, JiraListener jiraListener) {
 		JiraProject project = JiraProject.getProjectByKey(getProjectKey(jira));
 		log.debug("Project: " + project);
 		JiraClient client = project.getJiraClient();
+		if (jiraListener != null)
+			JiraListener.addJiraListener(jiraListener);
 		try {
 			client.login();
 			log.debug("Client: " + client);
@@ -93,7 +96,7 @@ public class PlannerHelper {
 	}
 
 	public void addToPlan(String jira) {
-		JiraIssue jiraIssue = getJiraIssueFromName(jira);
+		JiraIssue jiraIssue = getJiraIssueFromName(jira, null);
 		getActiveInternalFrame().addToPlan(jiraIssue);
 	}
 

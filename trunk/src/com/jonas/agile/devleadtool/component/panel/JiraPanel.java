@@ -17,11 +17,13 @@ import javax.swing.JScrollPane;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
 
+import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.common.MyComponentPanel;
+import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
@@ -73,40 +75,73 @@ public class JiraPanel extends MyComponentPanel {
 			public void actionPerformed(ActionEvent e) {
 				log.debug("getting fixVersion : " + jiraProjectsCombo.getSelectedItem());
 				jiraProjectFixVersionCombo.removeAllItems();
-				Object[] selectedObjects = jiraProjectsCombo.getSelectedObjects();
-				for (int i = 0; i < selectedObjects.length; i++) {
-					JiraProject selectedProject = (JiraProject) selectedObjects[i];
-					JiraVersion[] fixVersions;
-					try {
-						fixVersions = selectedProject.getJiraClient().getFixVersionsFromProject(selectedProject, false);
-						for (int j = 0; j < fixVersions.length; j++) {
-							jiraProjectFixVersionCombo.addItem(fixVersions[j]);
+				final Object[] selectedObjects = jiraProjectsCombo.getSelectedObjects();
+				final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Refreshing Fix Versions...",
+						"Refreshing Fix Versions...", selectedObjects.length);
+				SwingWorker worker = new SwingWorker() {
+					public Object construct() {
+						dialog.setIndeterminate(false);
+						for (int i = 0; i < selectedObjects.length; i++) {
+							JiraProject selectedProject = (JiraProject) selectedObjects[i];
+							dialog.setNote("Refreshing Fix Versions for " + selectedProject.getJiraKey() + "...");
+							JiraVersion[] fixVersions;
+							try {
+								fixVersions = selectedProject.getJiraClient().getFixVersionsFromProject(selectedProject, false);
+								for (int j = 0; j < fixVersions.length; j++) {
+									jiraProjectFixVersionCombo.addItem(fixVersions[j]);
+								}
+							} catch (RemoteException e1) {
+								AlertDialog.alertException(helper, e1);
+							}
 						}
-					} catch (RemoteException e1) {
-						AlertDialog.alertException(helper, e1);
+						return null;
 					}
-				}
+
+					@Override
+					public void finished() {
+						dialog.setComplete();
+					}
+				};
+				worker.start();
 			}
 		});
 		getJirasButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Object[] selects = jiraProjectFixVersionCombo.getSelectedObjects();
-				for (int i = 0; i < selects.length; i++) {
-					JiraVersion version = (JiraVersion) selects[i];
-					JiraClient client = version.getProject().getJiraClient();
-					try {
-						client.login();
-						JiraIssue[] jiras = client.getJirasFromFixVersion(version);
-						for (int j = 0; j < jiras.length; j++) {
-							log.debug(jiras[j]);
-							jiraTableModel.addRow(jiras[j]);
+				final Object[] selects = jiraProjectFixVersionCombo.getSelectedObjects();
+				final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Copying Jiras to Tab...",
+						"Logging in...", 0);
+				SwingWorker worker = new SwingWorker() {
+					public Object construct() {
+						dialog.setIndeterminate(false);
+						for (int i = 0; i < selects.length; i++) {
+							final JiraVersion version = (JiraVersion) selects[i];
+							final JiraClient client = version.getProject().getJiraClient();
+							try {
+								dialog.setNote("Logging in!");
+								client.login();
+
+								JiraIssue[] jiras = client.getJirasFromFixVersion(version);
+								dialog.increaseMax("Copying Jiras with Fix Version " + version.getName(), jiras.length);
+								for (int j = 0; j < jiras.length; j++) {
+									log.debug(jiras[j]);
+									dialog.increseProgress();
+									jiraTableModel.addRow(jiras[j]);
+								}
+							} catch (IOException e1) {
+								AlertDialog.alertException(helper, e1);
+							} catch (JDOMException e1) {
+								AlertDialog.alertException(helper, e1);
+							}
 						}
-					} catch (IOException e1) {
-						AlertDialog.alertException(helper, e1);
-					} catch (JDOMException e1) {
-						AlertDialog.alertException(helper, e1);
+						return null;
 					}
-				}
+
+					@Override
+					public void finished() {
+						dialog.setComplete();
+					}
+				};
+				worker.start();
 			}
 		});
 		clearJirasButton.addActionListener(new ActionListener() {
