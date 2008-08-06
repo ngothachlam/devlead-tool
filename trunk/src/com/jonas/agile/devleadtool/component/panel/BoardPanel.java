@@ -91,6 +91,9 @@ public class BoardPanel extends MyComponentPanel {
 
 		table.setDefaultEditor(Boolean.class, new BoardTableCellEditor(model));
 		table.addMouseListener(new BoardTableMouseListener());
+		
+		table.setAutoCreateRowSorter(true);
+
 
 		JTableHeader header = table.getTableHeader();
 		header.setUpdateTableInRealTime(true);

@@ -19,4 +19,7 @@ public class Main {
 	// TODO add a xml file to save what save location for each planner opened.
 	// TODO add system properties to store last save and load location directory
 	// TODO add system properties to store last window position and size
+	// TODO add lock mechanism to unable checkbox ticking, etc to prevent accidental changes
+	// TODO add remove button to Plan 
+	// TODO add function to 'drag' lines (not columns) for prioritisation
 }
