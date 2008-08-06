@@ -3,61 +3,36 @@ package com.jonas.agile.devleadtool.component.panel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
 
 import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.BoardTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
-import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.HyperlinkTableCellRenderer;
+import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.jira.JiraIssue;
 
 public class BoardPanel extends MyComponentPanel {
-
-	private final class BoardTableMouseListener implements MouseListener {
-		public void mouseClicked(MouseEvent e) {
-			JTable aTable = (JTable) e.getSource();
-			int itsRow = aTable.rowAtPoint(e.getPoint());
-			int itsColumn = aTable.columnAtPoint(e.getPoint());
-			if (itsColumn == 6) {
-				HyperLinker.displayURL(jira_url + (String) model.getValueAt(itsRow, itsColumn));
-			}
-		}
-
-		public void mouseEntered(MouseEvent e) {
-		}
-
-		public void mouseExited(MouseEvent e) {
-		}
-
-		public void mousePressed(MouseEvent e) {
-		}
-
-		public void mouseReleased(MouseEvent e) {
-		}
-	}
 
 	private BoardTableModel model;
 
@@ -90,14 +65,39 @@ public class BoardPanel extends MyComponentPanel {
 		table.setColumnRenderer(6, new HyperlinkTableCellRenderer(model));
 
 		table.setDefaultEditor(Boolean.class, new BoardTableCellEditor(model));
-		table.addMouseListener(new BoardTableMouseListener());
-		
+		table.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				JTable aTable = (JTable) e.getSource();
+				int itsRow = aTable.rowAtPoint(e.getPoint());
+				int itsColumn = aTable.columnAtPoint(e.getPoint());
+				if (itsColumn == 6) {
+					HyperLinker.displayURL(jira_url + (String) model.getValueAt(itsRow, itsColumn));
+				}
+			}
+		});
+		table.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				JTable aTable = (JTable) e.getSource();
+				int itsRow = aTable.getEditingRow();
+				int itsColumn = aTable.getEditingColumn();
+				if (itsColumn == 0) {
+					// TODO this is not very nice - doesn't work with keypressed for a long while (as it repeats) as well as
+					// restricts input!
+					model.fireTableRowsUpdated(itsRow, itsRow);
+					char keyChar = e.getKeyChar();
+					String valueAt = (String) model.getValueAt(itsRow, itsColumn);
+					if (keyChar >= 48 && keyChar <= 57)
+						model.setValueAt(valueAt + keyChar, itsRow, itsColumn);
+					if (keyChar == 8) {
+						if (valueAt != null && valueAt.length() > 0)
+							model.setValueAt(valueAt.substring(0, valueAt.length() - 1), itsRow, itsColumn);
+					}
+					System.out.println("value  " + model.getValueAt(itsRow, itsColumn));
+				}
+			}
+		});
+
 		table.setAutoCreateRowSorter(true);
-
-
-		JTableHeader header = table.getTableHeader();
-		header.setUpdateTableInRealTime(true);
-		header.setReorderingAllowed(true);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		addCenter(scrollPane);
@@ -105,7 +105,6 @@ public class BoardPanel extends MyComponentPanel {
 
 	private void initialiseTableHeader() {
 		JTableHeader header = table.getTableHeader();
-		header.setUpdateTableInRealTime(true);
 		header.setReorderingAllowed(true);
 	}
 
@@ -139,16 +138,17 @@ public class BoardPanel extends MyComponentPanel {
 							public Object construct() {
 								for (int i = 0; i < selectedRows.length; i++) {
 									Object valueAt = table.getValueAt(selectedRows[i], 6);
-									helper.addToPlan((String) valueAt);
+									helper.addToPlan((String) valueAt, false);
 									dialog.increseProgress();
 								}
 								return null;
 							}
+
 							@Override
 							public void finished() {
 								dialog.setComplete();
 							}
-							
+
 						};
 						worker.start();
 						// messageDialog.addText("Done!");
@@ -165,7 +165,11 @@ public class BoardPanel extends MyComponentPanel {
 	// table.setModel(model);
 	// }
 
-	public BoardTableModel getBoardModel() {
+	public MyTableModel getBoardModel() {
 		return model;
+	}
+
+	public void setEditable(boolean selected) {
+		model.setEditable(selected);
 	}
 }

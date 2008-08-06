@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.InternalFrame;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.panel.SaveDialog;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.common.logging.MyLogger;
@@ -24,7 +23,7 @@ public class PlannerHelper {
 
 	private String title;
 
-	private BoardTableModel model;
+	private MyTableModel model;
 
 	private InternalFrame internalFrame;
 
@@ -95,8 +94,8 @@ public class PlannerHelper {
 		return frame;
 	}
 
-	public void addToPlan(String jira) {
-		JiraIssue jiraIssue = getJiraIssueFromName(jira, null);
+	public void addToPlan(String jira, boolean syncWithJira) {
+		JiraIssue jiraIssue = syncWithJira ? getJiraIssueFromName(jira, null) : new JiraIssue(jira, "unknown", "unknown");
 		getActiveInternalFrame().addToPlan(jiraIssue);
 	}
 

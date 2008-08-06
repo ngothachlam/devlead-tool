@@ -48,4 +48,9 @@ public class PlanTableModel extends MyTableModel {
 		return true;
 	}
 
+	@Override
+	public boolean isCellEditable(int row, int column) {
+		return isEditable() ? super.isCellEditable(row, column) : false;
+	}
+
 }

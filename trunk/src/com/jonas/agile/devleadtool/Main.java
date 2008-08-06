@@ -14,6 +14,7 @@ public class Main {
 	}
 
 	// TODO add filter for *.xls to load dialog
+	// TODO Add project textbox for default jiraprefix when adding to board
 	// TODO add lock mechanism to unable checkbox ticking, etc to prevent accidental changes
 	// TODO add checkboxes to renderer
 	// TODO add other colors and make this OO - Jira status vs. Status code (inprogress should be mapped to blue (focus, selected,
@@ -25,4 +26,5 @@ public class Main {
 	// TODO add function to 'drag' lines (not columns) for prioritisation
 	// TODO add a properties save location C:\devleadproperties.xml containing
 	// TODO add property to save frames and locations.
+	// TODO when editing jira - update jira link realtime.
 }

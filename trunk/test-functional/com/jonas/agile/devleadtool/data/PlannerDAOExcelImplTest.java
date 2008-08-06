@@ -8,6 +8,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import junit.framework.TestCase;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 
 public class PlannerDAOExcelImplTest extends TestCase {
    File xlsFile = new File("bin\\test.xls");
@@ -45,11 +46,11 @@ public class PlannerDAOExcelImplTest extends TestCase {
 
    public void testSouldSaveAndLoadBoardCorrectly() throws IOException {
       PlannerDAO dao = new PlannerDAOExcelImpl();
-      BoardTableModel model_original = new BoardTableModel();
+      MyTableModel model_original = new BoardTableModel();
 
       // Save and Load on new file
       dao.saveBoardModel(xlsFile, model_original);
-      BoardTableModel model_loaded = dao.loadBoardModel(xlsFile);
+      MyTableModel model_loaded = dao.loadBoardModel(xlsFile);
 
       assertEquals(1, model_loaded.getRowCount());
       assertEquals(7, model_loaded.getColumnCount());
