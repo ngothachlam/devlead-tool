@@ -13,6 +13,7 @@ public class Main {
 		}
 	}
 
+	// FIXME when loading a file and duplicate jiras are in the first col - clicking editable will make them white!
 	// TODO handle 'issue not found' when syncing to jira and getting info (LLU-2)
 	// TODO handle issue moved to other project (LLU-6 that has become LLUOLD-1)
 	// TODO Add project textbox for default jiraprefix when adding to board
