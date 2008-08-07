@@ -13,6 +13,8 @@ public class Main {
 		}
 	}
 
+	// TODO handle 'issue not found' when syncing to jira and getting info (LLU-2)
+	// TODO handle issue moved to other project (LLU-6 that has become LLUOLD-1)
 	// TODO add filter for *.xls to load dialog
 	// TODO Add project textbox for default jiraprefix when adding to board
 	// TODO add lock mechanism to unable checkbox ticking, etc to prevent accidental changes
