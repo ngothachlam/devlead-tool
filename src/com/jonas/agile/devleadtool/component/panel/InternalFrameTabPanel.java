@@ -22,9 +22,7 @@ import com.jonas.common.MyComponentPanel;
 public class InternalFrameTabPanel extends MyComponentPanel {
 
 	private BoardPanel boardPanel;
-
 	private PlanPanel planPanel;
-
 	private JiraPanel jiraPanel;
 
 	private JTabbedPane tabbedPane;

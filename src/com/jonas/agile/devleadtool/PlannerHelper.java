@@ -69,7 +69,7 @@ public class PlannerHelper {
 
 	public JiraIssue getJiraIssueFromName(String jira, JiraListener jiraListener) {
 		JiraProject project = JiraProject.getProjectByKey(getProjectKey(jira));
-		log.debug("Project: " + project);
+		log.debug("Project: " + project + " for jira " + jira);
 		JiraClient client = project.getJiraClient();
 		if (jiraListener != null)
 			JiraListener.addJiraListener(jiraListener);
