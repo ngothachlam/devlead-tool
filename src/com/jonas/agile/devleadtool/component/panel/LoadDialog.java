@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.filechooser.FileFilter;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.DesktopPane;
@@ -25,10 +26,17 @@ public class LoadDialog extends JFileChooser {
 		this.desktopPane = desktop;
 		this.dao = plannerDAO;
 
-		// File file = plannerHelper.getFile();
-		// if (file != null)
-		// setSelectedFile(file);
+		addChoosableFileFilter(new FileFilter() {
+			public boolean accept(File f) {
+				if (getTypeDescription(f).equalsIgnoreCase("Microsoft Excel Worksheet") || f.isDirectory())
+					return true;
+				return false;
+			}
 
+			public String getDescription() {
+				return "XLS files";
+			}
+		});
 		int result = showOpenDialog(frame);
 
 		if (result == JFileChooser.APPROVE_OPTION) {
@@ -38,8 +46,9 @@ public class LoadDialog extends JFileChooser {
 				BoardTableModel boardModel = dao.loadBoardModel(xlsFile);
 				PlanTableModel planModel = dao.loadPlanModel(xlsFile);
 				JiraTableModel jiraModel = dao.loadJiraModel(xlsFile);
-				//TODO remove plannerHelper.getTitle?
-				InternalFrame internalFrame = new InternalFrame(plannerHelper, plannerHelper.getTitle(), boardModel, planModel, jiraModel);
+				// TODO remove plannerHelper.getTitle?
+				InternalFrame internalFrame = new InternalFrame(plannerHelper, plannerHelper.getTitle(), boardModel, planModel,
+						jiraModel);
 				desktopPane.addInternalFrame(internalFrame);
 				internalFrame.setExcelFile(xlsFile.getAbsolutePath());
 
