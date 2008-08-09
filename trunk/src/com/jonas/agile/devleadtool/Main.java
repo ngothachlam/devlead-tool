@@ -8,7 +8,7 @@ public class Main {
 		DevLeadTool tool = new DevLeadTool();
 		try {
 			tool.start();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			AlertDialog.alertException(tool.getHelper(), e);
 		}
 	}
