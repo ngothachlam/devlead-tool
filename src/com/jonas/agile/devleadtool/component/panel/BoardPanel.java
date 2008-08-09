@@ -10,8 +10,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
 import javax.swing.table.JTableHeader;
 
 import org.apache.log4j.Logger;
@@ -60,7 +58,7 @@ public class BoardPanel extends MyComponentPanel {
 		table = new MyTable();
 		table.setModel(model);
 
-		table.setColumnRenderer(0, new StringTableCellRenderer(model));
+		table.setDefaultRenderer(String.class, new StringTableCellRenderer(model));
 		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(model));
 		table.setColumnRenderer(6, new HyperlinkTableCellRenderer(model));
 

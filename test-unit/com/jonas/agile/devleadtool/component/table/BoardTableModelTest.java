@@ -41,6 +41,14 @@ public class BoardTableModelTest extends TestCase {
 		model.setValueAt("", 1, 0);
 		assertEquals(0, model.countOfSameValueInColumn(new String(""), 0));
 	}
+	public void testShouldCountColValuesCorrectlyAfterEdit() {
+		model.setValueAt("1234", 0, 0);
+		model.setValueAt("1234", 1, 0);
+		
+		assertEquals(2, model.countOfSameValueInColumn(new String("1234"), 0));
+		model.setEditable(false);
+		assertEquals(2, model.countOfSameValueInColumn(new String("1234"), 0));
+	}
 	
 	public void testShouldSetEditableCorrectly() {
 		assertTrue(model.isCellEditable(0, 0));

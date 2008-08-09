@@ -2,23 +2,30 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
+import com.jonas.common.logging.MyLogger;
+
 public class BoardTableModel extends MyTableModel {
 
 	private static String[] tableHeader = { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete", "URL" };
 
-	private static Object[] tableContents = { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
-	new String("") };
+	private static Object[] tableContents = { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
+			Boolean.FALSE, new String("") };
+
+	private static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
 	public BoardTableModel() {
 		super(new Object[][] { tableContents }, tableHeader);
 	}
-	
+
 	public BoardTableModel(Vector<Vector<Object>> contents, Vector<Object> header) {
 		super(contents, header);
 	}
 
 	private Object[] getEmptyRow() {
-		return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, new String("") };
+		return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
+				new String("") };
 	}
 
 	@Override
@@ -36,7 +43,7 @@ public class BoardTableModel extends MyTableModel {
 				this.addEmptyRow();
 			}
 		}
-		fireTableRowsUpdated(0, this.getRowCount()-1);
+		fireTableRowsUpdated(0, this.getRowCount() - 1);
 	}
 
 	public Class<?> getColumnClass(int columnIndex) {
@@ -73,8 +80,11 @@ public class BoardTableModel extends MyTableModel {
 
 	public int countOfSameValueInColumn(Object value, int column) {
 		int countOfSimilar = 0;
+		log.debug("Countof Same value");
 		for (int i = 0; i < this.getRowCount(); i++) {
-			if (this.getValueAt(i, column).equals(value)) {
+			Object valueAt = this.getValueAt(i, column);
+			log.debug(i + "Countof : " + value + " = " + value + "(" + valueAt.getClass() + ")");
+			if (valueAt.equals(value)) {
 				if (value instanceof String) {
 					if (((String) value).length() > 0) {
 						countOfSimilar++;
@@ -87,6 +97,7 @@ public class BoardTableModel extends MyTableModel {
 	}
 
 	public boolean isRed(Object value, int row, int column) {
+		log.debug("isRed: " + value + " row=" + row + ",col=" + column);
 		boolean theValue = false;
 		switch (column) {
 		case 0:
@@ -101,5 +112,4 @@ public class BoardTableModel extends MyTableModel {
 		}
 		return theValue;
 	}
-
 }

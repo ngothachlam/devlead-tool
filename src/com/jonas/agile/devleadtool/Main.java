@@ -13,7 +13,6 @@ public class Main {
 		}
 	}
 
-	// FIXME when loading a file and duplicate jiras are in the first col - clicking editable will make them white!
 	// TODO handle 'issue not found' when syncing to jira and getting info (LLU-2)
 	// TODO handle issue moved to other project (LLU-6 that has become LLUOLD-1)
 	// TODO Add project textbox for default jiraprefix when adding to board
@@ -21,6 +20,7 @@ public class Main {
 	// TODO add checkboxes to renderer
 	// TODO add other colors and make this OO - Jira status vs. Status code (inprogress should be mapped to blue (focus, selected,
 	// editable)
+	// TODO use enums to generic handle table model updates and set correct color?
 	// TODO add a xml file to save what save location for each planner opened.
 	// TODO add system properties to store last save and load location directory
 	// TODO add system properties to store last window position and size
