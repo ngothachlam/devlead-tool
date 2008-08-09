@@ -18,12 +18,6 @@ public class StringTableCellRenderer extends DefaultTableCellRenderer {
 	private static final Logger LOGGER = MyLogger.getLogger(StringTableCellRenderer.class);
 	private final MyTableModel model;
 
-	private Color backgroundUnselected = null;
-
-	private Color backgroundSelected = null;
-
-	private Color backgroundFocused = null;
-
 	public StringTableCellRenderer(MyTableModel model) {
 		this.model = model;
 	}
@@ -51,9 +45,4 @@ public class StringTableCellRenderer extends DefaultTableCellRenderer {
 		}
 		return cell;
 	}
-
-	private void debug(String string) {
-		LOGGER.debug(System.currentTimeMillis() + " ~ " + string);
-	}
-
 }

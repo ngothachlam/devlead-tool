@@ -1,10 +1,7 @@
 package com.jonas.agile.devleadtool.component.table.renderer;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.util.Calendar;
-import java.util.Date;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -13,19 +10,13 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.table.TableCellRenderer;
 
 import org.apache.log4j.Logger;
 
-import sun.util.calendar.CalendarUtils;
-
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.jira.access.JiraSoapClient;
 
 public class CheckBoxTableCellRenderer extends JPanel implements TableCellRenderer {
 
@@ -85,11 +76,5 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 		checkbox.setSelected(b);
 	}
 
-	private void debug(String string) {
-		LOGGER.debug(Calendar.getInstance().getTime() + " ~ " + string);
-	}
 
-	protected Color getBackgroundColor() {
-		return checkbox.getBackground();
-	}
 }
