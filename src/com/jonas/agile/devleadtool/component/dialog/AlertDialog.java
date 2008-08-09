@@ -48,7 +48,7 @@ public class AlertDialog extends JDialog {
 		setVisible(true);
 	}
 
-	public static void alertException(JFrame parentFrame, Exception e) {
+	public static void alertException(JFrame parentFrame, Throwable e) {
 		StringWriter sw = new StringWriter();
 		e.printStackTrace(new PrintWriter(sw));
 		String stacktrace = sw.toString();
@@ -62,7 +62,7 @@ public class AlertDialog extends JDialog {
 		AlertDialog.alertException(frame, TryoutTester.getTestException());
 	}
 
-	public static void alertException(PlannerHelper helper, Exception e) {
+	public static void alertException(PlannerHelper helper, Throwable e) {
 		alertException(helper.getParentFrame(), e);
 	}
 	public static AlertDialog message(PlannerHelper helper, String e) {
