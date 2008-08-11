@@ -87,8 +87,8 @@ public class JiraPanel extends MyComponentPanel {
 							JiraVersion[] fixVersions;
 							try {
 								fixVersions = selectedProject.getJiraClient().getFixVersionsFromProject(selectedProject, false);
-								for (int j = 0; j < fixVersions.length; j++) {
-									jiraProjectFixVersionCombo.addItem(fixVersions[j]);
+								for (JiraVersion jiraVersion : fixVersions) {
+									jiraProjectFixVersionCombo.addItem(jiraVersion);
 								}
 							} catch (RemoteException e1) {
 								AlertDialog.alertException(helper, e1);

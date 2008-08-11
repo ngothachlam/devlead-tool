@@ -91,7 +91,7 @@ public class JiraClient {
 	private void buildJiraVersions(RemoteVersion[] fixVersions, JiraProject jiraProject) {
 		jiraProject.clearFixVersions();
 		for (int i = 0; i < fixVersions.length; i++) {
-			jiraProject.addFixVersion(new JiraVersion(fixVersions[i], jiraProject));
+			new JiraVersion(fixVersions[i], jiraProject);
 		}
 	}
 

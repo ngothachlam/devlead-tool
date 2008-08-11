@@ -3,10 +3,9 @@ package com.jonas.agile.devleadtool.component.table.renderer;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.io.Serializable;
+import java.util.List;
 
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -86,9 +85,10 @@ public class ComboTableCellRenderer extends JPanel implements TableCellRenderer 
 	}
 	
 	public void updateFixVersionsAvailable(){
-		JiraVersion[] version = JiraProject.getProjectByKey("LLU").getFixVersions(false);
-		for (int i = 0; i < version.length; i++) {
-			combo.addItem(version[i]);
+		//FIXME : LLU Hardcoded!!!
+		JiraVersion[] versions = JiraProject.getProjectByKey("LLU").getFixVersions(false);
+		for (JiraVersion jiraVersion : versions) {
+			combo.addItem(jiraVersion);
 		}
 	}
 
