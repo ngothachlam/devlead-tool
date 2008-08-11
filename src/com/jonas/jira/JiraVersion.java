@@ -1,7 +1,9 @@
 package com.jonas.jira;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -11,7 +13,7 @@ import com.jonas.common.logging.MyLogger;
 
 public class JiraVersion {
 
-	private static Map<String, JiraVersion> versions = new HashMap<String, JiraVersion>();
+	private static Map<String, JiraVersion> VERSIONS = new HashMap<String, JiraVersion>();
 	private static Logger log = MyLogger.getLogger(JiraVersion.class);
 
 	public static JiraVersion Version10 = new JiraVersion("11382", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 10", false);
@@ -49,14 +51,14 @@ public class JiraVersion {
 	}
 
 	public static void addVersion(JiraVersion version) {
-		JiraVersion jiraVersion = versions.get(version.getId());
+		JiraVersion jiraVersion = VERSIONS.get(version.getId());
 		if (jiraVersion != null){
 			log.warn("version " + version + "(with id=" + version.getId() + ") already exists - not adding it, but overwriting values!");
 			jiraVersion.setArchived(version.isArchived());
 			jiraVersion.setName(version.getName());
 		}
 		else
-			versions.put(version.getId(), version);
+			VERSIONS.put(version.getId(), version);
 	}
 
 	private void setName(String name) {
@@ -65,11 +67,11 @@ public class JiraVersion {
 	}
 
 	public static JiraVersion getVersionById(String id) {
-		return versions.get(id);
+		return VERSIONS.get(id);
 	}
 
 	public static JiraVersion getVersionByName(String name) {
-		for (Iterator iterator = versions.values().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = VERSIONS.values().iterator(); iterator.hasNext();) {
 			JiraVersion version = (JiraVersion) iterator.next();
 			if(version.getName().equals(name)){
 				return version;
@@ -77,6 +79,17 @@ public class JiraVersion {
 		}
 		log.error("Version: \"" + name + "\" doesn't exist!");
 		return null;
+	}
+	
+	public static JiraVersion[] getVersionByProject(JiraProject lluSystemsProvisioning) {
+		List<JiraVersion> versions = new ArrayList<JiraVersion>();
+		for (Iterator<JiraVersion> iterator = VERSIONS.values().iterator(); iterator.hasNext();) {
+			JiraVersion version = (JiraVersion) iterator.next();
+			if(version.getProject().equals(lluSystemsProvisioning)){
+				versions.add(version);
+			}
+		}
+		return versions.toArray(new JiraVersion[versions.size()]);
 	}
 	
 	public JiraProject getProject() {
@@ -96,7 +109,7 @@ public class JiraVersion {
 	}
 
 	public static void removeVersion(String id) {
-		versions.remove(id);
+		VERSIONS.remove(id);
 	}
 
 

@@ -4,24 +4,21 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import org.apache.commons.logging.Log;
 import org.apache.log4j.Logger;
 
 import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
+import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.ComboTableCellRenderer;
@@ -30,9 +27,6 @@ import com.jonas.common.MyComponentPanel;
 import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
-import com.jonas.jira.JiraProject;
-import com.jonas.jira.JiraVersion;
-import com.jonas.jira.access.JiraClient;
 import com.jonas.jira.access.JiraListener;
 import com.jonas.testHelpers.TryoutTester;
 
@@ -108,8 +102,8 @@ public class PlanPanel extends MyComponentPanel {
 					public Object construct() {
 						final int[] rows = table.getSelectedRows();
 						dialog.increaseMax("Syncing...", rows.length);
-						for (int i = 0; i < rows.length; i++) {
-							final String jiraToGet = (String) model.getValueAt(rows[i], 0);
+						for (int rowSelected : rows) {
+							final String jiraToGet = (String) table.getValueAt(rowSelected, 0);
 							dialog.increseProgress("Syncing " + jiraToGet);
 							log.debug("Syncing Jira" + jiraToGet);
 							JiraIssue jira = helper.getJiraIssueFromName(jiraToGet, new JiraListener() {
@@ -129,7 +123,7 @@ public class PlanPanel extends MyComponentPanel {
 									}
 								}
 							});
-							model.setRow(jira, rows[i]);
+							table.setRow(jira, rowSelected);
 						}
 						return null;
 					}
@@ -165,6 +159,7 @@ public class PlanPanel extends MyComponentPanel {
 //		table.setDefaultRenderer(List.class, new ComboTableCellRenderer(model));
 		ComboTableCellRenderer comboTableCellRenderer = new ComboTableCellRenderer(model);
 		table.setColumnRenderer(1, comboTableCellRenderer);
+		table.setColumnEditor(1, new ComboTableCellEditor(model));
 		
 		JScrollPane scrollpane = new JScrollPane(table);
 

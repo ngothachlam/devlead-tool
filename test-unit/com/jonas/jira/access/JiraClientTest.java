@@ -1,15 +1,12 @@
 package com.jonas.jira.access;
 
 import java.io.IOException;
+import java.util.List;
 
-import javax.xml.rpc.ServiceException;
+import junit.framework.TestCase;
 
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
-
-import junit.framework.TestCase;
-import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
-import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
 
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;

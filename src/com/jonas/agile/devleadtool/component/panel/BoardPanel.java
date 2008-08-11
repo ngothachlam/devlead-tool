@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.editor.BoardTableCellEditor;
+import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
@@ -62,7 +62,7 @@ public class BoardPanel extends MyComponentPanel {
 		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(model));
 		table.setColumnRenderer(6, new HyperlinkTableCellRenderer(model));
 
-		table.setDefaultEditor(Boolean.class, new BoardTableCellEditor(model));
+		table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor(model));
 		
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
