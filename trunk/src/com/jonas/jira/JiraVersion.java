@@ -11,7 +11,7 @@ import com.jonas.common.logging.MyLogger;
 
 public class JiraVersion {
 
-	private static Map<String, JiraVersion> fixVersions = new HashMap<String, JiraVersion>();
+	private static Map<String, JiraVersion> versions = new HashMap<String, JiraVersion>();
 	private static Logger log = MyLogger.getLogger(JiraVersion.class);
 
 	public static JiraVersion Version10 = new JiraVersion("11382", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 10", false);
@@ -49,14 +49,14 @@ public class JiraVersion {
 	}
 
 	public static void addVersion(JiraVersion version) {
-		JiraVersion jiraVersion = fixVersions.get(version.getId());
+		JiraVersion jiraVersion = versions.get(version.getId());
 		if (jiraVersion != null){
 			log.warn("version " + version + "(with id=" + version.getId() + ") already exists - not adding it, but overwriting values!");
 			jiraVersion.setArchived(version.isArchived());
 			jiraVersion.setName(version.getName());
 		}
 		else
-			fixVersions.put(version.getId(), version);
+			versions.put(version.getId(), version);
 	}
 
 	private void setName(String name) {
@@ -65,11 +65,11 @@ public class JiraVersion {
 	}
 
 	public static JiraVersion getVersionById(String id) {
-		return fixVersions.get(id);
+		return versions.get(id);
 	}
 
 	public static JiraVersion getVersionByName(String name) {
-		for (Iterator iterator = fixVersions.values().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = versions.values().iterator(); iterator.hasNext();) {
 			JiraVersion version = (JiraVersion) iterator.next();
 			if(version.getName().equals(name)){
 				return version;
@@ -96,7 +96,7 @@ public class JiraVersion {
 	}
 
 	public static void removeVersion(String id) {
-		fixVersions.remove(id);
+		versions.remove(id);
 	}
 
 

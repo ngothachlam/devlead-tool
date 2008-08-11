@@ -13,6 +13,7 @@ public class Main {
 		}
 	}
 
+	// FIXME  the sync issues in planpanel doesn't work after we have reorderered
 	// TODO in boardPanel create the HyperLinker within the JiraIssue or make something nicer so you can set "defaultCellRenderer(HyperLink.class, blah)"
 	// TODO handle 'issue not found' when syncing to jira and getting info (LLU-2)
 	// TODO handle issue moved to other project (LLU-6 that has become LLUOLD-1)

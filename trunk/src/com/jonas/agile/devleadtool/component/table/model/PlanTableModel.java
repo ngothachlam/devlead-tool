@@ -1,8 +1,7 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
+import java.util.ArrayList;
 import java.util.Vector;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
 import org.apache.log4j.Logger;
 
@@ -20,6 +19,16 @@ public class PlanTableModel extends MyTableModel {
 		columnNames.add("Resolution");
 	}
 
+	@Override
+	protected Object[] getEmptyRow() {
+		return new Object[] { new String(""), new ArrayList(), "", "" };
+	}
+
+	public void setValueAt(Object value, int row, int column) {
+		super.setValueAt(value, row, column);
+		fireTableRowsUpdated(0, this.getRowCount() - 1);
+	}
+
 	private Logger log = MyLogger.getLogger(PlanTableModel.class);
 
 	public PlanTableModel() {
@@ -33,10 +42,13 @@ public class PlanTableModel extends MyTableModel {
 	public void addEmptyRow() {
 	}
 
-	public void removeSelectedRows(JTable table) {
+	@Override
+	public boolean isCellEditable(int row, int column) {
+		return isEditable() ? true : false;
 	}
 
 	public boolean isRed(Object value, int row, int column) {
+		log.debug("isRed: " + value + " row: " + row + " col: " + column);
 		return false;
 	}
 
@@ -47,7 +59,7 @@ public class PlanTableModel extends MyTableModel {
 		log.debug("adding jira to plan: " + jiraIssue.getName());
 		return true;
 	}
-	
+
 	public boolean setRow(JiraIssue jiraIssue, int row) {
 		log.debug("overwriting jira: " + jiraIssue.getName() + " to model on row: " + row);
 		Object[] object = new Object[] { jiraIssue.getName(), jiraIssue.getFixVersions(), jiraIssue.getStatus(),
@@ -56,11 +68,6 @@ public class PlanTableModel extends MyTableModel {
 			setValueAt(object[i], row, i);
 		}
 		return true;
-	}
-
-	@Override
-	public boolean isCellEditable(int row, int column) {
-		return isEditable() ? super.isCellEditable(row, column) : false;
 	}
 
 	public boolean doesJiraExist(String jira) {

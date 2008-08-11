@@ -63,6 +63,7 @@ public class BoardPanel extends MyComponentPanel {
 		table.setColumnRenderer(6, new HyperlinkTableCellRenderer(model));
 
 		table.setDefaultEditor(Boolean.class, new BoardTableCellEditor(model));
+		
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				JTable aTable = (JTable) e.getSource();
