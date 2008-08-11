@@ -65,14 +65,17 @@ public class JiraProject {
 
 	public void clearFixVersions() {
 		fixVersions.clear();
+		//TODO Add fix version listener
 	}
 
 	public void addFixVersion(JiraVersion jiraVersion) {
 		log.debug("Adding fixVersion " + jiraVersion.getName());
 		fixVersions.put(jiraVersion.getId(), jiraVersion);
+		//TODO Add fix version listener
 	}
 
 	public JiraVersion[] getFixVersions(boolean isArchived) {
+		// TODO make this change to use JiraVersion static classes instead of its own instance of fixversions!! 
 		List<JiraVersion> tempFixVersions = new ArrayList<JiraVersion>();
 		for (Iterator iterator = fixVersions.values().iterator(); iterator.hasNext();) {
 			JiraVersion version = (JiraVersion) iterator.next();

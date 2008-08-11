@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.table.renderer;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.io.Serializable;
 
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -15,15 +16,17 @@ import com.jonas.common.logging.MyLogger;
 
 public class StringTableCellRenderer extends DefaultTableCellRenderer {
 
-	private static final Logger LOGGER = MyLogger.getLogger(StringTableCellRenderer.class);
+	private static final Logger log = MyLogger.getLogger(StringTableCellRenderer.class);
 	private final MyTableModel model;
 
 	public StringTableCellRenderer(MyTableModel model) {
 		this.model = model;
 	}
 
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+			int column) {
 		JComponent cell = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		log.debug("String for column: " + column + " with value: " + value + " (class: " + debugClassOfValue(value) + ")");
 		if (model.isRed(value, row, column)) {
 			if (hasFocus)
 				cell.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
@@ -45,4 +48,9 @@ public class StringTableCellRenderer extends DefaultTableCellRenderer {
 		}
 		return cell;
 	}
+
+	private Serializable debugClassOfValue(Object value) {
+		return (value != null ? value.getClass() : "null");
+	}
+
 }

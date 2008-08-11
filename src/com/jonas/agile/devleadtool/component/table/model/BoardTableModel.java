@@ -23,7 +23,7 @@ public class BoardTableModel extends MyTableModel {
 		super(contents, header);
 	}
 
-	private Object[] getEmptyRow() {
+	protected Object[] getEmptyRow() {
 		return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
 				new String("") };
 	}
@@ -44,10 +44,6 @@ public class BoardTableModel extends MyTableModel {
 			}
 		}
 		fireTableRowsUpdated(0, this.getRowCount() - 1);
-	}
-
-	public Class<?> getColumnClass(int columnIndex) {
-		return getValueAt(0, columnIndex).getClass();
 	}
 
 	public int noOfCheckboxesTicked(int row) {

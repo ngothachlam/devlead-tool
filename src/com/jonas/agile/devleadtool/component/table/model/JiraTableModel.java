@@ -20,6 +20,11 @@ public class JiraTableModel extends MyTableModel {
 		columnNames.add("Resolution");
 	}
 
+	@Override
+	protected Object[] getEmptyRow() {
+		return new Object[] { "", "", "", "" };
+	}
+
 	private Logger log = MyLogger.getLogger(JiraTableModel.class);
 
 	public JiraTableModel() {

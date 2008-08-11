@@ -23,6 +23,9 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
+import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
+import com.jonas.agile.devleadtool.component.table.renderer.ComboTableCellRenderer;
+import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
@@ -98,12 +101,13 @@ public class PlanPanel extends MyComponentPanel {
 					worker.start();
 				}
 			} else {
-				final int[] rows = table.getSelectedRows();
 				final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Syncing with Jira...", "Starting...",
-						rows.length);
+						0);
 				dialog.setIndeterminate(false);
 				SwingWorker worker = new SwingWorker() {
 					public Object construct() {
+						final int[] rows = table.getSelectedRows();
+						dialog.increaseMax("Syncing...", rows.length);
 						for (int i = 0; i < rows.length; i++) {
 							final String jiraToGet = (String) model.getValueAt(rows[i], 0);
 							dialog.increseProgress("Syncing " + jiraToGet);
@@ -155,6 +159,13 @@ public class PlanPanel extends MyComponentPanel {
 
 		table = new MyTable();
 		table.setModel(model);
+		
+		table.setDefaultRenderer(String.class, new StringTableCellRenderer(model));
+		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(model));
+//		table.setDefaultRenderer(List.class, new ComboTableCellRenderer(model));
+		ComboTableCellRenderer comboTableCellRenderer = new ComboTableCellRenderer(model);
+		table.setColumnRenderer(1, comboTableCellRenderer);
+		
 		JScrollPane scrollpane = new JScrollPane(table);
 
 		table.setAutoCreateRowSorter(true);

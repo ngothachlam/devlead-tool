@@ -23,6 +23,10 @@ public abstract class MyTableModel extends DefaultTableModel {
 
 	public abstract boolean isRed(Object value, int row, int column);
 
+	public abstract boolean isCellEditable(int row, int column);
+
+	protected abstract Object[] getEmptyRow();
+
 	public void removeSelectedRows(JTable table) {
 		while (table.getSelectedRowCount() > 0) {
 			this.removeRow(table.getSelectedRow());
@@ -37,6 +41,11 @@ public abstract class MyTableModel extends DefaultTableModel {
 
 	public boolean isEditable() {
 		return editable;
+	}
+
+	public Class<?> getColumnClass(int columnIndex) {
+		Object valueAt = getValueAt(0, columnIndex);
+		return valueAt != null ? valueAt.getClass() : getEmptyRow()[columnIndex].getClass();
 	}
 
 }

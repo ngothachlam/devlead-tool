@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.io.Serializable;
 
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -18,41 +19,43 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.JiraProject;
+import com.jonas.jira.JiraVersion;
 
-public class CheckBoxTableCellRenderer extends JPanel implements TableCellRenderer {
+public class ComboTableCellRenderer extends JPanel implements TableCellRenderer {
 
 	private final MyTableModel model;
-	private static final Logger log = MyLogger.getLogger(CheckBoxTableCellRenderer.class);
+	private static final Logger log = MyLogger.getLogger(ComboTableCellRenderer.class);
 
-	private JCheckBox checkbox = new JCheckBox();
+	private JComboBox combo = new JComboBox();
 
-	public CheckBoxTableCellRenderer(MyTableModel model) {
+	public ComboTableCellRenderer(MyTableModel model) {
 		super(new BorderLayout());
 		this.model = model;
-		checkbox.setHorizontalAlignment(JLabel.CENTER);
-		this.add(checkbox, SwingUtilities.CENTER);
+		this.add(combo, SwingUtilities.CENTER);
+		updateFixVersionsAvailable();
 	}
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
 			int column) {
-		log.debug("CheckBox for column: " + column + " with value: " + value + " (class: " + debugClassOfValue(value) + ")");
 
+		log.debug("Combo for column: " + column + " with value: " + value + " (class: " + debugClassOfValue(value) + ")");
 		setFont(table.getFont());
 
 		if (model.isRed(value, row, column)) {
 			if (hasFocus)
-				checkbox.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
+				combo.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
 			else if (isSelected)
-				checkbox.setBackground(SwingUtil.COLOR_SELECTION_ERROR);
+				combo.setBackground(SwingUtil.COLOR_SELECTION_ERROR);
 			else
-				checkbox.setBackground(SwingUtil.COLOR_NONSELECT_ERROR);
+				combo.setBackground(SwingUtil.COLOR_NONSELECT_ERROR);
 		} else {
 			if (hasFocus)
-				checkbox.setBackground(SwingUtil.getTableCellFocusBackground());
+				combo.setBackground(SwingUtil.getTableCellFocusBackground());
 			else if (isSelected)
-				checkbox.setBackground(table.getSelectionBackground());
+				combo.setBackground(table.getSelectionBackground());
 			else
-				checkbox.setBackground(table.getBackground());
+				combo.setBackground(table.getBackground());
 		}
 
 		if (hasFocus) {
@@ -62,24 +65,31 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 		}
 
 		if (!table.isCellEditable(row, column)) {
-			checkbox.setEnabled(false);
+			combo.setEnabled(false);
 		} else
-			checkbox.setEnabled(true);
+			combo.setEnabled(true);
 
-		setSelected(((Boolean) value).booleanValue() ? true : false);
+		combo.setSelectedItem(value);
 		return this;
-	}
-
-	private Serializable debugClassOfValue(Object value) {
-		return (value != null ? value.getClass() : "null");
 	}
 
 	public void setBorder(Border border) {
 		super.setBorder(border);
 	}
 
-	private void setSelected(boolean b) {
-		checkbox.setSelected(b);
+	private Serializable debugClassOfValue(Object value) {
+		return (value != null ? value.getClass() : "null");
+	}
+
+	private void setSelected(Object b) {
+		combo.setSelectedItem(b);
+	}
+	
+	public void updateFixVersionsAvailable(){
+		JiraVersion[] version = JiraProject.getProjectByKey("LLU").getFixVersions(false);
+		for (int i = 0; i < version.length; i++) {
+			combo.addItem(version[i]);
+		}
 	}
 
 }
