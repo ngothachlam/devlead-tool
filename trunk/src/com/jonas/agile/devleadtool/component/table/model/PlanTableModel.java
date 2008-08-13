@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
+import com.jonas.jira.JiraVersion;
 
 public class PlanTableModel extends MyTableModel {
 
@@ -21,7 +22,7 @@ public class PlanTableModel extends MyTableModel {
 
 	@Override
 	protected Object[] getEmptyRow() {
-		return new Object[] { new String(""), new ArrayList(), "", "" };
+		return new Object[] { new String(""), new ArrayList<JiraVersion>(), "", "" };
 	}
 
 	public void setValueAt(Object value, int row, int column) {

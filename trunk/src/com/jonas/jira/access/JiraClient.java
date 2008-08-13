@@ -70,12 +70,12 @@ public class JiraClient {
 		this.soapClient = soapClient;
 	}
 
-	public JiraIssue[] getJirasFromFixVersion(JiraVersion version) throws HttpException, IOException, JDOMException {
+	public JiraIssue[] getJirasFromFixVersion(JiraVersion version) throws HttpException, IOException, JDOMException, JiraException {
 		List<JiraIssue> jiras = httpClient.getJiras(version);
 		return (JiraIssue[]) jiras.toArray(new JiraIssue[jiras.size()]);
 	}
 
-	public void login() throws HttpException, IOException {
+	public void login() throws HttpException, IOException, JiraException {
 		JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.LOGGING_IN);
 		httpClient.loginToJira();
 	}
