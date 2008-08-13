@@ -16,13 +16,13 @@ public class JiraHttpClientTest extends TestCase {
 	public void setUp() {
 	}
 
-	public void testApacheCommonsAttempt() throws IOException, HttpException, JDOMException {
+	public void testApacheCommonsAttempt() throws IOException, HttpException, JDOMException, JiraException {
 		JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
 		client.loginToJira();
 		asserFixVersionExistsAndHasJirasAgainstIt(client, JiraVersion.Atlassain_TST);
 	}
 
-	private void asserFixVersionExistsAndHasJirasAgainstIt(JiraHttpClient client, JiraVersion version) throws HttpException, IOException, JDOMException {
+	private void asserFixVersionExistsAndHasJirasAgainstIt(JiraHttpClient client, JiraVersion version) throws HttpException, IOException, JDOMException, JiraException {
 		List<JiraIssue> jiras = client.getJiras(version);
 		assertTrue(jiras.size() > 1);
 		for (int i = 0; i < jiras.size(); i++) {

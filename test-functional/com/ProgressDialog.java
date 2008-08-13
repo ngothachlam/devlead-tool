@@ -71,7 +71,7 @@ public class ProgressDialog extends JDialog {
 		});
 	}
 
-	public void setComplete() {
+	public void setCompleteSoonish() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				progressBar.setIndeterminate(false);
@@ -86,6 +86,17 @@ public class ProgressDialog extends JDialog {
 			}
 		});
 
+	}
+	public void setCompleteAsap() {
+	   SwingUtilities.invokeLater(new Runnable() {
+	      public void run() {
+	         progressBar.setIndeterminate(false);
+	         progressBar.setValue(progressBar.getMaximum());
+	         owner.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+	         dispose();
+	      }
+	   });
+	   
 	}
 
 	public void setIndeterminate(final boolean increaseCount) {
@@ -102,10 +113,12 @@ public class ProgressDialog extends JDialog {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				label.setText(string);
-				;
 				pack();
 			}
 		});
+	}
+	public String getNote() {
+	   return label.getText();
 	}
 
 	public static void main(String args[]) {
@@ -127,7 +140,7 @@ public class ProgressDialog extends JDialog {
 				progress.increseProgress();
 			}
 		}
-		progress.setComplete();
+		progress.setCompleteSoonish();
 
 	}
 

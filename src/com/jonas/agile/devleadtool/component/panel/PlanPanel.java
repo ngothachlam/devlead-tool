@@ -24,6 +24,7 @@ import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRen
 import com.jonas.agile.devleadtool.component.table.renderer.ComboTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.MyComponentPanel;
+import com.jonas.common.MyPanel;
 import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -89,7 +90,7 @@ public class PlanPanel extends MyComponentPanel {
 						public void finished() {
 							log.debug("got jira response!");
 							model.addRow((JiraIssue) get());
-							dialog.setComplete();
+							dialog.setCompleteSoonish();
 						}
 					};
 					worker.start();
@@ -130,7 +131,7 @@ public class PlanPanel extends MyComponentPanel {
 
 					public void finished() {
 						log.debug("Syncing Finished!");
-						dialog.setComplete();
+						dialog.setCompleteSoonish();
 					}
 				};
 				worker.start();
@@ -165,36 +166,30 @@ public class PlanPanel extends MyComponentPanel {
 
 		table.setAutoCreateRowSorter(true);
 
-		this.addNorth(getTopPanel());
+//		this.addNorth(getTopPanel());
 		this.addCenter(scrollpane);
 		this.addSouth(getBottomPanel());
 	}
 
-	private Component getTopPanel() {
+	private Component getBottomPanel() {
 		JPanel buttons = new JPanel();
 		final JLabel label = new JLabel("Jira:");
 		final JTextField field = new JTextField(4);
 		final JButton addJira = new JButton("Add");
 		final JCheckBox syncWithJiraCheckbox = new JCheckBox("jiraSync?", false);
-
+		JButton syncSelectedWithJiraButton = new JButton("sync With Jira");
+		
+		syncSelectedWithJiraButton.addActionListener(new SyncWithJiraActionListener());
 		addJira.addActionListener(new SyncWithJiraActionListener(syncWithJiraCheckbox, field));
 
 		buttons.add(label);
 		buttons.add(field);
 		buttons.add(syncWithJiraCheckbox);
 		buttons.add(addJira);
-		return buttons;
-	}
-
-	private Component getBottomPanel() {
-		JPanel buttons = new JPanel();
-		JButton syncSelectedWithJiraButton = new JButton("sync With Jira");
-
-		syncSelectedWithJiraButton.addActionListener(new SyncWithJiraActionListener());
-
 		buttons.add(syncSelectedWithJiraButton);
 		return buttons;
 	}
+
 
 	public PlanTableModel getPlanModel() {
 		return model;

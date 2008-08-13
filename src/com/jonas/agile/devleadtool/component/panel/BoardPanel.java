@@ -7,13 +7,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
-
 import org.apache.log4j.Logger;
-
 import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -26,7 +24,6 @@ import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRende
 import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
-import com.jonas.common.SwingUtil;
 import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
 
@@ -108,7 +105,8 @@ public class BoardPanel extends MyComponentPanel {
 	}
 
 	protected void setButtons() {
-		MyPanel buttonPanel = SwingUtil.getGridPanel(0, 2, 5, 5).bordered();
+//		MyPanel buttonPanel = SwingUtil.getGridPanel(0, 2, 5, 5).bordered();
+		JPanel buttonPanel = new JPanel();
 
 		addButton(buttonPanel, "Add", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -145,7 +143,7 @@ public class BoardPanel extends MyComponentPanel {
 
 							@Override
 							public void finished() {
-								dialog.setComplete();
+								dialog.setCompleteSoonish();
 							}
 
 						};
