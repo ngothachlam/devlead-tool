@@ -7,13 +7,19 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
+
+import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
+
 import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -23,9 +29,10 @@ import com.jonas.agile.devleadtool.component.table.renderer.HyperlinkTableCellRe
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
-import com.jonas.common.MyPanel;
 import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.access.JiraException;
+import com.jonas.jira.access.JiraIssueNotFoundException;
 
 public class BoardPanel extends MyComponentPanel {
 
@@ -60,7 +67,7 @@ public class BoardPanel extends MyComponentPanel {
 		table.setColumnRenderer(6, new HyperlinkTableCellRenderer(model));
 
 		table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor(model));
-		
+
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				JTable aTable = (JTable) e.getSource();
@@ -105,7 +112,7 @@ public class BoardPanel extends MyComponentPanel {
 	}
 
 	protected void setButtons() {
-//		MyPanel buttonPanel = SwingUtil.getGridPanel(0, 2, 5, 5).bordered();
+		// MyPanel buttonPanel = SwingUtil.getGridPanel(0, 2, 5, 5).bordered();
 		JPanel buttonPanel = new JPanel();
 
 		addButton(buttonPanel, "Add", new ActionListener() {
@@ -133,10 +140,20 @@ public class BoardPanel extends MyComponentPanel {
 								"Copying selected messages from Board to Plan...", selectedRows.length);
 						SwingWorker worker = new SwingWorker() {
 							public Object construct() {
-								for (int i = 0; i < selectedRows.length; i++) {
-									Object valueAt = table.getValueAt(selectedRows[i], 6);
-									helper.addToPlan((String) valueAt, false);
-									dialog.increseProgress();
+								try {
+									for (int i = 0; i < selectedRows.length; i++) {
+										Object valueAt = table.getValueAt(selectedRows[i], 6);
+										try {
+											helper.addToPlan((String) valueAt, false);
+										} catch (JiraIssueNotFoundException e) {
+											AlertDialog.alertException(helper, e);
+											e.printStackTrace();
+										}
+										dialog.increseProgress();
+									}
+								} catch (Exception e) {
+									AlertDialog.alertException(helper, e);
+									e.printStackTrace();
 								}
 								return null;
 							}

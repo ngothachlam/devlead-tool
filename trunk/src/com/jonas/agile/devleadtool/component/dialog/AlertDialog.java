@@ -49,7 +49,7 @@ public class AlertDialog extends JDialog {
       setVisible(true);
    }
 
-   public static void alertException(JFrame parentFrame, Throwable e) {
+   private static void alertException(JFrame parentFrame, Throwable e) {
       StringWriter sw = new StringWriter();
       e.printStackTrace(new PrintWriter(sw));
       String stacktrace = sw.toString();

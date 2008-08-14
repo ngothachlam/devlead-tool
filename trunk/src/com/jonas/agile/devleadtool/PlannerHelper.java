@@ -8,6 +8,9 @@ import javax.swing.JFrame;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 
+import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
+import com.atlassian.jira.rpc.exception.RemoteException;
+import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.jonas.agile.devleadtool.component.InternalFrame;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.panel.SaveDialog;
@@ -17,6 +20,8 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraClient;
+import com.jonas.jira.access.JiraException;
+import com.jonas.jira.access.JiraIssueNotFoundException;
 import com.jonas.jira.access.JiraListener;
 
 public class PlannerHelper {
@@ -67,20 +72,23 @@ public class PlannerHelper {
 		this.getActiveInternalFrame().setExcelFile(file.getAbsolutePath());
 	}
 
-	public JiraIssue getJiraIssueFromName(String jira, JiraListener jiraListener) {
+	public JiraIssue getJiraIssueFromName(String jira, JiraListener jiraListener) throws JiraException, JiraIssueNotFoundException, HttpException, IOException {
 		if (jiraListener != null)
 			JiraListener.addJiraListener(jiraListener);
-		JiraProject project = JiraProject.getProjectByKey(getProjectKey(jira));
-		log.debug("Project: " + project + " for jira " + jira);
-		JiraClient client = project.getJiraClient();
 		try {
+			JiraProject project = JiraProject.getProjectByKey(getProjectKey(jira));
+			log.debug("Project: " + project + " for jira " + jira);
+			if (project == null) {
+				throw new JiraException("Jira \"" + jira + "\" doesn't have a project related to it!");
+			}
+			JiraClient client = project.getJiraClient();
 			client.login();
 			log.debug("Client: " + client);
 			return client.getJira(jira, project);
-		} catch (Exception e) {
-			AlertDialog.alertException(frame, e);
+		} finally {
+			if (jiraListener != null)
+				JiraListener.removeJiraListener(jiraListener);
 		}
-		return null;
 	}
 
 	public static String getProjectKey(String jira) {
@@ -94,7 +102,7 @@ public class PlannerHelper {
 		return frame;
 	}
 
-	public void addToPlan(String jira, boolean syncWithJira) {
+	public void addToPlan(String jira, boolean syncWithJira) throws HttpException, JiraException, JiraIssueNotFoundException, IOException {
 		JiraIssue jiraIssue = syncWithJira ? getJiraIssueFromName(jira, null) : new JiraIssue(jira, "unknown", "unknown");
 		getActiveInternalFrame().addToPlan(jiraIssue);
 	}
