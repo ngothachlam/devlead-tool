@@ -21,4 +21,9 @@ public abstract class JiraListener {
 	public static void addJiraListener(JiraListener jiraListener) {
 		jiraListeners.add(jiraListener);
 	}
+
+	public static void removeJiraListener(JiraListener jiraListener) {
+		jiraListeners.remove(jiraListener);
+		
+	}
 }

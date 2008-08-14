@@ -43,6 +43,7 @@ public class PlanTableModel extends MyTableModel {
 	}
 
 	public void addEmptyRow() {
+		super.addRow(getEmptyRow());
 	}
 
 	@Override
