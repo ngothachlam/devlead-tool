@@ -19,6 +19,7 @@ import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
+import com.jonas.jira.JiraResolution;
 
 /**
  * Sample JIRA SOAP client. Note that the constants sit in the {@link ClientConstants} interface
@@ -29,6 +30,8 @@ public class JiraSoapClient {
 	private static final String LOGIN_NAME = "soaptester";
 	private static final String LOGIN_PASSWORD = "soaptester";
 
+	private static JiraResolution resolutions;
+	
 	private JiraSoapService jiraSoapService = null;
 	private String token;
 
@@ -145,7 +148,7 @@ public class JiraSoapClient {
 				StringBuffer sb = new StringBuffer();
 				sb.append("Fix Version[").append(i).append("] {");
 				sb.append("name=").append(versions[i].getName());
-				sb.append(", id=").append(versions[i].getId());
+				sb.append(",id=").append(versions[i].getId());
 				sb.append("}");
 				log.debug(sb.toString());
 

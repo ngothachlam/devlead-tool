@@ -32,18 +32,27 @@ public class JiraIssue {
 	public JiraIssue(Element e, List<JiraVersion> fixVersions) {
 		this(e);
 		this.fixVersions = fixVersions;
+		if (fixVersions.size() > 1) {
+			log.error("Cannot handle more than one fix version at the moment for " + getName());
+		}
 	}
 
 	public JiraIssue(RemoteIssue jira, JiraProject project) {
 		this(jira.getKey(), jira.getStatus(), jira.getResolution());
 		RemoteVersion[] tempFixVersions = jira.getFixVersions();
+//		if (tempFixVersions.length > 1) {
+//			throw new RuntimeException(getName() + " - has more than one fixversion!. Cannot handle this at the moment!!");
+//		}
 		for (int i = 0; i < tempFixVersions.length; i++) {
 			RemoteVersion remoteVersion = tempFixVersions[i];
 			JiraVersion fixVers = JiraVersion.getVersionById(remoteVersion.getId());
-			if(fixVers == null){
+			if (fixVers == null) {
 				fixVers = new JiraVersion(remoteVersion, project);
 			}
 			addFixVersions(fixVers);
+			if (i>1){
+				log.error("Cannot handle more than one fix version at the moment for " + getName());
+			}
 		}
 	}
 

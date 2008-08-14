@@ -22,7 +22,8 @@ public class MyTable extends JTable {
 
 	public void setRow(JiraIssue jira, int i) {
 		setValueAt(jira.getName(), i, 0);
-		setValueAt(jira.getFixVersions(), i, 1);
+		//TODO only works with one fix-version below!!
+		setValueAt(jira.getFixVersions().get(0), i, 1);
 		setValueAt(jira.getStatus(), i, 2);
 		setValueAt(jira.getResolution(), i, 3);
 	}

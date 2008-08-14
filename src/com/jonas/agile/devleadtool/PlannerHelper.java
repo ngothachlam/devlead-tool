@@ -68,11 +68,11 @@ public class PlannerHelper {
 	}
 
 	public JiraIssue getJiraIssueFromName(String jira, JiraListener jiraListener) {
+		if (jiraListener != null)
+			JiraListener.addJiraListener(jiraListener);
 		JiraProject project = JiraProject.getProjectByKey(getProjectKey(jira));
 		log.debug("Project: " + project + " for jira " + jira);
 		JiraClient client = project.getJiraClient();
-		if (jiraListener != null)
-			JiraListener.addJiraListener(jiraListener);
 		try {
 			client.login();
 			log.debug("Client: " + client);
@@ -83,7 +83,7 @@ public class PlannerHelper {
 		return null;
 	}
 
-	protected String getProjectKey(String jira) {
+	public static String getProjectKey(String jira) {
 		if (jira.contains("-")) {
 			return jira.substring(0, jira.indexOf("-"));
 		}
