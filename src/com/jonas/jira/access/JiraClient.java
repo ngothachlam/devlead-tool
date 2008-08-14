@@ -106,4 +106,8 @@ public class JiraClient {
 		}
 		return jiraIssue;
 	}
+
+	public String getJiraUrl() {
+		return httpClient.getJiraUrl();
+	}
 }

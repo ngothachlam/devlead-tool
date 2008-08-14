@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -33,6 +34,7 @@ import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.JiraException;
 import com.jonas.jira.access.JiraIssueNotFoundException;
+import com.jonas.testHelpers.TryoutTester;
 
 public class BoardPanel extends MyComponentPanel {
 
@@ -74,7 +76,10 @@ public class BoardPanel extends MyComponentPanel {
 				int itsRow = aTable.rowAtPoint(e.getPoint());
 				int itsColumn = aTable.columnAtPoint(e.getPoint());
 				if (itsColumn == 6) {
-					HyperLinker.displayURL(jira_url + (String) model.getValueAt(itsRow, itsColumn));
+					// HyperLinker.displayURL(jira_url + (String) model.getValueAt(itsRow, itsColumn));
+					String jira = (String) model.getValueAt(itsRow, itsColumn);
+					String jira_url = helper.getJiraUrl(jira);
+					HyperLinker.displayURL(jira_url + "/browse/" + jira);
 				}
 			}
 		});
@@ -185,5 +190,13 @@ public class BoardPanel extends MyComponentPanel {
 
 	public void setEditable(boolean selected) {
 		model.setEditable(selected);
+	}
+
+	public static void main(String[] args) {
+		JFrame frame = TryoutTester.getFrame();
+		PlannerHelper plannerHelper = new PlannerHelper(frame, "test");
+		BoardPanel panel = new BoardPanel(plannerHelper);
+		frame.setContentPane(panel);
+		frame.setVisible(true);
 	}
 }

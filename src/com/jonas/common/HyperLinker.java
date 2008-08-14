@@ -4,12 +4,25 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.logging.MyLogger;
 
 public class HyperLinker {
+	// Used to identify the windows platform.
+	private static final String WIN_ID = "Windows";
 
-	private static final Logger LOGGER = MyLogger.getLogger(HyperLinker.class);
+	// The default system browser under windows.
+	private static final String WIN_PATH = "rundll32";
+
+	// The flag to display a url.
+	private static final String WIN_FLAG = "url.dll,FileProtocolHandler";
+
+	// The default browser under unix.
+	private static final String UNIX_PATH = "netscape";
+
+	// The flag to display a url.
+	private static final String UNIX_FLAG = "-remote openURL";
+
+	private static final Logger log = MyLogger.getLogger(HyperLinker.class);
 
 	public static boolean displayURL(String url) {
 
@@ -17,7 +30,7 @@ public class HyperLinker {
 		boolean windows = isWindowsPlatform();
 		String cmd = null;
 		try {
-			LOGGER.debug("Opening Hyperlink!!");
+			log.debug("Opening URL " + url + "!!");
 			if (windows) {
 				cmd = WIN_PATH + " " + WIN_FLAG + " " + url;
 				Process p = Runtime.getRuntime().exec(cmd);
@@ -53,8 +66,7 @@ public class HyperLinker {
 	}
 
 	/**
-	 * Try to determine whether this application is running under Windows or some other platform by examing the os.name"
-	 * property.
+	 * Try to determine whether this application is running under Windows or some other platform by examing the os.name" property.
 	 * 
 	 * @return true if this application is running under a Windows OS
 	 */
@@ -66,18 +78,4 @@ public class HyperLinker {
 			return false;
 	}
 
-	// Used to identify the windows platform.
-	private static final String WIN_ID = "Windows";
-
-	// The default system browser under windows.
-	private static final String WIN_PATH = "rundll32";
-
-	// The flag to display a url.
-	private static final String WIN_FLAG = "url.dll,FileProtocolHandler";
-
-	// The default browser under unix.
-	private static final String UNIX_PATH = "netscape";
-
-	// The flag to display a url.
-	private static final String UNIX_FLAG = "-remote openURL";
 }
