@@ -35,6 +35,7 @@ public class JiraIssueTest extends TestCase {
 		JiraIssue jiraIssue = jiras.get(0);
 		assertTrue(jiraIssue != null);
 		JiraVersion fixVersion = jiraIssue.getFixVersions().get(0);
+//		JiraVersion fixVersion = jiraIssue.getFixVersions()[0];
 		assertEquals("Version 10", fixVersion.getName());
 	}
 

@@ -2,11 +2,12 @@ package com.jonas.agile.devleadtool.component.table.editor;
 
 import java.awt.Color;
 import java.awt.Component;
+
 import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 
 public class CheckBoxTableCellEditor extends DefaultCellEditor {

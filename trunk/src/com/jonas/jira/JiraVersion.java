@@ -16,15 +16,16 @@ public class JiraVersion {
 	private static Map<String, JiraVersion> VERSIONS = new HashMap<String, JiraVersion>();
 	private static Logger log = MyLogger.getLogger(JiraVersion.class);
 
+//	public static JiraVersion NullVersion = new JiraVersion("", JiraProject.LLU_SYSTEMS_PROVISIONING, "NULL", false);
 	public static JiraVersion Version10 = new JiraVersion("11382", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 10", false);
 	public static JiraVersion Version11 = new JiraVersion("11432", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 11", false);
-	public static JiraVersion Version11Next = new JiraVersion("11449", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 11 - Next Sprint (3)", false);
+	public static JiraVersion Version11Next = new JiraVersion("11449", JiraProject.LLU_SYSTEMS_PROVISIONING,
+			"Version 11 - Next Sprint (3)", false);
 	public static JiraVersion Backlog = new JiraVersion("11388", JiraProject.LLU_SYSTEMS_PROVISIONING, "Backlog", false);
 	public static JiraVersion PamsBacklog = new JiraVersion("11458", JiraProject.LLU_SYSTEMS_PROVISIONING, "Pam's Backlog", false);
 	public static JiraVersion Version9 = new JiraVersion("11264", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 9", false);
 	public static JiraVersion Atlassain_TST = new JiraVersion("13187", JiraProject.ATLASSIN_TST, "Dev Version", false);
 
-	private static String SELECT_NAME = "fixfor";
 	private boolean archived;
 	private String name;
 	private String id;
@@ -52,18 +53,17 @@ public class JiraVersion {
 
 	public static void addVersion(JiraVersion version) {
 		JiraVersion jiraVersion = VERSIONS.get(version.getId());
-		if (jiraVersion != null){
+		if (jiraVersion != null) {
 			log.warn("version " + version + "(with id=" + version.getId() + ") already exists - not adding it, but overwriting values!");
 			jiraVersion.setArchived(version.isArchived());
 			jiraVersion.setName(version.getName());
-		}
-		else
+		} else
 			VERSIONS.put(version.getId(), version);
 	}
 
 	private void setName(String name) {
 		this.name = name;
-		
+
 	}
 
 	public static JiraVersion getVersionById(String id) {
@@ -73,25 +73,25 @@ public class JiraVersion {
 	public static JiraVersion getVersionByName(String name) {
 		for (Iterator iterator = VERSIONS.values().iterator(); iterator.hasNext();) {
 			JiraVersion version = (JiraVersion) iterator.next();
-			if(version.getName().equals(name)){
+			if (version.getName().equals(name)) {
 				return version;
 			}
 		}
 		log.error("Version: \"" + name + "\" doesn't exist!");
 		return null;
 	}
-	
+
 	public static JiraVersion[] getVersionByProject(JiraProject lluSystemsProvisioning) {
 		List<JiraVersion> versions = new ArrayList<JiraVersion>();
 		for (Iterator<JiraVersion> iterator = VERSIONS.values().iterator(); iterator.hasNext();) {
 			JiraVersion version = (JiraVersion) iterator.next();
-			if(version.getProject().equals(lluSystemsProvisioning)){
+			if (version.getProject().equals(lluSystemsProvisioning)) {
 				versions.add(version);
 			}
 		}
 		return versions.toArray(new JiraVersion[versions.size()]);
 	}
-	
+
 	public JiraProject getProject() {
 		return jiraProject;
 	}
@@ -111,6 +111,5 @@ public class JiraVersion {
 	public static void removeVersion(String id) {
 		VERSIONS.remove(id);
 	}
-
 
 }

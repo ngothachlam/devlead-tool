@@ -73,7 +73,10 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 			for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
 				HSSFCell cell = row.createCell((short) colCount);
 				Object valueAt = model.getValueAt(rowCount, colCount);
-				if (valueAt instanceof Boolean) {
+				log.debug("valueAt: " + valueAt + " row: " + rowCount + "col:" + colCount);
+				if (valueAt == null)
+					cell.setCellValue(new HSSFRichTextString(""));
+				else if (valueAt instanceof Boolean) {
 					cell.setCellValue(((Boolean) valueAt).booleanValue());
 				} else {
 					cell.setCellValue(new HSSFRichTextString(valueAt.toString()));

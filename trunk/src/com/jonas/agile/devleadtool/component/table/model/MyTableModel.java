@@ -5,6 +5,9 @@ import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.jira.JiraProject;
+
 public abstract class MyTableModel extends DefaultTableModel {
 
 	protected boolean editable = true;
@@ -46,6 +49,11 @@ public abstract class MyTableModel extends DefaultTableModel {
 	public Class<?> getColumnClass(int columnIndex) {
 		Object valueAt = getValueAt(0, columnIndex);
 		return valueAt != null ? valueAt.getClass() : getEmptyRow()[columnIndex].getClass();
+	}
+
+	public JiraProject getProjectForRow(int row) {
+		String jira = (String) getValueAt(row, 0);
+		return JiraProject.getProjectByKey(PlannerHelper.getProjectKey(jira));
 	}
 
 }

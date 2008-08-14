@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,13 +22,13 @@ import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
-import com.jonas.agile.devleadtool.component.table.renderer.ComboTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
+import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraListener;
 import com.jonas.testHelpers.TryoutTester;
 
@@ -96,8 +97,7 @@ public class PlanPanel extends MyComponentPanel {
 					worker.start();
 				}
 			} else {
-				final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Syncing with Jira...", "Starting...",
-						0);
+				final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Syncing with Jira...", "Starting...", 0);
 				dialog.setIndeterminate(false);
 				SwingWorker worker = new SwingWorker() {
 					public Object construct() {
@@ -125,6 +125,7 @@ public class PlanPanel extends MyComponentPanel {
 								}
 							});
 							table.setRow(jira, rowSelected);
+//							model.setRow(jira, rowSelected);
 						}
 						return null;
 					}
@@ -142,6 +143,8 @@ public class PlanPanel extends MyComponentPanel {
 	private PlanTableModel model;
 	private final PlannerHelper helper;
 	private MyTable table;
+	private Logger log = MyLogger.getLogger(PlanPanel.class);
+	private JComboBox comboBox;
 
 	public PlanPanel(PlannerHelper client) {
 		this(client, new PlanTableModel());
@@ -154,18 +157,16 @@ public class PlanPanel extends MyComponentPanel {
 
 		table = new MyTable();
 		table.setModel(model);
-		
+
 		table.setDefaultRenderer(String.class, new StringTableCellRenderer(model));
 		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(model));
-//		table.setDefaultRenderer(List.class, new ComboTableCellRenderer(model));
-		ComboTableCellRenderer comboTableCellRenderer = new ComboTableCellRenderer(model);
-		table.setColumnRenderer(1, comboTableCellRenderer);
-		table.setColumnEditor(1, new ComboTableCellEditor(model));
-		
+
+		comboBox = new JComboBox(JiraProject.LLU_SYSTEMS_PROVISIONING.getFixVersions(false));
+		table.setColumnEditor(1, new ComboTableCellEditor(model, comboBox));
+
 		JScrollPane scrollpane = new JScrollPane(table);
 
 		table.setAutoCreateRowSorter(true);
-
 //		this.addNorth(getTopPanel());
 		this.addCenter(scrollpane);
 		this.addSouth(getBottomPanel());
@@ -178,7 +179,7 @@ public class PlanPanel extends MyComponentPanel {
 		final JButton addJira = new JButton("Add");
 		final JCheckBox syncWithJiraCheckbox = new JCheckBox("jiraSync?", false);
 		JButton syncSelectedWithJiraButton = new JButton("sync With Jira");
-		
+
 		syncSelectedWithJiraButton.addActionListener(new SyncWithJiraActionListener());
 		addJira.addActionListener(new SyncWithJiraActionListener(syncWithJiraCheckbox, field));
 
