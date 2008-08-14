@@ -71,20 +71,20 @@ public class PlanTableModel extends MyTableModel {
 		if (fixVersions != null && fixVersions.size() > 0) {
 			jiraVersion = fixVersions.get(0);
 		}
-		Object[] objects = new Object[] { jiraIssue.getName(), jiraVersion, jiraIssue.getStatus(), jiraIssue.getResolution() };
+		Object[] objects = new Object[] { jiraIssue.getKey(), jiraVersion, jiraIssue.getStatus(), jiraIssue.getResolution() };
 		super.addRow(objects);
-		log.debug("adding jira to plan: " + jiraIssue.getName());
+		log.debug("adding jira to plan: " + jiraIssue.getKey());
 		fireTableRowsUpdated(0, this.getRowCount() - 1);
 		return true;
 	}
 
 	public boolean setRow(JiraIssue jiraIssue, int row) {
-		log.debug("overwriting jira: " + jiraIssue.getName() + " to model on row: " + row);
+		log.debug("overwriting jira: " + jiraIssue.getKey() + " to model on row: " + row);
 		List<JiraVersion> fixVersions = jiraIssue.getFixVersions();
 		if (fixVersions.size() > 1) {
 			throw new RuntimeException(jiraIssue + " has more than one fixversion! Model can't handle it at the moment!!");
 		}
-		Object[] object = new Object[] { jiraIssue.getName(), fixVersions, jiraIssue.getStatus(), jiraIssue.getResolution() };
+		Object[] object = new Object[] { jiraIssue.getKey(), fixVersions, jiraIssue.getStatus(), jiraIssue.getResolution() };
 		for (int i = 0; i < object.length; i++) {
 			setValueAt(object[i], row, i);
 		}

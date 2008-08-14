@@ -15,14 +15,16 @@ public class JiraTableModel extends MyTableModel {
 
 	static {
 		columnNames.add("Jira");
+		columnNames.add("Description");
 		columnNames.add("FixVersion");
 		columnNames.add("Status");
 		columnNames.add("Resolution");
+		columnNames.add("HyperLink");
 	}
 
 	@Override
 	protected Object[] getEmptyRow() {
-		return new Object[] { "", "", "", "" };
+		return new Object[] { "", "", "", "", "", "" };
 	}
 
 	private Logger log = MyLogger.getLogger(JiraTableModel.class);
@@ -37,13 +39,13 @@ public class JiraTableModel extends MyTableModel {
 	}
 
 	public boolean addRow(JiraIssue jiraIssue) {
-		if (!exists(jiraIssue.getName())) {
-			Object[] objects = new Object[] { jiraIssue.getName(), jiraIssue.getFixVersions(), jiraIssue.getStatus(),
-					jiraIssue.getResolution() };
+		if (!exists(jiraIssue.getKey())) {
+			Object[] objects = new Object[] { jiraIssue.getKey(), jiraIssue.getSummary(), jiraIssue.getFixVersions(),
+					jiraIssue.getStatus(), jiraIssue.getResolution(), jiraIssue.getKey() };
 			super.addRow(objects);
 			return true;
 		}
-		log.debug("jira already in model: " + jiraIssue.getName());
+		log.debug("jira already in model: " + jiraIssue.getKey());
 		return false;
 	}
 
@@ -62,7 +64,7 @@ public class JiraTableModel extends MyTableModel {
 
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		return isEditable() ? false : false;
+		return column == 6 ? false : (isEditable() ? false : false);
 	}
 
 	public void removeSelectedRows(JTable table) {

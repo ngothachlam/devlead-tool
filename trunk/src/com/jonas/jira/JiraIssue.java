@@ -14,17 +14,19 @@ import com.jonas.common.logging.MyLogger;
 public class JiraIssue {
 
 	private static Logger log = MyLogger.getLogger(JiraIssue.class);
-	private String name;
+	private String key;
 	private List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
 	private String status;
 	private String resolution;
+	private String summary;
 
 	private JiraIssue(Element e) {
-		this(get(e, "key"), get(e, "status"), get(e, "resolution"));
+		this(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"));
 	}
 
-	public JiraIssue(String name, String status, String resolution) {
-		this.name = name;
+	public JiraIssue(String key, String summary, String status, String resolution) {
+		this.key = key;
+		this.summary = summary;
 		this.status = status;
 		this.resolution = resolution;
 	}
@@ -33,16 +35,16 @@ public class JiraIssue {
 		this(e);
 		this.fixVersions = fixVersions;
 		if (fixVersions.size() > 1) {
-			log.error("Cannot handle more than one fix version at the moment for " + getName());
+			log.error("Cannot handle more than one fix version at the moment for " + getKey());
 		}
 	}
 
 	public JiraIssue(RemoteIssue jira, JiraProject project) {
-		this(jira.getKey(), jira.getStatus(), jira.getResolution());
+		this(jira.getKey(), jira.getSummary(), jira.getStatus(), jira.getResolution());
 		RemoteVersion[] tempFixVersions = jira.getFixVersions();
-//		if (tempFixVersions.length > 1) {
-//			throw new RuntimeException(getName() + " - has more than one fixversion!. Cannot handle this at the moment!!");
-//		}
+		// if (tempFixVersions.length > 1) {
+		// throw new RuntimeException(getName() + " - has more than one fixversion!. Cannot handle this at the moment!!");
+		// }
 		for (int i = 0; i < tempFixVersions.length; i++) {
 			RemoteVersion remoteVersion = tempFixVersions[i];
 			JiraVersion fixVers = JiraVersion.getVersionById(remoteVersion.getId());
@@ -50,14 +52,14 @@ public class JiraIssue {
 				fixVers = new JiraVersion(remoteVersion, project);
 			}
 			addFixVersions(fixVers);
-			if (i>1){
-				log.error("Cannot handle more than one fix version at the moment for " + getName());
+			if (i > 1) {
+				log.error("Cannot handle more than one fix version at the moment for " + getKey());
 			}
 		}
 	}
 
-	public String getName() {
-		return name;
+	public String getKey() {
+		return key;
 	}
 
 	private void clearFixVersions() {
@@ -105,7 +107,7 @@ public class JiraIssue {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer("[Jira: (");
-		sb.append("Name: \"").append(name).append("\"");
+		sb.append("Name: \"").append(key).append("\"");
 		sb.append(", FixVersion: \"").append(fixVersions).append("\"");
 		sb.append(", Status: \"").append(status).append("\"");
 		sb.append(", Resolution: \"").append(resolution).append("\"");
@@ -113,4 +115,7 @@ public class JiraIssue {
 		return sb.toString();
 	}
 
+	public String getSummary() {
+		return summary;
+	}
 }

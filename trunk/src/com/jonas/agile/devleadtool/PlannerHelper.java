@@ -8,12 +8,7 @@ import javax.swing.JFrame;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 
-import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
-import com.atlassian.jira.rpc.exception.RemoteException;
-import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.jonas.agile.devleadtool.component.InternalFrame;
-import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.component.panel.SaveDialog;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.common.logging.MyLogger;
@@ -103,8 +98,13 @@ public class PlannerHelper {
 	}
 
 	public void addToPlan(String jira, boolean syncWithJira) throws HttpException, JiraException, JiraIssueNotFoundException, IOException {
-		JiraIssue jiraIssue = syncWithJira ? getJiraIssueFromName(jira, null) : new JiraIssue(jira, "unknown", "unknown");
+		JiraIssue jiraIssue = syncWithJira ? getJiraIssueFromName(jira, null) : new JiraIssue(jira, "unknown", "unknown", "unknown");
 		getActiveInternalFrame().addToPlan(jiraIssue);
 	}
 
+	public String getJiraUrl(String jira) {
+		log.debug("getting Jira URL for " + jira);
+		JiraProject project = JiraProject.getProjectByKey(getProjectKey(jira));
+		return project.getJiraClient().getJiraUrl();
+	}
 }
