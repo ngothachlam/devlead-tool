@@ -15,12 +15,9 @@ public class JiraProject {
 	private static List<JiraProject> PROJECTS = new ArrayList<JiraProject>();
 	private static Logger log = MyLogger.getLogger(JiraProject.class);
 
-	public static final JiraProject LLU_SYSTEMS_PROVISIONING = new JiraProject(JiraClient.JiraClientAolBB,
-			"LLU Systems Provisioning", "LLU", "10070");
-	public static final JiraProject LLU_DEV_SUPPORT = new JiraProject(JiraClient.JiraClientAolBB, "LLU Dev Support", "LLUDEVSUP",
-			"10192");
-	public static final JiraProject ATLASSIN_TST = new JiraProject(JiraClient.JiraClientAtlassin, "Atlassin - TST", "TST",
-			"10420");
+	public static final JiraProject LLU_SYSTEMS_PROVISIONING = new JiraProject(JiraClient.JiraClientAolBB, "LLU", "LLU", "10070");
+	public static final JiraProject LLU_DEV_SUPPORT = new JiraProject(JiraClient.JiraClientAolBB, "LLUDEVSUP", "LLUDEVSUP", "10192");
+	public static final JiraProject ATLASSIN_TST = new JiraProject(JiraClient.JiraClientAtlassin, "Atlassin", "TST", "10420");
 
 	private final Map<String, JiraVersion> fixVersions = new HashMap<String, JiraVersion>();
 
@@ -69,11 +66,11 @@ public class JiraProject {
 		// TODO Add fix version listener
 	}
 
-//	public void addFixVersion(JiraVersion jiraVersion) {
-//		log.debug("Adding fixVersion " + jiraVersion.getName());
-//		fixVersions.put(jiraVersion.getId(), jiraVersion);
-//		// TODO Add fix version listener
-//	}
+	// public void addFixVersion(JiraVersion jiraVersion) {
+	// log.debug("Adding fixVersion " + jiraVersion.getName());
+	// fixVersions.put(jiraVersion.getId(), jiraVersion);
+	// // TODO Add fix version listener
+	// }
 
 	public JiraVersion[] getFixVersions(boolean getArchivedVersions) {
 		// TODO make this change to use JiraVersion static classes instead of its own instance of fixversions!!
@@ -90,7 +87,7 @@ public class JiraProject {
 		for (int i = 0; i < versionByProject.length; i++) {
 			JiraVersion jiraVersion = versionByProject[i];
 			log.debug("checking " + jiraVersion.getId());
-			if (jiraVersion.isArchived() == getArchivedVersions){
+			if (jiraVersion.isArchived() == getArchivedVersions) {
 				log.debug("removing " + jiraVersion.getId());
 				versionsToReturn.add(jiraVersion);
 			}

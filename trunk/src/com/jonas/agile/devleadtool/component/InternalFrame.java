@@ -97,7 +97,7 @@ public class InternalFrame extends JInternalFrame {
 	}
 
 	public MyTableModel getBoardModel() {
-		return content.getBoardPanel().getBoardModel();
+		return content.getBoardPanel().getModel();
 	}
 
 	public void setExcelFile(String name) {

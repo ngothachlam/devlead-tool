@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-
 public class MyComponentPanel extends MyPanel {
 
 	private List<MyComponentPanel> changeListeners = new ArrayList<MyComponentPanel>();

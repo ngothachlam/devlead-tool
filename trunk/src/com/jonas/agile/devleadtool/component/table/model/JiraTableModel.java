@@ -11,6 +11,7 @@ import com.jonas.jira.JiraIssue;
 
 public class JiraTableModel extends MyTableModel {
 
+	public static final String COLUMNNAME_HYPERLINK = "URL";
 	private static Vector<String> columnNames = new Vector<String>();
 
 	static {
@@ -19,12 +20,13 @@ public class JiraTableModel extends MyTableModel {
 		columnNames.add("FixVersion");
 		columnNames.add("Status");
 		columnNames.add("Resolution");
-		columnNames.add("HyperLink");
+		columnNames.add("Build Nos");
+		columnNames.add(COLUMNNAME_HYPERLINK);
 	}
 
 	@Override
 	protected Object[] getEmptyRow() {
-		return new Object[] { "", "", "", "", "", "" };
+		return new Object[] { "", "", "", "", "", "", "" };
 	}
 
 	private Logger log = MyLogger.getLogger(JiraTableModel.class);
@@ -41,7 +43,7 @@ public class JiraTableModel extends MyTableModel {
 	public boolean addRow(JiraIssue jiraIssue) {
 		if (!exists(jiraIssue.getKey())) {
 			Object[] objects = new Object[] { jiraIssue.getKey(), jiraIssue.getSummary(), jiraIssue.getFixVersions(),
-					jiraIssue.getStatus(), jiraIssue.getResolution(), jiraIssue.getKey() };
+					jiraIssue.getStatus(), jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getKey() };
 			super.addRow(objects);
 			return true;
 		}
