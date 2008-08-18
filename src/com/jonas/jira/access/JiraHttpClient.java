@@ -22,6 +22,8 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
 
 public class JiraHttpClient extends HttpClient {
+	private static final String MAX_RESULTS = "100000";
+
 	private String baseUrl;
 
 	private static final Logger log = MyLogger.getLogger(JiraHttpClient.class);
@@ -69,7 +71,8 @@ public class JiraHttpClient extends HttpClient {
 	public List<JiraIssue> getJiras(JiraVersion fixVersion) throws HttpException, IOException, JDOMException, JiraException {
 		log.debug("getting Jiras");
 		String url = baseUrl + "/secure/IssueNavigator.jspa?view=rss&&fixfor=" + fixVersion.getId() + "&pid="
-				+ fixVersion.getProject().getId() + "&sorter/field=issuekey&sorter/order=DESC&tempMax=100000&reset=true&decorator=none";
+				+ fixVersion.getProject().getId() + "&sorter/field=issuekey&sorter/order=DESC&tempMax=" + MAX_RESULTS
+				+ "&reset=true&decorator=none";
 		log.debug("calling " + url);
 		GetMethod method = new GetMethod(url);
 		executeMethod(method);
@@ -78,13 +81,8 @@ public class JiraHttpClient extends HttpClient {
 
 		throwJiraExceptionIfRequired(method);
 
-		SAXBuilder sb = new SAXBuilder();
 		String string = new String(responseAsBytes);
-		log.trace("RSS feed responded with \"" + string + "\"");
-		Document doc = sb.build(new StringReader(string));
-
-		List<JiraIssue> jiras = null;
-		jiras = getXPath(doc, "/rss/channel/item", fixVersion);
+		List<JiraIssue> jiras = buildJirasFromXML(string);
 
 		if (log.isDebugEnabled()) {
 			for (Iterator<JiraIssue> iterator = jiras.iterator(); iterator.hasNext();) {
@@ -95,13 +93,23 @@ public class JiraHttpClient extends HttpClient {
 		return jiras;
 	}
 
+	protected List<JiraIssue> buildJirasFromXML( String string) throws JDOMException, IOException {
+		SAXBuilder sb = new SAXBuilder();
+		log.trace("RSS feed responded with \"" + string + "\"");
+		Document doc = sb.build(new StringReader(string));
+
+		List<JiraIssue> jiras = null;
+		jiras = getXPath(doc, "/rss/channel/item");
+		return jiras;
+	}
+
 	private void throwJiraExceptionIfRequired(HttpMethodBase method) throws JiraException {
 		if (method.getStatusCode() != 200) {
 			throw new JiraException("Jira Server responded: " + method.getStatusText() + "(" + method.getStatusCode() + ")");
 		}
 	}
 
-	private List<JiraIssue> getXPath(Document doc, String xPath, JiraVersion fixVersion) throws JDOMException {
+	private List<JiraIssue> getXPath(Document doc, String xPath) throws JDOMException {
 		XPath xpath = XPath.newInstance(xPath);
 		List<Element> list = xpath.selectNodes(doc);
 		return JiraIssue.buildJiras(list);

@@ -9,6 +9,7 @@ import org.jdom.Element;
 
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
+import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.logging.MyLogger;
 
 public class JiraIssue {
@@ -19,6 +20,7 @@ public class JiraIssue {
 	private String status;
 	private String resolution;
 	private String summary;
+	private String buildNo;
 
 	private JiraIssue(Element e) {
 		this(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"));
@@ -29,6 +31,8 @@ public class JiraIssue {
 		this.summary = summary;
 		this.status = status;
 		this.resolution = resolution;
+		// this.buildNo = buildNo;
+		// TODO: add build no
 	}
 
 	public JiraIssue(Element e, List<JiraVersion> fixVersions) {
@@ -67,6 +71,9 @@ public class JiraIssue {
 	}
 
 	private void addFixVersions(JiraVersion fixVersion) {
+		if (fixVersion == null) {
+			throw new NullPointerException("fixVersion is null!");
+		}
 		fixVersions.add(fixVersion);
 	}
 
@@ -91,6 +98,18 @@ public class JiraIssue {
 			for (Iterator<Element> iterator2 = fixVersionStrings.iterator(); iterator2.hasNext();) {
 				Element element = iterator2.next();
 				JiraVersion versionByName = JiraVersion.getVersionByName(element.getText());
+				// TODO separate logic!
+				if (versionByName == null) {
+					// FIXME use id to get JiraVersion!!
+					JiraProject projectByKey = JiraProject.getProjectByKey(PlannerHelper.getProjectKey(get(e, "key")));
+					try {
+						projectByKey.getJiraClient().getFixVersionsFromProject(projectByKey, false);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				versionByName = JiraVersion.getVersionByName(element.getText());
 				log.debug("Getting version byName: \"" + element.getText() + "\" is \"" + versionByName + "\"");
 				versions.add(versionByName);
 			}
@@ -104,7 +123,6 @@ public class JiraIssue {
 		return element.getChildText(string);
 	}
 
-	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer("[Jira: (");
 		sb.append("Name: \"").append(key).append("\"");
@@ -117,5 +135,9 @@ public class JiraIssue {
 
 	public String getSummary() {
 		return summary;
+	}
+
+	public String getBuildNo() {
+		return buildNo;
 	}
 }

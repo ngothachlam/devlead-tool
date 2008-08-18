@@ -5,9 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
+import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,12 +13,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 
-import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 
 import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -28,21 +26,18 @@ import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.HyperlinkTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
-import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.jira.access.JiraException;
 import com.jonas.jira.access.JiraIssueNotFoundException;
 import com.jonas.testHelpers.TryoutTester;
 
 public class BoardPanel extends MyComponentPanel {
 
-	private BoardTableModel model;
-
 	public String jira_url = "http://10.155.38.105/jira/browse/";
 
 	private MyTable table;
+	private Logger log = MyLogger.getLogger(BoardPanel.class);
 
 	private final PlannerHelper helper;
 
@@ -59,7 +54,7 @@ public class BoardPanel extends MyComponentPanel {
 	}
 
 	protected void makeContent(BoardTableModel boardTableModel) {
-		model = boardTableModel;
+		BoardTableModel model = boardTableModel;
 
 		table = new MyTable();
 		table.setModel(model);
@@ -67,40 +62,26 @@ public class BoardPanel extends MyComponentPanel {
 		table.setDefaultRenderer(String.class, new StringTableCellRenderer(model));
 		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(model));
 		table.setColumnRenderer(6, new HyperlinkTableCellRenderer(model));
-
 		table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor(model));
 
-		table.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				JTable aTable = (JTable) e.getSource();
-				int itsRow = aTable.rowAtPoint(e.getPoint());
-				int itsColumn = aTable.columnAtPoint(e.getPoint());
-				if (itsColumn == 6) {
-					// HyperLinker.displayURL(jira_url + (String) model.getValueAt(itsRow, itsColumn));
-					String jira = (String) model.getValueAt(itsRow, itsColumn);
-					String jira_url = helper.getJiraUrl(jira);
-					HyperLinker.displayURL(jira_url + "/browse/" + jira);
-				}
-			}
-		});
+		table.addMouseListener(new HyperLinkOpenerAdapter(table, helper, BoardTableModel.COLUMNNAME_HYPERLINK, 0));
 		table.addKeyListener(new KeyAdapter() {
-			public void keyReleased(KeyEvent e) {
+			public void keyTyped(KeyEvent e) {
+				// TODO is there a better way of doing this - not very nice!
 				JTable aTable = (JTable) e.getSource();
 				int itsRow = aTable.getEditingRow();
 				int itsColumn = aTable.getEditingColumn();
 				if (itsColumn == 0) {
-					// TODO this is not very nice - doesn't work with keypressed for a long while (as it repeats) as well as
-					// restricts input!
-					model.fireTableRowsUpdated(itsRow, itsRow);
+					((BoardTableModel) table.getModel()).fireTableRowsUpdated(itsRow, itsRow);
 					char keyChar = e.getKeyChar();
-					String valueAt = (String) model.getValueAt(itsRow, itsColumn);
+					String valueAt = (String) ((BoardTableModel) table.getModel()).getValueAt(itsRow, itsColumn);
 					if (keyChar >= 48 && keyChar <= 57)
-						model.setValueAt(valueAt + keyChar, itsRow, itsColumn);
+						((BoardTableModel) table.getModel()).setValueAt(valueAt + keyChar, itsRow, itsColumn);
 					if (keyChar == 8) {
 						if (valueAt != null && valueAt.length() > 0)
-							model.setValueAt(valueAt.substring(0, valueAt.length() - 1), itsRow, itsColumn);
+							((BoardTableModel) table.getModel()).setValueAt(valueAt.substring(0, valueAt.length() - 1), itsRow, itsColumn);
 					}
-					System.out.println("value  " + model.getValueAt(itsRow, itsColumn));
+					log.debug("value  " + ((BoardTableModel) table.getModel()).getValueAt(itsRow, itsColumn));
 				}
 			}
 		});
@@ -122,13 +103,13 @@ public class BoardPanel extends MyComponentPanel {
 
 		addButton(buttonPanel, "Add", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.addEmptyRow();
+				((BoardTableModel) table.getModel()).addEmptyRow();
 			}
 		});
 
 		addButton(buttonPanel, "Remove", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.removeSelectedRows(table);
+				((BoardTableModel) table.getModel()).removeSelectedRows(table);
 			}
 		});
 
@@ -180,16 +161,12 @@ public class BoardPanel extends MyComponentPanel {
 		addSouth(buttonPanel);
 	}
 
-	// public void setModel(BoardTableModel model) {
-	// table.setModel(model);
-	// }
-
-	public MyTableModel getBoardModel() {
-		return model;
+	public MyTableModel getModel() {
+		return ((MyTableModel) table.getModel());
 	}
 
 	public void setEditable(boolean selected) {
-		model.setEditable(selected);
+		((MyTableModel) table.getModel()).setEditable(selected);
 	}
 
 	public static void main(String[] args) {

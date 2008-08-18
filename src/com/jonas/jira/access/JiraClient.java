@@ -1,12 +1,8 @@
 package com.jonas.jira.access;
 
-import java.awt.Container;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.JFrame;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.commons.httpclient.HttpException;

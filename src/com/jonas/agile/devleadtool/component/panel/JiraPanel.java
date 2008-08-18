@@ -4,23 +4,23 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
+
 import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.common.HyperLinker;
@@ -37,8 +37,8 @@ import com.jonas.testHelpers.TryoutTester;
 public class JiraPanel extends MyComponentPanel {
 
 	private Logger log = MyLogger.getLogger(JiraPanel.class);
-	private JiraTableModel model;
 	private final PlannerHelper helper;
+	MyTable table;
 
 	public JiraPanel(PlannerHelper helper) {
 		this(helper, new JiraTableModel());
@@ -48,30 +48,18 @@ public class JiraPanel extends MyComponentPanel {
 		super(new BorderLayout());
 		this.helper = helper;
 
-		MyTable table = new MyTable();
-		model = jiraModel;
+		table = new MyTable();
+		JiraTableModel model = jiraModel;
 		table.setModel(model);
 		table.setAutoCreateRowSorter(true);
+		table.setDragEnabled(true);
 
 		JScrollPane scrollpane = new JScrollPane(table);
 
 		this.addCenter(scrollpane);
 		this.addSouth(getButtonPanel());
 
-		table.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				JTable aTable = (JTable) e.getSource();
-				int itsRow = aTable.rowAtPoint(e.getPoint());
-				int itsColumn = aTable.columnAtPoint(e.getPoint());
-				if (itsColumn == 5) {
-					// ("http://10.155.38.105/jira/browse/");
-					// "http://10.155.38.105/jira";
-					String jira = (String) model.getValueAt(itsRow, itsColumn);
-					String jira_url = helper.getJiraUrl(jira);
-					HyperLinker.displayURL(jira_url + "/browse/" + jira);
-				}
-			}
-		});
+		table.addMouseListener(new HyperLinkOpenerAdapter(table, helper, JiraTableModel.COLUMNNAME_HYPERLINK, 0));
 
 	}
 
@@ -85,6 +73,7 @@ public class JiraPanel extends MyComponentPanel {
 		final JButton fixVersionButton = new JButton("Refresh");
 		final JButton getJirasButton = new JButton("Get Jiras");
 		final JButton clearJirasButton = new JButton("Clear Jiras");
+		final JButton openJirasButton = new JButton("Open Jiras");
 
 		jiraProjectsCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -153,7 +142,7 @@ public class JiraPanel extends MyComponentPanel {
 								for (int j = 0; j < jiras.length; j++) {
 									log.debug(jiras[j]);
 									dialog.increseProgress();
-									model.addRow(jiras[j]);
+									((JiraTableModel) table.getModel()).addRow(jiras[j]);
 								}
 							} catch (IOException e1) {
 								AlertDialog.alertException(helper, e1);
@@ -178,10 +167,22 @@ public class JiraPanel extends MyComponentPanel {
 		});
 		clearJirasButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				JiraTableModel model = ((JiraTableModel) table.getModel());
 				while (model.getRowCount() > 0) {
 					model.removeRow(0);
 				}
 			}
+		});
+		openJirasButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int[] rows = table.getSelectedRows();
+				for (int j = 0; j < rows.length; j++) {
+					String jira = (String) table.getModel().getValueAt(table.convertRowIndexToModel(rows[j]), 0);
+					String jira_url = helper.getJiraUrl(jira);
+					HyperLinker.displayURL(jira_url + "/browse/" + jira);
+				}
+			}
+
 		});
 
 		buttons.add(jiraProjectsCombo);
@@ -189,6 +190,7 @@ public class JiraPanel extends MyComponentPanel {
 		buttons.add(jiraProjectFixVersionCombo);
 		buttons.add(getJirasButton);
 		buttons.add(clearJirasButton);
+		buttons.add(openJirasButton);
 
 		return buttons;
 	}
@@ -202,11 +204,11 @@ public class JiraPanel extends MyComponentPanel {
 	}
 
 	public JiraTableModel getJiraModel() {
-		return model;
+		return ((JiraTableModel) table.getModel());
 	}
 
 	public void setEditable(boolean selected) {
-		model.setEditable(selected);
+		((JiraTableModel) table.getModel()).setEditable(selected);
 	}
 
 }

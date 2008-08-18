@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -13,7 +12,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 
 import com.ProgressDialog;
@@ -29,7 +27,6 @@ import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
-import com.jonas.jira.access.JiraException;
 import com.jonas.jira.access.JiraIssueNotFoundException;
 import com.jonas.jira.access.JiraListener;
 import com.jonas.testHelpers.TryoutTester;
@@ -59,7 +56,7 @@ public class PlanPanel extends MyComponentPanel {
 			if (method == PlanPanel.SyncMethod.ADD_FROM_BUTTON) {
 				// final String jiraToGet = field.getText();
 				// if (!syncWithJiraCheckbox.isSelected())
-				model.addEmptyRow();
+				((PlanTableModel)table.getModel()).addEmptyRow();
 				// else {
 				// final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Copying Jira to Plan...",
 				// "Getting information from Jira", 0);
@@ -150,7 +147,6 @@ public class PlanPanel extends MyComponentPanel {
 		}
 	}
 
-	private PlanTableModel model;
 	private final PlannerHelper helper;
 	private MyTable table;
 	private Logger log = MyLogger.getLogger(PlanPanel.class);
@@ -163,7 +159,7 @@ public class PlanPanel extends MyComponentPanel {
 	public PlanPanel(PlannerHelper helper, PlanTableModel planModel) {
 		super(new BorderLayout());
 		this.helper = helper;
-		model = planModel;
+		PlanTableModel model = planModel;
 
 		table = new MyTable();
 		table.setModel(model);
@@ -203,7 +199,7 @@ public class PlanPanel extends MyComponentPanel {
 	}
 
 	public PlanTableModel getPlanModel() {
-		return model;
+		return ((PlanTableModel)table.getModel());
 	}
 
 	public static void main(String[] args) {
@@ -214,11 +210,11 @@ public class PlanPanel extends MyComponentPanel {
 	}
 
 	public void setEditable(boolean selected) {
-		model.setEditable(selected);
+		((PlanTableModel)table.getModel()).setEditable(selected);
 	}
 
 	public boolean doesJiraExist(String jira) {
-		return model.doesJiraExist(jira);
+		return ((PlanTableModel)table.getModel()).doesJiraExist(jira);
 	}
 
 }

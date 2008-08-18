@@ -1,7 +1,5 @@
 package com.jonas.jira;
 
-import java.util.List;
-
 import junit.framework.TestCase;
 
 public class JiraVersionTest extends TestCase {
