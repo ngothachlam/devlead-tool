@@ -38,14 +38,14 @@ public class JonasXpathEvaluator {
 		SAXBuilder sb = new SAXBuilder(false);
 		Document doc = sb.build(new StringReader(stringRepresentationOfXml));
 		List<Element> selectNodes = xpath.selectNodes(doc);
-		return selectNodes.get(0);
+		return selectNodes.size() > 0 ? selectNodes.get(0) : null;
 	}
-	
-	public String getElementText(Element element){
+
+	public String getElementText(Element element) {
 		String stringRepresentationOfXml = getStringRepresentationOfXml(element);
 		try {
 			Element xPathNode = getXpathElementFromString(stringRepresentationOfXml);
-			return xPathNode.getText();
+			return xPathNode != null ? xPathNode.getText() : null;
 		} catch (JDOMException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
