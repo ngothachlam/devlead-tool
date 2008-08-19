@@ -47,10 +47,10 @@ public class JiraBuilderTest extends TestCase {
 
 	private final class TestIteratorImplementation implements Iterator {
 		int i = 1;
-		private List<Element> listWithBuildNo2;
+		private List<Element> list;
 
-		public TestIteratorImplementation(List<Element> listWithBuildNo2) {
-			this.listWithBuildNo2 = listWithBuildNo2;
+		public TestIteratorImplementation(List<Element> list) {
+			this.list = list;
 		}
 
 		public boolean hasNext() {
@@ -59,8 +59,7 @@ public class JiraBuilderTest extends TestCase {
 
 		public Object next() {
 			i--;
-			listWithBuildNo2 = listWithBuildNo;
-			return listWithBuildNo2.get(0);
+			return list.get(0);
 		}
 
 		public void remove() {
@@ -96,11 +95,10 @@ public class JiraBuilderTest extends TestCase {
 
 		JiraIssue jiraIssue = jiras.get(0);
 		assertTrue(jiraIssue != null);
-		assertEquals("LLU-4052", jiraIssue.getKey());
-		assertEquals("Change SuiteDispatcher Log from Error to Debug when no jobs are found", jiraIssue.getSummary());
-		assertEquals("Backlog", jiraIssue.getFixVersions().get(0).getName());
-		assertEquals("testBuildNo", jiraIssue.getBuildNo());
-		assertTrue("this line above should fail as there is no build no!!!", false);
+		assertEquals("LLU-4119", jiraIssue.getKey());
+		assertEquals("&apos;Quality Gateway&apos; tests set up", jiraIssue.getSummary());
+		assertEquals("Version 11 - Next Sprint (2)", jiraIssue.getFixVersions().get(0).getName());
+		assertEquals(null, jiraIssue.getBuildNo());
 	}
 
 	// public void testShouldBuildBuildNoOk() throws JDOMException, IOException {
