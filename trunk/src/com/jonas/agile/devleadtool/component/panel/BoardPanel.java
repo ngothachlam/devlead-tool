@@ -59,10 +59,10 @@ public class BoardPanel extends MyComponentPanel {
 		table = new MyTable();
 		table.setModel(model);
 
-		table.setDefaultRenderer(String.class, new StringTableCellRenderer(model));
-		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(model));
-		table.setColumnRenderer(6, new HyperlinkTableCellRenderer(model));
-		table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor(model));
+		table.setDefaultRenderer(String.class, new StringTableCellRenderer());
+		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
+		table.setColumnRenderer(6, new HyperlinkTableCellRenderer());
+		table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
 
 		table.addMouseListener(new HyperLinkOpenerAdapter(table, helper, BoardTableModel.COLUMNNAME_HYPERLINK, 0));
 		table.addKeyListener(new KeyAdapter() {
@@ -71,17 +71,18 @@ public class BoardPanel extends MyComponentPanel {
 				JTable aTable = (JTable) e.getSource();
 				int itsRow = aTable.getEditingRow();
 				int itsColumn = aTable.getEditingColumn();
-				if (itsColumn == 0) {
-					((BoardTableModel) table.getModel()).fireTableRowsUpdated(itsRow, itsRow);
+				log.debug("itsRow: " + itsRow + "itsColumn: " + itsColumn);
+				if (table.getColumnName(itsColumn).equals(BoardTableModel.COLUMNNAME_JIRA)) {
+					// ((BoardTableModel) table.getModel()).fireTableRowsUpdated(itsRow, itsRow);
 					char keyChar = e.getKeyChar();
 					String valueAt = (String) ((BoardTableModel) table.getModel()).getValueAt(itsRow, itsColumn);
 					if (keyChar >= 48 && keyChar <= 57)
-						((BoardTableModel) table.getModel()).setValueAt(valueAt + keyChar, itsRow, itsColumn);
+						table.setValueAt(valueAt + keyChar, itsRow, itsColumn);
 					if (keyChar == 8) {
 						if (valueAt != null && valueAt.length() > 0)
-							((BoardTableModel) table.getModel()).setValueAt(valueAt.substring(0, valueAt.length() - 1), itsRow, itsColumn);
+							table.setValueAt(valueAt.substring(0, valueAt.length() - 1), itsRow, itsColumn);
 					}
-					log.debug("value  " + ((BoardTableModel) table.getModel()).getValueAt(itsRow, itsColumn));
+					log.debug("value  " + table.getValueAt(itsRow, itsColumn));
 				}
 			}
 		});

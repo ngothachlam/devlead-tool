@@ -14,12 +14,14 @@ public class CheckBoxTableCellRendererTest extends TestCase {
 
 	CheckBoxTableCellRenderer renderer;
 	MyTableModel myTableModel_Mock;
+	JTable myTable_Mock;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		myTableModel_Mock = EasyMock.createMock(MyTableModel.class);
-		renderer = new CheckBoxTableCellRenderer(myTableModel_Mock);
+		myTable_Mock = org.easymock.classextension.EasyMock.createMock(JTable.class);
+		myTableModel_Mock = org.easymock.classextension.EasyMock.createMock(MyTableModel.class);
+		renderer = new CheckBoxTableCellRenderer();
 
 	}
 
@@ -29,14 +31,15 @@ public class CheckBoxTableCellRendererTest extends TestCase {
 	}
 
 	public void testShouldSetCorrectColor() {
+		EasyMock.expect(myTable_Mock.getModel()).andReturn(myTableModel_Mock);
 		EasyMock.expect(myTableModel_Mock.isRed(true, 0, 0)).andReturn(false);
+		org.easymock.classextension.EasyMock.replay(myTable_Mock);
+		org.easymock.classextension.EasyMock.replay(myTableModel_Mock);
 
-		EasyMock.replay(myTableModel_Mock);
+		assertEquals(Color.red, renderer.getTableCellRendererComponent(new JTable(), Boolean.TRUE, true, true, 0, 0).getBackground());
 
-		assertEquals(Color.red, renderer.getTableCellRendererComponent(new JTable(), Boolean.TRUE, true, true, 0, 0)
-				.getBackground());
-
-		EasyMock.verify(myTableModel_Mock);
+		org.easymock.classextension.EasyMock.verify(myTable_Mock);
+		org.easymock.classextension.EasyMock.verify(myTableModel_Mock);
 
 	}
 }

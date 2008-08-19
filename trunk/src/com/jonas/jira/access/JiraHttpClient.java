@@ -20,6 +20,7 @@ import org.jdom.xpath.XPath;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
+import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraHttpClient extends HttpClient {
 	private static final String MAX_RESULTS = "100000";
@@ -112,7 +113,7 @@ public class JiraHttpClient extends HttpClient {
 	private List<JiraIssue> getXPath(Document doc, String xPath) throws JDOMException {
 		XPath xpath = XPath.newInstance(xPath);
 		List<Element> list = xpath.selectNodes(doc);
-		return JiraIssue.buildJiras(list);
+		return JiraBuilder.buildJiras(list);
 	}
 
 	public void setJiraUrl(String jiraUrl) {

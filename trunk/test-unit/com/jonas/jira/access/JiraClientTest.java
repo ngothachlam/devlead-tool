@@ -6,7 +6,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
-import com.jonas.jira.JiraTestComponents;
+import com.jonas.jira.TestObjects;
 import com.jonas.jira.JiraVersion;
 
 public class JiraClientTest extends TestCase {
@@ -19,7 +19,7 @@ public class JiraClientTest extends TestCase {
 
 	public void testShouldGetJirasForFixVersionOk() throws HttpException, IOException, JDOMException, JiraException {
 		jiraClient.login();
-		JiraIssue[] jiras = jiraClient.getJirasFromFixVersion(JiraTestComponents.Atlassain_TST);
+		JiraIssue[] jiras = jiraClient.getJirasFromFixVersion(TestObjects.Atlassain_TST);
 		assertTrue(jiras.length > 0);
 	}
 

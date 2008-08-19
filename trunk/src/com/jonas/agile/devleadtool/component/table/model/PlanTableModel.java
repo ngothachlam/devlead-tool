@@ -13,6 +13,7 @@ import com.jonas.jira.JiraVersion;
 
 public class PlanTableModel extends MyTableModel {
 
+	public static final String COLUMNNAME_HYPERLINK = "URL";
 	private static Vector<String> columnNames = new Vector<String>();
 
 	static {
@@ -20,11 +21,12 @@ public class PlanTableModel extends MyTableModel {
 		columnNames.add("FixVersion");
 		columnNames.add("Status");
 		columnNames.add("Resolution");
+		columnNames.add(COLUMNNAME_HYPERLINK);
 	}
 
 	@Override
 	protected Object[] getEmptyRow() {
-		return new Object[] { "", "", "", "" };
+		return new Object[] { "", "", "", "", "" };
 	}
 
 	public void setValueAt(Object value, int row, int column) {
@@ -40,10 +42,6 @@ public class PlanTableModel extends MyTableModel {
 
 	public PlanTableModel(Vector<Vector<Object>> contents, Vector<Object> header) {
 		super(contents, header);
-	}
-
-	public void addEmptyRow() {
-		super.addRow(getEmptyRow());
 	}
 
 	@Override

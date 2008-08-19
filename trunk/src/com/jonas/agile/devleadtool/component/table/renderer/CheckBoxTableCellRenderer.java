@@ -21,14 +21,12 @@ import com.jonas.common.logging.MyLogger;
 
 public class CheckBoxTableCellRenderer extends JPanel implements TableCellRenderer {
 
-	private final MyTableModel model;
 	private static final Logger log = MyLogger.getLogger(CheckBoxTableCellRenderer.class);
 
 	private JCheckBox checkbox = new JCheckBox();
 
-	public CheckBoxTableCellRenderer(MyTableModel model) {
+	public CheckBoxTableCellRenderer() {
 		super(new BorderLayout());
-		this.model = model;
 		checkbox.setHorizontalAlignment(JLabel.CENTER);
 		this.add(checkbox, SwingUtilities.CENTER);
 	}
@@ -39,7 +37,9 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 
 		setFont(table.getFont());
 
-		if (model.isRed(value, row, column)) {
+		MyTableModel model = (MyTableModel) table.getModel();
+		
+		if (model.isRed(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column))) {
 			if (hasFocus)
 				checkbox.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
 			else if (isSelected)

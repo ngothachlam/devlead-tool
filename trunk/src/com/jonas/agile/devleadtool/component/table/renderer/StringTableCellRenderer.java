@@ -17,16 +17,15 @@ import com.jonas.common.logging.MyLogger;
 public class StringTableCellRenderer extends DefaultTableCellRenderer {
 
 	private static final Logger log = MyLogger.getLogger(StringTableCellRenderer.class);
-	private final MyTableModel model;
 
-	public StringTableCellRenderer(MyTableModel model) {
-		this.model = model;
+	public StringTableCellRenderer() {
 	}
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
 			int column) {
 		JComponent cell = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		log.debug("String for column: " + column + " with value: " + value + " (class: " + debugClassOfValue(value) + ")");
+		MyTableModel model = (MyTableModel) table.getModel();
 		if (model.isRed(value, row, column)) {
 			if (hasFocus)
 				cell.setBackground(SwingUtil.COLOR_FOCUS_ERROR);

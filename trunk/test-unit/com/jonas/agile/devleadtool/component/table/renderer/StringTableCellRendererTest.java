@@ -14,7 +14,7 @@ public class StringTableCellRendererTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		model = new BoardTableModel();
-		board = new StringTableCellRenderer(model);
+		board = new StringTableCellRenderer();
 	}
 
 	protected void tearDown() throws Exception {

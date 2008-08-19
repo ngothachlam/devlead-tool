@@ -16,10 +16,12 @@ import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
+import com.atlassian.jira.rpc.soap.beans.RemoteResolution;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
+import com.jonas.jira.JiraResolution;
 import com.jonas.jira.JiraVersion;
 
 public class JiraClient {
@@ -30,8 +32,8 @@ public class JiraClient {
 
 	public static final JiraClient JiraClientAolBB = new JiraClient(ClientConstants.JIRA_URL_AOLBB + ClientConstants.WS_LOCATION,
 			ClientConstants.JIRA_URL_AOLBB);
-	public static final JiraClient JiraClientAtlassin = new JiraClient(ClientConstants.JIRA_URL_ATLASSIN
-			+ ClientConstants.WS_LOCATION, ClientConstants.JIRA_URL_ATLASSIN);
+	public static final JiraClient JiraClientAtlassin = new JiraClient(ClientConstants.JIRA_URL_ATLASSIN + ClientConstants.WS_LOCATION,
+			ClientConstants.JIRA_URL_ATLASSIN);
 
 	private JiraClient(String address) {
 		JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = getLocator(address);
@@ -67,6 +69,7 @@ public class JiraClient {
 	}
 
 	public JiraIssue[] getJirasFromFixVersion(JiraVersion version) throws HttpException, IOException, JDOMException, JiraException {
+		loadResolutionsIfRequired();
 		List<JiraIssue> jiras = httpClient.getJiras(version);
 		return (JiraIssue[]) jiras.toArray(new JiraIssue[jiras.size()]);
 	}
@@ -93,17 +96,33 @@ public class JiraClient {
 
 	public JiraIssue getJira(String jira, JiraProject project) throws RemotePermissionException, RemoteAuthenticationException,
 			RemoteException, java.rmi.RemoteException, JiraIssueNotFoundException {
-		//TODO thread this!!
+		// TODO thread this!!
+		loadResolutionsIfRequired();
 		JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_JIRA);
 		RemoteIssue remoteJira = soapClient.getJira(jira.toUpperCase());
 		JiraIssue jiraIssue = new JiraIssue(remoteJira, project);
-		if(jiraIssue == null){
-			throw new JiraIssueNotFoundException("Jira ["+jira+"] doesn't exist in " + project.getJiraKey());
+		if (jiraIssue == null) {
+			throw new JiraIssueNotFoundException("Jira [" + jira + "] doesn't exist in " + project.getJiraKey());
 		}
 		return jiraIssue;
 	}
 
 	public String getJiraUrl() {
 		return httpClient.getJiraUrl();
+	}
+
+	private void loadResolutionsIfRequired() throws RemotePermissionException, RemoteAuthenticationException, java.rmi.RemoteException {
+		if (JiraResolution.getAmount() < 1) {
+			synchronized (JiraResolution.class) {
+				if (JiraResolution.getAmount() < 1) {
+					loadResolutions();
+				}
+			}
+		}
+	}
+
+	private void loadResolutions() throws RemotePermissionException, RemoteAuthenticationException, java.rmi.RemoteException {
+		RemoteResolution[] remoteResolutions = soapClient.getResolutions();
+		JiraResolution.setResolutions(remoteResolutions);
 	}
 }

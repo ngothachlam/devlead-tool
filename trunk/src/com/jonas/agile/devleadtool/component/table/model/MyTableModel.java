@@ -56,4 +56,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 		return JiraProject.getProjectByKey(PlannerHelper.getProjectKey(jira));
 	}
 
+	public final void addEmptyRow() {
+		this.addRow(getEmptyRow());
+	}
 }
