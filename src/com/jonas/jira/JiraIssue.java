@@ -1,7 +1,6 @@
 package com.jonas.jira;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -9,12 +8,11 @@ import org.jdom.Element;
 
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
-import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.logging.MyLogger;
 
 public class JiraIssue {
 
-	private static Logger log = MyLogger.getLogger(JiraIssue.class);
+	public static Logger log = MyLogger.getLogger(JiraIssue.class);
 	private String key;
 	private List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
 	private String status;
@@ -22,8 +20,8 @@ public class JiraIssue {
 	private String summary;
 	private String buildNo;
 
-	private JiraIssue(Element e) {
-		this(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"));
+	public void setBuildNo(String buildNo) {
+		this.buildNo = buildNo;
 	}
 
 	public JiraIssue(String key, String summary, String status, String resolution) {
@@ -35,20 +33,9 @@ public class JiraIssue {
 		// TODO: add build no
 	}
 
-	public JiraIssue(Element e, List<JiraVersion> fixVersions) {
-		this(e);
-		this.fixVersions = fixVersions;
-		if (fixVersions.size() > 1) {
-			log.error("Cannot handle more than one fix version at the moment for " + getKey());
-		}
-	}
-
 	public JiraIssue(RemoteIssue jira, JiraProject project) {
-		this(jira.getKey(), jira.getSummary(), jira.getStatus(), jira.getResolution());
+		this(jira.getKey(), jira.getSummary(), jira.getStatus(), JiraResolution.getResolution(jira.getResolution()).getName());
 		RemoteVersion[] tempFixVersions = jira.getFixVersions();
-		// if (tempFixVersions.length > 1) {
-		// throw new RuntimeException(getName() + " - has more than one fixversion!. Cannot handle this at the moment!!");
-		// }
 		for (int i = 0; i < tempFixVersions.length; i++) {
 			RemoteVersion remoteVersion = tempFixVersions[i];
 			JiraVersion fixVers = JiraVersion.getVersionById(remoteVersion.getId());
@@ -70,7 +57,7 @@ public class JiraIssue {
 		fixVersions.clear();
 	}
 
-	private void addFixVersions(JiraVersion fixVersion) {
+	public void addFixVersions(JiraVersion fixVersion) {
 		if (fixVersion == null) {
 			throw new NullPointerException("fixVersion is null!");
 		}
@@ -87,40 +74,6 @@ public class JiraIssue {
 
 	public String getResolution() {
 		return resolution;
-	}
-
-	public static List<JiraIssue> buildJiras(List<Element> list) {
-		List<JiraIssue> jiras = new ArrayList<JiraIssue>();
-		for (Iterator<Element> iterator = list.iterator(); iterator.hasNext();) {
-			Element e = iterator.next();
-			List<Element> fixVersionStrings = e.getChildren("fixVersion");
-			List<JiraVersion> versions = new ArrayList<JiraVersion>();
-			for (Iterator<Element> iterator2 = fixVersionStrings.iterator(); iterator2.hasNext();) {
-				Element element = iterator2.next();
-				JiraVersion versionByName = JiraVersion.getVersionByName(element.getText());
-				// TODO separate logic!
-				if (versionByName == null) {
-					// FIXME use id to get JiraVersion!!
-					JiraProject projectByKey = JiraProject.getProjectByKey(PlannerHelper.getProjectKey(get(e, "key")));
-					try {
-						projectByKey.getJiraClient().getFixVersionsFromProject(projectByKey, false);
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-				versionByName = JiraVersion.getVersionByName(element.getText());
-				log.debug("Getting version byName: \"" + element.getText() + "\" is \"" + versionByName + "\"");
-				versions.add(versionByName);
-			}
-			jiras.add(new JiraIssue(e, versions));
-
-		}
-		return jiras;
-	}
-
-	private static String get(Element element, String string) {
-		return element.getChildText(string);
 	}
 
 	public String toString() {

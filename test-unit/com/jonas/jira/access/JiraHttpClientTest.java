@@ -2,8 +2,6 @@ package com.jonas.jira.access;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -20,7 +18,7 @@ import org.jdom.xpath.XPath;
 
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
-import com.jonas.jira.JiraTestComponents;
+import com.jonas.jira.TestObjects;
 import com.jonas.jira.JiraVersion;
 
 public class JiraHttpClientTest extends TestCase {
@@ -31,7 +29,7 @@ public class JiraHttpClientTest extends TestCase {
 	public void testApacheCommonsAttempt() throws IOException, HttpException, JDOMException, JiraException {
 		JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
 		client.loginToJira();
-		asserFixVersionExistsAndHasJirasAgainstIt(client, JiraTestComponents.Atlassain_TST);
+		asserFixVersionExistsAndHasJirasAgainstIt(client, TestObjects.Atlassain_TST);
 	}
 
 	private void asserFixVersionExistsAndHasJirasAgainstIt(JiraHttpClient client, JiraVersion version) throws HttpException, IOException,
@@ -46,8 +44,7 @@ public class JiraHttpClientTest extends TestCase {
 	}
 
 	public void testShouldBuildJiraXMLCorrectly() throws IOException, JDOMException {
-		File file = new File("test-functional/jiraXML.xml");
-		String xml = getFileContents(file);
+		String xml = getFileContents(TestObjects.file);
 		JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
 		List<JiraIssue> jiras = client.buildJirasFromXML(xml);
 		assertEquals(1, jiras.size());
@@ -65,8 +62,7 @@ public class JiraHttpClientTest extends TestCase {
 	}
 
 	public void testShouldBuildJiraXMLCorrectlyWithBuildNo() throws IOException, JDOMException {
-		File file = new File("test-functional/jiraXMLwBuildNo.xml");
-		String xml = getFileContents(file);
+		String xml = getFileContents(TestObjects.fileWithBuildNo);
 		JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
 		List<JiraIssue> jiras = client.buildJirasFromXML(xml);
 		assertEquals(1, jiras.size());
@@ -118,14 +114,4 @@ public class JiraHttpClientTest extends TestCase {
 		}
 	}
 
-	private String getBuildNo(Element element) {
-		List<Element> children = element.getChild("customfields").getChild("customfield").getChildren("customfieldvalues");
-		// FIXME get the buildNo!!
-		// return children.getChildText("customfieldvalue");
-		return null;
-	}
-
-	private static String get(Element element, String string) {
-		return element.getChildText(string);
-	}
 }

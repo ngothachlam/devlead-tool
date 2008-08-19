@@ -9,7 +9,6 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 
 import com.jonas.agile.devleadtool.component.InternalFrame;
-import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -22,8 +21,6 @@ import com.jonas.jira.access.JiraListener;
 public class PlannerHelper {
 
 	private String title;
-
-	private MyTableModel model;
 
 	private InternalFrame internalFrame;
 

@@ -1,11 +1,5 @@
 package com.jonas.jira.access;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 
 import org.apache.axis.AxisFault;
@@ -15,12 +9,11 @@ import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
 
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
-import com.atlassian.jira.rpc.exception.RemoteValidationException;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
+import com.atlassian.jira.rpc.soap.beans.RemoteResolution;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
-import com.jonas.jira.JiraResolution;
 
 /**
  * Sample JIRA SOAP client. Note that the constants sit in the {@link ClientConstants} interface
@@ -30,8 +23,6 @@ public class JiraSoapClient {
 	private final Logger log = MyLogger.getLogger(JiraSoapClient.class);
 	private static final String LOGIN_NAME = "soaptester";
 	private static final String LOGIN_PASSWORD = "soaptester";
-
-	private static JiraResolution resolutions;
 
 	private JiraSoapService jiraSoapService = null;
 	private String token;
@@ -136,6 +127,20 @@ public class JiraSoapClient {
 		log.debug("Getting FixVersion Done!");
 		return null;
 	}
+	public RemoteResolution[] getResolutions() throws RemotePermissionException,
+	RemoteAuthenticationException, RemoteException {
+		log.debug("Getting Resolutions");
+		
+		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
+			public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
+			com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+				return jiraSoapService.getResolutions(getToken());
+			}
+			
+		});
+		RemoteResolution[] resolutions = (RemoteResolution[]) command.execute();
+		return resolutions;
+	}		
 
 	public RemoteVersion[] getFixVersions(final JiraProject jiraProject) throws RemotePermissionException, RemoteAuthenticationException,
 			com.atlassian.jira.rpc.exception.RemoteException, RemoteException {

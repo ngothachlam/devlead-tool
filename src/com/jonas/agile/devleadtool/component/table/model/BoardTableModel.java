@@ -9,8 +9,9 @@ import com.jonas.common.logging.MyLogger;
 public class BoardTableModel extends MyTableModel {
 
 	public static final String COLUMNNAME_HYPERLINK = "URL";
+	public static final String COLUMNNAME_JIRA = "Jira";
 
-	private static String[] tableHeader = { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete", COLUMNNAME_HYPERLINK };
+	private static String[] tableHeader = { COLUMNNAME_JIRA, "Open", "Bugs", "In-Progress", "Resolved", "Complete", COLUMNNAME_HYPERLINK };
 
 	private static Object[] tableContents = { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
 			Boolean.FALSE, new String("") };
@@ -72,9 +73,6 @@ public class BoardTableModel extends MyTableModel {
 		return numberTicks;
 	}
 
-	public void addEmptyRow() {
-		this.addRow(getEmptyRow());
-	}
 
 	public int countOfSameValueInColumn(Object value, int column) {
 		int countOfSimilar = 0;

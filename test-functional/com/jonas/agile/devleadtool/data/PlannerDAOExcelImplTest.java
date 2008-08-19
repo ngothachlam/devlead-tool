@@ -13,7 +13,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.jira.JiraTestComponents;
+import com.jonas.jira.TestObjects;
 
 public class PlannerDAOExcelImplTest extends TestCase {
 	File xlsFile = new File("bin\\test.xls");
@@ -101,8 +101,8 @@ public class PlannerDAOExcelImplTest extends TestCase {
 		assertEquals(0, model_loaded.getRowCount());
 
 		// Modify,
-		model_loaded.addRow(new Object[] { "123", "desc1", JiraTestComponents.Version10, "1", "2", "link1" });
-		model_loaded.addRow(new Object[] { "1234", "desc2", JiraTestComponents.Version11, "3", "4", "link2" });
+		model_loaded.addRow(new Object[] { "123", "desc1", TestObjects.Version10, "1", "2", "link1" });
+		model_loaded.addRow(new Object[] { "1234", "desc2", TestObjects.Version11, "3", "4", "link2" });
 
 		// Save and Load on the existing file
 		dao.saveJiraModel(xlsFile, model_loaded);

@@ -10,7 +10,7 @@ import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 
 public class HyperlinkTableCellRenderer extends DefaultTableCellRenderer {
 
-	public HyperlinkTableCellRenderer(MyTableModel model) {
+	public HyperlinkTableCellRenderer() {
 	}
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
