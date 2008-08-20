@@ -1,12 +1,9 @@
 package com.jonas.agile.devleadtool.component.table.renderer;
 
 import java.awt.Component;
-
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-
-import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 
 public class HyperlinkTableCellRenderer extends DefaultTableCellRenderer {
 

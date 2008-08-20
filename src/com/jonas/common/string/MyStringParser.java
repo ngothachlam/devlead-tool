@@ -1,12 +1,20 @@
 package com.jonas.common.string;
 
+import java.util.ArrayList;
 import java.util.List;
-
+import java.util.StringTokenizer;
 
 public class MyStringParser {
 
+   private static final String delims = " ,;";
+
    public List<String> separateString(String string) {
-      throw new UnsupportedOperationException("Not Implemented yet!");
+      StringTokenizer st = new StringTokenizer(string, delims);
+      List<String> separateStrings = new ArrayList<String>();
+      while (st.hasMoreTokens()) {
+         separateStrings.add(st.nextToken());
+      }
+      return separateStrings;
    }
 
 }

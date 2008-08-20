@@ -10,18 +10,19 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.JiraClient;
 
 public class JiraProject {
-   private static Logger log = MyLogger.getLogger(JiraProject.class);
    private static List<JiraProject> projects = new ArrayList<JiraProject>();
    
    public static final JiraProject ATLASSIN_TST = new JiraProject(JiraClient.JiraClientAtlassin, "Atlassin", "TST", "10420");
    public static final JiraProject LLU_DEV_SUPPORT = new JiraProject(JiraClient.JiraClientAolBB, "LLUDEVSUP", "LLUDEVSUP", "10192");
    public static final JiraProject LLU_SYSTEMS_PROVISIONING = new JiraProject(JiraClient.JiraClientAolBB, "LLU", "LLU", "10070");
+   
+   private static Logger log = MyLogger.getLogger(JiraProject.class);
 
    private JiraClient client;
    private final Map<String, JiraVersion> fixVersions = new HashMap<String, JiraVersion>();
-   private final String name;
-   private final String jiraKey;
    private final String id;
+   private final String jiraKey;
+   private final String name;
 
    protected JiraProject(JiraClient client, String name, String jiraKey, String id) {
       this.client = client;
@@ -57,6 +58,38 @@ public class JiraProject {
       fixVersions.clear();
    }
 
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      JiraProject other = (JiraProject) obj;
+      if (fixVersions == null) {
+         if (other.fixVersions != null)
+            return false;
+      } else if (!fixVersions.equals(other.fixVersions))
+         return false;
+      if (id == null) {
+         if (other.id != null)
+            return false;
+      } else if (!id.equals(other.id))
+         return false;
+      if (jiraKey == null) {
+         if (other.jiraKey != null)
+            return false;
+      } else if (!jiraKey.equals(other.jiraKey))
+         return false;
+      if (name == null) {
+         if (other.name != null)
+            return false;
+      } else if (!name.equals(other.name))
+         return false;
+      return true;
+   }
+
    public JiraVersion[] getFixVersions(boolean getArchivedVersions) {
       JiraVersion[] versionByProject = JiraVersion.getVersionByProject(this);
       List<JiraVersion> versionsToReturn = new ArrayList<JiraVersion>();
@@ -85,6 +118,17 @@ public class JiraProject {
 
    public String getName() {
       return name;
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((fixVersions == null) ? 0 : fixVersions.hashCode());
+      result = prime * result + ((id == null) ? 0 : id.hashCode());
+      result = prime * result + ((jiraKey == null) ? 0 : jiraKey.hashCode());
+      result = prime * result + ((name == null) ? 0 : name.hashCode());
+      return result;
    }
 
    public String toString() {
