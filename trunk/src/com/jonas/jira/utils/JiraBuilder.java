@@ -12,7 +12,9 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
+import com.jonas.jira.JiraStatus;
 import com.jonas.jira.JiraVersion;
+import com.jonas.jira.access.JiraClient;
 
 public class JiraBuilder {
 
@@ -46,7 +48,7 @@ public class JiraBuilder {
       // FIXME:
       // JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), remoteJira.getStatus(),
       // JiraResolution.getResolution(remoteJira.getResolution()).getName());
-      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), remoteJira.getStatus(), remoteJira.getResolution());
+      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), JiraStatus.getJiraStatusById(remoteJira.getStatus()).getName(), remoteJira.getResolution());
       RemoteVersion[] tempFixVersions = remoteJira.getFixVersions();
       for (int i = 0; i < tempFixVersions.length; i++) {
          RemoteVersion remoteVersion = tempFixVersions[i];
@@ -66,26 +68,7 @@ public class JiraBuilder {
       List<JiraIssue> jiras = new ArrayList<JiraIssue>();
       for (Iterator<Element> iterator = list.iterator(); iterator.hasNext();) {
          Element e = iterator.next();
-         List<Element> fixVersionStrings = e.getChildren("fixVersion");
-         List<JiraVersion> versions = new ArrayList<JiraVersion>();
-         for (Iterator<Element> iterator2 = fixVersionStrings.iterator(); iterator2.hasNext();) {
-            Element element = iterator2.next();
-            JiraVersion versionByName = JiraVersion.getVersionByName(element.getText());
-            // TODO separate logic!
-            if (versionByName == null) {
-               // FIXME use id to get JiraVersion!!
-               JiraProject projectByKey = JiraProject.getProjectByKey(PlannerHelper.getProjectKey(get(e, "key")));
-               try {
-                  projectByKey.getJiraClient().getFixVersionsFromProject(projectByKey, false);
-               } catch (Exception e1) {
-                  // TODO Auto-generated catch block
-                  e1.printStackTrace();
-               }
-            }
-            versionByName = JiraVersion.getVersionByName(element.getText());
-            JiraIssue.log.debug("Getting version byName: \"" + element.getText() + "\" is \"" + versionByName + "\"");
-            versions.add(versionByName);
-         }
+         List<JiraVersion> versions = buildJiraVersion(e);
          JiraIssue jiraIssue = buildJira(e, versions);
 
          for (XPathImplementor xPathImplementor : jiraXpathActions) {
@@ -96,6 +79,30 @@ public class JiraBuilder {
 
       }
       return jiras;
+   }
+
+   @SuppressWarnings("unchecked")
+   private static List<JiraVersion> buildJiraVersion(Element e) {
+      List<Element> fixVersionStrings = e.getChildren("fixVersion");
+      List<JiraVersion> versions = new ArrayList<JiraVersion>();
+      for (Iterator<Element> iterator2 = fixVersionStrings.iterator(); iterator2.hasNext();) {
+         Element element = iterator2.next();
+         JiraVersion versionByName = JiraVersion.getVersionByName(element.getText());
+         if (versionByName == null) {
+            // FIXME use id to get JiraVersion!!
+            JiraProject projectByKey = JiraProject.getProjectByKey(PlannerHelper.getProjectKey(get(e, "key")));
+            try {
+               JiraClient jiraClient = projectByKey.getJiraClient();
+               jiraClient.getFixVersionsFromProject(projectByKey, false);
+            } catch (Exception e1) {
+               e1.printStackTrace();
+            }
+         }
+         versionByName = JiraVersion.getVersionByName(element.getText());
+         JiraIssue.log.debug("Getting version byName: \"" + element.getText() + "\" is \"" + versionByName + "\"");
+         versions.add(versionByName);
+      }
+      return versions;
    }
 
    public static JiraVersion buildJiraVersion(RemoteVersion remoteVersion, JiraProject jiraProject) {

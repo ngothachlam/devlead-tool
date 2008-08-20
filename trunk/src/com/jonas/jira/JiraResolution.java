@@ -8,6 +8,10 @@ import com.atlassian.jira.rpc.soap.beans.RemoteResolution;
 public class JiraResolution {
 
 	private final static Map<String, JiraResolution> jiraResolutions = new HashMap<String, JiraResolution>();
+	
+   //Use: http://jira.atlassian.com/secure/IssueNavigator.jspa?reset=true&resolution=-1&tempMax=1 to try!!
+	//TODO: Add preset resolutions!!
+	
 	private final String id;
 	private final String name;
 	private final String description;
