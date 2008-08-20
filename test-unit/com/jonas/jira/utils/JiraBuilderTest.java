@@ -1,102 +1,111 @@
 package com.jonas.jira.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.easymock.EasyMock;
-import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.xpath.XPath;
 
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
+import com.jonas.agile.devleadtool.junitutils.TestIterator;
 import com.jonas.jira.JiraIssue;
+import com.jonas.jira.JiraVersion;
 import com.jonas.jira.TestObjects;
 
-public class JiraBuilderTest extends TestCase {
+public class JiraBuilderTest extends JonasTestCase {
 
+	private static final String XPATH_JIRA_RSS_CHANNEL_ITEM = "/rss/channel/item";
 	List<Element> listWithBuildNo = null;
 	List<Element> listWithOutBuildNo = null;
 
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
 	public JiraBuilderTest() {
-		listWithBuildNo = setMockObject(TestObjects.fileWithBuildNo);
-		listWithOutBuildNo = setMockObject(TestObjects.file);
+		listWithBuildNo = getDomFromFile(TestObjects.fileWithBuildNo, XPATH_JIRA_RSS_CHANNEL_ITEM);
+		listWithOutBuildNo = getDomFromFile(TestObjects.file, XPATH_JIRA_RSS_CHANNEL_ITEM);
 	}
 
-	private List<Element> setMockObject(File file) {
-		try {
-			SAXBuilder sb = new SAXBuilder();
-			Document doc = sb.build(file);
-			XPath xpath = XPath.newInstance("/rss/channel/item");
-			return xpath.selectNodes(doc);
-		} catch (JDOMException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
+	public void testShouldBuildJiraOkUsingElement() {
+		Element e = createClassMock(Element.class);
+		setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution");
+
+		replay();
+
+		JiraIssue jira = JiraBuilder.buildJira(e);
+
+		verify();
+
+		assertJiraDetails(jira, "LLU-1", "Blah", "BlahStatus", "BlahResolution", new JiraVersion[]{});
+		assertEquals(0, jira.getFixVersions().size());
+		assertEquals(null, jira.getBuildNo());
 	}
 
-	private final class TestIteratorImplementation implements Iterator {
-		int i = 1;
-		private List<Element> list;
+	public void testShouldBuildJiraOkUsingElementAndFixVersions() {
+		Element e = createClassMock(Element.class);
+		List<JiraVersion> fixVersions = createInterfaceMock(List.class);
+		
+		setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution");
+		EasyMock.expect(fixVersions.get(0)).andReturn(TestObjects.Version_10);
+		EasyMock.expect(fixVersions.size()).andReturn(1);
+		
+		replay();
 
-		public TestIteratorImplementation(List<Element> list) {
-			this.list = list;
-		}
+		JiraIssue jira = JiraBuilder.buildJira(e, fixVersions);
 
-		public boolean hasNext() {
-			return i > 0;
-		}
+		verify();
 
-		public Object next() {
-			i--;
-			return list.get(0);
-		}
-
-		public void remove() {
-			i--;
-		}
+		assertJiraDetails(jira, "LLU-1", "Blah", "BlahStatus", "BlahResolution", new JiraVersion[]{TestObjects.Version_10});
+		assertEquals(1, jira.getFixVersions().size());
+		assertEquals(TestObjects.Version_10, jira.getFixVersions().get(0));
+		assertEquals(null, jira.getBuildNo());
 	}
 
-	List<Element> mockList = EasyMock.createMock(List.class);
+	public void testShouldBuildJiraOkUsingElementAndFixVersionsWithMoreThanOneFixVersion() {
+		Element e = createClassMock(Element.class);
+		List<JiraVersion> fixVersions = createInterfaceMock(List.class);
 
-	public void testShouldBuildJirasOkWithBuildNo() {
-		EasyMock.expect(mockList.iterator()).andReturn(new TestIteratorImplementation(listWithBuildNo));
-		EasyMock.replay(mockList);
+		setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution");
+		EasyMock.expect(fixVersions.get(0)).andReturn(TestObjects.Version_10);
+		EasyMock.expect(fixVersions.size()).andReturn(2);
+		
+		replay();
+
+		JiraIssue jira = JiraBuilder.buildJira(e, fixVersions);
+
+		verify();
+
+		assertJiraDetails(jira, "LLU-1", "Blah", "BlahStatus", "BlahResolution",new JiraVersion[]{TestObjects.Version_10});
+		assertEquals(1, jira.getFixVersions().size());
+		assertEquals(TestObjects.Version_10, jira.getFixVersions().get(0));
+		assertEquals(null, jira.getBuildNo());
+	}
+
+	public void testShouldBuildJirasOkUsingListOfElementsWithBuildNo() {
+		List<Element> mockList = createInterfaceMock(List.class);
+		EasyMock.expect(mockList.iterator()).andReturn(new TestIterator(listWithBuildNo, 1));
+		
+		replay();
 
 		List<JiraIssue> jiras = JiraBuilder.buildJiras(mockList);
 
-		EasyMock.verify(mockList);
+		verify();
 
+		assertEquals(1, jiras.size());
 		JiraIssue jiraIssue = jiras.get(0);
-		assertTrue(jiraIssue != null);
-		assertEquals("LLU-4052", jiraIssue.getKey());
-		assertEquals("Change SuiteDispatcher Log from Error to Debug when no jobs are found", jiraIssue.getSummary());
-		assertEquals("Backlog", jiraIssue.getFixVersions().get(0).getName());
+		assertJiraDetails(jiraIssue, "LLU-4052", "Change SuiteDispatcher Log from Error to Debug when no jobs are found", "Open", "Unresolved", new JiraVersion[]{TestObjects.Version_Backlog});
 		assertEquals("testBuildNo", jiraIssue.getBuildNo());
 	}
 
-	public void testShouldBuildJirasOkWithoutBuildNo() {
-		EasyMock.expect(mockList.iterator()).andReturn(new TestIteratorImplementation(listWithOutBuildNo));
-		EasyMock.replay(mockList);
+	public void testShouldBuildJirasOkUsingListOfElementsWithoutBuildNo() {
+		List<Element> mockList = createInterfaceMock(List.class);
+		EasyMock.expect(mockList.iterator()).andReturn(new TestIterator(listWithOutBuildNo, 1));
+		
+		replay();
 
 		List<JiraIssue> jiras = JiraBuilder.buildJiras(mockList);
 
-		EasyMock.verify(mockList);
+		verify();
 
+		assertEquals(1, jiras.size());
 		JiraIssue jiraIssue = jiras.get(0);
-		assertTrue(jiraIssue != null);
-		assertEquals("LLU-4119", jiraIssue.getKey());
-		assertEquals("&apos;Quality Gateway&apos; tests set up", jiraIssue.getSummary());
+		assertJiraDetails(jiraIssue, "LLU-4119", "&apos;Quality Gateway&apos; tests set up", "Open", "Unresolved");
 		assertEquals("Version 11 - Next Sprint (2)", jiraIssue.getFixVersions().get(0).getName());
 		assertEquals(null, jiraIssue.getBuildNo());
 	}

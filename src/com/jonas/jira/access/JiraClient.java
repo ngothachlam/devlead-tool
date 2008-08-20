@@ -23,17 +23,22 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraResolution;
 import com.jonas.jira.JiraVersion;
+import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraClient {
 
-	private Logger log = MyLogger.getLogger(JiraClient.class);
+	public static final JiraClient JiraClientAolBB = new JiraClient(ClientConstants.JIRA_URL_AOLBB + ClientConstants.WS_LOCATION, ClientConstants.JIRA_URL_AOLBB);
+	public static final JiraClient JiraClientAtlassin = new JiraClient(ClientConstants.JIRA_URL_ATLASSIN + ClientConstants.WS_LOCATION, ClientConstants.JIRA_URL_ATLASSIN);
 	private JiraHttpClient httpClient;
+
+	private Logger log = MyLogger.getLogger(JiraClient.class);
 	private JiraSoapClient soapClient;
 
-	public static final JiraClient JiraClientAolBB = new JiraClient(ClientConstants.JIRA_URL_AOLBB + ClientConstants.WS_LOCATION,
-			ClientConstants.JIRA_URL_AOLBB);
-	public static final JiraClient JiraClientAtlassin = new JiraClient(ClientConstants.JIRA_URL_ATLASSIN + ClientConstants.WS_LOCATION,
-			ClientConstants.JIRA_URL_ATLASSIN);
+	public JiraClient(String address, String jiraUrl) {
+		this(address);
+		this.setHttpClient(new JiraHttpClient(jiraUrl));
+		// httpClient.setJiraUrl(jiraUrl);
+	}
 
 	private JiraClient(String address) {
 		JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = getLocator(address);
@@ -47,10 +52,45 @@ public class JiraClient {
 		}
 	}
 
-	public JiraClient(String address, String jiraUrl) {
-		this(address);
-		this.setHttpClient(new JiraHttpClient(jiraUrl));
-		// httpClient.setJiraUrl(jiraUrl);
+	public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean isArchived) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
+		JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_FIXVERSION);
+		RemoteVersion[] fixVersions = soapClient.getFixVersions(jiraProject);
+		buildJiraVersions(fixVersions, jiraProject);
+		return jiraProject.getFixVersions(isArchived);
+	}
+
+	public JiraIssue getJira(String jira, JiraProject project) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException, JiraIssueNotFoundException {
+		// TODO thread this!!
+		loadResolutionsIfRequired();
+		JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_JIRA);
+		RemoteIssue remoteJira = soapClient.getJira(jira.toUpperCase());
+		JiraIssue jiraIssue = JiraBuilder.buildJira(remoteJira, project);
+		if (jiraIssue == null) {
+			throw new JiraIssueNotFoundException("Jira [" + jira + "] doesn't exist in " + project.getJiraKey());
+		}
+		return jiraIssue;
+	}
+
+	public JiraIssue[] getJirasFromFixVersion(JiraVersion version) throws HttpException, IOException, JDOMException, JiraException {
+		loadResolutionsIfRequired();
+		List<JiraIssue> jiras = httpClient.getJiras(version);
+		return (JiraIssue[]) jiras.toArray(new JiraIssue[jiras.size()]);
+	}
+
+	public String getJiraUrl() {
+		return httpClient.getJiraUrl();
+	}
+
+	public void login() throws HttpException, IOException, JiraException {
+		JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.LOGGING_IN);
+		httpClient.loginToJira();
+	}
+
+	private void buildJiraVersions(RemoteVersion[] fixVersions, JiraProject jiraProject) {
+		jiraProject.clearFixVersions();
+		for (int i = 0; i < fixVersions.length; i++) {
+			JiraBuilder.buildJiraVersion(fixVersions[i], jiraProject);
+		}
 	}
 
 	private JiraSoapServiceServiceLocator getLocator(String address) {
@@ -60,55 +100,9 @@ public class JiraClient {
 		return jiraSoapServiceServiceLocator;
 	}
 
-	private void setHttpClient(JiraHttpClient httpClient) {
-		this.httpClient = httpClient;
-	}
-
-	private void setSoapClient(JiraSoapClient soapClient) {
-		this.soapClient = soapClient;
-	}
-
-	public JiraIssue[] getJirasFromFixVersion(JiraVersion version) throws HttpException, IOException, JDOMException, JiraException {
-		loadResolutionsIfRequired();
-		List<JiraIssue> jiras = httpClient.getJiras(version);
-		return (JiraIssue[]) jiras.toArray(new JiraIssue[jiras.size()]);
-	}
-
-	public void login() throws HttpException, IOException, JiraException {
-		JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.LOGGING_IN);
-		httpClient.loginToJira();
-	}
-
-	public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean isArchived) throws RemotePermissionException,
-			RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
-		JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_FIXVERSION);
-		RemoteVersion[] fixVersions = soapClient.getFixVersions(jiraProject);
-		buildJiraVersions(fixVersions, jiraProject);
-		return jiraProject.getFixVersions(isArchived);
-	}
-
-	private void buildJiraVersions(RemoteVersion[] fixVersions, JiraProject jiraProject) {
-		jiraProject.clearFixVersions();
-		for (int i = 0; i < fixVersions.length; i++) {
-			new JiraVersion(fixVersions[i], jiraProject);
-		}
-	}
-
-	public JiraIssue getJira(String jira, JiraProject project) throws RemotePermissionException, RemoteAuthenticationException,
-			RemoteException, java.rmi.RemoteException, JiraIssueNotFoundException {
-		// TODO thread this!!
-		loadResolutionsIfRequired();
-		JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_JIRA);
-		RemoteIssue remoteJira = soapClient.getJira(jira.toUpperCase());
-		JiraIssue jiraIssue = new JiraIssue(remoteJira, project);
-		if (jiraIssue == null) {
-			throw new JiraIssueNotFoundException("Jira [" + jira + "] doesn't exist in " + project.getJiraKey());
-		}
-		return jiraIssue;
-	}
-
-	public String getJiraUrl() {
-		return httpClient.getJiraUrl();
+	private void loadResolutions() throws RemotePermissionException, RemoteAuthenticationException, java.rmi.RemoteException {
+		RemoteResolution[] remoteResolutions = soapClient.getResolutions();
+		JiraResolution.setResolutions(remoteResolutions);
 	}
 
 	private void loadResolutionsIfRequired() throws RemotePermissionException, RemoteAuthenticationException, java.rmi.RemoteException {
@@ -121,8 +115,11 @@ public class JiraClient {
 		}
 	}
 
-	private void loadResolutions() throws RemotePermissionException, RemoteAuthenticationException, java.rmi.RemoteException {
-		RemoteResolution[] remoteResolutions = soapClient.getResolutions();
-		JiraResolution.setResolutions(remoteResolutions);
+	private void setHttpClient(JiraHttpClient httpClient) {
+		this.httpClient = httpClient;
+	}
+
+	private void setSoapClient(JiraSoapClient soapClient) {
+		this.soapClient = soapClient;
 	}
 }

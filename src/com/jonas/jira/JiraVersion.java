@@ -8,18 +8,17 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.common.logging.MyLogger;
 
 public class JiraVersion {
 
-	private static Map<String, JiraVersion> VERSIONS = new HashMap<String, JiraVersion>();
 	private static Logger log = MyLogger.getLogger(JiraVersion.class);
+	private static Map<String, JiraVersion> versions = new HashMap<String, JiraVersion>();
 
 	private boolean archived;
-	private String name;
 	private String id;
 	private JiraProject jiraProject;
+	private String name;
 
 	public JiraVersion(String id, JiraProject jiraProject, String name, boolean archived) {
 		this.name = name;
@@ -29,40 +28,26 @@ public class JiraVersion {
 		addVersion(this);
 	}
 
-	public JiraVersion(RemoteVersion remoteVersion, JiraProject jiraProject) {
-		this(remoteVersion.getId(), jiraProject, remoteVersion.getName(), remoteVersion.isArchived());
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
 	public static void addVersion(JiraVersion version) {
-		JiraVersion jiraVersion = VERSIONS.get(version.getId());
+		JiraVersion jiraVersion = versions.get(version.getId());
 		if (jiraVersion != null) {
 			log.warn("version " + version + "(with id=" + version.getId() + ") already exists - not adding it, but overwriting values!");
 			jiraVersion.setArchived(version.isArchived());
 			jiraVersion.setName(version.getName());
 		} else
-			VERSIONS.put(version.getId(), version);
+			versions.put(version.getId(), version);
 	}
 
-	private void setName(String name) {
-		this.name = name;
-
+	public static void clearVersions() {
+		versions.clear();
 	}
 
 	public static JiraVersion getVersionById(String id) {
-		return VERSIONS.get(id);
+		return versions.get(id);
 	}
 
 	public static JiraVersion getVersionByName(String name) {
-		for (Iterator iterator = VERSIONS.values().iterator(); iterator.hasNext();) {
-			JiraVersion version = (JiraVersion) iterator.next();
+		for (JiraVersion version : versions.values()) {
 			if (version.getName().equals(name)) {
 				return version;
 			}
@@ -72,22 +57,30 @@ public class JiraVersion {
 	}
 
 	public static JiraVersion[] getVersionByProject(JiraProject lluSystemsProvisioning) {
-		List<JiraVersion> versions = new ArrayList<JiraVersion>();
-		for (Iterator<JiraVersion> iterator = VERSIONS.values().iterator(); iterator.hasNext();) {
+		List<JiraVersion> tempVersions = new ArrayList<JiraVersion>();
+		for (Iterator<JiraVersion> iterator = versions.values().iterator(); iterator.hasNext();) {
 			JiraVersion version = (JiraVersion) iterator.next();
 			if (version.getProject().equals(lluSystemsProvisioning)) {
-				versions.add(version);
+				tempVersions.add(version);
 			}
 		}
-		return versions.toArray(new JiraVersion[versions.size()]);
+		return tempVersions.toArray(new JiraVersion[tempVersions.size()]);
+	}
+
+	public static void removeVersion(String id) {
+		versions.remove(id);
+	}
+	
+	public String getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public JiraProject getProject() {
 		return jiraProject;
-	}
-
-	public String toString() {
-		return name;
 	}
 
 	public boolean isArchived() {
@@ -98,8 +91,17 @@ public class JiraVersion {
 		this.archived = archived;
 	}
 
-	public static void removeVersion(String id) {
-		VERSIONS.remove(id);
+	public String toString() {
+		return name;
+	}
+
+	void setJiraProject(JiraProject jiraProject) {
+		this.jiraProject = jiraProject;
+	}
+
+	void setName(String name) {
+		this.name = name;
+
 	}
 
 }

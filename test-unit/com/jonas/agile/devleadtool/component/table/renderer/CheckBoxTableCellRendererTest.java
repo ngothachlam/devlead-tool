@@ -4,13 +4,12 @@ import java.awt.Color;
 
 import javax.swing.JTable;
 
-import junit.framework.TestCase;
-
 import org.easymock.EasyMock;
 
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
-public class CheckBoxTableCellRendererTest extends TestCase {
+public class CheckBoxTableCellRendererTest extends JonasTestCase {
 
 	CheckBoxTableCellRenderer renderer;
 	MyTableModel myTableModel_Mock;
@@ -19,8 +18,8 @@ public class CheckBoxTableCellRendererTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		myTable_Mock = org.easymock.classextension.EasyMock.createMock(JTable.class);
-		myTableModel_Mock = org.easymock.classextension.EasyMock.createMock(MyTableModel.class);
+		myTable_Mock = createClassMock(JTable.class);
+		myTableModel_Mock = createClassMock(MyTableModel.class);
 		renderer = new CheckBoxTableCellRenderer();
 
 	}
@@ -33,13 +32,10 @@ public class CheckBoxTableCellRendererTest extends TestCase {
 	public void testShouldSetCorrectColor() {
 		EasyMock.expect(myTable_Mock.getModel()).andReturn(myTableModel_Mock);
 		EasyMock.expect(myTableModel_Mock.isRed(true, 0, 0)).andReturn(false);
-		org.easymock.classextension.EasyMock.replay(myTable_Mock);
-		org.easymock.classextension.EasyMock.replay(myTableModel_Mock);
+		replay();
 
 		assertEquals(Color.red, renderer.getTableCellRendererComponent(new JTable(), Boolean.TRUE, true, true, 0, 0).getBackground());
 
-		org.easymock.classextension.EasyMock.verify(myTable_Mock);
-		org.easymock.classextension.EasyMock.verify(myTableModel_Mock);
-
+		verify();
 	}
 }

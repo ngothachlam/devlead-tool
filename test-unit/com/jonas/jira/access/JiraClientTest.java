@@ -1,25 +1,28 @@
 package com.jonas.jira.access;
 
 import java.io.IOException;
-import junit.framework.TestCase;
+
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
+
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
-import com.jonas.jira.TestObjects;
 import com.jonas.jira.JiraVersion;
+import com.jonas.jira.TestObjects;
 
-public class JiraClientTest extends TestCase {
+public class JiraClientTest extends JonasTestCase {
 
 	JiraClient jiraClient = null;
 
-	public void setUp() {
+	public void setUp() throws Exception {
+		super.setUp();
 		jiraClient = JiraClient.JiraClientAtlassin;
 	}
 
 	public void testShouldGetJirasForFixVersionOk() throws HttpException, IOException, JDOMException, JiraException {
 		jiraClient.login();
-		JiraIssue[] jiras = jiraClient.getJirasFromFixVersion(TestObjects.Atlassain_TST);
+		JiraIssue[] jiras = jiraClient.getJirasFromFixVersion(TestObjects.Version_AtlassainTST);
 		assertTrue(jiras.length > 0);
 	}
 

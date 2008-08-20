@@ -1,14 +1,11 @@
 package com.jonas.agile.devleadtool.component;
 
-import junit.framework.TestCase;
-
-import org.easymock.classextension.EasyMock;
-
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
-public class InternalFrameTest extends TestCase {
+public class InternalFrameTest extends JonasTestCase {
 
-	PlannerHelper helperMock = EasyMock.createMock(PlannerHelper.class);
+	PlannerHelper helperMock = createClassMock(PlannerHelper.class);
 
 	public void testShouldCalculateTitleCorrectly() {
 		InternalFrame internalFrame = new InternalFrame(helperMock, "title");
@@ -17,7 +14,7 @@ public class InternalFrameTest extends TestCase {
 		helperMock.setActiveInternalFrame(internalFrame);
 		helperMock.setActiveInternalFrame(internalFrame2);
 		helperMock.setActiveInternalFrame(internalFrame3);
-		EasyMock.replay(helperMock);
+		replay();
 		assertEquals("title", internalFrame.getTitle());
 		assertEquals("title (1)", internalFrame2.getTitle());
 		assertEquals("titles", internalFrame3.getTitle());
@@ -29,7 +26,7 @@ public class InternalFrameTest extends TestCase {
 
 	public void testGetRightMostShouldWork() {
 		InternalFrame internalFrame = new InternalFrame(helperMock, "title");
-		EasyMock.replay(helperMock);
+		replay();
 		assertSettingTitleIsCorrect("p.xls", "lludevsup.xls", internalFrame, 5, 0);
 		assertSettingTitleIsCorrect("p.xls", "p.xls", internalFrame, 5, 0);
 		assertSettingTitleIsCorrect(".xls", ".xls", internalFrame, 5, -1);

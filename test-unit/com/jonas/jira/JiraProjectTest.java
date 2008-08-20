@@ -1,25 +1,26 @@
 package com.jonas.jira;
 
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.jira.access.JiraClient;
 
-import junit.framework.TestCase;
-
-public class JiraProjectTest extends TestCase {
+public class JiraProjectTest extends JonasTestCase{
 	
 	public void testJiraProject(){
-		assertJiraProject("LLU Systems Provisioning", "LLU", "10070");
-		assertJiraProject("LLU Dev Support", "LLUDEVSUP", "10192");
-		assertJiraProject("Atlassin - TST", "TST", "10420");
-		assertJiraProject("Atlassin - TST", "tst", "10420");
+		assertJiraProject("LLU", "LLU", "10070");
+		assertJiraProject("LLUDEVSUP", "LLUDEVSUP", "10192");
+		assertJiraProject("Atlassin", "TST", "10420");
+		assertJiraProject("Atlassin", "tst", "10420");
 	}
 
 	private void assertJiraProject(String name, String key, String id) {
-		assertEquals( key.toUpperCase(), JiraProject.getProjectByKey(key).getJiraKey() );
-		assertEquals( name, JiraProject.getProjectByKey(key).getName() );
-		assertEquals( id, JiraProject.getProjectByKey(key).getId() );
-		assertEquals( key.toUpperCase(), JiraProject.getProjectByName(name).getJiraKey() );
-		assertEquals( name, JiraProject.getProjectByName(name).getName() );
-		assertEquals( id, JiraProject.getProjectByName(name).getId() );
+		assertJiraProject(name, key, id, JiraProject.getProjectByKey(key));
+		assertJiraProject(name, key, id, JiraProject.getProjectByName(name));
+	}
+
+	private void assertJiraProject(String name, String key, String id, JiraProject project) {
+		assertEquals( key.toUpperCase(), project.getJiraKey() );
+		assertEquals( name, project.getName() );
+		assertEquals( id, project.getId() );
 	}
 
 	public void testJiraProjectAndFixVersion(){

@@ -1,10 +1,9 @@
 package com.jonas.agile.devleadtool.component.table;
 
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
-import junit.framework.TestCase;
-
-public class BoardTableModelTest extends TestCase {
+public class BoardTableModelTest extends JonasTestCase {
 	
 	String[] tableHeader = { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete" };
 	Object[][] tableContents = { getEmptyRow() };
