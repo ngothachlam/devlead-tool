@@ -18,12 +18,12 @@ public class JiraResolution {
 		this.description = description;
 	}
 
-	public static JiraResolution getResolution(String id) {
-		return jiraResolutions.get(id);
-	}
-	
 	public static int getAmount() {
 		return jiraResolutions.size();
+	}
+	
+	public static JiraResolution getResolution(String id) {
+		return jiraResolutions.get(id);
 	}
 
 	public static void setResolutions(RemoteResolution[] remoteResolutions) {

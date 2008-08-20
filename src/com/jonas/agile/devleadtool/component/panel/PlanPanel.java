@@ -4,15 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
+import javax.swing.JTextField;
 import org.apache.log4j.Logger;
-
 import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -26,6 +25,7 @@ import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRende
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.string.MyStringParser;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraIssueNotFoundException;
@@ -38,6 +38,8 @@ public class PlanPanel extends MyComponentPanel {
 	private MyTable table;
 	private Logger log = MyLogger.getLogger(PlanPanel.class);
 	private JComboBox comboBox;
+   private JTextField jiraPrefix;
+   private JTextField jiraCommas;
 
 	public PlanPanel(PlannerHelper client) {
 		this(client, new PlanTableModel());
@@ -69,12 +71,18 @@ public class PlanPanel extends MyComponentPanel {
 
 	private Component getBottomPanel() {
 		JPanel buttons = new JPanel();
-		final JButton addJira = new JButton("Add");
+		JLabel jiraPrefixLabel = new JLabel("Prefix:");
+		jiraPrefix = new JTextField(5);
+      jiraCommas = new JTextField(20);
+      JButton addJira = new JButton("Add");
 		JButton syncSelectedWithJiraButton = new JButton("sync With Jira");
 
-		syncSelectedWithJiraButton.addActionListener(new SyncWithJiraActionListener());
 		addJira.addActionListener(new AddNewRowActionListener(table));
+		syncSelectedWithJiraButton.addActionListener(new SyncWithJiraActionListener());
 
+		buttons.add(jiraPrefixLabel);
+		buttons.add(jiraPrefix);
+		buttons.add(jiraCommas);
 		buttons.add(addJira);
 		buttons.add(syncSelectedWithJiraButton);
 		return buttons;
@@ -107,6 +115,8 @@ public class PlanPanel extends MyComponentPanel {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+		   MyStringParser parser = new MyStringParser();
+		   parser.separateString(jiraCommas);
 			((MyTableModel) table.getModel()).addEmptyRow();
 		}
 	}
