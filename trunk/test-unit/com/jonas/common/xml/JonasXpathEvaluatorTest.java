@@ -1,14 +1,11 @@
 package com.jonas.common.xml;
 
-import java.io.IOException;
-
-import junit.framework.TestCase;
-
 import org.jdom.Attribute;
 import org.jdom.Element;
-import org.jdom.JDOMException;
 
-public class JonasXpathEvaluatorTest extends TestCase {
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
+
+public class JonasXpathEvaluatorTest extends JonasTestCase {
 	JonasXpathEvaluator jonasXpathEvaluator = new JonasXpathEvaluator("/test/child2[@childAttr='childAttrvalue']");
 	JonasXpathEvaluator jonasXpathEvaluatorWithIncorrectXpath = new JonasXpathEvaluator("/test/child2[@childAttr='chidldAttrvalue']");
 	private Element element;

@@ -1,17 +1,9 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.jira.JiraIssue;
-import junit.framework.TestCase;
 
-public class JiraTableModelTest extends TestCase {
-
-   protected void setUp() throws Exception {
-      super.setUp();
-   }
-
-   protected void tearDown() throws Exception {
-      super.tearDown();
-   }
+public class JiraTableModelTest extends JonasTestCase {
 
    public void testShouldCalculateAlreadyExistsOk() {
       JiraTableModel model = new JiraTableModel();

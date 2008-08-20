@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -16,20 +14,18 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
-import com.jonas.jira.TestObjects;
 import com.jonas.jira.JiraVersion;
+import com.jonas.jira.TestObjects;
 
-public class JiraHttpClientTest extends TestCase {
-
-	public void setUp() {
-	}
+public class JiraHttpClientTest extends JonasTestCase {
 
 	public void testApacheCommonsAttempt() throws IOException, HttpException, JDOMException, JiraException {
 		JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
 		client.loginToJira();
-		asserFixVersionExistsAndHasJirasAgainstIt(client, TestObjects.Atlassain_TST);
+		asserFixVersionExistsAndHasJirasAgainstIt(client, TestObjects.Version_AtlassainTST);
 	}
 
 	private void asserFixVersionExistsAndHasJirasAgainstIt(JiraHttpClient client, JiraVersion version) throws HttpException, IOException,

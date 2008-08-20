@@ -29,24 +29,6 @@ public class JiraIssue {
 		this.summary = summary;
 		this.status = status;
 		this.resolution = resolution;
-		// this.buildNo = buildNo;
-		// TODO: add build no
-	}
-
-	public JiraIssue(RemoteIssue jira, JiraProject project) {
-		this(jira.getKey(), jira.getSummary(), jira.getStatus(), JiraResolution.getResolution(jira.getResolution()).getName());
-		RemoteVersion[] tempFixVersions = jira.getFixVersions();
-		for (int i = 0; i < tempFixVersions.length; i++) {
-			RemoteVersion remoteVersion = tempFixVersions[i];
-			JiraVersion fixVers = JiraVersion.getVersionById(remoteVersion.getId());
-			if (fixVers == null) {
-				fixVers = new JiraVersion(remoteVersion, project);
-			}
-			addFixVersions(fixVers);
-			if (i > 1) {
-				log.error("Cannot handle more than one fix version at the moment for " + getKey());
-			}
-		}
 	}
 
 	public String getKey() {
@@ -58,9 +40,6 @@ public class JiraIssue {
 	}
 
 	public void addFixVersions(JiraVersion fixVersion) {
-		if (fixVersion == null) {
-			throw new NullPointerException("fixVersion is null!");
-		}
 		fixVersions.add(fixVersion);
 	}
 

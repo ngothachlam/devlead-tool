@@ -1,10 +1,9 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.jira.JiraIssue;
 
-import junit.framework.TestCase;
-
-public class PlanTableModelTest extends TestCase {
+public class PlanTableModelTest extends JonasTestCase {
 
 	PlanTableModel model = new PlanTableModel();
 

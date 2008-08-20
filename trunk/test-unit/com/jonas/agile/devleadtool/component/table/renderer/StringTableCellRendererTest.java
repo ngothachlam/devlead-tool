@@ -2,10 +2,9 @@ package com.jonas.agile.devleadtool.component.table.renderer;
 
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
-import junit.framework.TestCase;
-
-public class StringTableCellRendererTest extends TestCase {
+public class StringTableCellRendererTest extends JonasTestCase {
 
 	private StringTableCellRenderer board;
 

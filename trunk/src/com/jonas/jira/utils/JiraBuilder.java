@@ -7,29 +7,35 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
+import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
+import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
+import com.jonas.jira.JiraResolution;
 import com.jonas.jira.JiraVersion;
 
 public class JiraBuilder {
 
+	private static final List<XPathImplementor> jiraXpathActions = new ArrayList<XPathImplementor>();
 	private static final Logger log = MyLogger.getLogger(JiraBuilder.class);
 
-	private static final List<XPathImplementor> jiraXpathActions = new ArrayList<XPathImplementor>();
-
 	static {
+		String xPath = "/item/customfields/customfield[@id='customfield_10160']/customfieldvalues/customfieldvalue";
 		XpathAction xpathAction = new XpathAction() {
 			public void XPathValueFound(String xpathValue, JiraIssue jira) {
 				jira.setBuildNo(xpathValue);
 			}
 		};
-		String xPath = "/item/customfields/customfield[@id='customfield_10160']/customfieldvalues/customfieldvalue";
 		jiraXpathActions.add(new XPathImplementor(xPath, xpathAction));
 	}
 
+	public static JiraIssue buildJira(Element e) {
+		return new JiraIssue(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"));
+	}
+	
 	public static JiraIssue buildJira(Element e, List<JiraVersion> fixVersions) {
 		JiraIssue jira = buildJira(e);
 		jira.addFixVersions(fixVersions.get(0));
@@ -39,14 +45,23 @@ public class JiraBuilder {
 		return jira;
 	}
 
-	public static JiraIssue buildJira(Element e) {
-		return new JiraIssue(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"));
+	public static JiraIssue buildJira(RemoteIssue remoteJira, JiraProject project) {
+		JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), remoteJira.getStatus(), JiraResolution.getResolution(remoteJira.getResolution()).getName());
+		RemoteVersion[] tempFixVersions = remoteJira.getFixVersions();
+		for (int i = 0; i < tempFixVersions.length; i++) {
+			RemoteVersion remoteVersion = tempFixVersions[i];
+			JiraVersion fixVers = JiraVersion.getVersionById(remoteVersion.getId());
+			if (fixVers == null) {
+				fixVers = buildJiraVersion(remoteVersion, project);
+			}
+			jira.addFixVersions(fixVers);
+			if (i > 1) {
+				log.error("Cannot handle more than one fix version at the moment for " + jira.getKey());
+			}
+		}
+		return jira;
 	}
-
-	public static String get(Element element, String string) {
-		return element.getChildText(string);
-	}
-
+	
 	public static List<JiraIssue> buildJiras(List<Element> list) {
 		List<JiraIssue> jiras = new ArrayList<JiraIssue>();
 		for (Iterator<Element> iterator = list.iterator(); iterator.hasNext();) {
@@ -81,6 +96,14 @@ public class JiraBuilder {
 
 		}
 		return jiras;
+	}
+
+	public static JiraVersion buildJiraVersion(RemoteVersion remoteVersion, JiraProject jiraProject) {
+		return new JiraVersion(remoteVersion.getId(), jiraProject, remoteVersion.getName(), remoteVersion.isArchived());
+	}
+
+	public static String get(Element element, String string) {
+		return element.getChildText(string);
 	}
 }
 

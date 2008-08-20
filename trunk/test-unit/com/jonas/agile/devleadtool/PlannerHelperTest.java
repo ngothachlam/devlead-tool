@@ -1,16 +1,8 @@
 package com.jonas.agile.devleadtool;
 
-import junit.framework.TestCase;
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
-public class PlannerHelperTest extends TestCase {
-
-   protected void setUp() throws Exception {
-      super.setUp();
-   }
-
-   protected void tearDown() throws Exception {
-      super.tearDown();
-   }
+public class PlannerHelperTest extends JonasTestCase {
 
    public void testShouldExtractProjectnameFromJiraNameok(){
       PlannerHelper helper = new PlannerHelper(null, "test");

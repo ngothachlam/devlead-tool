@@ -1,8 +1,8 @@
 package com.jonas.jira.access;
 
-import junit.framework.TestCase;
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
-public class JiraListenerTest extends TestCase {
+public class JiraListenerTest extends JonasTestCase {
 
 	public static void testJiraListener() {
 		final BooleanWrapper access = new BooleanWrapper(false);
