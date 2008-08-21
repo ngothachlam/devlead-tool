@@ -66,8 +66,6 @@ public class PlanPanel extends MyComponentPanel {
 
       table.setDefaultRenderer(String.class, new StringTableCellRenderer());
       table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
-      JComboBox comboBox = new JComboBox();
-      table.setColumnEditor(1, new ComboTableCellEditor(comboBox));
 
       table.addMouseListener(new HyperLinkOpenerAdapter(table, helper, PlanTableModel.COLUMNNAME_HYPERLINK, 0));
       table.setAutoCreateRowSorter(true);
@@ -117,95 +115,6 @@ public class PlanPanel extends MyComponentPanel {
       ((PlanTableModel) table.getModel()).setEditable(selected);
    }
 
-   private final class EditorProjectPair {
-      private final TableCellEditor editor;
-      private final JComboBox combo;
-      private final JiraProject jiraProject;
-
-      public EditorProjectPair(TableCellEditor editor, JComboBox combo, JiraProject jiraProject) {
-         super();
-         this.combo = combo;
-         this.editor = editor;
-         this.jiraProject = jiraProject;
-      }
-
-      public JiraProject getJiraProject() {
-         return jiraProject;
-      }
-
-      public TableCellEditor getEditor() {
-         return editor;
-      }
-
-      public JComboBox getCombo() {
-         return combo;
-      }
-   }
-
-   private final class ComboBoxTable extends MyTable {
-
-      Map<String, EditorProjectPair> map = new HashMap<String, EditorProjectPair>();
-
-      ComboBoxTable() {
-         JComboBox llu_comboBox = new JComboBox(JiraProject.LLU_SYSTEMS_PROVISIONING.getFixVersions(false));
-         JComboBox lludevsup_comboBox = new JComboBox(JiraProject.LLU_DEV_SUPPORT.getFixVersions(false));
-         JComboBox tst_comboBox = new JComboBox(JiraProject.ATLASSIN_TST.getFixVersions(false));
-
-         TableCellEditor llu = new ComboTableCellEditor(llu_comboBox);
-         TableCellEditor lludevsup = new ComboTableCellEditor(lludevsup_comboBox);
-         TableCellEditor tst = new ComboTableCellEditor(tst_comboBox);
-
-         map.put("llu", new EditorProjectPair(llu, llu_comboBox, JiraProject.LLU_SYSTEMS_PROVISIONING));
-         map.put("lludevsup", new EditorProjectPair(lludevsup, lludevsup_comboBox, JiraProject.LLU_SYSTEMS_PROVISIONING));
-         map.put("tst", new EditorProjectPair(tst, tst_comboBox, JiraProject.ATLASSIN_TST));
-      }
-
-      @Override
-      public TableCellEditor getCellEditor(int row, int column) {
-         int modelRow = convertRowIndexToModel(row);
-         int modelCol = convertColumnIndexToModel(column);
-         if (modelCol == 1) {
-            String jira = (String) ((MyTableModel) this.getModel()).getValueAt(modelRow, 0);
-            log.debug("########");
-            log.debug(jira);
-            return map.get(helper.getProjectKey(jira).toLowerCase()).getEditor();
-         }
-         return super.getCellEditor(row, column);
-      }
-
-      @Override
-      public TableCellRenderer getCellRenderer(int row, int column) {
-         return super.getCellRenderer(row, column);
-      }
-
-      void refreshFixVersions() {
-         for (EditorProjectPair editorProjectPair : map.values()) {
-            JComboBox combo = editorProjectPair.getCombo();
-            combo.removeAllItems();
-            JiraProject jiraProject = editorProjectPair.getJiraProject();
-            try {
-               JiraVersion[] fixVersionsFromProject = jiraProject.getJiraClient().getFixVersionsFromProject(jiraProject, false);
-               for (JiraVersion jiraVersion : fixVersionsFromProject) {
-                 combo.addItem(jiraVersion); 
-               }
-            } catch (RemotePermissionException e) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-            } catch (RemoteAuthenticationException e) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-            } catch (RemoteException e) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-            } catch (java.rmi.RemoteException e) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-            }
-
-         }
-      }
-   }
-
    private final class AddNewRowActionListener implements ActionListener {
       private final MyTable table;
 
@@ -225,6 +134,100 @@ public class PlanPanel extends MyComponentPanel {
       }
    }
 
+   private final class ComboBoxTable extends MyTable {
+
+      Map<String, EditorProjectPair> map = new HashMap<String, EditorProjectPair>();
+
+      ComboBoxTable() {
+         JComboBox llu_comboBox = new JComboBox(JiraProject.LLU_SYSTEMS_PROVISIONING.getFixVersions(false));
+         JComboBox lludevsup_comboBox = new JComboBox(JiraProject.LLU_DEV_SUPPORT.getFixVersions(false));
+         JComboBox tst_comboBox = new JComboBox(JiraProject.ATLASSIN_TST.getFixVersions(false));
+
+         TableCellEditor llu = new ComboTableCellEditor(llu_comboBox);
+         TableCellEditor lludevsup = new ComboTableCellEditor(lludevsup_comboBox);
+         TableCellEditor tst = new ComboTableCellEditor(tst_comboBox);
+
+         // map.put("llu", new EditorProjectPair(llu, llu_comboBox, JiraProject.LLU_SYSTEMS_PROVISIONING));
+         // map.put("lludevsup", new EditorProjectPair(lludevsup, lludevsup_comboBox, JiraProject.LLU_SYSTEMS_PROVISIONING));
+         map.put("tst", new EditorProjectPair(tst, tst_comboBox, JiraProject.ATLASSIN_TST));
+      }
+
+      @Override
+      public TableCellEditor getCellEditor(int row, int column) {
+         int modelRow = convertRowIndexToModel(row);
+         int modelCol = convertColumnIndexToModel(column);
+         if (modelCol == 1) {
+            String jira = (String) ((MyTableModel) this.getModel()).getValueAt(modelRow, 0);
+            log.debug("########");
+            log.debug(jira);
+            try {
+               return map.get(helper.getProjectKey(jira).toLowerCase()).getEditor();
+            } catch (Throwable t) {
+               log.error(t);
+               return super.getCellEditor(row, column);
+            }
+         }
+         return super.getCellEditor(row, column);
+      }
+
+      @Override
+      public TableCellRenderer getCellRenderer(int row, int column) {
+         return super.getCellRenderer(row, column);
+      }
+
+      void refreshFixVersions() {
+         for (EditorProjectPair editorProjectPair : map.values()) {
+            JComboBox combo = editorProjectPair.getCombo();
+            combo.removeAllItems();
+            JiraProject jiraProject = editorProjectPair.getJiraProject();
+            try {
+               JiraVersion[] fixVersionsFromProject = jiraProject.getJiraClient().getFixVersionsFromProject(jiraProject, false);
+               for (JiraVersion jiraVersion : fixVersionsFromProject) {
+                  combo.addItem(jiraVersion);
+               }
+            } catch (RemotePermissionException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+            } catch (RemoteAuthenticationException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+            } catch (RemoteException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+            } catch (java.rmi.RemoteException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+            }
+
+         }
+      }
+   }
+
+   private final class EditorProjectPair {
+      private final JComboBox combo;
+      private final TableCellEditor editor;
+      private final JiraProject jiraProject;
+
+      public EditorProjectPair(TableCellEditor editor, JComboBox combo, JiraProject jiraProject) {
+         super();
+         this.combo = combo;
+         this.editor = editor;
+         this.jiraProject = jiraProject;
+      }
+
+      public JComboBox getCombo() {
+         return combo;
+      }
+
+      public TableCellEditor getEditor() {
+         return editor;
+      }
+
+      public JiraProject getJiraProject() {
+         return jiraProject;
+      }
+   }
+
    private final class RefreshFixVersionsListener implements ActionListener {
 
       private final ComboBoxTable table;
@@ -238,7 +241,7 @@ public class PlanPanel extends MyComponentPanel {
          table.refreshFixVersions();
       }
    }
-   
+
    private final class SyncWithJiraActionListener implements ActionListener {
       private Logger log = MyLogger.getLogger(this.getClass());
 
