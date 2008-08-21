@@ -9,12 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
@@ -25,6 +28,7 @@ import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -62,7 +66,7 @@ public class PlanPanel extends MyComponentPanel {
 		PlanTableModel model = planModel;
 
 		table = new ComboBoxTable();
-		JScrollPane scrollpane = new JScrollPane(table);
+		JScrollPane scrollpane = new MyScrollPane(table);
 
 		table.setModel(model);
 
@@ -74,6 +78,7 @@ public class PlanPanel extends MyComponentPanel {
 
 		this.addCenter(scrollpane);
 		this.addSouth(getBottomPanel());
+		this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
 	}
 
 	public static void main(String[] args) {
@@ -180,7 +185,8 @@ public class PlanPanel extends MyComponentPanel {
 				combo.removeAllItems();
 				JiraProject jiraProject = combo.getProject();
 				try {
-					JiraVersion[] fixVersionsFromProject = jiraProject.getJiraClient().getFixVersionsFromProject(jiraProject, false);
+					JiraVersion[] fixVersionsFromProject = jiraProject.getJiraClient().getFixVersionsFromProject(jiraProject,
+							false);
 					for (JiraVersion jiraVersion : fixVersionsFromProject) {
 						combo.addItem(jiraVersion);
 					}

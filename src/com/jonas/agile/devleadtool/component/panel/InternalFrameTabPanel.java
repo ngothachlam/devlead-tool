@@ -5,9 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -51,10 +49,11 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 		JPanel panel = new JPanel();
 		checkBox = new JCheckBox("Editable?", true);
 		panel.add(checkBox);
-		addNorth(panel);
+//		addNorth(panel);
 
 		makeContent(boardModel);
 		wireUpListeners();
+		this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
 	}
 
 	public void makeContent(MyTableModel boardTableModel) {

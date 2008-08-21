@@ -1,6 +1,7 @@
 package com.jonas.common;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.LayoutManager;
 import java.awt.event.ActionListener;
@@ -43,6 +44,11 @@ public class MyPanel extends JPanel {
 
 	public final MyPanel bordered(int top, int left, int bottom, int right) {
 		setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
+		return this;
+	}
+	
+	public final MyPanel borderedHighlightingThisPanels(){
+		setBorder(BorderFactory.createLineBorder(Color.GREEN));
 		return this;
 	}
 
