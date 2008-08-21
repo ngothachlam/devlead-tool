@@ -24,7 +24,7 @@ public class JonasXpathEvaluatorTest extends JonasTestCase {
 		assertEquals(getTestString(), jonasXpathEvaluator.getStringRepresentationOfXml(element));
 		Element xpathElementFromString = null;
 		try {
-			xpathElementFromString = jonasXpathEvaluator.getXpathElementFromString(getTestString());
+			xpathElementFromString = jonasXpathEvaluator.getXpathNodesFirstElement(getTestString());
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -39,7 +39,7 @@ public class JonasXpathEvaluatorTest extends JonasTestCase {
 		assertEquals(getTestString(), jonasXpathEvaluatorWithIncorrectXpath.getStringRepresentationOfXml(element));
 		Element xpathElementFromString = null;
 		try {
-			xpathElementFromString = jonasXpathEvaluatorWithIncorrectXpath.getXpathElementFromString(getTestString());
+			xpathElementFromString = jonasXpathEvaluatorWithIncorrectXpath.getXpathNodesFirstElement(getTestString());
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);

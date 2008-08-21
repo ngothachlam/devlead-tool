@@ -14,13 +14,8 @@ import com.jonas.jira.TestObjects;
 public class JiraBuilderTest extends JonasTestCase {
 
 	private static final String XPATH_JIRA_RSS_CHANNEL_ITEM = "/rss/channel/item";
-	List<Element> listWithBuildNo = null;
-	List<Element> listWithOutBuildNo = null;
-
-	public JiraBuilderTest() {
-		listWithBuildNo = getDomFromFile(TestObjects.fileWithBuildNo, XPATH_JIRA_RSS_CHANNEL_ITEM);
-		listWithOutBuildNo = getDomFromFile(TestObjects.file, XPATH_JIRA_RSS_CHANNEL_ITEM);
-	}
+	List<Element> listWithBuildNo = getDomFromFile(TestObjects.fileWithBuildNo, XPATH_JIRA_RSS_CHANNEL_ITEM);
+	List<Element> listWithOutBuildNo = getDomFromFile(TestObjects.fileWithoutBuildNo, XPATH_JIRA_RSS_CHANNEL_ITEM);
 
 	public void testShouldBuildJiraOkUsingElement() {
 		Element e = createClassMock(Element.class);
@@ -28,7 +23,7 @@ public class JiraBuilderTest extends JonasTestCase {
 
 		replay();
 
-		JiraIssue jira = JiraBuilder.buildJira(e);
+		JiraIssue jira = (new JiraBuilder()).buildJira(e);
 
 		verify();
 
@@ -47,7 +42,7 @@ public class JiraBuilderTest extends JonasTestCase {
 		
 		replay();
 
-		JiraIssue jira = JiraBuilder.buildJira(e, fixVersions);
+		JiraIssue jira = (new JiraBuilder()).buildJira(e, fixVersions);
 
 		verify();
 
@@ -67,7 +62,7 @@ public class JiraBuilderTest extends JonasTestCase {
 		
 		replay();
 
-		JiraIssue jira = JiraBuilder.buildJira(e, fixVersions);
+		JiraIssue jira = (new JiraBuilder()).buildJira(e, fixVersions);
 
 		verify();
 
@@ -83,7 +78,7 @@ public class JiraBuilderTest extends JonasTestCase {
 		
 		replay();
 
-		List<JiraIssue> jiras = JiraBuilder.buildJiras(mockList);
+		List<JiraIssue> jiras = (new JiraBuilder()).buildJiras(mockList);
 
 		verify();
 
@@ -99,13 +94,13 @@ public class JiraBuilderTest extends JonasTestCase {
 		
 		replay();
 
-		List<JiraIssue> jiras = JiraBuilder.buildJiras(mockList);
+		List<JiraIssue> jiras = (new JiraBuilder()).buildJiras(mockList);
 
 		verify();
 
 		assertEquals(1, jiras.size());
 		JiraIssue jiraIssue = jiras.get(0);
-		assertJiraDetails(jiraIssue, "LLU-4119", "&apos;Quality Gateway&apos; tests set up", "Open", "Unresolved");
+		assertJiraDetails(jiraIssue, "TST-4119", "&apos;Quality Gateway&apos; tests set up", "Open", "Unresolved");
 		assertEquals("Version 11 - Next Sprint (2)", jiraIssue.getFixVersions().get(0).getName());
 		assertEquals(null, jiraIssue.getBuildNo());
 	}

@@ -34,17 +34,15 @@ public class JonasXpathEvaluator {
 		return stringWriter.getBuffer().toString();
 	}
 
-	protected Element getXpathElementFromString(String stringRepresentationOfXml) throws JDOMException, IOException {
-		SAXBuilder sb = new SAXBuilder(false);
-		Document doc = sb.build(new StringReader(stringRepresentationOfXml));
-		List<Element> selectNodes = xpath.selectNodes(doc);
+	protected Element getXpathNodesFirstElement(String stringRepresentationOfXml) throws JDOMException, IOException {
+		List<Element> selectNodes = getXpathNodes(stringRepresentationOfXml);
 		return selectNodes.size() > 0 ? selectNodes.get(0) : null;
 	}
 
 	public String getElementText(Element element) {
 		String stringRepresentationOfXml = getStringRepresentationOfXml(element);
 		try {
-			Element xPathNode = getXpathElementFromString(stringRepresentationOfXml);
+			Element xPathNode = getXpathNodesFirstElement(stringRepresentationOfXml);
 			return xPathNode != null ? xPathNode.getText() : null;
 		} catch (JDOMException e) {
 			e.printStackTrace();
@@ -54,4 +52,11 @@ public class JonasXpathEvaluator {
 		return null;
 
 	}
+
+   public List<Element> getXpathNodes(String stringRepresentationOfXml) throws JDOMException, IOException {
+      SAXBuilder sb = new SAXBuilder(false);
+      Document doc = sb.build(new StringReader(stringRepresentationOfXml));
+      List<Element> selectNodes = xpath.selectNodes(doc);
+      return selectNodes;
+   }
 }

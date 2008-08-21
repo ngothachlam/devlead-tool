@@ -1,10 +1,14 @@
 package com.jonas.jira;
 
 import java.io.File;
+import org.jdom.Element;
 
 public class TestObjects {
-	public static File file = new File("test-functional/jiraXML.xml");
+	public static File fileWithoutBuildNo = new File("test-functional/jiraXML.xml");
 	public static File fileWithBuildNo = new File("test-functional/jiraXMLwBuildNo.xml");
+	public static File fileSimple = new File("test-functional/jiraXMLSimple.xml");
+	
+	public static Element elementSimple ;
 	
 	public static JiraProject Project_TST1;
 	public static JiraProject Project_TST2;
@@ -19,6 +23,8 @@ public class TestObjects {
 	public static JiraVersion Version_PamsBacklog;
 
 	public static void createTestObjects(){
+	   
+	   
 		Project_TST1 = new JiraProject(null, "tstProject1", "tstKey1", "tstId1");
 		Project_TST2 = new JiraProject(null, "tstProject2", "tstKey2", "tstId2");
 		

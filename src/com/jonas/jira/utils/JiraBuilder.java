@@ -20,7 +20,11 @@ public class JiraBuilder {
 
    private static final List<XPathImplementor> jiraXpathActions = new ArrayList<XPathImplementor>();
    private static final Logger log = MyLogger.getLogger(JiraBuilder.class);
+   private static JiraBuilder instance = new JiraBuilder();
 
+   JiraBuilder(){
+   }
+   
    static {
       String xPath = "/item/customfields/customfield[@id='customfield_10160']/customfieldvalues/customfieldvalue";
       XpathAction xpathAction = new XpathAction() {
@@ -31,11 +35,11 @@ public class JiraBuilder {
       jiraXpathActions.add(new XPathImplementor(xPath, xpathAction));
    }
 
-   public static JiraIssue buildJira(Element e) {
+   public JiraIssue buildJira(Element e) {
       return new JiraIssue(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"));
    }
 
-   public static JiraIssue buildJira(Element e, List<JiraVersion> fixVersions) {
+   public JiraIssue buildJira(Element e, List<JiraVersion> fixVersions) {
       JiraIssue jira = buildJira(e);
       jira.addFixVersions(fixVersions.get(0));
       if (fixVersions.size() > 1) {
@@ -44,7 +48,7 @@ public class JiraBuilder {
       return jira;
    }
 
-   public static JiraIssue buildJira(RemoteIssue remoteJira, JiraProject project) {
+   public JiraIssue buildJira(RemoteIssue remoteJira, JiraProject project) {
       // FIXME:
       // JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), remoteJira.getStatus(),
       // JiraResolution.getResolution(remoteJira.getResolution()).getName());
@@ -64,7 +68,7 @@ public class JiraBuilder {
       return jira;
    }
 
-   public static List<JiraIssue> buildJiras(List<Element> list) {
+   public List<JiraIssue> buildJiras(List<Element> list) {
       List<JiraIssue> jiras = new ArrayList<JiraIssue>();
       for (Iterator<Element> iterator = list.iterator(); iterator.hasNext();) {
          Element e = iterator.next();
@@ -82,7 +86,7 @@ public class JiraBuilder {
    }
 
    @SuppressWarnings("unchecked")
-   private static List<JiraVersion> buildJiraVersion(Element e) {
+   private List<JiraVersion> buildJiraVersion(Element e) {
       List<Element> fixVersionStrings = e.getChildren("fixVersion");
       List<JiraVersion> versions = new ArrayList<JiraVersion>();
       for (Iterator<Element> iterator2 = fixVersionStrings.iterator(); iterator2.hasNext();) {
@@ -105,12 +109,16 @@ public class JiraBuilder {
       return versions;
    }
 
-   public static JiraVersion buildJiraVersion(RemoteVersion remoteVersion, JiraProject jiraProject) {
+   public JiraVersion buildJiraVersion(RemoteVersion remoteVersion, JiraProject jiraProject) {
       return new JiraVersion(remoteVersion.getId(), jiraProject, remoteVersion.getName(), remoteVersion.isArchived());
    }
 
-   public static String get(Element element, String string) {
+   public String get(Element element, String string) {
       return element.getChildText(string);
+   }
+
+   public static JiraBuilder getInstance() {
+      return instance;
    }
 }
 
