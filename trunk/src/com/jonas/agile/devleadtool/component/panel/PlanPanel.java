@@ -4,7 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,8 +15,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import org.apache.log4j.Logger;
 import com.ProgressDialog;
+import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
+import com.atlassian.jira.rpc.exception.RemoteException;
+import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
@@ -30,6 +37,7 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.common.string.MyStringParser;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
+import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraIssueNotFoundException;
 import com.jonas.jira.access.JiraListener;
 import com.jonas.testHelpers.TryoutTester;
@@ -37,10 +45,10 @@ import com.jonas.testHelpers.TryoutTester;
 public class PlanPanel extends MyComponentPanel {
 
    private final PlannerHelper helper;
-   private MyTable table;
-   private Logger log = MyLogger.getLogger(PlanPanel.class);
-   private JTextField jiraPrefix;
    private JTextField jiraCommas;
+   private JTextField jiraPrefix;
+   private Logger log = MyLogger.getLogger(PlanPanel.class);
+   private ComboBoxTable table;
 
    public PlanPanel(PlannerHelper client) {
       this(client, new PlanTableModel());
@@ -51,14 +59,15 @@ public class PlanPanel extends MyComponentPanel {
       this.helper = helper;
       PlanTableModel model = planModel;
 
-      table = new MyTable();
+      table = new ComboBoxTable();
       JScrollPane scrollpane = new JScrollPane(table);
 
       table.setModel(model);
 
       table.setDefaultRenderer(String.class, new StringTableCellRenderer());
       table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
-      table.setColumnEditor(1, new ComboTableCellEditor(new JComboBox(JiraProject.LLU_SYSTEMS_PROVISIONING.getFixVersions(false))));
+      JComboBox comboBox = new JComboBox();
+      table.setColumnEditor(1, new ComboTableCellEditor(comboBox));
 
       table.addMouseListener(new HyperLinkOpenerAdapter(table, helper, PlanTableModel.COLUMNNAME_HYPERLINK, 0));
       table.setAutoCreateRowSorter(true);
@@ -67,17 +76,31 @@ public class PlanPanel extends MyComponentPanel {
       this.addSouth(getBottomPanel());
    }
 
+   public static void main(String[] args) {
+      JFrame frame = TryoutTester.getFrame();
+      JPanel panel = new PlanPanel(new PlannerHelper(frame, "test"));
+      frame.setContentPane(panel);
+      frame.setVisible(true);
+   }
+
+   public boolean doesJiraExist(String jira) {
+      return ((PlanTableModel) table.getModel()).doesJiraExist(jira);
+   }
+
    private Component getBottomPanel() {
       JPanel buttons = new JPanel();
+      JButton refreshFixVersions = new JButton("Refresh FixVersions");
       JLabel jiraPrefixLabel = new JLabel("Prefix:");
       jiraPrefix = new JTextField(5);
       jiraCommas = new JTextField(20);
       JButton addJira = new JButton("Add");
       JButton syncSelectedWithJiraButton = new JButton("sync With Jira");
 
+      refreshFixVersions.addActionListener(new RefreshFixVersionsListener(table));
       addJira.addActionListener(new AddNewRowActionListener(table));
       syncSelectedWithJiraButton.addActionListener(new SyncWithJiraActionListener());
 
+      buttons.add(refreshFixVersions);
       buttons.add(jiraPrefixLabel);
       buttons.add(jiraPrefix);
       buttons.add(jiraCommas);
@@ -90,19 +113,97 @@ public class PlanPanel extends MyComponentPanel {
       return ((PlanTableModel) table.getModel());
    }
 
-   public static void main(String[] args) {
-      JFrame frame = TryoutTester.getFrame();
-      JPanel panel = new PlanPanel(new PlannerHelper(frame, "test"));
-      frame.setContentPane(panel);
-      frame.setVisible(true);
-   }
-
    public void setEditable(boolean selected) {
       ((PlanTableModel) table.getModel()).setEditable(selected);
    }
 
-   public boolean doesJiraExist(String jira) {
-      return ((PlanTableModel) table.getModel()).doesJiraExist(jira);
+   private final class EditorProjectPair {
+      private final TableCellEditor editor;
+      private final JComboBox combo;
+      private final JiraProject jiraProject;
+
+      public EditorProjectPair(TableCellEditor editor, JComboBox combo, JiraProject jiraProject) {
+         super();
+         this.combo = combo;
+         this.editor = editor;
+         this.jiraProject = jiraProject;
+      }
+
+      public JiraProject getJiraProject() {
+         return jiraProject;
+      }
+
+      public TableCellEditor getEditor() {
+         return editor;
+      }
+
+      public JComboBox getCombo() {
+         return combo;
+      }
+   }
+
+   private final class ComboBoxTable extends MyTable {
+
+      Map<String, EditorProjectPair> map = new HashMap<String, EditorProjectPair>();
+
+      ComboBoxTable() {
+         JComboBox llu_comboBox = new JComboBox(JiraProject.LLU_SYSTEMS_PROVISIONING.getFixVersions(false));
+         JComboBox lludevsup_comboBox = new JComboBox(JiraProject.LLU_DEV_SUPPORT.getFixVersions(false));
+         JComboBox tst_comboBox = new JComboBox(JiraProject.ATLASSIN_TST.getFixVersions(false));
+
+         TableCellEditor llu = new ComboTableCellEditor(llu_comboBox);
+         TableCellEditor lludevsup = new ComboTableCellEditor(lludevsup_comboBox);
+         TableCellEditor tst = new ComboTableCellEditor(tst_comboBox);
+
+         map.put("llu", new EditorProjectPair(llu, llu_comboBox, JiraProject.LLU_SYSTEMS_PROVISIONING));
+         map.put("lludevsup", new EditorProjectPair(lludevsup, lludevsup_comboBox, JiraProject.LLU_SYSTEMS_PROVISIONING));
+         map.put("tst", new EditorProjectPair(tst, tst_comboBox, JiraProject.ATLASSIN_TST));
+      }
+
+      @Override
+      public TableCellEditor getCellEditor(int row, int column) {
+         int modelRow = convertRowIndexToModel(row);
+         int modelCol = convertColumnIndexToModel(column);
+         if (modelCol == 1) {
+            String jira = (String) ((MyTableModel) this.getModel()).getValueAt(modelRow, 0);
+            log.debug("########");
+            log.debug(jira);
+            return map.get(helper.getProjectKey(jira).toLowerCase()).getEditor();
+         }
+         return super.getCellEditor(row, column);
+      }
+
+      @Override
+      public TableCellRenderer getCellRenderer(int row, int column) {
+         return super.getCellRenderer(row, column);
+      }
+
+      void refreshFixVersions() {
+         for (EditorProjectPair editorProjectPair : map.values()) {
+            JComboBox combo = editorProjectPair.getCombo();
+            combo.removeAllItems();
+            JiraProject jiraProject = editorProjectPair.getJiraProject();
+            try {
+               JiraVersion[] fixVersionsFromProject = jiraProject.getJiraClient().getFixVersionsFromProject(jiraProject, false);
+               for (JiraVersion jiraVersion : fixVersionsFromProject) {
+                 combo.addItem(jiraVersion); 
+               }
+            } catch (RemotePermissionException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+            } catch (RemoteAuthenticationException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+            } catch (RemoteException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+            } catch (java.rmi.RemoteException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+            }
+
+         }
+      }
    }
 
    private final class AddNewRowActionListener implements ActionListener {
@@ -124,6 +225,20 @@ public class PlanPanel extends MyComponentPanel {
       }
    }
 
+   private final class RefreshFixVersionsListener implements ActionListener {
+
+      private final ComboBoxTable table;
+
+      public RefreshFixVersionsListener(ComboBoxTable table) {
+         this.table = table;
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         table.refreshFixVersions();
+      }
+   }
+   
    private final class SyncWithJiraActionListener implements ActionListener {
       private Logger log = MyLogger.getLogger(this.getClass());
 
