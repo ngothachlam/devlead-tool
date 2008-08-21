@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.panel;
+package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.Component;
 import java.io.File;

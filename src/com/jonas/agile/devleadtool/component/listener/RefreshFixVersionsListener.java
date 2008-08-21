@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.panel;
+package com.jonas.agile.devleadtool.component.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
