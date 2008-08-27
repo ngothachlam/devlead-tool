@@ -1,11 +1,7 @@
 package com;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -13,8 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-
 import com.jonas.common.SwingUtil;
 
 public class ProgressDialog extends JDialog {
@@ -35,7 +29,6 @@ public class ProgressDialog extends JDialog {
 		progressBar.setValue(0);
 
 		panel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-		// innerPanel.setBorder(BorderFactory.createTitledBorder("Progressing..."));
 		label.setBorder(BorderFactory.createEmptyBorder(2, 3, 5, 3));
 
 		innerPanel.add(label, BorderLayout.NORTH);
@@ -71,13 +64,13 @@ public class ProgressDialog extends JDialog {
 		});
 	}
 
-	public void setCompleteSoonish() {
+	public void setCompleteWithDelay(final int millisecondsDelay) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				progressBar.setIndeterminate(false);
 				progressBar.setValue(progressBar.getMaximum());
 				try {
-					Thread.sleep(300);
+					Thread.sleep(millisecondsDelay);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -87,18 +80,6 @@ public class ProgressDialog extends JDialog {
 		});
 
 	}
-	public void setCompleteAsap() {
-	   SwingUtilities.invokeLater(new Runnable() {
-	      public void run() {
-	         progressBar.setIndeterminate(false);
-	         progressBar.setValue(progressBar.getMaximum());
-	         owner.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	         dispose();
-	      }
-	   });
-	   
-	}
-
 	public void setIndeterminate(final boolean increaseCount) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -140,7 +121,7 @@ public class ProgressDialog extends JDialog {
 				progress.increseProgress();
 			}
 		}
-		progress.setCompleteSoonish();
+		progress.setCompleteWithDelay(300);
 
 	}
 

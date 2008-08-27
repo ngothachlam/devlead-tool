@@ -1,10 +1,8 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.Vector;
-
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.jira.JiraProject;
 
@@ -32,7 +30,8 @@ public abstract class MyTableModel extends DefaultTableModel {
 
 	public void removeSelectedRows(JTable table) {
 		while (table.getSelectedRowCount() > 0) {
-			this.removeRow(table.getSelectedRow());
+			int tableSelectedRow = table.getSelectedRow();
+         this.removeRow(table.convertRowIndexToModel(tableSelectedRow));
 		}
 	}
 
@@ -59,4 +58,20 @@ public abstract class MyTableModel extends DefaultTableModel {
 	public final void addEmptyRow() {
 		this.addRow(getEmptyRow());
 	}
+
+   public int countOfSameValueInColumn(Object value, int column) {
+   	int countOfSimilar = 0;
+   	for (int i = 0; i < this.getRowCount(); i++) {
+   		Object valueAt = this.getValueAt(i, column);
+   		if (valueAt.equals(value)) {
+   			if (value instanceof String) {
+   				if (((String) value).length() > 0) {
+   					countOfSimilar++;
+   				}
+   			} else
+   				countOfSimilar++;
+   		}
+   	}
+   	return countOfSimilar;
+   }
 }

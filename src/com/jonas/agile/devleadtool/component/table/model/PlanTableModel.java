@@ -48,6 +48,8 @@ public class PlanTableModel extends MyTableModel {
    public boolean isRed(Object value, int row, int column) {
       log.debug("isRed: " + value + " row: " + row + " col: " + column);
       switch (column) {
+      case 0:
+         return countOfSameValueInColumn(value, column) > 1;
       case 1:
          return value == null || value.toString().length() == 0;
       default:

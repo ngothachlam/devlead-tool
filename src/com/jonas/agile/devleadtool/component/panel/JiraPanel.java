@@ -7,17 +7,15 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
+import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
-
 import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
@@ -27,7 +25,6 @@ import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
-import com.jonas.common.SwingWorker;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
@@ -134,7 +131,7 @@ public class JiraPanel extends MyComponentPanel {
 			final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Refreshing Fix Versions...",
 					"Refreshing Fix Versions...", selectedObjects.length);
 			SwingWorker worker = new SwingWorker() {
-				public Object construct() {
+				public Object doInBackground() {
 					dialog.setIndeterminate(false);
 					for (int i = 0; i < selectedObjects.length; i++) {
 						JiraProject selectedProject = (JiraProject) selectedObjects[i];
@@ -153,11 +150,11 @@ public class JiraPanel extends MyComponentPanel {
 				}
 
 				@Override
-				public void finished() {
-					dialog.setCompleteSoonish();
+				public void done() {
+					dialog.setCompleteWithDelay(300);
 				}
 			};
-			worker.start();
+			worker.execute();
 		}
 	}
 
@@ -188,7 +185,7 @@ public class JiraPanel extends MyComponentPanel {
 			SwingWorker worker = new SwingWorker() {
 				private String error = null;
 
-				public Object construct() {
+				public Object doInBackground() {
 					dialog.setIndeterminate(false);
 					for (int i = 0; i < selects.length; i++) {
 						final JiraVersion version = (JiraVersion) selects[i];
@@ -220,15 +217,15 @@ public class JiraPanel extends MyComponentPanel {
 				}
 
 				@Override
-				public void finished() {
+				public void done() {
 					if (error != null) {
-						dialog.setCompleteAsap();
+					   dialog.setCompleteWithDelay(0);
 						AlertDialog.message(helper, error);
 					} else
-						dialog.setCompleteSoonish();
+						dialog.setCompleteWithDelay(300);
 				}
 			};
-			worker.start();
+			worker.execute();
 		}
 	}
 

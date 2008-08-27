@@ -1,13 +1,11 @@
 package com.jonas.agile.devleadtool.component;
 
-import java.lang.reflect.InvocationTargetException;
-
+import java.util.concurrent.ExecutionException;
 import javax.swing.JFrame;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
-
-import com.jonas.common.SwingWorker;
 import com.jonas.testHelpers.TryoutTester;
 
 public class MyProgressMonitor {
@@ -44,7 +42,7 @@ public class MyProgressMonitor {
 		frame.setVisible(true);
 
 		SwingWorker worker = new SwingWorker() {
-			public Object construct() {
+			public Object doInBackground() {
 				final int j = 5;
 				final MyProgressMonitor monitor = new MyProgressMonitor(frame, j);
 				for (int i = 0; i <= j-1; i++) {
@@ -59,9 +57,17 @@ public class MyProgressMonitor {
 				return "result";
 			}
 		};
-		worker.start();
+		worker.execute();
 
-		System.out.println("worker returns: \"" + worker.get() + "\"");
+		try {
+         System.out.println("worker returns: \"" + worker.get() + "\"");
+      } catch (InterruptedException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (ExecutionException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
 	}
 
 	public void increaseProgress() {
