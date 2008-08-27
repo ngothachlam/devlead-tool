@@ -23,7 +23,7 @@ public class ReleaseNotePanel extends MyComponentPanel {
 	private Logger log = MyLogger.getLogger(ReleaseNotePanel.class);
 
 	public ReleaseNotePanel(PlannerHelper client) {
-		this(client, new ReleaseTreeModel());
+		this(client, new ReleaseTreeModel(null));
 	}
 
 	public ReleaseNotePanel(PlannerHelper helper, ReleaseTreeModel planModel) {

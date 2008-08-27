@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 
 public class MyStringParser {
 
-   private static final String delims = " ,;";
+   private static final String delims = " ,;.\t";
 
    public List<String> separateString(String string) {
       StringTokenizer st = new StringTokenizer(string, delims);

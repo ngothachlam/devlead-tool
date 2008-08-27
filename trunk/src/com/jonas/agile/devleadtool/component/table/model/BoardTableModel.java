@@ -16,7 +16,7 @@ public class BoardTableModel extends MyTableModel {
 	private static Object[] tableContents = { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
 			Boolean.FALSE, new String("") };
 
-	private static Logger log = MyLogger.getLogger(BoardTableModel.class);
+	static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
 	public BoardTableModel() {
 		super(new Object[][] { tableContents }, tableHeader);
@@ -73,24 +73,6 @@ public class BoardTableModel extends MyTableModel {
 		return numberTicks;
 	}
 
-
-	public int countOfSameValueInColumn(Object value, int column) {
-		int countOfSimilar = 0;
-		log.debug("Countof Same value");
-		for (int i = 0; i < this.getRowCount(); i++) {
-			Object valueAt = this.getValueAt(i, column);
-			log.debug(i + "Countof : " + value + " = " + value + "(" + valueAt.getClass() + ")");
-			if (valueAt.equals(value)) {
-				if (value instanceof String) {
-					if (((String) value).length() > 0) {
-						countOfSimilar++;
-					}
-				} else
-					countOfSimilar++;
-			}
-		}
-		return countOfSimilar;
-	}
 
 	public boolean isRed(Object value, int row, int column) {
 		log.debug("isRed: " + value + " row=" + row + ",col=" + column);
