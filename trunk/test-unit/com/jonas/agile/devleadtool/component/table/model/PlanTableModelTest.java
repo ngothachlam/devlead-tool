@@ -15,7 +15,9 @@ public class PlanTableModelTest extends JonasTestCase {
 		model.addRow(new JiraIssue("llu-2", "summary 2", "status", "resolution"));
 		model.removeRow(0);
 		assertFalse(model.doesJiraExist("llu-1"));
+		assertFalse(model.doesJiraExist("lLu-1"));
 		assertTrue(model.doesJiraExist("llu-2"));
+		assertTrue(model.doesJiraExist("lLu-2"));
 	}
 
 	public void testAddAndSetRowWorks() {
@@ -35,4 +37,5 @@ public class PlanTableModelTest extends JonasTestCase {
 		assertEquals("status3", model.getValueAt(1, 2));
 		assertEquals("resolution3", model.getValueAt(1, 3));
 	}
+	
 }

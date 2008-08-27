@@ -49,7 +49,7 @@ public class PlanTableModel extends MyTableModel {
       log.debug("isRed: " + value + " row: " + row + " col: " + column);
       switch (column) {
       case 0:
-         return countOfSameValueInColumn(value, column) > 1;
+    	  return countOfSameValueInColumn(value, column) > 1;
       case 1:
          return value == null || value.toString().length() == 0;
       default:
@@ -57,6 +57,7 @@ public class PlanTableModel extends MyTableModel {
       }
       return false;
    }
+   
 
    public boolean addRow(JiraIssue jiraIssue) {
       List<JiraVersion> fixVersions = jiraIssue.getFixVersions();

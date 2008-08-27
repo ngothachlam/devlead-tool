@@ -1,8 +1,10 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.Vector;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.jira.JiraProject;
 
@@ -31,7 +33,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 	public void removeSelectedRows(JTable table) {
 		while (table.getSelectedRowCount() > 0) {
 			int tableSelectedRow = table.getSelectedRow();
-         this.removeRow(table.convertRowIndexToModel(tableSelectedRow));
+			this.removeRow(table.convertRowIndexToModel(tableSelectedRow));
 		}
 	}
 
@@ -59,19 +61,20 @@ public abstract class MyTableModel extends DefaultTableModel {
 		this.addRow(getEmptyRow());
 	}
 
-   public int countOfSameValueInColumn(Object value, int column) {
-   	int countOfSimilar = 0;
-   	for (int i = 0; i < this.getRowCount(); i++) {
-   		Object valueAt = this.getValueAt(i, column);
-   		if (valueAt.equals(value)) {
-   			if (value instanceof String) {
-   				if (((String) value).length() > 0) {
-   					countOfSimilar++;
-   				}
-   			} else
-   				countOfSimilar++;
-   		}
-   	}
-   	return countOfSimilar;
-   }
+	public int countOfSameValueInColumn(Object value, int column) {
+		int countOfSimilar = 0;
+		for (int i = 0; i < this.getRowCount(); i++) {
+			Object valueAt = this.getValueAt(i, column);
+			if (value instanceof String) {
+				String stringValue = (String) value;
+				String stringRowValue = (String) valueAt;
+				if ((stringValue).length() > 0 && stringValue.equalsIgnoreCase(stringRowValue)) {
+					countOfSimilar++;
+				}
+			} else if (valueAt.equals(value)) {
+				countOfSimilar++;
+			}
+		}
+		return countOfSimilar;
+	}
 }

@@ -8,7 +8,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 public class MyPanel extends JPanel {
@@ -57,9 +59,22 @@ public class MyPanel extends JPanel {
 		return this;
 	}
 	
-	public void addButton(JPanel buttonPanel, String string, ActionListener listener) {
+	public JButton addButton(JPanel buttonPanel, String string, ActionListener listener) {
 		JButton button = new JButton(string);
 		button.addActionListener(listener);
 		buttonPanel.add(button);
+		return button;
+	}
+
+	protected JLabel addLabel(JPanel buttons, String labelText) {
+		JLabel label = new JLabel(labelText);
+		buttons.add(label);
+		return label;
+	}
+
+	protected JTextField addTextField(JPanel buttons, int textFieldLength) {
+		JTextField jiraCommas = new JTextField(textFieldLength);
+		buttons.add(jiraCommas);
+		return jiraCommas;
 	}
 }

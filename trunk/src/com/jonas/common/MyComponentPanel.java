@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+
 public class MyComponentPanel extends MyPanel {
 
 	private List<MyComponentPanel> changeListeners = new ArrayList<MyComponentPanel>();

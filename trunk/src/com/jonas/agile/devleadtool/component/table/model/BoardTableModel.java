@@ -41,7 +41,7 @@ public class BoardTableModel extends MyTableModel {
 		super.setValueAt(value, rowIndex, columnIndex);
 		if (value instanceof Boolean) {
 		} else if (columnIndex == 0) {
-			setValueAt("LLU-" + value.toString(), rowIndex, 6);
+			setValueAt(value.toString(), rowIndex, 6);
 			if (rowIndex + 1 == this.getRowCount()) {
 				this.addEmptyRow();
 			}
@@ -59,20 +59,6 @@ public class BoardTableModel extends MyTableModel {
 		}
 		return numberTicks;
 	}
-
-	public int noOfCheckboxesTickedNext(int row, int col) {
-		int numberTicks = 0;
-		for (int i = 1; i < getColumnCount(); i++) {
-			Object valueAt = getValueAt(row, i);
-			if (valueAt instanceof Boolean && col == i && (!((Boolean) valueAt).booleanValue())) {
-				numberTicks++;
-			} else if (valueAt instanceof Boolean && col != i && ((Boolean) valueAt).booleanValue()) {
-				numberTicks++;
-			}
-		}
-		return numberTicks;
-	}
-
 
 	public boolean isRed(Object value, int row, int column) {
 		log.debug("isRed: " + value + " row=" + row + ",col=" + column);

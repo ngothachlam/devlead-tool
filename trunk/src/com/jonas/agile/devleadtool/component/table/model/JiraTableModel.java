@@ -69,12 +69,6 @@ public class JiraTableModel extends MyTableModel {
 		return column == 6 ? false : (isEditable() ? false : false);
 	}
 
-	public void removeSelectedRows(JTable table) {
-		while (table.getSelectedRowCount() > 0) {
-			this.removeRow(table.getSelectedRow());
-		}
-	}
-
 	// Only required if the table is updated by the app so that it becomes visible to the user.
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
 		log.debug("Setting value" + "[value: " + value + ", row:" + rowIndex + ", col:" + columnIndex + "]");
