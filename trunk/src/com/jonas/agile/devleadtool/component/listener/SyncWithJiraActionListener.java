@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.component.panel;
+package com.jonas.agile.devleadtool.component.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +20,7 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.access.JiraIssueNotFoundException;
 import com.jonas.jira.access.JiraListener;
 
-final class SyncWithJiraActionListener implements ActionListener {
+public class SyncWithJiraActionListener implements ActionListener {
 	/**
 	 * 
 	 */

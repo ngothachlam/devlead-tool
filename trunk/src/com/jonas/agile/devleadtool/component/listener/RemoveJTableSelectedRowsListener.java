@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.component.panel;
+package com.jonas.agile.devleadtool.component.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,13 +9,13 @@ import java.awt.event.ActionListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 
-final class RemoveJTableSelectedRowsListener implements ActionListener {
+public class RemoveJTableSelectedRowsListener implements ActionListener {
 	private final MyTable table;
 
 	/**
 	 * @param table
 	 */
-	RemoveJTableSelectedRowsListener(MyTable table) {
+	public RemoveJTableSelectedRowsListener(MyTable table) {
 		this.table = table;
 	}
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.component.panel;
+package com.jonas.agile.devleadtool.component;
 
 import javax.swing.JComboBox;
 

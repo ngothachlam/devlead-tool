@@ -8,7 +8,7 @@ import javax.swing.JTable;
 
 import org.apache.log4j.Logger;
 
-import com.jonas.agile.devleadtool.component.panel.MyComboBox;
+import com.jonas.agile.devleadtool.component.MyComboBox;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.logging.MyLogger;
