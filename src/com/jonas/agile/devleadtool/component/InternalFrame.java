@@ -127,4 +127,8 @@ public class InternalFrame extends JInternalFrame {
 	public String getRightMostFromString(String string, int i) {
 		return string.length() > i ? string.substring(string.length() - i, string.length()) : string;
 	}
+
+	public boolean doesJiraExistInPlan(String jira) {
+		return getPlanModel().doesJiraExist(jira);
+	}
 }

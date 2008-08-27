@@ -16,6 +16,7 @@ import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyComponentPanel;
+import com.jonas.common.MyPanel;
 
 public class InternalFrameTabPanel extends MyComponentPanel {
 

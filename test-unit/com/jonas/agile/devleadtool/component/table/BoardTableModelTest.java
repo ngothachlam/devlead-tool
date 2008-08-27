@@ -27,6 +27,17 @@ public class BoardTableModelTest extends JonasTestCase {
 		assertEquals(3, model.getRowCount());
 	}
 
+	public void testShouldCountColValuesCorrectlyWithStringsNotCaseSensitive() {
+		assertEquals(0, model.countOfSameValueInColumn(new String("llu-123"), 0));
+		model.setValueAt("llu-123", 0, 0);
+		assertEquals(1, model.countOfSameValueInColumn(new String("llu-123"), 0));
+		model.setValueAt("llu-123", 1, 0);
+		assertEquals(2, model.countOfSameValueInColumn(new String("llu-123"), 0));
+		model.setValueAt("lLu-123", 2, 0);
+		assertEquals(3, model.countOfSameValueInColumn(new String("llu-123"), 0));
+		assertEquals(3, model.countOfSameValueInColumn(new String("Llu-123"), 0));
+		assertEquals(0, model.countOfSameValueInColumn(new String("Llu-1234"), 0));
+	}
 	public void testShouldCountColValuesCorrectly() {
 		assertEquals(0, model.countOfSameValueInColumn(new String("123"), 0));
 		model.setValueAt("123", 0, 0);
@@ -68,21 +79,6 @@ public class BoardTableModelTest extends JonasTestCase {
 		assertEquals(3, model.noOfCheckboxesTicked(0));
 		model.setValueAt(Boolean.FALSE, 0, 2);
 		assertEquals(2, model.noOfCheckboxesTicked(0));
-	}
-	
-	public void testShouldCalculateRedBooleanColsNextCorrectly() {
-		
-		assertEquals(1,model.noOfCheckboxesTickedNext(0,1));
-		model.setValueAt(Boolean.TRUE, 0, 1); // checked col 1
-		assertEquals(0,model.noOfCheckboxesTickedNext(0,1));
-		model.setValueAt(Boolean.FALSE, 0, 1);// none checked
-		assertEquals(1,model.noOfCheckboxesTickedNext(0,1));
-		model.setValueAt(Boolean.TRUE, 0, 1);// checked col 1
-		assertEquals(0,model.noOfCheckboxesTickedNext(0,1));
-		model.setValueAt(Boolean.TRUE, 0, 2);// checked col 1,2
-		assertEquals(1,model.noOfCheckboxesTickedNext(0,1));
-		assertEquals(1,model.noOfCheckboxesTickedNext(0,2));
-		assertEquals(3,model.noOfCheckboxesTickedNext(0,3));
 	}
 	
 	public void testShouldReturnShouldBeRedCorrectly() {

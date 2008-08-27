@@ -34,10 +34,8 @@ public class StringTableCellRenderer extends DefaultTableCellRenderer {
          if (hasFocus) {
             cell.setBackground(SwingUtil.getTableCellFocusBackground());
          } else if (isSelected) {
-            cell.setForeground(table.getSelectionForeground());
             cell.setBackground(table.getSelectionBackground());
          } else {
-            cell.setForeground(table.getForeground());
             cell.setBackground(table.getBackground());
          }
       }
