@@ -3,15 +3,11 @@ package com.jonas.agile.devleadtool.component.panel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.table.JTableHeader;
 
@@ -21,7 +17,7 @@ import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
+import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
@@ -31,6 +27,7 @@ import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRen
 import com.jonas.agile.devleadtool.component.table.renderer.HyperlinkTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.MyComponentPanel;
+import com.jonas.common.MyPanel;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.JiraIssueNotFoundException;
 import com.jonas.testHelpers.TryoutTester;
@@ -39,7 +36,7 @@ public class BoardPanel extends MyComponentPanel {
 
 	public String jira_url = "http://10.155.38.105/jira/browse/";
 
-	private MyTable table;
+	public MyTable table;
 	private Logger log = MyLogger.getLogger(BoardPanel.class);
 
 	private final PlannerHelper helper;
@@ -66,26 +63,7 @@ public class BoardPanel extends MyComponentPanel {
 		table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
 
 		table.addMouseListener(new HyperLinkOpenerAdapter(table, helper, BoardTableModel.COLUMNNAME_HYPERLINK, 0));
-		table.addKeyListener(new KeyAdapter() {
-			public void keyTyped(KeyEvent e) {
-				// TODO is there a better way of doing this - not very nice!
-				JTable aTable = (JTable) e.getSource();
-				int itsRow = aTable.getEditingRow();
-				int itsColumn = aTable.getEditingColumn();
-				log.debug("itsRow: " + itsRow + "itsColumn: " + itsColumn);
-				if (table.getColumnName(itsColumn).equals(BoardTableModel.COLUMNNAME_JIRA)) {
-					char keyChar = e.getKeyChar();
-					String valueAt = (String) ((MyTableModel) table.getModel()).getValueAt(itsRow, itsColumn);
-					if (keyChar >= 48 && keyChar <= 57)
-						table.setValueAt(valueAt + keyChar, itsRow, itsColumn);
-					if (keyChar == 8) {
-						if (valueAt != null && valueAt.length() > 0)
-							table.setValueAt(valueAt.substring(0, valueAt.length() - 1), itsRow, itsColumn);
-					}
-					log.debug("value  " + table.getValueAt(itsRow, itsColumn));
-				}
-			}
-		});
+		table.addKeyListener(new TableKeyListenerOnJira(this));
 
 		table.setAutoCreateRowSorter(true);
 
@@ -99,23 +77,14 @@ public class BoardPanel extends MyComponentPanel {
 		JTableHeader header = table.getTableHeader();
 		header.setReorderingAllowed(true);
 	}
-	
-	private void getPanelWithAddOptions(JPanel buttons) {
-		addLabel(buttons, "Prefix:");
-		JTextField jiraPrefix = addTextField(buttons, 5);
-		JTextField jiraCommas = addTextField(buttons, 20);
-		addButton(buttons, "Add", new AddNewRowActionListener(table, jiraPrefix, jiraCommas));
-	}
 
 	protected void setButtons() {
 		// MyPanel buttonPanel = SwingUtil.getGridPanel(0, 2, 5, 5).bordered();
 		JPanel buttonPanel = new JPanel();
 
-		getPanelWithAddOptions(buttonPanel);
-
-		addButton(buttonPanel, "Remove", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				((MyTableModel) table.getModel()).removeSelectedRows(table);
+		addPanelWithAddAndRemoveOptions(table, buttonPanel, new AddNewRowActionListenerListener() {
+			public void addedNewRow(String jiraString, int itsRow, int itsColumn) {
+				((MyTableModel) table.getModel()).setValueAt(jiraString, itsRow, itsColumn);
 			}
 		});
 
@@ -173,7 +142,7 @@ public class BoardPanel extends MyComponentPanel {
 	public static void main(String[] args) {
 		JFrame frame = TryoutTester.getFrame();
 		PlannerHelper plannerHelper = new PlannerHelper(frame, "test");
-		BoardPanel panel = new BoardPanel(plannerHelper);
+		MyPanel panel = new BoardPanel(plannerHelper);
 		frame.setContentPane(panel);
 		frame.setVisible(true);
 	}
