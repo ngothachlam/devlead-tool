@@ -3,24 +3,16 @@ package com.jonas.agile.devleadtool.component.table.model;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnValue;
 import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
-
-   private enum YesNo {
-      Yes, No, NA {
-         @Override
-         public String toString() {
-            return "";
-         }
-      }
-   }
 
    private static Column[] tableHeader = { Column.Jira, Column.Open, Column.Bugs, Column.InProgress, Column.Resolved, Column.Complete,
          Column.URL, Column.inPanel };
 
    private static Object[] tableContents = { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, new String(""),
-         YesNo.NA };
+         ColumnValue.NA };
 
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
@@ -33,7 +25,7 @@ public class BoardTableModel extends MyTableModel {
    }
 
    protected Object[] getEmptyRow() {
-      return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, new String(""), YesNo.NA };
+      return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, new String(""), ColumnValue.NA };
    }
 
    @Override
