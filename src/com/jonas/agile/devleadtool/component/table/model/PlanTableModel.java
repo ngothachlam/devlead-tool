@@ -36,7 +36,7 @@ public class PlanTableModel extends MyTableModel {
       super(columnNames, 0);
    }
 
-   public PlanTableModel(Vector<Vector<Object>> contents, Vector<Object> header) {
+   public PlanTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
       super(contents, header);
    }
 

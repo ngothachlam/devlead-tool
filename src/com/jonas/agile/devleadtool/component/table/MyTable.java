@@ -10,6 +10,7 @@ import javax.swing.table.TableColumnModel;
 import org.apache.log4j.Logger;
 
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
+import com.jonas.agile.devleadtool.component.table.model.Column;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -49,6 +50,17 @@ public class MyTable extends JTable {
 
    public boolean isRed(Object value, int row, int column) {
       return ((MyTableModel)getModel()).isRed(value, convertRowIndexToModel(row), convertColumnIndexToModel(column));
+   }
+
+   public boolean isColumnEqual(int itsColumn, Column column) {
+      return getColumnName(itsColumn).equals(column.toString());
+   }
+
+   public Column getColumnEnum(int itsColumn) {
+      return ((MyTableModel)getModel()).getColumnEnum( convertColumnIndexToModel(itsColumn));
+   }
+   public int getColumnEnum(Column column) {
+      return convertColumnIndexToView(((MyTableModel)getModel()).getColumnEnum( column));
    }
 
 }
