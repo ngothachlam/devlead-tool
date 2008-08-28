@@ -23,6 +23,7 @@ import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyComboBox;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
+import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
 import com.jonas.agile.devleadtool.component.listener.RemoveJTableSelectedRowsListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
@@ -82,19 +83,14 @@ public class PlanPanel extends MyComponentPanel {
 		JPanel buttons = new JPanel();
 
 		addButton(buttons, "Refresh FixVersions", new RefreshFixVersionsListener(table));
-		
-		getPanelWithAddOptions(buttons);
-		
-		addButton(buttons, "Remove", new RemoveJTableSelectedRowsListener(table));
+		addPanelWithAddAndRemoveOptions(table, buttons, new AddNewRowActionListenerListener(){
+			public void addedNewRow(String jiraString, int itsRow, int itsColumn) {
+				((MyTableModel)table.getModel()).setValueAt(jiraString, itsRow, itsColumn);
+			}
+		});
+
 		addButton(buttons, "Sync", new SyncWithJiraActionListener(table, helper));
 		return buttons;
-	}
-
-	private void getPanelWithAddOptions(JPanel buttons) {
-		addLabel(buttons, "Prefix:");
-		JTextField jiraPrefix = addTextField(buttons, 5);
-		JTextField jiraCommas = addTextField(buttons, 20);
-		addButton(buttons, "Add", new AddNewRowActionListener(table, jiraPrefix, jiraCommas));
 	}
 
 	public PlanTableModel getPlanModel() {
