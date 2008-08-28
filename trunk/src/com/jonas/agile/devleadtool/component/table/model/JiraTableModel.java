@@ -12,10 +12,10 @@ import com.jonas.jira.JiraIssue;
 public class JiraTableModel extends MyTableModel {
 
 	public static final String COLUMNNAME_HYPERLINK = "URL";
-	private static Vector<String> columnNames = new Vector<String>();
+	private static Vector<Column> columnNames = new Vector<Column>();
 
 	static {
-		columnNames.add("Jira");
+		columnNames.add(Column.Jira);
 		columnNames.add("Description");
 		columnNames.add("FixVersion");
 		columnNames.add("Status");
@@ -35,7 +35,7 @@ public class JiraTableModel extends MyTableModel {
 		super(columnNames, 0);
 	}
 
-	public JiraTableModel(Vector<Vector<Object>> contents, Vector<Object> header) {
+	public JiraTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
 		super(contents, header);
 		log.debug("Initiated from existing contents and header!");
 	}

@@ -6,29 +6,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-
 import org.apache.log4j.Logger;
-
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyComboBox;
-import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
-import com.jonas.agile.devleadtool.component.listener.RemoveJTableSelectedRowsListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
+import com.jonas.agile.devleadtool.component.table.model.Column;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
@@ -60,7 +55,7 @@ public class PlanPanel extends MyComponentPanel {
 		table.setDefaultRenderer(String.class, new StringTableCellRenderer());
 		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
 
-		table.addMouseListener(new HyperLinkOpenerAdapter(table, helper, PlanTableModel.COLUMNNAME_HYPERLINK, 0));
+		table.addMouseListener(new HyperLinkOpenerAdapter(helper, Column.URL, Column.Jira));
 		table.setAutoCreateRowSorter(true);
 
 		this.addCenter(scrollpane);

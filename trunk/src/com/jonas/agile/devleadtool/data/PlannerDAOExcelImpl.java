@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
-
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.extractor.ExcelExtractor;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -20,8 +19,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.Column;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
@@ -174,10 +173,10 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
 class TableModelDTO {
 
-	private final Vector<Object> header;
+	private final Vector<Column> header;
 	private final Vector<Vector<Object>> contents;
 
-	public TableModelDTO(Vector<Object> header, Vector<Vector<Object>> contents) {
+	public TableModelDTO(Vector<Column> header, Vector<Vector<Object>> contents) {
 		this.header = header;
 		this.contents = contents;
 	}

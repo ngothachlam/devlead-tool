@@ -12,15 +12,15 @@ public abstract class MyTableModel extends DefaultTableModel {
 
 	protected boolean editable = true;
 
-	public MyTableModel(Object[][] objects, String[] tableHeader) {
+	public MyTableModel(Object[][] objects, Column[] tableHeader) {
 		super(objects, tableHeader);
 	}
 
-	public MyTableModel(Vector contents, Vector headers) {
+	public MyTableModel(Vector contents, Vector<Column> headers) {
 		super(contents, headers);
 	}
 
-	public MyTableModel(Vector columnNames, int i) {
+	public MyTableModel(Vector<Column> columnNames, int i) {
 		super(columnNames, i);
 	}
 
@@ -77,4 +77,18 @@ public abstract class MyTableModel extends DefaultTableModel {
 		}
 		return countOfSimilar;
 	}
+
+   public Column getColumnEnum(int itsColumn) {
+      return Column.getEnum( getColumnName(itsColumn));
+   }
+
+   public int getColumnEnum(Column column) {
+      for (int col = 0; col < getColumnCount(); col++) {
+         if(getColumnName(col).equals(column.toString())){
+            return col;
+         }
+      }
+      return -1;
+   }
+
 }

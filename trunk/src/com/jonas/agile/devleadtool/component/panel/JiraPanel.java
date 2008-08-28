@@ -22,6 +22,7 @@ import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
 import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.component.table.model.Column;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
@@ -59,7 +60,7 @@ public class JiraPanel extends MyComponentPanel {
 		this.addSouth(getButtonPanel());
 		this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
 
-		table.addMouseListener(new HyperLinkOpenerAdapter(table, helper, JiraTableModel.COLUMNNAME_HYPERLINK, 0));
+		table.addMouseListener(new HyperLinkOpenerAdapter( helper, Column.URL, Column.Jira));
 	}
 
 	public static void main(String[] args) {
