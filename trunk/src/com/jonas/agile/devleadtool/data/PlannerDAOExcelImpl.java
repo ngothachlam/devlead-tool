@@ -19,8 +19,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.Column;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
@@ -135,7 +135,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
 		HSSFSheet sheet = wb.getSheet(sheetName);
 		Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-		Vector<Object> header = new Vector<Object>();
+		Vector<Column> header = new Vector<Column>();
 		TableModelDTO dataModelDTO = new TableModelDTO(header, contents);
 		int rowCount = -1;
 		for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {
@@ -155,7 +155,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 					HSSFRichTextString string = cell.getRichStringCellValue();
 					String tempString = (string == null ? new String("") : string.getString());
 					if (rowCount == 0)
-						header.add(tempString);
+						header.add(Column.getEnum(tempString));
 					else
 						rowData.add(tempString);
 					break;
@@ -181,7 +181,7 @@ class TableModelDTO {
 		this.contents = contents;
 	}
 
-	public Vector<Object> getHeader() {
+	public Vector<Column> getHeader() {
 		return header;
 	}
 

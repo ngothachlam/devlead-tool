@@ -16,10 +16,10 @@ import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.Column;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.HyperlinkTableCellRenderer;
@@ -59,7 +59,7 @@ public class BoardPanel extends MyComponentPanel {
       table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
 
       table.addMouseListener(new HyperLinkOpenerAdapter(helper, Column.URL, Column.Jira));
-       table.addKeyListener(new KeyStrokeForJiraChangeTableListener(table));
+      table.addKeyListener(new KeyStrokeForJiraChangeTableListener(table));
       table.setAutoCreateRowSorter(true);
 
       JScrollPane scrollPane = new MyScrollPane(table);

@@ -6,6 +6,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.jira.JiraProject;
 
 public abstract class MyTableModel extends DefaultTableModel {

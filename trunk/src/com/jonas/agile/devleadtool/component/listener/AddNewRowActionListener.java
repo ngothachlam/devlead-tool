@@ -44,10 +44,8 @@ public class AddNewRowActionListener implements ActionListener {
 			model.addRow(vector);
 			int itsRow = table.getModel().getRowCount() - 1;
 			int itsColumn = table.getModel().getColumnCount() - 1;
-			// update the jira link table.
 			for (AddNewRowActionListenerListener listener : listeners) {
 				listener.addedNewRow(jiraString, itsRow, itsColumn);
-				// model.setValueAt(jiraString, itsRow, itsColumn);
 			}
 		}
 	}

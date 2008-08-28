@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.Vector;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {

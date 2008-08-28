@@ -6,6 +6,7 @@ import javax.swing.JTable;
 
 import org.apache.log4j.Logger;
 
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
@@ -16,12 +17,12 @@ public class JiraTableModel extends MyTableModel {
 
 	static {
 		columnNames.add(Column.Jira);
-		columnNames.add("Description");
-		columnNames.add("FixVersion");
-		columnNames.add("Status");
-		columnNames.add("Resolution");
-		columnNames.add("Build Nos");
-		columnNames.add(COLUMNNAME_HYPERLINK);
+		columnNames.add(Column.Description);
+		columnNames.add(Column.FixVersion);
+		columnNames.add(Column.Status);
+		columnNames.add(Column.Resolution);
+		columnNames.add(Column.BuildNo);
+		columnNames.add(Column.URL);
 	}
 
 	@Override
