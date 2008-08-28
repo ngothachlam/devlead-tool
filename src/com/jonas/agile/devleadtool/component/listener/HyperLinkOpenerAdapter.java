@@ -4,8 +4,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.table.TableModel;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.model.Column;
 import com.jonas.common.HyperLinker;
 
 /**

@@ -10,7 +10,6 @@ import javax.swing.table.TableColumnModel;
 import org.apache.log4j.Logger;
 
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
-import com.jonas.agile.devleadtool.component.table.model.Column;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;

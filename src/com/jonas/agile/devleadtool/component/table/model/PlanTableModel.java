@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 import java.util.List;
 import java.util.Vector;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
@@ -10,14 +11,14 @@ import com.jonas.jira.JiraVersion;
 public class PlanTableModel extends MyTableModel {
 
    public static final String COLUMNNAME_HYPERLINK = "URL";
-   private static Vector<String> columnNames = new Vector<String>();
+   private static Vector<Column> columnNames = new Vector<Column>();
 
    static {
-      columnNames.add("Jira");
-      columnNames.add("FixVersion");
-      columnNames.add("Status");
-      columnNames.add("Resolution");
-      columnNames.add(COLUMNNAME_HYPERLINK);
+      columnNames.add(Column.Jira);
+      columnNames.add(Column.FixVersion);
+      columnNames.add(Column.Status);
+      columnNames.add(Column.Resolution);
+      columnNames.add(Column.URL);
    }
 
    @Override

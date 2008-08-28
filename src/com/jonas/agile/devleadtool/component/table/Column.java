@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.component.table.model;
+package com.jonas.agile.devleadtool.component.table;
 
 public enum Column {
    URL, Open, Bugs, InProgress, Resolved, Complete, inPanel {
@@ -10,7 +10,7 @@ public enum Column {
          return "inPanel?";
       }
    },
-   Jira, Description;
+   Jira, Description, FixVersion, Status, Resolution, BuildNo;
 
    public static Column getEnum(String columnName) {
       for (Column col : Column.values()) {
