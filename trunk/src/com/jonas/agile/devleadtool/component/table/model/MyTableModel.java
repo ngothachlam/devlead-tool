@@ -62,7 +62,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 		this.addRow(getEmptyRow());
 	}
 
-	public int countOfSameValueInColumn(Object value, int column) {
+	public int getCountOfSameValueInColumn(Object value, int column) {
 		int countOfSimilar = 0;
 		for (int i = 0; i < this.getRowCount(); i++) {
 			Object valueAt = this.getValueAt(i, column);
@@ -78,12 +78,33 @@ public abstract class MyTableModel extends DefaultTableModel {
 		}
 		return countOfSimilar;
 	}
+	/**
+	 * Returns -1 if cannot be found otherwise first instance of occurence.
+	 * @param value
+	 * @param column
+	 * @return 
+	 */
+	public int getRowOfSameValueInColumn(Object value, int column) {
+		for (int i = 0; i < this.getRowCount(); i++) {
+			Object valueAt = this.getValueAt(i, column);
+			if (value instanceof String) {
+				String stringValue = (String) value;
+				String stringRowValue = (String) valueAt;
+				if ((stringValue).length() > 0 && stringValue.equalsIgnoreCase(stringRowValue)) {
+					return i;
+				}
+			} else if (valueAt.equals(value)) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
-   public Column getColumnEnum(int itsColumn) {
-      return Column.getEnum( getColumnName(itsColumn));
+   public Column getColumn(int columnNo) {
+      return Column.getEnum( getColumnName(columnNo));
    }
 
-   public int getColumnEnum(Column column) {
+   public int getColumnNo(Column column) {
       for (int col = 0; col < getColumnCount(); col++) {
          if(getColumnName(col).equals(column.toString())){
             return col;
