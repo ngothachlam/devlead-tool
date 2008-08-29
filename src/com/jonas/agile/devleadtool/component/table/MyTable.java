@@ -56,10 +56,10 @@ public class MyTable extends JTable {
    }
 
    public Column getColumnEnum(int itsColumn) {
-      return ((MyTableModel)getModel()).getColumnEnum( convertColumnIndexToModel(itsColumn));
+      return ((MyTableModel)getModel()).getColumn( convertColumnIndexToModel(itsColumn));
    }
    public int getColumnEnum(Column column) {
-      return convertColumnIndexToView(((MyTableModel)getModel()).getColumnEnum( column));
+      return convertColumnIndexToView(((MyTableModel)getModel()).getColumnNo( column));
    }
 
 }

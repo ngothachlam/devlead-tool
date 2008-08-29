@@ -28,36 +28,36 @@ public class BoardTableModelTest extends JonasTestCase {
 	}
 
 	public void testShouldCountColValuesCorrectlyWithStringsNotCaseSensitive() {
-		assertEquals(0, model.countOfSameValueInColumn(new String("llu-123"), 0));
+		assertEquals(0, model.getCountOfSameValueInColumn(new String("llu-123"), 0));
 		model.setValueAt("llu-123", 0, 0);
-		assertEquals(1, model.countOfSameValueInColumn(new String("llu-123"), 0));
+		assertEquals(1, model.getCountOfSameValueInColumn(new String("llu-123"), 0));
 		model.setValueAt("llu-123", 1, 0);
-		assertEquals(2, model.countOfSameValueInColumn(new String("llu-123"), 0));
+		assertEquals(2, model.getCountOfSameValueInColumn(new String("llu-123"), 0));
 		model.setValueAt("lLu-123", 2, 0);
-		assertEquals(3, model.countOfSameValueInColumn(new String("llu-123"), 0));
-		assertEquals(3, model.countOfSameValueInColumn(new String("Llu-123"), 0));
-		assertEquals(0, model.countOfSameValueInColumn(new String("Llu-1234"), 0));
+		assertEquals(3, model.getCountOfSameValueInColumn(new String("llu-123"), 0));
+		assertEquals(3, model.getCountOfSameValueInColumn(new String("Llu-123"), 0));
+		assertEquals(0, model.getCountOfSameValueInColumn(new String("Llu-1234"), 0));
 	}
 	public void testShouldCountColValuesCorrectly() {
-		assertEquals(0, model.countOfSameValueInColumn(new String("123"), 0));
+		assertEquals(0, model.getCountOfSameValueInColumn(new String("123"), 0));
 		model.setValueAt("123", 0, 0);
-		assertEquals(1, model.countOfSameValueInColumn(new String("123"), 0));
+		assertEquals(1, model.getCountOfSameValueInColumn(new String("123"), 0));
 		model.setValueAt("1234", 0, 0);
-		assertEquals(0, model.countOfSameValueInColumn(new String("123"), 0));
-		assertEquals(1, model.countOfSameValueInColumn(new String("1234"), 0));
+		assertEquals(0, model.getCountOfSameValueInColumn(new String("123"), 0));
+		assertEquals(1, model.getCountOfSameValueInColumn(new String("1234"), 0));
 		model.setValueAt("1234", 1, 0);
-		assertEquals(2, model.countOfSameValueInColumn(new String("1234"), 0));
+		assertEquals(2, model.getCountOfSameValueInColumn(new String("1234"), 0));
 		model.setValueAt("", 0, 0);
 		model.setValueAt("", 1, 0);
-		assertEquals(0, model.countOfSameValueInColumn(new String(""), 0));
+		assertEquals(0, model.getCountOfSameValueInColumn(new String(""), 0));
 	}
 	public void testShouldCountColValuesCorrectlyAfterEdit() {
 		model.setValueAt("1234", 0, 0);
 		model.setValueAt("1234", 1, 0);
 		
-		assertEquals(2, model.countOfSameValueInColumn(new String("1234"), 0));
+		assertEquals(2, model.getCountOfSameValueInColumn(new String("1234"), 0));
 		model.setEditable(false);
-		assertEquals(2, model.countOfSameValueInColumn(new String("1234"), 0));
+		assertEquals(2, model.getCountOfSameValueInColumn(new String("1234"), 0));
 	}
 	
 	public void testShouldSetEditableCorrectly() {

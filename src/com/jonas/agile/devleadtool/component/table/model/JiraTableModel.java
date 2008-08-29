@@ -5,7 +5,9 @@ import java.util.Vector;
 import javax.swing.JTable;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.record.BarRecord;
 
+import com.jonas.agile.devleadtool.component.table.BoardStatus;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -23,11 +25,12 @@ public class JiraTableModel extends MyTableModel {
 		columnNames.add(Column.Resolution);
 		columnNames.add(Column.BuildNo);
 		columnNames.add(Column.URL);
+		columnNames.add(Column.BoardStatus);
 	}
 
 	@Override
 	protected Object[] getEmptyRow() {
-		return new Object[] { "", "", "", "", "", "", "" };
+		return new Object[] { "", "", "", "", "", "", "", BoardStatus.UnKnown};
 	}
 
 	private Logger log = MyLogger.getLogger(JiraTableModel.class);
@@ -44,7 +47,7 @@ public class JiraTableModel extends MyTableModel {
 	public boolean addRow(JiraIssue jiraIssue) {
 		if (!exists(jiraIssue.getKey())) {
 			Object[] objects = new Object[] { jiraIssue.getKey(), jiraIssue.getSummary(), jiraIssue.getFixVersions(),
-					jiraIssue.getStatus(), jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getKey() };
+					jiraIssue.getStatus(), jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getKey(), BoardStatus.UnKnown };
 			super.addRow(objects);
 			return true;
 		}
@@ -67,7 +70,7 @@ public class JiraTableModel extends MyTableModel {
 
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		return column == 6 ? false : (isEditable() ? false : false);
+		return column >= 6 ? false : (isEditable() ? false : false);
 	}
 
 	// Only required if the table is updated by the app so that it becomes visible to the user.

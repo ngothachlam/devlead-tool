@@ -50,7 +50,7 @@ public class PlanTableModel extends MyTableModel {
       log.debug("isRed: " + value + " row: " + row + " col: " + column);
       switch (column) {
       case 0:
-    	  return countOfSameValueInColumn(value, column) > 1;
+    	  return getCountOfSameValueInColumn(value, column) > 1;
       case 1:
          return value == null || value.toString().length() == 0;
       default:

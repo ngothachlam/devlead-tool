@@ -28,6 +28,8 @@ public class PlannerHelper {
 
 	private JFrame frame;
 
+	private PlannerCommunicator plannerCommunicator = new PlannerCommunicator(this);
+
 	public PlannerHelper(JFrame frame, String title) {
 		this.frame = frame;
 		this.title = title;
@@ -106,5 +108,9 @@ public class PlannerHelper {
 		log.debug("getting Jira URL for " + jira);
 		JiraProject project = JiraProject.getProjectByKey(getProjectKey(jira));
 		return project.getJiraClient().getJiraUrl();
+	}
+
+	public PlannerCommunicator getPlannerCommunicator() {
+		return plannerCommunicator;
 	}
 }

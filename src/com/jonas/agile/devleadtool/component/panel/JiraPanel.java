@@ -4,9 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,31 +14,33 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
+import javax.swing.table.TableModel;
+
 import org.apache.log4j.Logger;
-import org.jdom.JDOMException;
+
 import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.component.listener.DownloadJirasListener;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
+import com.jonas.agile.devleadtool.component.table.BoardStatus;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
-import com.jonas.jira.access.JiraClient;
-import com.jonas.jira.access.JiraException;
 import com.jonas.testHelpers.TryoutTester;
 
 public class JiraPanel extends MyComponentPanel {
 
-	private final PlannerHelper helper;
-	private Logger log = MyLogger.getLogger(JiraPanel.class);
-	private MyTable table;
+	final PlannerHelper helper;
+	Logger log = MyLogger.getLogger(JiraPanel.class);
+	MyTable table;
 
 	public JiraPanel(PlannerHelper helper) {
 		this(helper, new JiraTableModel());
@@ -60,7 +62,7 @@ public class JiraPanel extends MyComponentPanel {
 		this.addSouth(getButtonPanel());
 		this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
 
-		table.addMouseListener(new HyperLinkOpenerAdapter( helper, Column.URL, Column.Jira));
+		table.addMouseListener(new HyperLinkOpenerAdapter(helper, Column.URL, Column.Jira));
 	}
 
 	public static void main(String[] args) {
@@ -78,23 +80,27 @@ public class JiraPanel extends MyComponentPanel {
 
 		final JComboBox jiraProjectsCombo = new JComboBox(projects.toArray());
 		final JComboBox jiraProjectFixVersionCombo = new JComboBox();
-		final JButton fixVersionButton = new JButton("Refresh");
-		final JButton getJirasButton = new JButton("Get Jiras");
-		final JButton clearJirasButton = new JButton("Clear Jiras");
-		final JButton openJirasButton = new JButton("Open Jiras");
 
 		jiraProjectsCombo.addActionListener(new AlteringProjectListener(jiraProjectFixVersionCombo));
-		fixVersionButton.addActionListener(new RefreshingFixVersionListener(jiraProjectFixVersionCombo, jiraProjectsCombo));
-		getJirasButton.addActionListener(new DownloadJirasListener(jiraProjectFixVersionCombo));
-		clearJirasButton.addActionListener(new ClearJirasListener());
-		openJirasButton.addActionListener(new OpenJirasListener());
 
 		buttons.add(jiraProjectsCombo);
-		buttons.add(fixVersionButton);
+		addButton(buttons, "Refresh", new RefreshingFixVersionListener(jiraProjectFixVersionCombo, jiraProjectsCombo));
 		buttons.add(jiraProjectFixVersionCombo);
-		buttons.add(getJirasButton);
-		buttons.add(clearJirasButton);
-		buttons.add(openJirasButton);
+		addButton(buttons, "Get Jiras", new DownloadJirasListener(jiraProjectFixVersionCombo, table, helper));
+		addButton(buttons, "Clear Jiras", new ClearJirasListener());
+		addButton(buttons, "Open Jiras", new OpenJirasListener());
+		addButton(buttons, "BoardStatus", new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MyTableModel model = (MyTableModel) table.getModel();
+				for (int i = 0; i < model.getRowCount(); i++) {
+					int boardStatusNo = model.getColumnNo(Column.BoardStatus);
+					int jiraNameNo = model.getColumnNo(Column.Jira);
+					String jira = (String) model.getValueAt(i, jiraNameNo);
+					BoardStatus jiraStatusFromBoard = helper.getPlannerCommunicator().getJiraStatusFromBoard(jira);
+					model.setValueAt(jiraStatusFromBoard, i, boardStatusNo);
+				}
+			}
+		});
 
 		return buttons;
 	}
@@ -169,64 +175,6 @@ public class JiraPanel extends MyComponentPanel {
 		public void actionPerformed(ActionEvent e) {
 			jiraProjectFixVersionCombo.removeAllItems();
 			jiraProjectFixVersionCombo.setEditable(false);
-		}
-	}
-
-	private final class DownloadJirasListener implements ActionListener {
-		private final JComboBox jiraProjectFixVersionCombo;
-
-		private DownloadJirasListener(JComboBox jiraProjectFixVersionCombo) {
-			this.jiraProjectFixVersionCombo = jiraProjectFixVersionCombo;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			final Object[] selects = jiraProjectFixVersionCombo.getSelectedObjects();
-			final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Copying Jiras to Tab...", "Logging in...",
-					0);
-			SwingWorker worker = new SwingWorker() {
-				private String error = null;
-
-				public Object doInBackground() {
-					dialog.setIndeterminate(false);
-					for (int i = 0; i < selects.length; i++) {
-						final JiraVersion version = (JiraVersion) selects[i];
-						final JiraClient client = version.getProject().getJiraClient();
-						try {
-							dialog.setNote("Logging in.");
-							JiraIssue[] jiras;
-							try {
-								client.login();
-								dialog.setNote("Getting Jiras From FixVersion \"" + version + "\".");
-								jiras = client.getJirasFromFixVersion(version);
-							} catch (JiraException e) {
-								error = "Whilst " + dialog.getNote() + "\n" + e.getMessage();
-								return null;
-							}
-							dialog.increaseMax("Copying Jiras with Fix Version " + version.getName(), jiras.length);
-							for (int j = 0; j < jiras.length; j++) {
-								log.debug(jiras[j]);
-								dialog.increseProgress();
-								((JiraTableModel) table.getModel()).addRow(jiras[j]);
-							}
-						} catch (IOException e1) {
-							AlertDialog.alertException(helper, e1);
-						} catch (JDOMException e1) {
-							AlertDialog.alertException(helper, e1);
-						}
-					}
-					return null;
-				}
-
-				@Override
-				public void done() {
-					if (error != null) {
-					   dialog.setCompleteWithDelay(0);
-						AlertDialog.message(helper, error);
-					} else
-						dialog.setCompleteWithDelay(300);
-				}
-			};
-			worker.execute();
 		}
 	}
 
