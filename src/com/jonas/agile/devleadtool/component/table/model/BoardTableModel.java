@@ -1,5 +1,7 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -11,13 +13,11 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
 
-	private static Column[] tableHeader = { Column.Jira, Column.Open, Column.Bugs, Column.InProgress, Column.Resolved,
-			Column.Complete, Column.URL, Column.inPanel };
+	private static Column[]	tableHeader		= { Column.Jira, Column.Open, Column.Bugs, Column.InProgress, Column.Resolved, Column.Complete, Column.URL, Column.inPanel };
 
-	private static Object[] tableContents = { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
-			Boolean.FALSE, new String(""), ColumnValue.NA };
+	private static Object[]	tableContents	= { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, new String(""), ColumnValue.NA };
 
-	static Logger log = MyLogger.getLogger(BoardTableModel.class);
+	static Logger				log				= MyLogger.getLogger(BoardTableModel.class);
 
 	public BoardTableModel() {
 		super(new Object[][] { tableContents }, tableHeader);
@@ -28,8 +28,7 @@ public class BoardTableModel extends MyTableModel {
 	}
 
 	protected Object[] getEmptyRow() {
-		return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
-				new String(""), ColumnValue.NA };
+		return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, new String(""), ColumnValue.NA };
 	}
 
 	@Override
@@ -80,26 +79,56 @@ public class BoardTableModel extends MyTableModel {
 
 	public BoardStatus getStatus(String jira) {
 		int row = getRowOfSameValueInColumn(jira, getColumnNo(Column.Jira));
+		log.debug("row: " + row + " for jira: " + jira);
 		if (row >= 0) {
-			//FIXME - doens't work obvoiusly!!!
+			BoardStatus result = null;
+			// FIXME - doens't work obvoiusly!!!
 			for (Column column : tableHeader) {
 				switch (column) {
 				case Open:
-					return BoardStatus.Open;
 				case Bugs:
-					return BoardStatus.Bugs;
 				case InProgress:
-					return BoardStatus.InProgress;
 				case Resolved:
-					return BoardStatus.Resolved;
 				case Complete:
-					return BoardStatus.Complete;
+					log.debug("column: " + column);
+					if (getBoardStatus(row, column)) {
+						log.debug("tralllalala!");
+						result = BoardStatusToColumnMap.getBoardStatus(column);
+					}
 				default:
 					break;
 				}
 			}
-			return BoardStatus.todo;
+			log.debug("result: " + result);
+			return result;
 		} else
 			return BoardStatus.Empty;
 	}
+
+	private boolean getBoardStatus(int row, Column column) {
+		int columnTemp = getColumnNo(column);
+		log.debug("column: " + column + " columnTemp: " + columnTemp + " row: " + row);
+		Boolean valueAt = (Boolean) getValueAt(row, columnTemp);
+		log.debug("valueAt: " + valueAt);
+		return valueAt == null ? false : valueAt.booleanValue();
+	}
+}
+
+class BoardStatusToColumnMap {
+
+	private static final Map<Column, BoardStatus>	map		= new HashMap<Column, BoardStatus>();
+	private static final BoardStatusToColumnMap		mapping1	= new BoardStatusToColumnMap(Column.Open, BoardStatus.Open);
+	private static final BoardStatusToColumnMap		mapping2	= new BoardStatusToColumnMap(Column.Bugs, BoardStatus.Bugs);
+	private static final BoardStatusToColumnMap		mapping3	= new BoardStatusToColumnMap(Column.InProgress, BoardStatus.InProgress);
+	private static final BoardStatusToColumnMap		mapping4	= new BoardStatusToColumnMap(Column.Resolved, BoardStatus.Resolved);
+	private static final BoardStatusToColumnMap		mapping5	= new BoardStatusToColumnMap(Column.Complete, BoardStatus.Complete);
+
+	public BoardStatusToColumnMap(Column column, BoardStatus status) {
+		map.put(column, status);
+	}
+
+	public static BoardStatus getBoardStatus(Column column) {
+		return map.get(column);
+	}
+
 }
