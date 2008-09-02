@@ -1,11 +1,12 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
-import javax.swing.JTable;
-
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.record.BarRecord;
 
 import com.jonas.agile.devleadtool.component.table.BoardStatus;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -15,17 +16,17 @@ import com.jonas.jira.JiraIssue;
 public class JiraTableModel extends MyTableModel {
 
 	public static final String COLUMNNAME_HYPERLINK = "URL";
-	private static Vector<Column> columnNames = new Vector<Column>();
+	protected static Map<Column, Integer> columnNames = new HashMap<Column, Integer>();
 
 	static {
-		columnNames.add(Column.Jira);
-		columnNames.add(Column.Description);
-		columnNames.add(Column.FixVersion);
-		columnNames.add(Column.Status);
-		columnNames.add(Column.Resolution);
-		columnNames.add(Column.BuildNo);
-		columnNames.add(Column.URL);
-		columnNames.add(Column.BoardStatus);
+		columnNames.put(Column.Jira, 0);
+		columnNames.put(Column.Description, 1);
+		columnNames.put(Column.FixVersion, 2);
+		columnNames.put(Column.Status, 3);
+		columnNames.put(Column.Resolution, 4);
+		columnNames.put(Column.BuildNo, 5);
+		columnNames.put(Column.URL, 6);
+		columnNames.put(Column.BoardStatus, 7);
 	}
 
 	@Override
@@ -36,14 +37,26 @@ public class JiraTableModel extends MyTableModel {
 	private Logger log = MyLogger.getLogger(JiraTableModel.class);
 
 	public JiraTableModel() {
-		super(columnNames, 0);
+		super(new Vector(columnNames.values()), 0);
 	}
 
 	public JiraTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
 		// FIXME - this needs to work dynamically if columns are added and removed in the spreadsheet!! I.e. if more or less
 		// columns added than intended!
-		super(contents, header);
+		this();
+		List<Integer> convertInputHeaderToOriginal = convertInputHeaderToOriginal(header, columnNames);
+		Vector dataVector2 = dataVector;
+		Vector columnIdentifiers2 = columnIdentifiers;
+		this.setDataVector(dataVector2, columnIdentifiers2);
 		log.debug("Initiated from existing contents and header!");
+	}
+
+	List<Integer> convertInputHeaderToOriginal(Vector<Column> header, Map<Column, Integer> columnNames2) {
+		List<Integer> list = new ArrayList();
+		for (Column column : header) {
+			list.add(columnNames2.get(column));
+		}
+		return list;
 	}
 
 	public boolean addRow(JiraIssue jiraIssue) {
