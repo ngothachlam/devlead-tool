@@ -2,6 +2,8 @@ package com.jonas.agile.devleadtool;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 
@@ -22,6 +24,9 @@ public class PlannerHelper {
 
 	private String title;
 
+	Pattern jiraPattern = Pattern.compile("^[A-Z]+\\-\\d+$", Pattern.CASE_INSENSITIVE);
+	Matcher match = jiraPattern.matcher("");
+	
 	private InternalFrame internalFrame;
 
 	private Logger log = MyLogger.getLogger(PlannerHelper.class);
@@ -104,10 +109,22 @@ public class PlannerHelper {
 		}
 	}
 
-	public String getJiraUrl(String jira) {
+	public String getJiraUrl(String jira) throws NotJiraException {
 		log.debug("getting Jira URL for " + jira);
-		JiraProject project = JiraProject.getProjectByKey(getProjectKey(jira));
+		String projectKey = getProjectKey(jira);
+		JiraProject project = JiraProject.getProjectByKey(projectKey);
+		if (project == null || !isJiraString(jira)){
+			throw new NotJiraException("\""+jira+"\" is not a jira string!");
+		}
 		return project.getJiraClient().getJiraUrl();
+	}
+
+	protected boolean isJiraString(String jiraNo) {
+		match.reset(jiraNo);
+		if (match.matches()) {
+			return true;
+		}
+		return false;
 	}
 
 	public PlannerCommunicator getPlannerCommunicator() {

@@ -30,7 +30,7 @@ public class JiraTableModel extends MyTableModel {
 
 	@Override
 	protected Object[] getEmptyRow() {
-		return new Object[] { "", "", "", "", "", "", "", BoardStatus.UnKnown};
+		return new Object[] { "", "", "", "", "", "", "", BoardStatus.UnKnown };
 	}
 
 	private Logger log = MyLogger.getLogger(JiraTableModel.class);
@@ -40,6 +40,8 @@ public class JiraTableModel extends MyTableModel {
 	}
 
 	public JiraTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
+		// FIXME - this needs to work dynamically if columns are added and removed in the spreadsheet!! I.e. if more or less
+		// columns added than intended!
 		super(contents, header);
 		log.debug("Initiated from existing contents and header!");
 	}
@@ -47,7 +49,8 @@ public class JiraTableModel extends MyTableModel {
 	public boolean addRow(JiraIssue jiraIssue) {
 		if (!exists(jiraIssue.getKey())) {
 			Object[] objects = new Object[] { jiraIssue.getKey(), jiraIssue.getSummary(), jiraIssue.getFixVersions(),
-					jiraIssue.getStatus(), jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getKey(), BoardStatus.UnKnown };
+					jiraIssue.getStatus(), jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getKey(),
+					BoardStatus.UnKnown };
 			super.addRow(objects);
 			return true;
 		}
