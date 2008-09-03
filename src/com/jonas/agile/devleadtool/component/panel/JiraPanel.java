@@ -46,12 +46,12 @@ public class JiraPanel extends MyComponentPanel {
 		this(helper, new JiraTableModel());
 	}
 
-	public JiraPanel(final PlannerHelper helper, JiraTableModel jiraModel) {
+	public JiraPanel(final PlannerHelper helper, MyTableModel jiraModel) {
 		super(new BorderLayout());
 		this.helper = helper;
 
 		table = new MyTable();
-		JiraTableModel model = jiraModel;
+		MyTableModel model = jiraModel;
 		table.setModel(model);
 		table.setAutoCreateRowSorter(true);
 		table.setDragEnabled(true);
@@ -105,17 +105,17 @@ public class JiraPanel extends MyComponentPanel {
 		return buttons;
 	}
 
-	public JiraTableModel getJiraModel() {
-		return ((JiraTableModel) table.getModel());
+	public MyTableModel getJiraModel() {
+		return ((MyTableModel) table.getModel());
 	}
 
 	public void setEditable(boolean selected) {
-		((JiraTableModel) table.getModel()).setEditable(selected);
+		((MyTableModel) table.getModel()).setEditable(selected);
 	}
 
 	private final class ClearJirasListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			JiraTableModel model = ((JiraTableModel) table.getModel());
+			MyTableModel model = ((MyTableModel) table.getModel());
 			while (model.getRowCount() > 0) {
 				model.removeRow(0);
 			}

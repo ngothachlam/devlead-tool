@@ -10,7 +10,7 @@ import com.jonas.jira.JiraIssue;
 public class JiraTableModelTest extends JonasTestCase {
 
    public void testGetConvertionNumbersWithStandardColumnsOk() {
-      JiraTableModel model = new JiraTableModel();
+      MyTableModel model = new JiraTableModel();
       Vector<Column> header = new Vector<Column>();
       getMixedHeader(header);
       List convert = model.getConvertionNumbers(header, JiraTableModel.columnNames);
@@ -26,7 +26,7 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testGetConvertionNumbersWithFewerColumnsOk() {
-      JiraTableModel model = new JiraTableModel();
+      MyTableModel model = new JiraTableModel();
       Vector<Column> header = new Vector<Column>();
       header.add(Column.FixVersion); //2
       header.add(Column.Jira); //0
@@ -45,7 +45,7 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldSortVectorBasedOnListOk() {
-      JiraTableModel model = new JiraTableModel();
+      MyTableModel model = new JiraTableModel();
 
       List<Integer> originalList = new ArrayList<Integer>();
       originalList.add(1);
@@ -71,7 +71,7 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldSortVectorBasedOnListWithFewerOk() {
-      JiraTableModel model = new JiraTableModel();
+      MyTableModel model = new JiraTableModel();
 
       List<Integer> originalList = new ArrayList<Integer>();
       originalList.add(1);
@@ -140,7 +140,7 @@ public class JiraTableModelTest extends JonasTestCase {
       contents.add(getRowVector(1));
       contents.add(getMixedRowVector(2));
 
-      JiraTableModel model = new JiraTableModel(contents, header);
+      MyTableModel model = new JiraTableModel(contents, header);
 
       assertRow(model, 0);
       assertRow(model, 1);
@@ -154,7 +154,7 @@ public class JiraTableModelTest extends JonasTestCase {
       contents.add(getMixedRowVector(0));
       contents.add(getMixedRowVector(1));
 
-      JiraTableModel model = new JiraTableModel(contents, header);
+      MyTableModel model = new JiraTableModel(contents, header);
 
       assertRow(model, 0);
       assertRow(model, 1);
@@ -179,7 +179,7 @@ public class JiraTableModelTest extends JonasTestCase {
       contents.add(vector);
       contents.add(getMixedRowVector(1));
 
-      JiraTableModel model = new JiraTableModel(contents, header);
+      MyTableModel model = new JiraTableModel(contents, header);
 
       assertEquals(8, model.getColumnCount());
       assertEquals("Jira-" + i, model.getValueAt(i, 0));
@@ -213,7 +213,7 @@ public class JiraTableModelTest extends JonasTestCase {
       contents.add(vector);
       contents.add(getMixedRowVector(1));
       
-      JiraTableModel model = new JiraTableModel(contents, header);
+      MyTableModel model = new JiraTableModel(contents, header);
       
       assertEquals(8, model.getColumnCount());
       assertEquals("Jira-" + i, model.getValueAt(i, 0));
@@ -237,7 +237,7 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.URL);
    }
 
-   private void assertRow(JiraTableModel model, int i) {
+   private void assertRow(MyTableModel model, int i) {
       assertEquals(8, model.getColumnCount());
       assertEquals("Jira-" + i, model.getValueAt(i, 0));
       assertEquals("Description " + i, model.getValueAt(i, 1));

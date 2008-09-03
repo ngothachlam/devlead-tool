@@ -1,14 +1,9 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.record.formula.functions.Harmean;
 import com.jonas.agile.devleadtool.component.table.BoardStatus;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.logging.MyLogger;
@@ -33,22 +28,11 @@ public class JiraTableModel extends MyTableModel {
    }
 
    public JiraTableModel() {
-      super(new Vector(columnNames.keySet()), 0);
+      super(columnNames);
    }
 
    public JiraTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
-      // FIXME - this needs to work dynamically if columns are added and removed in the spreadsheet!! I.e. if more or less
-      // columns added than intended!
-      this();
-      List<Integer> convertInputHeaderToOriginal = getConvertionNumbers(header, columnNames);
-
-      Vector<Vector> newDataVector = new Vector<Vector>();
-      for (Vector<Object> vector : contents) {
-         newDataVector.add(sortVectorBasedOnList(convertInputHeaderToOriginal, vector));
-      }
-      Vector newHeaderVector = sortVectorBasedOnList(convertInputHeaderToOriginal, header);
-      this.setDataVector(newDataVector, newHeaderVector);
-      log.debug("Initiated from existing contents and header!");
+      super(contents, header);
    }
 
    public boolean addRow(JiraIssue jiraIssue) {
@@ -91,38 +75,9 @@ public class JiraTableModel extends MyTableModel {
       return new Object[] { "", "", "", "", "", "", "", BoardStatus.UnKnown };
    }
 
-   List<Integer> getConvertionNumbers(Vector<Column> mixedUpVector, Map<Column, Integer> originalVector) {
-      List<Integer> list = new ArrayList();
-      if (mixedUpVector.size() < originalVector.size()) {
-         for (Column originalColumn : originalVector.keySet()) {
-            Integer integer = -1;
-            if (mixedUpVector.contains(originalColumn))
-               integer = mixedUpVector.indexOf(originalColumn);
-            list.add(integer);
-         }
-      } else {
-         for (Column column : mixedUpVector) {
-            Integer integer = originalVector.get(column);
-            System.out.println("for " + column + " we are getting " + integer);
-            list.add(integer);
-         }
-      }
-      return list;
-   }
-
-   <T> Vector<T> sortVectorBasedOnList(List<Integer> convertedList, Vector<T> realVector) {
-      Vector<T> result = new Vector<T>();
-      for (Integer integer : convertedList) {
-         T t = null;
-         try {
-            t = realVector.get(integer);
-         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.print("exception -> ");
-         }
-         System.out.println("adding " + t + " from " + integer);
-         result.add(t);
-      }
-      return result;
+   @Override
+   Map<Column, Integer> getColumnNames() {
+      return columnNames;
    }
 
 }
