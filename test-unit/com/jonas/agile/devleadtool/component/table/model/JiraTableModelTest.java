@@ -193,7 +193,37 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldBeCreatedFromDAOOkWhenColsAreMixedUpAndMoreThanOriginal() {
-      assertTrue(false);
+      Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
+      Vector<Column> header = new Vector<Column>();
+      
+      header.add(Column.Jira);
+      header.add(Column.FixVersion);
+      header.add(Column.Resolution);
+      header.add(Column.URL);
+      header.add(Column.Bugs);
+      
+      Vector<Object> vector = new Vector<Object>();
+      int i = 0;
+      vector.add("Jira-" + i);
+      vector.add("FixVersion " + i);
+      vector.add("Resolution " + i);
+      vector.add("URL " + i);
+      vector.add("Bugs " + i);
+      
+      contents.add(vector);
+      contents.add(getMixedRowVector(1));
+      
+      JiraTableModel model = new JiraTableModel(contents, header);
+      
+      assertEquals(8, model.getColumnCount());
+      assertEquals("Jira-" + i, model.getValueAt(i, 0));
+      assertEquals(null, model.getValueAt(i, 1));
+      assertEquals("FixVersion " + i, model.getValueAt(i, 2));
+      assertEquals(null, model.getValueAt(i, 3));
+      assertEquals("Resolution " + i, model.getValueAt(i, 4));
+      assertEquals(null, model.getValueAt(i, 5));
+      assertEquals("URL " + i, model.getValueAt(i, 6));
+      assertEquals(null, model.getValueAt(i, 7));
    }
 
    private void getMixedHeader(Vector<Column> header) {
