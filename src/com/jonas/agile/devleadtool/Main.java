@@ -13,6 +13,7 @@ public class Main {
       }
    }
 
+   // FIXME when loading in a excel sheet with a header with incorrect name it doesn't work!!
    // TODO drag'n'drop table rows = all tables!!
    // FIXME the Open and Resolved need from Soap Client need to get the text of the object - not the id.
    // FIXME Fixed? the sync issues in planpanel doesn't work after we have reorderered
