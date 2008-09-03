@@ -130,8 +130,10 @@ public abstract class MyTableModel extends DefaultTableModel {
       // TODO need to fireUpdate on Table
    }
 
-   protected List<Integer> getConvertionNumbers(Vector<Column> mixedUpVector, Map<Column, Integer> originalVector) {
+   List<Integer> getConvertionNumbers(Vector<Column> mixedUpVector, Map<Column, Integer> originalVector) {
       List<Integer> list = new ArrayList();
+      log.debug("mixedUpVectorSize: " + mixedUpVector.size());
+      log.debug("originalVector: " + originalVector.size());
       if (mixedUpVector.size() < originalVector.size()) {
          for (Column originalColumn : originalVector.keySet()) {
             Integer integer = -1;
@@ -151,14 +153,16 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    protected abstract Object[] getEmptyRow();
 
-   protected <T> Vector<T> sortVectorBasedOnList(List<Integer> convertedList, Vector<T> realVector) {
+   <T> Vector<T> sortVectorBasedOnList(List<Integer> convertedList, Vector<T> realVector) {
       Vector<T> result = new Vector<T>();
       for (Integer integer : convertedList) {
          T t = null;
          try {
             t = realVector.get(integer);
          } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.print("exception -> ");
+            System.out.print("ArrayIndexOutOfBoundsException -> ");
+         } catch (NullPointerException e) {
+            System.out.print("NullPointerException -> ");
          }
          System.out.println("adding " + t + " from " + integer);
          result.add(t);

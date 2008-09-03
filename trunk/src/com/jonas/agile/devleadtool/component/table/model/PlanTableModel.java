@@ -104,8 +104,7 @@ public class PlanTableModel extends MyTableModel {
 
    @Override
    Map<Column, Integer> getColumnNames() {
-      // TODO Auto-generated method stub
-      return null;
+      return columnNames;
    }
 
 }
