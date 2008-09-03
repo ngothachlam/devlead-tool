@@ -44,17 +44,28 @@ public class JiraTableModel extends MyTableModel {
 		// FIXME - this needs to work dynamically if columns are added and removed in the spreadsheet!! I.e. if more or less
 		// columns added than intended!
 		this();
-		List<Integer> convertInputHeaderToOriginal = convertInputHeaderToOriginal(header, columnNames);
-		Vector dataVector2 = dataVector;
-		Vector columnIdentifiers2 = columnIdentifiers;
+		List<Integer> convertInputHeaderToOriginal = getConvertionNumbers(header, columnNames);
+		Vector<Vector> dataVector2 = new Vector<Vector>();
+		for (Vector<Object> vector : contents) {
+		   dataVector2.add( sortVectorBasedOnList(convertInputHeaderToOriginal, vector) );
+      }
+		Vector columnIdentifiers2 = sortVectorBasedOnList(convertInputHeaderToOriginal, header);
 		this.setDataVector(dataVector2, columnIdentifiers2);
 		log.debug("Initiated from existing contents and header!");
 	}
 
-	List<Integer> convertInputHeaderToOriginal(Vector<Column> header, Map<Column, Integer> columnNames2) {
+	<T> Vector<T> sortVectorBasedOnList(List<Integer> originalList, Vector<T> vector) {
+	   Vector<T> result = new Vector<T>();
+	   for (Integer integer : originalList) {
+         result.add(vector.get(integer));
+      }
+	   return result;
+   }
+
+   List<Integer> getConvertionNumbers(Vector<Column> mixedUpVector, Map<Column, Integer> originalVector) {
 		List<Integer> list = new ArrayList();
-		for (Column column : header) {
-			list.add(columnNames2.get(column));
+		for (Column column : mixedUpVector) {
+			list.add(originalVector.get(column));
 		}
 		return list;
 	}
