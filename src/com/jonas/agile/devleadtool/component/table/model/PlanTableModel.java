@@ -13,6 +13,8 @@ public class PlanTableModel extends MyTableModel {
    public static final String COLUMNNAME_HYPERLINK = "URL";
    private static Vector<Column> columnNames = new Vector<Column>();
 
+   private Logger log = MyLogger.getLogger(PlanTableModel.class);
+
    static {
       columnNames.add(Column.Jira);
       columnNames.add(Column.FixVersion);
@@ -21,24 +23,37 @@ public class PlanTableModel extends MyTableModel {
       columnNames.add(Column.URL);
    }
 
-   @Override
-   protected Object[] getEmptyRow() {
-      return new Object[] { "", "", "", "", "" };
-   }
-
-   public void setValueAt(Object value, int row, int column) {
-      super.setValueAt(value, row, column);
-      fireTableRowsUpdated(0, this.getRowCount() - 1);
-   }
-
-   private Logger log = MyLogger.getLogger(PlanTableModel.class);
-
    public PlanTableModel() {
       super(columnNames, 0);
    }
 
    public PlanTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
       super(contents, header);
+   }
+
+   public boolean addRow(JiraIssue jiraIssue) {
+      List<JiraVersion> fixVersions = jiraIssue.getFixVersions();
+      if (fixVersions.size() > 1) {
+         throw new RuntimeException(jiraIssue + " has more than one fixversion! Model can't handle it at the moment!!");
+      }
+      JiraVersion jiraVersion = null;
+      if (fixVersions != null && fixVersions.size() > 0) {
+         jiraVersion = fixVersions.get(0);
+      }
+      Object[] objects = new Object[] { jiraIssue.getKey(), jiraVersion, jiraIssue.getStatus(), jiraIssue.getResolution() };
+      super.addRow(objects);
+      log.debug("adding jira to plan: " + jiraIssue.getKey());
+      fireTableRowsUpdated(0, this.getRowCount() - 1);
+      return true;
+   }
+
+   public boolean doesJiraExist(String jira) {
+      for (int row = 0; row < getRowCount(); row++) {
+         log.debug("checking row " + row);
+         if (jira.equalsIgnoreCase((String) getValueAt(row, 0)))
+            return true;
+      }
+      return false;
    }
 
    @Override
@@ -60,22 +75,6 @@ public class PlanTableModel extends MyTableModel {
    }
    
 
-   public boolean addRow(JiraIssue jiraIssue) {
-      List<JiraVersion> fixVersions = jiraIssue.getFixVersions();
-      if (fixVersions.size() > 1) {
-         throw new RuntimeException(jiraIssue + " has more than one fixversion! Model can't handle it at the moment!!");
-      }
-      JiraVersion jiraVersion = null;
-      if (fixVersions != null && fixVersions.size() > 0) {
-         jiraVersion = fixVersions.get(0);
-      }
-      Object[] objects = new Object[] { jiraIssue.getKey(), jiraVersion, jiraIssue.getStatus(), jiraIssue.getResolution() };
-      super.addRow(objects);
-      log.debug("adding jira to plan: " + jiraIssue.getKey());
-      fireTableRowsUpdated(0, this.getRowCount() - 1);
-      return true;
-   }
-
    public boolean setRow(JiraIssue jiraIssue, int row) {
       log.debug("overwriting jira: " + jiraIssue.getKey() + " to model on row: " + row);
       List<JiraVersion> fixVersions = jiraIssue.getFixVersions();
@@ -90,13 +89,14 @@ public class PlanTableModel extends MyTableModel {
       return true;
    }
 
-   public boolean doesJiraExist(String jira) {
-      for (int row = 0; row < getRowCount(); row++) {
-         log.debug("checking row " + row);
-         if (jira.equalsIgnoreCase((String) getValueAt(row, 0)))
-            return true;
-      }
-      return false;
+   public void setValueAt(Object value, int row, int column) {
+      super.setValueAt(value, row, column);
+      fireTableRowsUpdated(0, this.getRowCount() - 1);
+   }
+
+   @Override
+   protected Object[] getEmptyRow() {
+      return new Object[] { "", "", "", "", "" };
    }
 
 }

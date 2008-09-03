@@ -13,54 +13,39 @@ public abstract class MyTableModel extends DefaultTableModel {
 
 	protected boolean editable = true;
 
-	public MyTableModel(Object[][] objects, Column[] tableHeader) {
+	MyTableModel(Object[][] objects, Column[] tableHeader) {
 		super(objects, tableHeader);
 	}
 
-	public MyTableModel(Vector contents, Vector<Column> headers) {
+	MyTableModel(Vector contents, Vector<Column> headers) {
 		super(contents, headers);
 	}
 
-	public MyTableModel(Vector<Column> columnNames, int i) {
+	MyTableModel(Vector<Column> columnNames, int i) {
 		super(columnNames, i);
 	}
 
-	public abstract boolean isRed(Object value, int row, int column);
-
-	public abstract boolean isCellEditable(int row, int column);
-
-	protected abstract Object[] getEmptyRow();
-
-	public void removeSelectedRows(JTable table) {
-		while (table.getSelectedRowCount() > 0) {
-			int tableSelectedRow = table.getSelectedRow();
-			this.removeRow(table.convertRowIndexToModel(tableSelectedRow));
-		}
+	public final void addEmptyRow() {
+		this.addRow(getEmptyRow());
 	}
 
-	public void setEditable(boolean selected) {
-		editable = selected;
-		fireTableStructureChanged();
-		// TODO need to fireUpdate on Table
-	}
-
-	public boolean isEditable() {
-		return editable;
-	}
+	public Column getColumn(int columnNo) {
+      return Column.getEnum( getColumnName(columnNo));
+   }
 
 	public Class<?> getColumnClass(int columnIndex) {
 		Object valueAt = getValueAt(0, columnIndex);
 		return valueAt != null ? valueAt.getClass() : getEmptyRow()[columnIndex].getClass();
 	}
 
-	public JiraProject getProjectForRow(int row) {
-		String jira = (String) getValueAt(row, 0);
-		return JiraProject.getProjectByKey(PlannerHelper.getProjectKey(jira));
-	}
-
-	public final void addEmptyRow() {
-		this.addRow(getEmptyRow());
-	}
+	public int getColumnNo(Column column) {
+      for (int col = 0; col < getColumnCount(); col++) {
+         if(getColumnName(col).equals(column.toString())){
+            return col;
+         }
+      }
+      return -1;
+   }
 
 	public int getCountOfSameValueInColumn(Object value, int column) {
 		int countOfSimilar = 0;
@@ -78,6 +63,12 @@ public abstract class MyTableModel extends DefaultTableModel {
 		}
 		return countOfSimilar;
 	}
+
+	public JiraProject getProjectForRow(int row) {
+		String jira = (String) getValueAt(row, 0);
+		return JiraProject.getProjectByKey(PlannerHelper.getProjectKey(jira));
+	}
+
 	/**
 	 * Returns -1 if cannot be found otherwise first instance of occurence.
 	 * @param value
@@ -100,17 +91,26 @@ public abstract class MyTableModel extends DefaultTableModel {
 		return -1;
 	}
 
-   public Column getColumn(int columnNo) {
-      return Column.getEnum( getColumnName(columnNo));
-   }
+	public abstract boolean isCellEditable(int row, int column);
 
-   public int getColumnNo(Column column) {
-      for (int col = 0; col < getColumnCount(); col++) {
-         if(getColumnName(col).equals(column.toString())){
-            return col;
-         }
-      }
-      return -1;
-   }
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public abstract boolean isRed(Object value, int row, int column);
+	public void removeSelectedRows(JTable table) {
+		while (table.getSelectedRowCount() > 0) {
+			int tableSelectedRow = table.getSelectedRow();
+			this.removeRow(table.convertRowIndexToModel(tableSelectedRow));
+		}
+	}
+
+   public void setEditable(boolean selected) {
+		editable = selected;
+		fireTableStructureChanged();
+		// TODO need to fireUpdate on Table
+	}
+
+   protected abstract Object[] getEmptyRow();
 
 }
