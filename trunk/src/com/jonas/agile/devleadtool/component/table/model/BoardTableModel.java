@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -13,6 +14,8 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
 
+   private final static Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+
    private static Object[] tableContents = { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, new String(""),
          ColumnValue.NA };
 
@@ -20,9 +23,18 @@ public class BoardTableModel extends MyTableModel {
          Column.inPanel };
 
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
+   static {
+      columnNames.put(Column.Jira, 0);
+      columnNames.put(Column.Open, 1);
+      columnNames.put(Column.Bugs, 2);
+      columnNames.put(Column.InProgress, 3);
+      columnNames.put(Column.Resolved, 4);
+      columnNames.put(Column.Complete, 5);
+      columnNames.put(Column.URL, 6);
+   }
 
    public BoardTableModel() {
-      super(new Object[][] { tableContents }, tableHeader);
+      super(columnNames, 1);
    }
 
    public BoardTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
@@ -109,6 +121,11 @@ public class BoardTableModel extends MyTableModel {
 
    protected Object[] getEmptyRow() {
       return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, new String(""), ColumnValue.NA };
+   }
+
+   @Override
+   Map<Column, Integer> getColumnNames() {
+      return columnNames;
    }
 }
 

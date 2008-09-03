@@ -1,6 +1,8 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -11,20 +13,21 @@ import com.jonas.jira.JiraVersion;
 public class PlanTableModel extends MyTableModel {
 
    public static final String COLUMNNAME_HYPERLINK = "URL";
-   private static Vector<Column> columnNames = new Vector<Column>();
+   protected static Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+//   private static Vector<Column> columnNames = new Vector<Column>();
 
    private Logger log = MyLogger.getLogger(PlanTableModel.class);
 
    static {
-      columnNames.add(Column.Jira);
-      columnNames.add(Column.FixVersion);
-      columnNames.add(Column.Status);
-      columnNames.add(Column.Resolution);
-      columnNames.add(Column.URL);
+      columnNames.put(Column.Jira,0);
+      columnNames.put(Column.FixVersion,1);
+      columnNames.put(Column.Status,2);
+      columnNames.put(Column.Resolution,3);
+      columnNames.put(Column.URL,4);
    }
 
    public PlanTableModel() {
-      super(columnNames, 0);
+      super(columnNames);
    }
 
    public PlanTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
@@ -97,6 +100,12 @@ public class PlanTableModel extends MyTableModel {
    @Override
    protected Object[] getEmptyRow() {
       return new Object[] { "", "", "", "", "" };
+   }
+
+   @Override
+   Map<Column, Integer> getColumnNames() {
+      // TODO Auto-generated method stub
+      return null;
    }
 
 }

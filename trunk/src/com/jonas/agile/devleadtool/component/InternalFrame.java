@@ -108,7 +108,7 @@ public class InternalFrame extends JInternalFrame {
 		return content.getExcelFile();
 	}
 
-	public JiraTableModel getJiraModel() {
+	public MyTableModel getJiraModel() {
 		return content.getJiraPanel().getJiraModel();
 	}
 
