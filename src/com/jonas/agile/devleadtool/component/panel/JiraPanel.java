@@ -6,15 +6,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.List;
+
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
-import javax.swing.table.TableModel;
+
 import org.apache.log4j.Logger;
+
 import com.ProgressDialog;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
@@ -22,6 +23,7 @@ import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.listener.DownloadJirasListener;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
+import com.jonas.agile.devleadtool.component.listener.RemoveJTableSelectedRowsListener;
 import com.jonas.agile.devleadtool.component.table.BoardStatus;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -85,7 +87,7 @@ public class JiraPanel extends MyComponentPanel {
 		addButton(buttons, "Refresh", new RefreshingFixVersionListener(jiraProjectFixVersionCombo, jiraProjectsCombo));
 		buttons.add(jiraProjectFixVersionCombo);
 		addButton(buttons, "Get Jiras", new DownloadJirasListener(jiraProjectFixVersionCombo, table, helper));
-		addButton(buttons, "Clear Jiras", new ClearJirasListener());
+		addButton(buttons, "Remove", new RemoveJTableSelectedRowsListener(table));
 		addButton(buttons, "Open Jiras", new OpenJirasListener());
 		addButton(buttons, "BoardStatus", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

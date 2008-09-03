@@ -1,7 +1,7 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -14,7 +14,7 @@ import com.jonas.jira.JiraIssue;
 public class JiraTableModel extends MyTableModel {
 
    public static final String COLUMNNAME_HYPERLINK = "URL";
-   protected static Map<Column, Integer> columnNames = new HashMap<Column, Integer>();
+   protected static Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
 
    static {
       columnNames.put(Column.Jira, 0);
@@ -35,7 +35,7 @@ public class JiraTableModel extends MyTableModel {
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
 
    public JiraTableModel() {
-      super(new Vector(columnNames.values()), 0);
+      super(new Vector(columnNames.keySet()), 0);
    }
 
    public JiraTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
@@ -43,19 +43,32 @@ public class JiraTableModel extends MyTableModel {
       // columns added than intended!
       this();
       List<Integer> convertInputHeaderToOriginal = getConvertionNumbers(header, columnNames);
-      Vector<Vector> dataVector2 = new Vector<Vector>();
+      addNullsWhereRequired(convertInputHeaderToOriginal, columnNames);
+
+      Vector<Vector> newDataVector = new Vector<Vector>();
       for (Vector<Object> vector : contents) {
-         dataVector2.add(sortVectorBasedOnList(convertInputHeaderToOriginal, vector));
+         newDataVector.add(sortVectorBasedOnList(convertInputHeaderToOriginal, vector));
       }
-      Vector columnIdentifiers2 = sortVectorBasedOnList(convertInputHeaderToOriginal, header);
-      this.setDataVector(dataVector2, columnIdentifiers2);
+      Vector newHeaderVector = sortVectorBasedOnList(convertInputHeaderToOriginal, header);
+      this.setDataVector(newDataVector, newHeaderVector);
       log.debug("Initiated from existing contents and header!");
+   }
+
+   void addNullsWhereRequired(List<Integer> convertInputHeaderToOriginal, Map<Column, Integer> columnNames2) {
+      // TODO Auto-generated method stub
    }
 
    <T> Vector<T> sortVectorBasedOnList(List<Integer> originalList, Vector<T> vector) {
       Vector<T> result = new Vector<T>();
       for (Integer integer : originalList) {
-         result.add(vector.get(integer));
+         T t = null;
+         try {
+            t = vector.get(integer);
+         } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.print("exception -> ");
+         }
+         System.out.println("adding " + t + " from " + integer);
+         result.add(t);
       }
       return result;
    }
@@ -63,7 +76,9 @@ public class JiraTableModel extends MyTableModel {
    List<Integer> getConvertionNumbers(Vector<Column> mixedUpVector, Map<Column, Integer> originalVector) {
       List<Integer> list = new ArrayList();
       for (Column column : mixedUpVector) {
-         list.add(originalVector.get(column));
+         Integer integer = originalVector.get(column);
+         System.out.println("for " + column + " we are getting " + integer);
+         list.add(integer);
       }
       return list;
    }
