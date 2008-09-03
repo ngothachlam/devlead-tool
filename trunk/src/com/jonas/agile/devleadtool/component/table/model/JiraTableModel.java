@@ -19,6 +19,8 @@ public class JiraTableModel extends MyTableModel {
    public static final String COLUMNNAME_HYPERLINK = "URL";
    protected static Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
 
+   private Logger log = MyLogger.getLogger(JiraTableModel.class);
+
    static {
       columnNames.put(Column.Jira, 0);
       columnNames.put(Column.Description, 1);
@@ -29,13 +31,6 @@ public class JiraTableModel extends MyTableModel {
       columnNames.put(Column.URL, 6);
       columnNames.put(Column.BoardStatus, 7);
    }
-
-   @Override
-   protected Object[] getEmptyRow() {
-      return new Object[] { "", "", "", "", "", "", "", BoardStatus.UnKnown };
-   }
-
-   private Logger log = MyLogger.getLogger(JiraTableModel.class);
 
    public JiraTableModel() {
       super(new Vector(columnNames.keySet()), 0);
@@ -56,19 +51,44 @@ public class JiraTableModel extends MyTableModel {
       log.debug("Initiated from existing contents and header!");
    }
 
-   <T> Vector<T> sortVectorBasedOnList(List<Integer> convertedList, Vector<T> realVector) {
-      Vector<T> result = new Vector<T>();
-      for (Integer integer : convertedList) {
-         T t = null;
-         try {
-            t = realVector.get(integer);
-         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.print("exception -> ");
-         }
-         System.out.println("adding " + t + " from " + integer);
-         result.add(t);
+   public boolean addRow(JiraIssue jiraIssue) {
+      if (!exists(jiraIssue.getKey())) {
+         Object[] objects = new Object[] { jiraIssue.getKey(), jiraIssue.getSummary(), jiraIssue.getFixVersions(), jiraIssue.getStatus(),
+               jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getKey(), BoardStatus.UnKnown };
+         super.addRow(objects);
+         return true;
       }
-      return result;
+      log.debug("jira already in model: " + jiraIssue.getKey());
+      return false;
+   }
+
+   @Override
+   public boolean isCellEditable(int row, int column) {
+      return column >= 6 ? false : (isEditable() ? false : false);
+   }
+
+   public boolean isRed(Object value, int row, int column) {
+      return false;
+   }
+
+   // Only required if the table is updated by the app so that it becomes visible to the user.
+   public void setValueAt(Object value, int rowIndex, int columnIndex) {
+      log.debug("Setting value" + "[value: " + value + ", row:" + rowIndex + ", col:" + columnIndex + "]");
+      super.setValueAt(value, rowIndex, columnIndex);
+   }
+
+   protected boolean exists(String name) {
+      for (int row = 0; row < getRowCount(); row++) {
+         if (getValueAt(row, 0).equals(name)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   @Override
+   protected Object[] getEmptyRow() {
+      return new Object[] { "", "", "", "", "", "", "", BoardStatus.UnKnown };
    }
 
    List<Integer> getConvertionNumbers(Vector<Column> mixedUpVector, Map<Column, Integer> originalVector) {
@@ -90,39 +110,19 @@ public class JiraTableModel extends MyTableModel {
       return list;
    }
 
-   public boolean addRow(JiraIssue jiraIssue) {
-      if (!exists(jiraIssue.getKey())) {
-         Object[] objects = new Object[] { jiraIssue.getKey(), jiraIssue.getSummary(), jiraIssue.getFixVersions(), jiraIssue.getStatus(),
-               jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getKey(), BoardStatus.UnKnown };
-         super.addRow(objects);
-         return true;
-      }
-      log.debug("jira already in model: " + jiraIssue.getKey());
-      return false;
-   }
-
-   protected boolean exists(String name) {
-      for (int row = 0; row < getRowCount(); row++) {
-         if (getValueAt(row, 0).equals(name)) {
-            return true;
+   <T> Vector<T> sortVectorBasedOnList(List<Integer> convertedList, Vector<T> realVector) {
+      Vector<T> result = new Vector<T>();
+      for (Integer integer : convertedList) {
+         T t = null;
+         try {
+            t = realVector.get(integer);
+         } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.print("exception -> ");
          }
+         System.out.println("adding " + t + " from " + integer);
+         result.add(t);
       }
-      return false;
-   }
-
-   public boolean isRed(Object value, int row, int column) {
-      return false;
-   }
-
-   @Override
-   public boolean isCellEditable(int row, int column) {
-      return column >= 6 ? false : (isEditable() ? false : false);
-   }
-
-   // Only required if the table is updated by the app so that it becomes visible to the user.
-   public void setValueAt(Object value, int rowIndex, int columnIndex) {
-      log.debug("Setting value" + "[value: " + value + ", row:" + rowIndex + ", col:" + columnIndex + "]");
-      super.setValueAt(value, rowIndex, columnIndex);
+      return result;
    }
 
 }
