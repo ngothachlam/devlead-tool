@@ -23,6 +23,10 @@ public class PlanFixVersion {
       return text;
    }
 
+   public static List<PlanFixVersion> getList(){
+      return list;
+   }
+   
    public static void remove(PlanFixVersion planFixVersion) {
       list.remove(planFixVersion);
       notifyListenersFixVersionHasBeenRemoved();

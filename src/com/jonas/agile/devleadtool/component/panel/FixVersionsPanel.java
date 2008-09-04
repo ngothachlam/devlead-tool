@@ -7,18 +7,13 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.listener.PlanFixVersionListener;
-import com.jonas.agile.devleadtool.component.listener.RemoveJTableSelectedRowsListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.data.PlanFixVersion;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
@@ -27,13 +22,11 @@ import com.jonas.testHelpers.TryoutTester;
 
 public class FixVersionsPanel extends MyComponentPanel {
 
-   final PlannerHelper helper;
    private Logger log = MyLogger.getLogger(FixVersionsPanel.class);
    private MyTable table;
 
-   public FixVersionsPanel(PlannerHelper client) {
+   public FixVersionsPanel() {
       super(new BorderLayout());
-      this.helper = client;
 
       addCenter(getTablePanel());
       addSouth(getBottomPanel());
@@ -68,9 +61,14 @@ public class FixVersionsPanel extends MyComponentPanel {
 
    public static void main(String[] args) {
       JFrame frame = TryoutTester.getFrame();
-      JPanel panel = new FixVersionsPanel(new PlannerHelper(frame, "test"));
-      frame.setContentPane(panel);
+      frame.setContentPane(new FixVersionsPanel());
       frame.setVisible(true);
+      
+      JFrame testFrame = TryoutTester.getFrame();
+      testFrame.setSize(200, 200);
+
+      testFrame.setContentPane(new TestPanel());
+      testFrame.setVisible(true);
    }
 
    private Vector<Object> getRowData(JiraProject project, PlanFixVersion fixVersion) {
