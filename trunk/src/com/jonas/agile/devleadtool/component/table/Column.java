@@ -10,7 +10,7 @@ public enum Column {
          return "inPanel?";
       }
    },
-   Jira, Description, FixVersion, Status, Resolution, BuildNo, BoardStatus;
+   Jira, Description, FixVersion, Status, Resolution, BuildNo, BoardStatus, Estimate;
 
    public static Column getEnum(String columnName) {
       for (Column col : Column.values()) {

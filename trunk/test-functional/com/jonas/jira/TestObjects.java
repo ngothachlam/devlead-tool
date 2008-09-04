@@ -7,6 +7,7 @@ public class TestObjects {
 	public static File fileWithoutBuildNo = new File("test-functional/jiraXML.xml");
 	public static File fileWithBuildNo = new File("test-functional/jiraXMLwBuildNo.xml");
 	public static File fileSimple = new File("test-functional/jiraXMLSimple.xml");
+	public static File fileWithBuildAndEstimate = new File("test-functional/jiraXMLWithBuildAndEstimate.xml");
 	
 	public static Element elementSimple ;
 	

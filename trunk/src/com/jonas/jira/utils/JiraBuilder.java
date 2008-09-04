@@ -19,6 +19,8 @@ import com.jonas.jira.access.JiraClient;
 
 public class JiraBuilder {
 
+   
+   
 	private static final List<XPathImplementor> jiraXpathActions = new ArrayList<XPathImplementor>();
 	private static final Logger log = MyLogger.getLogger(JiraBuilder.class);
 	private static JiraBuilder instance = new JiraBuilder();
@@ -33,7 +35,16 @@ public class JiraBuilder {
 				jira.setBuildNo(xpathValue);
 			}
 		};
+		String xPath2 = "/item/timeoriginalestimate/@seconds";
+//		String xPath2 = "/xsd:item/xsd:timeoriginalestimate/@seconds";
+		XpathAction xpathAction2 = new XpathAction() {
+		   public void XPathValueFound(String xpathValue, JiraIssue jira) {
+		      int xpathResult = new Integer( xpathValue ).intValue();
+            jira.setEstimate(xpathResult);
+		   }
+		};
 		jiraXpathActions.add(new XPathImplementor(xPath, xpathAction));
+		jiraXpathActions.add(new XPathImplementor(xPath2, xpathAction2));
 	}
 
 	public JiraIssue buildJira(Element e) {
@@ -138,8 +149,9 @@ class XPathImplementor {
 		xpathEvaluator = new JonasXpathEvaluator(xpathExpression);
 	}
 
-	public void execute(Element element, JiraIssue jira) {
+
+   public void execute(Element element, JiraIssue jira) {
 		xpathAction.XPathValueFound(xpathEvaluator.getElementText(element), jira);
 	}
-
 }
+
