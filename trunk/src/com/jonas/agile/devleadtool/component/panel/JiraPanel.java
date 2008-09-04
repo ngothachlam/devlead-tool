@@ -6,16 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.List;
-
+import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
-
 import org.apache.log4j.Logger;
-
 import com.ProgressDialog;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
@@ -76,9 +74,8 @@ public class JiraPanel extends MyComponentPanel {
 	private Component getButtonPanel() {
 		JPanel buttons = new JPanel();
 
-		List<JiraProject> projects = JiraProject.getProjects();
-
-		final JComboBox jiraProjectsCombo = new JComboBox(projects.toArray());
+		Vector<JiraProject> projects = JiraProject.getProjects();
+		final JComboBox jiraProjectsCombo = new JComboBox(projects);
 		final JComboBox jiraProjectFixVersionCombo = new JComboBox();
 
 		jiraProjectsCombo.addActionListener(new AlteringProjectListener(jiraProjectFixVersionCombo));

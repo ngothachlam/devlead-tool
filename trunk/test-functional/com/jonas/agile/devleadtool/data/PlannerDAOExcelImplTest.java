@@ -10,6 +10,7 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.jira.TestObjects;
 
 public class PlannerDAOExcelImplTest extends TestCase {
@@ -78,7 +79,30 @@ public class PlannerDAOExcelImplTest extends TestCase {
 
    public void testSouldSaveAndLoadPlanCorrectly() throws IOException {
       PlannerDAO dao = new PlannerDAOExcelImpl();
-      assertTrue(false);
+      MyTableModel model_original = new PlanTableModel();
+
+      // Save and Load on new file
+      dao.savePlanModel(xlsFile, model_original);
+      MyTableModel model_loaded = dao.loadPlanModel(xlsFile);
+
+      assertEquals(0, model_loaded.getRowCount());
+      assertEquals(8, model_loaded.getColumnCount());
+      assertHeaderInModel(model_loaded, new Object[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "URL", "BoardStatus" });
+      assertEquals(0, model_loaded.getRowCount());
+
+      // Modify,
+      model_loaded.addRow(new Object[] { "123", "desc1", TestObjects.Version_10, "1", "2", "link1" });
+      model_loaded.addRow(new Object[] { "1234", "desc2", TestObjects.Version_11, "3", "4", "link2" });
+
+      // Save and Load on the existing file
+      dao.saveJiraModel(xlsFile, model_loaded);
+      model_loaded = dao.loadJiraModel(xlsFile);
+
+      assertEquals(2, model_loaded.getRowCount());
+      assertEquals(8, model_loaded.getColumnCount());
+      assertHeaderInModel(model_loaded, new Object[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "URL", "BoardStatus" });
+      assertRowInModel(0, model_loaded, new Object[] { "123", "desc1", "Version 10", "1", "2", "link1" });
+      assertRowInModel(1, model_loaded, new Object[] { "1234", "desc2", "Version 11", "3", "4", "link2" });
    }
 
    public void testSouldSaveAndLoadJiraCorrectly() throws IOException {

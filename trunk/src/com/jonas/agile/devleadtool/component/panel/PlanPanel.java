@@ -38,7 +38,7 @@ public class PlanPanel extends MyComponentPanel {
 
 	final PlannerHelper helper;
 	private Logger log = MyLogger.getLogger(PlanPanel.class);
-	ComboBoxTable table;
+	MyTable table;
 
 	public PlanPanel(PlannerHelper client) {
 		this(client, new PlanTableModel());
@@ -47,10 +47,10 @@ public class PlanPanel extends MyComponentPanel {
 	public PlanPanel(PlannerHelper helper, PlanTableModel planModel) {
 		super(new BorderLayout());
 		this.helper = helper;
-		table = new ComboBoxTable();
+		table = new MyTable();
+		table.setModel(planModel);
 		JScrollPane scrollpane = new JScrollPane(table);
 
-		table.setModel(planModel);
 
 		table.setDefaultRenderer(String.class, new StringTableCellRenderer());
 		table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
@@ -77,7 +77,7 @@ public class PlanPanel extends MyComponentPanel {
 	private Component getBottomPanel() {
 		JPanel buttons = new JPanel();
 
-		addButton(buttons, "Refresh FixVersions", new RefreshFixVersionsListener(table));
+//		addButton(buttons, "Refresh FixVersions", new RefreshFixVersionsListener(table));
 		addPanelWithAddAndRemoveOptions(table, buttons, new AddNewRowActionListenerListener(){
 			public void addedNewRow(String jiraString, int itsRow, int itsColumn) {
 				((MyTableModel)table.getModel()).setValueAt(jiraString, itsRow, itsColumn);

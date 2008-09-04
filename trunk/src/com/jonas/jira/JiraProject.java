@@ -5,16 +5,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.JiraClient;
 
 public class JiraProject {
-   private static List<JiraProject> projects = new ArrayList<JiraProject>();
+   private static Vector<JiraProject> projects = new Vector<JiraProject>();
    
-   public static final JiraProject ATLASSIN_TST = new JiraProject(JiraClient.JiraClientAtlassin, "Atlassin", "TST", "10420");
-   public static final JiraProject LLU_DEV_SUPPORT = new JiraProject(JiraClient.JiraClientAolBB, "LLUDEVSUP", "LLUDEVSUP", "10192");
    public static final JiraProject LLU_SYSTEMS_PROVISIONING = new JiraProject(JiraClient.JiraClientAolBB, "LLU", "LLU", "10070");
+   public static final JiraProject LLU_DEV_SUPPORT = new JiraProject(JiraClient.JiraClientAolBB, "LLUDEVSUP", "LLUDEVSUP", "10192");
+   public static final JiraProject ATLASSIN_TST = new JiraProject(JiraClient.JiraClientAtlassin, "Atlassin", "TST", "10420");
    
    private static Logger log = MyLogger.getLogger(JiraProject.class);
 
@@ -50,7 +51,7 @@ public class JiraProject {
       return null;
    }
 
-   public static List<JiraProject> getProjects() {
+   public static Vector<JiraProject> getProjects() {
       return projects;
    }
 
