@@ -38,7 +38,7 @@ public class FixVersionsPanel extends MyComponentPanel {
       PlanFixVersion.addListener(new PlanFixVersionListener() {
          public void planFixVersionAdded(PlanFixVersion fixVersion, JiraProject project) {
             DefaultTableModel model = (DefaultTableModel) table.getModel();
-            Vector<Object> rowData = getRowData(project, fixVersion);
+            Vector<Object> rowData = getRowData(fixVersion);
             model.addRow(rowData);
          }
 
@@ -52,8 +52,11 @@ public class FixVersionsPanel extends MyComponentPanel {
       table = new MyTable();
       Vector header = new Vector();
       header.add("FixVersion");
-      header.add("Project");
-      table.setModel(new DefaultTableModel(null, header));
+      table.setModel(new DefaultTableModel(null, header) {
+         public boolean isCellEditable(int row, int column) {
+            return false;
+         }
+      });
       JScrollPane scrollpane = new JScrollPane(table);
       panel.add(scrollpane);
       return panel;
@@ -63,7 +66,7 @@ public class FixVersionsPanel extends MyComponentPanel {
       JFrame frame = TryoutTester.getFrame();
       frame.setContentPane(new FixVersionsPanel());
       frame.setVisible(true);
-      
+
       JFrame testFrame = TryoutTester.getFrame();
       testFrame.setSize(200, 200);
 
@@ -71,10 +74,9 @@ public class FixVersionsPanel extends MyComponentPanel {
       testFrame.setVisible(true);
    }
 
-   private Vector<Object> getRowData(JiraProject project, PlanFixVersion fixVersion) {
+   private Vector<Object> getRowData(PlanFixVersion fixVersion) {
       Vector<Object> rowData = new Vector<Object>();
       rowData.add(fixVersion);
-      rowData.add(project);
       return rowData;
    }
 
@@ -92,7 +94,7 @@ public class FixVersionsPanel extends MyComponentPanel {
          }
 
       });
-      addButton(panel, "Remove", new ActionListener() {
+      addButton(panel, "Remove Selected", new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             DefaultTableModel model = (DefaultTableModel) table.getModel();
             while (table.getSelectedRowCount() > 0) {
@@ -101,6 +103,22 @@ public class FixVersionsPanel extends MyComponentPanel {
                PlanFixVersion versionToRemove = (PlanFixVersion) model.getValueAt(modelRowNo, 0);
                PlanFixVersion.remove(versionToRemove);
                model.removeRow(modelRowNo);
+            }
+         }
+      });
+      addButton(panel, "Update Selected", new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            if (table.getSelectedRowCount() > 1) {
+               throw new RuntimeException("Can only update one row!!");
+            }
+            while (table.getSelectedRowCount() > 0) {
+               int tableSelectedRow = table.getSelectedRow();
+               int modelRowNo = table.convertRowIndexToModel(tableSelectedRow);
+               PlanFixVersion versionToUpdate = (PlanFixVersion) model.getValueAt(modelRowNo, 0);
+               versionToUpdate.setText(newVersionField.getText());
+               versionToUpdate.setProject((JiraProject) projectCombo.getSelectedItem());
+               model.fireTableDataChanged();
             }
          }
       });

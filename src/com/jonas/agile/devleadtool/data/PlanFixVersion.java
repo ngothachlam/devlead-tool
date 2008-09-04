@@ -7,10 +7,10 @@ import com.jonas.jira.JiraProject;
 
 public class PlanFixVersion {
 
-   private final String text;
-   private final JiraProject project;
    private final static List<PlanFixVersion> list = new ArrayList<PlanFixVersion>();
    private final static List<PlanFixVersionListener> listeners = new ArrayList<PlanFixVersionListener>();
+   private JiraProject project;
+   private String text;
 
    public PlanFixVersion(String text, JiraProject project) {
       this.text = text;
@@ -19,17 +19,21 @@ public class PlanFixVersion {
       notifyListenersFixVersionHasBeenAdded(this, project);
    }
 
-   public String toString() {
-      return text;
+   public static void addListener(PlanFixVersionListener listener) {
+      listeners.add(listener);
    }
 
-   public static List<PlanFixVersion> getList(){
+   public static List<PlanFixVersion> getList() {
       return list;
    }
-   
+
    public static void remove(PlanFixVersion planFixVersion) {
       list.remove(planFixVersion);
       notifyListenersFixVersionHasBeenRemoved();
+   }
+
+   public static void removeListener(PlanFixVersionListener listener) {
+      listeners.remove(listener);
    }
 
    private static void notifyListenersFixVersionHasBeenRemoved() {
@@ -38,17 +42,27 @@ public class PlanFixVersion {
       }
    }
 
+   public String getText() {
+      return text;
+   }
+
+   public void setProject(JiraProject project) {
+      this.project = project;
+   }
+
+   public void setText(String text) {
+      this.text = text;
+   }
+
+   public String toString() {
+      StringBuffer sb = new StringBuffer();
+      sb.append(text).append(" <").append(project).append(">");
+      return sb.toString();
+   }
+
    private void notifyListenersFixVersionHasBeenAdded(PlanFixVersion planFixVersion, JiraProject project) {
       for (PlanFixVersionListener listener : listeners) {
          listener.planFixVersionAdded(planFixVersion, project);
       }
-   }
-
-   public static void addListener(PlanFixVersionListener listener) {
-      listeners.add(listener);
-   }
-
-   public static void removeListener(PlanFixVersionListener listener) {
-      listeners.remove(listener);
    }
 }
