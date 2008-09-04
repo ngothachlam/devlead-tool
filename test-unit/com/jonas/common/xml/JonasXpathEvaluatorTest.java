@@ -8,6 +8,7 @@ import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 public class JonasXpathEvaluatorTest extends JonasTestCase {
 	JonasXpathEvaluator jonasXpathEvaluator = new JonasXpathEvaluator("/test/child2[@childAttr='childAttrvalue']");
 	JonasXpathEvaluator jonasXpathEvaluatorWithIncorrectXpath = new JonasXpathEvaluator("/test/child2[@childAttr='chidldAttrvalue']");
+	JonasXpathEvaluator jonasXpathEvaluatorWithAttribute = new JonasXpathEvaluator("/test/child2/@childAttr");
 	private Element element;
 
 	public JonasXpathEvaluatorTest() {
@@ -22,22 +23,39 @@ public class JonasXpathEvaluatorTest extends JonasTestCase {
 
 	public void testShouldTextRepresentXMLCorrect() {
 		assertEquals(getTestString(), jonasXpathEvaluator.getStringRepresentationOfXml(element));
-		Element xpathElementFromString = null;
+		Object xpathElementFromString = null;
 		try {
 			xpathElementFromString = jonasXpathEvaluator.getXpathNodesFirstElement(getTestString());
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);
 		}
-		assertEquals("child2", xpathElementFromString.getName());
-		assertEquals("child2Value", xpathElementFromString.getText());
+		Element returnedElement = (Element) xpathElementFromString;
+		assertEquals("child2", returnedElement.getName());
+		assertEquals("child2Value", returnedElement.getText());
 		
 		assertEquals("child2Value", jonasXpathEvaluator.getElementText(element));
 	}
 	
+	public void testShouldTextRepresentXMLWithAttributeCorrect() {
+	   assertEquals(getTestString(), jonasXpathEvaluatorWithAttribute.getStringRepresentationOfXml(element));
+	   Object xpathElementFromString = null;
+	   try {
+	      xpathElementFromString = jonasXpathEvaluatorWithAttribute.getXpathNodesFirstElement(getTestString());
+	   } catch (Exception e) {
+	      e.printStackTrace();
+	      assertTrue(false);
+	   }
+	   Attribute returnedAttribute = (Attribute) xpathElementFromString;
+	   assertEquals("childAttr", returnedAttribute.getName());
+	   assertEquals("childAttrvalue", returnedAttribute.getValue());
+	   
+	   assertEquals("childAttrvalue", jonasXpathEvaluatorWithAttribute.getElementText(element));
+	}
+	
 	public void testShouldTextRepresentXMLInCorrect() {
 		assertEquals(getTestString(), jonasXpathEvaluatorWithIncorrectXpath.getStringRepresentationOfXml(element));
-		Element xpathElementFromString = null;
+		Object xpathElementFromString = null;
 		try {
 			xpathElementFromString = jonasXpathEvaluatorWithIncorrectXpath.getXpathNodesFirstElement(getTestString());
 		} catch (Exception e) {

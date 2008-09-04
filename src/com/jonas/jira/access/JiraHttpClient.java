@@ -58,7 +58,7 @@ public class JiraHttpClient extends HttpClient {
       log.trace("RSS feed responded with \"" + string + "\"");
 
       JonasXpathEvaluator evaluator = factory.getXpathEvaluator("/rss/channel/item");
-      List<Element> jiras = evaluator.getXpathNodes(string);
+      List<Element> jiras = evaluator.getXpathElements(string);
       
       return factory.getJiraBuilder().buildJiras(jiras);
    }

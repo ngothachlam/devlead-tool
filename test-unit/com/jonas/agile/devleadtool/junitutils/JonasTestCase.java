@@ -24,7 +24,7 @@ public class JonasTestCase extends TestCase {
 
    protected Factory mockFactory = createInterfaceMock(Factory.class);
    protected JiraBuilder mockJiraBuilder = createClassMock(JiraBuilder.class);
-   
+
    protected void assertJiraDetails(JiraIssue jira, String expectedKey, String expectedSummary, String expectedStatus, String expectedResolution) {
       assertEquals(expectedKey, jira.getKey());
       assertEquals(expectedSummary, jira.getSummary());
@@ -35,13 +35,14 @@ public class JonasTestCase extends TestCase {
    protected void assertJiraDetails(JiraIssue jira, String expectedKey, String expectedSummary, String expectedStatus, String expectedResolution,
          JiraVersion[] jiraVersions) {
       assertJiraDetails(jira, expectedKey, expectedSummary, expectedStatus, expectedResolution);
+      List<JiraVersion> fixVersions = jira.getFixVersions();
       if (jiraVersions.length > 0) {
-         assertEquals("Did expect fixversions!", jiraVersions.length, jira.getFixVersions().size());
+         assertEquals("Did expect fixversions!", jiraVersions.length, fixVersions.size());
          for (JiraVersion jiraVersion : jiraVersions) {
-            assertTrue("Expected to have this fixversion!", jira.getFixVersions().contains(jiraVersion));
+            assertTrue("Expected to have this fixversion! (got:"+jiraVersion+")" , fixVersions.contains(jiraVersion));
          }
       } else {
-         assertEquals("Did not expect any fixversions!", 0, jira.getFixVersions().size());
+         assertEquals("Did not expect any fixversions!", 0, fixVersions.size());
       }
       assertEquals(expectedResolution, jira.getResolution());
    }
@@ -88,6 +89,11 @@ public class JonasTestCase extends TestCase {
       EasyMock.expect(mockFactory.getJiraBuilder()).andReturn(mockJiraBuilder).anyTimes();
    }
 
+   protected void setupMockActualsForElementExtendedWithEstimate(Element e, String string, String string2, String string3, String string4) {
+      setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution");
+      EasyMock.expect(e.getChildText("timeoriginalestimate")).andReturn("2 days");
+   }
+
    protected void setupMockActualsForElement(Element e, String key, String summary, String status, String resolution) {
       EasyMock.expect(e.getChildText("key")).andReturn(key);
       EasyMock.expect(e.getChildText("summary")).andReturn(summary);
@@ -103,6 +109,7 @@ public class JonasTestCase extends TestCase {
          EasyMock.verify(iterable_element);
       }
    }
+
    protected void reset() {
       for (Object iterable_element : interfaceMocks) {
          EasyMock.reset(iterable_element);
