@@ -56,7 +56,6 @@ public class PlannerHelper {
 		try {
 			InternalFrame activeInternalFrame = this.getActiveInternalFrame();
 			dao.saveBoardModel(selFile, activeInternalFrame.getBoardModel());
-			dao.saveJiraModel(selFile, activeInternalFrame.getJiraModel());
 			dao.savePlanModel(selFile, activeInternalFrame.getPlanModel());
 		} catch (IOException e) {
 			e.printStackTrace();

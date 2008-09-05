@@ -33,19 +33,17 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 	private JCheckBox checkBox;
 
 	public InternalFrameTabPanel(InternalFrame parent, PlannerHelper client) {
-		this(parent, client, null, null, null);
+		this(parent, client, null, null);
 	}
 
-	public InternalFrameTabPanel(InternalFrame frame, PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel,
-			JiraTableModel jiraModel) {
+	public InternalFrameTabPanel(InternalFrame frame, PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel) {
 		super(new BorderLayout());
 		this.frame = frame;
 		boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
 		planModel = (planModel == null) ? new PlanTableModel() : planModel;
-		jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 		boardPanel = new BoardPanel(client, boardModel);
 		planPanel = new PlanPanel(client, planModel);
-		jiraPanel = new JiraPanel(client, jiraModel);
+		jiraPanel = new JiraPanel(client);
 
 		JPanel panel = new JPanel();
 		checkBox = new JCheckBox("Editable?", true);

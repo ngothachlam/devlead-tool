@@ -62,4 +62,11 @@ public class MyTable extends JTable {
       return convertColumnIndexToView(((MyTableModel)getModel()).getColumnNo( column));
    }
 
+   public void removeSelectedRows() {
+         while (getSelectedRowCount() > 0) {
+           int tableSelectedRow = getSelectedRow();
+           int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
+           ((MyTableModel)getModel()).removeRow(convertRowIndexToModel);
+        }
+   }
 }
