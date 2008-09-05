@@ -104,7 +104,7 @@ public class JiraBuilderTest extends JonasTestCase {
       JiraIssue jiraIssue = jiras.get(0);
       assertJiraDetails(jiraIssue, "LLU-4072", "R900 - Quality Gateway E2E tests", "Open", "Unresolved", new JiraVersion[] { TestObjects.Version_Backlog });
       assertEquals(null, jiraIssue.getBuildNo());
-      assertEquals(57600, jiraIssue.getEstimate());
+      assertEquals(57600f, jiraIssue.getEstimate());
    }
 
    public void testShouldBuildJirasOkUsingListOfElementsWithoutBuildNo() {
