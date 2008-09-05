@@ -36,8 +36,8 @@ public class JiraBuilder {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             if (xpathValue != null && xpathValue.trim().length() > 0) {
                int xpathResultAsInt = new Integer(xpathValue).intValue();
-//               jira.setEstimate(getSecondsAsDays(xpathResultAsInt));
-               jira.setEstimate(xpathResultAsInt);
+               jira.setEstimate(JiraBuilder.getSecondsAsDays(xpathResultAsInt));
+//               jira.setEstimate(xpathResultAsInt);
             }
          }
       };
@@ -45,9 +45,10 @@ public class JiraBuilder {
       jiraXpathActions.add(new XPathImplementor(xPath2, xpathAction2));
    }
    
-//   public static float getSecondsAsDayString(int seconds){
-//      
-//   }
+   public static float getSecondsAsDays(int seconds){
+      float secondsConverter = 60*60*8;
+      return seconds / secondsConverter;
+   }
 
    JiraBuilder() {
    }
