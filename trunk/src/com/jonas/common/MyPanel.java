@@ -64,9 +64,12 @@ public class MyPanel extends JPanel {
 		return this;
 	}
 	
-	public JButton addButton(JPanel buttonPanel, String string, ActionListener listener) {
+	public JButton addButton(JPanel buttonPanel, String string, ActionListener listener, Object constraints) {
 		JButton button = new JButton(string);
 		button.addActionListener(listener);
+		if(constraints != null)
+		   buttonPanel.add(button, constraints);
+		else
 		buttonPanel.add(button);
 		return button;
 	}
@@ -87,7 +90,7 @@ public class MyPanel extends JPanel {
 		addLabel(buttons, "Prefix:");
 		JTextField jiraPrefix = addTextField(buttons, 5);
 		JTextField jiraCommas = addTextField(buttons, 20);
-		addButton(buttons, "Add", new AddNewRowActionListener(table, jiraPrefix, jiraCommas, listener));
-		addButton(buttons, "Remove", new RemoveJTableSelectedRowsListener(table));
+		addButton(buttons, "Add", new AddNewRowActionListener(table, jiraPrefix, jiraCommas, listener), null);
+		addButton(buttons, "Remove", new RemoveJTableSelectedRowsListener(table), null);
 	}
 }

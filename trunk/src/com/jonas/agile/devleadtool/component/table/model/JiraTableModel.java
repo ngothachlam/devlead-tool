@@ -24,8 +24,6 @@ public class JiraTableModel extends MyTableModel {
       columnNames.put(Column.Resolution, 4);
       columnNames.put(Column.BuildNo, 5);
       columnNames.put(Column.Estimate, 5);
-      columnNames.put(Column.URL, 6);
-      columnNames.put(Column.BoardStatus, 7);
    }
 
    public JiraTableModel() {
@@ -39,7 +37,7 @@ public class JiraTableModel extends MyTableModel {
    public boolean addRow(JiraIssue jiraIssue) {
       if (!exists(jiraIssue.getKey())) {
          Object[] objects = new Object[] { jiraIssue.getKey(), jiraIssue.getSummary(), jiraIssue.getFixVersions(), jiraIssue.getStatus(),
-               jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getEstimate(), jiraIssue.getKey(), BoardStatus.UnKnown };
+               jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getEstimate()};
          super.addRow(objects);
          return true;
       }
@@ -73,7 +71,7 @@ public class JiraTableModel extends MyTableModel {
 
    @Override
    protected Object[] getEmptyRow() {
-      return new Object[] { "", "", "", "", "", "", null, "", BoardStatus.UnKnown };
+      return new Object[] { "", "", "", "", "", "", null};
    }
 
    @Override
