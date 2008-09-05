@@ -31,13 +31,11 @@ public class JiraBuilder {
          }
       };
       String xPath2 = "/item/timeoriginalestimate/@seconds";
-      // String xPath2 = "/xsd:item/xsd:timeoriginalestimate/@seconds";
       XpathAction xpathAction2 = new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             if (xpathValue != null && xpathValue.trim().length() > 0) {
                int xpathResultAsInt = new Integer(xpathValue).intValue();
                jira.setEstimate(JiraBuilder.getSecondsAsDays(xpathResultAsInt));
-//               jira.setEstimate(xpathResultAsInt);
             }
          }
       };
