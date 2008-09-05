@@ -5,9 +5,7 @@ package com.jonas.agile.devleadtool.component.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 
 public class RemoveJTableSelectedRowsListener implements ActionListener {
 	private final MyTable table;
@@ -20,6 +18,6 @@ public class RemoveJTableSelectedRowsListener implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		((MyTableModel) table.getModel()).removeSelectedRows(table);
+		table.removeSelectedRows();
 	}
 }

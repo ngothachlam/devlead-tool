@@ -36,85 +36,50 @@ import com.jonas.testHelpers.TryoutTester;
 
 public class JiraPanel extends MyComponentPanel {
 
-	final PlannerHelper helper;
-	Logger log = MyLogger.getLogger(JiraPanel.class);
-	MyTable table;
+	private final class AlteringProjectListener implements ActionListener {
+		private final JComboBox jiraProjectFixVersionCombo;
 
-	public JiraPanel(PlannerHelper helper) {
-		this(helper, new JiraTableModel());
+		private AlteringProjectListener(JComboBox jiraProjectFixVersionCombo) {
+			this.jiraProjectFixVersionCombo = jiraProjectFixVersionCombo;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			jiraProjectFixVersionCombo.removeAllItems();
+			jiraProjectFixVersionCombo.setEditable(false);
+		}
 	}
-
-	public JiraPanel(final PlannerHelper helper, MyTableModel jiraModel) {
-		super(new BorderLayout());
-		this.helper = helper;
-
-		table = new MyTable();
-		MyTableModel model = jiraModel;
-		table.setModel(model);
-		table.setAutoCreateRowSorter(true);
-		table.setDragEnabled(true);
-
-		JScrollPane scrollpane = new MyScrollPane(table);
-
-		this.addCenter(scrollpane);
-		this.addSouth(getButtonPanel());
-		this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
-
-		table.addMouseListener(new HyperLinkOpenerAdapter(helper, Column.URL, Column.Jira));
-	}
-
-	public static void main(String[] args) {
-		JFrame frame = TryoutTester.getFrame();
-		PlannerHelper plannerHelper = new PlannerHelper(frame, "test");
-		JiraPanel panel = new JiraPanel(plannerHelper);
-		frame.setContentPane(panel);
-		frame.setVisible(true);
-	}
-
-	private Component getButtonPanel() {
-		JPanel buttons = new JPanel();
-
-		Vector<JiraProject> projects = JiraProject.getProjects();
-		final JComboBox jiraProjectsCombo = new JComboBox(projects);
-		final JComboBox jiraProjectFixVersionCombo = new JComboBox();
-
-		jiraProjectsCombo.addActionListener(new AlteringProjectListener(jiraProjectFixVersionCombo));
-
-		buttons.add(jiraProjectsCombo);
-		addButton(buttons, "Refresh", new RefreshingFixVersionListener(jiraProjectFixVersionCombo, jiraProjectsCombo));
-		buttons.add(jiraProjectFixVersionCombo);
-		addButton(buttons, "Get Jiras", new DownloadJirasListener(jiraProjectFixVersionCombo, table, helper));
-		addButton(buttons, "Remove", new RemoveJTableSelectedRowsListener(table));
-		addButton(buttons, "Open Jiras", new OpenJirasListener());
-		addButton(buttons, "BoardStatus", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				MyTableModel model = (MyTableModel) table.getModel();
-				for (int i = 0; i < model.getRowCount(); i++) {
-					int boardStatusNo = model.getColumnNo(Column.BoardStatus);
-					int jiraNameNo = model.getColumnNo(Column.Jira);
-					String jira = (String) model.getValueAt(i, jiraNameNo);
-					List<BoardStatus> jirasBoardStatusList = helper.getPlannerCommunicator().getJiraStatusFromBoard(jira);
-					model.setValueAt(jirasBoardStatusList, i, boardStatusNo);
-				}
-			}
-		});
-
-		return buttons;
-	}
-
-	public MyTableModel getJiraModel() {
-		return ((MyTableModel) table.getModel());
-	}
-
-	public void setEditable(boolean selected) {
-		((MyTableModel) table.getModel()).setEditable(selected);
-	}
-
 	private final class ClearJirasListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			MyTableModel model = ((MyTableModel) table.getModel());
 			while (model.getRowCount() > 0) {
 				model.removeRow(0);
+			}
+		}
+	}
+	private final class OpenJirasListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			int[] rows = table.getSelectedRows();
+			StringBuffer sb = new StringBuffer();
+			for (int j = 0; j < rows.length; j++) {
+				String jira = (String) table.getModel().getValueAt(table.convertRowIndexToModel(rows[j]), 0);
+				String jira_url = null;
+				boolean error = false;
+				try {
+					jira_url = helper.getJiraUrl(jira);
+				} catch (NotJiraException e1) {
+					if(sb.length()>0){
+						sb.append(", ");
+					}
+					sb.append(jira);
+					error = true;
+				}
+				if (!error) {
+					HyperLinker.displayURL(jira_url + "/browse/" + jira);
+				}
+			}
+			if (sb.length() > 0){
+				sb.append(" are incorrect!");
+				AlertDialog.alertException(helper, e.toString());
 			}
 		}
 	}
@@ -162,45 +127,80 @@ public class JiraPanel extends MyComponentPanel {
 		}
 	}
 
-	private final class AlteringProjectListener implements ActionListener {
-		private final JComboBox jiraProjectFixVersionCombo;
+	final PlannerHelper helper;
 
-		private AlteringProjectListener(JComboBox jiraProjectFixVersionCombo) {
-			this.jiraProjectFixVersionCombo = jiraProjectFixVersionCombo;
-		}
+	Logger log = MyLogger.getLogger(JiraPanel.class);
 
-		public void actionPerformed(ActionEvent e) {
-			jiraProjectFixVersionCombo.removeAllItems();
-			jiraProjectFixVersionCombo.setEditable(false);
-		}
+	MyTable table;
+
+	public JiraPanel(PlannerHelper helper) {
+		this(helper, new JiraTableModel());
 	}
 
-	private final class OpenJirasListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			int[] rows = table.getSelectedRows();
-			StringBuffer sb = new StringBuffer();
-			for (int j = 0; j < rows.length; j++) {
-				String jira = (String) table.getModel().getValueAt(table.convertRowIndexToModel(rows[j]), 0);
-				String jira_url = null;
-				boolean error = false;
-				try {
-					jira_url = helper.getJiraUrl(jira);
-				} catch (NotJiraException e1) {
-					if(sb.length()>0){
-						sb.append(", ");
-					}
-					sb.append(jira);
-					error = true;
-				}
-				if (!error) {
-					HyperLinker.displayURL(jira_url + "/browse/" + jira);
+	private JiraPanel(final PlannerHelper helper, MyTableModel jiraModel) {
+		super(new BorderLayout());
+		this.helper = helper;
+
+		table = new MyTable();
+		MyTableModel model = jiraModel;
+		table.setModel(model);
+		table.setAutoCreateRowSorter(true);
+		table.setDragEnabled(true);
+
+		JScrollPane scrollpane = new MyScrollPane(table);
+
+		this.addCenter(scrollpane);
+		this.addSouth(getButtonPanel());
+		this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
+
+		table.addMouseListener(new HyperLinkOpenerAdapter(helper, Column.URL, Column.Jira));
+	}
+
+	public static void main(String[] args) {
+		JFrame frame = TryoutTester.getFrame();
+		PlannerHelper plannerHelper = new PlannerHelper(frame, "test");
+		JiraPanel panel = new JiraPanel(plannerHelper);
+		frame.setContentPane(panel);
+		frame.setVisible(true);
+	}
+
+	public MyTableModel getJiraModel() {
+		return ((MyTableModel) table.getModel());
+	}
+
+	public void setEditable(boolean selected) {
+		((MyTableModel) table.getModel()).setEditable(selected);
+	}
+
+	private Component getButtonPanel() {
+		JPanel buttons = new JPanel();
+
+		Vector<JiraProject> projects = JiraProject.getProjects();
+		final JComboBox jiraProjectsCombo = new JComboBox(projects);
+		final JComboBox jiraProjectFixVersionCombo = new JComboBox();
+
+		jiraProjectsCombo.addActionListener(new AlteringProjectListener(jiraProjectFixVersionCombo));
+
+		buttons.add(jiraProjectsCombo);
+		addButton(buttons, "Refresh", new RefreshingFixVersionListener(jiraProjectFixVersionCombo, jiraProjectsCombo));
+		buttons.add(jiraProjectFixVersionCombo);
+		addButton(buttons, "Get Jiras", new DownloadJirasListener(jiraProjectFixVersionCombo, table, helper));
+		addButton(buttons, "Remove", new RemoveJTableSelectedRowsListener(table));
+		addButton(buttons, "Open Jiras", new OpenJirasListener());
+		addButton(buttons, "BoardStatus", new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MyTableModel model = (MyTableModel) table.getModel();
+				for (int i = 0; i < model.getRowCount(); i++) {
+					int boardStatusNo = model.getColumnNo(Column.BoardStatus);
+					int jiraNameNo = model.getColumnNo(Column.Jira);
+					String jira = (String) model.getValueAt(i, jiraNameNo);
+					List<BoardStatus> jirasBoardStatusList = helper.getPlannerCommunicator().getJiraStatusFromBoard(jira);
+					model.setValueAt(jirasBoardStatusList, i, boardStatusNo);
 				}
 			}
-			if (sb.length() > 0){
-				sb.append(" are incorrect!");
-				AlertDialog.alertException(helper, e.toString());
-			}
-		}
+		});
+
+		return buttons;
 	}
 
 }

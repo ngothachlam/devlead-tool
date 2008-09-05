@@ -33,9 +33,9 @@ import com.jonas.testHelpers.TryoutTester;
 public class BoardPanel extends MyComponentPanel {
 
    public MyTable table;
-   private Logger log = MyLogger.getLogger(BoardPanel.class);
-
    private final PlannerHelper helper;
+
+   private Logger log = MyLogger.getLogger(BoardPanel.class);
 
    public BoardPanel(PlannerHelper client) {
       this(client, new BoardTableModel());
@@ -47,6 +47,27 @@ public class BoardPanel extends MyComponentPanel {
       makeContent(boardModel);
       setButtons();
       initialiseTableHeader();
+   }
+
+   public static void main(String[] args) {
+      JFrame frame = TryoutTester.getFrame();
+      PlannerHelper plannerHelper = new PlannerHelper(frame, "test");
+      MyPanel panel = new BoardPanel(plannerHelper);
+      frame.setContentPane(panel);
+      frame.setVisible(true);
+   }
+
+   public MyTableModel getModel() {
+      return ((MyTableModel) table.getModel());
+   }
+
+   public void setEditable(boolean selected) {
+      ((MyTableModel) table.getModel()).setEditable(selected);
+   }
+
+   private void initialiseTableHeader() {
+      JTableHeader header = table.getTableHeader();
+      header.setReorderingAllowed(true);
    }
 
    protected void makeContent(MyTableModel boardTableModel) {
@@ -66,11 +87,6 @@ public class BoardPanel extends MyComponentPanel {
 
       this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
       addCenter(scrollPane);
-   }
-
-   private void initialiseTableHeader() {
-      JTableHeader header = table.getTableHeader();
-      header.setReorderingAllowed(true);
    }
 
    protected void setButtons() {
@@ -125,21 +141,5 @@ public class BoardPanel extends MyComponentPanel {
       });
 
       addSouth(buttonPanel);
-   }
-
-   public MyTableModel getModel() {
-      return ((MyTableModel) table.getModel());
-   }
-
-   public void setEditable(boolean selected) {
-      ((MyTableModel) table.getModel()).setEditable(selected);
-   }
-
-   public static void main(String[] args) {
-      JFrame frame = TryoutTester.getFrame();
-      PlannerHelper plannerHelper = new PlannerHelper(frame, "test");
-      MyPanel panel = new BoardPanel(plannerHelper);
-      frame.setContentPane(panel);
-      frame.setVisible(true);
    }
 }

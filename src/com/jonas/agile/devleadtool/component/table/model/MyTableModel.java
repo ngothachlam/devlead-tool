@@ -117,13 +117,6 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    public abstract boolean isRed(Object value, int row, int column);
 
-   public void removeSelectedRows(JTable table) {
-      while (table.getSelectedRowCount() > 0) {
-         int tableSelectedRow = table.getSelectedRow();
-         this.removeRow(table.convertRowIndexToModel(tableSelectedRow));
-      }
-   }
-
    public void setEditable(boolean selected) {
       editable = selected;
       fireTableStructureChanged();
