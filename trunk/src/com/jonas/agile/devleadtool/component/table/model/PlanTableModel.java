@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.data.PlanRow;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
@@ -20,10 +21,15 @@ public class PlanTableModel extends MyTableModel {
 
    static {
       columnNames.put(Column.Jira,0);
-      columnNames.put(Column.FixVersion,1);
-      columnNames.put(Column.Status,2);
-      columnNames.put(Column.Resolution,3);
+      columnNames.put(Column.Description,0);
+      columnNames.put(Column.Type,0);
       columnNames.put(Column.URL,4);
+      columnNames.put(Column.Planned_Sprint,4);
+      columnNames.put(Column.Resolved_Sprint,4);
+      columnNames.put(Column.Closed_Sprint,4);
+      columnNames.put(Column.Estimate,4);
+      columnNames.put(Column.Actual,4);
+      columnNames.put(Column.Note,4);
    }
 
    public PlanTableModel() {
@@ -34,7 +40,7 @@ public class PlanTableModel extends MyTableModel {
       super(contents, header);
    }
 
-   public boolean addRow(JiraIssue jiraIssue) {
+   public boolean addRow(PlanRow jiraIssue) {
       List<JiraVersion> fixVersions = jiraIssue.getFixVersions();
       if (fixVersions.size() > 1) {
          throw new RuntimeException(jiraIssue + " has more than one fixversion! Model can't handle it at the moment!!");
