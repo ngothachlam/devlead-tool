@@ -2,13 +2,17 @@ package com.jonas.agile.devleadtool.data;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Vector;
 import javax.swing.table.TableModel;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.easymock.classextension.EasyMock;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
+import com.jonas.agile.devleadtool.component.table.model.TableModelBuilder;
+import com.jonas.agile.devleadtool.component.table.model.TableModelDTO;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.jira.TestObjects;
 
@@ -77,22 +81,33 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
    }
 
    public void testSouldSaveAndLoadPlanCorrectly() throws IOException {
-      PlannerDAO dao = new PlannerDAOExcelImpl();
+      TableModelBuilder model_builder = createClassMock(TableModelBuilder.class);
+      
+      PlanTableModel planTableModel = createClassMock(PlanTableModel.class);
+      
+      Vector<Column> header = new Vector();
+      header.add(Column.Jira);
+      header.add(Column.inPanel);
+      Vector<Vector<Object>> contents = new Vector();
+      TableModelDTO tableModelDTO = new TableModelDTO(header, contents);
+      EasyMock.expect(model_builder.buildPlanTableModel(tableModelDTO)).andReturn(planTableModel);
+      
       MyTableModel model_original = createClassMock(PlanTableModel.class);
       EasyMock.expect(model_original.getColumnCount()).andReturn(2).anyTimes();
-      EasyMock.expect(model_original.getColumnName(0)).andReturn("Header0").anyTimes();
-      EasyMock.expect(model_original.getColumnName(1)).andReturn("Header1").anyTimes();
+      EasyMock.expect(model_original.getColumnName(0)).andReturn("Jira").anyTimes();
+      EasyMock.expect(model_original.getColumnName(1)).andReturn("inPanel").anyTimes();
       EasyMock.expect(model_original.getRowCount()).andReturn(0).anyTimes();
-      
+
+      PlannerDAO dao = new PlannerDAOExcelImpl(model_builder);
+
       replay();
-      
+
       // Save and Load on new file
       dao.savePlanModel(xlsFile, model_original);
       MyTableModel model_loaded = dao.loadPlanModel(xlsFile);
 
       verify();
-      
-      
+
       assertEquals(0, model_loaded.getRowCount());
       assertHeaderInModel(model_loaded, new Object[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "URL", "BoardStatus" });
       assertEquals("Header0", model_loaded.getColumnName(0));
@@ -103,7 +118,7 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
       reset();
       EasyMock.expect(model_original.getColumnCount()).andReturn(0).anyTimes();
       replay();
-      
+
       // Modify,
       model_loaded.addRow(new Object[] { "123", "desc1", TestObjects.Version_10, "1", "2", "link1" });
       model_loaded.addRow(new Object[] { "1234", "desc2", TestObjects.Version_11, "3", "4", "link2" });

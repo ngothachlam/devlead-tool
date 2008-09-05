@@ -1,14 +1,11 @@
 package com.jonas.agile.devleadtool.component.table;
 
 import java.util.List;
-
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-
 import org.apache.log4j.Logger;
-
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.logging.MyLogger;
@@ -17,38 +14,38 @@ import com.jonas.jira.JiraVersion;
 
 public class MyTable extends JTable {
 
-	private Logger log = MyLogger.getLogger(MyTable.class);
+   private Logger log = MyLogger.getLogger(MyTable.class);
 
-	public MyTable() {
-		super();
-	}
+   public MyTable() {
+      super();
+   }
 
-	public void setColumnRenderer(int i, TableCellRenderer renderer) {
-		TableColumnModel tcm = getColumnModel();
-		TableColumn tc = tcm.getColumn(i);
-		tc.setCellRenderer(renderer);
-	}
+   public void setColumnRenderer(int i, TableCellRenderer renderer) {
+      TableColumnModel tcm = getColumnModel();
+      TableColumn tc = tcm.getColumn(i);
+      tc.setCellRenderer(renderer);
+   }
 
-	public void setRow(JiraIssue jira, int i) {
-		log.debug("setRow for jira: " + jira + "i: " + i);
-		setValueAt(jira.getKey(), i, 0);
-		// TODO only works with one fix-version below!!
-		List<JiraVersion> fixVersions = jira.getFixVersions();
-		JiraVersion jiraVersion = fixVersions != null && fixVersions.size() > 0 ? fixVersions.get(0) : null;
-		setValueAt(jiraVersion, i, 1);
-		setValueAt(jira.getStatus(), i, 2);
-		setValueAt(jira.getResolution(), i, 3);
-	}
+   public void setRow(JiraIssue jira, int i) {
+      log.debug("setRow for jira: " + jira + "i: " + i);
+      setValueAt(jira.getKey(), i, 0);
+      // TODO only works with one fix-version below!!
+      List<JiraVersion> fixVersions = jira.getFixVersions();
+      JiraVersion jiraVersion = fixVersions != null && fixVersions.size() > 0 ? fixVersions.get(0) : null;
+      setValueAt(jiraVersion, i, 1);
+      setValueAt(jira.getStatus(), i, 2);
+      setValueAt(jira.getResolution(), i, 3);
+   }
 
-	public void setColumnEditor(int i, ComboTableCellEditor editor) {
-		TableColumnModel tcm = getColumnModel();
-		TableColumn tc = tcm.getColumn(i);
-		tc.setCellEditor(editor);
+   public void setColumnEditor(int i, ComboTableCellEditor editor) {
+      TableColumnModel tcm = getColumnModel();
+      TableColumn tc = tcm.getColumn(i);
+      tc.setCellEditor(editor);
 
-	}
+   }
 
    public boolean isRed(Object value, int row, int column) {
-      return ((MyTableModel)getModel()).isRed(value, convertRowIndexToModel(row), convertColumnIndexToModel(column));
+      return ((MyTableModel) getModel()).isRed(value, convertRowIndexToModel(row), convertColumnIndexToModel(column));
    }
 
    public boolean isColumnEqual(int itsColumn, Column column) {
@@ -56,17 +53,20 @@ public class MyTable extends JTable {
    }
 
    public Column getColumnEnum(int itsColumn) {
-      return ((MyTableModel)getModel()).getColumn( convertColumnIndexToModel(itsColumn));
+      return ((MyTableModel) getModel()).getColumn(convertColumnIndexToModel(itsColumn));
    }
+
    public int getColumnEnum(Column column) {
-      return convertColumnIndexToView(((MyTableModel)getModel()).getColumnNo( column));
+      return convertColumnIndexToView(((MyTableModel) getModel()).getColumnNo(column));
    }
 
    public void removeSelectedRows() {
-         while (getSelectedRowCount() > 0) {
-           int tableSelectedRow = getSelectedRow();
-           int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
-           ((MyTableModel)getModel()).removeRow(convertRowIndexToModel);
-        }
+      int[] selectedRows = getSelectedRows(); // Need to store this before hand or the last selected row seems to disappear!
+      for (int count = selectedRows.length - 1; count > -1; count--) {
+         // we can't remove upwards the table and down (from lower to greater index) as the table changes on each delete.
+         int tableSelectedRow = selectedRows[count];
+         int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
+         ((MyTableModel) getModel()).removeRow(convertRowIndexToModel);
+      }
    }
 }
