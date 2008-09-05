@@ -23,15 +23,19 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
+import com.jonas.agile.devleadtool.component.table.model.TableModelBuilder;
+import com.jonas.agile.devleadtool.component.table.model.TableModelDTO;
 import com.jonas.common.logging.MyLogger;
 
 public class PlannerDAOExcelImpl implements PlannerDAO {
 
 	private static Map<File, HSSFWorkbook> fileOrganiser = new HashMap<File, HSSFWorkbook>();
 	private Logger log = MyLogger.getLogger(PlannerDAOExcelImpl.class);
+	private TableModelBuilder modelBuilder;
 
-	public PlannerDAOExcelImpl() {
+	public PlannerDAOExcelImpl(TableModelBuilder modelBuilder) {
 		super();
+      this.modelBuilder = modelBuilder;
 	}
 
 	public BoardTableModel loadBoardModel(File xlsFile) throws IOException {
@@ -41,10 +45,10 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
 	public PlanTableModel loadPlanModel(File xlsFile) throws IOException {
 		TableModelDTO dto = loadModel(xlsFile, "plan");
-		return new PlanTableModel(dto.getContents(), dto.getHeader());
+		return modelBuilder.buildPlanTableModel(dto);
 	}
 
-	public void saveBoardModel(File xlsFile, MyTableModel model) throws IOException {
+   public void saveBoardModel(File xlsFile, MyTableModel model) throws IOException {
 		saveModel(xlsFile, model, "board");
 	}
 
@@ -52,7 +56,11 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 		saveModel(xlsFile, model, "plan");
 	}
 
-	private TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException {
+	private Column getHeaderMappingToColumn(String tempString) {
+      return Column.getEnum(tempString);
+   }
+
+   private TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException {
 		log.debug("Loading Model from " + xlsFile.getAbsolutePath() + " and sheet: " + sheetName);
 		InputStream inp = new FileInputStream(xlsFile);
 		HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(inp));
@@ -71,9 +79,12 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 			rowCount++;
 			Vector<Object> rowData = new Vector<Object>();
 			HSSFRow row = rit.next();
+			log.debug("Going through rows to load!" + rowCount);
 			for (Iterator<HSSFCell> cit = row.cellIterator(); cit.hasNext();) {
 				HSSFCell cell = cit.next();
-				switch (cell.getCellType()) {
+				int cellType = cell.getCellType();
+            log.debug("Going through columns. Got column of type " + cellType);
+				switch (cellType) {
 				case HSSFCell.CELL_TYPE_BOOLEAN:
 					rowData.add(new Boolean(cell.getBooleanCellValue()));
 					break;
@@ -81,12 +92,12 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 					rowData.add(new Double(cell.getNumericCellValue()));
 					break;
 				case HSSFCell.CELL_TYPE_STRING:
-					HSSFRichTextString string = cell.getRichStringCellValue();
-					String tempString = (string == null ? new String("") : string.getString());
+					HSSFRichTextString cellHeader = cell.getRichStringCellValue();
+					String cellHeaderAsString = (cellHeader == null ? new String("") : cellHeader.getString());
 					if (rowCount == 0)
-						header.add(Column.getEnum(tempString));
+						header.add(getHeaderMappingToColumn(cellHeaderAsString));
 					else
-						rowData.add(tempString);
+						rowData.add(cellHeaderAsString);
 					break;
 				default:
 					break;
@@ -159,22 +170,4 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
 }
 
-class TableModelDTO {
 
-	private final Vector<Vector<Object>> contents;
-	private final Vector<Column> header;
-
-	public TableModelDTO(Vector<Column> header, Vector<Vector<Object>> contents) {
-		this.header = header;
-		this.contents = contents;
-	}
-
-	public Vector<Vector<Object>> getContents() {
-		return contents;
-	}
-
-	public Vector<Column> getHeader() {
-		return header;
-	}
-
-}
