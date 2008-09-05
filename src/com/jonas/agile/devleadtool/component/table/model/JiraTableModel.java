@@ -73,7 +73,7 @@ public class JiraTableModel extends MyTableModel {
 
    @Override
    protected Object[] getEmptyRow() {
-      return new Object[] { "", "", "", "", "", "", "","", BoardStatus.UnKnown };
+      return new Object[] { "", "", "", "", "", "", null, "", BoardStatus.UnKnown };
    }
 
    @Override

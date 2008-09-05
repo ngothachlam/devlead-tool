@@ -74,7 +74,8 @@ public class JiraBuilderTest extends JonasTestCase {
    public void testShouldBuildJirasOkUsingListOfElementsWithBuildNo() {
       List<Element> mockList = createInterfaceMock(List.class);
       EasyMock.expect(mockList.iterator()).andReturn(new TestIterator(listWithBuildNo, 1));
-
+      EasyMock.expect(mockList.size()).andReturn(1).anyTimes();
+      
       replay();
 
       List<JiraIssue> jiras = (new JiraBuilder()).buildJiras(mockList);
@@ -91,6 +92,7 @@ public class JiraBuilderTest extends JonasTestCase {
    public void testShouldBuildJirasOkUsingListOfElementsWithBuildNoAndEstimate() {
       List<Element> mockList = createInterfaceMock(List.class);
       EasyMock.expect(mockList.iterator()).andReturn(new TestIterator(listWithEstimate, 1));
+      EasyMock.expect(mockList.size()).andReturn(1).anyTimes();
 
       replay();
 
@@ -102,12 +104,13 @@ public class JiraBuilderTest extends JonasTestCase {
       JiraIssue jiraIssue = jiras.get(0);
       assertJiraDetails(jiraIssue, "LLU-4072", "R900 - Quality Gateway E2E tests", "Open", "Unresolved", new JiraVersion[] { TestObjects.Version_Backlog });
       assertEquals(null, jiraIssue.getBuildNo());
-      assertEquals("57600", jiraIssue.getEstimate());
+      assertEquals(57600, jiraIssue.getEstimate());
    }
 
    public void testShouldBuildJirasOkUsingListOfElementsWithoutBuildNo() {
       List<Element> mockList = createInterfaceMock(List.class);
       EasyMock.expect(mockList.iterator()).andReturn(new TestIterator(listWithOutBuildNo, 1));
+      EasyMock.expect(mockList.size()).andReturn(1).anyTimes();
 
       replay();
 

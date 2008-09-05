@@ -4,14 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.List;
 import org.apache.commons.httpclient.HttpException;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.xpath.XPath;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class JiraHttpClientTest extends JonasTestCase {
