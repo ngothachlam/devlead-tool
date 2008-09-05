@@ -75,7 +75,7 @@ public class JiraBuilderTest extends JonasTestCase {
       List<Element> mockList = createInterfaceMock(List.class);
       EasyMock.expect(mockList.iterator()).andReturn(new TestIterator(listWithBuildNo, 1));
       EasyMock.expect(mockList.size()).andReturn(1).anyTimes();
-      
+
       replay();
 
       List<JiraIssue> jiras = (new JiraBuilder()).buildJiras(mockList);
@@ -104,7 +104,7 @@ public class JiraBuilderTest extends JonasTestCase {
       JiraIssue jiraIssue = jiras.get(0);
       assertJiraDetails(jiraIssue, "LLU-4072", "R900 - Quality Gateway E2E tests", "Open", "Unresolved", new JiraVersion[] { TestObjects.Version_Backlog });
       assertEquals(null, jiraIssue.getBuildNo());
-      assertEquals(57600f, jiraIssue.getEstimate());
+      assertEquals(2f, jiraIssue.getEstimate());
    }
 
    public void testShouldBuildJirasOkUsingListOfElementsWithoutBuildNo() {
@@ -130,4 +130,11 @@ public class JiraBuilderTest extends JonasTestCase {
    // assertEquals("testBuildNo", JiraBuilder.getBuildNo(list.get(0),
    // "/item/customfields/customfield[@id='customfield_10160']/customfieldvalues/customfieldvalue"));
    // }
+
+   public void testGetSecondsAsDays() {
+      assertEquals(1f, JiraBuilder.getSecondsAsDays(60 * 60 * 8));
+      assertEquals(0.5f, JiraBuilder.getSecondsAsDays(60 * 60 * 4));
+      assertEquals(0.25f, JiraBuilder.getSecondsAsDays(60 * 60 * 2));
+      assertEquals(0.125f, JiraBuilder.getSecondsAsDays(60 * 60 * 1));
+   }
 }
