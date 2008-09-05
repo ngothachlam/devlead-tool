@@ -35,14 +35,19 @@ public class JiraBuilder {
       XpathAction xpathAction2 = new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             if (xpathValue != null && xpathValue.trim().length() > 0) {
-               int xpathResult = new Integer(xpathValue).intValue();
-               jira.setEstimate(xpathResult);
+               int xpathResultAsInt = new Integer(xpathValue).intValue();
+//               jira.setEstimate(getSecondsAsDays(xpathResultAsInt));
+               jira.setEstimate(xpathResultAsInt);
             }
          }
       };
       jiraXpathActions.add(new XPathImplementor(xPath, xpathAction));
       jiraXpathActions.add(new XPathImplementor(xPath2, xpathAction2));
    }
+   
+//   public static float getSecondsAsDayString(int seconds){
+//      
+//   }
 
    JiraBuilder() {
    }

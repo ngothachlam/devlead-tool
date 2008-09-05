@@ -14,7 +14,7 @@ public class JiraIssue {
 	private String resolution;
 	private String status;
 	private String summary;
-   private int originalEstimate;
+   private float estimate;
 
 	public JiraIssue(String key, String summary, String status, String resolution) {
 		this.key = key;
@@ -125,11 +125,11 @@ public class JiraIssue {
          : this.summary.equals(castedObj.summary)));
    }
 
-   public void setEstimate(int xpathResult) {
-      this.originalEstimate = xpathResult;
+   public void setEstimate(float xpathResult) {
+      this.estimate = xpathResult;
    }
 
-   public int getEstimate() {
-      return originalEstimate;
+   public float getEstimate() {
+      return estimate;
    }
 }
