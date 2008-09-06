@@ -15,6 +15,7 @@ public class JiraTableModelTest extends JonasTestCase {
       getMixedHeader(header);
       List convert = model.getConvertionNumbers(header, JiraTableModel.columnNames);
 
+      assertEquals(8, convert.size());
       assertEquals(1, convert.get(0));
       assertEquals(0, convert.get(1));
       assertEquals(3, convert.get(2));

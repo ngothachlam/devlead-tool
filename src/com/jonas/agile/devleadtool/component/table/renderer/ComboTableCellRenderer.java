@@ -41,11 +41,11 @@ public class ComboTableCellRenderer extends JPanel implements TableCellRenderer 
 
 		if (table.isRed(value, row, column)) {
 			if (hasFocus)
-				combo.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
+				combo.setBackground(SwingUtil.COLOR_RED_3);
 			else if (isSelected)
-				combo.setBackground(SwingUtil.COLOR_SELECTION_ERROR);
+				combo.setBackground(SwingUtil.COLOR_RED_2);
 			else
-				combo.setBackground(SwingUtil.COLOR_NONSELECT_ERROR);
+				combo.setBackground(SwingUtil.COLOR_RED_1);
 		} else {
 			if (hasFocus)
 				combo.setBackground(SwingUtil.getTableCellFocusBackground());
