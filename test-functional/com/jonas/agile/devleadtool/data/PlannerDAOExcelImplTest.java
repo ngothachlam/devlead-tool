@@ -30,7 +30,7 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
    }
 
    public void testSouldGetCorrectSheet() {
-      PlannerDAOExcelImpl dao = new PlannerDAOExcelImpl();
+      PlannerDAOExcelImpl dao = new PlannerDAOExcelImpl(null);
       HSSFWorkbook wb = dao.getWorkBook(xlsFile);
       HSSFSheet sheet = dao.getSheet("test", wb);
       assertTrue(sheet != null);
@@ -39,7 +39,7 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
    }
 
    public void testSouldGetCorrectWorkBook() {
-      PlannerDAOExcelImpl dao = new PlannerDAOExcelImpl();
+      PlannerDAOExcelImpl dao = new PlannerDAOExcelImpl(null);
       HSSFWorkbook wb = dao.getWorkBook(xlsFile);
       assertTrue(wb != null);
       HSSFWorkbook wb2 = dao.getWorkBook(xlsFile);
@@ -51,7 +51,7 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
    }
 
    public void testSouldSaveAndLoadBoardCorrectly() throws IOException {
-      PlannerDAO dao = new PlannerDAOExcelImpl();
+      PlannerDAO dao = new PlannerDAOExcelImpl(null);
       MyTableModel model_original = new BoardTableModel();
 
       // Save and Load on new file

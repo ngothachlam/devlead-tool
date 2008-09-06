@@ -1,4 +1,4 @@
-package com;
+package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;

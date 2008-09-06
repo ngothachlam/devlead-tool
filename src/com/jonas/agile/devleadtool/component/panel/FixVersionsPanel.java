@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -18,7 +17,6 @@ import com.jonas.agile.devleadtool.data.PlanFixVersion;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
-import com.jonas.testHelpers.TryoutTester;
 
 public class FixVersionsPanel extends MyComponentPanel {
 
@@ -60,18 +58,6 @@ public class FixVersionsPanel extends MyComponentPanel {
       JScrollPane scrollpane = new JScrollPane(table);
       panel.add(scrollpane);
       return panel;
-   }
-
-   public static void main(String[] args) {
-      JFrame frame = TryoutTester.getFrame();
-      frame.setContentPane(new FixVersionsPanel());
-      frame.setVisible(true);
-
-      JFrame testFrame = TryoutTester.getFrame();
-      testFrame.setSize(200, 200);
-
-      testFrame.setContentPane(new TestPanel());
-      testFrame.setVisible(true);
    }
 
    private Vector<Object> getRowData(PlanFixVersion fixVersion) {

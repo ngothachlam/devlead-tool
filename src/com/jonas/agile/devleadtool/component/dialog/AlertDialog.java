@@ -15,7 +15,6 @@ import javax.swing.JTextArea;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
-import com.jonas.testHelpers.TryoutTester;
 
 public class AlertDialog extends JDialog {
 	private JTextArea textArea;
@@ -49,18 +48,11 @@ public class AlertDialog extends JDialog {
 		setVisible(true);
 	}
 
-	private static void alertException(JFrame parentFrame, Throwable e) {
+	static void alertException(JFrame parentFrame, Throwable e) {
 		StringWriter sw = new StringWriter();
 		e.printStackTrace(new PrintWriter(sw));
 		String stacktrace = sw.toString();
 		alertException(parentFrame, stacktrace);
-	}
-
-	public static void main(String[] args) {
-		JFrame frame = TryoutTester.getFrame();
-		frame.setLocation(100, 100);
-		frame.setVisible(true);
-		AlertDialog.alertException(frame, TryoutTester.getTestException());
 	}
 
 	public static void alertException(PlannerHelper helper, Throwable e) {
