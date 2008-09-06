@@ -1,4 +1,4 @@
-<project name="MyProject" default="dist" basedir=".">
+<project name="MyProject" default="default" basedir=".">
 	<description> simple example build file</description>
 	<property name="src" location="src" />
 	<property name="src.tests.unit" location="test-unit" />
@@ -30,6 +30,15 @@
 		</delete>
 		<delete includeEmptyDirs="true">
 			<fileset dir="${dist}" includes="**/*" />
+		</delete>
+	</target>
+	
+	<target name="clean.after" description="clean up">
+		<delete includeemptydirs="true">
+			<fileset dir="${build.classes}" includes="**/*" />
+		</delete>
+		<delete includeemptydirs="true">
+			<fileset dir="${build.tests}" includes="**/*" />
 		</delete>
 	</target>
 
@@ -66,11 +75,12 @@
 	</target>
 
 	<target name="run.tests.unit" description="Run unit tests">
-		<delete includeEmptyDirs="true">
+		<delete includeEmptyDirs="true" quiet="true">
 			<fileset dir="${build.tests.results}" includes="**/*" />
 		</delete>
 		<mkdir dir="${build.tests.results}" />
-		<junit printsummary="yes" haltonfailure="no">
+		<mkdir dir="bin/junitTemp" />
+		<junit printsummary="yes" haltonfailure="no" tempdir="bin/junitTemp" >
 			<classpath refid="project.class.path" />
 			<!--
 			<classpath location="${dist}/devlead-tool-${DSTAMP}.jar" />
@@ -80,15 +90,17 @@
 				<pathelement path="bin" />
 			</classpath>
 
-			<formatter  type="plain" />
+			<formatter  type="plain"  />
 
 			<batchtest fork="yes" todir="${build.tests.results}" >
 				<fileset dir="${src.tests.unit}">
-					<include name="**/*Test*.java" />
+					<include name="**/*Test.java" />
 					<exclude name="**/*TestScreen.java" />
 				</fileset>
 			</batchtest>
 		</junit>
 	</target>
+	
+	<target name="default" depends="run.tests.unit, dist, clean.after" />
 
 </project>
