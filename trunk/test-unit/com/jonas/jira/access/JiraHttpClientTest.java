@@ -26,7 +26,7 @@ public class JiraHttpClientTest extends JonasTestCase {
    }
 
    public void testApacheCommonsAttempt() throws IOException, HttpException, JiraException {
-      JiraHttpClient client = new JiraHttpClient(mockFactory, ClientConstants.JIRA_URL_ATLASSIN);
+      JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
       
       client.loginToJira();
    }

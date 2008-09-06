@@ -2,10 +2,13 @@ package com.jonas.jira.access;
 
 import java.rmi.RemoteException;
 
+import javax.xml.rpc.ServiceException;
+
 import org.apache.axis.AxisFault;
 import org.apache.log4j.Logger;
 
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
+import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
 
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
@@ -20,9 +23,10 @@ import com.jonas.jira.JiraProject;
  */
 public class JiraSoapClient {
 
-	private final Logger log = MyLogger.getLogger(JiraSoapClient.class);
+	private static final Logger log = MyLogger.getLogger(JiraSoapClient.class);
 	private static final String LOGIN_NAME = "soaptester";
 	private static final String LOGIN_PASSWORD = "soaptester";
+	private static JiraSoapClient instance;
 
 	private JiraSoapService jiraSoapService = null;
 	private String token;
@@ -64,7 +68,8 @@ public class JiraSoapClient {
 		this.jiraSoapService = jiraSoapService;
 	}
 
-	private String getToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+	private String getToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
+			RemoteException {
 		log.debug("Getting Token!");
 		if (token == null) {
 			log.trace("Syncing Token Block");
@@ -80,8 +85,8 @@ public class JiraSoapClient {
 		return token;
 	}
 
-	private synchronized void renewToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
-			RemoteException {
+	private synchronized void renewToken() throws RemoteAuthenticationException,
+			com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
 		log.debug("Renewing Token");
 		token = jiraSoapService.login(LOGIN_NAME, LOGIN_PASSWORD);
 		log.debug("Renewing Token Done!");
@@ -107,7 +112,7 @@ public class JiraSoapClient {
 		} catch (java.rmi.RemoteException e) {
 			AxisFault axisFault = (org.apache.axis.AxisFault) e;
 			if ("java.lang.NullPointerException".equals(axisFault.getFaultString()))
-			throw new JiraIssueNotFoundException("Jira \"" + jiraName + "\" not found!");
+				throw new JiraIssueNotFoundException("Jira \"" + jiraName + "\" not found!");
 		}
 		log.trace("Getting Jira Done!" + jiraName);
 		return execute;
@@ -127,23 +132,23 @@ public class JiraSoapClient {
 		log.debug("Getting FixVersion Done!");
 		return null;
 	}
-	public RemoteResolution[] getResolutions() throws RemotePermissionException,
-	RemoteAuthenticationException, RemoteException {
+
+	public RemoteResolution[] getResolutions() throws RemotePermissionException, RemoteAuthenticationException, RemoteException {
 		log.debug("Getting Resolutions");
-		
+
 		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
 			public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
-			com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+					com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
 				return jiraSoapService.getResolutions(getToken());
 			}
-			
+
 		});
 		RemoteResolution[] resolutions = (RemoteResolution[]) command.execute();
 		return resolutions;
-	}		
+	}
 
-	public RemoteVersion[] getFixVersions(final JiraProject jiraProject) throws RemotePermissionException, RemoteAuthenticationException,
-			com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+	public RemoteVersion[] getFixVersions(final JiraProject jiraProject) throws RemotePermissionException,
+			RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
 		log.debug("Getting Fix Versions!");
 		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
 			public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
@@ -167,5 +172,30 @@ public class JiraSoapClient {
 		}
 
 		return versions;
+	}
+
+	public static JiraSoapClient getInstance(String address) {
+		if (instance == null) {
+			synchronized (JiraSoapClient.class) {
+				if (instance == null) {
+					JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = getLocator(address);
+					JiraSoapService jirasoapserviceV2 = null;
+					try {
+						jirasoapserviceV2 = jiraSoapServiceServiceLocator.getJirasoapserviceV2();
+						return new JiraSoapClient(jirasoapserviceV2);
+					} catch (ServiceException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return instance;
+	}
+
+	private static JiraSoapServiceServiceLocator getLocator(String address) {
+		JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
+		jiraSoapServiceServiceLocator.setJirasoapserviceV2EndpointAddress(address);
+		log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
+		return jiraSoapServiceServiceLocator;
 	}
 }
