@@ -86,7 +86,7 @@ public class JonasTestCase extends TestCase {
    protected void setUp() throws Exception {
       super.setUp();
       TestObjects.createTestObjects();
-      EasyMock.expect(mockFactory.getJiraBuilder()).andReturn(mockJiraBuilder).anyTimes();
+//      EasyMock.expect(mockFactory.getJiraBuilder()).andReturn(mockJiraBuilder).anyTimes();
    }
 
    protected void setupMockActualsForElementExtendedWithEstimate(Element e, String string, String string2, String string3, String string4) {

@@ -3,6 +3,7 @@ package com.jonas.jira.access;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethodBase;
@@ -11,6 +12,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
@@ -47,23 +49,19 @@ public class JiraHttpClient extends HttpClient {
 
    private String baseUrl;
 
-   private Factory factory;
-
-   public JiraHttpClient(Factory factory, String jiraUrl) {
-      this.factory = factory;
+   public JiraHttpClient(String jiraUrl) {
       this.baseUrl = jiraUrl;
    }
 
-   protected List<JiraIssue> buildJirasFromXML(String string) throws JDOMException, IOException {
+   protected List<JiraIssue> buildJirasFromXML(String string, JiraBuilder jiraBuilder, JonasXpathEvaluator jonasXpathEvaluator) throws JDOMException, IOException {
       log.trace("RSS feed responded with \"" + string + "\"");
-
-      JonasXpathEvaluator evaluator = factory.getXpathEvaluator("/rss/channel/item");
+      JonasXpathEvaluator evaluator = jonasXpathEvaluator;
       List<Element> jiras = evaluator.getXpathElements(string);
       
-      return factory.getJiraBuilder().buildJiras(jiras);
+      return jiraBuilder.buildJiras(jiras);
    }
 
-   public List<JiraIssue> getJiras(JiraVersion fixVersion) throws HttpException, IOException, JDOMException, JiraException {
+   public List<JiraIssue> getJiras(JiraVersion fixVersion, JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder) throws HttpException, IOException, JDOMException, JiraException {
       log.debug("getting Jiras");
       String url = baseUrl + "/secure/IssueNavigator.jspa?view=rss&&fixfor=" + fixVersion.getId() + "&pid=" + fixVersion.getProject().getId()
             + "&sorter/field=issuekey&sorter/order=DESC&tempMax=" + MAX_RESULTS + "&reset=true&decorator=none";
@@ -76,7 +74,7 @@ public class JiraHttpClient extends HttpClient {
       throwJiraExceptionIfRequired(method);
 
       String string = new String(responseAsBytes);
-      List<JiraIssue> jiras = buildJirasFromXML(string);
+      List<JiraIssue> jiras = buildJirasFromXML(string, jiraBuilder, jonasXpathEvaluator);
 
       if (log.isDebugEnabled()) {
          for (Iterator<JiraIssue> iterator = jiras.iterator(); iterator.hasNext();) {
