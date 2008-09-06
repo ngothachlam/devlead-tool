@@ -33,7 +33,6 @@ import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
-import com.jonas.testHelpers.TryoutTester;
 
 public class PlanPanel extends MyComponentPanel {
 
@@ -144,12 +143,7 @@ public class PlanPanel extends MyComponentPanel {
       this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
    }
 
-   public static void main(String[] args) {
-      JFrame frame = TryoutTester.getFrame();
-      JPanel panel = new PlanPanel(new PlannerHelper(frame, "test"));
-      frame.setContentPane(panel);
-      frame.setVisible(true);
-   }
+
 
    public boolean doesJiraExist(String jira) {
       return ((PlanTableModel) table.getModel()).doesJiraExist(jira);

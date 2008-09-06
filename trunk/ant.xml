@@ -1,0 +1,94 @@
+<project name="MyProject" default="dist" basedir=".">
+	<description> simple example build file</description>
+	<property name="src" location="src" />
+	<property name="src.tests.unit" location="test-unit" />
+	<property name="src.tests.functional" location="test-functional" />
+	<property name="build" location="build" />
+	<property name="build.classes" location="${build}/classes" />
+	<property name="build.tests" location="${build}/tests" />
+	<property name="build.tests.results" location="${build}/tests-results" />
+	<property name="dist" location="dist" />
+
+	<path id="project.class.path">
+		<pathelement location="lib" />
+		<fileset dir="lib">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="lib">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="lib">
+			<include name="**/**/*.jar" />
+		</fileset>
+		<pathelement path="${java.class.path}/" />
+		<pathelement path="${additional.path}" />
+	</path>
+
+	<target name="clean" description="clean up">
+		<delete includeemptydirs="true">
+			<fileset dir="${build}" includes="**/*" />
+		</delete>
+		<delete includeEmptyDirs="true">
+			<fileset dir="${dist}" includes="**/*" />
+		</delete>
+	</target>
+
+	<target name="init" depends="clean">
+		<!-- Create the time stamp -->
+		<tstamp />
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build.classes}" />
+	</target>
+
+	<target name="compile" depends="init" description="compile the source ">
+		<javac srcdir="${src}" destdir="${build.classes}">
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile" description="generate the distribution">
+		<mkdir dir="${dist}" />
+		<jar jarfile="${dist}/devlead-tool-${DSTAMP}.jar" basedir="${build.classes}" />
+	</target>
+
+	<target name="compile.tests" depends="dist" description="compile the source ">
+		<mkdir dir="${build.tests}" />
+		<mkdir dir="${build.tests}/dist" />
+		<javac srcdir="${src.tests.unit}" destdir="${build.tests}">
+			<classpath refid="project.class.path" />
+			<classpath location="${dist}/devlead-tool-${DSTAMP}.jar" />
+		</javac>
+		<javac srcdir="${src.tests.functional}" destdir="${build.tests}">
+			<classpath refid="project.class.path" />
+			<classpath location="${dist}/devlead-tool-${DSTAMP}.jar" />
+		</javac>
+		<jar jarfile="${build.tests}/dist/tests.jar" basedir="${build.tests}" />
+	</target>
+
+	<target name="run.tests.unit" description="Run unit tests">
+		<delete includeEmptyDirs="true">
+			<fileset dir="${build.tests.results}" includes="**/*" />
+		</delete>
+		<mkdir dir="${build.tests.results}" />
+		<junit printsummary="yes" haltonfailure="no">
+			<classpath refid="project.class.path" />
+			<!--
+			<classpath location="${dist}/devlead-tool-${DSTAMP}.jar" />
+			<classpath location="${build.tests}/dist/tests.jar" />
+			-->
+			<classpath>
+				<pathelement path="bin" />
+			</classpath>
+
+			<formatter  type="plain" />
+
+			<batchtest fork="yes" todir="${build.tests.results}" >
+				<fileset dir="${src.tests.unit}">
+					<include name="**/*Test*.java" />
+					<exclude name="**/*TestScreen.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+</project>

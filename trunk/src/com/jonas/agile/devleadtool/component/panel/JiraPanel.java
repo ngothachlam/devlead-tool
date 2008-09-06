@@ -11,16 +11,15 @@ import java.rmi.RemoteException;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
-import com.ProgressDialog;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.listener.DownloadJirasListener;
 import com.jonas.agile.devleadtool.component.listener.RemoveJTableSelectedRowsListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -31,7 +30,6 @@ import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
-import com.jonas.testHelpers.TryoutTester;
 
 public class JiraPanel extends MyComponentPanel {
 
@@ -53,22 +51,6 @@ public class JiraPanel extends MyComponentPanel {
       this.addCenter(scrollpane);
       this.addSouth(getButtonPanel());
       this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
-   }
-
-   public static void main(String[] args) {
-      JFrame frame = TryoutTester.getFrame();
-      PlannerHelper plannerHelper = new PlannerHelper(frame, "test");
-      JiraPanel panel = new JiraPanel(plannerHelper);
-      frame.setContentPane(panel);
-      frame.setVisible(true);
-   }
-
-   public MyTableModel getJiraModel() {
-      return ((MyTableModel) table.getModel());
-   }
-
-   public void setEditable(boolean selected) {
-      ((MyTableModel) table.getModel()).setEditable(selected);
    }
 
    private Component getButtonPanel() {
@@ -115,6 +97,14 @@ public class JiraPanel extends MyComponentPanel {
       // });
 
       return panel;
+   }
+
+   public MyTableModel getJiraModel() {
+      return ((MyTableModel) table.getModel());
+   }
+
+   public void setEditable(boolean selected) {
+      ((MyTableModel) table.getModel()).setEditable(selected);
    }
 
    private final class AlteringProjectListener implements ActionListener {

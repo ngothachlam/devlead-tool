@@ -41,6 +41,11 @@ public class PlanTableModel extends MyTableModel {
    }
 
    public boolean addRow(PlanRow jiraIssue) {
+      return false;
+   }
+   
+   @Deprecated
+   public boolean addRow(JiraIssue jiraIssue) {
       List<JiraVersion> fixVersions = jiraIssue.getFixVersions();
       if (fixVersions.size() > 1) {
          throw new RuntimeException(jiraIssue + " has more than one fixversion! Model can't handle it at the moment!!");

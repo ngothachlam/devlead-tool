@@ -19,6 +19,7 @@ import com.jonas.agile.devleadtool.component.dialog.LoadDialog;
 import com.jonas.agile.devleadtool.component.dialog.PlannerDialog;
 import com.jonas.agile.devleadtool.component.dialog.SaveDialog;
 import com.jonas.agile.devleadtool.component.listener.MainFrameListener;
+import com.jonas.agile.devleadtool.component.table.model.TableModelBuilder;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.common.MyPanel;
@@ -71,7 +72,7 @@ public class DevLeadTool {
 
 	private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
 		plannerHelper = new PlannerHelper(frame, "Planner");
-		final PlannerDAO plannerDAO = new PlannerDAOExcelImpl();
+		final PlannerDAO plannerDAO = new PlannerDAOExcelImpl(new TableModelBuilder());
 
 		JMenuItem planner = createMenuItem("New Planner", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

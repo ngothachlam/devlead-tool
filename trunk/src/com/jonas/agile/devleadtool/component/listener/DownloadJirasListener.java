@@ -6,16 +6,13 @@ package com.jonas.agile.devleadtool.component.listener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
 import javax.swing.JComboBox;
 import javax.swing.SwingWorker;
-
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
-
-import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.common.logging.MyLogger;

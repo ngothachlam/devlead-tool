@@ -4,16 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.JTableHeader;
 import org.apache.log4j.Logger;
-import com.ProgressDialog;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -25,10 +24,8 @@ import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRen
 import com.jonas.agile.devleadtool.component.table.renderer.HyperlinkTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.MyComponentPanel;
-import com.jonas.common.MyPanel;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.JiraIssueNotFoundException;
-import com.jonas.testHelpers.TryoutTester;
 
 public class BoardPanel extends MyComponentPanel {
 
@@ -49,13 +46,7 @@ public class BoardPanel extends MyComponentPanel {
       initialiseTableHeader();
    }
 
-   public static void main(String[] args) {
-      JFrame frame = TryoutTester.getFrame();
-      PlannerHelper plannerHelper = new PlannerHelper(frame, "test");
-      MyPanel panel = new BoardPanel(plannerHelper);
-      frame.setContentPane(panel);
-      frame.setVisible(true);
-   }
+
 
    public MyTableModel getModel() {
       return ((MyTableModel) table.getModel());
