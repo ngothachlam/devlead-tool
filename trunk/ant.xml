@@ -47,6 +47,7 @@
 		<tstamp />
 		<!-- Create the build directory structure used by compile -->
 		<mkdir dir="${build.classes}" />
+		<mkdir dir="${build.tests}" />
 	</target>
 
 	<target name="compile" depends="init" description="compile the source ">
@@ -61,7 +62,6 @@
 	</target>
 
 	<target name="compile.tests" depends="dist" description="compile the source ">
-		<mkdir dir="${build.tests}" />
 		<mkdir dir="${build.tests}/dist" />
 		<javac srcdir="${src.tests.unit}" destdir="${build.tests}">
 			<classpath refid="project.class.path" />

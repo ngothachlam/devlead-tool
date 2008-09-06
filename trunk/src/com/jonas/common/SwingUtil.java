@@ -13,10 +13,9 @@ import javax.swing.UIManager;
 
 public class SwingUtil {
 	
-	public static final Color COLOR_NONSELECT_ERROR = new Color(200, 0, 0);
-	public static final Color COLOR_SELECTION_ERROR = new Color(225, 0, 0);
-	public static final Color COLOR_FOCUS_ERROR = new Color(250, 0, 0);
-
+	public static final Color COLOR_RED_1 = new Color(200, 0, 0);
+	public static final Color COLOR_RED_2 = new Color(225, 0, 0);
+	public static final Color COLOR_RED_3 = new Color(250, 0, 0);
 	
 	private static Color selectionBackground = null;
 

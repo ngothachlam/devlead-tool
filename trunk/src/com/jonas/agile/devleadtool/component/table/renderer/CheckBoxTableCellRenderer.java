@@ -37,11 +37,11 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 			// MyTableModel model = (MyTableModel) table.getModel();
 			// if (model.isRed(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column))) {
 			if (hasFocus)
-				checkbox.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
+				checkbox.setBackground(SwingUtil.COLOR_RED_3);
 			else if (isSelected)
-				checkbox.setBackground(SwingUtil.COLOR_SELECTION_ERROR);
+				checkbox.setBackground(SwingUtil.COLOR_RED_2);
 			else
-				checkbox.setBackground(SwingUtil.COLOR_NONSELECT_ERROR);
+				checkbox.setBackground(SwingUtil.COLOR_RED_1);
 		} else {
 			if (hasFocus)
 				checkbox.setBackground(SwingUtil.getTableCellFocusBackground());
@@ -82,6 +82,11 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		return this.getTableCellRendererComponent((MyTable) table, value, isSelected, hasFocus, row, column);
+	}
+
+	JCheckBox getCheckBox() {
+		// TODO Auto-generated method stub
+		return checkbox;
 	}
 
 }

@@ -24,11 +24,11 @@ public class StringTableCellRenderer extends DefaultTableCellRenderer {
          // MyTableModel model = (MyTableModel) table.getModel();
          // if (model.isRed(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column))) {
          if (hasFocus)
-            cell.setBackground(SwingUtil.COLOR_FOCUS_ERROR);
+            cell.setBackground(SwingUtil.COLOR_RED_3);
          else if (isSelected)
-            cell.setBackground(SwingUtil.COLOR_SELECTION_ERROR);
+            cell.setBackground(SwingUtil.COLOR_RED_2);
          else
-            cell.setBackground(SwingUtil.COLOR_NONSELECT_ERROR);
+            cell.setBackground(SwingUtil.COLOR_RED_1);
 
       } else {
          if (hasFocus) {
