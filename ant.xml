@@ -101,6 +101,33 @@
 		</junit>
 	</target>
 	
-	<target name="default" depends="run.tests.unit, dist, clean.after" />
+	<target name="run.tests.functional" description="Run functional tests">
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="${build.tests.results}" includes="**/*" />
+		</delete>
+		<mkdir dir="${build.tests.results}" />
+		<mkdir dir="bin/junitTemp" />
+		<junit printsummary="yes" haltonfailure="no" tempdir="bin/junitTemp" >
+			<classpath refid="project.class.path" />
+			<!--
+			<classpath location="${dist}/devlead-tool-${DSTAMP}.jar" />
+			<classpath location="${build.tests}/dist/tests.jar" />
+			-->
+			<classpath>
+				<pathelement path="bin" />
+			</classpath>
+
+			<formatter  type="plain"  />
+
+			<batchtest fork="yes" todir="${build.tests.results}" >
+				<fileset dir="${src.tests.functional}">
+					<include name="**/*Test.java" />
+					<exclude name="**/*TestScreen.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<target name="default" depends="run.tests.unit, run.tests.functional ,dist, clean.after" />
 
 </project>
