@@ -3,8 +3,9 @@ package com.jonas.agile.devleadtool.component.table.model;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
+
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.table.BoardStatus;
+
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -23,7 +24,7 @@ public class JiraTableModel extends MyTableModel {
       columnNames.put(Column.Status, 3);
       columnNames.put(Column.Resolution, 4);
       columnNames.put(Column.BuildNo, 5);
-      columnNames.put(Column.Estimate, 5);
+      columnNames.put(Column.Estimate, 6);
    }
 
    public JiraTableModel() {

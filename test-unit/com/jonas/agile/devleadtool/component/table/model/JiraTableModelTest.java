@@ -1,242 +1,15 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.jira.JiraIssue;
 
 public class JiraTableModelTest extends JonasTestCase {
-
-   public void testGetConvertionNumbersWithStandardColumnsOk() {
-      MyTableModel model = new JiraTableModel();
-      Vector<Column> header = new Vector<Column>();
-      getMixedHeader(header);
-      List convert = model.getConvertionNumbers(header, JiraTableModel.columnNames);
-
-      assertEquals(8, convert.size());
-      assertEquals(1, convert.get(0));
-      assertEquals(0, convert.get(1));
-      assertEquals(3, convert.get(2));
-      assertEquals(2, convert.get(3));
-      assertEquals(5, convert.get(4));
-      assertEquals(4, convert.get(5));
-      assertEquals(7, convert.get(6));
-      assertEquals(6, convert.get(7));
-   }
-
-   public void testGetConvertionNumbersWithFewerColumnsOk() {
-      MyTableModel model = new JiraTableModel();
-      Vector<Column> header = new Vector<Column>();
-      header.add(Column.FixVersion); //2
-      header.add(Column.Jira); //0
-
-      List convert = model.getConvertionNumbers(header, JiraTableModel.columnNames);
-
-      assertEquals(8, convert.size());
-      assertEquals(1, convert.get(0));
-      assertEquals(-1, convert.get(1));
-      assertEquals(0, convert.get(2));
-      assertEquals(-1, convert.get(3));
-      assertEquals(-1, convert.get(4));
-      assertEquals(-1, convert.get(5));
-      assertEquals(-1, convert.get(6));
-      assertEquals(-1, convert.get(7));
-   }
-
-   public void testShouldSortVectorBasedOnListOk() {
-      MyTableModel model = new JiraTableModel();
-
-      List<Integer> originalList = new ArrayList<Integer>();
-      originalList.add(1);
-      originalList.add(0);
-      originalList.add(3);
-      originalList.add(2);
-      originalList.add(5);
-      originalList.add(4);
-      originalList.add(7);
-      originalList.add(6);
-
-      Vector<Object> mixedRowVector = getMixedRowVector(0);
-
-      Vector result = model.sortVectorBasedOnList(originalList, mixedRowVector);
-      assertEquals("Jira-0", result.get(0));
-      assertEquals("Description 0", result.get(1));
-      assertEquals("FixVersion 0", result.get(2));
-      assertEquals("Status 0", result.get(3));
-      assertEquals("Resolution 0", result.get(4));
-      assertEquals("BuildNo 0", result.get(5));
-      assertEquals("URL 0", result.get(6));
-      assertEquals("BoardStatus 0", result.get(7));
-   }
-
-   public void testShouldSortVectorBasedOnListWithFewerOk() {
-      MyTableModel model = new JiraTableModel();
-
-      List<Integer> originalList = new ArrayList<Integer>();
-      originalList.add(1);
-      originalList.add(0);
-      originalList.add(3);
-      originalList.add(2);
-      originalList.add(-1);
-      originalList.add(4);
-      originalList.add(7);
-      originalList.add(6);
-
-      Vector<Object> mixedRowVector = new Vector<Object>();
-      int i = 0;
-      mixedRowVector.add("Description " + i);
-      mixedRowVector.add("Jira-" + i);
-      mixedRowVector.add("Status " + i);
-      mixedRowVector.add("FixVersion " + i);
-      mixedRowVector.add("BuildNo " + i);
-      mixedRowVector.add("Resolution " + i);
-      mixedRowVector.add("BoardStatus " + i);
-      mixedRowVector.add("URL " + i);
-
-      Vector result = model.sortVectorBasedOnList(originalList, mixedRowVector);
-      assertEquals("Jira-0", result.get(0));
-      assertEquals("Description 0", result.get(1));
-      assertEquals("FixVersion 0", result.get(2));
-      assertEquals("Status 0", result.get(3));
-      assertEquals(null, result.get(4));
-      assertEquals("BuildNo 0", result.get(5));
-      assertEquals("URL 0", result.get(6));
-      assertEquals("BoardStatus 0", result.get(7));
-   }
-
-   public void testShouldCalculateAlreadyExistsOk() {
-      JiraTableModel model = new JiraTableModel();
-      String jira = "Jira-1";
-      assertFalse(model.exists(jira));
-      JiraIssue jiraIssue = new JiraIssue("Jira-1", "Summary 1", "Open", "Resolved");
-      model.addRow(jiraIssue);
-      assertTrue(model.exists(jira));
-   }
-
-   public void testShouldAddRowOk() {
-      JiraTableModel model = new JiraTableModel();
-      JiraIssue jiraIssue = new JiraIssue("Jira-1", "Summary 1", "Open", "Resolved");
-      JiraIssue jiraIssue2 = new JiraIssue("Jira-2", "Summary 2", "Open", "Resolved");
-      assertTrue(model.addRow(jiraIssue));
-      assertFalse(model.addRow(jiraIssue));
-      assertTrue(model.addRow(jiraIssue2));
-   }
-
-   public void testShouldBeCreatedFromDAOOk() {
-      Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      Vector<Column> header = new Vector<Column>();
-
-      header.add(Column.Jira);
-      header.add(Column.Description);
-      header.add(Column.FixVersion);
-      header.add(Column.Status);
-      header.add(Column.Resolution);
-      header.add(Column.BuildNo);
-      header.add(Column.URL);
-      header.add(Column.BoardStatus);
-
-      contents.add(getRowVector(0));
-      contents.add(getRowVector(1));
-      contents.add(getMixedRowVector(2));
-
-      MyTableModel model = new JiraTableModel(contents, header);
-
-      assertRow(model, 0);
-      assertRow(model, 1);
-   }
-
-   public void testShouldBeCreatedFromDAOOkWhenColsAreMixedUp() {
-      Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      Vector<Column> header = new Vector<Column>();
-
-      getMixedHeader(header);
-      contents.add(getMixedRowVector(0));
-      contents.add(getMixedRowVector(1));
-
-      MyTableModel model = new JiraTableModel(contents, header);
-
-      assertRow(model, 0);
-      assertRow(model, 1);
-   }
-
-   public void testShouldBeCreatedFromDAOOkWhenColsAreMixedUpAndLessThanOriginal() {
-      Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      Vector<Column> header = new Vector<Column>();
-
-      header.add(Column.Jira);
-      header.add(Column.FixVersion);
-      header.add(Column.Resolution);
-      header.add(Column.URL);
-
-      Vector<Object> vector = new Vector<Object>();
-      int i = 0;
-      vector.add("Jira-" + i);
-      vector.add("FixVersion " + i);
-      vector.add("Resolution " + i);
-      vector.add("URL " + i);
-
-      contents.add(vector);
-      contents.add(getMixedRowVector(1));
-
-      MyTableModel model = new JiraTableModel(contents, header);
-
-      assertEquals(8, model.getColumnCount());
-      assertEquals("Jira-" + i, model.getValueAt(i, 0));
-      assertEquals(null, model.getValueAt(i, 1));
-      assertEquals("FixVersion " + i, model.getValueAt(i, 2));
-      assertEquals(null, model.getValueAt(i, 3));
-      assertEquals("Resolution " + i, model.getValueAt(i, 4));
-      assertEquals(null, model.getValueAt(i, 5));
-      assertEquals("URL " + i, model.getValueAt(i, 6));
-      assertEquals(null, model.getValueAt(i, 7));
-   }
-
-   public void testShouldBeCreatedFromDAOOkWhenColsAreMixedUpAndMoreThanOriginal() {
-      Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      Vector<Column> header = new Vector<Column>();
-      
-      header.add(Column.Jira);
-      header.add(Column.FixVersion);
-      header.add(Column.Resolution);
-      header.add(Column.URL);
-      header.add(Column.Bugs);
-      
-      Vector<Object> vector = new Vector<Object>();
-      int i = 0;
-      vector.add("Jira-" + i);
-      vector.add("FixVersion " + i);
-      vector.add("Resolution " + i);
-      vector.add("URL " + i);
-      vector.add("Bugs " + i);
-      
-      contents.add(vector);
-      contents.add(getMixedRowVector(1));
-      
-      MyTableModel model = new JiraTableModel(contents, header);
-      
-      assertEquals(8, model.getColumnCount());
-      assertEquals("Jira-" + i, model.getValueAt(i, 0));
-      assertEquals(null, model.getValueAt(i, 1));
-      assertEquals("FixVersion " + i, model.getValueAt(i, 2));
-      assertEquals(null, model.getValueAt(i, 3));
-      assertEquals("Resolution " + i, model.getValueAt(i, 4));
-      assertEquals(null, model.getValueAt(i, 5));
-      assertEquals("URL " + i, model.getValueAt(i, 6));
-      assertEquals(null, model.getValueAt(i, 7));
-   }
-
-   private void getMixedHeader(Vector<Column> header) {
-      header.add(Column.Description);
-      header.add(Column.Jira);
-      header.add(Column.Status);
-      header.add(Column.FixVersion);
-      header.add(Column.BuildNo);
-      header.add(Column.Resolution);
-      header.add(Column.BoardStatus);
-      header.add(Column.URL);
-   }
 
    private void assertRow(MyTableModel model, int i) {
       assertEquals(8, model.getColumnCount());
@@ -250,17 +23,29 @@ public class JiraTableModelTest extends JonasTestCase {
       assertEquals("BoardStatus " + i, model.getValueAt(i, 7));
    }
 
-   private Vector<Object> getRowVector(int i) {
+   private void assertRow(String[] strings, MyTableModel model, int row) {
+      for (int col = 0; col < strings.length; col++) {
+         assertEquals(strings[col], model.getValueAt(row, col));
+      }
+   }
+
+   private Vector<Object> getARowVector(String[] strings, int i) {
       Vector<Object> vector = new Vector<Object>();
-      vector.add("Jira-" + i);
-      vector.add("Description " + i);
-      vector.add("FixVersion " + i);
-      vector.add("Status " + i);
-      vector.add("Resolution " + i);
-      vector.add("BuildNo " + i);
-      vector.add("URL " + i);
-      vector.add("BoardStatus " + i);
+      for (String string : strings) {
+         vector.add(string + "-" + i);
+      }
       return vector;
+   }
+
+   private void getMixedHeader(Vector<Column> header) {
+      header.add(Column.Description);
+      header.add(Column.Jira);
+      header.add(Column.Status);
+      header.add(Column.FixVersion);
+      header.add(Column.BuildNo);
+      header.add(Column.Resolution);
+      header.add(Column.BoardStatus);
+      header.add(Column.URL);
    }
 
    private Vector<Object> getMixedRowVector(int i) {
@@ -274,5 +59,165 @@ public class JiraTableModelTest extends JonasTestCase {
       vector.add("BoardStatus " + i);
       vector.add("URL " + i);
       return vector;
+   }
+
+   public void testShouldConvertionNumbersWithFewerColumnsOk() {
+      MyTableModel model = new JiraTableModel();
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Description);
+      header.add(Column.Jira);
+
+      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+      columnNames.put(Column.Jira, 0);
+      columnNames.put(Column.Note, 1);
+      columnNames.put(Column.BuildNo, 2);
+      columnNames.put(Column.Description, 3);
+
+      List convert = model.getConvertionNumbers(header, columnNames);
+
+      assertEquals(4, convert.size());
+      assertEquals(1, convert.get(0));
+      assertEquals(-1, convert.get(1));
+      assertEquals(-1, convert.get(2));
+      assertEquals(0, convert.get(3));
+   }
+
+   public void testShouldConvertionNumbersWithStandardColumnsOk() {
+      MyTableModel model = new JiraTableModel();
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Description);
+      header.add(Column.Jira);
+
+      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+      columnNames.put(Column.Jira, 0);
+      columnNames.put(Column.Description, 1);
+
+      List convert = model.getConvertionNumbers(header, columnNames);
+
+      assertEquals(2, convert.size());
+      assertEquals(1, convert.get(0));
+      assertEquals(0, convert.get(1));
+   }
+
+   public void testShouldSortVectorBasedOnListWithStandardColumnsOk() {
+      MyTableModel model = new JiraTableModel();
+
+      List<Integer> originalList = new ArrayList<Integer>();
+      originalList.add(1);
+      originalList.add(0);
+
+      Vector<Object> mixedRowVector = new Vector<Object>();
+      mixedRowVector.add("Description");
+      mixedRowVector.add("Jira");
+
+      Vector result = model.sortVectorBasedOnList(originalList, mixedRowVector);
+      assertEquals("Jira", result.get(0));
+      assertEquals("Description", result.get(1));
+      assertEquals(2, result.size());
+   }
+
+   public void testShouldSortVectorBasedOnListWithFewerColumnsOk() {
+      MyTableModel model = new JiraTableModel();
+
+      List<Integer> originalList = new ArrayList<Integer>();
+      originalList.add(1);
+      originalList.add(-1);
+      originalList.add(0);
+      originalList.add(-1);
+
+      Vector<Object> mixedRowVector = new Vector<Object>();
+      mixedRowVector.add("Description");
+      mixedRowVector.add("Jira");
+
+      Vector result = model.sortVectorBasedOnList(originalList, mixedRowVector);
+      assertEquals("Jira", result.get(0));
+      assertEquals(null, result.get(1));
+      assertEquals("Description", result.get(2));
+      assertEquals(null, result.get(3));
+      assertEquals(4, result.size());
+   }
+
+   public void testShouldBeConstructedFromDAOOk() {
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Jira);
+      header.add(Column.Description);
+      header.add(Column.FixVersion);
+      header.add(Column.Status);
+      header.add(Column.Resolution);
+      header.add(Column.BuildNo);
+      header.add(Column.Estimate);
+
+      Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
+      contents.add(getARowVector(new String[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "Estimate" }, 0));
+      contents.add(getARowVector(new String[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "Estimate" }, 1));
+
+      MyTableModel model = new JiraTableModel(contents, header);
+
+      assertEquals(2, model.getRowCount());
+      assertEquals(7, model.getColumnCount());
+      assertRow(new String[] { "Jira-0", "Description-0", "FixVersion-0", "Status-0", "Resolution-0", "BuildNo-0", "Estimate-0" }, model, 0);
+      assertRow(new String[] { "Jira-1", "Description-1", "FixVersion-1", "Status-1", "Resolution-1", "BuildNo-1", "Estimate-1" }, model, 1);
+   }
+
+   public void testShouldBeConstructedFromDAOOkWhenColsAreMixedUp() {
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Description);
+      header.add(Column.Jira);
+      header.add(Column.Status);
+      header.add(Column.FixVersion);
+      header.add(Column.BuildNo);
+      header.add(Column.Resolution);
+      header.add(Column.Estimate);
+
+      Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
+      contents.add(getARowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 0));
+      contents.add(getARowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 1));
+
+      MyTableModel model = new JiraTableModel(contents, header);
+
+      assertEquals(2, model.getRowCount());
+      assertEquals(7, model.getColumnCount());
+      assertRow(new String[] { "Jira-0", "Description-0", "FixVersion-0", "Status-0", "Resolution-0", "BuildNo-0", "Estimate-0" }, model, 0);
+      assertRow(new String[] { "Jira-1", "Description-1", "FixVersion-1", "Status-1", "Resolution-1", "BuildNo-1", "Estimate-1" }, model, 1);
+   }
+
+   public void testShouldBeConstructedFromDAOOkWhenColsAreMixedUpAndLessThanOriginal() {
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Description);
+      header.add(Column.Jira);
+
+      Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
+      contents.add(getARowVector(new String[] { "Description", "Jira" }, 0));
+      contents.add(getARowVector(new String[] { "Description", "Jira" }, 1));
+
+      MyTableModel model = new JiraTableModel(contents, header);
+
+      assertEquals(2, model.getRowCount());
+      assertEquals(7, model.getColumnCount());
+      assertRow(new String[] { "Jira-0", "Description-0", null, null, null, null, null }, model, 0);
+      assertRow(new String[] { "Jira-1", "Description-1", null, null, null, null, null }, model, 1);
+
+   }
+
+   public void testShouldBeConstructedFromDAOOkWhenColsAreMixedUpAndMoreThanOriginal() {
+      assertTrue(false);
+   }
+
+   public void testShouldAddRowOk() {
+      JiraTableModel model = new JiraTableModel();
+      JiraIssue jiraIssue = new JiraIssue("Jira-1", "Summary 1", "Open", "Resolved");
+      JiraIssue jiraIssue2 = new JiraIssue("Jira-2", "Summary 2", "Open", "Resolved");
+      assertTrue(model.addRow(jiraIssue));
+      assertFalse(model.addRow(jiraIssue));
+      assertTrue(model.addRow(jiraIssue2));
+   }
+
+   public void testShouldCalculateAlreadyExistsOk() {
+      JiraTableModel model = new JiraTableModel();
+      String jira = "Jira-1";
+      assertFalse(model.exists(jira));
+      JiraIssue jiraIssue = new JiraIssue("Jira-1", "Summary 1", "Open", "Resolved");
+      model.addRow(jiraIssue);
+      assertTrue(model.exists(jira));
    }
 }
