@@ -2,19 +2,13 @@ package com.jonas.agile.devleadtool.data;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Vector;
-import javax.swing.table.TableModel;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.easymock.classextension.EasyMock;
-import com.jonas.agile.devleadtool.component.table.Column;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
-import com.jonas.agile.devleadtool.component.table.model.TableModelBuilder;
 import com.jonas.agile.devleadtool.component.table.model.TableModelDTO;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
-import com.jonas.jira.TestObjects;
 
 public class PlannerDAOExcelImplTest extends JonasTestCase {
    File xlsFile = new File("bin\\test.xls");
@@ -50,99 +44,44 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
       assertNotSame(wb, wb4);
    }
 
-   public void testSouldSaveAndLoadBoardCorrectly() throws IOException {
-      PlannerDAO dao = new PlannerDAOExcelImpl(null);
-      MyTableModel model_original = new BoardTableModel();
-
-      // Save and Load on new file
-      dao.saveBoardModel(xlsFile, model_original);
-      MyTableModel model_loaded = dao.loadBoardModel(xlsFile);
-
-      assertEquals(1, model_loaded.getRowCount());
-      assertEquals(7, model_loaded.getColumnCount());
-      assertHeaderInModel(model_loaded, new Object[] { "Jira", "Open", "Bugs", "InProgress", "Resolved", "Complete", "URL" });
-      assertRowInModel(0, model_loaded, new Object[] { "", "", "", "", "", "", "" });
-
-      // Modify,
-      model_loaded.addRow(new Object[] { "123", Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "LLU-123" });
-      model_loaded.addRow(new Object[] { "1234", Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, "LLU-1234" });
-
-      // Save and Load on the existing file
-      dao.saveBoardModel(xlsFile, model_loaded);
-      model_loaded = dao.loadBoardModel(xlsFile);
-
-      assertEquals(3, model_loaded.getRowCount());
-      assertEquals(7, model_loaded.getColumnCount());
-      assertHeaderInModel(model_loaded, new Object[] { "Jira", "Open", "Bugs", "InProgress", "Resolved", "Complete", "URL" });
-      assertRowInModel(0, model_loaded, new Object[] { "", "", "", "", "", "", "" });
-      // assertRowInModel(0, model_loaded, new Object[] { "", Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "" });
-      assertRowInModel(1, model_loaded, new Object[] { "123", Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, "LLU-123" });
-      assertRowInModel(2, model_loaded, new Object[] { "1234", Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, "LLU-1234" });
-   }
-
    public void testSouldSaveAndLoadPlanCorrectly() throws IOException {
-      TableModelBuilder model_builder = createClassMock(TableModelBuilder.class);
-      
-      PlanTableModel planTableModel = createClassMock(PlanTableModel.class);
-      
-      Vector<Column> header = new Vector();
-      header.add(Column.Jira);
-      header.add(Column.inPanel);
-      Vector<Vector<Object>> contents = new Vector();
-      TableModelDTO tableModelDTO = new TableModelDTO(header, contents);
-      EasyMock.expect(model_builder.buildPlanTableModel(tableModelDTO)).andReturn(planTableModel);
-      
-      MyTableModel model_original = createClassMock(PlanTableModel.class);
-      EasyMock.expect(model_original.getColumnCount()).andReturn(2).anyTimes();
-      EasyMock.expect(model_original.getColumnName(0)).andReturn("Jira").anyTimes();
-      EasyMock.expect(model_original.getColumnName(1)).andReturn("inPanel").anyTimes();
-      EasyMock.expect(model_original.getRowCount()).andReturn(0).anyTimes();
+      PlannerDAOExcelImpl dao = new PlannerDAOExcelImpl(null);
 
-      PlannerDAO dao = new PlannerDAOExcelImpl(model_builder);
+      MyTableModel model_original = createClassMock(PlanTableModel.class);
+
+       // setup expectations for header
+       EasyMock.expect(model_original.getColumnCount()).andReturn(2).anyTimes();
+       EasyMock.expect(model_original.getColumnName(0)).andReturn("Jira").anyTimes();
+       EasyMock.expect(model_original.getColumnName(1)).andReturn("inPanel").anyTimes();
+      
+       // setup expectations for number of data rows
+       EasyMock.expect(model_original.getRowCount()).andReturn(1).anyTimes();
+       
+       // setup expectations for first data row
+       EasyMock.expect(model_original.getValueAt(0, 0)).andReturn("Row0-Col0").anyTimes();
+       EasyMock.expect(model_original.getValueAt(0, 1)).andReturn("Row0-Col1").anyTimes();
+       // setup expectations for first data row when checking color.
+       EasyMock.expect(model_original.isRed("Row0-Col0", 0, 0)).andStubReturn(Boolean.FALSE);
+       EasyMock.expect(model_original.isRed("Row0-Col1", 0, 1)).andStubReturn(Boolean.FALSE);
+       // setup expectations for first data row
+       EasyMock.expect(model_original.getValueAt(1, 0)).andReturn("Row1-Col0").anyTimes();
+       EasyMock.expect(model_original.getValueAt(1, 1)).andReturn("Row1-Col1").anyTimes();
+       // setup expectations for first data row when checking color.
+       EasyMock.expect(model_original.isRed("Row1-Col0", 1, 0)).andStubReturn(Boolean.FALSE);
+       EasyMock.expect(model_original.isRed("Row1-Col1", 1, 1)).andStubReturn(Boolean.FALSE);
 
       replay();
 
       // Save and Load on new file
       dao.savePlanModel(xlsFile, model_original);
-      MyTableModel model_loaded = dao.loadPlanModel(xlsFile);
+      TableModelDTO dtoLoaded = dao.loadModel(xlsFile, "plan");
 
       verify();
 
-      assertEquals(0, model_loaded.getRowCount());
-      assertHeaderInModel(model_loaded, new Object[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "URL", "BoardStatus" });
-      assertEquals("Header0", model_loaded.getColumnName(0));
-      assertEquals("Header1", model_loaded.getColumnName(1));
-      assertEquals(2, model_loaded.getColumnCount());
-      assertEquals(0, model_loaded.getRowCount());
-
-      reset();
-      EasyMock.expect(model_original.getColumnCount()).andReturn(0).anyTimes();
-      replay();
-
-      // Modify,
-      model_loaded.addRow(new Object[] { "123", "desc1", TestObjects.Version_10, "1", "2", "link1" });
-      model_loaded.addRow(new Object[] { "1234", "desc2", TestObjects.Version_11, "3", "4", "link2" });
-
-      // Save and Load on the existing file
-      dao.savePlanModel(xlsFile, model_loaded);
-      model_loaded = dao.loadPlanModel(xlsFile);
-
-      assertEquals(2, model_loaded.getRowCount());
-      assertEquals(8, model_loaded.getColumnCount());
-      assertHeaderInModel(model_loaded, new Object[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "URL", "BoardStatus" });
-      assertRowInModel(0, model_loaded, new Object[] { "123", "desc1", "Version 10", "1", "2", "link1" });
-      assertRowInModel(1, model_loaded, new Object[] { "1234", "desc2", "Version 11", "3", "4", "link2" });
-   }
-
-   private void assertHeaderInModel(TableModel model_loaded, Object[] expected) {
-      for (int j = 0; j < expected.length; j++) {
-         assertEquals(expected[j], model_loaded.getColumnName(j));
-      }
-   }
-
-   private void assertRowInModel(int row, TableModel model, Object[] expected) {
-      for (int j = 0; j < expected.length; j++) {
-         assertEquals("error on " + j + " out of " + expected.length, expected[j], model.getValueAt(row, j));
-      }
+      assertEquals(2, dtoLoaded.getHeader().size());
+      assertEquals(2, dtoLoaded.getContents().size());
+      assertEquals(2, dtoLoaded.getContents().get(0).size());
+      assertEquals("Row0-Col0", dtoLoaded.getContents().get(0).get(0));
+      assertEquals("Row0-Col1", dtoLoaded.getContents().get(0).get(1));
    }
 }
