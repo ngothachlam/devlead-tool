@@ -18,12 +18,6 @@ public class JiraClientTest extends JonasTestCase {
       jiraClient = JiraClient.JiraClientAtlassin;
    }
 
-   public void testShouldGetJirasForFixVersionOk() throws HttpException, IOException, JDOMException, JiraException {
-      jiraClient.login();
-      JiraIssue[] jiras = jiraClient.getJirasFromFixVersion(TestObjects.Version_AtlassainTST);
-      assertTrue(jiras.length > 0);
-   }
-
    public void testShouldGetFixVersionsOk() throws HttpException, IOException, JiraException {
       jiraClient.login();
       JiraVersion[] fixVersions = jiraClient.getFixVersionsFromProject(JiraProject.ATLASSIN_TST, false);
@@ -39,6 +33,12 @@ public class JiraClientTest extends JonasTestCase {
       } catch (JiraException e) {
       }
       assertEquals(0, jiras.length);
+   }
+
+   public void testShouldGetJirasForFixVersionOk() throws HttpException, IOException, JDOMException, JiraException {
+      jiraClient.login();
+      JiraIssue[] jiras = jiraClient.getJirasFromFixVersion(TestObjects.Version_AtlassainTST);
+      assertTrue(jiras.length > 0);
    }
 
 }
