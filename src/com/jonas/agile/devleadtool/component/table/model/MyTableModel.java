@@ -119,24 +119,24 @@ public abstract class MyTableModel extends DefaultTableModel {
    public void setEditable(boolean selected) {
       editable = selected;
       fireTableStructureChanged();
-      // TODO need to fireUpdate on Table
+      // TODO need to fireUpdate on Table?
    }
 
    List<Integer> getConvertionNumbers(Vector<Column> mixedUpVector, Map<Column, Integer> originalVector) {
       List<Integer> list = new ArrayList();
       log.debug("mixedUpVectorSize: " + mixedUpVector.size());
       log.debug("originalVector: " + originalVector.size());
-      if (mixedUpVector.size() < originalVector.size()) {
+      if (mixedUpVector.size() == originalVector.size()) {
+         for (Column column : mixedUpVector) {
+            Integer integer = originalVector.get(column);
+            System.out.println("for " + column + " we are getting " + integer);
+            list.add(integer);
+         }
+      } else {
          for (Column originalColumn : originalVector.keySet()) {
             Integer integer = -1;
             if (mixedUpVector.contains(originalColumn))
                integer = mixedUpVector.indexOf(originalColumn);
-            list.add(integer);
-         }
-      } else {
-         for (Column column : mixedUpVector) {
-            Integer integer = originalVector.get(column);
-            System.out.println("for " + column + " we are getting " + integer);
             list.add(integer);
          }
       }
