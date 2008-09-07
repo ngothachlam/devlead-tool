@@ -55,7 +55,7 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
        EasyMock.expect(model_original.getColumnName(1)).andReturn("inPanel").anyTimes();
       
        // setup expectations for number of data rows
-       EasyMock.expect(model_original.getRowCount()).andReturn(1).anyTimes();
+       EasyMock.expect(model_original.getRowCount()).andReturn(2).anyTimes();
        
        // setup expectations for first data row
        EasyMock.expect(model_original.getValueAt(0, 0)).andReturn("Row0-Col0").anyTimes();
