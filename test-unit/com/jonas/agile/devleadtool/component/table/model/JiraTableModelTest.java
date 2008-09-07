@@ -61,27 +61,6 @@ public class JiraTableModelTest extends JonasTestCase {
       return vector;
    }
 
-   public void testShouldConvertionNumbersWithFewerColumnsOk() {
-      MyTableModel model = new JiraTableModel();
-      Vector<Column> header = new Vector<Column>();
-      header.add(Column.Description);
-      header.add(Column.Jira);
-
-      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
-      columnNames.put(Column.Jira, 0);
-      columnNames.put(Column.Note, 1);
-      columnNames.put(Column.BuildNo, 2);
-      columnNames.put(Column.Description, 3);
-
-      List convert = model.getConvertionNumbers(header, columnNames);
-
-      assertEquals(4, convert.size());
-      assertEquals(1, convert.get(0));
-      assertEquals(-1, convert.get(1));
-      assertEquals(-1, convert.get(2));
-      assertEquals(0, convert.get(3));
-   }
-
    public void testShouldConvertionNumbersWithStandardColumnsOk() {
       MyTableModel model = new JiraTableModel();
       Vector<Column> header = new Vector<Column>();
@@ -99,6 +78,49 @@ public class JiraTableModelTest extends JonasTestCase {
       assertEquals(0, convert.get(1));
    }
 
+   public void testShouldConvertionNumbersWithFewerColumnsOk() {
+      MyTableModel model = new JiraTableModel();
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Description);
+      header.add(Column.Jira);
+      
+      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+      columnNames.put(Column.Jira, 0);
+      columnNames.put(Column.Note, 1);
+      columnNames.put(Column.BuildNo, 2);
+      columnNames.put(Column.Description, 3);
+      
+      List convert = model.getConvertionNumbers(header, columnNames);
+      
+      assertEquals(4, convert.size());
+      assertEquals(1, convert.get(0));
+      assertEquals(-1, convert.get(1));
+      assertEquals(-1, convert.get(2));
+      assertEquals(0, convert.get(3));
+   }
+   
+   public void testShouldConvertionNumbersWithMoreColumnsOk() {
+      MyTableModel model = new JiraTableModel();
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Description);
+      header.add(Column.Jira);
+      
+      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+      columnNames.put(Column.Jira, 0);
+      columnNames.put(Column.Note, 1);
+      columnNames.put(Column.BuildNo, 2);
+      columnNames.put(Column.Description, 3);
+      
+      List convert = model.getConvertionNumbers(header, columnNames);
+      
+      assertEquals(4, convert.size());
+      assertEquals(1, convert.get(0));
+      assertEquals(-1, convert.get(1));
+      assertEquals(-1, convert.get(2));
+      assertEquals(0, convert.get(3));
+      assertTrue(false);
+   }
+   
    public void testShouldSortVectorBasedOnListWithStandardColumnsOk() {
       MyTableModel model = new JiraTableModel();
 
@@ -196,11 +218,29 @@ public class JiraTableModelTest extends JonasTestCase {
       assertEquals(7, model.getColumnCount());
       assertRow(new String[] { "Jira-0", "Description-0", null, null, null, null, null }, model, 0);
       assertRow(new String[] { "Jira-1", "Description-1", null, null, null, null, null }, model, 1);
-
    }
 
    public void testShouldBeConstructedFromDAOOkWhenColsAreMixedUpAndMoreThanOriginal() {
-      assertTrue(false);
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Description);
+      header.add(Column.Jira);
+      header.add(Column.Status);
+      header.add(Column.FixVersion);
+      header.add(Column.BuildNo);
+      header.add(Column.Resolution);
+      header.add(Column.Estimate);
+      header.add(Column.Note);
+
+      Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
+      contents.add(getARowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 0));
+      contents.add(getARowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 1));
+
+      MyTableModel model = new JiraTableModel(contents, header);
+
+      assertEquals(2, model.getRowCount());
+      assertEquals(7, model.getColumnCount());
+      assertRow(new String[] { "Jira-0", "Description-0", "FixVersion-0", "Status-0", "Resolution-0", "BuildNo-0", "Estimate-0" }, model, 0);
+      assertRow(new String[] { "Jira-1", "Description-1", "FixVersion-1", "Status-1", "Resolution-1", "BuildNo-1", "Estimate-1" }, model, 1);
    }
 
    public void testShouldAddRowOk() {
