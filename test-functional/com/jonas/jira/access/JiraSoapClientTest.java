@@ -1,14 +1,9 @@
 package com.jonas.jira.access;
 
 import junit.framework.TestCase;
-
 import org.apache.axis.client.Stub;
-import org.apache.axis.description.TypeDesc;
-import org.jdom.Element;
-
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
-
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
