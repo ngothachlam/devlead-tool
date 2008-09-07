@@ -104,21 +104,17 @@ public class JiraTableModelTest extends JonasTestCase {
       Vector<Column> header = new Vector<Column>();
       header.add(Column.Description);
       header.add(Column.Jira);
-      
+      header.add(Column.Bugs);
+
       Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
       columnNames.put(Column.Jira, 0);
-      columnNames.put(Column.Note, 1);
-      columnNames.put(Column.BuildNo, 2);
-      columnNames.put(Column.Description, 3);
-      
+      columnNames.put(Column.Description, 1);
+
       List convert = model.getConvertionNumbers(header, columnNames);
-      
-      assertEquals(4, convert.size());
+
       assertEquals(1, convert.get(0));
-      assertEquals(-1, convert.get(1));
-      assertEquals(-1, convert.get(2));
-      assertEquals(0, convert.get(3));
-      assertTrue(false);
+      assertEquals(0, convert.get(1));
+      assertEquals(2, convert.size());
    }
    
    public void testShouldSortVectorBasedOnListWithStandardColumnsOk() {
