@@ -1,9 +1,5 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
@@ -11,148 +7,18 @@ import com.jonas.jira.JiraIssue;
 
 public class JiraTableModelTest extends JonasTestCase {
 
-   private void assertRow(MyTableModel model, int i) {
-      assertEquals(8, model.getColumnCount());
-      assertEquals("Jira-" + i, model.getValueAt(i, 0));
-      assertEquals("Description " + i, model.getValueAt(i, 1));
-      assertEquals("FixVersion " + i, model.getValueAt(i, 2));
-      assertEquals("Status " + i, model.getValueAt(i, 3));
-      assertEquals("Resolution " + i, model.getValueAt(i, 4));
-      assertEquals("BuildNo " + i, model.getValueAt(i, 5));
-      assertEquals("URL " + i, model.getValueAt(i, 6));
-      assertEquals("BoardStatus " + i, model.getValueAt(i, 7));
-   }
-
    private void assertRow(String[] strings, MyTableModel model, int row) {
       for (int col = 0; col < strings.length; col++) {
          assertEquals(strings[col], model.getValueAt(row, col));
       }
    }
 
-   private Vector<Object> getARowVector(String[] strings, int i) {
+   private Vector<Object> getTestRowVector(String[] strings, int i) {
       Vector<Object> vector = new Vector<Object>();
       for (String string : strings) {
          vector.add(string + "-" + i);
       }
       return vector;
-   }
-
-   private void getMixedHeader(Vector<Column> header) {
-      header.add(Column.Description);
-      header.add(Column.Jira);
-      header.add(Column.Status);
-      header.add(Column.FixVersion);
-      header.add(Column.BuildNo);
-      header.add(Column.Resolution);
-      header.add(Column.BoardStatus);
-      header.add(Column.URL);
-   }
-
-   private Vector<Object> getMixedRowVector(int i) {
-      Vector<Object> vector = new Vector<Object>();
-      vector.add("Description " + i);
-      vector.add("Jira-" + i);
-      vector.add("Status " + i);
-      vector.add("FixVersion " + i);
-      vector.add("BuildNo " + i);
-      vector.add("Resolution " + i);
-      vector.add("BoardStatus " + i);
-      vector.add("URL " + i);
-      return vector;
-   }
-
-   public void testShouldConvertionNumbersWithStandardColumnsOk() {
-      MyTableModel model = new JiraTableModel();
-      Vector<Column> header = new Vector<Column>();
-      header.add(Column.Description);
-      header.add(Column.Jira);
-
-      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
-      columnNames.put(Column.Jira, 0);
-      columnNames.put(Column.Description, 1);
-
-      List convert = model.getConvertionNumbers(header, columnNames);
-
-      assertEquals(2, convert.size());
-      assertEquals(1, convert.get(0));
-      assertEquals(0, convert.get(1));
-   }
-
-   public void testShouldConvertionNumbersWithFewerColumnsOk() {
-      MyTableModel model = new JiraTableModel();
-      Vector<Column> header = new Vector<Column>();
-      header.add(Column.Description);
-      header.add(Column.Jira);
-      
-      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
-      columnNames.put(Column.Jira, 0);
-      columnNames.put(Column.Note, 1);
-      columnNames.put(Column.BuildNo, 2);
-      columnNames.put(Column.Description, 3);
-      
-      List convert = model.getConvertionNumbers(header, columnNames);
-      
-      assertEquals(4, convert.size());
-      assertEquals(1, convert.get(0));
-      assertEquals(-1, convert.get(1));
-      assertEquals(-1, convert.get(2));
-      assertEquals(0, convert.get(3));
-   }
-   
-   public void testShouldConvertionNumbersWithMoreColumnsOk() {
-      MyTableModel model = new JiraTableModel();
-      Vector<Column> header = new Vector<Column>();
-      header.add(Column.Description);
-      header.add(Column.Jira);
-      header.add(Column.Bugs);
-
-      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
-      columnNames.put(Column.Jira, 0);
-      columnNames.put(Column.Description, 1);
-
-      List convert = model.getConvertionNumbers(header, columnNames);
-
-      assertEquals(1, convert.get(0));
-      assertEquals(0, convert.get(1));
-      assertEquals(2, convert.size());
-   }
-   
-   public void testShouldSortVectorBasedOnListWithStandardColumnsOk() {
-      MyTableModel model = new JiraTableModel();
-
-      List<Integer> originalList = new ArrayList<Integer>();
-      originalList.add(1);
-      originalList.add(0);
-
-      Vector<Object> mixedRowVector = new Vector<Object>();
-      mixedRowVector.add("Description");
-      mixedRowVector.add("Jira");
-
-      Vector result = model.sortVectorBasedOnList(originalList, mixedRowVector);
-      assertEquals("Jira", result.get(0));
-      assertEquals("Description", result.get(1));
-      assertEquals(2, result.size());
-   }
-
-   public void testShouldSortVectorBasedOnListWithFewerColumnsOk() {
-      MyTableModel model = new JiraTableModel();
-
-      List<Integer> originalList = new ArrayList<Integer>();
-      originalList.add(1);
-      originalList.add(-1);
-      originalList.add(0);
-      originalList.add(-1);
-
-      Vector<Object> mixedRowVector = new Vector<Object>();
-      mixedRowVector.add("Description");
-      mixedRowVector.add("Jira");
-
-      Vector result = model.sortVectorBasedOnList(originalList, mixedRowVector);
-      assertEquals("Jira", result.get(0));
-      assertEquals(null, result.get(1));
-      assertEquals("Description", result.get(2));
-      assertEquals(null, result.get(3));
-      assertEquals(4, result.size());
    }
 
    public void testShouldBeConstructedFromDAOOk() {
@@ -166,8 +32,8 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.Estimate);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      contents.add(getARowVector(new String[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "Estimate" }, 0));
-      contents.add(getARowVector(new String[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "Estimate" }, 1));
+      contents.add(getTestRowVector(new String[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "Estimate" }, 0));
+      contents.add(getTestRowVector(new String[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "Estimate" }, 1));
 
       MyTableModel model = new JiraTableModel(contents, header);
 
@@ -188,8 +54,8 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.Estimate);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      contents.add(getARowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 0));
-      contents.add(getARowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 1));
+      contents.add(getTestRowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 0));
+      contents.add(getTestRowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 1));
 
       MyTableModel model = new JiraTableModel(contents, header);
 
@@ -205,8 +71,8 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.Jira);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      contents.add(getARowVector(new String[] { "Description", "Jira" }, 0));
-      contents.add(getARowVector(new String[] { "Description", "Jira" }, 1));
+      contents.add(getTestRowVector(new String[] { "Description", "Jira" }, 0));
+      contents.add(getTestRowVector(new String[] { "Description", "Jira" }, 1));
 
       MyTableModel model = new JiraTableModel(contents, header);
 
@@ -228,8 +94,8 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.Note);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      contents.add(getARowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 0));
-      contents.add(getARowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 1));
+      contents.add(getTestRowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 0));
+      contents.add(getTestRowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 1));
 
       MyTableModel model = new JiraTableModel(contents, header);
 
