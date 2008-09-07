@@ -21,15 +21,15 @@ public class PlanTableModel extends MyTableModel {
 
    static {
       columnNames.put(Column.Jira,0);
-      columnNames.put(Column.Description,0);
-      columnNames.put(Column.Type,0);
-      columnNames.put(Column.URL,4);
+      columnNames.put(Column.Description,1);
+      columnNames.put(Column.Type,2);
+      columnNames.put(Column.URL,3);
       columnNames.put(Column.Planned_Sprint,4);
-      columnNames.put(Column.Resolved_Sprint,4);
-      columnNames.put(Column.Closed_Sprint,4);
-      columnNames.put(Column.Estimate,4);
-      columnNames.put(Column.Actual,4);
-      columnNames.put(Column.Note,4);
+      columnNames.put(Column.Resolved_Sprint,5);
+      columnNames.put(Column.Closed_Sprint,6);
+      columnNames.put(Column.Estimate,7);
+      columnNames.put(Column.Actual,8);
+      columnNames.put(Column.Note,9);
    }
 
    public PlanTableModel() {
@@ -110,7 +110,7 @@ public class PlanTableModel extends MyTableModel {
 
    @Override
    protected Object[] getEmptyRow() {
-      return new Object[] { "", "", "", "", "" };
+      return new Object[] { "", "", "", "", "", "", "", "", "", "" };
    }
 
    @Override

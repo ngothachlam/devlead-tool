@@ -4,7 +4,7 @@
 package com.jonas.agile.devleadtool.component.table;
 
 public enum Column {
-   URL, Open, Bugs, InProgress, Resolved, Complete, inPanel {
+   URL, Open, Bugs, InProgress, Resolved, Complete, inPlan {
       @Override
       public String toString() {
          return "inPanel?";

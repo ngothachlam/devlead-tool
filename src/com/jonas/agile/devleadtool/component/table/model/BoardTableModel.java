@@ -16,11 +16,8 @@ public class BoardTableModel extends MyTableModel {
 
    private final static Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
 
-   private static Object[] tableContents = { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, new String(""),
-         ColumnValue.NA };
-
    private static Column[] tableHeader = { Column.Jira, Column.Open, Column.Bugs, Column.InProgress, Column.Resolved, Column.Complete, Column.URL,
-         Column.inPanel };
+         Column.inPlan };
 
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
    static {
@@ -31,6 +28,7 @@ public class BoardTableModel extends MyTableModel {
       columnNames.put(Column.Resolved, 4);
       columnNames.put(Column.Complete, 5);
       columnNames.put(Column.URL, 6);
+      columnNames.put(Column.inPlan, 7);
    }
 
    public BoardTableModel() {
@@ -119,11 +117,12 @@ public class BoardTableModel extends MyTableModel {
       return valueAt == null ? false : valueAt.booleanValue();
    }
 
-   protected Object[] getEmptyRow() {
+   public Object[] getEmptyRow() {
       return new Object[] { new String(""), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, new String(""), ColumnValue.NA };
    }
 
    @Override
+   public
    Map<Column, Integer> getColumnNames() {
       return columnNames;
    }
