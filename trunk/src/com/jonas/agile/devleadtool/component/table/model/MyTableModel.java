@@ -51,7 +51,15 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    public Class<?> getColumnClass(int columnIndex) {
       Object valueAt = getValueAt(0, columnIndex);
-      return valueAt != null ? valueAt.getClass() : getEmptyRow()[columnIndex].getClass();
+      return valueAt != null ? getClass(valueAt) : getClassFromColumn(columnIndex);
+   }
+
+   private Class<?> getClassFromColumn(int columnIndex) {
+      return getEmptyRow()[columnIndex].getClass();
+   }
+
+   private Class<?> getClass(Object valueAt) {
+      return valueAt.getClass();
    }
 
    public int getColumnNo(Column column) {

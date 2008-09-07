@@ -11,7 +11,7 @@ public class Main {
       } catch (Throwable e) {
          AlertDialog.alertException(tool.getHelper(), e);
       }
-   }
+   } 
 
    // FIXME when loading in a excel sheet with a header with incorrect name it doesn't work!!
    // TODO drag'n'drop table rows = all tables!!
