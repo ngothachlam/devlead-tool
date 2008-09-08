@@ -42,23 +42,6 @@ public class PlanTableModel extends MyTableModel {
       super.addRow(objects);
    }
    
-   @Deprecated
-   public boolean addRow(JiraIssue jiraIssue) {
-      List<JiraVersion> fixVersions = jiraIssue.getFixVersions();
-      if (fixVersions.size() > 1) {
-         throw new RuntimeException(jiraIssue + " has more than one fixversion! Model can't handle it at the moment!!");
-      }
-      JiraVersion jiraVersion = null;
-      if (fixVersions != null && fixVersions.size() > 0) {
-         jiraVersion = fixVersions.get(0);
-      }
-      Object[] objects = new Object[] { jiraIssue.getKey(), jiraVersion, jiraIssue.getStatus(), jiraIssue.getResolution() };
-      super.addRow(objects);
-      log.debug("adding jira to plan: " + jiraIssue.getKey());
-      fireTableRowsUpdated(0, this.getRowCount() - 1);
-      return true;
-   }
-
    public boolean doesJiraExist(String jira) {
       for (int row = 0; row < getRowCount(); row++) {
          log.debug("checking row " + row);

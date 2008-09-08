@@ -69,7 +69,8 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
       replay();
 
       // Save and Load on new file
-      dao.savePlanModel(xlsFile, model_original);
+      dao.setXlsFile(xlsFile);
+      dao.savePlanModel(model_original);
       TableModelDTO dtoLoaded = dao.loadModel(xlsFile, "plan");
 
       verify();
