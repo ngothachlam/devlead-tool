@@ -61,14 +61,10 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
        EasyMock.expect(model_original.getValueAt(0, 0)).andReturn("Row0-Col0").anyTimes();
        EasyMock.expect(model_original.getValueAt(0, 1)).andReturn("Row0-Col1").anyTimes();
        // setup expectations for first data row when checking color.
-       EasyMock.expect(model_original.isRed("Row0-Col0", 0, 0)).andStubReturn(Boolean.FALSE);
-       EasyMock.expect(model_original.isRed("Row0-Col1", 0, 1)).andStubReturn(Boolean.FALSE);
        // setup expectations for first data row
        EasyMock.expect(model_original.getValueAt(1, 0)).andReturn("Row1-Col0").anyTimes();
        EasyMock.expect(model_original.getValueAt(1, 1)).andReturn("Row1-Col1").anyTimes();
        // setup expectations for first data row when checking color.
-       EasyMock.expect(model_original.isRed("Row1-Col0", 1, 0)).andStubReturn(Boolean.FALSE);
-       EasyMock.expect(model_original.isRed("Row1-Col1", 1, 1)).andStubReturn(Boolean.FALSE);
 
       replay();
 

@@ -51,16 +51,6 @@ public class JiraTableModel extends MyTableModel {
       return column >= 6 ? false : (isEditable() ? false : false);
    }
 
-   public boolean isRed(Object value, int row, int column) {
-      return false;
-   }
-
-   // Only required if the table is updated by the app so that it becomes visible to the user.
-   public void setValueAt(Object value, int rowIndex, int columnIndex) {
-      log.debug("Setting value" + "[value: " + value + ", row:" + rowIndex + ", col:" + columnIndex + "]");
-      super.setValueAt(value, rowIndex, columnIndex);
-   }
-
    protected boolean exists(String name) {
       for (int row = 0; row < getRowCount(); row++) {
          if (getValueAt(row, 0).equals(name)) {

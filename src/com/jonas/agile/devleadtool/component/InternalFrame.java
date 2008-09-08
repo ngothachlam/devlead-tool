@@ -108,8 +108,8 @@ public class InternalFrame extends JInternalFrame {
 		return content.getPlanPanel().getPlanModel();
 	}
 
-	public void addToPlan(JiraIssue jiraIssue) {
-		getPlanModel().addRow(jiraIssue);
+	public void addToPlan(String jira) {
+		getPlanModel().addJira(jira);
 	}
 
 	public void setFileName(String fileName) {

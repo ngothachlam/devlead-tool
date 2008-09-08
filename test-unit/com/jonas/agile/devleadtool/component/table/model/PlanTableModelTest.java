@@ -49,7 +49,7 @@ public class PlanTableModelTest extends JonasTestCase {
       PlanTableModel model = new PlanTableModel(contents, header);
       
       assertEquals(2, model.getRowCount());
-      assertEquals(10, model.getColumnCount());
+      assertEquals(9, model.getColumnCount());
       assertEquals("row0-0", model.getValueAt(0,0));
       assertEquals(null, model.getValueAt(0,1));
       assertEquals(null, model.getValueAt(0,2));
@@ -59,7 +59,6 @@ public class PlanTableModelTest extends JonasTestCase {
       assertEquals(null, model.getValueAt(0,6));
       assertEquals(null, model.getValueAt(0,7));
       assertEquals(null, model.getValueAt(0,8));
-      assertEquals(null, model.getValueAt(0,9));
    }
 
    private Vector<Object> getContentRow(int noOfColumns, String data, int identifier) {

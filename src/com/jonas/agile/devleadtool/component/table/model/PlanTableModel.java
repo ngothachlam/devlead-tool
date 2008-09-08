@@ -6,14 +6,12 @@ import java.util.Map;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
-import com.jonas.agile.devleadtool.data.PlanRow;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
 
 public class PlanTableModel extends MyTableModel {
 
-   public static final String COLUMNNAME_HYPERLINK = "URL";
    protected static Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
 //   private static Vector<Column> columnNames = new Vector<Column>();
 
@@ -23,13 +21,12 @@ public class PlanTableModel extends MyTableModel {
       columnNames.put(Column.Jira,0);
       columnNames.put(Column.Description,1);
       columnNames.put(Column.Type,2);
-      columnNames.put(Column.URL,3);
-      columnNames.put(Column.Planned_Sprint,4);
-      columnNames.put(Column.Resolved_Sprint,5);
-      columnNames.put(Column.Closed_Sprint,6);
-      columnNames.put(Column.Estimate,7);
-      columnNames.put(Column.Actual,8);
-      columnNames.put(Column.Note,9);
+      columnNames.put(Column.Planned_Sprint,3);
+      columnNames.put(Column.Resolved_Sprint,4);
+      columnNames.put(Column.Closed_Sprint,5);
+      columnNames.put(Column.Estimate,6);
+      columnNames.put(Column.Actual,7);
+      columnNames.put(Column.Note,8);
    }
 
    public PlanTableModel() {
@@ -40,8 +37,9 @@ public class PlanTableModel extends MyTableModel {
       super(contents, header);
    }
 
-   public boolean addRow(PlanRow jiraIssue) {
-      return false;
+   public void addJira(String jira){
+      Object[] objects = new Object[] { jira, null, null, null, null, null, null, null, null };
+      super.addRow(objects);
    }
    
    @Deprecated
@@ -75,20 +73,6 @@ public class PlanTableModel extends MyTableModel {
       return isEditable() ? true : false;
    }
 
-   public boolean isRed(Object value, int row, int column) {
-      log.debug("isRed: " + value + " row: " + row + " col: " + column);
-      switch (column) {
-      case 0:
-    	  return getCountOfSameValueInColumn(value, column) > 1;
-      case 1:
-         return value == null || value.toString().length() == 0;
-      default:
-         break;
-      }
-      return false;
-   }
-   
-
    public boolean setRow(JiraIssue jiraIssue, int row) {
       log.debug("overwriting jira: " + jiraIssue.getKey() + " to model on row: " + row);
       List<JiraVersion> fixVersions = jiraIssue.getFixVersions();
@@ -103,14 +87,9 @@ public class PlanTableModel extends MyTableModel {
       return true;
    }
 
-   public void setValueAt(Object value, int row, int column) {
-      super.setValueAt(value, row, column);
-      fireTableRowsUpdated(0, this.getRowCount() - 1);
-   }
-
    @Override
    protected Object[] getEmptyRow() {
-      return new Object[] { "", "", "", "", "", "", "", "", "", "" };
+      return new Object[] { "", "", "", "", "", "", "", "", "" };
    }
 
    @Override

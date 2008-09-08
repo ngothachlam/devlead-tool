@@ -29,10 +29,10 @@ import com.jonas.jira.access.JiraIssueNotFoundException;
 
 public class BoardPanel extends MyComponentPanel {
 
-   public MyTable table;
    private final PlannerHelper helper;
 
    private Logger log = MyLogger.getLogger(BoardPanel.class);
+   public MyTable table;
 
    public BoardPanel(PlannerHelper client) {
       this(client, new BoardTableModel());
@@ -46,14 +46,8 @@ public class BoardPanel extends MyComponentPanel {
       initialiseTableHeader();
    }
 
-
-
    public MyTableModel getModel() {
       return ((MyTableModel) table.getModel());
-   }
-
-   public void setEditable(boolean selected) {
-      ((MyTableModel) table.getModel()).setEditable(selected);
    }
 
    private void initialiseTableHeader() {
@@ -70,8 +64,6 @@ public class BoardPanel extends MyComponentPanel {
       table.setColumnRenderer(6, new HyperlinkTableCellRenderer());
       table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
 
-      table.addMouseListener(new HyperLinkOpenerAdapter(helper, Column.URL, Column.Jira));
-      table.addKeyListener(new KeyStrokeForJiraChangeTableListener(table));
       table.setAutoCreateRowSorter(true);
 
       JScrollPane scrollPane = new MyScrollPane(table);
@@ -89,48 +81,60 @@ public class BoardPanel extends MyComponentPanel {
             ((MyTableModel) table.getModel()).setValueAt(jiraString, itsRow, itsColumn);
          }
       });
-
-      addButton(buttonPanel, "Copy to Plan", new ActionListener() {
-         private Logger log = MyLogger.getLogger(this.getClass());
-
-         public void actionPerformed(ActionEvent e) {
-            // AlertDialog messageDialog = AlertDialog.message(helper, "Copying... ");
-
-            final int[] selectedRows = table.getSelectedRows();
-            final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Copying...", "Copying selected messages from Board to Plan...",
-                  selectedRows.length);
-            SwingWorker worker = new SwingWorker() {
-
-               public void done() {
-                  dialog.setCompleteWithDelay(300);
-               }
-
-               @Override
-               protected Object doInBackground() {
-                  try {
-                     for (int i = 0; i < selectedRows.length; i++) {
-                        Object valueAt = table.getValueAt(selectedRows[i], 6);
-                        try {
-                           helper.addToPlan((String) valueAt, false);
-                        } catch (JiraIssueNotFoundException e) {
-                           AlertDialog.alertException(helper, e);
-                           e.printStackTrace();
-                        }
-                        dialog.increseProgress();
-                     }
-                  } catch (Exception e) {
-                     AlertDialog.alertException(helper, e);
-                     e.printStackTrace();
-                  }
-                  return null;
-               }
-
-            };
-            worker.execute();
-            // messageDialog.addText("Done!");
-         }
-      });
+      addButton(buttonPanel, "Open Jiras", new OpenJirasListener(table, helper));
+      addButton(buttonPanel, "Copy to Plan", new CopyToPlanListener(table, helper));
 
       addSouth(buttonPanel);
+   }
+
+   public void setEditable(boolean selected) {
+      ((MyTableModel) table.getModel()).setEditable(selected);
+   }
+
+   private final class CopyToPlanListener implements ActionListener {
+      private Logger log = MyLogger.getLogger(this.getClass());
+      private final MyTable table2;
+      private final PlannerHelper helper2;
+
+      public CopyToPlanListener(MyTable table, PlannerHelper helper) {
+         table2 = table;
+         helper2 = helper;
+      }
+
+      public void actionPerformed(ActionEvent e) {
+
+         final int[] selectedRows = table2.getSelectedRows();
+         final ProgressDialog dialog = new ProgressDialog(helper2.getParentFrame(), "Copying...", "Copying selected messages from Board to Plan...",
+               selectedRows.length);
+         SwingWorker worker = new SwingWorker() {
+
+            @Override
+            protected Object doInBackground() {
+               try {
+                  for (int i = 0; i < selectedRows.length; i++) {
+                     String valueAt = (String) table2.getValueAt(Column.Jira, selectedRows[i]);
+                     try {
+                        helper2.addToPlan(valueAt, false);
+                     } catch (JiraIssueNotFoundException e) {
+                        AlertDialog.alertException(helper2, e);
+                        e.printStackTrace();
+                     }
+                     dialog.increseProgress();
+                  }
+               } catch (Exception e) {
+                  AlertDialog.alertException(helper2, e);
+                  e.printStackTrace();
+               }
+               return null;
+            }
+
+            public void done() {
+               dialog.setCompleteWithDelay(300);
+            }
+
+         };
+         worker.execute();
+         // messageDialog.addText("Done!");
+      }
    }
 }

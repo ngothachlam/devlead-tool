@@ -2,9 +2,7 @@ package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
@@ -15,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -25,7 +22,6 @@ import com.jonas.agile.devleadtool.component.listener.RemoveJTableSelectedRowsLi
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.common.HyperLinker;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
@@ -54,8 +50,7 @@ public class JiraPanel extends MyComponentPanel {
    }
 
    private Component getButtonPanel() {
-      JPanel panel = new JPanel(new GridBagLayout());
-      GridBagConstraints gbc = new GridBagConstraints();
+      JPanel panel = new JPanel(new FlowLayout());
 
       Vector<JiraProject> projects = JiraProject.getProjects();
       final JComboBox jiraProjectsCombo = new JComboBox(projects);
@@ -63,39 +58,12 @@ public class JiraPanel extends MyComponentPanel {
 
       jiraProjectsCombo.addActionListener(new AlteringProjectListener(jiraProjectFixVersionCombo));
 
-      gbc.fill = GridBagConstraints.HORIZONTAL;
-      gbc.insets = new Insets(2, 2, 2, 2);
-      gbc.gridx = 0;
-      gbc.gridy = 0;
-      panel.add(jiraProjectsCombo, gbc);
-      gbc.gridx = 1;
-      gbc.gridy = 0;
-      addButton(panel, "Refresh", new RefreshingFixVersionListener(jiraProjectFixVersionCombo, jiraProjectsCombo), gbc);
-      gbc.gridx = 2;
-      gbc.gridy = 0;
-      panel.add(jiraProjectFixVersionCombo, gbc);
-      gbc.gridx = 3;
-      gbc.gridy = 0;
-      addButton(panel, "Get Jiras", new DownloadJirasListener(jiraProjectFixVersionCombo, table, helper), gbc);
-      gbc.gridx = 0;
-      gbc.gridy = 1;
-      addButton(panel, "Remove Selected", new RemoveJTableSelectedRowsListener(table), gbc);
-      gbc.gridx = 1;
-      gbc.gridy = 1;
-      addButton(panel, "Open Jiras", new OpenJirasListener(), gbc);
-      // addButton(buttons, "BoardStatus", new ActionListener() {
-      // public void actionPerformed(ActionEvent e) {
-      // MyTableModel model = (MyTableModel) table.getModel();
-      // for (int i = 0; i < model.getRowCount(); i++) {
-      // int boardStatusNo = model.getColumnNo(Column.BoardStatus);
-      // int jiraNameNo = model.getColumnNo(Column.Jira);
-      // String jira = (String) model.getValueAt(i, jiraNameNo);
-      // List<BoardStatus> jirasBoardStatusList = helper.getPlannerCommunicator().getJiraStatusFromBoard(jira);
-      // model.setValueAt(jirasBoardStatusList, i, boardStatusNo);
-      // }
-      // }
-      // });
-
+      panel.add(jiraProjectsCombo);
+      addButton(panel, "Refresh", new RefreshingFixVersionListener(jiraProjectFixVersionCombo, jiraProjectsCombo));
+      panel.add(jiraProjectFixVersionCombo);
+      addButton(panel, "Get Jiras", new DownloadJirasListener(jiraProjectFixVersionCombo, table, helper));
+      addButton(panel, "Remove Selected", new RemoveJTableSelectedRowsListener(table));
+      addButton(panel, "Open Jiras", new OpenJirasListener(table, helper));
       return panel;
    }
 
@@ -125,34 +93,6 @@ public class JiraPanel extends MyComponentPanel {
          MyTableModel model = ((MyTableModel) table.getModel());
          while (model.getRowCount() > 0) {
             model.removeRow(0);
-         }
-      }
-   }
-
-   private final class OpenJirasListener implements ActionListener {
-      public void actionPerformed(ActionEvent e) {
-         int[] rows = table.getSelectedRows();
-         StringBuffer sb = new StringBuffer();
-         for (int j = 0; j < rows.length; j++) {
-            String jira = (String) table.getModel().getValueAt(table.convertRowIndexToModel(rows[j]), 0);
-            String jira_url = null;
-            boolean error = false;
-            try {
-               jira_url = helper.getJiraUrl(jira);
-            } catch (NotJiraException e1) {
-               if (sb.length() > 0) {
-                  sb.append(", ");
-               }
-               sb.append(jira);
-               error = true;
-            }
-            if (!error) {
-               HyperLinker.displayURL(jira_url + "/browse/" + jira);
-            }
-         }
-         if (sb.length() > 0) {
-            sb.append(" are incorrect!");
-            AlertDialog.alertException(helper, e.toString());
          }
       }
    }

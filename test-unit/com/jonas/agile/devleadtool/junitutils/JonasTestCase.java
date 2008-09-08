@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.junitutils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
@@ -11,6 +12,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
+import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.TestObjects;
@@ -39,7 +41,7 @@ public class JonasTestCase extends TestCase {
       if (jiraVersions.length > 0) {
          assertEquals("Did expect fixversions!", jiraVersions.length, fixVersions.size());
          for (JiraVersion jiraVersion : jiraVersions) {
-            assertTrue("Expected to have this fixversion! (got:"+jiraVersion+")" , fixVersions.contains(jiraVersion));
+            assertTrue("Expected to have this fixversion! (got:" + jiraVersion + ")", fixVersions.contains(jiraVersion));
          }
       } else {
          assertEquals("Did not expect any fixversions!", 0, fixVersions.size());
@@ -48,9 +50,22 @@ public class JonasTestCase extends TestCase {
    }
 
    protected <T> T createClassMock(Class<T> theClass) {
-      T createMock = EasyMock.createMock(theClass);
-      classMocks.add(createMock);
-      return createMock;
+      T mock = EasyMock.createMock(theClass);
+      classMocks.add(mock);
+      return mock;
+   }
+
+//   protected <T> T createNiceClassMock(Class<T> theClass) {
+//      T mock = EasyMock.createNiceMock(theClass);
+//      classMocks.add(mock);
+//      return mock;
+//   }
+
+   protected <T> T createMock(Class<T> class1, Method... method) {
+      T mock = EasyMock.createMock(class1, method);
+      classMocks.add(mock);
+      return mock;
+
    }
 
    protected <T> T createInterfaceMock(Class<T> theClass) {
@@ -86,7 +101,7 @@ public class JonasTestCase extends TestCase {
    protected void setUp() throws Exception {
       super.setUp();
       TestObjects.createTestObjects();
-//      EasyMock.expect(mockFactory.getJiraBuilder()).andReturn(mockJiraBuilder).anyTimes();
+      // EasyMock.expect(mockFactory.getJiraBuilder()).andReturn(mockJiraBuilder).anyTimes();
    }
 
    protected void setupMockActualsForElementExtendedWithEstimate(Element e, String string, String string2, String string3, String string4) {

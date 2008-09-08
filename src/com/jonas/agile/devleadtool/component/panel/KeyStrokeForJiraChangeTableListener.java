@@ -9,7 +9,6 @@ import javax.swing.JTable;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.logging.MyLogger;
 
@@ -20,13 +19,16 @@ final class KeyStrokeForJiraChangeTableListener extends KeyAdapter {
    private Logger log = MyLogger.getLogger(KeyStrokeForJiraChangeTableListener.class);
    private final MyTable table;
    private MyTableModel model;
+   private Column jiraColumn;
 
    /**
     * @param table
+    * @param columnToListenForKeystrokesOn TODO
     */
-   KeyStrokeForJiraChangeTableListener(MyTable table) {
+   KeyStrokeForJiraChangeTableListener(MyTable table, Column columnToListenForKeystrokesOn) {
       this.table = table;
       model = (MyTableModel) table.getModel();
+      jiraColumn = columnToListenForKeystrokesOn;
    }
 
    public void keyTyped(KeyEvent e) {
@@ -34,7 +36,8 @@ final class KeyStrokeForJiraChangeTableListener extends KeyAdapter {
       JTable aTable = (JTable) e.getSource();
       int itsRow = aTable.getEditingRow();
       int itsColumn = aTable.getEditingColumn();
-      if (table.isColumnEqual(itsColumn, Column.Jira)) {
+      if (table.isColumn(jiraColumn, itsColumn)) {
+//      if (table.isColumEqual(itsColumn, Column.Jira)) {
          char keyChar = e.getKeyChar();
          log.debug("itsRow: " + itsRow + "itsColumn: " + itsColumn + " keyChar: " + keyChar);
          String valueAt = (String) model.getValueAt(itsRow, itsColumn);

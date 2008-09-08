@@ -136,10 +136,10 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             } else {
                cell.setCellValue(new HSSFRichTextString(valueAt.toString()));
             }
-            if (model.isRed(valueAt, rowCount, colCount)) {
-               log.debug("Setting background Color of excel cell!");
-               cell.setCellStyle(style_red_background);
-            }
+            // if (model.isRed(valueAt, rowCount, colCount)) {
+            // log.debug("Setting background Color of excel cell!");
+            // cell.setCellStyle(style_red_background);
+            // }
          }
       }
 
