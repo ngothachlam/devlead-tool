@@ -32,32 +32,39 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    private static Map<File, HSSFWorkbook> fileOrganiser = new HashMap<File, HSSFWorkbook>();
    private Logger log = MyLogger.getLogger(PlannerDAOExcelImpl.class);
    private TableModelBuilder modelBuilder;
+   private File xlsFile;
 
    public PlannerDAOExcelImpl(TableModelBuilder modelBuilder) {
       super();
       this.modelBuilder = modelBuilder;
    }
 
-   public BoardTableModel loadBoardModel(File xlsFile) throws IOException {
-      TableModelDTO dto = loadModel(xlsFile, "board");
-      return new BoardTableModel(dto.getContents(), dto.getHeader());
-   }
-
-   public PlanTableModel loadPlanModel(File xlsFile) throws IOException {
-      TableModelDTO dto = loadModel(xlsFile, "plan");
-      return modelBuilder.buildPlanTableModel(dto);
-   }
-
-   public void saveBoardModel(File xlsFile, MyTableModel model) throws IOException {
-      saveModel(xlsFile, model, "board");
-   }
-
-   public void savePlanModel(File xlsFile, MyTableModel model) throws IOException {
-      saveModel(xlsFile, model, "plan");
-   }
-
    private Column getHeaderMappingToColumn(String tempString) {
       return Column.getEnum(tempString);
+   }
+
+   protected HSSFSheet getSheet(String sheetName, HSSFWorkbook wb) {
+      HSSFSheet sheet = wb.getSheet(sheetName);
+      sheet = sheet == null ? wb.createSheet(sheetName) : sheet;
+      return sheet;
+   }
+
+   protected HSSFWorkbook getWorkBook(File xlsFile) {
+      HSSFWorkbook workbook = fileOrganiser.get(xlsFile);
+      if (workbook == null) {
+         workbook = new HSSFWorkbook();
+         fileOrganiser.put(xlsFile, workbook);
+      }
+      return workbook;
+   }
+
+   public File getXlsFile() {
+      return xlsFile;
+   }
+
+   public BoardTableModel loadBoardModel() throws IOException {
+      TableModelDTO dto = loadModel(xlsFile, "board");
+      return new BoardTableModel(dto.getContents(), dto.getHeader());
    }
 
    TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException {
@@ -104,6 +111,15 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       return dataModelDTO;
    }
 
+   public PlanTableModel loadPlanModel() throws IOException {
+      TableModelDTO dto = loadModel(xlsFile, "plan");
+      return modelBuilder.buildPlanTableModel(dto);
+   }
+
+   public void saveBoardModel(MyTableModel model) throws IOException {
+      saveModel(xlsFile, model, "board");
+   }
+
    private void saveModel(File xlsFile, MyTableModel model, String sheetName) throws IOException {
       HSSFWorkbook wb = getWorkBook(xlsFile);
       HSSFSheet sheet = getSheet(sheetName, wb);
@@ -136,10 +152,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             } else {
                cell.setCellValue(new HSSFRichTextString(valueAt.toString()));
             }
-            // if (model.isRed(valueAt, rowCount, colCount)) {
-            // log.debug("Setting background Color of excel cell!");
-            // cell.setCellStyle(style_red_background);
-            // }
          }
       }
 
@@ -148,19 +160,12 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       fileOut.close();
    }
 
-   protected HSSFSheet getSheet(String sheetName, HSSFWorkbook wb) {
-      HSSFSheet sheet = wb.getSheet(sheetName);
-      sheet = sheet == null ? wb.createSheet(sheetName) : sheet;
-      return sheet;
+   public void savePlanModel(MyTableModel model) throws IOException {
+      saveModel(xlsFile, model, "plan");
    }
 
-   protected HSSFWorkbook getWorkBook(File xlsFile) {
-      HSSFWorkbook workbook = fileOrganiser.get(xlsFile);
-      if (workbook == null) {
-         workbook = new HSSFWorkbook();
-         fileOrganiser.put(xlsFile, workbook);
-      }
-      return workbook;
+   public void setXlsFile(File xlsFile) {
+      this.xlsFile = xlsFile;
    }
 
 }

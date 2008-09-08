@@ -52,11 +52,11 @@ public class PlannerHelper {
 		return internalFrame;
 	}
 
-	public void saveModels(File selFile, PlannerDAO dao) {
+	public void saveModels(PlannerDAO dao) {
 		try {
 			InternalFrame activeInternalFrame = this.getActiveInternalFrame();
-			dao.saveBoardModel(selFile, activeInternalFrame.getBoardModel());
-			dao.savePlanModel(selFile, activeInternalFrame.getPlanModel());
+			dao.saveBoardModel( activeInternalFrame.getBoardModel());
+			dao.savePlanModel( activeInternalFrame.getPlanModel());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

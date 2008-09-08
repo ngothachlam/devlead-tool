@@ -72,7 +72,7 @@ public class DevLeadTool {
 
 	private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
 		plannerHelper = new PlannerHelper(frame, "Planner");
-		final PlannerDAO plannerDAO = new PlannerDAOExcelImpl(new TableModelBuilder());
+		final PlannerDAOExcelImpl plannerDAO = new PlannerDAOExcelImpl(new TableModelBuilder());
 
 		JMenuItem planner = createMenuItem("New Planner", new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

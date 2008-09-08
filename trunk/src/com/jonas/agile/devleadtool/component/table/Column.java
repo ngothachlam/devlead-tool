@@ -4,13 +4,63 @@
 package com.jonas.agile.devleadtool.component.table;
 
 public enum Column {
-   URL, Open, Bugs, InProgress, Resolved, Complete, inPlan {
+   // String Defaults
+   URL, Jira, Description, FixVersion, Status, Resolution, BuildNo, Type, Note, Planned_Sprint, Resolved_Sprint, Closed_Sprint,
+
+   // Float Defaults
+   Estimate {
       @Override
-      public String toString() {
-         return "inPanel?";
+      public Object getCellContentDefault() {
+         return 0f;
       }
    },
-   Jira, Description, FixVersion, Status, Resolution, BuildNo, BoardStatus, Estimate, Type, Planned_Sprint, Resolved_Sprint, Closed_Sprint, Actual, Note;
+   Actual {
+      @Override
+      public Object getCellContentDefault() {
+         return 0f;
+      }
+   },
+
+   // Boolean Defaults
+   isOpen {
+      @Override
+      public Object getCellContentDefault() {
+         return Boolean.FALSE;
+      }
+   },
+   isBug {
+      @Override
+      public Object getCellContentDefault() {
+         return Boolean.FALSE;
+      }
+   },
+   isInProgress {
+      @Override
+      public Object getCellContentDefault() {
+         return Boolean.FALSE;
+      }
+   },
+   isResolved {
+      @Override
+      public Object getCellContentDefault() {
+         return Boolean.FALSE;
+      }
+   },
+   isComplete {
+      @Override
+      public Object getCellContentDefault() {
+         return Boolean.FALSE;
+      }
+   },
+
+   // Other Defaults
+   isInPlan {
+      @Override
+      public Object getCellContentDefault() {
+         return ColumnValue.NA;
+      }
+
+   };
 
    public static Column getEnum(String columnName) {
       for (Column col : Column.values()) {
@@ -20,5 +70,9 @@ public enum Column {
       }
       return null;
 
+   }
+
+   public Object getCellContentDefault() {
+      return "";
    }
 }

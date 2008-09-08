@@ -1,65 +1,26 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
+import java.util.Map;
+import java.util.Vector;
+import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnValue;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class BoardTableModelTest extends JonasTestCase {
 
-   String[] tableHeader = { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete" };
-   Object[][] tableContents = { getEmptyRow() };
+   String[] tableHeader;
+   Object[][] tableContents;
    BoardTableModel model;
 
    protected void setUp() throws Exception {
+      tableHeader = new String[] { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete" };
+      tableContents = new Object[][] { getEmptyRow() };
       super.setUp();
       model = new BoardTableModel();
    }
 
    protected void tearDown() throws Exception {
       super.tearDown();
-   }
-
-   public void testShouldAddRowsWhilstEditingCorrectly() {
-      assertEquals(1, model.getRowCount());
-      model.setValueAt("123", 0, 0);
-      assertEquals(2, model.getRowCount());
-      model.setValueAt("1234", 0, 0);
-      assertEquals(2, model.getRowCount());
-      model.setValueAt("1234", 1, 0);
-      assertEquals(3, model.getRowCount());
-   }
-
-   public void testShouldCountColValuesCorrectlyWithStringsNotCaseSensitive() {
-      assertEquals(0, model.getCountOfSameValueInColumn(new String("llu-123"), 0));
-      model.setValueAt("llu-123", 0, 0);
-      assertEquals(1, model.getCountOfSameValueInColumn(new String("llu-123"), 0));
-      model.setValueAt("llu-123", 1, 0);
-      assertEquals(2, model.getCountOfSameValueInColumn(new String("llu-123"), 0));
-      model.setValueAt("lLu-123", 2, 0);
-      assertEquals(3, model.getCountOfSameValueInColumn(new String("llu-123"), 0));
-      assertEquals(3, model.getCountOfSameValueInColumn(new String("Llu-123"), 0));
-      assertEquals(0, model.getCountOfSameValueInColumn(new String("Llu-1234"), 0));
-   }
-
-   public void testShouldCountColValuesCorrectly() {
-      assertEquals(0, model.getCountOfSameValueInColumn(new String("123"), 0));
-      model.setValueAt("123", 0, 0);
-      assertEquals(1, model.getCountOfSameValueInColumn(new String("123"), 0));
-      model.setValueAt("1234", 0, 0);
-      assertEquals(0, model.getCountOfSameValueInColumn(new String("123"), 0));
-      assertEquals(1, model.getCountOfSameValueInColumn(new String("1234"), 0));
-      model.setValueAt("1234", 1, 0);
-      assertEquals(2, model.getCountOfSameValueInColumn(new String("1234"), 0));
-      model.setValueAt("", 0, 0);
-      model.setValueAt("", 1, 0);
-      assertEquals(0, model.getCountOfSameValueInColumn(new String(""), 0));
-   }
-
-   public void testShouldCountColValuesCorrectlyAfterEdit() {
-      model.setValueAt("1234", 0, 0);
-      model.setValueAt("1234", 1, 0);
-
-      assertEquals(2, model.getCountOfSameValueInColumn(new String("1234"), 0));
-      model.setEditable(false);
-      assertEquals(2, model.getCountOfSameValueInColumn(new String("1234"), 0));
    }
 
    public void testShouldSetEditableCorrectly() {
@@ -81,4 +42,62 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(model.getColumnNames().size(), model.getEmptyRow().length);
    }
 
+   public void testColumnNames() {
+      Map<Column, Integer> columnNames = model.getColumnNames();
+      assertEquals(new Integer(0).intValue(), columnNames.get(Column.Jira).intValue());
+      assertEquals(new Integer(1).intValue(), columnNames.get(Column.isOpen).intValue());
+      assertEquals(new Integer(2).intValue(), columnNames.get(Column.isBug).intValue());
+      assertEquals(new Integer(3).intValue(), columnNames.get(Column.isInProgress).intValue());
+      assertEquals(new Integer(4).intValue(), columnNames.get(Column.isResolved).intValue());
+      assertEquals(new Integer(5).intValue(), columnNames.get(Column.isComplete).intValue());
+      assertEquals(new Integer(6).intValue(), columnNames.get(Column.isInPlan).intValue());
+      assertEquals(7, columnNames.size());
+   }
+   
+   public void testGetEmptyRow(){
+      Object[] emptyRow = model.getEmptyRow();
+      assertEquals(7, emptyRow.length);
+      assertEquals("", emptyRow[0]);
+      assertEquals(Boolean.FALSE, emptyRow[1]);
+      assertEquals(Boolean.FALSE, emptyRow[2]);
+      assertEquals(Boolean.FALSE, emptyRow[3]);
+      assertEquals(Boolean.FALSE, emptyRow[4]);
+      assertEquals(Boolean.FALSE, emptyRow[5]);
+      assertEquals(ColumnValue.NA, emptyRow[6]);
+   }
+   
+   public void testShouldCreateFromConstructorOk() {
+      Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Jira);
+      contents.add(getTestContentRow(1, "row0-", 0));
+      contents.add(getTestContentRow(1, "row1-", 0));
+      BoardTableModel model = new BoardTableModel(contents, header);
+
+      assertEquals(2, model.getRowCount());
+      assertEquals(7, model.getColumnCount());
+      assertEquals("row0-0", model.getValueAt(0, 0));
+      assertEquals(null, model.getValueAt(0, 1));
+      assertEquals(null, model.getValueAt(0, 2));
+      assertEquals(null, model.getValueAt(0, 3));
+      assertEquals(null, model.getValueAt(0, 4));
+      assertEquals(null, model.getValueAt(0, 5));
+      assertEquals(null, model.getValueAt(0, 6));
+      assertEquals("row1-0", model.getValueAt(1, 0));
+      assertEquals(null, model.getValueAt(1, 1));
+      assertEquals(null, model.getValueAt(1, 2));
+      assertEquals(null, model.getValueAt(1, 3));
+      assertEquals(null, model.getValueAt(1, 4));
+      assertEquals(null, model.getValueAt(1, 5));
+      assertEquals(null, model.getValueAt(1, 6));
+      
+      assertEquals("Jira", model.getColumnName(0));
+      assertEquals("isOpen", model.getColumnName(1));
+      assertEquals("isBug", model.getColumnName(2));
+      assertEquals("isInProgress", model.getColumnName(3));
+      assertEquals("isResolved", model.getColumnName(4));
+      assertEquals("isComplete", model.getColumnName(5));
+      assertEquals("isInPlan", model.getColumnName(6));
+      
+   }
 }

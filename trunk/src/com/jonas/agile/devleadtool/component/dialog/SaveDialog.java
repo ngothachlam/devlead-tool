@@ -8,10 +8,11 @@ import javax.swing.filechooser.FileFilter;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
+import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 
 public class SaveDialog extends JFileChooser {
 
-	public SaveDialog(PlannerDAO dao, Component frame, PlannerHelper plannerHelper) {
+	public SaveDialog(PlannerDAOExcelImpl dao, Component frame, PlannerHelper plannerHelper) {
 		super(new File("."));
 		File file = plannerHelper.getFile();
 		if (file != null)
@@ -33,7 +34,8 @@ public class SaveDialog extends JFileChooser {
 		if (result == JFileChooser.APPROVE_OPTION) {
 			File selFile = getSelectedFile();
 			plannerHelper.setFile(selFile);
-			plannerHelper.saveModels(selFile, dao);
+			dao.setXlsFile(selFile);
+			plannerHelper.saveModels(dao);
 		}
 	}
 

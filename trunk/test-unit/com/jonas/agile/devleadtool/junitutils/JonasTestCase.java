@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.jdom.Document;
@@ -132,6 +133,16 @@ public class JonasTestCase extends TestCase {
       for (Object iterable_element : classMocks) {
          EasyMock.reset(iterable_element);
       }
+   }
+
+   protected Vector<Object> getTestContentRow(int noOfColumns, String data, int identifier) {
+      Vector<Object> vector = new Vector<Object>();
+      while (noOfColumns > 0) {
+         vector.add(data + identifier);
+         noOfColumns--;
+   
+      }
+      return vector;
    }
 
 }
