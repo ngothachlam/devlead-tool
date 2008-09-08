@@ -7,6 +7,8 @@ import com.jonas.jira.JiraIssue;
 
 public class JiraTableModelTest extends JonasTestCase {
 
+   private MyTableModel model;
+
    private void assertRow(String[] strings, MyTableModel model, int row) {
       for (int col = 0; col < strings.length; col++) {
          assertEquals(strings[col], model.getValueAt(row, col));
@@ -35,7 +37,7 @@ public class JiraTableModelTest extends JonasTestCase {
       contents.add(getTestRowVector(new String[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "Estimate" }, 0));
       contents.add(getTestRowVector(new String[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "Estimate" }, 1));
 
-      MyTableModel model = new JiraTableModel(contents, header);
+      model = new JiraTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
       assertEquals(7, model.getColumnCount());
@@ -57,7 +59,7 @@ public class JiraTableModelTest extends JonasTestCase {
       contents.add(getTestRowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 0));
       contents.add(getTestRowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 1));
 
-      MyTableModel model = new JiraTableModel(contents, header);
+      model = new JiraTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
       assertEquals(7, model.getColumnCount());
@@ -74,7 +76,7 @@ public class JiraTableModelTest extends JonasTestCase {
       contents.add(getTestRowVector(new String[] { "Description", "Jira" }, 0));
       contents.add(getTestRowVector(new String[] { "Description", "Jira" }, 1));
 
-      MyTableModel model = new JiraTableModel(contents, header);
+      model = new JiraTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
       assertEquals(7, model.getColumnCount());
@@ -97,7 +99,7 @@ public class JiraTableModelTest extends JonasTestCase {
       contents.add(getTestRowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 0));
       contents.add(getTestRowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 1));
 
-      MyTableModel model = new JiraTableModel(contents, header);
+      model = new JiraTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
       assertEquals(7, model.getColumnCount());
@@ -106,20 +108,11 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldAddRowOk() {
-      JiraTableModel model = new JiraTableModel();
+      model = new JiraTableModel();
       JiraIssue jiraIssue = new JiraIssue("Jira-1", "Summary 1", "Open", "Resolved");
       JiraIssue jiraIssue2 = new JiraIssue("Jira-2", "Summary 2", "Open", "Resolved");
-      assertTrue(model.addRow(jiraIssue));
-      assertFalse(model.addRow(jiraIssue));
-      assertTrue(model.addRow(jiraIssue2));
+      model.addJira("Jira-1");
    }
 
-   public void testShouldCalculateAlreadyExistsOk() {
-      JiraTableModel model = new JiraTableModel();
-      String jira = "Jira-1";
-      assertFalse(model.exists(jira));
-      JiraIssue jiraIssue = new JiraIssue("Jira-1", "Summary 1", "Open", "Resolved");
-      model.addRow(jiraIssue);
-      assertTrue(model.exists(jira));
-   }
+
 }

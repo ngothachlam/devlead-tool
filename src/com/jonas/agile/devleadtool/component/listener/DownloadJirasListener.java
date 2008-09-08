@@ -14,7 +14,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
@@ -62,7 +62,7 @@ public class DownloadJirasListener implements ActionListener {
 						for (int j = 0; j < jiras.length; j++) {
 							log.debug(jiras[j]);
 							dialog.increseProgress();
-							((JiraTableModel) table.getModel()).addRow(jiras[j]);
+							table.addJira(jiras[j].getKey());
 						}
 					} catch (IOException e1) {
 						AlertDialog.alertException(helper, e1);

@@ -72,21 +72,12 @@ public class PlanPanel extends MyComponentPanel {
    private Component getBottomPanel() {
       JPanel buttons = new JPanel();
 
-      addPanelWithAddAndRemoveOptions(table, buttons, new AddNewRowActionListenerListener() {
-         public void addedNewRow(String jiraString, int itsRow, int itsColumn) {
-            MyTableModel model = (MyTableModel) table.getModel();
-            model.setValueAt(jiraString, itsRow, itsColumn);
-         }
-         public void addedNewRowsCompleted() {
-            table.addEmptyRow();
-         }
-      });
-
-//      addButton(buttons, "Sync", new SyncWithJiraActionListener(table, helper));
+      addPanelWithAddAndRemoveOptions(table, buttons);
+      // addButton(buttons, "Sync", new SyncWithJiraActionListener(table, helper));
       addButton(buttons, "Open Jiras", new OpenJirasListener(table, helper));
 
       setupPlanVersionsFrame();
-      
+
       addButton(buttons, "PlanVersions", new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             SwingUtil.centreWindowWithinWindow(planVersionsFrame, helper.getParentFrame());
@@ -95,8 +86,6 @@ public class PlanPanel extends MyComponentPanel {
       });
       return buttons;
    }
-
-
 
    public PlanTableModel getPlanModel() {
       return ((PlanTableModel) table.getModel());

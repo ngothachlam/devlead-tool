@@ -88,11 +88,11 @@ public class MyPanel extends JPanel {
       return jiraCommas;
    }
 
-   protected void addPanelWithAddAndRemoveOptions(MyTable table, JPanel buttons, AddNewRowActionListenerListener listener) {
+   protected void addPanelWithAddAndRemoveOptions(MyTable table, JPanel buttons) {
       addLabel(buttons, "Prefix:");
       JTextField jiraPrefix = addTextField(buttons, 5);
       JTextField jiraCommas = addTextField(buttons, 20);
-      addButton(buttons, "Add", new AddNewRowActionListener(table, jiraPrefix, jiraCommas, listener));
+      addButton(buttons, "Add", new AddNewRowActionListener(table, jiraPrefix, jiraCommas));
       addButton(buttons, "Remove", new RemoveJTableSelectedRowsListener(table));
    }
 }

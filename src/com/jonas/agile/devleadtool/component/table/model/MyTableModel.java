@@ -1,37 +1,34 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.jira.JiraProject;
 
 public abstract class MyTableModel extends DefaultTableModel {
 
+   protected Counter counter = new Counter();
    private Logger log = MyLogger.getLogger(MyTableModel.class);
+   protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
    protected boolean editable = true;
 
-   private MyTableModel() {
-      super();
+   public MyTableModel(Column[] columns) {
+      super(columns, 0);
+      initiateColumns(columns);
    }
 
    private MyTableModel(Vector<Column> vector, int i) {
       super(vector, i);
    }
 
-   MyTableModel(Map<Column, Integer> columnNames) {
-      this(new Vector<Column>(columnNames.keySet()), 0);
-   }
-
-   MyTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
-      this();
+   MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header) {
+      initiateColumns(columns);
       List<Integer> convertInputHeaderToOriginal = getConvertionNumbers(header, getColumnNames());
 
       Vector<Vector<Object>> newDataVector = new Vector<Vector<Object>>();
@@ -43,20 +40,35 @@ public abstract class MyTableModel extends DefaultTableModel {
       log.debug("Initiated from existing contents and header!");
    }
 
-   public final void addEmptyRow() {
+   MyTableModel(Map<Column, Integer> columnNames) {
+      this(new Vector<Column>(columnNames.keySet()), 0);
+   }
+
+   final public void addEmptyRow() {
       this.addRow(getEmptyRow());
    }
 
-   public Class<?> getColumnClass(int columnIndex) {
+   final public void addJira(String jira) {
+      Object[] row = getEmptyRow();
+      row[0] = jira;
+      log.debug("addJira of row size: " + row.length);
+      addRow(row);
+   }
+
+   final public Class<?> getColumnClass(int columnIndex) {
       Object valueAt = getValueAt(0, columnIndex);
       return valueAt != null ? getClass(valueAt) : getClassFromColumn(columnIndex);
    }
 
-   public Column getColumnEnum(int columnNo) {
+   final public Column getColumnEnum(int columnNo) {
       return Column.getEnum(getColumnName(columnNo));
    }
 
-   public int getColumnNo(Column column) {
+   final public Map<Column, Integer> getColumnNames(){
+      return columnNames;
+   }
+
+   final public int getColumnNo(Column column) {
       for (int col = 0; col < getColumnCount(); col++) {
          if (getColumnName(col).equals(column.toString())) {
             return col;
@@ -65,21 +77,30 @@ public abstract class MyTableModel extends DefaultTableModel {
       return -1;
    }
 
-   public JiraProject getProjectForRow(int row) {
-      String jira = (String) getValueAt(row, 0);
-      return JiraProject.getProjectByKey(PlannerHelper.getProjectKey(jira));
+   final public Object[] getEmptyRow() {
+      Map<Column, Integer> colnams = getColumnNames();
+      Object[] objects = new Object[colnams.size()];
+      int i = 0;
+      log.debug("getting Empty Row");
+      for (Column column : colnams.keySet()) {
+         objects[i++] = column.getCellContentDefault();
+         log.debug("column: " + column + " containing: " + objects[i-1]);
+      }
+      return objects;
    }
 
    /**
     * Returns -1 if cannot be found otherwise first instance of occurence.
     * 
     * @param value
-    * @param column
+    * @param columnNo
+    * @param column 
     * @return
     */
-   public int getRowOfSameValueInColumn(Object value, int column) {
+   final public int getRowOfSameValueInColumn(Object value, Column column) {
+      int columnNo = getColumnNo(column);
       for (int i = 0; i < this.getRowCount(); i++) {
-         Object valueAt = this.getValueAt(i, column);
+         Object valueAt = this.getValueAt(i, columnNo);
          if (value instanceof String) {
             String stringValue = (String) value;
             String stringRowValue = (String) valueAt;
@@ -93,54 +114,79 @@ public abstract class MyTableModel extends DefaultTableModel {
       return -1;
    }
 
-   public abstract boolean isCellEditable(int row, int column);
+   final public Object getValueAt(Column column, int row){
+      return getValueAt(row, getColumnNo(column));
+   }
+   
+   final public boolean isCellEditable(int row, int column){
+      return isEditable() ? true : false;
+   }
 
-   public boolean isEditable() {
+   final public boolean isEditable() {
       return editable;
    }
 
-   // public int getCountOfSameValueInColumn(Object value, int column) {
-   // int countOfSimilar = 0;
-   // for (int i = 0; i < this.getRowCount(); i++) {
-   // Object valueAt = this.getValueAt(i, column);
-   // if (value instanceof String) {
-   // String stringValue = (String) value;
-   // String stringRowValue = (String) valueAt;
-   // if ((stringValue).length() > 0 && stringValue.equalsIgnoreCase(stringRowValue)) {
-   // countOfSimilar++;
-   // }
-   // } else if (valueAt != null && valueAt.equals(value)) {
-   // countOfSimilar++;
-   // }
-   // }
-   // return countOfSimilar;
-   // }
-
-   public void setEditable(boolean selected) {
+   final public void setEditable(boolean selected) {
       editable = selected;
       fireTableStructureChanged();
       // TODO need to fireUpdate on Table?
    }
 
    // Only required if the table is updated by the app so that it becomes visible to the user.
-   public void setValueAt(Object value, int rowIndex, int columnIndex) {
+   final public void setValueAt(Object value, int rowIndex, int columnIndex) {
       super.setValueAt(value, rowIndex, columnIndex);
       fireTableRowsUpdated(rowIndex, rowIndex);
    }
 
-   private Class<?> getClass(Object valueAt) {
+   final private Class<?> getClass(Object valueAt) {
       return valueAt.getClass();
    }
 
-   private Class<?> getClassFromColumn(int columnIndex) {
+   final private Class<?> getClassFromColumn(int columnIndex) {
       return getEmptyRow()[columnIndex].getClass();
    }
 
-   protected abstract Object[] getEmptyRow();
+   final public boolean doesJiraExist(String name) {
+      for (int row = 0; row < getRowCount(); row++) {
+         if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
+            return true;
+         }
+      }
+      return false;
+   }
 
-   abstract Map<Column, Integer> getColumnNames();
+   final protected void initiateColumns(Column[] columns) {
+      counter.reset();
+      for (Column column : columns) {
+         putIntoColumnNames(column);
+      }
+   }
 
-   List<Integer> getConvertionNumbers(Vector<Column> mixedUpVector, Map<Column, Integer> originalVector) {
+   final protected void putIntoColumnNames(Column column) {
+      int valueAndIncrease = counter.getValueAndIncrease();
+      log.debug("putIntoColumnNames: " + column + " of default type: " + column.getCellContentDefault() + " in position " + valueAndIncrease);
+      columnNames.put(column, valueAndIncrease);
+   }
+
+   final Column findIndexThatDoesNotExist(Map<Column, Integer> columnNames, Vector<Column> realVector, int i) {
+      Set<Column> keySet = columnNames.keySet();
+      Column[] columns = keySet.toArray(new Column[columnNames.size()]);
+      for (int temp = 0; temp < columns.length; temp++) {
+         Column column = columns[temp];
+         log.debug("Column: " + column + " temp: " + temp + " of " + i);
+         if (!realVector.contains(column)) {
+            log.debug("RealVector contains the column!");
+            if (temp == i) {
+               return column;
+            }
+         } else {
+            i++;
+         }
+      }
+      return null;
+   }
+
+   final List<Integer> getConvertionNumbers(Vector<Column> mixedUpVector, Map<Column, Integer> originalVector) {
       List<Integer> list = new ArrayList();
       log.debug("mixedUpVectorSize: " + mixedUpVector.size());
       log.debug("originalVector: " + originalVector.size());
@@ -161,7 +207,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       return list;
    }
 
-   Vector<Column> sortHeaderBasedOnList(List<Integer> convertedList, Vector<Column> realVector, Map<Column, Integer> columnNames) {
+   final Vector<Column> sortHeaderBasedOnList(List<Integer> convertedList, Vector<Column> realVector, Map<Column, Integer> columnNames) {
       Vector<Column> result = sortVectorBasedOnList(convertedList, realVector);
       int i = 0;
       List<Column> newColumn = new ArrayList<Column>();
@@ -183,25 +229,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       return result;
    }
 
-   Column findIndexThatDoesNotExist(Map<Column, Integer> columnNames, Vector<Column> realVector, int i) {
-      Set<Column> keySet = columnNames.keySet();
-      Column[] columns = keySet.toArray(new Column[columnNames.size()]);
-      for (int temp = 0; temp < columns.length; temp++) {
-         Column column = columns[temp];
-         log.debug("Column: " + column + " temp: " + temp + " of " + i);
-         if (!realVector.contains(column)) {
-            log.debug("RealVector contains the column!");
-            if (temp == i) {
-               return column;
-            }
-         } else {
-            i++;
-         }
-      }
-      return null;
-   }
-
-   <T> Vector<T> sortVectorBasedOnList(List<Integer> convertedList, Vector<T> realVector) {
+   final <T> Vector<T> sortVectorBasedOnList(List<Integer> convertedList, Vector<T> realVector) {
       Vector<T> result = new Vector<T>();
       for (Integer integer : convertedList) {
          T t = null;
