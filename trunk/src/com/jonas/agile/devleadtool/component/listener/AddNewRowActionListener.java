@@ -48,6 +48,9 @@ public class AddNewRowActionListener implements ActionListener {
 				listener.addedNewRow(jiraString, itsRow, itsColumn);
 			}
 		}
+		for (AddNewRowActionListenerListener listener : listeners) {
+		   listener.addedNewRowsCompleted();
+		}
 	}
 
 	public void addListener(AddNewRowActionListenerListener listener) {

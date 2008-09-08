@@ -20,6 +20,10 @@ public class MyTable extends JTable {
       super();
    }
 
+   public void addEmptyRow() {
+      ((MyTableModel)this.getModel()).addEmptyRow();
+   }
+   
    public void setColumnRenderer(int i, TableCellRenderer renderer) {
       TableColumnModel tcm = getColumnModel();
       TableColumn tc = tcm.getColumn(i);

@@ -14,7 +14,6 @@ import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListenerListener;
-import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
@@ -78,7 +77,12 @@ public class BoardPanel extends MyComponentPanel {
 
       addPanelWithAddAndRemoveOptions(table, buttonPanel, new AddNewRowActionListenerListener() {
          public void addedNewRow(String jiraString, int itsRow, int itsColumn) {
-            ((MyTableModel) table.getModel()).setValueAt(jiraString, itsRow, itsColumn);
+            MyTableModel model = (MyTableModel) table.getModel();
+            model.setValueAt(jiraString, itsRow, itsColumn);
+         }
+         @Override
+         public void addedNewRowsCompleted() {
+            table.addEmptyRow();
          }
       });
       addButton(buttonPanel, "Open Jiras", new OpenJirasListener(table, helper));
