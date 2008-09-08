@@ -45,7 +45,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       this.addRow(getEmptyRow());
    }
 
-   public Column getColumn(int columnNo) {
+   public Column getColumnEnum(int columnNo) {
       return Column.getEnum(getColumnName(columnNo));
    }
 
@@ -69,6 +69,17 @@ public abstract class MyTableModel extends DefaultTableModel {
          }
       }
       return -1;
+   }
+   
+   // Only required if the table is updated by the app so that it becomes visible to the user.
+   public void setValueAt(Object value, int rowIndex, int columnIndex) {
+      super.setValueAt(value, rowIndex, columnIndex);
+      int lastRowIndex = rowIndex;
+      if(rowIndex == getRowCount()-1){
+         addEmptyRow();
+         lastRowIndex = getRowCount()-1;
+      }
+      fireTableRowsUpdated(rowIndex, lastRowIndex);
    }
 
    public int getCountOfSameValueInColumn(Object value, int column) {
@@ -121,8 +132,6 @@ public abstract class MyTableModel extends DefaultTableModel {
    public boolean isEditable() {
       return editable;
    }
-
-   public abstract boolean isRed(Object value, int row, int column);
 
    public void setEditable(boolean selected) {
       editable = selected;

@@ -2,8 +2,6 @@ package com.jonas.agile.devleadtool.component.listener;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.table.TableModel;
-
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -38,11 +36,7 @@ public class HyperLinkOpenerAdapter extends MouseAdapter {
 		int itsRow = table.rowAtPoint(e.getPoint());
 		int itsColumn = table.columnAtPoint(e.getPoint());
 		if (hyperLinkColumn.equals(table.getColumnEnum(itsColumn))) {
-			// table.getColumnEnum();
-			int jiraColumnNu = table.getColumnEnum(jiraColumn);
-			int convertRowIndexToModel = table.convertRowIndexToModel(itsRow);
-			TableModel model = table.getModel();
-			String jira = (String) model.getValueAt(convertRowIndexToModel, jiraColumnNu);
+			String jira = (String) table.getValueAt(jiraColumn, itsRow);
 			try {
 				HyperLinker.displayURL(helper.getJiraUrl(jira) + "/browse/" + jira);
 			} catch (NotJiraException e1) {

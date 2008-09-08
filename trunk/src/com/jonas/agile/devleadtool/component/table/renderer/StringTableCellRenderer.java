@@ -20,24 +20,13 @@ public class StringTableCellRenderer extends DefaultTableCellRenderer {
    public Component getTableCellRendererComponent(MyTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
       JComponent cell = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       log.debug("String for column: " + column + " with value: " + value + " (class: " + debugClassOfValue(value) + ")");
-      if (table.isRed(value, row, column)) {
-         // MyTableModel model = (MyTableModel) table.getModel();
-         // if (model.isRed(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column))) {
-         if (hasFocus)
-            cell.setBackground(SwingUtil.COLOR_RED_3);
-         else if (isSelected)
-            cell.setBackground(SwingUtil.COLOR_RED_2);
-         else
-            cell.setBackground(SwingUtil.COLOR_RED_1);
 
+      if (hasFocus) {
+         cell.setBackground(SwingUtil.getTableCellFocusBackground());
+      } else if (isSelected) {
+         cell.setBackground(table.getSelectionBackground());
       } else {
-         if (hasFocus) {
-            cell.setBackground(SwingUtil.getTableCellFocusBackground());
-         } else if (isSelected) {
-            cell.setBackground(table.getSelectionBackground());
-         } else {
-            cell.setBackground(table.getBackground());
-         }
+         cell.setBackground(table.getBackground());
       }
       return cell;
    }

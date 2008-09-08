@@ -20,86 +20,77 @@ import com.jonas.jira.JiraVersion;
 
 public class ComboTableCellRenderer extends JPanel implements TableCellRenderer {
 
-	private static final Logger log = MyLogger.getLogger(ComboTableCellRenderer.class);
+   private static final Logger log = MyLogger.getLogger(ComboTableCellRenderer.class);
 
-	private JComboBox combo;
+   private JComboBox combo;
 
-	public ComboTableCellRenderer() {
-		super(new BorderLayout());
-		// FIXME hardcoded!!
-		JiraVersion[] fixVersions = JiraProject.getProjectByKey("LLU").getFixVersions(false);
-		combo = new JComboBox(fixVersions);
-		this.add(combo, SwingUtilities.CENTER);
-		updateFixVersionsAvailable();
-	}
+   public ComboTableCellRenderer() {
+      super(new BorderLayout());
+      // FIXME hardcoded!!
+      JiraVersion[] fixVersions = JiraProject.getProjectByKey("LLU").getFixVersions(false);
+      combo = new JComboBox(fixVersions);
+      this.add(combo, SwingUtilities.CENTER);
+      updateFixVersionsAvailable();
+   }
 
-	@SuppressWarnings("unchecked")
-	public Component getTableCellRendererComponent(MyTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+   @SuppressWarnings("unchecked")
+   public Component getTableCellRendererComponent(MyTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
-		log.debug("Combo for column: " + column + " with value: " + value + " (class: " + debugClassOfValue(value) + ")");
-		setFont(table.getFont());
+      log.debug("Combo for column: " + column + " with value: " + value + " (class: " + debugClassOfValue(value) + ")");
+      setFont(table.getFont());
 
-		if (table.isRed(value, row, column)) {
-			if (hasFocus)
-				combo.setBackground(SwingUtil.COLOR_RED_3);
-			else if (isSelected)
-				combo.setBackground(SwingUtil.COLOR_RED_2);
-			else
-				combo.setBackground(SwingUtil.COLOR_RED_1);
-		} else {
-			if (hasFocus)
-				combo.setBackground(SwingUtil.getTableCellFocusBackground());
-			else if (isSelected)
-				combo.setBackground(table.getSelectionBackground());
-			else
-				combo.setBackground(table.getBackground());
-		}
+      if (hasFocus)
+         combo.setBackground(SwingUtil.getTableCellFocusBackground());
+      else if (isSelected)
+         combo.setBackground(table.getSelectionBackground());
+      else
+         combo.setBackground(table.getBackground());
 
-		if (hasFocus) {
-			setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-		} else {
-			setBorder(UIManager.getBorder("Table.focusSelectedCellHighlightBorder"));
-		}
+      if (hasFocus) {
+         setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
+      } else {
+         setBorder(UIManager.getBorder("Table.focusSelectedCellHighlightBorder"));
+      }
 
-		if (!table.isCellEditable(row, column)) {
-			combo.setEnabled(false);
-		} else
-			combo.setEnabled(true);
+      if (!table.isCellEditable(row, column)) {
+         combo.setEnabled(false);
+      } else
+         combo.setEnabled(true);
 
-		setComboValue((List<JiraVersion>) value);
-		return this;
-	}
+      setComboValue((List<JiraVersion>) value);
+      return this;
+   }
 
-	private void setComboValue(List<JiraVersion> jiraVersions) {
-		if (jiraVersions.size() > 1) {
-			throw new RuntimeException("Cannot handle multiple Fix versions yet!!");
-		}
-		for (int i = 0; i < jiraVersions.size(); i++) {
-			JiraVersion fixVersion = jiraVersions.get(i);
-			combo.setSelectedItem(fixVersion);
-		}
-	}
+   private void setComboValue(List<JiraVersion> jiraVersions) {
+      if (jiraVersions.size() > 1) {
+         throw new RuntimeException("Cannot handle multiple Fix versions yet!!");
+      }
+      for (int i = 0; i < jiraVersions.size(); i++) {
+         JiraVersion fixVersion = jiraVersions.get(i);
+         combo.setSelectedItem(fixVersion);
+      }
+   }
 
-	public void setBorder(Border border) {
-		super.setBorder(border);
-	}
+   public void setBorder(Border border) {
+      super.setBorder(border);
+   }
 
-	private Serializable debugClassOfValue(Object value) {
-		return (value != null ? value.getClass() : "null");
-	}
+   private Serializable debugClassOfValue(Object value) {
+      return (value != null ? value.getClass() : "null");
+   }
 
-	private void updateFixVersionsAvailable() {
-		// FIXME : LLU Hardcoded!!!
-		JiraVersion[] versions = JiraProject.getProjectByKey("LLU").getFixVersions(false);
-		for (JiraVersion jiraVersion : versions) {
-			combo.addItem(jiraVersion);
-		}
-	}
+   private void updateFixVersionsAvailable() {
+      // FIXME : LLU Hardcoded!!!
+      JiraVersion[] versions = JiraProject.getProjectByKey("LLU").getFixVersions(false);
+      for (JiraVersion jiraVersion : versions) {
+         combo.addItem(jiraVersion);
+      }
+   }
 
-	@SuppressWarnings("cast")
-	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-		return this.getTableCellRendererComponent((MyTable) table, value, isSelected, hasFocus, row, column);
-	}
+   @SuppressWarnings("cast")
+   @Override
+   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+      return this.getTableCellRendererComponent((MyTable) table, value, isSelected, hasFocus, row, column);
+   }
 
 }

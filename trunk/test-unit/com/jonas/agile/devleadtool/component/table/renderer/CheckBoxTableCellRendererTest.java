@@ -38,7 +38,6 @@ public class CheckBoxTableCellRendererTest extends JonasTestCase {
 	}
 
 	public void testShouldSetCorrectColor() {
-		EasyMock.expect(myTable_Mock.isRed(true, 0, 0)).andReturn(false);
 		EasyMock.expect(myTable_Mock.getFont()).andStubReturn(new Font("", 1, 2));
 		EasyMock.expect(myTable_Mock.isCellEditable(0, 0)).andReturn(true);
 		replay();
@@ -53,7 +52,6 @@ public class CheckBoxTableCellRendererTest extends JonasTestCase {
 
 		reset();
 
-		EasyMock.expect(myTable_Mock.isRed(true, 0, 0)).andReturn(false);
 		EasyMock.expect(myTable_Mock.getFont()).andStubReturn(new Font("", 1, 2));
 		EasyMock.expect(myTable_Mock.isCellEditable(0, 0)).andReturn(true);
 		EasyMock.expect(myTable_Mock.getSelectionBackground()).andReturn(Color.black);
@@ -69,7 +67,6 @@ public class CheckBoxTableCellRendererTest extends JonasTestCase {
 
 		reset();
 
-		EasyMock.expect(myTable_Mock.isRed(true, 0, 0)).andReturn(false);
 		EasyMock.expect(myTable_Mock.getFont()).andStubReturn(new Font("", 1, 2));
 		EasyMock.expect(myTable_Mock.isCellEditable(0, 0)).andReturn(true);
 		EasyMock.expect(myTable_Mock.getBackground()).andReturn(Color.blue);
@@ -80,51 +77,6 @@ public class CheckBoxTableCellRendererTest extends JonasTestCase {
 		tableCellRendererComponent = renderer.getTableCellRendererComponent(myTable_Mock, Boolean.TRUE, isSelected, hasFocus, 0,
 				0);
 		assertEquals(Color.blue, getObjectWithBackground(tableCellRendererComponent).getBackground());
-
-		verify();
-	}
-
-	public void testShouldSetCorrectColorWhenError() {
-		EasyMock.expect(myTable_Mock.isRed(true, 0, 0)).andReturn(true);
-		EasyMock.expect(myTable_Mock.getFont()).andStubReturn(new Font("", 1, 2));
-		EasyMock.expect(myTable_Mock.isCellEditable(0, 0)).andReturn(true);
-		replay();
-
-		boolean isSelected = true;
-		boolean hasFocus = true;
-		Component tableCellRendererComponent = renderer.getTableCellRendererComponent(myTable_Mock, Boolean.TRUE, isSelected,
-				hasFocus, 0, 0);
-		assertEquals(SwingUtil.COLOR_RED_3, getObjectWithBackground(tableCellRendererComponent).getBackground());
-
-		verify();
-
-		reset();
-
-		EasyMock.expect(myTable_Mock.isRed(true, 0, 0)).andReturn(true);
-		EasyMock.expect(myTable_Mock.getFont()).andStubReturn(new Font("", 1, 2));
-		EasyMock.expect(myTable_Mock.isCellEditable(0, 0)).andReturn(true);
-		replay();
-
-		isSelected = true;
-		hasFocus = false;
-		tableCellRendererComponent = renderer.getTableCellRendererComponent(myTable_Mock, Boolean.TRUE, isSelected, hasFocus, 0,
-				0);
-		assertEquals(SwingUtil.COLOR_RED_2, getObjectWithBackground(tableCellRendererComponent).getBackground());
-
-		verify();
-
-		reset();
-
-		EasyMock.expect(myTable_Mock.isRed(true, 0, 0)).andReturn(true);
-		EasyMock.expect(myTable_Mock.getFont()).andStubReturn(new Font("", 1, 2));
-		EasyMock.expect(myTable_Mock.isCellEditable(0, 0)).andReturn(true);
-		replay();
-
-		isSelected = false;
-		hasFocus = false;
-		tableCellRendererComponent = renderer.getTableCellRendererComponent(myTable_Mock, Boolean.TRUE, isSelected, hasFocus, 0,
-				0);
-		assertEquals(SwingUtil.COLOR_RED_1, getObjectWithBackground(tableCellRendererComponent).getBackground());
 
 		verify();
 	}

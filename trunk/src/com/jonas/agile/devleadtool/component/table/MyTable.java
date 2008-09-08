@@ -44,19 +44,16 @@ public class MyTable extends JTable {
 
    }
 
-   public boolean isRed(Object value, int row, int column) {
-      return ((MyTableModel) getModel()).isRed(value, convertRowIndexToModel(row), convertColumnIndexToModel(column));
-   }
-
-   public boolean isColumnEqual(int itsColumn, Column column) {
-      return getColumnName(itsColumn).equals(column.toString());
-   }
+//   public boolean isColumnEqual(int itsColumn, Column column) {
+//      return getColumnName(itsColumn).equals(column.toString());
+//   }
 
    public Column getColumnEnum(int itsColumn) {
-      return ((MyTableModel) getModel()).getColumn(convertColumnIndexToModel(itsColumn));
+      MyTableModel model = (MyTableModel) getModel();
+      return model.getColumnEnum(convertColumnIndexToModel(itsColumn));
    }
 
-   public int getColumnEnum(Column column) {
+   private int getColumnIndex(Column column) {
       return convertColumnIndexToView(((MyTableModel) getModel()).getColumnNo(column));
    }
 
@@ -68,5 +65,14 @@ public class MyTable extends JTable {
          int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
          ((MyTableModel) getModel()).removeRow(convertRowIndexToModel);
       }
+   }
+
+   public boolean isColumn(Column column, int colNoToCompare) {
+      return column.equals(getColumnEnum(colNoToCompare));
+   }
+   
+   public Object getValueAt(Column column, int rowInView) {
+      int colInView = getColumnIndex(column);
+      return ((MyTableModel)getModel()).getValueAt(convertRowIndexToModel(rowInView), convertColumnIndexToModel(colInView));
    }
 }
