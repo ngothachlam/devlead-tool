@@ -1,19 +1,33 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
-import com.jonas.agile.devleadtool.component.table.Column;
 import junit.framework.TestCase;
+import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnValue;
 
 public class MyTableModelTest extends TestCase {
 
+   private MyTableModel model;
+
+   protected void setUp() throws Exception {
+      super.setUp();
+      model = new JiraTableModel();
+   }
+
+   protected void tearDown() throws Exception {
+      super.tearDown();
+   }
+
+   public void testShouldBeCreatedOk(){
+      assertEquals(0, model.getRowCount());
+      assertTrue(model.getColumnCount()>0);
+   }
+   
    public void testShouldConvertionNumbersWithStandardColumnsOk() {
-      MyTableModel model = new JiraTableModel();
       Vector<Column> header = new Vector<Column>();
       header.add(Column.Description);
       header.add(Column.Jira);
@@ -30,7 +44,6 @@ public class MyTableModelTest extends TestCase {
    }
 
    public void testShouldConvertionNumbersWithFewerColumnsOk() {
-      MyTableModel model = new JiraTableModel();
       Vector<Column> header = new Vector<Column>();
       header.add(Column.Description);
       header.add(Column.Jira);
@@ -51,7 +64,6 @@ public class MyTableModelTest extends TestCase {
    }
 
    public void testShouldConvertionNumbersWithMoreColumnsOk() {
-      MyTableModel model = new JiraTableModel();
       Vector<Column> header = new Vector<Column>();
       header.add(Column.Description);
       header.add(Column.Jira);
@@ -69,8 +81,6 @@ public class MyTableModelTest extends TestCase {
    }
 
    public void testShouldSortVectorBasedOnListWithStandardColumnsOk() {
-      MyTableModel model = new JiraTableModel();
-
       List<Integer> originalList = new ArrayList<Integer>();
       originalList.add(1);
       originalList.add(0);
@@ -86,8 +96,6 @@ public class MyTableModelTest extends TestCase {
    }
 
    public void testShouldSortVectorBasedOnListWithFewerColumnsOk() {
-      MyTableModel model = new JiraTableModel();
-
       List<Integer> originalList = new ArrayList<Integer>();
       originalList.add(1);
       originalList.add(-1);
@@ -107,7 +115,6 @@ public class MyTableModelTest extends TestCase {
    }
 
    public void testShouldReturnFirstOccurenceInSetThatDoesNotExistInVector() {
-      MyTableModel model = new JiraTableModel();
       Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
       columnNames.put(Column.Actual, 0);
       columnNames.put(Column.BuildNo, 1);
@@ -121,8 +128,6 @@ public class MyTableModelTest extends TestCase {
    }
 
    public void testShouldSortHeaderBasedOnListWithFewerColumnsOk() {
-      MyTableModel model = new JiraTableModel();
-
       List<Integer> originalList = new ArrayList<Integer>();
       originalList.add(1);
       originalList.add(-1);
@@ -149,9 +154,10 @@ public class MyTableModelTest extends TestCase {
    }
 
    public void testShouldAddRowsWhilstEditingCorrectly() {
-      MyTableModel model = new JiraTableModel();
       assertEquals(0, model.getRowCount());
       model.addEmptyRow();
+      assertEquals(1, model.getRowCount());
+      assertTrue(model.getColumnCount() > 1);
       model.setValueAt("123", 0, 0);
       assertEquals(1, model.getRowCount());
       assertEquals("123", model.getValueAt(0, 0));
@@ -165,5 +171,41 @@ public class MyTableModelTest extends TestCase {
       assertEquals(2, model.getRowCount());
       assertEquals("1234", model.getValueAt(0, 0));
       assertEquals("1235", model.getValueAt(1, 0));
+   }
+
+   public void testGetEmptyRow() {
+      model = new BoardTableModel();
+      Object[] emptyRow = model.getEmptyRow();
+      assertEquals(7, emptyRow.length);
+      assertEquals("", emptyRow[0]);
+      assertEquals(Boolean.FALSE, emptyRow[1]);
+      assertEquals(Boolean.FALSE, emptyRow[2]);
+      assertEquals(Boolean.FALSE, emptyRow[3]);
+      assertEquals(Boolean.FALSE, emptyRow[4]);
+      assertEquals(Boolean.FALSE, emptyRow[5]);
+      assertEquals(ColumnValue.NA, emptyRow[6]);
+   }
+
+   public void testShouldAddJiraOk() {
+      model.addJira("llu-1");
+
+      assertEquals("llu-1", model.getValueAt(0, 0));
+      assertEquals("", model.getValueAt(0, 1));
+      assertEquals("", model.getValueAt(0, 2));
+      assertEquals("", model.getValueAt(0, 3));
+      assertEquals("", model.getValueAt(0, 4));
+      assertEquals("", model.getValueAt(0, 5));
+      assertEquals(0f, model.getValueAt(0, 6));
+   }
+
+   public void testShouldCalculateAlreadyExistsOk() {
+      String jira = "Jira-1";
+      assertFalse(model.doesJiraExist(jira));
+      model.addJira(jira);
+      assertTrue(model.doesJiraExist(jira));
+   }
+
+   public void testShouldGetColumnInfoOk() {
+      assertEquals(0, model.getColumnNo(Column.Jira));
    }
 }

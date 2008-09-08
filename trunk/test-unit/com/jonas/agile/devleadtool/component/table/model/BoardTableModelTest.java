@@ -3,14 +3,13 @@ package com.jonas.agile.devleadtool.component.table.model;
 import java.util.Map;
 import java.util.Vector;
 import com.jonas.agile.devleadtool.component.table.Column;
-import com.jonas.agile.devleadtool.component.table.ColumnValue;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class BoardTableModelTest extends JonasTestCase {
 
    String[] tableHeader;
    Object[][] tableContents;
-   BoardTableModel model;
+   MyTableModel model;
 
    protected void setUp() throws Exception {
       tableHeader = new String[] { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete" };
@@ -54,25 +53,13 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(7, columnNames.size());
    }
    
-   public void testGetEmptyRow(){
-      Object[] emptyRow = model.getEmptyRow();
-      assertEquals(7, emptyRow.length);
-      assertEquals("", emptyRow[0]);
-      assertEquals(Boolean.FALSE, emptyRow[1]);
-      assertEquals(Boolean.FALSE, emptyRow[2]);
-      assertEquals(Boolean.FALSE, emptyRow[3]);
-      assertEquals(Boolean.FALSE, emptyRow[4]);
-      assertEquals(Boolean.FALSE, emptyRow[5]);
-      assertEquals(ColumnValue.NA, emptyRow[6]);
-   }
-   
    public void testShouldCreateFromConstructorOk() {
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       Vector<Column> header = new Vector<Column>();
       header.add(Column.Jira);
       contents.add(getTestContentRow(1, "row0-", 0));
       contents.add(getTestContentRow(1, "row1-", 0));
-      BoardTableModel model = new BoardTableModel(contents, header);
+      MyTableModel model = new BoardTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
       assertEquals(7, model.getColumnCount());

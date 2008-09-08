@@ -1,8 +1,6 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -12,48 +10,15 @@ import com.jonas.jira.JiraVersion;
 
 public class PlanTableModel extends MyTableModel {
 
-   protected static Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
-//   private static Vector<Column> columnNames = new Vector<Column>();
-
    private Logger log = MyLogger.getLogger(PlanTableModel.class);
-
-   static {
-      columnNames.put(Column.Jira,0);
-      columnNames.put(Column.Description,1);
-      columnNames.put(Column.Type,2);
-      columnNames.put(Column.Planned_Sprint,3);
-      columnNames.put(Column.Resolved_Sprint,4);
-      columnNames.put(Column.Closed_Sprint,5);
-      columnNames.put(Column.Estimate,6);
-      columnNames.put(Column.Actual,7);
-      columnNames.put(Column.Note,8);
-   }
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Estimate, Column.Actual, Column.Note };
 
    public PlanTableModel() {
-      super(columnNames);
+      super(columns);
    }
 
    public PlanTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
-      super(contents, header);
-   }
-
-   public void addJira(String jira){
-      Object[] objects = new Object[] { jira, null, null, null, null, null, null, null, null };
-      super.addRow(objects);
-   }
-   
-   public boolean doesJiraExist(String jira) {
-      for (int row = 0; row < getRowCount(); row++) {
-         log.debug("checking row " + row);
-         if (jira.equalsIgnoreCase((String) getValueAt(row, 0)))
-            return true;
-      }
-      return false;
-   }
-
-   @Override
-   public boolean isCellEditable(int row, int column) {
-      return isEditable() ? true : false;
+      super(columns, contents, header);
    }
 
    public boolean setRow(JiraIssue jiraIssue, int row) {
@@ -68,16 +33,6 @@ public class PlanTableModel extends MyTableModel {
          setValueAt(object[i], row, i);
       }
       return true;
-   }
-
-   @Override
-   protected Object[] getEmptyRow() {
-      return new Object[] { "", "", "", "", "", "", "", "", "" };
-   }
-
-   @Override
-   Map<Column, Integer> getColumnNames() {
-      return columnNames;
    }
 
 }

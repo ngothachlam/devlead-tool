@@ -2,7 +2,6 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -13,57 +12,25 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
 
-   private final static Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
-   private static Counter counter = new Counter();
-
-   private static Column[] tableHeader = { Column.Jira, Column.isOpen, Column.isBug, Column.isInProgress, Column.isResolved, Column.isComplete, Column.isInPlan };
-
+   private static final Column[] columns = { Column.Jira, Column.isOpen, Column.isBug, Column.isInProgress, Column.isResolved, Column.isComplete, Column.isInPlan };
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
-   static {
-      counter.reset();
-      putIntoColumnNames(Column.Jira);
-      putIntoColumnNames(Column.isOpen);
-      putIntoColumnNames(Column.isBug);
-      putIntoColumnNames(Column.isInProgress);
-      putIntoColumnNames(Column.isResolved);
-      putIntoColumnNames(Column.isComplete);
-      putIntoColumnNames(Column.isInPlan);
-   }
 
    public BoardTableModel() {
-      super(columnNames);
+      super(columns);
    }
 
    public BoardTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
-      super(contents, header);
-   }
-
-   private static Integer putIntoColumnNames(Column column) {
-      return columnNames.put(column, counter.getValueAndIncrease());
-   }
-
-   @Override
-   public Map<Column, Integer> getColumnNames() {
-      return columnNames;
-   }
-
-   public Object[] getEmptyRow() {
-      Object[] objects = new Object[columnNames.size()];
-      int i = 0;
-      for (Column column : columnNames.keySet()) {
-         objects[i++] = column.getCellContentDefault();
-      }
-      return objects;
+      super(columns, contents, header);
    }
 
    public List<BoardStatus> getStatus(String jira) {
-      int row = getRowOfSameValueInColumn(jira, getColumnNo(Column.Jira));
+      int row = getRowOfSameValueInColumn(jira, Column.Jira);
       log.debug("row: " + row + " for jira: " + jira);
       List<BoardStatus> list = new ArrayList<BoardStatus>();
       if (row >= 0) {
          BoardStatus result = null;
-         for (Column column : tableHeader) {
+         for (Column column : columns) {
             switch (column) {
             case isOpen:
             case isBug:
@@ -81,11 +48,6 @@ public class BoardTableModel extends MyTableModel {
             list.add(BoardStatus.Empty);
       }
       return list;
-   }
-
-   @Override
-   public boolean isCellEditable(int row, int column) {
-      return isEditable() ? column < 6 : false;
    }
 
    private boolean getBoardStatus(int row, Column column) {

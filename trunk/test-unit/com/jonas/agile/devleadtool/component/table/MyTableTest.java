@@ -7,7 +7,7 @@ import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class MyTableTest extends JonasTestCase {
 
-   MyTable table = null;
+   MyTable table;
 
    protected void setUp() throws Exception {
       super.setUp();
@@ -23,7 +23,7 @@ public class MyTableTest extends JonasTestCase {
       EasyMock.expect(mock_table_model.getColumnEnum(0)).andReturn(Column.Jira);
 
       // mock out table methods (jtable is a big class!)
-      MyTable newtable = createMock(MyTable.class, MyTable.class.getMethod("getModel", null), MyTable.class.getMethod("convertColumnIndexToModel", int.class));
+      MyTable newtable = createMock(MyTable.class, MyTable.class.getMethod("getModel", MyTableModel.class), MyTable.class.getMethod("convertColumnIndexToModel", int.class));
       EasyMock.expect(newtable.getModel()).andReturn(mock_table_model).anyTimes();
       EasyMock.expect(newtable.convertColumnIndexToModel(0)).andReturn(0).anyTimes();
 
@@ -49,5 +49,4 @@ public class MyTableTest extends JonasTestCase {
 
       verify();
    }
-
 }

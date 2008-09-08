@@ -72,19 +72,9 @@ public class BoardPanel extends MyComponentPanel {
    }
 
    protected void setButtons() {
-      // MyPanel buttonPanel = SwingUtil.getGridPanel(0, 2, 5, 5).bordered();
       JPanel buttonPanel = new JPanel();
 
-      addPanelWithAddAndRemoveOptions(table, buttonPanel, new AddNewRowActionListenerListener() {
-         public void addedNewRow(String jiraString, int itsRow, int itsColumn) {
-            MyTableModel model = (MyTableModel) table.getModel();
-            model.setValueAt(jiraString, itsRow, itsColumn);
-         }
-         @Override
-         public void addedNewRowsCompleted() {
-            table.addEmptyRow();
-         }
-      });
+      addPanelWithAddAndRemoveOptions(table, buttonPanel);
       addButton(buttonPanel, "Open Jiras", new OpenJirasListener(table, helper));
       addButton(buttonPanel, "Copy to Plan", new CopyToPlanListener(table, helper));
 
