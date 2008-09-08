@@ -74,12 +74,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    // Only required if the table is updated by the app so that it becomes visible to the user.
    public void setValueAt(Object value, int rowIndex, int columnIndex) {
       super.setValueAt(value, rowIndex, columnIndex);
-      int lastRowIndex = rowIndex;
-      if(rowIndex == getRowCount()-1){
-         addEmptyRow();
-         lastRowIndex = getRowCount()-1;
-      }
-      fireTableRowsUpdated(rowIndex, lastRowIndex);
+      fireTableRowsUpdated(rowIndex, rowIndex);
    }
 
    public int getCountOfSameValueInColumn(Object value, int column) {

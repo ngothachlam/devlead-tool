@@ -74,7 +74,11 @@ public class PlanPanel extends MyComponentPanel {
 
       addPanelWithAddAndRemoveOptions(table, buttons, new AddNewRowActionListenerListener() {
          public void addedNewRow(String jiraString, int itsRow, int itsColumn) {
-            ((MyTableModel) table.getModel()).setValueAt(jiraString, itsRow, itsColumn);
+            MyTableModel model = (MyTableModel) table.getModel();
+            model.setValueAt(jiraString, itsRow, itsColumn);
+         }
+         public void addedNewRowsCompleted() {
+            table.addEmptyRow();
          }
       });
 
