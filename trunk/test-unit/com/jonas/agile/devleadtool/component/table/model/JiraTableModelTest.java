@@ -109,8 +109,8 @@ public class JiraTableModelTest extends JonasTestCase {
 
    public void testShouldAddRowOk() {
       model = new JiraTableModel();
-      JiraIssue jiraIssue = new JiraIssue("Jira-1", "Summary 1", "Open", "Resolved");
-      JiraIssue jiraIssue2 = new JiraIssue("Jira-2", "Summary 2", "Open", "Resolved");
+      JiraIssue jiraIssue = new JiraIssue("Jira-1", "Summary 1", "Open", "Resolved", "Type");
+      JiraIssue jiraIssue2 = new JiraIssue("Jira-2", "Summary 2", "Open", "Resolved", "Type");
       model.addJira("Jira-1");
    }
 
