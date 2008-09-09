@@ -7,120 +7,140 @@ import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.panel.BoardPanel;
 import com.jonas.agile.devleadtool.component.panel.InternalFrameTabPanel;
+import com.jonas.agile.devleadtool.component.panel.JiraPanel;
+import com.jonas.agile.devleadtool.component.panel.PlanPanel;
+import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.jira.JiraIssue;
 
 public class InternalFrame extends JInternalFrame {
-	private final class MyInternalFrameListener extends InternalFrameAdapter {
-		private final PlannerHelper client;
+   private static List<InternalFrame> internalFrames = new ArrayList<InternalFrame>();
 
-		private final InternalFrame frame;
+   private final PlannerHelper client;
 
-		private MyInternalFrameListener(PlannerHelper client, InternalFrame frame) {
-			this.client = client;
-			this.frame = frame;
-		}
+   private InternalFrameTabPanel content;
 
-		public void internalFrameActivated(InternalFrameEvent e) {
-			client.setActiveInternalFrame(frame);
-		}
+   private String title;
 
-		public void internalFrameClosing(InternalFrameEvent ife) {
-			close();
-		}
-	}
+   public InternalFrame(final PlannerHelper client, String title) {
+      this(client, title, null, null);
+   }
 
-	private static List<InternalFrame> internalFrames = new ArrayList<InternalFrame>();
+   public InternalFrame(PlannerHelper client, String title, BoardTableModel boardModel, PlanTableModel planModel) {
+      super("", true, true, true, true);
+      this.client = client;
+      this.title = title;
 
-	private InternalFrameTabPanel content;
+      this.setTitle(createTitle());
 
-	private String title;
+      internalFrames.add(this);
 
-	private final PlannerHelper client;
+      content = new InternalFrameTabPanel(this, client, boardModel, planModel);
 
-	public InternalFrame(final PlannerHelper client, String title) {
-		this(client, title, null, null);
-	}
+      this.addInternalFrameListener(new MyInternalFrameListener(client, this));
+      setContentPane(content);
+      client.setActiveInternalFrame(this);
+   }
 
-	public InternalFrame(PlannerHelper client, String title, BoardTableModel boardModel, PlanTableModel planModel) {
-		super("", true, true, true, true);
-		this.client = client;
-		this.title = title;
+   public static void closeAll() {
+      for (Iterator<InternalFrame> iterator = internalFrames.iterator(); iterator.hasNext();) {
+         iterator.next().close();
+         iterator.remove();
+      }
+   }
 
-		this.setTitle(createTitle());
+   public void addToPlan(String jira) {
+      getPlanModel().addJira(jira);
+   }
 
-		internalFrames.add(this);
+   public MyTableModel getBoardModel() {
+      return getBoardPanel().getModel();
+   }
 
-		content = new InternalFrameTabPanel(this, client, boardModel, planModel);
+   public String getExcelFile() {
+      return content.getExcelFile();
+   }
 
-		this.addInternalFrameListener(new MyInternalFrameListener(client, this));
-		setContentPane(content);
-		client.setActiveInternalFrame(this);
-	}
+   public int getInternalFramesCount() {
+      return internalFrames.size();
+   }
 
-	private void close() {
-		content.close();
-		internalFrames.remove(this);
-	}
+   public MyTable getJiraTable() {
+      return getJiraPanel().getTable();
+   }
 
-	public static void closeAll() {
-		for (Iterator<InternalFrame> iterator = internalFrames.iterator(); iterator.hasNext();) {
-			iterator.next().close();
-			iterator.remove();
-		}
-	}
+   public PlanTableModel getPlanModel() {
+      return getPlanPanel().getPlanModel();
+   }
 
-	public int getInternalFramesCount() {
-		return internalFrames.size();
-	}
+   public MyTable getPlanTable() {
+      return getPlanPanel().getTable();
+   }
 
-	private int getCountWithSameTitle(String title) {
-		int count = 0;
-		for (Iterator<InternalFrame> iterator = internalFrames.iterator(); iterator.hasNext();) {
-			if (title.equalsIgnoreCase(iterator.next().title)) {
-				count++;
-			}
-		}
-		return count;
-	}
+   public String getRightMostFromString(String string, int i) {
+      return string.length() > i ? string.substring(string.length() - i, string.length()) : string;
+   }
 
-	protected String createTitle() {
-		int countOfSameTitles = getCountWithSameTitle(title);
-		return title + (countOfSameTitles > 0 ? " (" + countOfSameTitles + ")" : "");
-	}
+   public void setExcelFile(String name) {
+      content.setExcelFile(name);
+   }
 
-	public MyTableModel getBoardModel() {
-		return content.getBoardPanel().getModel();
-	}
+   public void setFileName(String fileName) {
+      this.setTitle(this.getTitle() + " - ..." + getRightMostFromString(fileName, 35));
+   }
 
-	public void setExcelFile(String name) {
-		content.setExcelFile(name);
-	}
+   private void close() {
+      content.close();
+      internalFrames.remove(this);
+   }
 
-	public String getExcelFile() {
-		return content.getExcelFile();
-	}
+   private BoardPanel getBoardPanel() {
+      return content.getBoardPanel();
+   }
 
-	public PlanTableModel getPlanModel() {
-		return content.getPlanPanel().getPlanModel();
-	}
+   private int getCountWithSameTitle(String title) {
+      int count = 0;
+      for (Iterator<InternalFrame> iterator = internalFrames.iterator(); iterator.hasNext();) {
+         if (title.equalsIgnoreCase(iterator.next().title)) {
+            count++;
+         }
+      }
+      return count;
+   }
 
-	public void addToPlan(String jira) {
-		getPlanModel().addJira(jira);
-	}
+   private PlanPanel getPlanPanel() {
+      return content.getPlanPanel();
+   }
 
-	public void setFileName(String fileName) {
-		this.setTitle(this.getTitle() + " - ..." + getRightMostFromString(fileName, 35));
-	}
+   private JiraPanel getJiraPanel() {
+      return content.getJiraPanel();
+   }
 
-	public String getRightMostFromString(String string, int i) {
-		return string.length() > i ? string.substring(string.length() - i, string.length()) : string;
-	}
+   protected String createTitle() {
+      int countOfSameTitles = getCountWithSameTitle(title);
+      return title + (countOfSameTitles > 0 ? " (" + countOfSameTitles + ")" : "");
+   }
 
-	public boolean doesJiraExistInPlan(String jira) {
-		return getPlanModel().doesJiraExist(jira);
-	}
+   private final class MyInternalFrameListener extends InternalFrameAdapter {
+      private final PlannerHelper client;
+
+      private final InternalFrame frame;
+
+      private MyInternalFrameListener(PlannerHelper client, InternalFrame frame) {
+         this.client = client;
+         this.frame = frame;
+      }
+
+      public void internalFrameActivated(InternalFrameEvent e) {
+         client.setActiveInternalFrame(frame);
+      }
+
+      public void internalFrameClosing(InternalFrameEvent ife) {
+         close();
+      }
+   }
 }

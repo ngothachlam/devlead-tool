@@ -100,18 +100,6 @@ public class PlannerHelper {
 		return frame;
 	}
 
-	public void addToPlan(String jira, boolean syncWithJira) throws HttpException, JiraException, JiraIssueNotFoundException, IOException {
-//		InternalFrame activeInternalFrame = getActiveInternalFrame();
-//		if (!activeInternalFrame.doesJiraExistInPlan(jira)) {
-//			JiraIssue jiraIssue = syncWithJira ? getJiraIssueFromName(jira, null) : new JiraIssue(jira, "unknown", "unknown", "unknown");
-//			activeInternalFrame.addToPlan(jiraIssue);
-//		}
-		InternalFrame activeInternalFrame = getActiveInternalFrame();
-		if (!activeInternalFrame.doesJiraExistInPlan(jira)) {
-		   activeInternalFrame.addToPlan(jira);
-		}
-	}
-
 	public String getJiraUrl(String jira) throws NotJiraException {
 		log.debug("getting Jira URL for " + jira);
 		String projectKey = getProjectKey(jira);

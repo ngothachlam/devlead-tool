@@ -175,4 +175,8 @@ public class JiraPanel extends MyComponentPanel {
       }
    }
 
+   public MyTable getTable() {
+      return table;
+   }
+
 }
