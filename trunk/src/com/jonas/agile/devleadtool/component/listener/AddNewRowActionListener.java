@@ -17,6 +17,7 @@ public class AddNewRowActionListener implements ActionListener {
    private final JTextField jiraPrefix;
    private JTextComponent jiraCommas;
 
+   //FIXME merge this with the Syncl....ListenerListener
    private List<AddNewRowActionListenerListener> listeners = new ArrayList<AddNewRowActionListenerListener>();
 
    public AddNewRowActionListener(MyTable table, JTextField jiraPrefix, JTextField jiraCommas) {

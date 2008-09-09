@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.JiraIssue;
 
 public abstract class MyTableModel extends DefaultTableModel {
 
@@ -21,10 +22,6 @@ public abstract class MyTableModel extends DefaultTableModel {
    public MyTableModel(Column[] columns) {
       super(columns, 0);
       initiateColumns(columns);
-   }
-
-   private MyTableModel(Vector<Column> vector, int i) {
-      super(vector, i);
    }
 
    MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header) {
@@ -40,19 +37,17 @@ public abstract class MyTableModel extends DefaultTableModel {
       log.debug("Initiated from existing contents and header!");
    }
 
-   MyTableModel(Map<Column, Integer> columnNames) {
-      this(new Vector<Column>(columnNames.keySet()), 0);
-   }
-
    final public void addEmptyRow() {
       this.addRow(getEmptyRow());
    }
 
    final public void addJira(String jira) {
-      Object[] row = getEmptyRow();
-      row[0] = jira;
-      log.debug("addJira of row size: " + row.length);
-      addRow(row);
+      if (!doesJiraExist(jira)) {
+         Object[] row = getEmptyRow();
+         row[0] = jira;
+         log.debug("addJira of row size: " + row.length);
+         addRow(row);
+      }
    }
 
    final public Class<?> getColumnClass(int columnIndex) {
@@ -64,7 +59,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       return Column.getEnum(getColumnName(columnNo));
    }
 
-   final public Map<Column, Integer> getColumnNames(){
+   final public Map<Column, Integer> getColumnNames() {
       return columnNames;
    }
 
@@ -84,7 +79,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       log.debug("getting Empty Row");
       for (Column column : colnams.keySet()) {
          objects[i++] = column.getCellContentDefault();
-         log.debug("column: " + column + " containing: " + objects[i-1]);
+         log.debug("column: " + column + " containing: " + objects[i - 1]);
       }
       return objects;
    }
@@ -94,7 +89,7 @@ public abstract class MyTableModel extends DefaultTableModel {
     * 
     * @param value
     * @param columnNo
-    * @param column 
+    * @param column
     * @return
     */
    final public int getRowOfSameValueInColumn(Object value, Column column) {
@@ -114,11 +109,11 @@ public abstract class MyTableModel extends DefaultTableModel {
       return -1;
    }
 
-   final public Object getValueAt(Column column, int row){
+   final public Object getValueAt(Column column, int row) {
       return getValueAt(row, getColumnNo(column));
    }
-   
-   final public boolean isCellEditable(int row, int column){
+
+   final public boolean isCellEditable(int row, int column) {
       return isEditable() ? true : false;
    }
 
@@ -219,7 +214,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
       for (Column column : newColumn) {
          for (int j = 0; j < result.size(); j++) {
-            if(result.get(j) == null){
+            if (result.get(j) == null) {
                result.remove(j);
                result.insertElementAt(column, j);
                break;
@@ -244,6 +239,48 @@ public abstract class MyTableModel extends DefaultTableModel {
          result.add(t);
       }
       return result;
+   }
+
+   public void addJira(JiraIssue jiraIssue) {
+      if (!doesJiraExist(jiraIssue.getKey())) {
+         Set<Column> columnSet = columnNames.keySet();
+         Vector<Object> contents = new Vector<Object>();
+         for (Column column : columnSet) {
+            switch (column) {
+            case Jira:
+               contents.add(jiraIssue.getKey());
+               break;
+            case Description:
+               contents.add(jiraIssue.getSummary());
+               break;
+            case FixVersion:
+               contents.add(jiraIssue.getFixVersions());
+               break;
+            case Status:
+               contents.add(jiraIssue.getStatus());
+               break;
+            case Resolution:
+               contents.add(jiraIssue.getResolution());
+               break;
+            case BuildNo:
+               contents.add(jiraIssue.getBuildNo());
+               break;
+            case Estimate:
+               contents.add(jiraIssue.getEstimate());
+               break;
+            case Type:
+               contents.add(jiraIssue.getType());
+               break;
+            default:
+               contents.add(column.getCellContentDefault());
+               break;
+            }
+         }
+//         Object[] objects = new Object[] { jiraIssue.getKey(), jiraIssue.getSummary(), jiraIssue.getFixVersions(), jiraIssue.getStatus(),
+//               jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getEstimate() };
+//         super.addRow(objects);
+         super.addRow(contents);
+      }
    }
 
 }

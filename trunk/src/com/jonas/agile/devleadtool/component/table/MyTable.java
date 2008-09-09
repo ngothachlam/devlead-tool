@@ -91,4 +91,9 @@ public class MyTable extends JTable {
    public void setValueAt(Object value, int row, Column column) {
       setValueAt(value, row, getColumnIndex(column));
    }
+
+   public void addJira(JiraIssue jiraIssue) {
+      MyTableModel model = (MyTableModel)getModel();
+      model.addJira(jiraIssue);
+   }
 }

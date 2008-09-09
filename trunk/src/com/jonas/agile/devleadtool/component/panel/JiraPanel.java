@@ -19,11 +19,15 @@ import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.listener.DownloadJirasListener;
 import com.jonas.agile.devleadtool.component.listener.RemoveJTableSelectedRowsListener;
+import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
+import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
 
@@ -50,7 +54,11 @@ public class JiraPanel extends MyComponentPanel {
    }
 
    private Component getButtonPanel() {
-      JPanel panel = new JPanel(new FlowLayout());
+      JPanel mainPanel = new JPanel(new BorderLayout());
+
+      
+      JPanel topPanel = new JPanel(new FlowLayout());
+      JPanel bottomPanel = new JPanel(new FlowLayout());
 
       Vector<JiraProject> projects = JiraProject.getProjects();
       final JComboBox jiraProjectsCombo = new JComboBox(projects);
@@ -58,13 +66,41 @@ public class JiraPanel extends MyComponentPanel {
 
       jiraProjectsCombo.addActionListener(new AlteringProjectListener(jiraProjectFixVersionCombo));
 
-      panel.add(jiraProjectsCombo);
-      addButton(panel, "Refresh", new RefreshingFixVersionListener(jiraProjectFixVersionCombo, jiraProjectsCombo));
-      panel.add(jiraProjectFixVersionCombo);
-      addButton(panel, "Get Jiras", new DownloadJirasListener(jiraProjectFixVersionCombo, table, helper));
-      addButton(panel, "Remove Selected", new RemoveJTableSelectedRowsListener(table));
-      addButton(panel, "Open Jiras", new OpenJirasListener(table, helper));
-      return panel;
+      
+      addPanelWithAddAndRemoveOptions(table, topPanel);
+      SyncWithJiraActionListener listener = new SyncWithJiraActionListener(table, helper);
+      SyncWithJiraActionListenerListener syncWithJiraListener = new SyncWithJiraActionListenerListener(){
+         public void jiraSynced(JiraIssue jira, int tableRowSynced) {
+            table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
+            table.setValueAt(jira.getFixVersions(), tableRowSynced, Column.FixVersion);
+            table.setValueAt(jira.getStatus(), tableRowSynced, Column.Status);
+            table.setValueAt(jira.getResolution(), tableRowSynced, Column.Resolution);
+            table.setValueAt(jira.getBuildNo(), tableRowSynced, Column.BuildNo);
+            table.setValueAt(jira.getEstimate(), tableRowSynced, Column.Estimate);
+         }
+         public void jiraSyncedCompleted() {
+         }
+         public void jiraAdded(JiraIssue jiraIssue) {
+            table.addJira(jiraIssue);
+         }
+      };
+      listener.addListener(syncWithJiraListener);
+      addButton(topPanel, "Sync", listener);
+      addButton(topPanel, "Open Jiras", new OpenJirasListener(table, helper));
+      
+      
+      
+      bottomPanel.add(jiraProjectsCombo);
+      addButton(bottomPanel, "Refresh", new RefreshingFixVersionListener(jiraProjectFixVersionCombo, jiraProjectsCombo));
+      bottomPanel.add(jiraProjectFixVersionCombo);
+      DownloadJirasListener listener2 = new DownloadJirasListener(jiraProjectFixVersionCombo, table, helper);
+      listener2.addListener(syncWithJiraListener);
+      addButton(bottomPanel, "Get Jiras", listener2);
+//      addButton(panel, "Remove Selected", new RemoveJTableSelectedRowsListener(table));
+      
+      mainPanel.add(topPanel,BorderLayout.NORTH);
+      mainPanel.add(bottomPanel,BorderLayout.SOUTH);
+      return mainPanel;
    }
 
    public MyTableModel getJiraModel() {

@@ -5,11 +5,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import junit.framework.TestCase;
+import org.easymock.classextension.EasyMock;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.ColumnValue;
+import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
+import com.jonas.jira.JiraIssue;
+import com.jonas.jira.JiraVersion;
+import com.jonas.jira.TestObjects;
 
-public class MyTableModelTest extends TestCase {
+public class MyTableModelTest extends JonasTestCase {
 
    private MyTableModel model;
 
@@ -22,11 +26,11 @@ public class MyTableModelTest extends TestCase {
       super.tearDown();
    }
 
-   public void testShouldBeCreatedOk(){
+   public void testShouldBeCreatedOk() {
       assertEquals(0, model.getRowCount());
-      assertTrue(model.getColumnCount()>0);
+      assertTrue(model.getColumnCount() > 0);
    }
-   
+
    public void testShouldConvertionNumbersWithStandardColumnsOk() {
       Vector<Column> header = new Vector<Column>();
       header.add(Column.Description);
@@ -207,5 +211,61 @@ public class MyTableModelTest extends TestCase {
 
    public void testShouldGetColumnInfoOk() {
       assertEquals(0, model.getColumnNo(Column.Jira));
+   }
+
+   public void testShouldAddJiraComplexObjectOk() {
+      JiraIssue mock_jiraIssue = createClassMock(JiraIssue.class);
+      EasyMock.expect(mock_jiraIssue.getKey()).andReturn("LLU-1").anyTimes();
+      EasyMock.expect(mock_jiraIssue.getSummary()).andReturn("Summary1").anyTimes();
+      List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
+      fixVersions.add(TestObjects.Version_10);
+      fixVersions.add(TestObjects.Version_11);
+      EasyMock.expect(mock_jiraIssue.getFixVersions()).andReturn(fixVersions).anyTimes();
+      EasyMock.expect(mock_jiraIssue.getStatus()).andReturn("Status1").anyTimes();
+      EasyMock.expect(mock_jiraIssue.getResolution()).andReturn("Resolution1").anyTimes();
+      EasyMock.expect(mock_jiraIssue.getBuildNo()).andReturn("BuildNo1").anyTimes();
+      EasyMock.expect(mock_jiraIssue.getEstimate()).andReturn(1.4f).anyTimes();
+      replay();
+
+      model.addJira(mock_jiraIssue);
+
+      verify();
+      assertEquals(1, model.getRowCount());
+      assertEquals(7, model.getColumnCount());
+      assertModelRow("LLU-1", Column.Jira, 0, 0);
+      assertModelRow("Summary1", Column.Description, 1, 0);
+      assertModelRow("Status1", Column.Status, 3, 0);
+      assertModelRow("Resolution1", Column.Resolution, 4, 0);
+      assertModelRow("BuildNo1", Column.BuildNo, 5, 0);
+      assertModelRow(1.4f, Column.Estimate, 6, 0);
+
+      reset();
+      model = new PlanTableModel();
+      EasyMock.expect(mock_jiraIssue.getKey()).andReturn("LLU-2").anyTimes();
+      EasyMock.expect(mock_jiraIssue.getSummary()).andReturn("Summary2").anyTimes();
+      EasyMock.expect(mock_jiraIssue.getType()).andReturn("Type2").anyTimes();
+      EasyMock.expect(mock_jiraIssue.getEstimate()).andReturn(2.4f).anyTimes();
+      replay();
+
+      model.addJira(mock_jiraIssue);
+
+      verify();
+      assertEquals(1, model.getRowCount());
+      assertEquals(9, model.getColumnCount());
+      //Column.Jira, Column.Description, Column.Type, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Estimate, Column.Actual, Column.Note
+      assertModelRow("LLU-2", Column.Jira, 0, 0);
+      assertModelRow("Summary2", Column.Description, 1, 0);
+      assertModelRow("Type2", Column.Type, 2, 0);
+      assertModelRow("", Column.Planned_Sprint, 3, 0);
+      assertModelRow("", Column.Resolved_Sprint, 4, 0);
+      assertModelRow("", Column.Closed_Sprint, 5, 0);
+      assertModelRow(2.4f, Column.Estimate, 6, 0);
+      assertModelRow(0f, Column.Actual, 7, 0);
+      assertModelRow("", Column.Note, 8, 0);
+   }
+
+   private void assertModelRow(Object string, Column column, int col, int row) {
+      assertEquals(string, model.getValueAt(column, row));
+      assertEquals(string, model.getValueAt(row, col));
    }
 }

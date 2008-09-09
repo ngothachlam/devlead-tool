@@ -61,7 +61,6 @@ public class SyncWithJiraActionListener implements ActionListener {
       for (SyncWithJiraActionListenerListener listener : listeners) {
          listener.jiraSyncedCompleted();
       }
-
    }
 
    private final class JiraListenerImpl extends JiraListener {
