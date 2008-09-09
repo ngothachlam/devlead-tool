@@ -17,8 +17,9 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
+import com.jonas.agile.devleadtool.component.listener.CopyToTableListener;
+import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
 import com.jonas.agile.devleadtool.component.listener.DownloadJirasListener;
-import com.jonas.agile.devleadtool.component.listener.RemoveJTableSelectedRowsListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -87,9 +88,17 @@ public class JiraPanel extends MyComponentPanel {
       listener.addListener(syncWithJiraListener);
       addButton(topPanel, "Sync", listener);
       addButton(topPanel, "Open Jiras", new OpenJirasListener(table, helper));
-      
-      
-      
+      addButton(topPanel, "Copy to Plan", new CopyToTableListener(table, new DestinationRetriever() {
+         public MyTable getDestinationTable() {
+            return helper.getActiveInternalFrame().getPlanTable();
+         }
+      }, helper));
+      addButton(topPanel, "Copy to Board", new CopyToTableListener(table, new DestinationRetriever() {
+         public MyTable getDestinationTable() {
+            return helper.getActiveInternalFrame().getBoardTable();
+         }
+      }, helper));
+
       bottomPanel.add(jiraProjectsCombo);
       addButton(bottomPanel, "Refresh", new RefreshingFixVersionListener(jiraProjectFixVersionCombo, jiraProjectsCombo));
       bottomPanel.add(jiraProjectFixVersionCombo);

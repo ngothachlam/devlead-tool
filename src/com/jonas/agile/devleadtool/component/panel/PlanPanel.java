@@ -93,6 +93,12 @@ public class PlanPanel extends MyComponentPanel {
             return helper.getActiveInternalFrame().getJiraTable();
          }
       }, helper));
+      addButton(buttons, "Copy to Board", new CopyToTableListener(table, new DestinationRetriever() {
+         public MyTable getDestinationTable() {
+            return helper.getActiveInternalFrame().getBoardTable();
+         }
+      }, helper));
+
       addButton(buttons, "Open Jiras", new OpenJirasListener(table, helper));
       
       setupPlanVersionsFrame();

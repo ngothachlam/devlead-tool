@@ -152,6 +152,7 @@ public class JiraSoapClient {
          }
 
       });
+      //FIXME doesn't work on TST project!!
       return (RemoteIssueType[]) command.execute();
       }
 

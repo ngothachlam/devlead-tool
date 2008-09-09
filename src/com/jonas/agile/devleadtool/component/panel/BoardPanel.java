@@ -87,4 +87,8 @@ public class BoardPanel extends MyComponentPanel {
    public void setEditable(boolean selected) {
       ((MyTableModel) table.getModel()).setEditable(selected);
    }
+
+   public MyTable getTable() {
+      return table;
+   }
 }
