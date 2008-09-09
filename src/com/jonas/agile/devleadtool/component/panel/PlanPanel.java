@@ -82,6 +82,8 @@ public class PlanPanel extends MyComponentPanel {
          }
          public void jiraSyncedCompleted() {
          }
+         public void jiraAdded(JiraIssue jiraIssue) {
+         }
       });
       addButton(buttons, "Sync", listener);
       addButton(buttons, "Open Jiras", new OpenJirasListener(table, helper));
