@@ -78,6 +78,7 @@ public class PlanPanel extends MyComponentPanel {
       listener.addListener(new SyncWithJiraActionListenerListener(){
          public void jiraSynced(JiraIssue jira, int tableRowSynced) {
             table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
+            table.setValueAt(jira.getType(), tableRowSynced, Column.Type);
          }
          public void jiraSyncedCompleted() {
          }

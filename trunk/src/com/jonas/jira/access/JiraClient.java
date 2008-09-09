@@ -9,6 +9,7 @@ import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
+import com.atlassian.jira.rpc.soap.beans.RemoteIssueType;
 import com.atlassian.jira.rpc.soap.beans.RemoteResolution;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.common.logging.MyLogger;
@@ -56,6 +57,7 @@ public class JiraClient {
          java.rmi.RemoteException, JiraIssueNotFoundException {
       // TODO thread this!!
       loadResolutionsIfRequired();
+      loadJiraTypesIfRequired();
       JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_JIRA);
       RemoteIssue remoteJira = jiraSoapClient.getJira(jira.toUpperCase());
       JiraIssue jiraIssue = jiraBuilder.buildJira(remoteJira, project);
@@ -67,6 +69,7 @@ public class JiraClient {
 
    public JiraIssue[] getJirasFromFixVersion(JiraVersion version) throws HttpException, IOException, JDOMException, JiraException {
       loadResolutionsIfRequired();
+      loadJiraTypesIfRequired();
       List<JiraIssue> jiras = httpClient.getJiras(version, new JonasXpathEvaluator("/rss/channel/item"), jiraBuilder);
       return (JiraIssue[]) jiras.toArray(new JiraIssue[jiras.size()]);
    }
@@ -79,12 +82,26 @@ public class JiraClient {
       RemoteResolution[] remoteResolutions = jiraSoapClient.getResolutions();
       JiraResolution.setResolutions(remoteResolutions);
    }
+   
+   private void loadJiraTypes() throws RemotePermissionException, RemoteAuthenticationException, java.rmi.RemoteException {
+      RemoteIssueType[] remoteTypes = jiraSoapClient.getTypes();
+      JiraType.setTypes(remoteTypes);
+   }
 
    private void loadResolutionsIfRequired() throws RemotePermissionException, RemoteAuthenticationException, java.rmi.RemoteException {
       if (JiraResolution.getAmount() < 1) {
          synchronized (JiraResolution.class) {
             if (JiraResolution.getAmount() < 1) {
                loadResolutions();
+            }
+         }
+      }
+   }
+   private void loadJiraTypesIfRequired() throws RemotePermissionException, RemoteAuthenticationException, java.rmi.RemoteException {
+      if (JiraType.getAmount() < 1) {
+         synchronized (JiraType.class) {
+            if (JiraType.getAmount() < 1) {
+               loadJiraTypes();
             }
          }
       }

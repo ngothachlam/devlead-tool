@@ -16,6 +16,7 @@ import com.jonas.jira.JiraResolution;
 import com.jonas.jira.JiraStatus;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraClient;
+import com.jonas.jira.access.JiraType;
 
 public class JiraBuilder {
 
@@ -42,9 +43,9 @@ public class JiraBuilder {
       jiraXpathActions.add(new XPathImplementor(xPath, xpathAction));
       jiraXpathActions.add(new XPathImplementor(xPath2, xpathAction2));
    }
-   
-   public static float getSecondsAsDays(int seconds){
-      float secondsConverter = 60*60*8;
+
+   public static float getSecondsAsDays(int seconds) {
+      float secondsConverter = 60 * 60 * 8;
       return seconds / secondsConverter;
    }
 
@@ -71,10 +72,12 @@ public class JiraBuilder {
 
    public JiraIssue buildJira(RemoteIssue remoteJira, JiraProject project) {
       JiraResolution resolution = JiraResolution.getResolution(remoteJira.getResolution());
+      JiraType type = JiraType.getResolution(remoteJira.getType());
       JiraStatus status = JiraStatus.getJiraStatusById(remoteJira.getStatus());
       String statusName = status != null ? status.getName() : null;
       String resolutionName = resolution != null ? resolution.getName() : null;
-      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName, remoteJira.getType());
+      String typeName = type != null ? type.getName() : null;
+      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName, typeName);
       RemoteVersion[] tempFixVersions = remoteJira.getFixVersions();
       for (int i = 0; i < tempFixVersions.length; i++) {
          RemoteVersion remoteVersion = tempFixVersions[i];
@@ -88,6 +91,10 @@ public class JiraBuilder {
          }
       }
       return jira;
+   }
+
+   private String getJiraFieldIfNotNull(JiraType type) {
+      return type != null ? type.getName() : null;
    }
 
    public List<JiraIssue> buildJiras(List<Element> list) {
