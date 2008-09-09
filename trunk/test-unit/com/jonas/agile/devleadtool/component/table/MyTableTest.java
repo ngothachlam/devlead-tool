@@ -1,8 +1,10 @@
 package com.jonas.agile.devleadtool.component.table;
 
+import javax.swing.table.TableModel;
 import org.easymock.EasyMock;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class MyTableTest extends JonasTestCase {
@@ -48,5 +50,40 @@ public class MyTableTest extends JonasTestCase {
       assertFalse(newtable.isColumn(Column.Jira, 0));
 
       verify();
+   }
+   
+   public void testShouldSetValueUsingColumnDataCorrectly(){
+      MyTableModel model = new PlanTableModel();
+      table.setModel(model);
+      
+      table.addEmptyRow();
+      
+      assertEquals(1, table.getRowCount());
+      assertEquals(9, table.getColumnCount());
+      assertEquals("", table.getValueAt(0, 0));
+      assertEquals("", table.getValueAt(0, 1));
+      assertEquals("", table.getValueAt(0, 2));
+      assertEquals("", table.getValueAt(0, 3));
+      assertEquals("", table.getValueAt(0, 4));
+      assertEquals("", table.getValueAt(0, 5));
+      assertEquals(0f, table.getValueAt(0, 6));
+      assertEquals(0f, table.getValueAt(0, 7));
+      assertEquals("", table.getValueAt(0, 8));
+      
+      table.setValueAt("newValue", 0, Column.Description);
+      table.setValueAt(1f, 0, Column.Estimate);
+      
+      assertEquals(1, table.getRowCount());
+      assertEquals(9, table.getColumnCount());
+      assertEquals("", table.getValueAt(0, 0));
+      assertEquals("newValue", table.getValueAt(0, 1));
+      assertEquals("", table.getValueAt(0, 2));
+      assertEquals("", table.getValueAt(0, 3));
+      assertEquals("", table.getValueAt(0, 4));
+      assertEquals("", table.getValueAt(0, 5));
+      assertEquals(1f, table.getValueAt(0, 6));
+      assertEquals(0f, table.getValueAt(0, 7));
+      assertEquals("", table.getValueAt(0, 8));
+      
    }
 }
