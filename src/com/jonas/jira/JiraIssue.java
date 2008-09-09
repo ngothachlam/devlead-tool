@@ -15,15 +15,21 @@ public class JiraIssue {
 	private String status;
 	private String summary;
    private float estimate;
+   private final String type;
 
-	public JiraIssue(String key, String summary, String status, String resolution) {
+	public JiraIssue(String key, String summary, String status, String resolution, String type) {
 		this.key = key;
 		this.summary = summary;
 		this.status = status;
 		this.resolution = resolution;
+      this.type = type;
 	}
 
-	public void addFixVersions(JiraVersion fixVersion) {
+	public String getType() {
+      return type;
+   }
+
+   public void addFixVersions(JiraVersion fixVersion) {
 		fixVersions.add(fixVersion);
 	}
 

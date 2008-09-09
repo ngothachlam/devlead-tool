@@ -18,7 +18,7 @@ public class JiraBuilderTest extends JonasTestCase {
 
    public void testShouldBuildJiraOkUsingElement() {
       Element e = createClassMock(Element.class);
-      setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution");
+      setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution", "BlahType");
 
       replay();
 
@@ -26,7 +26,7 @@ public class JiraBuilderTest extends JonasTestCase {
 
       verify();
 
-      assertJiraDetails(jira, "LLU-1", "Blah", "BlahStatus", "BlahResolution", new JiraVersion[] {});
+      assertJiraDetails(jira, "LLU-1", "Blah", "BlahStatus", "BlahResolution", "BlahType", new JiraVersion[] {});
       assertEquals(0, jira.getFixVersions().size());
       assertEquals(null, jira.getBuildNo());
    }
@@ -35,7 +35,7 @@ public class JiraBuilderTest extends JonasTestCase {
       Element e = createClassMock(Element.class);
       List<JiraVersion> fixVersions = createInterfaceMock(List.class);
 
-      setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution");
+      setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution", "BlahType");
       EasyMock.expect(fixVersions.get(0)).andReturn(TestObjects.Version_10);
       EasyMock.expect(fixVersions.size()).andReturn(1);
 
@@ -45,7 +45,7 @@ public class JiraBuilderTest extends JonasTestCase {
 
       verify();
 
-      assertJiraDetails(jira, "LLU-1", "Blah", "BlahStatus", "BlahResolution", new JiraVersion[] { TestObjects.Version_10 });
+      assertJiraDetails(jira, "LLU-1", "Blah", "BlahStatus", "BlahResolution", "BlahType", new JiraVersion[] { TestObjects.Version_10 });
       assertEquals(1, jira.getFixVersions().size());
       assertEquals(TestObjects.Version_10, jira.getFixVersions().get(0));
       assertEquals(null, jira.getBuildNo());
@@ -55,7 +55,7 @@ public class JiraBuilderTest extends JonasTestCase {
       Element e = createClassMock(Element.class);
       List<JiraVersion> fixVersions = createInterfaceMock(List.class);
 
-      setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution");
+      setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution", "BlahType");
       EasyMock.expect(fixVersions.get(0)).andReturn(TestObjects.Version_10);
       EasyMock.expect(fixVersions.size()).andReturn(2);
 
@@ -65,7 +65,7 @@ public class JiraBuilderTest extends JonasTestCase {
 
       verify();
 
-      assertJiraDetails(jira, "LLU-1", "Blah", "BlahStatus", "BlahResolution", new JiraVersion[] { TestObjects.Version_10 });
+      assertJiraDetails(jira, "LLU-1", "Blah", "BlahStatus", "BlahResolution", "BlahType", new JiraVersion[] { TestObjects.Version_10 });
       assertEquals(1, jira.getFixVersions().size());
       assertEquals(TestObjects.Version_10, jira.getFixVersions().get(0));
       assertEquals(null, jira.getBuildNo());
@@ -85,7 +85,7 @@ public class JiraBuilderTest extends JonasTestCase {
       assertEquals(1, jiras.size());
       JiraIssue jiraIssue = jiras.get(0);
       assertJiraDetails(jiraIssue, "LLU-4052", "Change SuiteDispatcher Log from Error to Debug when no jobs are found", "Open", "Unresolved",
-            new JiraVersion[] { TestObjects.Version_Backlog });
+            "Technical Debt", new JiraVersion[] { TestObjects.Version_Backlog });
       assertEquals("testBuildNo", jiraIssue.getBuildNo());
    }
 
@@ -102,7 +102,7 @@ public class JiraBuilderTest extends JonasTestCase {
 
       assertEquals(1, jiras.size());
       JiraIssue jiraIssue = jiras.get(0);
-      assertJiraDetails(jiraIssue, "LLU-4072", "R900 - Quality Gateway E2E tests", "Open", "Unresolved", new JiraVersion[] { TestObjects.Version_Backlog });
+      assertJiraDetails(jiraIssue, "LLU-4072", "R900 - Quality Gateway E2E tests", "Open", "Unresolved", "Story", new JiraVersion[] { TestObjects.Version_Backlog });
       assertEquals(null, jiraIssue.getBuildNo());
       assertEquals(2f, jiraIssue.getEstimate());
    }
@@ -121,7 +121,7 @@ public class JiraBuilderTest extends JonasTestCase {
       assertEquals(1, jiras.size());
       JiraIssue jiraIssue = jiras.get(0);
       assertJiraDetails(jiraIssue, "LLU-4119", "&apos;Quality Gateway&apos; tests set up", "Open", "Unresolved",
-            new JiraVersion[] { TestObjects.Version_Backlog });
+            "Story", new JiraVersion[] { TestObjects.Version_Backlog });
       assertEquals(null, jiraIssue.getBuildNo());
       // assertEquals("Version 11 - Next Sprint (2)", jiraIssue.getFixVersions().get(0).getName());
    }

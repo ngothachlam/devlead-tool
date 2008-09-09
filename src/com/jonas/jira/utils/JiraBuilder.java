@@ -56,7 +56,7 @@ public class JiraBuilder {
    }
 
    public JiraIssue buildJira(Element e) {
-      return new JiraIssue(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"));
+      return new JiraIssue(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"), get(e, "type"));
    }
 
    public JiraIssue buildJira(Element e, List<JiraVersion> fixVersions) {
@@ -74,7 +74,7 @@ public class JiraBuilder {
       JiraStatus status = JiraStatus.getJiraStatusById(remoteJira.getStatus());
       String statusName = status != null ? status.getName() : null;
       String resolutionName = resolution != null ? resolution.getName() : null;
-      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName);
+      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName, remoteJira.getType());
       RemoteVersion[] tempFixVersions = remoteJira.getFixVersions();
       for (int i = 0; i < tempFixVersions.length; i++) {
          RemoteVersion remoteVersion = tempFixVersions[i];

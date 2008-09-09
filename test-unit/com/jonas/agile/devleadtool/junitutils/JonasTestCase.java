@@ -28,16 +28,17 @@ public class JonasTestCase extends TestCase {
    protected Factory mockFactory = createInterfaceMock(Factory.class);
    protected JiraBuilder mockJiraBuilder = createClassMock(JiraBuilder.class);
 
-   protected void assertJiraDetails(JiraIssue jira, String expectedKey, String expectedSummary, String expectedStatus, String expectedResolution) {
+   protected void assertJiraDetails(JiraIssue jira, String expectedKey, String expectedSummary, String expectedStatus, String expectedResolution, String expectedType) {
       assertEquals(expectedKey, jira.getKey());
       assertEquals(expectedSummary, jira.getSummary());
       assertEquals(expectedStatus, jira.getStatus());
       assertEquals(expectedResolution, jira.getResolution());
+      assertEquals(expectedType, jira.getType());
    }
 
    protected void assertJiraDetails(JiraIssue jira, String expectedKey, String expectedSummary, String expectedStatus, String expectedResolution,
-         JiraVersion[] jiraVersions) {
-      assertJiraDetails(jira, expectedKey, expectedSummary, expectedStatus, expectedResolution);
+         String expectedType, JiraVersion[] jiraVersions) {
+      assertJiraDetails(jira, expectedKey, expectedSummary, expectedStatus, expectedResolution, expectedType);
       List<JiraVersion> fixVersions = jira.getFixVersions();
       if (jiraVersions.length > 0) {
          assertEquals("Did expect fixversions!", jiraVersions.length, fixVersions.size());
@@ -106,15 +107,16 @@ public class JonasTestCase extends TestCase {
    }
 
    protected void setupMockActualsForElementExtendedWithEstimate(Element e, String string, String string2, String string3, String string4) {
-      setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution");
+      setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution", "BlahType");
       EasyMock.expect(e.getChildText("timeoriginalestimate")).andReturn("2 days");
    }
 
-   protected void setupMockActualsForElement(Element e, String key, String summary, String status, String resolution) {
+   protected void setupMockActualsForElement(Element e, String key, String summary, String status, String resolution, String type) {
       EasyMock.expect(e.getChildText("key")).andReturn(key);
       EasyMock.expect(e.getChildText("summary")).andReturn(summary);
       EasyMock.expect(e.getChildText("status")).andReturn(status);
       EasyMock.expect(e.getChildText("resolution")).andReturn(resolution);
+      EasyMock.expect(e.getChildText("type")).andReturn(type);
    }
 
    protected void verify() {
