@@ -13,6 +13,7 @@ import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceService
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
+import com.atlassian.jira.rpc.soap.beans.RemoteIssueType;
 import com.atlassian.jira.rpc.soap.beans.RemoteResolution;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.common.logging.MyLogger;
@@ -23,99 +24,41 @@ import com.jonas.jira.JiraProject;
  */
 public class JiraSoapClient {
 
+	private static JiraSoapClient instance;
 	private static final Logger log = MyLogger.getLogger(JiraSoapClient.class);
 	private static final String LOGIN_NAME = "soaptester";
 	private static final String LOGIN_PASSWORD = "soaptester";
-	private static JiraSoapClient instance;
 
 	private JiraSoapService jiraSoapService = null;
 	private String token;
-
-	interface JiraAccessAction {
-		Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
-				com.atlassian.jira.rpc.exception.RemoteException, RemoteException;
-	}
-
-	class JiraTokenCommand {
-
-		private final Logger log = MyLogger.getLogger(JiraTokenCommand.class);
-		private final JiraAccessAction action;
-
-		public JiraTokenCommand(JiraAccessAction action) {
-			this.action = action;
-		}
-
-		public Object execute() throws RemotePermissionException, RemoteAuthenticationException,
-				com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
-			// RemoteException - If there was some problem preventing the operation from working.
-			// RemotePermissionException - If the user is not permitted to perform this operation in this context.
-			// RemoteAuthenticationException - If the token is invalid or the SOAP session has timed out
-			// RemoteValidationException - If the arguments and their properties are incomplete or malformed.
-
-			try {
-				log.debug("ConductingAction : " + action);
-				return action.accessJiraAndReturn();
-			} catch (RemoteAuthenticationException e) {
-				log.info(e);
-				log.info("Session timed out. Renewing token again!");
-				renewToken();
-			}
-			return action.accessJiraAndReturn();
-		}
-	}
 
 	public JiraSoapClient(JiraSoapService jiraSoapService) {
 		this.jiraSoapService = jiraSoapService;
 	}
 
-	private String getToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
-			RemoteException {
-		log.debug("Getting Token!");
-		if (token == null) {
-			log.trace("Syncing Token Block");
-			synchronized (this) {
-				log.trace("Syncing Token Block has been synced");
-				if (token == null) {
-					log.debug("Token needs renewing!");
-					renewToken();
+	public static JiraSoapClient getInstance(String address) {
+		if (instance == null) {
+			synchronized (JiraSoapClient.class) {
+				if (instance == null) {
+					JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = getLocator(address);
+					JiraSoapService jirasoapserviceV2 = null;
+					try {
+						jirasoapserviceV2 = jiraSoapServiceServiceLocator.getJirasoapserviceV2();
+						return new JiraSoapClient(jirasoapserviceV2);
+					} catch (ServiceException e) {
+						e.printStackTrace();
+					}
 				}
-				log.trace("Block Synced Done!");
 			}
 		}
-		return token;
+		return instance;
 	}
 
-	private synchronized void renewToken() throws RemoteAuthenticationException,
-			com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
-		log.debug("Renewing Token");
-		token = jiraSoapService.login(LOGIN_NAME, LOGIN_PASSWORD);
-		log.debug("Renewing Token Done!");
-	}
-
-	public RemoteIssue getJira(final String jiraName) throws RemotePermissionException, RemoteAuthenticationException,
-			com.atlassian.jira.rpc.exception.RemoteException, RemoteException, JiraIssueNotFoundException {
-		log.debug("Getting Jira " + jiraName);
-		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
-
-			public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
-					com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
-				log.trace("accessJiraAndReturn!!");
-				String token2 = getToken();
-				log.trace("Getting Jira Action!! (" + token2 + " - " + jiraName + ")");
-				return jiraSoapService.getIssue(token2, jiraName);
-			}
-
-		});
-		RemoteIssue execute = null;
-		try {
-			execute = (RemoteIssue) command.execute();
-		} catch (java.rmi.RemoteException e) {
-			AxisFault axisFault = (org.apache.axis.AxisFault) e;
-			if ("java.lang.NullPointerException".equals(axisFault.getFaultString()))
-				throw new JiraIssueNotFoundException("Jira \"" + jiraName + "\" not found!");
-		}
-		log.trace("Getting Jira Done!" + jiraName);
-		return execute;
+	private static JiraSoapServiceServiceLocator getLocator(String address) {
+		JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
+		jiraSoapServiceServiceLocator.setJirasoapserviceV2EndpointAddress(address);
+		log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
+		return jiraSoapServiceServiceLocator;
 	}
 
 	public RemoteVersion getFixVersion(final String fixName, JiraProject jiraProject) throws RemotePermissionException,
@@ -131,20 +74,6 @@ public class JiraSoapClient {
 		}
 		log.debug("Getting FixVersion Done!");
 		return null;
-	}
-
-	public RemoteResolution[] getResolutions() throws RemotePermissionException, RemoteAuthenticationException, RemoteException {
-		log.debug("Getting Resolutions");
-
-		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
-			public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
-					com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
-				return jiraSoapService.getResolutions(getToken());
-			}
-
-		});
-		RemoteResolution[] resolutions = (RemoteResolution[]) command.execute();
-		return resolutions;
 	}
 
 	public RemoteVersion[] getFixVersions(final JiraProject jiraProject) throws RemotePermissionException,
@@ -174,28 +103,112 @@ public class JiraSoapClient {
 		return versions;
 	}
 
-	public static JiraSoapClient getInstance(String address) {
-		if (instance == null) {
-			synchronized (JiraSoapClient.class) {
-				if (instance == null) {
-					JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = getLocator(address);
-					JiraSoapService jirasoapserviceV2 = null;
-					try {
-						jirasoapserviceV2 = jiraSoapServiceServiceLocator.getJirasoapserviceV2();
-						return new JiraSoapClient(jirasoapserviceV2);
-					} catch (ServiceException e) {
-						e.printStackTrace();
-					}
-				}
+	public RemoteIssue getJira(final String jiraName) throws RemotePermissionException, RemoteAuthenticationException,
+			com.atlassian.jira.rpc.exception.RemoteException, RemoteException, JiraIssueNotFoundException {
+		log.debug("Getting Jira " + jiraName);
+		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
+
+			public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
+					com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+				log.trace("accessJiraAndReturn!!");
+				String token2 = getToken();
+				log.trace("Getting Jira Action!! (" + token2 + " - " + jiraName + ")");
+				return jiraSoapService.getIssue(token2, jiraName);
 			}
+
+		});
+		RemoteIssue execute = null;
+		try {
+			execute = (RemoteIssue) command.execute();
+		} catch (java.rmi.RemoteException e) {
+			AxisFault axisFault = (org.apache.axis.AxisFault) e;
+			if ("java.lang.NullPointerException".equals(axisFault.getFaultString()))
+				throw new JiraIssueNotFoundException("Jira \"" + jiraName + "\" not found!");
 		}
-		return instance;
+		log.trace("Getting Jira Done!" + jiraName);
+		return execute;
 	}
 
-	private static JiraSoapServiceServiceLocator getLocator(String address) {
-		JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
-		jiraSoapServiceServiceLocator.setJirasoapserviceV2EndpointAddress(address);
-		log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
-		return jiraSoapServiceServiceLocator;
+	public RemoteResolution[] getResolutions() throws RemotePermissionException, RemoteAuthenticationException, RemoteException {
+		log.debug("Getting Resolutions");
+
+		JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
+			public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
+					com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+				return jiraSoapService.getResolutions(getToken());
+			}
+
+		});
+		return (RemoteResolution[]) command.execute();
+	}
+
+	public RemoteIssueType[] getTypes() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+      log.debug("Getting Resolutions");
+
+      JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
+         public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
+               com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+            return jiraSoapService.getIssueTypes(getToken());
+         }
+
+      });
+      return (RemoteIssueType[]) command.execute();
+      }
+
+	private String getToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
+			RemoteException {
+		log.debug("Getting Token!");
+		if (token == null) {
+			log.trace("Syncing Token Block");
+			synchronized (this) {
+				log.trace("Syncing Token Block has been synced");
+				if (token == null) {
+					log.debug("Token needs renewing!");
+					renewToken();
+				}
+				log.trace("Block Synced Done!");
+			}
+		}
+		return token;
+	}
+
+	private synchronized void renewToken() throws RemoteAuthenticationException,
+			com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+		log.debug("Renewing Token");
+		token = jiraSoapService.login(LOGIN_NAME, LOGIN_PASSWORD);
+		log.debug("Renewing Token Done!");
+	}
+
+	interface JiraAccessAction {
+		Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
+				com.atlassian.jira.rpc.exception.RemoteException, RemoteException;
+	}
+
+   class JiraTokenCommand {
+
+		private final JiraAccessAction action;
+		private final Logger log = MyLogger.getLogger(JiraTokenCommand.class);
+
+		public JiraTokenCommand(JiraAccessAction action) {
+			this.action = action;
+		}
+
+		public Object execute() throws RemotePermissionException, RemoteAuthenticationException,
+				com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+			// RemoteException - If there was some problem preventing the operation from working.
+			// RemotePermissionException - If the user is not permitted to perform this operation in this context.
+			// RemoteAuthenticationException - If the token is invalid or the SOAP session has timed out
+			// RemoteValidationException - If the arguments and their properties are incomplete or malformed.
+
+			try {
+				log.debug("ConductingAction : " + action);
+				return action.accessJiraAndReturn();
+			} catch (RemoteAuthenticationException e) {
+				log.info(e);
+				log.info("Session timed out. Renewing token again!");
+				renewToken();
+			}
+			return action.accessJiraAndReturn();
+		}
 	}
 }
