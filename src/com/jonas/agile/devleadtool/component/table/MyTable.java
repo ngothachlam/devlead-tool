@@ -79,11 +79,16 @@ public class MyTable extends JTable {
    
    public Object getValueAt(Column column, int rowInView) {
       int colInView = getColumnIndex(column);
-      return ((MyTableModel)getModel()).getValueAt(convertRowIndexToModel(rowInView), convertColumnIndexToModel(colInView));
+      MyTableModel model = (MyTableModel)getModel();
+      return model.getValueAt(convertRowIndexToModel(rowInView), convertColumnIndexToModel(colInView));
    }
 
    public void addJira(String jira) {
       MyTableModel model = (MyTableModel) getModel();
       model.addJira(jira);
+   }
+
+   public void setValueAt(Object value, int row, Column column) {
+      setValueAt(value, row, getColumnIndex(column));
    }
 }

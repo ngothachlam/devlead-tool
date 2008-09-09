@@ -18,9 +18,9 @@ import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyComboBox;
-import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
+import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
@@ -31,6 +31,7 @@ import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRende
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
 
@@ -73,7 +74,15 @@ public class PlanPanel extends MyComponentPanel {
       JPanel buttons = new JPanel();
 
       addPanelWithAddAndRemoveOptions(table, buttons);
-      // addButton(buttons, "Sync", new SyncWithJiraActionListener(table, helper));
+      SyncWithJiraActionListener listener = new SyncWithJiraActionListener(table, helper);
+      listener.addListener(new SyncWithJiraActionListenerListener(){
+         public void jiraSynced(JiraIssue jira, int tableRowSynced) {
+            table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
+         }
+         public void jiraSyncedCompleted() {
+         }
+      });
+      addButton(buttons, "Sync", listener);
       addButton(buttons, "Open Jiras", new OpenJirasListener(table, helper));
 
       setupPlanVersionsFrame();
