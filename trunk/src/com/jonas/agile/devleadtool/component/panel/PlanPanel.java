@@ -18,6 +18,8 @@ import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyComboBox;
+import com.jonas.agile.devleadtool.component.listener.CopyToTableListener;
+import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
@@ -86,8 +88,13 @@ public class PlanPanel extends MyComponentPanel {
          }
       });
       addButton(buttons, "Sync", listener);
+      addButton(buttons, "Copy to Jira", new CopyToTableListener(table, new DestinationRetriever() {
+         public MyTable getDestinationTable() {
+            return helper.getActiveInternalFrame().getJiraTable();
+         }
+      }, helper));
       addButton(buttons, "Open Jiras", new OpenJirasListener(table, helper));
-
+      
       setupPlanVersionsFrame();
 
       addButton(buttons, "PlanVersions", new ActionListener() {
@@ -190,5 +197,9 @@ public class PlanPanel extends MyComponentPanel {
       public void actionPerformed(ActionEvent e) {
          table.refreshFixVersions();
       }
+   }
+
+   public MyTable getTable() {
+      return table;
    }
 }
