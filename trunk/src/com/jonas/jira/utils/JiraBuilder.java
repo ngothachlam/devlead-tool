@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
+import com.atlassian.jira.rpc.soap.beans.RemoteCustomFieldValue;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.agile.devleadtool.PlannerHelper;
@@ -56,8 +57,13 @@ public class JiraBuilder {
       return instance;
    }
 
-   public JiraIssue buildJira(Element e) {
-      return new JiraIssue(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"), get(e, "type"));
+   JiraIssue buildJira(Element e) {
+      JiraIssue jiraIssue = new JiraIssue(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"), get(e, "type"));
+      for (XPathImplementor xPathImplementor : jiraXpathActions) {
+         log.debug("executing xpathImplementor on Jira " + jiraIssue.getKey());
+         xPathImplementor.execute(e, jiraIssue);
+      }
+      return jiraIssue;
    }
 
    public JiraIssue buildJira(Element e, List<JiraVersion> fixVersions) {
@@ -77,7 +83,10 @@ public class JiraBuilder {
       String statusName = status != null ? status.getName() : null;
       String resolutionName = resolution != null ? resolution.getName() : null;
       String typeName = type != null ? type.getName() : null;
-      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName, typeName);
+      RemoteCustomFieldValue[] customFieldValues = remoteJira.getCustomFieldValues();
+      String buildNo = getCustomFieldValue(customFieldValues, "customfield_10160");
+      // fixme - doesn't work with estimate at the moment.
+      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName, typeName, buildNo, -1f);
       RemoteVersion[] tempFixVersions = remoteJira.getFixVersions();
       for (int i = 0; i < tempFixVersions.length; i++) {
          RemoteVersion remoteVersion = tempFixVersions[i];
@@ -93,6 +102,15 @@ public class JiraBuilder {
       return jira;
    }
 
+   private String getCustomFieldValue(RemoteCustomFieldValue[] customFieldValues, String anObject) {
+      for (RemoteCustomFieldValue remoteCustomFieldValue : customFieldValues) {
+         String customfieldId = remoteCustomFieldValue.getCustomfieldId();
+         if (customfieldId.equals(anObject))
+            return remoteCustomFieldValue.getValues()[0];
+      }
+      return "";
+   }
+
    private String getJiraFieldIfNotNull(JiraType type) {
       return type != null ? type.getName() : null;
    }
@@ -105,12 +123,6 @@ public class JiraBuilder {
          List<JiraVersion> versions = buildJiraVersion(e);
          JiraIssue jiraIssue = buildJira(e, versions);
          log.debug("built jira " + jiraIssue.getKey());
-
-         for (XPathImplementor xPathImplementor : jiraXpathActions) {
-            log.debug("executing xpathImplementor on Jira " + jiraIssue.getKey());
-            xPathImplementor.execute(e, jiraIssue);
-         }
-
          jiras.add(jiraIssue);
 
       }
