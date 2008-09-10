@@ -3,11 +3,13 @@ package com.jonas.jira.utils;
 import java.util.List;
 import org.easymock.EasyMock;
 import org.jdom.Element;
+import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.agile.devleadtool.junitutils.TestIterator;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.TestObjects;
+import com.jonas.jira.access.JiraSoapClient;
 
 public class JiraBuilderTest extends JonasTestCase {
 
@@ -15,6 +17,13 @@ public class JiraBuilderTest extends JonasTestCase {
    List<Element> listWithBuildNo = getDomFromFile(TestObjects.fileWithBuildNo, XPATH_JIRA_RSS_CHANNEL_ITEM);
    List<Element> listWithEstimate = getDomFromFile(TestObjects.fileWithBuildAndEstimate, XPATH_JIRA_RSS_CHANNEL_ITEM);
    List<Element> listWithOutBuildNo = getDomFromFile(TestObjects.fileWithoutBuildNo, XPATH_JIRA_RSS_CHANNEL_ITEM);
+   private JiraBuilder jiraBuilder;
+   
+   @Override
+   protected void setUp() throws Exception {
+      super.setUp();
+      jiraBuilder = new JiraBuilder();
+   }
 
    public void testShouldBuildJiraOkUsingElement() {
       Element e = createClassMock(Element.class);
@@ -22,7 +31,7 @@ public class JiraBuilderTest extends JonasTestCase {
 
       replay();
 
-      JiraIssue jira = (new JiraBuilder()).buildJira(e);
+      JiraIssue jira = jiraBuilder.buildJira(e);
 
       verify();
 
@@ -41,7 +50,7 @@ public class JiraBuilderTest extends JonasTestCase {
 
       replay();
 
-      JiraIssue jira = (new JiraBuilder()).buildJira(e, fixVersions);
+      JiraIssue jira = jiraBuilder.buildJira(e, fixVersions);
 
       verify();
 
@@ -61,7 +70,7 @@ public class JiraBuilderTest extends JonasTestCase {
 
       replay();
 
-      JiraIssue jira = (new JiraBuilder()).buildJira(e, fixVersions);
+      JiraIssue jira = jiraBuilder.buildJira(e, fixVersions);
 
       verify();
 
@@ -78,7 +87,7 @@ public class JiraBuilderTest extends JonasTestCase {
 
       replay();
 
-      List<JiraIssue> jiras = (new JiraBuilder()).buildJiras(mockList);
+      List<JiraIssue> jiras = jiraBuilder.buildJiras(mockList);
 
       verify();
 
@@ -96,7 +105,7 @@ public class JiraBuilderTest extends JonasTestCase {
 
       replay();
 
-      List<JiraIssue> jiras = (new JiraBuilder()).buildJiras(mockList);
+      List<JiraIssue> jiras = jiraBuilder.buildJiras(mockList);
 
       verify();
 
@@ -114,7 +123,7 @@ public class JiraBuilderTest extends JonasTestCase {
 
       replay();
 
-      List<JiraIssue> jiras = (new JiraBuilder()).buildJiras(mockList);
+      List<JiraIssue> jiras = jiraBuilder.buildJiras(mockList);
 
       verify();
 
@@ -136,5 +145,15 @@ public class JiraBuilderTest extends JonasTestCase {
       assertEquals(0.5f, JiraBuilder.getSecondsAsDays(60 * 60 * 4));
       assertEquals(0.25f, JiraBuilder.getSecondsAsDays(60 * 60 * 2));
       assertEquals(0.125f, JiraBuilder.getSecondsAsDays(60 * 60 * 1));
+   }
+   
+   public void testShouldBUildJiraOkUsingSoapCall(){
+      RemoteIssue mock_remoteIssue = createClassMock(RemoteIssue.class);
+      
+      verify();
+      
+      jiraBuilder.buildJira(mock_remoteIssue, TestObjects.Project_TST1);
+      
+      replay();
    }
 }
