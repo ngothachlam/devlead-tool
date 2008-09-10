@@ -3,20 +3,16 @@ package com.jonas.agile.devleadtool.component.panel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.InternalFrame;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyComponentPanel;
-import com.jonas.common.MyPanel;
 
 public class InternalFrameTabPanel extends MyComponentPanel {
 
