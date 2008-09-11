@@ -23,7 +23,7 @@ public class ColumnNew {
    
    public static final ColumnNew isOpen = new ColumnNew(Boolean.FALSE, Column.isOpen);
    public static final ColumnNew isBug = new ColumnNew(Boolean.FALSE, Column.isBug);
-   public static final ColumnNew isInProgress = new ColumnNew(Boolean.FALSE, Column.isInProgress);
+   public static final ColumnNew isInProgress = new ColumnNew(Boolean.FALSE, Column.Remaining_Progress);
    public static final ColumnNew isResolved = new ColumnNew(Boolean.FALSE, Column.isResolved);
    public static final ColumnNew isComplete = new ColumnNew(Boolean.FALSE, Column.isComplete);
    

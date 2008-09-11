@@ -5,7 +5,7 @@ package com.jonas.agile.devleadtool.component.table;
 
 public enum Column {
    // String Defaults
-   URL, Jira, Description, FixVersion, Status, Resolution, BuildNo, Type, Note, Planned_Sprint, Resolved_Sprint, Closed_Sprint,
+   URL, Jira, Description, FixVersion, Status, Resolution, BuildNo, Type, Note, Planned_Sprint, Resolved_Sprint, Closed_Sprint, Remaining_Progress,
 
    // Float Defaults
    Estimate {
@@ -29,12 +29,6 @@ public enum Column {
       }
    },
    isBug {
-      @Override
-      public Object getCellContentDefault() {
-         return Boolean.FALSE;
-      }
-   },
-   isInProgress {
       @Override
       public Object getCellContentDefault() {
          return Boolean.FALSE;
