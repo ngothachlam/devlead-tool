@@ -12,7 +12,7 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.isOpen, Column.isBug, Column.isInProgress, Column.isResolved, Column.isComplete, Column.isInPlan };
+   private static final Column[] columns = { Column.Jira, Column.isOpen, Column.isBug, Column.Remaining_Progress, Column.isResolved, Column.isComplete, Column.isInPlan };
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
 
@@ -34,7 +34,7 @@ public class BoardTableModel extends MyTableModel {
             switch (column) {
             case isOpen:
             case isBug:
-            case isInProgress:
+            case Remaining_Progress:
             case isResolved:
             case isComplete:
                if (getBoardStatus(row, column)) {
@@ -62,7 +62,7 @@ class BoardStatusToColumnMap {
    private static final Map<Column, BoardStatus> map = new HashMap<Column, BoardStatus>();
    private static final BoardStatusToColumnMap mapping1 = new BoardStatusToColumnMap(Column.isOpen, BoardStatus.Open);
    private static final BoardStatusToColumnMap mapping2 = new BoardStatusToColumnMap(Column.isBug, BoardStatus.Bugs);
-   private static final BoardStatusToColumnMap mapping3 = new BoardStatusToColumnMap(Column.isInProgress, BoardStatus.InProgress);
+   private static final BoardStatusToColumnMap mapping3 = new BoardStatusToColumnMap(Column.Remaining_Progress, BoardStatus.InProgress);
    private static final BoardStatusToColumnMap mapping4 = new BoardStatusToColumnMap(Column.isResolved, BoardStatus.Resolved);
    private static final BoardStatusToColumnMap mapping5 = new BoardStatusToColumnMap(Column.isComplete, BoardStatus.Complete);
 
