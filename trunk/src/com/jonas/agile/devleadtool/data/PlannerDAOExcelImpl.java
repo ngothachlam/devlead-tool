@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.extractor.ExcelExtractor;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
@@ -87,15 +86,18 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             int cellType = cell.getCellType();
             log.debug("Going through columns. Got column of type " + cellType);
             switch (cellType) {
+            case HSSFCell.CELL_TYPE_BLANK:
+               rowData.add(null);
+               break;
             case HSSFCell.CELL_TYPE_BOOLEAN:
-               rowData.add(new Boolean(cell.getBooleanCellValue()));
+               rowData.add(Boolean.valueOf(cell.getBooleanCellValue()));
                break;
             case HSSFCell.CELL_TYPE_NUMERIC:
                rowData.add(new Double(cell.getNumericCellValue()));
                break;
             case HSSFCell.CELL_TYPE_STRING:
                HSSFRichTextString cellHeader = cell.getRichStringCellValue();
-               String cellHeaderAsString = (cellHeader == null ? new String("") : cellHeader.getString());
+               String cellHeaderAsString = (cellHeader == null ? "" : cellHeader.getString());
                if (rowCount == 0)
                   dataModelDTO.getHeader().add(getHeaderMappingToColumn(cellHeaderAsString));
                else
@@ -136,7 +138,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             cell.setCellValue(((Boolean) valueAt).booleanValue());
          } else if (valueAt instanceof String) {
             cell.setCellValue(new HSSFRichTextString((String) valueAt));
-         }
+         } 
       }
       // Create a row and put some cells in it. Rows are 0 based.
       for (int rowCount = 0; rowCount < model.getRowCount(); rowCount++) {

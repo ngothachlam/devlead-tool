@@ -29,7 +29,7 @@ public class BoardTableModelTest extends JonasTestCase {
       assertTrue(model.isCellEditable(0, 3));
       assertTrue(model.isCellEditable(0, 4));
       assertTrue(model.isCellEditable(0, 5));
-      assertFalse(model.isCellEditable(0, 6));
+      assertTrue(model.isCellEditable(0, 6));
    }
 
    private Object[] getEmptyRow() {
@@ -46,7 +46,7 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(new Integer(0).intValue(), columnNames.get(Column.Jira).intValue());
       assertEquals(new Integer(1).intValue(), columnNames.get(Column.isOpen).intValue());
       assertEquals(new Integer(2).intValue(), columnNames.get(Column.isBug).intValue());
-      assertEquals(new Integer(3).intValue(), columnNames.get(Column.Remaining_Progress).intValue());
+      assertEquals(new Integer(3).intValue(), columnNames.get(Column.isInProgress).intValue());
       assertEquals(new Integer(4).intValue(), columnNames.get(Column.isResolved).intValue());
       assertEquals(new Integer(5).intValue(), columnNames.get(Column.isComplete).intValue());
       assertEquals(new Integer(6).intValue(), columnNames.get(Column.isInPlan).intValue());
@@ -81,7 +81,7 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals("Jira", model.getColumnName(0));
       assertEquals("isOpen", model.getColumnName(1));
       assertEquals("isBug", model.getColumnName(2));
-      assertEquals("isInProgress", model.getColumnName(3));
+      assertEquals("Remaining_Progress", model.getColumnName(3));
       assertEquals("isResolved", model.getColumnName(4));
       assertEquals("isComplete", model.getColumnName(5));
       assertEquals("isInPlan", model.getColumnName(6));

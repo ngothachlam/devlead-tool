@@ -9,6 +9,7 @@ import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDTO;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
@@ -44,7 +45,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    final public void addJira(String jira) {
       if (!doesJiraExist(jira)) {
          Object[] row = getEmptyRow();
-         row[0] = jira;
+         row[0] = jira.toUpperCase();
          log.debug("addJira of row size: " + row.length);
          addRow(row);
       }
@@ -72,6 +73,31 @@ public abstract class MyTableModel extends DefaultTableModel {
       return -1;
    }
 
+//   final public Object[] getEmptyRow() {
+//      Map<Column, Integer> colnams = getColumnNames();
+//      Object[] objects = new Object[colnams.size()];
+//      int i = 0;
+//      log.debug("getting Empty Row");
+//      for (Column column : colnams.keySet()) {
+//         ColumnDTO dto = ColumnDTO.getColumnDTO(column);
+//         objects[i++] = dto.getDefaultValue();
+//         log.debug("column: " + column + " containing: " + objects[i - 1]);
+//      }
+//      return objects;
+//   }
+   
+//   final public Class[] getEmptyRowClass() {
+//      Map<Column, Integer> colnams = getColumnNames();
+//      Class[] objects = new Object[colnams.size()];
+//      int i = 0;
+//      log.debug("getting Empty Row");
+//      for (Column column : colnams.keySet()) {
+//         ColumnDTO dto = ColumnDTO.getColumnDTO(column);
+//         objects[i++] = dto.getClass();
+//         log.debug("column: " + column + " containing: " + objects[i - 1]);
+//      }
+//      return objects;
+//   }
    final public Object[] getEmptyRow() {
       Map<Column, Integer> colnams = getColumnNames();
       Object[] objects = new Object[colnams.size()];
@@ -148,6 +174,15 @@ public abstract class MyTableModel extends DefaultTableModel {
          }
       }
       return false;
+   }
+   
+   final public int getJiraRow(String name) {
+      for (int row = 0; row < getRowCount(); row++) {
+         if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
+            return row;
+         }
+      }
+      return -1;
    }
 
    final protected void initiateColumns(Column[] columns) {
@@ -256,7 +291,7 @@ public abstract class MyTableModel extends DefaultTableModel {
             case FixVersion:
                contents.add(jiraIssue.getFixVersions());
                break;
-            case Status:
+            case JiraStatus:
                contents.add(jiraIssue.getStatus());
                break;
             case Resolution:
@@ -265,7 +300,7 @@ public abstract class MyTableModel extends DefaultTableModel {
             case BuildNo:
                contents.add(jiraIssue.getBuildNo());
                break;
-            case Estimate:
+            case Dev_Estimate:
                contents.add(jiraIssue.getEstimate());
                break;
             case Type:

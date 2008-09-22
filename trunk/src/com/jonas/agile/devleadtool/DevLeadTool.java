@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -12,7 +11,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-
 import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.dialog.ClosingDialog;
 import com.jonas.agile.devleadtool.component.dialog.LoadDialog;
@@ -26,100 +24,101 @@ import com.jonas.common.MyPanel;
 
 public class DevLeadTool {
 
-	private PlannerHelper plannerHelper;
+   private PlannerHelper plannerHelper;
 
-	DevLeadTool() {
-	}
+   DevLeadTool() {
+   }
 
-	public void start() {
-		// SwingUtilities.invokeLater(new Runnable() {
-		// public void run() {
-		makeUI();
-		// }
-		// });
-	}
+   public void start() {
+      // SwingUtilities.invokeLater(new Runnable() {
+      // public void run() {
+      makeUI();
+      // }
+      // });
+   }
 
-	private void makeUI() {
-		JFrame frame = setLookAndFeel();
+   private void makeUI() {
+      JFrame frame = setLookAndFeel();
+      plannerHelper = new PlannerHelper(frame, "Planner");
 
-		DesktopPane desktop = new DesktopPane();
-		JPanel contentPanel = new MyPanel(new BorderLayout());
-		contentPanel.add(desktop);
-		frame.setJMenuBar(createMenuBar(frame, desktop));
-		frame.setContentPane(contentPanel);
+      DesktopPane desktop = new DesktopPane();
+      JPanel contentPanel = new MyPanel(new BorderLayout());
+      contentPanel.add(desktop);
+      plannerHelper.setDesktop(desktop);
+      frame.setJMenuBar(createMenuBar(frame, desktop));
+      frame.setContentPane(contentPanel);
 
-		frame.setSize(new Dimension(1000, 500));
-		frame.setVisible(true);
-		frame.addWindowListener(new MainFrameListener(frame));
+      frame.setSize(new Dimension(1000, 500));
+      frame.setVisible(true);
+      frame.addWindowListener(new MainFrameListener(frame));
 
-	}
+   }
 
-	private JFrame setLookAndFeel() {
-		JFrame frame = new JFrame("Jonas' Dev Lead Tool");
-		// Use the Java look and feel.
-		try {
-			String laf = UIManager.getCrossPlatformLookAndFeelClassName();
-			laf = UIManager.getSystemLookAndFeelClassName();
-			UIManager.setLookAndFeel(laf);
-		} catch (Exception e) {
-		}
+   private JFrame setLookAndFeel() {
+      JFrame frame = new JFrame("Jonas' Dev Lead Tool");
+      // Use the Java look and feel.
+      try {
+         String laf = UIManager.getCrossPlatformLookAndFeelClassName();
+         laf = UIManager.getSystemLookAndFeelClassName();
+         UIManager.setLookAndFeel(laf);
+      } catch (Exception e) {
+      }
 
-		// Make sure we have nice window decorations.
-		JFrame.setDefaultLookAndFeelDecorated(true);
-		JDialog.setDefaultLookAndFeelDecorated(true);
-		return frame;
-	}
+      // Make sure we have nice window decorations.
+      JFrame.setDefaultLookAndFeelDecorated(true);
+      JDialog.setDefaultLookAndFeelDecorated(true);
+      return frame;
+   }
 
-	private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
-		plannerHelper = new PlannerHelper(frame, "Planner");
-		final PlannerDAOExcelImpl plannerDAO = new PlannerDAOExcelImpl(new TableModelBuilder());
+   private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
+      final PlannerDAOExcelImpl plannerDAO = new PlannerDAOExcelImpl(new TableModelBuilder());
 
-		JMenuItem planner = createMenuItem("New Planner", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new PlannerDialog(frame, desktop, plannerHelper);
-			}
-		});
-		JMenuItem open = createMenuItem("Open Planner", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new LoadDialog(desktop, plannerDAO, frame, plannerHelper);
-			}
-		});
-		JMenuItem save = createMenuItem("Save Planner", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new SaveDialog(plannerDAO, frame, plannerHelper);
-			}
-		});
-		JMenuItem exit = createMenuItem("Exit All", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new ClosingDialog(frame, plannerHelper);
-			}
-		});
-		return new JMenuItem[] { planner, open, save, exit };
-	}
+      JMenuItem planner = createMenuItem("New Planner", new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            new PlannerDialog(frame, desktop, plannerHelper);
+         }
+      });
+      JMenuItem open = createMenuItem("Open Planner", new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            new LoadDialog(desktop, plannerDAO, frame, plannerHelper);
+         }
+      });
+      JMenuItem save = createMenuItem("Save Planner", new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            new SaveDialog(plannerDAO, frame, plannerHelper);
+         }
+      });
+      JMenuItem exit = createMenuItem("Exit All", new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            new ClosingDialog(frame, plannerHelper);
+         }
+      });
+      return new JMenuItem[] { planner, open, save, exit };
+   }
 
-	private JMenu createFileMenu(String title, JMenuItem[] menuItemList) {
-		JMenu fileMenu = new JMenu(title);
-		for (int i = 0; i < menuItemList.length; i++) {
-			fileMenu.add(menuItemList[i]);
-		}
-		return fileMenu;
-	}
+   private JMenu createFileMenu(String title, JMenuItem[] menuItemList) {
+      JMenu fileMenu = new JMenu(title);
+      for (int i = 0; i < menuItemList.length; i++) {
+         fileMenu.add(menuItemList[i]);
+      }
+      return fileMenu;
+   }
 
-	private JMenuItem createMenuItem(String menuTitle, ActionListener actionListener) {
-		JMenuItem menuItem = new JMenuItem(menuTitle);
-		menuItem.addActionListener(actionListener);
-		return menuItem;
-	}
+   private JMenuItem createMenuItem(String menuTitle, ActionListener actionListener) {
+      JMenuItem menuItem = new JMenuItem(menuTitle);
+      menuItem.addActionListener(actionListener);
+      return menuItem;
+   }
 
-	private JMenuBar createMenuBar(final JFrame frame, DesktopPane desktop) {
-		JMenu fileMenuFile = createFileMenu("File", getFileMenuItemArray(frame, desktop));
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(fileMenuFile);
-		return menuBar;
-	}
+   private JMenuBar createMenuBar(final JFrame frame, DesktopPane desktop) {
+      JMenu fileMenuFile = createFileMenu("File", getFileMenuItemArray(frame, desktop));
+      JMenuBar menuBar = new JMenuBar();
+      menuBar.add(fileMenuFile);
+      return menuBar;
+   }
 
-	public PlannerHelper getHelper() {
-		return plannerHelper;
-	}
+   public PlannerHelper getHelper() {
+      return plannerHelper;
+   }
 
 }

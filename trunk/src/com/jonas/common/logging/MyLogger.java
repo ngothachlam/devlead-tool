@@ -14,4 +14,8 @@ public class MyLogger {
 	public static Logger getLogger(Class className) {
 		return Logger.getLogger(className);
 	}
+
+   public static void setup(String log4jPropertyLocation) {
+      PropertyConfigurator.configure(log4jPropertyLocation);
+   }
 }

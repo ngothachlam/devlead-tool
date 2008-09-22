@@ -38,7 +38,7 @@ public class MyTableTest extends JonasTestCase {
 
    public void testShouldIdentifyColumnInCorrectly() throws SecurityException, NoSuchMethodException {
       MyTableModel mock_table_model = createClassMock(JiraTableModel.class);
-      EasyMock.expect(mock_table_model.getColumnEnum(0)).andReturn(Column.Actual);
+      EasyMock.expect(mock_table_model.getColumnEnum(0)).andReturn(Column.Dev_Actual);
 
       // mock out table methods (jtable is a big class!)
       MyTable newtable = createMock(MyTable.class, MyTable.class.getMethod("getModel", null), MyTable.class.getMethod("convertColumnIndexToModel", int.class));
@@ -59,22 +59,23 @@ public class MyTableTest extends JonasTestCase {
       table.addEmptyRow();
       
       assertEquals(1, table.getRowCount());
-      assertEquals(9, table.getColumnCount());
+      assertEquals(10, table.getColumnCount());
       assertEquals("", table.getValueAt(0, 0));
       assertEquals("", table.getValueAt(0, 1));
       assertEquals("", table.getValueAt(0, 2));
       assertEquals("", table.getValueAt(0, 3));
       assertEquals("", table.getValueAt(0, 4));
       assertEquals("", table.getValueAt(0, 5));
-      assertEquals(0f, table.getValueAt(0, 6));
-      assertEquals(0f, table.getValueAt(0, 7));
+      assertEquals("", table.getValueAt(0, 6));
+      assertEquals("", table.getValueAt(0, 7));
       assertEquals("", table.getValueAt(0, 8));
+      assertEquals("", table.getValueAt(0, 9));
       
       table.setValueAt("newValue", 0, Column.Description);
-      table.setValueAt(1f, 0, Column.Estimate);
+      table.setValueAt(1f, 0, Column.Dev_Estimate);
       
       assertEquals(1, table.getRowCount());
-      assertEquals(9, table.getColumnCount());
+      assertEquals(10, table.getColumnCount());
       assertEquals("", table.getValueAt(0, 0));
       assertEquals("newValue", table.getValueAt(0, 1));
       assertEquals("", table.getValueAt(0, 2));
@@ -82,8 +83,9 @@ public class MyTableTest extends JonasTestCase {
       assertEquals("", table.getValueAt(0, 4));
       assertEquals("", table.getValueAt(0, 5));
       assertEquals(1f, table.getValueAt(0, 6));
-      assertEquals(0f, table.getValueAt(0, 7));
+      assertEquals("", table.getValueAt(0, 7));
       assertEquals("", table.getValueAt(0, 8));
+      assertEquals("", table.getValueAt(0, 9));
       
    }
 }

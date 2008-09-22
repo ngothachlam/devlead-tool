@@ -28,10 +28,10 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.Jira);
       header.add(Column.Description);
       header.add(Column.FixVersion);
-      header.add(Column.Status);
+      header.add(Column.JiraStatus);
       header.add(Column.Resolution);
       header.add(Column.BuildNo);
-      header.add(Column.Estimate);
+      header.add(Column.Dev_Estimate);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       contents.add(getTestRowVector(new String[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "Estimate" }, 0));
@@ -49,11 +49,11 @@ public class JiraTableModelTest extends JonasTestCase {
       Vector<Column> header = new Vector<Column>();
       header.add(Column.Description);
       header.add(Column.Jira);
-      header.add(Column.Status);
+      header.add(Column.JiraStatus);
       header.add(Column.FixVersion);
       header.add(Column.BuildNo);
       header.add(Column.Resolution);
-      header.add(Column.Estimate);
+      header.add(Column.Dev_Estimate);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       contents.add(getTestRowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 0));
@@ -88,11 +88,11 @@ public class JiraTableModelTest extends JonasTestCase {
       Vector<Column> header = new Vector<Column>();
       header.add(Column.Description);
       header.add(Column.Jira);
-      header.add(Column.Status);
+      header.add(Column.JiraStatus);
       header.add(Column.FixVersion);
       header.add(Column.BuildNo);
       header.add(Column.Resolution);
-      header.add(Column.Estimate);
+      header.add(Column.Dev_Estimate);
       header.add(Column.Note);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();

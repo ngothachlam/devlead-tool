@@ -13,6 +13,7 @@ public class Main {
       }
    } 
 
+   //FIXME When putting a new plan in - the estimates and actuals needs to be null or empty strings.
    // TODO drag'n'drop table rows = all tables!!
    // TODO add function to 'drag' lines (not columns) for prioritisation
    // TODO when refreshing jira info on Jira tab - update combo box for fixversions for plan

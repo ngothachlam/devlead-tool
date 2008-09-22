@@ -74,10 +74,10 @@ public class JiraPanel extends MyComponentPanel {
          public void jiraSynced(JiraIssue jira, int tableRowSynced) {
             table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
             table.setValueAt(jira.getFixVersions(), tableRowSynced, Column.FixVersion);
-            table.setValueAt(jira.getStatus(), tableRowSynced, Column.Status);
+            table.setValueAt(jira.getStatus(), tableRowSynced, Column.JiraStatus);
             table.setValueAt(jira.getResolution(), tableRowSynced, Column.Resolution);
             table.setValueAt(jira.getBuildNo(), tableRowSynced, Column.BuildNo);
-            table.setValueAt(jira.getEstimate(), tableRowSynced, Column.Estimate);
+            table.setValueAt(jira.getEstimate(), tableRowSynced, Column.Dev_Estimate);
          }
          public void jiraSyncedCompleted() {
          }

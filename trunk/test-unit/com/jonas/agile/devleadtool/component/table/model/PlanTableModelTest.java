@@ -37,7 +37,7 @@ public class PlanTableModelTest extends JonasTestCase {
       PlanTableModel model = new PlanTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(9, model.getColumnCount());
+      assertEquals(10, model.getColumnCount());
       assertEquals("row0-0", model.getValueAt(0, 0));
       assertEquals(null, model.getValueAt(0, 1));
       assertEquals(null, model.getValueAt(0, 2));
@@ -61,4 +61,56 @@ public class PlanTableModelTest extends JonasTestCase {
    public void testShouldHaveEmptyRowAndColumnNamesOfSameSize() {
       assertEquals(model.getColumnNames().size(), model.getEmptyRow().length);
    }
+
+   public void testShouldGetColumnForJiraOk() {
+      Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
+      PlanTableModel model = new PlanTableModel();
+
+      String jira_one = "llu-1";
+      String jira_two = "llu-2";
+      
+      assertFalse(model.doesJiraExist(jira_one));
+      assertFalse(model.doesJiraExist(jira_two));
+      assertEquals(0, model.getRowCount());
+      assertEquals(10, model.getColumnCount());
+
+      model.addJira(jira_one);
+      model.addJira(jira_two);
+
+      assertTrue(model.doesJiraExist(jira_one));
+      assertTrue(model.doesJiraExist(jira_two));
+
+      assertEquals(2, model.getRowCount());
+      assertEquals(10, model.getColumnCount());
+      assertEquals("LLU-1", model.getValueAt(0, 0));
+      assertEquals("", model.getValueAt(0, 1));
+      assertEquals("", model.getValueAt(0, 2));
+      assertEquals("", model.getValueAt(0, 3));
+      assertEquals("", model.getValueAt(0, 4));
+      assertEquals("", model.getValueAt(0, 5));
+      assertEquals("", model.getValueAt(0, 6));
+      assertEquals("", model.getValueAt(0, 7));
+      assertEquals("", model.getValueAt(0, 8));
+      assertEquals("LLU-2", model.getValueAt(1, 0));
+      assertEquals("", model.getValueAt(1, 1));
+      assertEquals("", model.getValueAt(1, 2));
+      assertEquals("", model.getValueAt(1, 3));
+      assertEquals("", model.getValueAt(1, 4));
+      assertEquals("", model.getValueAt(1, 5));
+      assertEquals("", model.getValueAt(1, 6));
+      assertEquals("", model.getValueAt(1, 7));
+      assertEquals("", model.getValueAt(1, 8));
+      
+      model.setValueAt("blah1", 0, 1);
+      model.setValueAt("blah2", 1, 2);
+      
+      assertEquals("LLU-1", (String) model.getValueAt(Column.Jira, jira_one));
+      assertEquals("blah1", (String) model.getValueAt(Column.Description, jira_one));
+      assertEquals("", (String) model.getValueAt(Column.Type, jira_one));
+      
+      assertEquals("LLU-2", (String) model.getValueAt(Column.Jira, jira_two));
+      assertEquals("", (String) model.getValueAt(Column.Description, jira_two));
+      assertEquals("blah2", (String) model.getValueAt(Column.Type, jira_two));
+   }
+
 }

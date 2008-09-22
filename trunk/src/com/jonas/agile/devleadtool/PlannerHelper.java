@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 
+import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.InternalFrame;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.common.logging.MyLogger;
@@ -34,6 +35,8 @@ public class PlannerHelper {
 	private JFrame frame;
 
 	private PlannerCommunicator plannerCommunicator = new PlannerCommunicator(this);
+
+   private static DesktopPane desktop;
 
 	public PlannerHelper(JFrame frame, String title) {
 		this.frame = frame;
@@ -121,4 +124,12 @@ public class PlannerHelper {
 	public PlannerCommunicator getPlannerCommunicator() {
 		return plannerCommunicator;
 	}
+
+   public void setDesktop(DesktopPane desktop) {
+      this.desktop = desktop;
+   }
+   
+   public DesktopPane getDesktop(){
+      return desktop;
+   }
 }
