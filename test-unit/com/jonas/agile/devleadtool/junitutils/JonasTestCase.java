@@ -13,7 +13,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
-import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.TestObjects;
@@ -27,7 +27,11 @@ public class JonasTestCase extends TestCase {
 
    protected Factory mockFactory = createInterfaceMock(Factory.class);
    protected JiraBuilder mockJiraBuilder = createClassMock(JiraBuilder.class);
-
+   
+   protected JonasTestCase(){
+      MyLogger.setup("properties/log4j.properties");
+   }
+   
    protected void assertJiraDetails(JiraIssue jira, String expectedKey, String expectedSummary, String expectedStatus, String expectedResolution, String expectedType) {
       assertEquals(expectedKey, jira.getKey());
       assertEquals(expectedSummary, jira.getSummary());

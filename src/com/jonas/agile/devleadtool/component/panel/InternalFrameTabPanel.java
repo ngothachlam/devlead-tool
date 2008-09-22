@@ -22,7 +22,7 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 
 	private JTabbedPane tabbedPane;
 
-	private String excelFile = new String();
+	private String excelFile;
 
 	private final InternalFrame frame;
 
@@ -34,6 +34,7 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 
 	public InternalFrameTabPanel(InternalFrame frame, PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel) {
 		super(new BorderLayout());
+		excelFile = "";
 		this.frame = frame;
 		boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
 		planModel = (planModel == null) ? new PlanTableModel() : planModel;

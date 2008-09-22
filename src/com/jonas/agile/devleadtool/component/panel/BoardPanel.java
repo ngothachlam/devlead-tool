@@ -10,6 +10,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.listener.CopyToTableListener;
 import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
+import com.jonas.agile.devleadtool.component.listener.TabCheckButtonActionListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -22,7 +23,7 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardPanel extends MyComponentPanel {
 
-   private final PlannerHelper helper;
+   final PlannerHelper helper;
 
    private Logger log = MyLogger.getLogger(BoardPanel.class);
    public MyTable table;
@@ -80,6 +81,7 @@ public class BoardPanel extends MyComponentPanel {
             return helper.getActiveInternalFrame().getJiraTable();
          }
       }, helper));
+      addButton(buttonPanel, "TabCheck", new TabCheckButtonActionListener(table, helper.getPlannerCommunicator()));
 
       addSouth(buttonPanel);
    }

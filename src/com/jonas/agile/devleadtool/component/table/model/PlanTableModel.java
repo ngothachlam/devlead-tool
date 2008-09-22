@@ -11,7 +11,7 @@ import com.jonas.jira.JiraVersion;
 public class PlanTableModel extends MyTableModel {
 
    private Logger log = MyLogger.getLogger(PlanTableModel.class);
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Estimate, Column.Actual, Column.Note };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Dev_Estimate, Column.QA_Estimate, Column.Dev_Actual, Column.Note };
 
    public PlanTableModel() {
       super(columns);
@@ -33,6 +33,12 @@ public class PlanTableModel extends MyTableModel {
          setValueAt(object[i], row, i);
       }
       return true;
+   }
+
+   public Object getValueAt(Column column, String jira) {
+      int columnNo = this.getColumnNo(column);
+      int rowNo = this.getJiraRow(jira);
+      return this.getValueAt(rowNo, columnNo);
    }
 
 }
