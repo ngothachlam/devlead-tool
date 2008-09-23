@@ -44,8 +44,6 @@ public class JiraPanel extends MyComponentPanel {
 
       table = new MyTable();
       table.setModel(new JiraTableModel());
-      table.setAutoCreateRowSorter(true);
-      table.setDragEnabled(true);
 
       JScrollPane scrollpane = new MyScrollPane(table);
 

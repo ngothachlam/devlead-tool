@@ -57,11 +57,7 @@ public class PlanPanel extends MyComponentPanel {
       table.setModel(planModel);
       JScrollPane scrollpane = new JScrollPane(table);
 
-      table.setDefaultRenderer(String.class, new StringTableCellRenderer());
-      table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
-
       table.addMouseListener(new HyperLinkOpenerAdapter(helper, Column.URL, Column.Jira));
-      table.setAutoCreateRowSorter(true);
 
       this.addCenter(scrollpane);
       this.addSouth(getBottomPanel());

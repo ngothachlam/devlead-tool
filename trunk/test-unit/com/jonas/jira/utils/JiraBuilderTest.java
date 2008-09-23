@@ -113,7 +113,7 @@ public class JiraBuilderTest extends JonasTestCase {
       JiraIssue jiraIssue = jiras.get(0);
       assertJiraDetails(jiraIssue, "LLU-4072", "R900 - Quality Gateway E2E tests", "Open", "Unresolved", "Story", new JiraVersion[] { TestObjects.Version_Backlog });
       assertEquals(null, jiraIssue.getBuildNo());
-      assertEquals(2f, jiraIssue.getEstimate());
+      assertEquals("2.0", jiraIssue.getEstimate());
    }
 
    public void testShouldBuildJirasOkUsingListOfElementsWithoutBuildNo() {
@@ -145,6 +145,8 @@ public class JiraBuilderTest extends JonasTestCase {
       assertEquals(0.5f, JiraBuilder.getSecondsAsDays(60 * 60 * 4));
       assertEquals(0.25f, JiraBuilder.getSecondsAsDays(60 * 60 * 2));
       assertEquals(0.125f, JiraBuilder.getSecondsAsDays(60 * 60 * 1));
+      
+      assertEquals("0.125", JiraBuilder.getSecondsAsDays("3600"));
    }
    
    public void testShouldBUildJiraOkUsingSoapCall(){

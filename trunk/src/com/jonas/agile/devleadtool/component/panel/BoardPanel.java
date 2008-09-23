@@ -53,13 +53,6 @@ public class BoardPanel extends MyComponentPanel {
       table = new MyTable();
       table.setModel(boardTableModel);
 
-      table.setDefaultRenderer(String.class, new StringTableCellRenderer());
-      table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
-      table.setColumnRenderer(6, new HyperlinkTableCellRenderer());
-      table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
-
-      table.setAutoCreateRowSorter(true);
-
       JScrollPane scrollPane = new MyScrollPane(table);
 
       this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));

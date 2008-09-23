@@ -36,8 +36,7 @@ public class JiraBuilder {
       XpathAction xpathAction2 = new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             if (xpathValue != null && xpathValue.trim().length() > 0) {
-               int xpathResultAsInt = new Integer(xpathValue).intValue();
-               jira.setEstimate(JiraBuilder.getSecondsAsDays(xpathResultAsInt));
+               jira.setEstimate(JiraBuilder.getSecondsAsDays(xpathValue));
             }
          }
       };
@@ -45,6 +44,12 @@ public class JiraBuilder {
       jiraXpathActions.add(new XPathImplementor(xPath2, xpathAction2));
    }
 
+   public static String getSecondsAsDays(String seconds) {
+      int intSeconds = new Integer(seconds).intValue();
+      float floatDays = getSecondsAsDays(intSeconds);
+      return String.valueOf(floatDays);
+   }
+   
    public static float getSecondsAsDays(int seconds) {
       float secondsConverter = 60 * 60 * 8;
       return seconds / secondsConverter;
@@ -86,7 +91,7 @@ public class JiraBuilder {
       RemoteCustomFieldValue[] customFieldValues = remoteJira.getCustomFieldValues();
       String buildNo = getCustomFieldValue(customFieldValues, "customfield_10160");
       // fixme - doesn't work with estimate at the moment.
-      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName, typeName, buildNo, -1f);
+      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName, typeName, buildNo, "");
       RemoteVersion[] tempFixVersions = remoteJira.getFixVersions();
       for (int i = 0; i < tempFixVersions.length; i++) {
          RemoteVersion remoteVersion = tempFixVersions[i];

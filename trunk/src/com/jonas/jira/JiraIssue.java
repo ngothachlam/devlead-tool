@@ -9,7 +9,7 @@ public class JiraIssue {
 
 	public static Logger log = MyLogger.getLogger(JiraIssue.class);
 	private String buildNo;
-	private float estimate;
+	private String estimate;
 	private List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
 	private final String key;
 	private final String resolution;
@@ -17,7 +17,7 @@ public class JiraIssue {
    private final String summary;
    private final String type;
 
-   public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, float estimate) {
+   public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate) {
 	   this(key, summary, status, resolution, type);
       this.buildNo = buildNo;
       this.estimate = estimate;
@@ -64,7 +64,7 @@ public class JiraIssue {
 		return buildNo;
 	}
 
-	public float getEstimate() {
+	public String getEstimate() {
       return estimate;
    }
 
@@ -113,7 +113,7 @@ public class JiraIssue {
 		this.buildNo = buildNo;
 	}
 
-   public void setEstimate(float xpathResult) {
+   public void setEstimate(String xpathResult) {
       this.estimate = xpathResult;
    }
 
