@@ -12,7 +12,7 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.isOpen, Column.isBug, Column.isInProgress, Column.isResolved, Column.isComplete, Column.isInPlan };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.isOpen, Column.isBug, Column.isInProgress, Column.isResolved, Column.isComplete, Column.isInPlan };
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
 

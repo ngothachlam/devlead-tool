@@ -86,14 +86,14 @@ public class JiraPanel extends MyComponentPanel {
       listener.addListener(syncWithJiraListener);
       addButton(topPanel, "Sync", listener);
       addButton(topPanel, "Open Jiras", new OpenJirasListener(table, helper));
-      addButton(topPanel, "Copy to Plan", new CopyToTableListener(table, new DestinationRetriever() {
-         public MyTable getDestinationTable() {
-            return helper.getActiveInternalFrame().getPlanTable();
-         }
-      }, helper));
       addButton(topPanel, "Copy to Board", new CopyToTableListener(table, new DestinationRetriever() {
          public MyTable getDestinationTable() {
             return helper.getActiveInternalFrame().getBoardTable();
+         }
+      }, helper));
+      addButton(topPanel, "Copy to Plan", new CopyToTableListener(table, new DestinationRetriever() {
+         public MyTable getDestinationTable() {
+            return helper.getActiveInternalFrame().getPlanTable();
          }
       }, helper));
 

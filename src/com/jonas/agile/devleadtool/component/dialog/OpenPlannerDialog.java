@@ -7,8 +7,8 @@ import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.InternalFrame;
 import com.jonas.agile.devleadtool.gui.jigloo.NewJInternalFrame;
 
-public class PlannerDialog {
-   public PlannerDialog(JFrame parent, DesktopPane desktopPane, final PlannerHelper plannerHelper) {
+public class OpenPlannerDialog {
+   public OpenPlannerDialog(JFrame parent, DesktopPane desktopPane, final PlannerHelper plannerHelper) {
       final InternalFrame internalFrame = new InternalFrame(plannerHelper.getTitle());
       desktopPane.addInternalFrame(internalFrame);
       

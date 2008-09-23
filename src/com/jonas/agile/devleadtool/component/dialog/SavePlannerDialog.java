@@ -10,9 +10,9 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 
-public class SaveDialog extends JFileChooser {
+public class SavePlannerDialog extends JFileChooser {
 
-	public SaveDialog(PlannerDAOExcelImpl dao, Component frame, PlannerHelper plannerHelper) {
+	public SavePlannerDialog(PlannerDAOExcelImpl dao, Component frame, PlannerHelper plannerHelper) {
 		super(new File("."));
 		File file = plannerHelper.getFile();
 		if (file != null)

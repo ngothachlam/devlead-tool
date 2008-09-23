@@ -14,24 +14,26 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import com.jonas.agile.devleadtool.PlannerCommunicator;
+import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.table.BoardStatus;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.MyPanel;
+import com.jonas.common.SwingUtil;
 
 public class TabCheckButtonActionListener implements ActionListener {
 
    private final MyTable table;
    private final PlannerCommunicator plannerCommunicator;
+   private final PlannerHelper helper;
    
-   
-   
-
    /**
+    * @param helper 
     * @param boardPanel
     */
-   public TabCheckButtonActionListener(MyTable table, PlannerCommunicator plannerCommunicator){
+   public TabCheckButtonActionListener(PlannerHelper helper, MyTable table, PlannerCommunicator plannerCommunicator){
+      this.helper = helper;
       this.table = table;
       this.plannerCommunicator = plannerCommunicator;
    }
@@ -75,7 +77,8 @@ public class TabCheckButtonActionListener implements ActionListener {
       contentPane.addSouth(new JLabel("South!"));
       
       newFrame.setContentPane(contentPane);
-      newFrame.setSize(new Dimension(100, 50));
+      newFrame.setSize(new Dimension(300, 700));
+      SwingUtil.locateWindowRelativeToWindow(newFrame, helper.getActiveInternalFrame(), 840, 58);
       newFrame.setVisible(true);
       }
 }

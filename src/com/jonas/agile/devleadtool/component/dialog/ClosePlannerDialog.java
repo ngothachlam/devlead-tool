@@ -11,13 +11,13 @@ import com.jonas.agile.devleadtool.data.SystemProperties;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
 
-public class ClosingDialog extends JDialog {
+public class ClosePlannerDialog extends JDialog {
 	private final PlannerHelper plannerHelper;
 
-	public ClosingDialog(JFrame parent) {
+	public ClosePlannerDialog(JFrame parent) {
 		this(parent, null);
 	}
-	public ClosingDialog(JFrame parent, PlannerHelper plannerHelper) {
+	public ClosePlannerDialog(JFrame parent, PlannerHelper plannerHelper) {
 		super(parent, "Closing ...", true);
 		this.plannerHelper = plannerHelper;
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -34,7 +34,6 @@ public class ClosingDialog extends JDialog {
 				System.exit(0);
 			}
 		}).start();
-
 		setVisible(true);
 	}
 }
