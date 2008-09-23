@@ -13,7 +13,6 @@ import com.jonas.agile.devleadtool.component.panel.InternalFrameTabPanel;
 import com.jonas.agile.devleadtool.component.panel.JiraPanel;
 import com.jonas.agile.devleadtool.component.panel.PlanPanel;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.logging.MyLogger;
@@ -24,24 +23,24 @@ public class InternalFrame extends JInternalFrame {
 
    private static Logger log = MyLogger.getLogger(InternalFrame.class);
 
-   private InternalFrameTabPanel content;
+   private InternalFrameTabPanel internalFrameTabPanel;
 
    private String excelFile;
 
    private String originalTitle;
    private String originalTitleWithDuplicateNumber;
 
-   public InternalFrame(PlannerHelper client, String title, BoardTableModel boardModel, PlanTableModel planModel) {
+   public InternalFrame(PlannerHelper client, String title, InternalFrameTabPanel internalFrameTabPanel) {
       this(title);
 
-      content = new InternalFrameTabPanel(client, boardModel, planModel);
+      this.internalFrameTabPanel = internalFrameTabPanel;
 
       this.addInternalFrameListener(new MyInternalFrameListener(client, this));
-      setContentPane(content);
+      setContentPane(internalFrameTabPanel);
       client.setActiveInternalFrame(this);
    }
 
-   public InternalFrame(String title) {
+   InternalFrame(String title) {
       super("", true, true, true, true);
       internalFrames.add(this);
       this.originalTitle = title;
@@ -96,20 +95,20 @@ public class InternalFrame extends JInternalFrame {
    }
 
    private BoardPanel getBoardPanel() {
-      return content.getBoardPanel();
+      return internalFrameTabPanel.getBoardPanel();
    }
 
    private JiraPanel getJiraPanel() {
-      return content.getJiraPanel();
+      return internalFrameTabPanel.getJiraPanel();
    }
 
    private PlanPanel getPlanPanel() {
-      return content.getPlanPanel();
+      return internalFrameTabPanel.getPlanPanel();
    }
 
    void close() {
-      if (content != null)
-         content.close();
+      if (internalFrameTabPanel != null)
+         internalFrameTabPanel.close();
       internalFrames.remove(this);
    }
 
