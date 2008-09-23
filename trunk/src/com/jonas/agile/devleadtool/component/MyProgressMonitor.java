@@ -3,12 +3,15 @@ package com.jonas.agile.devleadtool.component;
 import javax.swing.JFrame;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
+import org.apache.log4j.Logger;
+import com.jonas.common.logging.MyLogger;
 
 public class MyProgressMonitor {
 
 	private ProgressMonitor pbar;
 	private int counter = 0;
 	private int max;
+	private Logger log = MyLogger.getLogger(MyProgressMonitor.class);
 
 	public MyProgressMonitor(JFrame frame, int max) {
 		this.max = max;
@@ -19,10 +22,11 @@ public class MyProgressMonitor {
 
 	public void increaseProgress() {
 		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
+
+         public void run() {
 				pbar.setProgress(counter);
 				String string = "Operation is " + ((counter * 100) / max) + "% complete";
-				System.out.println(string);
+				log.debug(string);
 				pbar.setNote(string);
 				counter += 1;
 			}

@@ -52,6 +52,10 @@ public class BoardPanel extends MyComponentPanel {
    protected void makeContent(MyTableModel boardTableModel) {
       table = new MyTable();
       table.setModel(boardTableModel);
+      
+      table.setDefaultRenderer(String.class, new StringTableCellRenderer());
+      table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
+      table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
 
       JScrollPane scrollPane = new MyScrollPane(table);
 

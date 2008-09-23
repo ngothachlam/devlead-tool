@@ -4,11 +4,14 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
+import org.apache.log4j.Logger;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.testHelpers.TryoutTester;
-import junit.framework.TestCase;
 
 public class MyProgressMonitorTestScreen {
 
+   private static final Logger log = MyLogger.getLogger(MyProgressMonitorTestScreen.class);
+   
    public static void main(String args[]) {
       UIManager.put("ProgressMonitor.progressText", "This is progress?");
       UIManager.put("OptionPane.cancelButtonText", "Go Away");
@@ -36,7 +39,7 @@ public class MyProgressMonitorTestScreen {
             for (int i = 0; i <= j-1; i++) {
                monitor.increaseProgress();
                try {
-                  System.out.println("sleeping...");
+                  log.debug("sleeping...");
                   Thread.sleep(3000);
                } catch (InterruptedException e) {
                   e.printStackTrace();
@@ -48,7 +51,7 @@ public class MyProgressMonitorTestScreen {
       worker.execute();
 
       try {
-         System.out.println("worker returns: \"" + worker.get() + "\"");
+         log.debug("worker returns: \"" + worker.get() + "\"");
       } catch (InterruptedException e) {
          // TODO Auto-generated catch block
          e.printStackTrace();
