@@ -21,16 +21,62 @@ public class MyTable extends JTable {
 
    public MyTable() {
       super();
-      setDragEnabled(true);
-      setAutoCreateRowSorter(true);
-
       setDefaultRenderer(String.class, new StringTableCellRenderer());
       setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
       setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
+      
+      setDragEnabled(true);
+      setAutoCreateRowSorter(true);
    }
 
    public void addEmptyRow() {
       ((MyTableModel)this.getModel()).addEmptyRow();
+   }
+   
+   public void addJira(JiraIssue jiraIssue) {
+      MyTableModel model = (MyTableModel)getModel();
+      model.addJira(jiraIssue);
+   }
+
+   public void addJira(String jira) {
+      MyTableModel model = (MyTableModel) getModel();
+      model.addJira(jira);
+   }
+
+   public Column getColumnEnum(int itsColumn) {
+      MyTableModel model = (MyTableModel) getModel();
+      return model.getColumnEnum(convertColumnIndexToModel(itsColumn));
+   }
+
+//   public boolean isColumnEqual(int itsColumn, Column column) {
+//      return getColumnName(itsColumn).equals(column.toString());
+//   }
+
+   public Object getValueAt(Column column, int rowInView) {
+      int colInView = getColumnIndex(column);
+      MyTableModel model = (MyTableModel)getModel();
+      return model.getValueAt(convertRowIndexToModel(rowInView), convertColumnIndexToModel(colInView));
+   }
+
+   public boolean isColumn(Column column, int colNoToCompare) {
+      return column.equals(getColumnEnum(colNoToCompare));
+   }
+
+   public void removeSelectedRows() {
+      int[] selectedRows = getSelectedRows(); // Need to store this before hand or the last selected row seems to disappear!
+      for (int count = selectedRows.length - 1; count > -1; count--) {
+         // we can't remove upwards the table and down (from lower to greater index) as the table changes on each delete.
+         int tableSelectedRow = selectedRows[count];
+         int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
+         ((MyTableModel) getModel()).removeRow(convertRowIndexToModel);
+      }
+   }
+
+   public void setColumnEditor(int i, ComboTableCellEditor editor) {
+      TableColumnModel tcm = getColumnModel();
+      TableColumn tc = tcm.getColumn(i);
+      tc.setCellEditor(editor);
+
    }
    
    public void setColumnRenderer(int i, TableCellRenderer renderer) {
@@ -50,57 +96,15 @@ public class MyTable extends JTable {
       setValueAt(jira.getResolution(), i, 3);
    }
 
-   public void setColumnEditor(int i, ComboTableCellEditor editor) {
-      TableColumnModel tcm = getColumnModel();
-      TableColumn tc = tcm.getColumn(i);
-      tc.setCellEditor(editor);
-
+   public void setValueAt(Object value, int row, Column column) {
+      setValueAt(value, row, getColumnIndex(column));
    }
-
-//   public boolean isColumnEqual(int itsColumn, Column column) {
-//      return getColumnName(itsColumn).equals(column.toString());
-//   }
-
-   public Column getColumnEnum(int itsColumn) {
-      MyTableModel model = (MyTableModel) getModel();
-      return model.getColumnEnum(convertColumnIndexToModel(itsColumn));
+   
+   public void setValueAt(Object value, int row, int column) {
+      super.setValueAt(value, row, column);
    }
 
    private int getColumnIndex(Column column) {
       return convertColumnIndexToView(((MyTableModel) getModel()).getColumnNo(column));
-   }
-
-   public void removeSelectedRows() {
-      int[] selectedRows = getSelectedRows(); // Need to store this before hand or the last selected row seems to disappear!
-      for (int count = selectedRows.length - 1; count > -1; count--) {
-         // we can't remove upwards the table and down (from lower to greater index) as the table changes on each delete.
-         int tableSelectedRow = selectedRows[count];
-         int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
-         ((MyTableModel) getModel()).removeRow(convertRowIndexToModel);
-      }
-   }
-
-   public boolean isColumn(Column column, int colNoToCompare) {
-      return column.equals(getColumnEnum(colNoToCompare));
-   }
-   
-   public Object getValueAt(Column column, int rowInView) {
-      int colInView = getColumnIndex(column);
-      MyTableModel model = (MyTableModel)getModel();
-      return model.getValueAt(convertRowIndexToModel(rowInView), convertColumnIndexToModel(colInView));
-   }
-
-   public void addJira(String jira) {
-      MyTableModel model = (MyTableModel) getModel();
-      model.addJira(jira);
-   }
-
-   public void setValueAt(Object value, int row, Column column) {
-      setValueAt(value, row, getColumnIndex(column));
-   }
-
-   public void addJira(JiraIssue jiraIssue) {
-      MyTableModel model = (MyTableModel)getModel();
-      model.addJira(jiraIssue);
    }
 }

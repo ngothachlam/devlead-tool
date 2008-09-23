@@ -233,7 +233,7 @@ public class JiraSoapClient {
       });
       RemoteField[] execute = (RemoteField[]) command.execute();
       for (RemoteField remoteField : execute) {
-         System.out.println("Getting RemoteField: " + remoteField.getId() + " - " + remoteField.getName());
+         log.debug("Getting RemoteField: " + remoteField.getId() + " - " + remoteField.getName());
       }
    }
 

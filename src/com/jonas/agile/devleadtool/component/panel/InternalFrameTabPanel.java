@@ -22,20 +22,14 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 
 	private JTabbedPane tabbedPane;
 
-	private String excelFile;
-
-	private final InternalFrame frame;
-
 	private JCheckBox checkBox;
 
-	public InternalFrameTabPanel(InternalFrame parent, PlannerHelper client) {
-		this(parent, client, null, null);
+	public InternalFrameTabPanel(PlannerHelper client) {
+		this(client, null, null);
 	}
 
-	public InternalFrameTabPanel(InternalFrame frame, PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel) {
+	public InternalFrameTabPanel(PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel) {
 		super(new BorderLayout());
-		excelFile = "";
-		this.frame = frame;
 		boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
 		planModel = (planModel == null) ? new PlanTableModel() : planModel;
 		boardPanel = new BoardPanel(client, boardModel);
@@ -78,15 +72,6 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 
 	public BoardPanel getBoardPanel() {
 		return boardPanel;
-	}
-
-	public void setExcelFile(String fileName) {
-		excelFile = fileName;
-		frame.setFileName(fileName);
-	}
-
-	public String getExcelFile() {
-		return excelFile;
 	}
 
 	public JiraPanel getJiraPanel() {

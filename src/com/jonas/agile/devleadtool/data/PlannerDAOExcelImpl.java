@@ -86,6 +86,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             int cellType = cell.getCellType();
             log.debug("Going through columns. Got column of type " + cellType);
             switch (cellType) {
+            // FIXME - don't use the cell type - use the column type!!! Start by mapping sheets to TableModels to get the columns!
             case HSSFCell.CELL_TYPE_BLANK:
                rowData.add(null);
                break;
@@ -138,7 +139,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             cell.setCellValue(((Boolean) valueAt).booleanValue());
          } else if (valueAt instanceof String) {
             cell.setCellValue(new HSSFRichTextString((String) valueAt));
-         } 
+         }
       }
       // Create a row and put some cells in it. Rows are 0 based.
       for (int rowCount = 0; rowCount < model.getRowCount(); rowCount++) {

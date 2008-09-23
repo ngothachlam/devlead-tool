@@ -223,7 +223,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       if (mixedUpVector.size() == originalVector.size()) {
          for (Column column : mixedUpVector) {
             Integer integer = originalVector.get(column);
-            System.out.println("for " + column + " we are getting " + integer);
+            log.debug("for " + column + " we are getting " + integer);
             list.add(integer);
          }
       } else {
@@ -266,11 +266,11 @@ public abstract class MyTableModel extends DefaultTableModel {
          try {
             t = realVector.get(integer);
          } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.print("ArrayIndexOutOfBoundsException -> ");
+            log.warn("ArrayIndexOutOfBoundsException -> ");
          } catch (NullPointerException e) {
-            System.out.print("NullPointerException -> ");
+            log.warn("NullPointerException -> ");
          }
-         System.out.println("adding " + t + " from " + integer);
+         log.debug("adding " + t + " from " + integer);
          result.add(t);
       }
       return result;
