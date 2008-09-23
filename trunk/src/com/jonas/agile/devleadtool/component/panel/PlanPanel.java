@@ -28,8 +28,6 @@ import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
-import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
-import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
@@ -84,21 +82,20 @@ public class PlanPanel extends MyComponentPanel {
          }
       });
       addButton(buttons, "Sync", listener);
-      addButton(buttons, "Copy to Jira", new CopyToTableListener(table, new DestinationRetriever() {
-         public MyTable getDestinationTable() {
-            return helper.getActiveInternalFrame().getJiraTable();
-         }
-      }, helper));
+      addButton(buttons, "Open Jiras", new OpenJirasListener(table, helper));
       addButton(buttons, "Copy to Board", new CopyToTableListener(table, new DestinationRetriever() {
          public MyTable getDestinationTable() {
             return helper.getActiveInternalFrame().getBoardTable();
          }
       }, helper));
-
-      addButton(buttons, "Open Jiras", new OpenJirasListener(table, helper));
+      addButton(buttons, "Copy to Jira", new CopyToTableListener(table, new DestinationRetriever() {
+         public MyTable getDestinationTable() {
+            return helper.getActiveInternalFrame().getJiraTable();
+         }
+      }, helper));
       
-      setupPlanVersionsFrame();
 
+      setupPlanVersionsFrame();
       addButton(buttons, "PlanVersions", new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             SwingUtil.centreWindowWithinWindow(planVersionsFrame, helper.getParentFrame());

@@ -13,13 +13,13 @@ import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 
-public class LoadDialog extends JFileChooser {
+public class LoadPlannerDialog extends JFileChooser {
 
 	private final PlannerDAOExcelImpl dao;
 
 	private final DesktopPane desktopPane;
 
-	public LoadDialog(DesktopPane desktop, PlannerDAOExcelImpl plannerDAO, JFrame frame, PlannerHelper plannerHelper) {
+	public LoadPlannerDialog(DesktopPane desktop, PlannerDAOExcelImpl plannerDAO, JFrame frame, PlannerHelper plannerHelper) {
 		super(new File("."));
 		this.desktopPane = desktop;
 		this.dao = plannerDAO;

@@ -12,10 +12,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import com.jonas.agile.devleadtool.component.DesktopPane;
-import com.jonas.agile.devleadtool.component.dialog.ClosingDialog;
-import com.jonas.agile.devleadtool.component.dialog.LoadDialog;
-import com.jonas.agile.devleadtool.component.dialog.PlannerDialog;
-import com.jonas.agile.devleadtool.component.dialog.SaveDialog;
+import com.jonas.agile.devleadtool.component.dialog.ClosePlannerDialog;
+import com.jonas.agile.devleadtool.component.dialog.LoadPlannerDialog;
+import com.jonas.agile.devleadtool.component.dialog.OpenPlannerDialog;
+import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
 import com.jonas.agile.devleadtool.component.listener.MainFrameListener;
 import com.jonas.agile.devleadtool.component.table.model.TableModelBuilder;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
@@ -75,22 +75,22 @@ public class DevLeadTool {
 
       JMenuItem planner = createMenuItem("New Planner", new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            new PlannerDialog(frame, desktop, plannerHelper);
+            new OpenPlannerDialog(frame, desktop, plannerHelper);
          }
       });
       JMenuItem open = createMenuItem("Open Planner", new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            new LoadDialog(desktop, plannerDAO, frame, plannerHelper);
+            new LoadPlannerDialog(desktop, plannerDAO, frame, plannerHelper);
          }
       });
       JMenuItem save = createMenuItem("Save Planner", new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            new SaveDialog(plannerDAO, frame, plannerHelper);
+            new SavePlannerDialog(plannerDAO, frame, plannerHelper);
          }
       });
       JMenuItem exit = createMenuItem("Exit All", new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            new ClosingDialog(frame, plannerHelper);
+            new ClosePlannerDialog(frame, plannerHelper);
          }
       });
       return new JMenuItem[] { planner, open, save, exit };

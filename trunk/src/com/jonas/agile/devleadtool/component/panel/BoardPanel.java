@@ -10,7 +10,10 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.listener.CopyToTableListener;
 import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
+import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
+import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.TabCheckButtonActionListener;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -20,6 +23,7 @@ import com.jonas.agile.devleadtool.component.table.renderer.HyperlinkTableCellRe
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.JiraIssue;
 
 public class BoardPanel extends MyComponentPanel {
 
@@ -67,6 +71,17 @@ public class BoardPanel extends MyComponentPanel {
       JPanel buttonPanel = new JPanel();
 
       addPanelWithAddAndRemoveOptions(table, buttonPanel);
+      SyncWithJiraActionListener listener = new SyncWithJiraActionListener(table, helper);
+      listener.addListener(new SyncWithJiraActionListenerListener(){
+         public void jiraSynced(JiraIssue jira, int tableRowSynced) {
+            table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
+         }
+         public void jiraSyncedCompleted() {
+         }
+         public void jiraAdded(JiraIssue jiraIssue) {
+         }
+      });
+      addButton(buttonPanel, "Sync", listener);
       addButton(buttonPanel, "Open Jiras", new OpenJirasListener(table, helper));
       addButton(buttonPanel, "Copy to Plan", new CopyToTableListener(table, new DestinationRetriever() {
          public MyTable getDestinationTable() {
@@ -78,7 +93,7 @@ public class BoardPanel extends MyComponentPanel {
             return helper.getActiveInternalFrame().getJiraTable();
          }
       }, helper));
-      addButton(buttonPanel, "TabCheck", new TabCheckButtonActionListener(table, helper.getPlannerCommunicator()));
+      addButton(buttonPanel, "TabCheck", new TabCheckButtonActionListener(helper, table, helper.getPlannerCommunicator()));
 
       addSouth(buttonPanel);
    }
