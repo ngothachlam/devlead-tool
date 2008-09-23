@@ -245,7 +245,7 @@ public class MyTableModelTest extends JonasTestCase {
       EasyMock.expect(mock_jiraIssue.getStatus()).andReturn("Status1").anyTimes();
       EasyMock.expect(mock_jiraIssue.getResolution()).andReturn("Resolution1").anyTimes();
       EasyMock.expect(mock_jiraIssue.getBuildNo()).andReturn("BuildNo1").anyTimes();
-      EasyMock.expect(mock_jiraIssue.getEstimate()).andReturn(1.4f).anyTimes();
+      EasyMock.expect(mock_jiraIssue.getEstimate()).andReturn("1.4").anyTimes();
       replay();
 
       model.addJira(mock_jiraIssue);
@@ -265,7 +265,7 @@ public class MyTableModelTest extends JonasTestCase {
       EasyMock.expect(mock_jiraIssue.getKey()).andReturn("LLU-2").anyTimes();
       EasyMock.expect(mock_jiraIssue.getSummary()).andReturn("Summary2").anyTimes();
       EasyMock.expect(mock_jiraIssue.getType()).andReturn("Type2").anyTimes();
-      EasyMock.expect(mock_jiraIssue.getEstimate()).andReturn(2.4f).anyTimes();
+      EasyMock.expect(mock_jiraIssue.getEstimate()).andReturn("2.4").anyTimes();
       replay();
 
       model.addJira(mock_jiraIssue);

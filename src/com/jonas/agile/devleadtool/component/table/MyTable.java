@@ -1,15 +1,16 @@
 package com.jonas.agile.devleadtool.component.table;
 
 import java.util.List;
-import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
+import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
@@ -20,6 +21,12 @@ public class MyTable extends JTable {
 
    public MyTable() {
       super();
+      setDragEnabled(true);
+      setAutoCreateRowSorter(true);
+
+      setDefaultRenderer(String.class, new StringTableCellRenderer());
+      setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
+      setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
    }
 
    public void addEmptyRow() {
