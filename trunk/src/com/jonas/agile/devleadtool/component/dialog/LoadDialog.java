@@ -6,6 +6,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.CutoverLength;
 import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.InternalFrame;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -46,7 +47,7 @@ public class LoadDialog extends JFileChooser {
 				// TODO remove plannerHelper.getTitle?
 				InternalFrame internalFrame = new InternalFrame(plannerHelper, plannerHelper.getTitle(), boardModel, planModel);
 				desktopPane.addInternalFrame(internalFrame);
-				internalFrame.setExcelFile(xlsFile.getAbsolutePath());
+				internalFrame.setExcelFile(xlsFile.getAbsolutePath(), CutoverLength.DEFAULT);
 
 			} catch (IOException e) {
 				e.printStackTrace();

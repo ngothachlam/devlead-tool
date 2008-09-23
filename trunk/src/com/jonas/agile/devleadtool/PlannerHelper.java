@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 
+import com.jonas.agile.devleadtool.component.CutoverLength;
 import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.InternalFrame;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
@@ -70,7 +71,7 @@ public class PlannerHelper {
 	}
 
 	public void setFile(File file) {
-		this.getActiveInternalFrame().setExcelFile(file.getAbsolutePath());
+		this.getActiveInternalFrame().setExcelFile(file.getAbsolutePath(), CutoverLength.DEFAULT);
 	}
 
 	public JiraIssue getJiraIssueFromName(String jira, JiraListener jiraListener) throws JiraException, JiraIssueNotFoundException, HttpException, IOException {

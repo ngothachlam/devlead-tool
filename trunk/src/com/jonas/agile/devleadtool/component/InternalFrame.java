@@ -20,32 +20,16 @@ import com.jonas.common.logging.MyLogger;
 
 public class InternalFrame extends JInternalFrame {
 
-   private static Logger log = MyLogger.getLogger(InternalFrame.class);
-
    private static List<InternalFrame> internalFrames = new ArrayList<InternalFrame>();
 
-   public static void closeAll() {
-      for (Iterator<InternalFrame> iterator = internalFrames.iterator(); iterator.hasNext();) {
-         iterator.next().close();
-         iterator.remove();
-      }
-   }
+   private static Logger log = MyLogger.getLogger(InternalFrame.class);
 
    private InternalFrameTabPanel content;
 
-   private String originalTitle;
-   private String originalTitleWithDuplicateNumber;
-
    private String excelFile;
 
-   public InternalFrame(String title) {
-      super("", true, true, true, true);
-      internalFrames.add(this);
-      this.originalTitle = title;
-      originalTitleWithDuplicateNumber = createTitle(title);
-      log.debug("created and setting Title: " + originalTitleWithDuplicateNumber);
-      this.setTitle(originalTitleWithDuplicateNumber);
-   }
+   private String originalTitle;
+   private String originalTitleWithDuplicateNumber;
 
    public InternalFrame(PlannerHelper client, String title, BoardTableModel boardModel, PlanTableModel planModel) {
       this(title);
@@ -57,6 +41,72 @@ public class InternalFrame extends JInternalFrame {
       client.setActiveInternalFrame(this);
    }
 
+   public InternalFrame(String title) {
+      super("", true, true, true, true);
+      internalFrames.add(this);
+      this.originalTitle = title;
+      originalTitleWithDuplicateNumber = createTitle(title);
+      log.debug("created and setting Title: " + originalTitleWithDuplicateNumber);
+      this.setTitle(originalTitleWithDuplicateNumber);
+   }
+
+   public static void closeAll() {
+      for (Iterator<InternalFrame> iterator = internalFrames.iterator(); iterator.hasNext();) {
+         iterator.next().close();
+         iterator.remove();
+      }
+   }
+
+   public MyTableModel getBoardModel() {
+      return getBoardPanel().getModel();
+   }
+
+   public MyTable getBoardTable() {
+      return getBoardPanel().getTable();
+
+   }
+
+   public String getExcelFile() {
+      return excelFile;
+   }
+
+   public int getInternalFramesCount() {
+      return internalFrames.size();
+   }
+
+   public MyTable getJiraTable() {
+      return getJiraPanel().getTable();
+   }
+
+   public PlanTableModel getPlanModel() {
+      return getPlanPanel().getPlanModel();
+   }
+
+   public MyTable getPlanTable() {
+      return getPlanPanel().getTable();
+   }
+
+   public String getRightMostFromString(String string, int i) {
+      return string.length() > i ? string.substring(string.length() - i, string.length()) : string;
+   }
+
+   public void setExcelFile(String fileName, CutoverLength cutoverLength) {
+      excelFile = fileName;
+      setFileName(fileName, cutoverLength);
+   }
+
+   private BoardPanel getBoardPanel() {
+      return content.getBoardPanel();
+   }
+
+   private JiraPanel getJiraPanel() {
+      return content.getJiraPanel();
+   }
+
+   private PlanPanel getPlanPanel() {
+      return content.getPlanPanel();
+   }
+
    void close() {
       if (content != null)
          content.close();
@@ -66,19 +116,6 @@ public class InternalFrame extends JInternalFrame {
    String createTitle(String title) {
       int countOfSameTitles = getCountWithSameTitle(title);
       return title + (countOfSameTitles > 1 ? " (" + (countOfSameTitles - 1) + ")" : "");
-   }
-
-   public MyTableModel getBoardModel() {
-      return getBoardPanel().getModel();
-   }
-
-   private BoardPanel getBoardPanel() {
-      return content.getBoardPanel();
-   }
-
-   public MyTable getBoardTable() {
-      return getBoardPanel().getTable();
-
    }
 
    int getCountWithSameTitle(String title) {
@@ -93,45 +130,15 @@ public class InternalFrame extends JInternalFrame {
       return count;
    }
 
-   public String getExcelFile() {
-      return excelFile;
-   }
-
-   public int getInternalFramesCount() {
-      return internalFrames.size();
-   }
-
-   private JiraPanel getJiraPanel() {
-      return content.getJiraPanel();
-   }
-
-   public MyTable getJiraTable() {
-      return getJiraPanel().getTable();
-   }
-
-   public PlanTableModel getPlanModel() {
-      return getPlanPanel().getPlanModel();
-   }
-
-   private PlanPanel getPlanPanel() {
-      return content.getPlanPanel();
-   }
-
-   public MyTable getPlanTable() {
-      return getPlanPanel().getTable();
-   }
-
-   public String getRightMostFromString(String string, int i) {
-      return string.length() > i ? string.substring(string.length() - i, string.length()) : string;
-   }
-
-   public void setExcelFile(String fileName) {
-      excelFile = fileName;
-      setFileName(fileName, 35);
-   }
-
-   void setFileName(String fileName, int cutoverLength) {
-      this.setTitle(this.originalTitleWithDuplicateNumber + " - ..." + getRightMostFromString(fileName, cutoverLength));
+   void setFileName(String fileName, CutoverLength cutoverLength) {
+      String rightMostFromString = getRightMostFromString(fileName, cutoverLength.value());
+      StringBuffer sb = new StringBuffer(this.originalTitleWithDuplicateNumber);
+      sb.append(" - ");
+      if (rightMostFromString.length() < fileName.length()) {
+         sb.append("...");
+      }
+      sb.append(rightMostFromString);
+      this.setTitle(sb.toString());
    }
 
    private final class MyInternalFrameListener extends InternalFrameAdapter {

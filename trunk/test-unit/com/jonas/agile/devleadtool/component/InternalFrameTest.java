@@ -39,7 +39,10 @@ public class InternalFrameTest extends JonasTestCase {
       InternalFrame internalFrame = getTestInternalFrame("title");
       assertEquals("title", internalFrame.getTitle());
 
-      internalFrame.setFileName("C:\\Documents\\lludevsup.xls", 5);
+      internalFrame.setFileName("u.xls", CutoverLength.TEST_5);
+      assertEquals("title - u.xls", internalFrame.getTitle());
+      
+      internalFrame.setFileName("C:\\Documents\\lludevsup.xls", CutoverLength.TEST_5);
       assertEquals("title - ...p.xls", internalFrame.getTitle());
    }
 
@@ -72,15 +75,15 @@ public class InternalFrameTest extends JonasTestCase {
       assertEquals("titles", internalFrame2.getTitle());
       assertEquals("title (1)", internalFrame3.getTitle());
 
-      internalFrame.setExcelFile("C:\\Documents and Settings\\jonasjolofsson\\lludevsup.xls");
+      internalFrame.setExcelFile("C:\\Documents and Settings\\jonasjolofsson\\lludevsup.xls", CutoverLength.TEST_5);
 
-      assertEquals("title - ...ttings\\jonasjolofsson\\lludevsup.xls", internalFrame.getTitle());
+      assertEquals("title - ...p.xls", internalFrame.getTitle());
       assertEquals("titles", internalFrame2.getTitle());
       assertEquals("title (1)", internalFrame3.getTitle());
       
-      internalFrame.setExcelFile("C:\\Documents and Settings\\jonasjolofsson\\lludevsup.xls");
+      internalFrame.setExcelFile("C:\\Documents and Settings\\jonasjolofsson\\lludevsup.xls", CutoverLength.TEST_5);
       
-      assertEquals("title - ...ttings\\jonasjolofsson\\lludevsup.xls", internalFrame.getTitle());
+      assertEquals("title - ...p.xls", internalFrame.getTitle());
       assertEquals("titles", internalFrame2.getTitle());
       assertEquals("title (1)", internalFrame3.getTitle());
    }
