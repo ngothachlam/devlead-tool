@@ -39,7 +39,7 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 		JPanel panel = new JPanel();
 		checkBox = new JCheckBox("Editable?", true);
 		panel.add(checkBox);
-//		addNorth(panel);
+		addNorth(panel);
 
 		makeContent(boardModel);
 		wireUpListeners();

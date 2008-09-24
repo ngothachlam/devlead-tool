@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.table;
 
 import javax.swing.table.TableModel;
 import org.easymock.EasyMock;
+import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
@@ -50,6 +51,15 @@ public class MyTableTest extends JonasTestCase {
       assertFalse(newtable.isColumn(Column.Jira, 0));
 
       verify();
+   }
+   
+   public void testShouldGetCorrectColumnIndex(){
+      MyTableModel model = new BoardTableModel();
+      table.setModel(model);
+      
+      assertEquals(0,table.getColumnIndex(Column.Jira));
+      assertEquals(1,table.getColumnIndex(Column.Description));
+      assertEquals(-1,table.getColumnIndex(Column.Resolved_Sprint));
    }
    
    public void testShouldSetValueUsingColumnDataCorrectly(){

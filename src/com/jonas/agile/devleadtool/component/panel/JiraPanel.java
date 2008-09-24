@@ -1,7 +1,6 @@
 package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +11,8 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
@@ -27,6 +28,7 @@ import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.MyComponentPanel;
+import com.jonas.common.MyPanel;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
@@ -34,28 +36,46 @@ import com.jonas.jira.JiraVersion;
 
 public class JiraPanel extends MyComponentPanel {
 
-   final PlannerHelper helper;
-   Logger log = MyLogger.getLogger(JiraPanel.class);
-   MyTable table;
+   private final PlannerHelper helper;
+   private Logger log = MyLogger.getLogger(JiraPanel.class);
+   private TableRowSorter<TableModel> sorter;
+   private MyTable table;
 
    public JiraPanel(PlannerHelper helper) {
       super(new BorderLayout());
       this.helper = helper;
 
-      table = new MyTable();
-      table.setModel(new JiraTableModel());
+      table = new MyTable(new JiraTableModel());
+      // table.setModel(new JiraTableModel());
+
+      sorter = new TableRowSorter<TableModel>(table.getModel());
+      table.setRowSorter(sorter);
 
       JScrollPane scrollpane = new MyScrollPane(table);
 
       this.addCenter(scrollpane);
-      this.addSouth(getButtonPanel());
+      this.addSouth(getBottomPanel());
       this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
    }
 
-   private Component getButtonPanel() {
+   protected JPanel getBottomPanel() {
+      MyPanel buttonPanel = new MyPanel(new BorderLayout());
+      JPanel buttonPanelOne = getButtonPanelNorth();
+      JPanel buttonPanelTwo = getButtonPanelSouth();
+      buttonPanel.addNorth(buttonPanelOne);
+      buttonPanel.addSouth(buttonPanelTwo);
+      return buttonPanel;
+   }
+
+   private JPanel getButtonPanelNorth() {
+      JPanel buttonPanel = new JPanel();
+      addFilter(buttonPanel, table, sorter, Column.Jira, Column.Description);
+      return buttonPanel;
+   }
+
+   private JPanel getButtonPanelSouth() {
       JPanel mainPanel = new JPanel(new BorderLayout());
 
-      
       JPanel topPanel = new JPanel(new FlowLayout());
       JPanel bottomPanel = new JPanel(new FlowLayout());
 
@@ -65,10 +85,13 @@ public class JiraPanel extends MyComponentPanel {
 
       jiraProjectsCombo.addActionListener(new AlteringProjectListener(jiraProjectFixVersionCombo));
 
-      
       addPanelWithAddAndRemoveOptions(table, topPanel);
       SyncWithJiraActionListener listener = new SyncWithJiraActionListener(table, helper);
-      SyncWithJiraActionListenerListener syncWithJiraListener = new SyncWithJiraActionListenerListener(){
+      SyncWithJiraActionListenerListener syncWithJiraListener = new SyncWithJiraActionListenerListener() {
+         public void jiraAdded(JiraIssue jiraIssue) {
+            table.addJira(jiraIssue);
+         }
+
          public void jiraSynced(JiraIssue jira, int tableRowSynced) {
             table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
             table.setValueAt(jira.getFixVersions(), tableRowSynced, Column.FixVersion);
@@ -77,10 +100,8 @@ public class JiraPanel extends MyComponentPanel {
             table.setValueAt(jira.getBuildNo(), tableRowSynced, Column.BuildNo);
             table.setValueAt(jira.getEstimate(), tableRowSynced, Column.Dev_Estimate);
          }
+
          public void jiraSyncedCompleted() {
-         }
-         public void jiraAdded(JiraIssue jiraIssue) {
-            table.addJira(jiraIssue);
          }
       };
       listener.addListener(syncWithJiraListener);
@@ -103,15 +124,19 @@ public class JiraPanel extends MyComponentPanel {
       DownloadJirasListener listener2 = new DownloadJirasListener(jiraProjectFixVersionCombo, table, helper);
       listener2.addListener(syncWithJiraListener);
       addButton(bottomPanel, "Get Jiras", listener2);
-//      addButton(panel, "Remove Selected", new RemoveJTableSelectedRowsListener(table));
-      
-      mainPanel.add(topPanel,BorderLayout.NORTH);
-      mainPanel.add(bottomPanel,BorderLayout.SOUTH);
+      // addButton(panel, "Remove Selected", new RemoveJTableSelectedRowsListener(table));
+
+      mainPanel.add(topPanel, BorderLayout.NORTH);
+      mainPanel.add(bottomPanel, BorderLayout.SOUTH);
       return mainPanel;
    }
 
    public MyTableModel getJiraModel() {
       return ((MyTableModel) table.getModel());
+   }
+
+   public MyTable getTable() {
+      return table;
    }
 
    public void setEditable(boolean selected) {
@@ -180,10 +205,6 @@ public class JiraPanel extends MyComponentPanel {
          };
          worker.execute();
       }
-   }
-
-   public MyTable getTable() {
-      return table;
    }
 
 }

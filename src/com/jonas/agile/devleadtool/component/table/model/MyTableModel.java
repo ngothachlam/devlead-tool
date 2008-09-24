@@ -14,7 +14,7 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.testing.TableSorter;
 
 public abstract class MyTableModel extends DefaultTableModel {
-//public abstract class MyTableModel extends TableSorter {
+   // public abstract class MyTableModel extends TableSorter {
 
    protected Counter counter = new Counter();
    private Logger log = MyLogger.getLogger(MyTableModel.class);
@@ -150,7 +150,9 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public void setEditable(boolean selected) {
       editable = selected;
-      fireTableStructureChanged();
+      if (getRowCount() > 0) {
+         fireTableStructureChanged();
+      }
       // TODO need to fireUpdate on Table?
    }
 
