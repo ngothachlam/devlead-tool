@@ -11,9 +11,13 @@ import java.awt.Window;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.InternalFrame;
+import com.jonas.common.logging.MyLogger;
 
 public class SwingUtil {
+
+   private static final Logger log = MyLogger.getLogger(SwingUtil.class);
 
    public static final Color COLOR_RED_1 = new Color(200, 0, 0);
    public static final Color COLOR_RED_2 = new Color(225, 0, 0);
@@ -36,13 +40,24 @@ public class SwingUtil {
       window.setLocation(x, y);
    }
 
-   public static void locateWindowRelativeToWindow(Window window, Component parentWindow, int xOffset, int yOffset) {
+   public static void locateWindowRelativeToWindow(Component window, Component parentWindow, int xOffset, int yOffset) {
       Point parentLocation = parentWindow.getLocation();
-      int x = parentLocation.x + xOffset;
-      int y = parentLocation.y + yOffset;
-      window.setLocation(x, y);
+      int parentx = parentLocation.x;
+      int parenty = parentLocation.y;
+      int destinationx = parentx + xOffset;
+      int destinationy = parenty + yOffset;
+      
+      log.debug("parent location : " + parentx + ", " + parenty);
+      log.debug("setting location : " + destinationx + ", " + destinationy);
+      
+      Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+      
+      log.debug("Screen Size: " + screenSize.width + ", " + screenSize.height);
+      log.debug("component width: " + window.getWidth() + ", " + window.getHeight());
+      
+      window.setLocation(destinationx, destinationy);
    }
-
+   
    public static MyPanel getGridPanel(int rows, int cols, int hgap, int vgap) {
       return new MyPanel(new GridLayout(rows, cols, hgap, vgap));
    }
