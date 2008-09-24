@@ -12,7 +12,7 @@ public class JiraIssue {
 	private String estimate;
 	private List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
 	private final String key;
-	private String lluListPriority;
+	private int lluListPriority;
 	private final String resolution;
    private final String status;
    private final String summary;
@@ -26,7 +26,7 @@ public class JiraIssue {
       this.type = type;
    }
    
-	public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate, String listPrio) {
+	public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate, int listPrio) {
 	   this(key, summary, status, resolution, type);
       this.buildNo = buildNo;
       this.estimate = estimate;
@@ -78,7 +78,7 @@ public class JiraIssue {
 		return key;
 	}
 
-	public String getLLUListPriority() {
+	public int getLLUListPriority() {
       return lluListPriority;
    }
 
@@ -122,7 +122,7 @@ public class JiraIssue {
    public void setEstimate(String xpathResult) {
       this.estimate = xpathResult;
    }
-   public void setLLUListPriority(String lluListPriority) {
+   public void setLLUListPriority(int lluListPriority) {
       this.lluListPriority = lluListPriority;
    }
 
