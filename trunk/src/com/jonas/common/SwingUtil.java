@@ -50,7 +50,8 @@ public class SwingUtil {
       log.debug("parent location : " + parentx + ", " + parenty);
       log.debug("setting location : " + destinationx + ", " + destinationy);
       
-      Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+      Toolkit defaultToolkit = java.awt.Toolkit.getDefaultToolkit();
+      Dimension screenSize = defaultToolkit.getScreenSize();
       
       log.debug("Screen Size: " + screenSize.width + ", " + screenSize.height);
       log.debug("component width: " + window.getWidth() + ", " + window.getHeight());

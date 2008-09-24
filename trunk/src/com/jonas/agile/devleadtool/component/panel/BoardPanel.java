@@ -75,6 +75,7 @@ public class BoardPanel extends MyComponentPanel {
       listener.addListener(new SyncWithJiraActionListenerListener(){
          public void jiraSynced(JiraIssue jira, int tableRowSynced) {
             table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
+            table.setValueAt(jira.getLLUListPriority(), tableRowSynced, Column.ListPrio);
          }
          public void jiraSyncedCompleted() {
          }

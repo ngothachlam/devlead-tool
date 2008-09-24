@@ -300,6 +300,9 @@ public abstract class MyTableModel extends DefaultTableModel {
             case BuildNo:
                contents.add(jiraIssue.getBuildNo());
                break;
+            case ListPrio:
+               contents.add(jiraIssue.getLLUListPriority());
+               break;
             case Dev_Estimate:
                contents.add(jiraIssue.getEstimate());
                break;

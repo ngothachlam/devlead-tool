@@ -21,27 +21,34 @@ import com.jonas.jira.access.JiraType;
 
 public class JiraBuilder {
 
+   private static final String CUSTOMFIELD_LLULISTPRIO = "customfield_10241";
+   private static final String CUSTOMFIELD_BUILDNO = "customfield_10160";
    private static JiraBuilder instance = new JiraBuilder();
    private static final List<XPathImplementor> jiraXpathActions = new ArrayList<XPathImplementor>();
    private static final Logger log = MyLogger.getLogger(JiraBuilder.class);
 
    static {
-      String xPath = "/item/customfields/customfield[@id='customfield_10160']/customfieldvalues/customfieldvalue";
-      XpathAction xpathAction = new XpathAction() {
+      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_BUILDNO + "']/customfieldvalues/customfieldvalue", new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             jira.setBuildNo(xpathValue);
          }
-      };
-      String xPath2 = "/item/timeoriginalestimate/@seconds";
-      XpathAction xpathAction2 = new XpathAction() {
+      });
+      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_LLULISTPRIO + "']/customfieldvalues/customfieldvalue", new XpathAction() {
+         public void XPathValueFound(String xpathValue, JiraIssue jira) {
+            jira.setLLUListPriority(xpathValue);
+         }
+      });
+      addXpathAction("/item/timeoriginalestimate/@seconds", new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             if (xpathValue != null && xpathValue.trim().length() > 0) {
                jira.setEstimate(JiraBuilder.getSecondsAsDays(xpathValue));
             }
          }
-      };
-      jiraXpathActions.add(new XPathImplementor(xPath, xpathAction));
-      jiraXpathActions.add(new XPathImplementor(xPath2, xpathAction2));
+      });
+   }
+
+   private static void addXpathAction(String xPath, XpathAction action) {
+      jiraXpathActions.add(new XPathImplementor(xPath, action));
    }
 
    public static String getSecondsAsDays(String seconds) {
@@ -49,7 +56,7 @@ public class JiraBuilder {
       float floatDays = getSecondsAsDays(intSeconds);
       return String.valueOf(floatDays);
    }
-   
+
    public static float getSecondsAsDays(int seconds) {
       float secondsConverter = 60 * 60 * 8;
       return seconds / secondsConverter;
@@ -89,9 +96,10 @@ public class JiraBuilder {
       String resolutionName = resolution != null ? resolution.getName() : null;
       String typeName = type != null ? type.getName() : null;
       RemoteCustomFieldValue[] customFieldValues = remoteJira.getCustomFieldValues();
-      String buildNo = getCustomFieldValue(customFieldValues, "customfield_10160");
+      String buildNo = getCustomFieldValue(customFieldValues, CUSTOMFIELD_BUILDNO);
+      String listPrio = getCustomFieldValue(customFieldValues, CUSTOMFIELD_LLULISTPRIO);
       // fixme - doesn't work with estimate at the moment.
-      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName, typeName, buildNo, "");
+      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName, typeName, buildNo, "", listPrio);
       RemoteVersion[] tempFixVersions = remoteJira.getFixVersions();
       for (int i = 0; i < tempFixVersions.length; i++) {
          RemoteVersion remoteVersion = tempFixVersions[i];

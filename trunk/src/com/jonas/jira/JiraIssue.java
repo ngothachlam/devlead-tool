@@ -12,24 +12,26 @@ public class JiraIssue {
 	private String estimate;
 	private List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
 	private final String key;
+	private String lluListPriority;
 	private final String resolution;
-	private final String status;
+   private final String status;
    private final String summary;
    private final String type;
 
-   public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate) {
-	   this(key, summary, status, resolution, type);
-      this.buildNo = buildNo;
-      this.estimate = estimate;
-	}
-   
-	public JiraIssue(String key, String summary, String status, String resolution, String type) {
+   public JiraIssue(String key, String summary, String status, String resolution, String type) {
       this.key = key;
       this.summary = summary;
       this.status = status;
       this.resolution = resolution;
       this.type = type;
    }
+   
+	public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate, String listPrio) {
+	   this(key, summary, status, resolution, type);
+      this.buildNo = buildNo;
+      this.estimate = estimate;
+      this.lluListPriority = listPrio;
+	}
 
 	public void addFixVersions(JiraVersion fixVersion) {
 		fixVersions.add(fixVersion);
@@ -76,6 +78,10 @@ public class JiraIssue {
 		return key;
 	}
 
+	public String getLLUListPriority() {
+      return lluListPriority;
+   }
+
 	public String getResolution() {
 		return resolution;
 	}
@@ -88,7 +94,7 @@ public class JiraIssue {
 		return summary;
 	}
 
-	public String getType() {
+   public String getType() {
       return type;
    }
 
@@ -115,6 +121,9 @@ public class JiraIssue {
 
    public void setEstimate(String xpathResult) {
       this.estimate = xpathResult;
+   }
+   public void setLLUListPriority(String lluListPriority) {
+      this.lluListPriority = lluListPriority;
    }
 
    /**
