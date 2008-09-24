@@ -2,12 +2,9 @@ package com.jonas.agile.devleadtool.component.table;
 
 import java.util.List;
 import javax.swing.JTable;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
@@ -21,9 +18,9 @@ import com.jonas.testing.TableSorter;
 
 public class MyTable extends JTable {
 
-   private Object sorterLock = new Object();
    private Logger log = MyLogger.getLogger(MyTable.class);
    private TableSorter sorter = null;
+   private Object sorterLock = new Object();
 
    public MyTable() {
       super();
@@ -62,6 +59,10 @@ public class MyTable extends JTable {
    // public boolean isColumnEqual(int itsColumn, Column column) {
    // return getColumnName(itsColumn).equals(column.toString());
    // }
+
+   public int getColumnIndex(Column column) {
+      return convertColumnIndexToView(((MyTableModel) getModel()).getColumnNo(column));
+   }
 
    public Object getValueAt(Column column, int rowInView) {
       int colInView = getColumnIndex(column);
@@ -113,9 +114,5 @@ public class MyTable extends JTable {
 
    public void setValueAt(Object value, int row, int column) {
       super.setValueAt(value, row, column);
-   }
-
-   private int getColumnIndex(Column column) {
-      return convertColumnIndexToView(((MyTableModel) getModel()).getColumnNo(column));
    }
 }

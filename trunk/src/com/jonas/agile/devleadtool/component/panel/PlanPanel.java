@@ -1,7 +1,6 @@
 package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -12,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import org.apache.log4j.Logger;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
@@ -29,6 +30,7 @@ import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyComponentPanel;
+import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -37,12 +39,11 @@ import com.jonas.jira.JiraVersion;
 
 public class PlanPanel extends MyComponentPanel {
 
-   final PlannerHelper helper;
-
+   private final PlannerHelper helper;
    private Logger log = MyLogger.getLogger(PlanPanel.class);
-
    private JFrame planVersionsFrame;
-   MyTable table;
+   private TableRowSorter<TableModel> sorter;
+   private MyTable table;
 
    public PlanPanel(PlannerHelper client) {
       this(client, new PlanTableModel());
@@ -51,8 +52,12 @@ public class PlanPanel extends MyComponentPanel {
    public PlanPanel(PlannerHelper helper, PlanTableModel planModel) {
       super(new BorderLayout());
       this.helper = helper;
-      table = new MyTable();
-      table.setModel(planModel);
+      table = new MyTable(planModel);
+      // table.setModel(planModel);
+
+      sorter = new TableRowSorter<TableModel>(table.getModel());
+      table.setRowSorter(sorter);
+
       JScrollPane scrollpane = new JScrollPane(table);
 
       table.addMouseListener(new HyperLinkOpenerAdapter(helper, Column.URL, Column.Jira));
@@ -66,19 +71,36 @@ public class PlanPanel extends MyComponentPanel {
       return ((PlanTableModel) table.getModel()).doesJiraExist(jira);
    }
 
-   private Component getBottomPanel() {
+   protected JPanel getBottomPanel() {
+      MyPanel buttonPanel = new MyPanel(new BorderLayout());
+      JPanel buttonPanelOne = getButtonPanelNorth();
+      JPanel buttonPanelTwo = getButtonPanelSouth();
+      buttonPanel.addNorth(buttonPanelOne);
+      buttonPanel.addSouth(buttonPanelTwo);
+      return buttonPanel;
+   }
+
+   private JPanel getButtonPanelNorth() {
+      JPanel buttonPanel = new JPanel();
+      addFilter(buttonPanel, table, sorter, Column.Jira, Column.Description);
+      return buttonPanel;
+   }
+
+   private JPanel getButtonPanelSouth() {
       JPanel buttons = new JPanel();
 
       addPanelWithAddAndRemoveOptions(table, buttons);
       SyncWithJiraActionListener listener = new SyncWithJiraActionListener(table, helper);
-      listener.addListener(new SyncWithJiraActionListenerListener(){
+      listener.addListener(new SyncWithJiraActionListenerListener() {
+         public void jiraAdded(JiraIssue jiraIssue) {
+         }
+
          public void jiraSynced(JiraIssue jira, int tableRowSynced) {
             table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
             table.setValueAt(jira.getType(), tableRowSynced, Column.Type);
          }
+
          public void jiraSyncedCompleted() {
-         }
-         public void jiraAdded(JiraIssue jiraIssue) {
          }
       });
       addButton(buttons, "Sync", listener);
@@ -93,7 +115,6 @@ public class PlanPanel extends MyComponentPanel {
             return helper.getActiveInternalFrame().getJiraTable();
          }
       }, helper));
-      
 
       setupPlanVersionsFrame();
       addButton(buttons, "PlanVersions", new ActionListener() {
@@ -107,6 +128,10 @@ public class PlanPanel extends MyComponentPanel {
 
    public PlanTableModel getPlanModel() {
       return ((PlanTableModel) table.getModel());
+   }
+
+   public MyTable getTable() {
+      return table;
    }
 
    public void setEditable(boolean selected) {
@@ -196,9 +221,5 @@ public class PlanPanel extends MyComponentPanel {
       public void actionPerformed(ActionEvent e) {
          table.refreshFixVersions();
       }
-   }
-
-   public MyTable getTable() {
-      return table;
    }
 }
