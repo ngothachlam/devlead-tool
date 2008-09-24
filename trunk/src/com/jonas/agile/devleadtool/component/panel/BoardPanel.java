@@ -1,6 +1,8 @@
 package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -53,8 +55,7 @@ public class BoardPanel extends MyComponentPanel {
    }
 
    protected void makeContent(MyTableModel boardTableModel) {
-      table = new MyTable();
-      table.setModel(boardTableModel);
+      table = new MyTable(boardTableModel);
       
       table.setDefaultRenderer(String.class, new StringTableCellRenderer());
       table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
@@ -83,6 +84,12 @@ public class BoardPanel extends MyComponentPanel {
       });
       addButton(buttonPanel, "Sync", listener);
       addButton(buttonPanel, "Open Jiras", new OpenJirasListener(table, helper));
+      addButton(buttonPanel, "Unsort", new ActionListener(){
+         @Override
+         public void actionPerformed(ActionEvent e) {
+//            table.clearSorting();
+         }
+      });
       addButton(buttonPanel, "Copy to Plan", new CopyToTableListener(table, new DestinationRetriever() {
          public MyTable getDestinationTable() {
             return helper.getActiveInternalFrame().getPlanTable();

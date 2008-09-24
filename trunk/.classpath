@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test-functional"/>
 	<classpathentry kind="src" path="test-unit"/>
+	<classpathentry kind="src" path="testing"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_07"/>
 	<classpathentry kind="lib" path="lib/poi-3.1-FINAL/poi-3.1-FINAL-20080629.jar">
 		<attributes>

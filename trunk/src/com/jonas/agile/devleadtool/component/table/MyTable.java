@@ -2,9 +2,12 @@ package com.jonas.agile.devleadtool.component.table;
 
 import java.util.List;
 import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
@@ -14,27 +17,35 @@ import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRende
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
+import com.jonas.testing.TableSorter;
 
 public class MyTable extends JTable {
 
+   private Object sorterLock = new Object();
    private Logger log = MyLogger.getLogger(MyTable.class);
+   private TableSorter sorter = null;
 
    public MyTable() {
       super();
       setDefaultRenderer(String.class, new StringTableCellRenderer());
       setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
       setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
-      
+
       setDragEnabled(true);
       setAutoCreateRowSorter(true);
    }
 
-   public void addEmptyRow() {
-      ((MyTableModel)this.getModel()).addEmptyRow();
+   public MyTable(MyTableModel modelModel) {
+      this();
+      setModel(modelModel);
    }
    
+   public void addEmptyRow() {
+      ((MyTableModel) this.getModel()).addEmptyRow();
+   }
+
    public void addJira(JiraIssue jiraIssue) {
-      MyTableModel model = (MyTableModel)getModel();
+      MyTableModel model = (MyTableModel) getModel();
       model.addJira(jiraIssue);
    }
 
@@ -48,13 +59,13 @@ public class MyTable extends JTable {
       return model.getColumnEnum(convertColumnIndexToModel(itsColumn));
    }
 
-//   public boolean isColumnEqual(int itsColumn, Column column) {
-//      return getColumnName(itsColumn).equals(column.toString());
-//   }
+   // public boolean isColumnEqual(int itsColumn, Column column) {
+   // return getColumnName(itsColumn).equals(column.toString());
+   // }
 
    public Object getValueAt(Column column, int rowInView) {
       int colInView = getColumnIndex(column);
-      MyTableModel model = (MyTableModel)getModel();
+      MyTableModel model = (MyTableModel) getModel();
       return model.getValueAt(convertRowIndexToModel(rowInView), convertColumnIndexToModel(colInView));
    }
 
@@ -78,7 +89,7 @@ public class MyTable extends JTable {
       tc.setCellEditor(editor);
 
    }
-   
+
    public void setColumnRenderer(int i, TableCellRenderer renderer) {
       TableColumnModel tcm = getColumnModel();
       TableColumn tc = tcm.getColumn(i);
@@ -99,7 +110,7 @@ public class MyTable extends JTable {
    public void setValueAt(Object value, int row, Column column) {
       setValueAt(value, row, getColumnIndex(column));
    }
-   
+
    public void setValueAt(Object value, int row, int column) {
       super.setValueAt(value, row, column);
    }
