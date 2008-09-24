@@ -2,12 +2,8 @@ package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.Component;
 import java.io.File;
-
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 
 public class SavePlannerDialog extends JFileChooser {

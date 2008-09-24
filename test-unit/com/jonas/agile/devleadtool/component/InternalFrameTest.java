@@ -22,7 +22,7 @@ public class InternalFrameTest extends JonasTestCase {
    }
 
    private InternalFrame getTestInternalFrame(String title) {
-      InternalFrame internalFrame = new InternalFrame(title);
+      InternalFrame internalFrame = new InternalFrame(title, null);
       internalFrames.add(internalFrame);
       return internalFrame;
    }

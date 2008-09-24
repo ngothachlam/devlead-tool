@@ -50,7 +50,7 @@ public class DevLeadTool {
 
       frame.setSize(new Dimension(1000, 500));
       frame.setVisible(true);
-      frame.addWindowListener(new MainFrameListener(frame));
+      frame.addWindowListener(new MainFrameListener(frame, plannerHelper));
 
    }
 
@@ -88,12 +88,12 @@ public class DevLeadTool {
             new SavePlannerDialog(plannerDAO, frame, plannerHelper);
          }
       });
-      JMenuItem exit = createMenuItem("Exit All", new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            new ClosePlannerDialog(frame, plannerHelper);
-         }
-      });
-      return new JMenuItem[] { planner, open, save, exit };
+//      JMenuItem exit = createMenuItem("Exit All", new ActionListener() {
+//         public void actionPerformed(ActionEvent e) {
+//            new ClosePlannerDialog(frame, plannerHelper);
+//         }
+//      });
+      return new JMenuItem[] { planner, open, save };
    }
 
    private JMenu createFileMenu(String title, JMenuItem[] menuItemList) {

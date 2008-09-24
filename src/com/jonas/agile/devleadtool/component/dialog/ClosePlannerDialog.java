@@ -14,7 +14,7 @@ import com.jonas.common.SwingUtil;
 public class ClosePlannerDialog extends JDialog {
 	private final PlannerHelper plannerHelper;
 
-	public ClosePlannerDialog(JFrame parent) {
+	ClosePlannerDialog(JFrame parent) {
 		this(parent, null);
 	}
 	public ClosePlannerDialog(JFrame parent, PlannerHelper plannerHelper) {
@@ -28,6 +28,8 @@ public class ClosePlannerDialog extends JDialog {
 		pack();
 		SwingUtil.centreWindowWithinWindow(this, parent);
 
+		plannerHelper.getActiveInternalFrame().closeAll();
+		
 		new Thread(new Runnable() {
 			public void run() {
 				SystemProperties.close();
