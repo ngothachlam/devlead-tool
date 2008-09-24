@@ -35,7 +35,7 @@ public class JiraBuilder {
       });
       addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_LLULISTPRIO + "']/customfieldvalues/customfieldvalue", new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
-            jira.setLLUListPriority(new Integer(xpathValue).intValue());
+            jira.setLLUListPriority(getStringAsIntIfNumeric(xpathValue));
          }
       });
       addXpathAction("/item/timeoriginalestimate/@seconds", new XpathAction() {
@@ -98,14 +98,7 @@ public class JiraBuilder {
       RemoteCustomFieldValue[] customFieldValues = remoteJira.getCustomFieldValues();
       String buildNo = getCustomFieldValue(customFieldValues, CUSTOMFIELD_BUILDNO);
       String listPrioAsString = getCustomFieldValue(customFieldValues, CUSTOMFIELD_LLULISTPRIO);
-      int listPrio = -1;
-      try
-      {
-          listPrio = Integer.parseInt(listPrioAsString);
-      }
-      catch (NumberFormatException e) // s does not represent an integer
-      {
-      }
+      int listPrio = getStringAsIntIfNumeric(listPrioAsString);
       // fixme - doesn't work with estimate at the moment.
       JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName, typeName, buildNo, "", listPrio);
       RemoteVersion[] tempFixVersions = remoteJira.getFixVersions();
@@ -121,6 +114,16 @@ public class JiraBuilder {
          }
       }
       return jira;
+   }
+
+   private static int getStringAsIntIfNumeric(String string) {
+      int intValue = -1;
+      try {
+         intValue = Integer.parseInt(string);
+      } catch (NumberFormatException e) {
+         log.debug("String \"" + string + "\"cannot be transformed to an int!");
+      }
+      return intValue;
    }
 
    private String getCustomFieldValue(RemoteCustomFieldValue[] customFieldValues, String anObject) {
