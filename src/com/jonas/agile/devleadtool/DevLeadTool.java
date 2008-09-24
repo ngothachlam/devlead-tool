@@ -12,13 +12,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import com.jonas.agile.devleadtool.component.DesktopPane;
-import com.jonas.agile.devleadtool.component.dialog.ClosePlannerDialog;
 import com.jonas.agile.devleadtool.component.dialog.LoadPlannerDialog;
 import com.jonas.agile.devleadtool.component.dialog.OpenPlannerDialog;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
 import com.jonas.agile.devleadtool.component.listener.MainFrameListener;
 import com.jonas.agile.devleadtool.component.table.model.TableModelBuilder;
-import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.common.MyPanel;
 
@@ -29,45 +27,33 @@ public class DevLeadTool {
    DevLeadTool() {
    }
 
+   public PlannerHelper getHelper() {
+      return plannerHelper;
+   }
+
    public void start() {
-      // SwingUtilities.invokeLater(new Runnable() {
-      // public void run() {
       makeUI();
-      // }
-      // });
    }
 
-   private void makeUI() {
-      JFrame frame = setLookAndFeel();
-      plannerHelper = new PlannerHelper(frame, "Planner");
-
-      DesktopPane desktop = new DesktopPane();
-      JPanel contentPanel = new MyPanel(new BorderLayout());
-      contentPanel.add(desktop);
-      plannerHelper.setDesktop(desktop);
-      frame.setJMenuBar(createMenuBar(frame, desktop));
-      frame.setContentPane(contentPanel);
-
-      frame.setSize(new Dimension(1000, 500));
-      frame.setVisible(true);
-      frame.addWindowListener(new MainFrameListener(frame, plannerHelper));
-
-   }
-
-   private JFrame setLookAndFeel() {
-      JFrame frame = new JFrame("Jonas' Dev Lead Tool");
-      // Use the Java look and feel.
-      try {
-         String laf = UIManager.getCrossPlatformLookAndFeelClassName();
-         laf = UIManager.getSystemLookAndFeelClassName();
-         UIManager.setLookAndFeel(laf);
-      } catch (Exception e) {
+   private JMenu createFileMenu(String title, JMenuItem[] menuItemList) {
+      JMenu fileMenu = new JMenu(title);
+      for (int i = 0; i < menuItemList.length; i++) {
+         fileMenu.add(menuItemList[i]);
       }
+      return fileMenu;
+   }
 
-      // Make sure we have nice window decorations.
-      JFrame.setDefaultLookAndFeelDecorated(true);
-      JDialog.setDefaultLookAndFeelDecorated(true);
-      return frame;
+   private JMenuBar createMenuBar(final JFrame frame, DesktopPane desktop) {
+      JMenu fileMenuFile = createFileMenu("File", getFileMenuItemArray(frame, desktop));
+      JMenuBar menuBar = new JMenuBar();
+      menuBar.add(fileMenuFile);
+      return menuBar;
+   }
+
+   private JMenuItem createMenuItem(String menuTitle, ActionListener actionListener) {
+      JMenuItem menuItem = new JMenuItem(menuTitle);
+      menuItem.addActionListener(actionListener);
+      return menuItem;
    }
 
    private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
@@ -88,37 +74,44 @@ public class DevLeadTool {
             new SavePlannerDialog(plannerDAO, frame, plannerHelper);
          }
       });
-//      JMenuItem exit = createMenuItem("Exit All", new ActionListener() {
-//         public void actionPerformed(ActionEvent e) {
-//            new ClosePlannerDialog(frame, plannerHelper);
-//         }
-//      });
       return new JMenuItem[] { planner, open, save };
    }
 
-   private JMenu createFileMenu(String title, JMenuItem[] menuItemList) {
-      JMenu fileMenu = new JMenu(title);
-      for (int i = 0; i < menuItemList.length; i++) {
-         fileMenu.add(menuItemList[i]);
+   private void makeUI() {
+      JFrame frame = setLookAndFeel();
+      plannerHelper = new PlannerHelper(frame, "Planner");
+
+      DesktopPane desktop = new DesktopPane();
+      JPanel contentPanel = new MyPanel(new BorderLayout());
+      contentPanel.add(desktop);
+      plannerHelper.setDesktop(desktop);
+      frame.setJMenuBar(createMenuBar(frame, desktop));
+      frame.setContentPane(contentPanel);
+
+      frame.setSize(new Dimension(1000, 500));
+      frame.setVisible(true);
+
+      wireListeners(frame);
+   }
+
+   private JFrame setLookAndFeel() {
+      JFrame frame = new JFrame("Jonas' Dev Lead Tool");
+      // Use the Java look and feel.
+      try {
+         String laf = UIManager.getCrossPlatformLookAndFeelClassName();
+         laf = UIManager.getSystemLookAndFeelClassName();
+         UIManager.setLookAndFeel(laf);
+      } catch (Exception e) {
       }
-      return fileMenu;
+
+      // Make sure we have nice window decorations.
+      JFrame.setDefaultLookAndFeelDecorated(true);
+      JDialog.setDefaultLookAndFeelDecorated(true);
+      return frame;
    }
 
-   private JMenuItem createMenuItem(String menuTitle, ActionListener actionListener) {
-      JMenuItem menuItem = new JMenuItem(menuTitle);
-      menuItem.addActionListener(actionListener);
-      return menuItem;
-   }
-
-   private JMenuBar createMenuBar(final JFrame frame, DesktopPane desktop) {
-      JMenu fileMenuFile = createFileMenu("File", getFileMenuItemArray(frame, desktop));
-      JMenuBar menuBar = new JMenuBar();
-      menuBar.add(fileMenuFile);
-      return menuBar;
-   }
-
-   public PlannerHelper getHelper() {
-      return plannerHelper;
+   private void wireListeners(JFrame frame) {
+      frame.addWindowListener(new MainFrameListener(frame, plannerHelper));
    }
 
 }
