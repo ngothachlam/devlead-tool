@@ -9,11 +9,12 @@ import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
-import com.jonas.agile.devleadtool.component.table.ColumnDTO;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
+import com.jonas.testing.TableSorter;
 
 public abstract class MyTableModel extends DefaultTableModel {
+//public abstract class MyTableModel extends TableSorter {
 
    protected Counter counter = new Counter();
    private Logger log = MyLogger.getLogger(MyTableModel.class);
@@ -73,31 +74,31 @@ public abstract class MyTableModel extends DefaultTableModel {
       return -1;
    }
 
-//   final public Object[] getEmptyRow() {
-//      Map<Column, Integer> colnams = getColumnNames();
-//      Object[] objects = new Object[colnams.size()];
-//      int i = 0;
-//      log.debug("getting Empty Row");
-//      for (Column column : colnams.keySet()) {
-//         ColumnDTO dto = ColumnDTO.getColumnDTO(column);
-//         objects[i++] = dto.getDefaultValue();
-//         log.debug("column: " + column + " containing: " + objects[i - 1]);
-//      }
-//      return objects;
-//   }
-   
-//   final public Class[] getEmptyRowClass() {
-//      Map<Column, Integer> colnams = getColumnNames();
-//      Class[] objects = new Object[colnams.size()];
-//      int i = 0;
-//      log.debug("getting Empty Row");
-//      for (Column column : colnams.keySet()) {
-//         ColumnDTO dto = ColumnDTO.getColumnDTO(column);
-//         objects[i++] = dto.getClass();
-//         log.debug("column: " + column + " containing: " + objects[i - 1]);
-//      }
-//      return objects;
-//   }
+   // final public Object[] getEmptyRow() {
+   // Map<Column, Integer> colnams = getColumnNames();
+   // Object[] objects = new Object[colnams.size()];
+   // int i = 0;
+   // log.debug("getting Empty Row");
+   // for (Column column : colnams.keySet()) {
+   // ColumnDTO dto = ColumnDTO.getColumnDTO(column);
+   // objects[i++] = dto.getDefaultValue();
+   // log.debug("column: " + column + " containing: " + objects[i - 1]);
+   // }
+   // return objects;
+   // }
+
+   // final public Class[] getEmptyRowClass() {
+   // Map<Column, Integer> colnams = getColumnNames();
+   // Class[] objects = new Object[colnams.size()];
+   // int i = 0;
+   // log.debug("getting Empty Row");
+   // for (Column column : colnams.keySet()) {
+   // ColumnDTO dto = ColumnDTO.getColumnDTO(column);
+   // objects[i++] = dto.getClass();
+   // log.debug("column: " + column + " containing: " + objects[i - 1]);
+   // }
+   // return objects;
+   // }
    final public Object[] getEmptyRow() {
       Map<Column, Integer> colnams = getColumnNames();
       Object[] objects = new Object[colnams.size()];
@@ -175,7 +176,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
       return false;
    }
-   
+
    final public int getJiraRow(String name) {
       for (int row = 0; row < getRowCount(); row++) {
          if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
@@ -314,9 +315,9 @@ public abstract class MyTableModel extends DefaultTableModel {
                break;
             }
          }
-//         Object[] objects = new Object[] { jiraIssue.getKey(), jiraIssue.getSummary(), jiraIssue.getFixVersions(), jiraIssue.getStatus(),
-//               jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getEstimate() };
-//         super.addRow(objects);
+         // Object[] objects = new Object[] { jiraIssue.getKey(), jiraIssue.getSummary(), jiraIssue.getFixVersions(), jiraIssue.getStatus(),
+         // jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getEstimate() };
+         // super.addRow(objects);
          super.addRow(contents);
       }
    }
