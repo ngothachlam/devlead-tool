@@ -8,6 +8,7 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
 import com.jonas.agile.devleadtool.component.panel.BoardPanel;
 import com.jonas.agile.devleadtool.component.panel.InternalFrameTabPanel;
 import com.jonas.agile.devleadtool.component.panel.JiraPanel;
@@ -15,6 +16,8 @@ import com.jonas.agile.devleadtool.component.panel.PlanPanel;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
+import com.jonas.agile.devleadtool.component.table.model.TableModelBuilder;
+import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.common.logging.MyLogger;
 
 public class InternalFrame extends JInternalFrame {
@@ -30,18 +33,22 @@ public class InternalFrame extends JInternalFrame {
    private String originalTitle;
    private String originalTitleWithDuplicateNumber;
 
+   private PlannerHelper client;
+
    public InternalFrame(PlannerHelper client, String title, InternalFrameTabPanel internalFrameTabPanel) {
-      this(title);
+      this(title, client);
 
       this.internalFrameTabPanel = internalFrameTabPanel;
 
       this.addInternalFrameListener(new MyInternalFrameListener(client, this));
+
       setContentPane(internalFrameTabPanel);
       client.setActiveInternalFrame(this);
    }
 
-   InternalFrame(String title) {
+   InternalFrame(String title, PlannerHelper client) {
       super("", true, true, true, true);
+      this.client = client;
       internalFrames.add(this);
       this.originalTitle = title;
       originalTitleWithDuplicateNumber = createTitle(title);
@@ -50,9 +57,9 @@ public class InternalFrame extends JInternalFrame {
    }
 
    public static void closeAll() {
-      for (Iterator<InternalFrame> iterator = internalFrames.iterator(); iterator.hasNext();) {
-         iterator.next().close();
-         iterator.remove();
+      while (internalFrames.size() > 0) {
+         InternalFrame internalFrame = internalFrames.get(internalFrames.size()-1);
+         internalFrame.close();
       }
    }
 
@@ -107,9 +114,19 @@ public class InternalFrame extends JInternalFrame {
    }
 
    void close() {
-      if (internalFrameTabPanel != null)
+      log.debug("Closing internal frame: " + getTitle());
+      openSaveDialogForThisInternalFrame();
+      if (internalFrameTabPanel != null) {
          internalFrameTabPanel.close();
+      }
       internalFrames.remove(this);
+      dispose();
+   }
+
+   private void openSaveDialogForThisInternalFrame() {
+      log.debug("Should Open Save Dialog!!");
+      final PlannerDAOExcelImpl plannerDAO = new PlannerDAOExcelImpl(new TableModelBuilder());
+      new SavePlannerDialog(plannerDAO, this, client);
    }
 
    String createTitle(String title) {

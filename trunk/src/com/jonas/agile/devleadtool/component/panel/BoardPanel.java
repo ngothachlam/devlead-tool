@@ -19,7 +19,6 @@ import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEdito
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
-import com.jonas.agile.devleadtool.component.table.renderer.HyperlinkTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
