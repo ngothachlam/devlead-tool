@@ -5,14 +5,16 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.LayoutManager;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
-import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListenerListener;
+import com.jonas.agile.devleadtool.component.listener.FilterType;
 import com.jonas.agile.devleadtool.component.listener.RemoveJTableSelectedRowsListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 
@@ -87,11 +89,16 @@ public class MyPanel extends JPanel {
       buttons.add(jiraCommas);
       return jiraCommas;
    }
+   protected JComboBox addComboBox(JPanel buttons, FilterType[] filterTypes) {
+      JComboBox component = new JComboBox(filterTypes);
+      buttons.add(component);
+      return component;
+   }
 
    protected void addPanelWithAddAndRemoveOptions(MyTable table, JPanel buttons) {
       addLabel(buttons, "Prefix:");
       JTextField jiraPrefix = addTextField(buttons, 5);
-      JTextField jiraCommas = addTextField(buttons, 20);
+      JTextField jiraCommas = addTextField(buttons, 30);
       addButton(buttons, "Add", new AddNewRowActionListener(table, jiraPrefix, jiraCommas));
       addButton(buttons, "Remove", new RemoveJTableSelectedRowsListener(table));
    }
