@@ -51,8 +51,9 @@ public class FilterDocumentListenerListener {
             List<String> list = parser.separateString(filterText.getText(), "|");
             searches = list.size();
 
-            if (filterText.getText().length() == 1) {
-               rf = RowFilter.regexFilter(filterText.getText(), intArr);
+            if (filterText.getText().length() == 0) {
+               //FIXME Doesn't work!! is supposed to give us all results!
+               rf = RowFilter.regexFilter("", intArr);
             } else {
                List<RowFilter<Object, Object>> filters = new ArrayList<RowFilter<Object, Object>>(10);
                for (String string : list) {
@@ -66,6 +67,9 @@ public class FilterDocumentListenerListener {
          }
       } catch (PatternSyntaxException e) {
          log.debug(e);
+      }
+      if (filterText.getText().length() == 0) {
+         searches = -1;
       }
 
       if (table.getModel().getRowCount() > 0)
@@ -92,7 +96,7 @@ public class FilterDocumentListenerListener {
          array.add(columnIndexOne);
    }
 
-   public int getSearches() {
-      return searches;
+   public String getSearches() {
+      return searches >= 0 ? String.valueOf(searches) : "All";
    }
 }
