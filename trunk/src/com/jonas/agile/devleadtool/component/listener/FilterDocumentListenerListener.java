@@ -37,31 +37,28 @@ public class FilterDocumentListenerListener {
    }
 
    public void newFilter(FilterType filterType) {
-      RowFilter<TableModel, Object> rf = null;
+      RowFilter<Object, Object> rf = null;
       try {
          int[] intArr = getArray(columns);
          log.debug("FilterType " + filterType);
          switch (filterType) {
-         case REGEX:
-            rf = RowFilter.regexFilter(filterText.getText(), intArr);
+         case REGEX: {
+            rf = getFilter(filterText.getText());
             searches = 1;
+         }
             break;
-         case PIPESEPARATOR:
+         case PIPESEPARATOR: {
             MyStringParser parser = new MyStringParser();
             List<String> list = parser.separateString(filterText.getText(), "|");
             searches = list.size();
 
-            if (filterText.getText().length() == 0) {
-               //FIXME Doesn't work!! is supposed to give us all results!
-               rf = RowFilter.regexFilter("", intArr);
-            } else {
-               List<RowFilter<Object, Object>> filters = new ArrayList<RowFilter<Object, Object>>(10);
-               for (String string : list) {
-                  filters.add(RowFilter.regexFilter(string));
-               }
-               rf = RowFilter.orFilter(filters);
+            List<RowFilter<Object, Object>> filters = new ArrayList<RowFilter<Object, Object>>(10);
+            for (String string : list) {
+               filters.add(getFilter(string));
             }
+            rf = RowFilter.orFilter(filters);
             break;
+         }
          default:
             break;
          }
@@ -69,11 +66,20 @@ public class FilterDocumentListenerListener {
          log.debug(e);
       }
       if (filterText.getText().length() == 0) {
+         rf = getFilter("");
          searches = -1;
       }
 
-      if (table.getModel().getRowCount() > 0)
+      if (table.getModel().getRowCount() > 0) {
+         // FIXME Doesn't seem to work when adding a row to empty table that already has a filter set!!
          tableRowSorter.setRowFilter(rf);
+      }
+   }
+
+   private RowFilter<Object, Object> getFilter(String text) {
+      List<RowFilter<Object, Object>> filters = new ArrayList<RowFilter<Object, Object>>(2);
+      filters.add(RowFilter.regexFilter(text));
+      return RowFilter.andFilter(filters);
    }
 
    int[] getArray(Column... columns) {
