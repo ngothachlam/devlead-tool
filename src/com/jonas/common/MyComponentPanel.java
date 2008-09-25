@@ -74,7 +74,6 @@ public class MyComponentPanel extends MyPanel {
       addLabel(buttonPanel, "Jira Filter:");
       JTextField filterText = addTextField(buttonPanel, 20);
       final JComboBox typeOfFilter = addComboBox(buttonPanel, FilterType.values());
-//      typeOfFilter.setSelectedItem(FilterType.REGEX);
       
       JTextField results = addTextField(buttonPanel, 20);
       results.setEditable(false);
