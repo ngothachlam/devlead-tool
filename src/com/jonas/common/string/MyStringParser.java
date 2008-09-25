@@ -6,10 +6,8 @@ import java.util.StringTokenizer;
 
 public class MyStringParser {
 
-   private static final String delims = " ,;.\t";
-
-   public List<String> separateString(String string) {
-      StringTokenizer st = new StringTokenizer(string, delims);
+   public List<String> separateString(String string, String delimeters) {
+      StringTokenizer st = new StringTokenizer(string, delimeters);
       List<String> separateStrings = new ArrayList<String>();
       while (st.hasMoreTokens()) {
          separateStrings.add(st.nextToken());

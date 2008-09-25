@@ -28,7 +28,7 @@ public class AddNewRowActionListener implements ActionListener {
 
    public void actionPerformed(@SuppressWarnings("unused") ActionEvent e) {
       MyStringParser parser = new MyStringParser();
-      List<String> jiras = parser.separateString(jiraCommas.getText());
+      List<String> jiras = parser.separateString(jiraCommas.getText(), " ,;.\t");
       for (String jiraNumber : jiras) {
          String prefix = jiraPrefix.getText();
          String jiraString = getJiraString(prefix, jiraNumber);

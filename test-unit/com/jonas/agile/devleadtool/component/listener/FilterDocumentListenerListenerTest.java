@@ -7,10 +7,10 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 
-public class FilterDocumentListenerListenerImplTest extends TestCase {
+public class FilterDocumentListenerListenerTest extends TestCase {
 
    public void testShouldAddToArrayOnlyPositiveNumbers() {
-      FilterDocumentListenerListenerImpl listener = new FilterDocumentListenerListenerImpl();
+      FilterDocumentListenerListener listener = new FilterDocumentListenerListener();
       List<Integer> array = new ArrayList<Integer>();
       assertEquals(0, array.size());
       listener.addToArrayIfPositive(-1, array);
@@ -24,7 +24,7 @@ public class FilterDocumentListenerListenerImplTest extends TestCase {
    }
 
    public void testShouldCalculateArrayCorrectly() {
-      FilterDocumentListenerListenerImpl listener = new FilterDocumentListenerListenerImpl(null, new MyTable(new BoardTableModel()), null, Column.Jira);
+      FilterDocumentListenerListener listener = new FilterDocumentListenerListener(null, new MyTable(new BoardTableModel()), null, Column.Jira);
       // FilterDocumentListenerListenerImpl listener = new FilterDocumentListenerListenerImpl();
       assertEquals(0, listener.getArray(Column.Closed_Sprint).length);
       int[] array = listener.getArray(Column.Jira, Column.Closed_Sprint, Column.Description);
