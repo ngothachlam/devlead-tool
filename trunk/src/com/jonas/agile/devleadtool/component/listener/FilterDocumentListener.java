@@ -33,7 +33,7 @@ public final class FilterDocumentListener implements DocumentListener {
       results.setText(getResultText(listener.getSearches()));
    }
 
-   private String getResultText(int noOfSearches){
+   private String getResultText(String noOfSearches){
       StringBuffer sb = new StringBuffer();
       sb.append("Searched: ");
       sb.append(noOfSearches);
