@@ -5,8 +5,8 @@ package com.jonas.agile.devleadtool.component.table;
 
 public enum Column {
    // String Defaults
-   URL, Jira, Description, FixVersion, JiraStatus, Resolution, BuildNo, Type, Note, Planned_Sprint, Resolved_Sprint, Closed_Sprint, BoardStatus, Dev_Estimate, QA_Estimate, Dev_Actual, 
-   
+   URL, Jira, Description, FixVersion, JiraStatus, Resolution, BuildNo, Type, Note, Planned_Sprint, Resolved_Sprint, Closed_Sprint, BoardStatus, Dev_Estimate, Dev_Spent, QA_Estimate, Dev_Actual,
+
    ListPrio {
       @Override
       public Object getCellContentDefault() {

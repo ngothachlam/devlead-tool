@@ -309,6 +309,9 @@ public abstract class MyTableModel extends DefaultTableModel {
             case Dev_Estimate:
                contents.add(jiraIssue.getEstimate());
                break;
+            case Dev_Spent:
+               contents.add(jiraIssue.getSpent());
+               break;
             case Type:
                contents.add(jiraIssue.getType());
                break;

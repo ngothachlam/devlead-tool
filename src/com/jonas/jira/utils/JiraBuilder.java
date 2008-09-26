@@ -45,6 +45,13 @@ public class JiraBuilder {
             }
          }
       });
+      addXpathAction("/item/timespent/@seconds", new XpathAction() {
+         public void XPathValueFound(String xpathValue, JiraIssue jira) {
+            if (xpathValue != null && xpathValue.trim().length() > 0) {
+               jira.setSpent(JiraBuilder.getSecondsAsDays(xpathValue));
+            }
+         }
+      });
    }
 
    private static void addXpathAction(String xPath, XpathAction action) {
@@ -52,7 +59,7 @@ public class JiraBuilder {
    }
 
    public static String getSecondsAsDays(String seconds) {
-      int intSeconds = new Integer(seconds).intValue();
+      int intSeconds = new Float(seconds).intValue();
       float floatDays = getSecondsAsDays(intSeconds);
       return String.valueOf(floatDays);
    }
@@ -97,8 +104,7 @@ public class JiraBuilder {
       String typeName = type != null ? type.getName() : null;
       RemoteCustomFieldValue[] customFieldValues = remoteJira.getCustomFieldValues();
       String buildNo = getCustomFieldValue(customFieldValues, CUSTOMFIELD_BUILDNO);
-      String listPrioAsString = getCustomFieldValue(customFieldValues, CUSTOMFIELD_LLULISTPRIO);
-      int listPrio = getStringAsIntIfNumeric(listPrioAsString);
+      int listPrio = getStringAsIntIfNumeric(getCustomFieldValue(customFieldValues, CUSTOMFIELD_LLULISTPRIO));
       // fixme - doesn't work with estimate at the moment.
       JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName, typeName, buildNo, "", listPrio);
       RemoteVersion[] tempFixVersions = remoteJira.getFixVersions();

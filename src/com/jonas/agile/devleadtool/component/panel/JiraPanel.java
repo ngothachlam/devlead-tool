@@ -48,8 +48,8 @@ public class JiraPanel extends MyComponentPanel {
       table = new MyTable(new JiraTableModel());
       // table.setModel(new JiraTableModel());
 
-      sorter = new TableRowSorter<TableModel>(table.getModel());
-      table.setRowSorter(sorter);
+//      sorter = new TableRowSorter<TableModel>(table.getModel());
+//      table.setRowSorter(sorter);
 
       JScrollPane scrollpane = new MyScrollPane(table);
 
@@ -60,9 +60,9 @@ public class JiraPanel extends MyComponentPanel {
 
    protected JPanel getBottomPanel() {
       MyPanel buttonPanel = new MyPanel(new BorderLayout());
-      JPanel buttonPanelOne = getButtonPanelNorth();
+//      JPanel buttonPanelOne = getButtonPanelNorth();
       JPanel buttonPanelTwo = getButtonPanelSouth();
-      buttonPanel.addNorth(buttonPanelOne);
+//      buttonPanel.addNorth(buttonPanelOne);
       buttonPanel.addSouth(buttonPanelTwo);
       return buttonPanel;
    }
@@ -99,6 +99,7 @@ public class JiraPanel extends MyComponentPanel {
             table.setValueAt(jira.getResolution(), tableRowSynced, Column.Resolution);
             table.setValueAt(jira.getBuildNo(), tableRowSynced, Column.BuildNo);
             table.setValueAt(jira.getEstimate(), tableRowSynced, Column.Dev_Estimate);
+            table.setValueAt(jira.getSpent(), tableRowSynced, Column.Dev_Spent);
          }
 
          public void jiraSyncedCompleted() {

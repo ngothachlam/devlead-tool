@@ -32,7 +32,7 @@ public class JiraXMLHelper extends HttpClient {
       try {
          helper.loginToJira();
 //         System.out.println(helper.getXML("browse/LLU-4072?decorator=none&view=rss"));
-         System.out.println(helper.getXML("browse/LLUDEVSUP-497?decorator=none&view=rss"));
+         System.out.println(helper.getXML("browse/LLU-4139?decorator=none&view=rss"));
       } catch (IOException e) {
          e.printStackTrace();
       } catch (JiraException e) {
