@@ -15,7 +15,7 @@ import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.jira.JiraProject;
 
-public class JiraSoapClientTest extends TestCase {
+public class JiraSoapClientFunctionalTest extends TestCase {
 
    JiraSoapClient client = null;
    JiraSoapClient clientAolBB = null;

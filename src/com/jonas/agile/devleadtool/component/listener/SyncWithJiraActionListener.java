@@ -22,6 +22,8 @@ import com.jonas.jira.access.JiraListener;
 /**
  * This class syncs for a given MyTable the selected rows and gets the relevant JiraIssues.
  * 
+ * use DownloadJirasListener
+ * 
  * @author Jonas Olofsson
  */
 
@@ -117,7 +119,7 @@ public class SyncWithJiraActionListener implements ActionListener {
                JiraIssue jira;
                try {
                   jira = helper.getJiraIssueFromName(jiraToGet, new JiraListenerImpl(dialog, jiraToGet));
-               } catch (JiraIssueNotFoundException e) {
+               } catch (Exception e) {
                   AlertDialog.alertException(helper, e);
                   e.printStackTrace();
                   continue;

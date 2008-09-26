@@ -48,8 +48,9 @@ public class JiraPanel extends MyComponentPanel {
       table = new MyTable(new JiraTableModel());
       // table.setModel(new JiraTableModel());
 
-//      sorter = new TableRowSorter<TableModel>(table.getModel());
-//      table.setRowSorter(sorter);
+      // FIXME - the filterer doesn't work
+      // sorter = new TableRowSorter<TableModel>(table.getModel());
+      // table.setRowSorter(sorter);
 
       JScrollPane scrollpane = new MyScrollPane(table);
 
@@ -60,9 +61,9 @@ public class JiraPanel extends MyComponentPanel {
 
    protected JPanel getBottomPanel() {
       MyPanel buttonPanel = new MyPanel(new BorderLayout());
-//      JPanel buttonPanelOne = getButtonPanelNorth();
+      // JPanel buttonPanelOne = getButtonPanelNorth();
       JPanel buttonPanelTwo = getButtonPanelSouth();
-//      buttonPanel.addNorth(buttonPanelOne);
+      // buttonPanel.addNorth(buttonPanelOne);
       buttonPanel.addSouth(buttonPanelTwo);
       return buttonPanel;
    }
