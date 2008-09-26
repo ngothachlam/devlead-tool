@@ -1,5 +1,8 @@
 package com.jonas.jira.access;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Locale;
 import junit.framework.TestCase;
 import org.apache.axis.client.Stub;
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
@@ -8,7 +11,6 @@ import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.atlassian.jira.rpc.soap.beans.RemoteCustomFieldValue;
-import com.atlassian.jira.rpc.soap.beans.RemoteField;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.jira.JiraProject;
@@ -49,19 +51,47 @@ public class JiraSoapClientTest extends TestCase {
       RemoteIssue jira = clientAolBB.getJira("LLU-4088");
       assertEquals("LLU-4088", jira.getKey());
       RemoteCustomFieldValue[] customFieldValues = jira.getCustomFieldValues();
+
+      printAllMethodsAndResults(jira);
+
+      System.out.println("Custom Fields:");
       for (RemoteCustomFieldValue remoCustomFieldValue : customFieldValues) {
-         System.out.println(remoCustomFieldValue.getCustomfieldId() + " - " + remoCustomFieldValue.getKey());
-         System.out.println("1: " + remoCustomFieldValue.getCustomfieldId());
-         System.out.println("2: " + remoCustomFieldValue.getKey());
+         System.out.println("\tgetCustomfieldId: " + remoCustomFieldValue.getCustomfieldId() + " - getKey: " + remoCustomFieldValue.getKey());
          String[] values = remoCustomFieldValue.getValues();
          for (String string : values) {
-            System.out.println("\t" + string);
+            System.out.println("\t\tgetValues(...): " + string);
          }
          if ("customfield_10160".equals(remoCustomFieldValue.getCustomfieldId())) {
             System.out.println("\t**");
          }
       }
       assertTrue(false);
+   }
+
+   private void printAllMethodsAndResults(RemoteIssue jira) {
+      Class<?> c = jira.getClass();
+      Method[] allMethods = c.getDeclaredMethods();
+      System.out.println("Methods:");
+      for (Method method : allMethods) {
+
+         if (!method.getName().startsWith("get") && method.getGenericParameterTypes().length != 0)
+            continue;
+         System.out.println(method.getName());
+
+         try {
+            method.setAccessible(true);
+            Object o = method.invoke(jira);
+            System.out.println("\t" + method.getName() + "() returned: " + o);
+
+            // Handle any exceptions thrown by method to be invoked.
+         } catch (Throwable x) {
+            Throwable cause = x.getCause();
+            System.out.println("\t" + method.getName() + "() returned: " + cause);
+            x.printStackTrace();
+         }
+
+      }
+
    }
 
    public void testGetJiraThatDoesNotExist() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException,
@@ -88,8 +118,8 @@ public class JiraSoapClientTest extends TestCase {
       assertTrue("Get Timeout to work!", false);
       assertEquals("TST-3", client.getJira("TST-3").getKey());
    }
-   
-   public void testAllCustomFields() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException{
+
+   public void testAllCustomFields() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
       clientAolBB.printAllCustomFieldInfo();
    }
 }

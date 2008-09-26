@@ -7,7 +7,7 @@ import com.jonas.common.logging.MyLogger;
 
 public class JiraTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.FixVersion, Column.JiraStatus, Column.Resolution, Column.BuildNo, Column.Dev_Estimate };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.FixVersion, Column.JiraStatus, Column.Resolution, Column.BuildNo, Column.Dev_Estimate, Column.Dev_Spent };
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
 
    public JiraTableModel() {
