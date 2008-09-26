@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import javax.swing.JFrame;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
+import org.jdom.JDOMException;
 import com.jonas.agile.devleadtool.component.CutoverLength;
 import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.InternalFrame;
@@ -72,7 +73,7 @@ public class PlannerHelper {
       this.getActiveInternalFrame().setExcelFile(file.getAbsolutePath(), CutoverLength.DEFAULT);
    }
 
-   public JiraIssue getJiraIssueFromName(String jira, JiraListener jiraListener) throws JiraException, JiraIssueNotFoundException, HttpException, IOException {
+   public JiraIssue getJiraIssueFromName(String jira, JiraListener jiraListener) throws JiraException, HttpException, IOException, JDOMException {
       if (jiraListener != null)
          JiraListener.addJiraListener(jiraListener);
       try {

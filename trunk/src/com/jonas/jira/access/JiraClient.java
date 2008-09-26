@@ -53,18 +53,22 @@ public class JiraClient {
       return jiraProject.getFixVersions(isArchived);
    }
 
-   public JiraIssue getJira(String jira, JiraProject project) throws RemotePermissionException, RemoteAuthenticationException, RemoteException,
-         java.rmi.RemoteException, JiraIssueNotFoundException {
-      // TODO thread this!!
-      loadResolutionsIfRequired();
+   public JiraIssue getJira(String jira, JiraProject project) throws HttpException, IOException, JDOMException, JiraException {
+      JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_FIXVERSION);
       loadJiraTypesIfRequired();
-      JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_JIRA);
-      RemoteIssue remoteJira = jiraSoapClient.getJira(jira.toUpperCase());
-      JiraIssue jiraIssue = jiraBuilder.buildJira(remoteJira, project);
-      if (jiraIssue == null) {
-         throw new JiraIssueNotFoundException("Jira [" + jira + "] doesn't exist in " + project.getJiraKey());
-      }
+      loadResolutionsIfRequired();
+      JiraIssue jiraIssue = httpClient.getJira(jira, new JonasXpathEvaluator("/rss/channel/item"), jiraBuilder);
       return jiraIssue;
+      // // TODO thread this!!
+      // loadResolutionsIfRequired();
+      // loadJiraTypesIfRequired();
+      // JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_JIRA);
+      // RemoteIssue remoteJira = jiraSoapClient.getJira(jira.toUpperCase());
+      // JiraIssue jiraIssue = jiraBuilder.buildJira(remoteJira, project);
+      // if (jiraIssue == null) {
+      // throw new JiraIssueNotFoundException("Jira [" + jira + "] doesn't exist in " + project.getJiraKey());
+      // }
+      // return jiraIssue;
    }
 
    public JiraIssue[] getJirasFromFixVersion(JiraVersion version) throws HttpException, IOException, JDOMException, JiraException {
@@ -82,7 +86,7 @@ public class JiraClient {
       RemoteResolution[] remoteResolutions = jiraSoapClient.getResolutions();
       JiraResolution.setResolutions(remoteResolutions);
    }
-   
+
    private void loadJiraTypes() throws RemotePermissionException, RemoteAuthenticationException, java.rmi.RemoteException {
       RemoteIssueType[] remoteTypes = jiraSoapClient.getTypes();
       JiraType.setTypes(remoteTypes);
@@ -97,6 +101,7 @@ public class JiraClient {
          }
       }
    }
+
    private void loadJiraTypesIfRequired() throws RemotePermissionException, RemoteAuthenticationException, java.rmi.RemoteException {
       if (JiraType.getAmount() < 1) {
          synchronized (JiraType.class) {
