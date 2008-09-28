@@ -13,8 +13,7 @@ import junit.framework.TestCase;
 
 public class JiraHttpClientFunctionalTest extends TestCase {
 
-   JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB);
-
+   JiraHttpClient client;
    
    private String getFileContents(File file) throws IOException {
       StringBuffer sb = new StringBuffer();
@@ -31,8 +30,17 @@ public class JiraHttpClientFunctionalTest extends TestCase {
       return sb.toString();
    }
    
+   public void testGetJira() throws IOException, HttpException, JiraException, JDOMException {
+      JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
+//      client.loginToJira();
+      JiraIssue jira = client.getJira("TST-124", new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
+      
+      assertEquals("what the heck a test", jira.getSummary());
+   }
+   
    public void testApacheCommonsAttempt() throws IOException, HttpException, JiraException, JDOMException {
-      client.loginToJira();
+      JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB);
+//      client.loginToJira();
       JiraIssue jira = client.getJira("LLU-4139", new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
       
       assertEquals("llu-inventory-build-2933 / llu-master-build-4066", jira.getBuildNo());
