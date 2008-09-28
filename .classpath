@@ -5,33 +5,33 @@
 	<classpathentry kind="src" path="test-unit"/>
 	<classpathentry kind="src" path="testing"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_07"/>
-	<classpathentry kind="lib" path="lib/poi-3.1-FINAL/poi-3.1-FINAL-20080629.jar">
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/poi-3.1-FINAL-20080629.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://poi.apache.org/apidocs/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/easymock2.4/easymock.jar"/>
-	<classpathentry kind="lib" path="lib/easymockclassextension2.3/easymockclassextension.jar"/>
-	<classpathentry kind="lib" path="lib/axis-1_4/axis.jar"/>
-	<classpathentry kind="lib" path="lib/axis-1_4/commons-discovery-0.2.jar"/>
-	<classpathentry kind="lib" path="lib/axis-1_4/jaxrpc.jar"/>
-	<classpathentry kind="lib" path="lib/axis-1_4/saaj.jar"/>
-	<classpathentry kind="lib" path="lib/axis-1_4/wsdl4j-1.5.1.jar"/>
-	<classpathentry kind="lib" path="lib/jwebunit-1.5/jwebunit-core-1.5.jar"/>
-	<classpathentry kind="lib" path="lib/jwebunit-1.5/jwebunit-htmlunit-plugin-1.5.jar"/>
-	<classpathentry kind="lib" path="lib/jdom-1.1/jdom.jar"/>
-	<classpathentry kind="lib" path="lib/jwebunit-1.5/lib/htmlunit-1.14.jar"/>
-	<classpathentry kind="lib" path="lib/jwebunit-1.5/lib/jaxen-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/jwebunit-1.5/lib/commons-httpclient-3.1.jar"/>
-	<classpathentry kind="lib" path="lib/junit.jar"/>
-	<classpathentry kind="lib" path="lib/jwebunit-1.5/lib/commons-codec-1.3.jar"/>
-	<classpathentry kind="lib" path="lib/jwebunit-1.5/lib/commons-collections-3.2.jar"/>
-	<classpathentry kind="lib" path="lib/jwebunit-1.5/lib/commons-io-1.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/jwebunit-1.5/lib/commons-lang-2.3.jar"/>
-	<classpathentry kind="lib" path="lib/jwebunit-1.5/lib/commons-logging-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/jwebunit-1.5/lib/regexp-1.3.jar"/>
-	<classpathentry kind="lib" path="lib/apache-log4j-1.2.15/log4j-1.2.15.jar"/>
-	<classpathentry kind="lib" path="lib/easymockclassextension2.3/cglib-nodep-2.1_3.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/easymock2.4.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/easymockclassextension2.3.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/axis-1.4.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/commons-discovery-0.2.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/saaj.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/wsdl4j-1.5.1.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/jwebunit-core-1.5.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/jwebunit-htmlunit-plugin-1.5.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/jdom-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/htmlunit-1.14.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/jaxen-1.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/commons-httpclient-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/junit-3.8.2.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/commons-collections-3.2.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/commons-io-1.3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/commons-lang-2.3.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/regexp-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Jonas Olofsson/My Documents/workspace/devlead-tool/lib/cglib-nodep-2.1_3.jar"/>
 	<classpathentry kind="lib" path="lib/looks-2.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/forms-1.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>

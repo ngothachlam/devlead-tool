@@ -8,7 +8,6 @@ import org.jdom.JDOMException;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
-import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssueType;
 import com.atlassian.jira.rpc.soap.beans.RemoteResolution;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
