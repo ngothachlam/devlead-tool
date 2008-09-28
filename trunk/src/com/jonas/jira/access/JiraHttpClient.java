@@ -103,6 +103,7 @@ public class JiraHttpClient extends HttpClient {
    }
 
    private void throwJiraExceptionIfRequired(HttpMethodBase method) throws JiraException {
+      //FIXME map jira exception to a jira action so that we know in the code what is going on!
       if (method.getStatusCode() != 200) {
          log.debug("Throwing jira exception!");
          throw new JiraException(debugMethod(method));
