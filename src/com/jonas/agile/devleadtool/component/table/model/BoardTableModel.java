@@ -45,7 +45,7 @@ public class BoardTableModel extends MyTableModel {
             }
          }
          if (list.size() == 0)
-            list.add(BoardStatusValue.Empty);
+            list.add(BoardStatusValue.UnKnown);
       }
       return list;
    }

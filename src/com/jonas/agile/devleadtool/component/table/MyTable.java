@@ -1,7 +1,11 @@
 package com.jonas.agile.devleadtool.component.table;
 
+import java.awt.Component;
 import java.util.List;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -35,8 +39,18 @@ public class MyTable extends JTable {
    public MyTable(MyTableModel modelModel) {
       this();
       setModel(modelModel);
+      // FIXME make this dynamic
+      int boardStatus = getColumnIndex(Column.BoardStatus);
+      if (boardStatus > -1) {
+         TableColumnModel tcm = getColumnModel();
+         TableColumn tc = tcm.getColumn(boardStatus);
+         DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
+         tc.setCellRenderer(cellRenderer);
+         JComboBox combo = new JComboBox(BoardStatusValue.values());
+         tc.setCellEditor(new DefaultCellEditor(combo));
+      }
    }
-   
+
    public void addEmptyRow() {
       ((MyTableModel) this.getModel()).addEmptyRow();
    }
@@ -55,10 +69,6 @@ public class MyTable extends JTable {
       MyTableModel model = (MyTableModel) getModel();
       return model.getColumnEnum(convertColumnIndexToModel(itsColumn));
    }
-
-   // public boolean isColumnEqual(int itsColumn, Column column) {
-   // return getColumnName(itsColumn).equals(column.toString());
-   // }
 
    public int getColumnIndex(Column column) {
       return convertColumnIndexToView(((MyTableModel) getModel()).getColumnNo(column));
@@ -111,7 +121,7 @@ public class MyTable extends JTable {
    public void setValueAt(Object value, int row, Column column) {
       setValueAt(value, row, getColumnIndex(column));
    }
-   
+
    public void setValueAt(Object value, int row, int column) {
       super.setValueAt(value, row, column);
    }
