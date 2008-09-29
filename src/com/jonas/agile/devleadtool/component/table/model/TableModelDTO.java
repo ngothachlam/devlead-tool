@@ -1,14 +1,14 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.Vector;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 
 public class TableModelDTO {
 
    private final Vector<Vector<Object>> contents;
-   private final Vector<Column> header;
+   private final Vector<ColumnDataType> header;
 
-   public TableModelDTO(Vector<Column> header, Vector<Vector<Object>> contents) {
+   public TableModelDTO(Vector<ColumnDataType> header, Vector<Vector<Object>> contents) {
       this.header = header;
       this.contents = contents;
    }
@@ -17,7 +17,7 @@ public class TableModelDTO {
       return contents;
    }
 
-   public Vector<Column> getHeader() {
+   public Vector<ColumnDataType> getHeader() {
       return header;
    }
 

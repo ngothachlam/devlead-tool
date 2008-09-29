@@ -1,7 +1,7 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.Vector;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.jira.JiraIssue;
 
@@ -24,14 +24,14 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldBeConstructedFromDAOOk() {
-      Vector<Column> header = new Vector<Column>();
-      header.add(Column.Jira);
-      header.add(Column.Description);
-      header.add(Column.FixVersion);
-      header.add(Column.JiraStatus);
-      header.add(Column.Resolution);
-      header.add(Column.BuildNo);
-      header.add(Column.Dev_Estimate);
+      Vector<ColumnDataType> header = new Vector<ColumnDataType>();
+      header.add(ColumnDataType.Jira);
+      header.add(ColumnDataType.Description);
+      header.add(ColumnDataType.J_FixVersion);
+      header.add(ColumnDataType.J_Status);
+      header.add(ColumnDataType.J_Resolution);
+      header.add(ColumnDataType.J_BuildNo);
+      header.add(ColumnDataType.Dev_Estimate);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       contents.add(getTestRowVector(new String[] { "Jira", "Description", "FixVersion", "Status", "Resolution", "BuildNo", "Estimate" }, 0));
@@ -46,14 +46,14 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldBeConstructedFromDAOOkWhenColsAreMixedUp() {
-      Vector<Column> header = new Vector<Column>();
-      header.add(Column.Description);
-      header.add(Column.Jira);
-      header.add(Column.JiraStatus);
-      header.add(Column.FixVersion);
-      header.add(Column.BuildNo);
-      header.add(Column.Resolution);
-      header.add(Column.Dev_Estimate);
+      Vector<ColumnDataType> header = new Vector<ColumnDataType>();
+      header.add(ColumnDataType.Description);
+      header.add(ColumnDataType.Jira);
+      header.add(ColumnDataType.J_Status);
+      header.add(ColumnDataType.J_FixVersion);
+      header.add(ColumnDataType.J_BuildNo);
+      header.add(ColumnDataType.J_Resolution);
+      header.add(ColumnDataType.Dev_Estimate);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       contents.add(getTestRowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 0));
@@ -68,9 +68,9 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldBeConstructedFromDAOOkWhenColsAreMixedUpAndLessThanOriginal() {
-      Vector<Column> header = new Vector<Column>();
-      header.add(Column.Description);
-      header.add(Column.Jira);
+      Vector<ColumnDataType> header = new Vector<ColumnDataType>();
+      header.add(ColumnDataType.Description);
+      header.add(ColumnDataType.Jira);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       contents.add(getTestRowVector(new String[] { "Description", "Jira" }, 0));
@@ -85,15 +85,15 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldBeConstructedFromDAOOkWhenColsAreMixedUpAndMoreThanOriginal() {
-      Vector<Column> header = new Vector<Column>();
-      header.add(Column.Description);
-      header.add(Column.Jira);
-      header.add(Column.JiraStatus);
-      header.add(Column.FixVersion);
-      header.add(Column.BuildNo);
-      header.add(Column.Resolution);
-      header.add(Column.Dev_Estimate);
-      header.add(Column.Note);
+      Vector<ColumnDataType> header = new Vector<ColumnDataType>();
+      header.add(ColumnDataType.Description);
+      header.add(ColumnDataType.Jira);
+      header.add(ColumnDataType.J_Status);
+      header.add(ColumnDataType.J_FixVersion);
+      header.add(ColumnDataType.J_BuildNo);
+      header.add(ColumnDataType.J_Resolution);
+      header.add(ColumnDataType.Dev_Estimate);
+      header.add(ColumnDataType.Note);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       contents.add(getTestRowVector(new String[] { "Description", "Jira", "Status", "FixVersion", "BuildNo", "Resolution", "Estimate" }, 0));

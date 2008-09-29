@@ -17,7 +17,7 @@ import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.TabCheckButtonActionListener;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -54,7 +54,7 @@ public class BoardPanel extends MyComponentPanel {
 
    private JPanel getButtonPanelNorth() {
       JPanel buttonPanel = new JPanel();
-      addFilter(buttonPanel, table, sorter, Column.Jira, Column.Description);
+      addFilter(buttonPanel, table, sorter, ColumnDataType.Jira, ColumnDataType.Description);
       return buttonPanel;
    }
 
@@ -68,8 +68,8 @@ public class BoardPanel extends MyComponentPanel {
          }
 
          public void jiraSynced(JiraIssue jira, int tableRowSynced) {
-            table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
-            table.setValueAt(jira.getLLUListPriority(), tableRowSynced, Column.ListPrio);
+            table.setValueAt(jira.getSummary(), tableRowSynced, ColumnDataType.Description);
+            table.setValueAt(jira.getLLUListPriority(), tableRowSynced, ColumnDataType.ListPrio);
          }
 
          public void jiraSyncedCompleted() {

@@ -3,9 +3,10 @@
  */
 package com.jonas.agile.devleadtool.component.table;
 
-public enum Column {
+public enum ColumnDataType {
    // String Defaults
-   URL, Jira, Description, FixVersion, JiraStatus, Resolution, BuildNo, Type, Note, Planned_Sprint, Resolved_Sprint, Closed_Sprint, BoardStatus, Dev_Estimate, Dev_Spent, QA_Estimate, Dev_Actual,
+   URL, Jira, Description, J_Status, J_Resolution, J_BuildNo, Note, Planned_Sprint, Resolved_Sprint, Closed_Sprint, BoardStatus, Dev_Estimate, Dev_Spent, QA_Estimate, Dev_Actual,
+   J_FixVersion, J_Type, J_Dev_Estimate, J_Dev_Spent,
 
    ListPrio {
       @Override
@@ -55,8 +56,8 @@ public enum Column {
 
    };
 
-   public static Column getEnum(String columnName) {
-      for (Column col : Column.values()) {
+   public static ColumnDataType getEnum(String columnName) {
+      for (ColumnDataType col : ColumnDataType.values()) {
          if (col.toString().equals(columnName)) {
             return col;
          }

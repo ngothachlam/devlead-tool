@@ -55,7 +55,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 
 /**
  * TableSorter is a decorator for TableModels; adding sorting functionality to a supplied TableModel. TableSorter does not store or copy the data in its
@@ -133,7 +133,7 @@ public class TableSorter extends DefaultTableModel {
       setTableModel(tableModel);
    }
 
-   public TableSorter(Column[] columns, int i) {
+   public TableSorter(ColumnDataType[] columns, int i) {
       super(columns, i);
       this.mouseListener = new MouseHandler();
       this.tableModelListener = new TableModelHandler();

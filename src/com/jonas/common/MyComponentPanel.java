@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.listener.FilterDocumentListener;
 import com.jonas.agile.devleadtool.component.listener.FilterDocumentListenerListener;
 import com.jonas.agile.devleadtool.component.listener.FilterType;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.logging.MyLogger;
 
@@ -70,7 +70,7 @@ public class MyComponentPanel extends MyPanel {
       panel.closeListeners.remove(this);
    }
 
-   protected void addFilter(JPanel buttonPanel, MyTable table, TableRowSorter<TableModel> sorter, Column... columns) {
+   protected void addFilter(JPanel buttonPanel, MyTable table, TableRowSorter<TableModel> sorter, ColumnDataType... columns) {
       addLabel(buttonPanel, "Jira Filter:");
       JTextField filterText = addTextField(buttonPanel, 20);
       final JComboBox typeOfFilter = addComboBox(buttonPanel, FilterType.values());

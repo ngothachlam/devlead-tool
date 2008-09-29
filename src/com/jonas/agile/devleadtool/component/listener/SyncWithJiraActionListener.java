@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -113,7 +113,7 @@ public class SyncWithJiraActionListener implements ActionListener {
                   break;
                // int convertedTableRowToModel = table.convertRowIndexToModel(row);
                // final String jiraToGet = (String) (table.getModel()).getValueAt(convertedTableRowToModel, 0);
-               final String jiraToGet = (String) table.getValueAt(Column.Jira, row);
+               final String jiraToGet = (String) table.getValueAt(ColumnDataType.Jira, row);
                dialog.increseProgress("Syncing " + jiraToGet);
                log.debug("Syncing Jira" + jiraToGet);
                JiraIssue jira;

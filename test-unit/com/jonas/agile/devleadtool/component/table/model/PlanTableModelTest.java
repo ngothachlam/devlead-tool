@@ -1,7 +1,7 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.Vector;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class PlanTableModelTest extends JonasTestCase {
@@ -30,8 +30,8 @@ public class PlanTableModelTest extends JonasTestCase {
 
    public void testShouldCreateFromConstructorOk() {
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      Vector<Column> header = new Vector<Column>();
-      header.add(Column.Jira);
+      Vector<ColumnDataType> header = new Vector<ColumnDataType>();
+      header.add(ColumnDataType.Jira);
       contents.add(getTestContentRow(1, "row0-", 0));
       contents.add(getTestContentRow(1, "row1-", 0));
       PlanTableModel model = new PlanTableModel(contents, header);
@@ -104,13 +104,13 @@ public class PlanTableModelTest extends JonasTestCase {
       model.setValueAt("blah1", 0, 1);
       model.setValueAt("blah2", 1, 2);
       
-      assertEquals("LLU-1", (String) model.getValueAt(Column.Jira, jira_one));
-      assertEquals("blah1", (String) model.getValueAt(Column.Description, jira_one));
-      assertEquals("", (String) model.getValueAt(Column.Type, jira_one));
+      assertEquals("LLU-1", (String) model.getValueAt(ColumnDataType.Jira, jira_one));
+      assertEquals("blah1", (String) model.getValueAt(ColumnDataType.Description, jira_one));
+      assertEquals("", (String) model.getValueAt(ColumnDataType.J_Type, jira_one));
       
-      assertEquals("LLU-2", (String) model.getValueAt(Column.Jira, jira_two));
-      assertEquals("", (String) model.getValueAt(Column.Description, jira_two));
-      assertEquals("blah2", (String) model.getValueAt(Column.Type, jira_two));
+      assertEquals("LLU-2", (String) model.getValueAt(ColumnDataType.Jira, jira_two));
+      assertEquals("", (String) model.getValueAt(ColumnDataType.Description, jira_two));
+      assertEquals("blah2", (String) model.getValueAt(ColumnDataType.J_Type, jira_two));
    }
 
 }

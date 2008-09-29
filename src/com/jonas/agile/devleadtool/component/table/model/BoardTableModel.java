@@ -7,12 +7,12 @@ import java.util.Map;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.BoardStatus;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.isOpen, Column.isBug, Column.isInProgress, Column.isResolved, Column.isComplete, Column.isInPlan, Column.ListPrio };
+   private static final ColumnDataType[] columns = { ColumnDataType.Jira, ColumnDataType.Description, ColumnDataType.isOpen, ColumnDataType.isBug, ColumnDataType.isInProgress, ColumnDataType.isResolved, ColumnDataType.isComplete, ColumnDataType.isInPlan, ColumnDataType.ListPrio };
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
 
@@ -20,17 +20,17 @@ public class BoardTableModel extends MyTableModel {
       super(columns);
    }
 
-   public BoardTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
+   public BoardTableModel(Vector<Vector<Object>> contents, Vector<ColumnDataType> header) {
       super(columns, contents, header);
    }
 
    public List<BoardStatus> getStatus(String jira) {
-      int row = getRowOfSameValueInColumn(jira, Column.Jira);
+      int row = getRowOfSameValueInColumn(jira, ColumnDataType.Jira);
       log.debug("row: " + row + " for jira: " + jira);
       List<BoardStatus> list = new ArrayList<BoardStatus>();
       if (row >= 0) {
          BoardStatus result = null;
-         for (Column column : columns) {
+         for (ColumnDataType column : columns) {
             switch (column) {
             case isOpen:
             case isBug:
@@ -50,7 +50,7 @@ public class BoardTableModel extends MyTableModel {
       return list;
    }
 
-   private boolean getBoardStatus(int row, Column column) {
+   private boolean getBoardStatus(int row, ColumnDataType column) {
       int columnTemp = getColumnNo(column);
       Boolean valueAt = (Boolean) getValueAt(row, columnTemp);
       return valueAt == null ? false : valueAt.booleanValue();
@@ -59,18 +59,18 @@ public class BoardTableModel extends MyTableModel {
 
 class BoardStatusToColumnMap {
 
-   private static final Map<Column, BoardStatus> map = new HashMap<Column, BoardStatus>();
-   private static final BoardStatusToColumnMap mapping1 = new BoardStatusToColumnMap(Column.isOpen, BoardStatus.Open);
-   private static final BoardStatusToColumnMap mapping2 = new BoardStatusToColumnMap(Column.isBug, BoardStatus.Bugs);
-   private static final BoardStatusToColumnMap mapping3 = new BoardStatusToColumnMap(Column.isInProgress, BoardStatus.InProgress);
-   private static final BoardStatusToColumnMap mapping4 = new BoardStatusToColumnMap(Column.isResolved, BoardStatus.Resolved);
-   private static final BoardStatusToColumnMap mapping5 = new BoardStatusToColumnMap(Column.isComplete, BoardStatus.Complete);
+   private static final Map<ColumnDataType, BoardStatus> map = new HashMap<ColumnDataType, BoardStatus>();
+   private static final BoardStatusToColumnMap mapping1 = new BoardStatusToColumnMap(ColumnDataType.isOpen, BoardStatus.Open);
+   private static final BoardStatusToColumnMap mapping2 = new BoardStatusToColumnMap(ColumnDataType.isBug, BoardStatus.Bugs);
+   private static final BoardStatusToColumnMap mapping3 = new BoardStatusToColumnMap(ColumnDataType.isInProgress, BoardStatus.InProgress);
+   private static final BoardStatusToColumnMap mapping4 = new BoardStatusToColumnMap(ColumnDataType.isResolved, BoardStatus.Resolved);
+   private static final BoardStatusToColumnMap mapping5 = new BoardStatusToColumnMap(ColumnDataType.isComplete, BoardStatus.Complete);
 
-   public BoardStatusToColumnMap(Column column, BoardStatus status) {
+   public BoardStatusToColumnMap(ColumnDataType column, BoardStatus status) {
       map.put(column, status);
    }
 
-   public static BoardStatus getBoardStatus(Column column) {
+   public static BoardStatus getBoardStatus(ColumnDataType column) {
       return map.get(column);
    }
 }
