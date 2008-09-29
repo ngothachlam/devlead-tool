@@ -24,7 +24,7 @@ import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -60,7 +60,7 @@ public class PlanPanel extends MyComponentPanel {
 
       JScrollPane scrollpane = new JScrollPane(table);
 
-      table.addMouseListener(new HyperLinkOpenerAdapter(helper, Column.URL, Column.Jira));
+      table.addMouseListener(new HyperLinkOpenerAdapter(helper, ColumnDataType.URL, ColumnDataType.Jira));
 
       this.addCenter(scrollpane);
       this.addSouth(getBottomPanel());
@@ -82,7 +82,7 @@ public class PlanPanel extends MyComponentPanel {
 
    private JPanel getButtonPanelNorth() {
       JPanel buttonPanel = new JPanel();
-      addFilter(buttonPanel, table, sorter, Column.Jira, Column.Description);
+      addFilter(buttonPanel, table, sorter, ColumnDataType.Jira, ColumnDataType.Description);
       return buttonPanel;
    }
 
@@ -96,8 +96,8 @@ public class PlanPanel extends MyComponentPanel {
          }
 
          public void jiraSynced(JiraIssue jira, int tableRowSynced) {
-            table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
-            table.setValueAt(jira.getType(), tableRowSynced, Column.Type);
+            table.setValueAt(jira.getSummary(), tableRowSynced, ColumnDataType.Description);
+            table.setValueAt(jira.getType(), tableRowSynced, ColumnDataType.J_Type);
          }
 
          public void jiraSyncedCompleted() {

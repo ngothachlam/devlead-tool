@@ -23,7 +23,7 @@ public class MyTableTest extends JonasTestCase {
 
    public void testShouldIdentifyColumnCorrectly() throws SecurityException, NoSuchMethodException {
       MyTableModel mock_table_model = createClassMock(JiraTableModel.class);
-      EasyMock.expect(mock_table_model.getColumnEnum(0)).andReturn(Column.Jira);
+      EasyMock.expect(mock_table_model.getColumnEnum(0)).andReturn(ColumnDataType.Jira);
 
       // mock out table methods (jtable is a big class!)
       MyTable newtable = createMock(MyTable.class, MyTable.class.getMethod("getModel", MyTableModel.class), MyTable.class.getMethod("convertColumnIndexToModel", int.class));
@@ -32,14 +32,14 @@ public class MyTableTest extends JonasTestCase {
 
       replay();
 
-      assertTrue(newtable.isColumn(Column.Jira, 0));
+      assertTrue(newtable.isColumn(ColumnDataType.Jira, 0));
 
       verify();
    }
 
    public void testShouldIdentifyColumnInCorrectly() throws SecurityException, NoSuchMethodException {
       MyTableModel mock_table_model = createClassMock(JiraTableModel.class);
-      EasyMock.expect(mock_table_model.getColumnEnum(0)).andReturn(Column.Dev_Actual);
+      EasyMock.expect(mock_table_model.getColumnEnum(0)).andReturn(ColumnDataType.Dev_Actual);
 
       // mock out table methods (jtable is a big class!)
       MyTable newtable = createMock(MyTable.class, MyTable.class.getMethod("getModel", null), MyTable.class.getMethod("convertColumnIndexToModel", int.class));
@@ -48,7 +48,7 @@ public class MyTableTest extends JonasTestCase {
 
       replay();
 
-      assertFalse(newtable.isColumn(Column.Jira, 0));
+      assertFalse(newtable.isColumn(ColumnDataType.Jira, 0));
 
       verify();
    }
@@ -57,9 +57,9 @@ public class MyTableTest extends JonasTestCase {
       MyTableModel model = new BoardTableModel();
       table.setModel(model);
       
-      assertEquals(0,table.getColumnIndex(Column.Jira));
-      assertEquals(1,table.getColumnIndex(Column.Description));
-      assertEquals(-1,table.getColumnIndex(Column.Resolved_Sprint));
+      assertEquals(0,table.getColumnIndex(ColumnDataType.Jira));
+      assertEquals(1,table.getColumnIndex(ColumnDataType.Description));
+      assertEquals(-1,table.getColumnIndex(ColumnDataType.Resolved_Sprint));
    }
    
    public void testShouldSetValueUsingColumnDataCorrectly(){
@@ -81,8 +81,8 @@ public class MyTableTest extends JonasTestCase {
       assertEquals("", table.getValueAt(0, 8));
       assertEquals("", table.getValueAt(0, 9));
       
-      table.setValueAt("newValue", 0, Column.Description);
-      table.setValueAt(1f, 0, Column.Dev_Estimate);
+      table.setValueAt("newValue", 0, ColumnDataType.Description);
+      table.setValueAt(1f, 0, ColumnDataType.Dev_Estimate);
       
       assertEquals(1, table.getRowCount());
       assertEquals(10, table.getColumnCount());

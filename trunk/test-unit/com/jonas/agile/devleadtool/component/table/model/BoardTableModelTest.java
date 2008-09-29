@@ -2,7 +2,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.Map;
 import java.util.Vector;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class BoardTableModelTest extends JonasTestCase {
@@ -42,21 +42,21 @@ public class BoardTableModelTest extends JonasTestCase {
    }
 
    public void testColumnNames() {
-      Map<Column, Integer> columnNames = model.getColumnNames();
-      assertEquals(new Integer(0).intValue(), columnNames.get(Column.Jira).intValue());
-      assertEquals(new Integer(1).intValue(), columnNames.get(Column.isOpen).intValue());
-      assertEquals(new Integer(2).intValue(), columnNames.get(Column.isBug).intValue());
-      assertEquals(new Integer(3).intValue(), columnNames.get(Column.isInProgress).intValue());
-      assertEquals(new Integer(4).intValue(), columnNames.get(Column.isResolved).intValue());
-      assertEquals(new Integer(5).intValue(), columnNames.get(Column.isComplete).intValue());
-      assertEquals(new Integer(6).intValue(), columnNames.get(Column.isInPlan).intValue());
+      Map<ColumnDataType, Integer> columnNames = model.getColumnNames();
+      assertEquals(new Integer(0).intValue(), columnNames.get(ColumnDataType.Jira).intValue());
+      assertEquals(new Integer(1).intValue(), columnNames.get(ColumnDataType.isOpen).intValue());
+      assertEquals(new Integer(2).intValue(), columnNames.get(ColumnDataType.isBug).intValue());
+      assertEquals(new Integer(3).intValue(), columnNames.get(ColumnDataType.isInProgress).intValue());
+      assertEquals(new Integer(4).intValue(), columnNames.get(ColumnDataType.isResolved).intValue());
+      assertEquals(new Integer(5).intValue(), columnNames.get(ColumnDataType.isComplete).intValue());
+      assertEquals(new Integer(6).intValue(), columnNames.get(ColumnDataType.isInPlan).intValue());
       assertEquals(7, columnNames.size());
    }
    
    public void testShouldCreateFromConstructorOk() {
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      Vector<Column> header = new Vector<Column>();
-      header.add(Column.Jira);
+      Vector<ColumnDataType> header = new Vector<ColumnDataType>();
+      header.add(ColumnDataType.Jira);
       contents.add(getTestContentRow(1, "row0-", 0));
       contents.add(getTestContentRow(1, "row1-", 0));
       MyTableModel model = new BoardTableModel(contents, header);

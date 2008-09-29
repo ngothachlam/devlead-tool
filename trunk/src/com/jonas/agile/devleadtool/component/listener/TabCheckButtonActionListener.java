@@ -17,7 +17,7 @@ import com.jonas.agile.devleadtool.PlannerCommunicator;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.table.BoardStatus;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
@@ -42,12 +42,12 @@ public class TabCheckButtonActionListener implements ActionListener {
    public void actionPerformed(ActionEvent e) {
       JFrame newFrame = new JFrame();
       MyPanel contentPane = new MyPanel(new BorderLayout());
-      DefaultTableModel model = new DefaultTableModel(new Column[]{Column.Jira, Column.BoardStatus, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint}, 0);
+      DefaultTableModel model = new DefaultTableModel(new ColumnDataType[]{ColumnDataType.Jira, ColumnDataType.BoardStatus, ColumnDataType.Planned_Sprint, ColumnDataType.Resolved_Sprint, ColumnDataType.Closed_Sprint}, 0);
       
       for (int i = 0; i < table.getModel().getRowCount(); i++) {
          Vector<String> rowData = new Vector<String>();
          //col 1: 
-         String jira = (String) table.getValueAt(Column.Jira, i);
+         String jira = (String) table.getValueAt(ColumnDataType.Jira, i);
          rowData.add(jira);
 
          //col 2: 

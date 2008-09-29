@@ -3,7 +3,7 @@ package com.jonas.agile.devleadtool.component.listener;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 
@@ -24,10 +24,10 @@ public class FilterDocumentListenerListenerTest extends TestCase {
    }
 
    public void testShouldCalculateArrayCorrectly() {
-      FilterDocumentListenerListener listener = new FilterDocumentListenerListener(null, new MyTable(new BoardTableModel()), null, Column.Jira);
+      FilterDocumentListenerListener listener = new FilterDocumentListenerListener(null, new MyTable(new BoardTableModel()), null, ColumnDataType.Jira);
       // FilterDocumentListenerListenerImpl listener = new FilterDocumentListenerListenerImpl();
-      assertEquals(0, listener.getArray(Column.Closed_Sprint).length);
-      int[] array = listener.getArray(Column.Jira, Column.Closed_Sprint, Column.Description);
+      assertEquals(0, listener.getArray(ColumnDataType.Closed_Sprint).length);
+      int[] array = listener.getArray(ColumnDataType.Jira, ColumnDataType.Closed_Sprint, ColumnDataType.Description);
       assertEquals(2, array.length);
       assertEquals(0, array[0]);
       assertEquals(1, array[1]);

@@ -51,7 +51,7 @@ public class MyTable extends JTable {
       model.addJira(jira);
    }
 
-   public Column getColumnEnum(int itsColumn) {
+   public ColumnDataType getColumnEnum(int itsColumn) {
       MyTableModel model = (MyTableModel) getModel();
       return model.getColumnEnum(convertColumnIndexToModel(itsColumn));
    }
@@ -60,17 +60,17 @@ public class MyTable extends JTable {
    // return getColumnName(itsColumn).equals(column.toString());
    // }
 
-   public int getColumnIndex(Column column) {
+   public int getColumnIndex(ColumnDataType column) {
       return convertColumnIndexToView(((MyTableModel) getModel()).getColumnNo(column));
    }
 
-   public Object getValueAt(Column column, int rowInView) {
+   public Object getValueAt(ColumnDataType column, int rowInView) {
       int colInView = getColumnIndex(column);
       MyTableModel model = (MyTableModel) getModel();
       return model.getValueAt(convertRowIndexToModel(rowInView), convertColumnIndexToModel(colInView));
    }
 
-   public boolean isColumn(Column column, int colNoToCompare) {
+   public boolean isColumn(ColumnDataType column, int colNoToCompare) {
       return column.equals(getColumnEnum(colNoToCompare));
    }
 
@@ -108,7 +108,7 @@ public class MyTable extends JTable {
       setValueAt(jira.getResolution(), i, 3);
    }
 
-   public void setValueAt(Object value, int row, Column column) {
+   public void setValueAt(Object value, int row, ColumnDataType column) {
       setValueAt(value, row, getColumnIndex(column));
    }
 

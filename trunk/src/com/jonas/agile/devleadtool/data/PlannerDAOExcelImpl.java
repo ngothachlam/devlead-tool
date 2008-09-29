@@ -18,7 +18,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
@@ -38,8 +38,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       this.modelBuilder = modelBuilder;
    }
 
-   private Column getHeaderMappingToColumn(String tempString) {
-      return Column.getEnum(tempString);
+   private ColumnDataType getHeaderMappingToColumn(String tempString) {
+      return ColumnDataType.getEnum(tempString);
    }
 
    protected HSSFSheet getSheet(String sheetName, HSSFWorkbook wb) {
@@ -73,7 +73,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
       HSSFSheet sheet = wb.getSheet(sheetName);
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      Vector<Column> header = new Vector<Column>();
+      Vector<ColumnDataType> header = new Vector<ColumnDataType>();
       TableModelDTO dataModelDTO = new TableModelDTO(header, contents);
       int rowCount = -1;
       for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {

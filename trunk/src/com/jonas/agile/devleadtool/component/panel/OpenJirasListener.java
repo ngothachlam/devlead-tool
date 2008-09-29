@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.HyperLinker;
 
@@ -28,7 +28,7 @@ final class OpenJirasListener implements ActionListener {
       int[] rows = table.getSelectedRows();
       StringBuffer sb = new StringBuffer();
       for (int j = 0; j < rows.length; j++) {
-         String jira = (String) table.getValueAt(Column.Jira, rows[j]);
+         String jira = (String) table.getValueAt(ColumnDataType.Jira, rows[j]);
 //         String jira = (String) table.getModel().getValueAt(table.convertRowIndexToModel(rows[j]), 0);
          String jira_url = null;
          boolean error = false;

@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.ColumnDataType;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.logging.MyLogger;
 
@@ -32,7 +32,7 @@ public class CopyToTableListener implements ActionListener {
             selectedRows.length);
       try {
          for (int i = 0; i < selectedRows.length; i++) {
-            String jiraString = (String) sourceTable.getValueAt(Column.Jira, selectedRows[i]);
+            String jiraString = (String) sourceTable.getValueAt(ColumnDataType.Jira, selectedRows[i]);
             listener.getDestinationTable().addJira(jiraString);
             dialog.increseProgress();
          }
