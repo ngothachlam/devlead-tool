@@ -35,12 +35,12 @@ public enum Column {
 
    private final Class defaultClass;
    private final Object defaultValue;
-   private final boolean save;
+   private final boolean shouldLoad;
 
-   private <T> Column(Class<T> defaultClass, Object defaultValue, boolean save) {
+   private <T> Column(Class<T> defaultClass, Object defaultValue, boolean shouldLoad) {
       this.defaultClass = defaultClass;
       this.defaultValue = defaultValue;
-      this.save = save;
+      this.shouldLoad = shouldLoad;
 
    }
 
@@ -61,7 +61,7 @@ public enum Column {
       return defaultClass;
    }
 
-   public boolean isSaveable() {
-      return save;
+   public boolean shouldLoad() {
+      return shouldLoad;
    }
 }

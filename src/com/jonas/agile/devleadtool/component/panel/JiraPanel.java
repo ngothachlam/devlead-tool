@@ -42,18 +42,22 @@ public class JiraPanel extends MyComponentPanel {
    private MyTable table;
 
    public JiraPanel(PlannerHelper helper) {
+      this(helper, new JiraTableModel());
+   }
+
+   public JiraPanel(PlannerHelper helper, JiraTableModel jiraModel) {
       super(new BorderLayout());
       this.helper = helper;
-
-      table = new MyTable(new JiraTableModel());
+      
+      table = new MyTable(jiraModel);
       // table.setModel(new JiraTableModel());
-
+      
       // FIXME - the filterer doesn't work
       // sorter = new TableRowSorter<TableModel>(table.getModel());
       // table.setRowSorter(sorter);
-
+      
       JScrollPane scrollpane = new MyScrollPane(table);
-
+      
       this.addCenter(scrollpane);
       this.addSouth(getBottomPanel());
       this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));

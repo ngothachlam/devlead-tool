@@ -10,6 +10,7 @@ import javax.swing.JTabbedPane;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.InternalFrame;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyComponentPanel;
@@ -25,16 +26,17 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 	private JCheckBox checkBox;
 
 	public InternalFrameTabPanel(PlannerHelper client) {
-		this(client, null, null);
+		this(client, null, null, null);
 	}
 
-	public InternalFrameTabPanel(PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel) {
+	public InternalFrameTabPanel(PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel, JiraTableModel jiraModel) {
 		super(new BorderLayout());
 		boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
 		planModel = (planModel == null) ? new PlanTableModel() : planModel;
+		jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 		boardPanel = new BoardPanel(client, boardModel);
 		planPanel = new PlanPanel(client, planModel);
-		jiraPanel = new JiraPanel(client);
+		jiraPanel = new JiraPanel(client, jiraModel);
 
 		JPanel panel = new JPanel();
 		checkBox = new JCheckBox("Editable?", true);
