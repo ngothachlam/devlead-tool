@@ -47,7 +47,7 @@ public class LoadPlannerDialog extends JFileChooser {
 				PlanTableModel planModel = dao.loadPlanModel();
 				// TODO remove plannerHelper.getTitle?
 				InternalFrameTabPanel internalFrameTabPanel = new InternalFrameTabPanel(plannerHelper, boardModel, planModel);
-            InternalFrame internalFrame = new InternalFrame(plannerHelper, plannerHelper.getTitle(), internalFrameTabPanel);
+            InternalFrame internalFrame = new InternalFrame(plannerHelper, plannerHelper.getTitle(), internalFrameTabPanel, dao);
 				desktopPane.addInternalFrame(internalFrame);
 				internalFrame.setExcelFile(xlsFile.getAbsolutePath(), CutoverLength.DEFAULT);
 

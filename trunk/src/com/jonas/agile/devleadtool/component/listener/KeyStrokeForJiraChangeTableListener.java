@@ -7,7 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JTable;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.table.ColumnDataType;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.logging.MyLogger;
@@ -19,13 +19,13 @@ final class KeyStrokeForJiraChangeTableListener extends KeyAdapter {
    private Logger log = MyLogger.getLogger(KeyStrokeForJiraChangeTableListener.class);
    private final MyTable table;
    private MyTableModel model;
-   private ColumnDataType jiraColumn;
+   private Column jiraColumn;
 
    /**
     * @param table
     * @param columnToListenForKeystrokesOn TODO
     */
-   KeyStrokeForJiraChangeTableListener(MyTable table, ColumnDataType columnToListenForKeystrokesOn) {
+   KeyStrokeForJiraChangeTableListener(MyTable table, Column columnToListenForKeystrokesOn) {
       this.table = table;
       model = (MyTableModel) table.getModel();
       jiraColumn = columnToListenForKeystrokesOn;

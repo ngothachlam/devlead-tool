@@ -2,7 +2,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.Map;
 import java.util.Vector;
-import com.jonas.agile.devleadtool.component.table.ColumnDataType;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class BoardTableModelTest extends JonasTestCase {
@@ -42,27 +42,28 @@ public class BoardTableModelTest extends JonasTestCase {
    }
 
    public void testColumnNames() {
-      Map<ColumnDataType, Integer> columnNames = model.getColumnNames();
-      assertEquals(new Integer(0).intValue(), columnNames.get(ColumnDataType.Jira).intValue());
-      assertEquals(new Integer(1).intValue(), columnNames.get(ColumnDataType.isOpen).intValue());
-      assertEquals(new Integer(2).intValue(), columnNames.get(ColumnDataType.isBug).intValue());
-      assertEquals(new Integer(3).intValue(), columnNames.get(ColumnDataType.isInProgress).intValue());
-      assertEquals(new Integer(4).intValue(), columnNames.get(ColumnDataType.isResolved).intValue());
-      assertEquals(new Integer(5).intValue(), columnNames.get(ColumnDataType.isComplete).intValue());
-      assertEquals(new Integer(6).intValue(), columnNames.get(ColumnDataType.isInPlan).intValue());
-      assertEquals(7, columnNames.size());
+      Map<Column, Integer> columnNames = model.getColumnNames();
+      assertEquals(new Integer(0).intValue(), columnNames.get(Column.Jira).intValue());
+      assertEquals(new Integer(1).intValue(), columnNames.get(Column.Description).intValue());
+      assertEquals(new Integer(2).intValue(), columnNames.get(Column.isOpen).intValue());
+      assertEquals(new Integer(3).intValue(), columnNames.get(Column.isBug).intValue());
+      assertEquals(new Integer(4).intValue(), columnNames.get(Column.isInProgress).intValue());
+      assertEquals(new Integer(5).intValue(), columnNames.get(Column.isResolved).intValue());
+      assertEquals(new Integer(6).intValue(), columnNames.get(Column.isComplete).intValue());
+      assertEquals(new Integer(7).intValue(), columnNames.get(Column.ListPrio).intValue());
+      assertEquals(8, columnNames.size());
    }
    
    public void testShouldCreateFromConstructorOk() {
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      Vector<ColumnDataType> header = new Vector<ColumnDataType>();
-      header.add(ColumnDataType.Jira);
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Jira);
       contents.add(getTestContentRow(1, "row0-", 0));
       contents.add(getTestContentRow(1, "row1-", 0));
       MyTableModel model = new BoardTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(7, model.getColumnCount());
+      assertEquals(8, model.getColumnCount());
       assertEquals("row0-0", model.getValueAt(0, 0));
       assertEquals(null, model.getValueAt(0, 1));
       assertEquals(null, model.getValueAt(0, 2));
@@ -79,12 +80,13 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(null, model.getValueAt(1, 6));
       
       assertEquals("Jira", model.getColumnName(0));
-      assertEquals("isOpen", model.getColumnName(1));
-      assertEquals("isBug", model.getColumnName(2));
-      assertEquals("Remaining_Progress", model.getColumnName(3));
-      assertEquals("isResolved", model.getColumnName(4));
-      assertEquals("isComplete", model.getColumnName(5));
-      assertEquals("isInPlan", model.getColumnName(6));
+      assertEquals("Description", model.getColumnName(1));
+      assertEquals("isOpen", model.getColumnName(2));
+      assertEquals("isBug", model.getColumnName(3));
+      assertEquals("isInProgress", model.getColumnName(4));
+      assertEquals("isResolved", model.getColumnName(5));
+      assertEquals("isComplete", model.getColumnName(6));
+      assertEquals("ListPrio", model.getColumnName(7));
       
    }
 }

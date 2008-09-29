@@ -23,7 +23,7 @@ import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
 import com.jonas.agile.devleadtool.component.listener.DownloadJirasListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
-import com.jonas.agile.devleadtool.component.table.ColumnDataType;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -70,7 +70,7 @@ public class JiraPanel extends MyComponentPanel {
 
    private JPanel getButtonPanelNorth() {
       JPanel buttonPanel = new JPanel();
-      addFilter(buttonPanel, table, sorter, ColumnDataType.Jira, ColumnDataType.Description);
+      addFilter(buttonPanel, table, sorter, Column.Jira, Column.Description);
       return buttonPanel;
    }
 
@@ -94,17 +94,17 @@ public class JiraPanel extends MyComponentPanel {
          }
 
          public void jiraSynced(JiraIssue jira, int tableRowSynced) {
-            table.setValueAt(jira.getSummary(), tableRowSynced, ColumnDataType.Description);
-            table.setValueAt(jira.getType(), tableRowSynced, ColumnDataType.J_Type);
-            table.setValueAt(jira.getFixVersions(), tableRowSynced, ColumnDataType.J_FixVersion);
-            table.setValueAt(jira.getStatus(), tableRowSynced, ColumnDataType.J_Status);
-            table.setValueAt(jira.getResolution(), tableRowSynced, ColumnDataType.J_Resolution);
-            table.setValueAt(jira.getBuildNo(), tableRowSynced, ColumnDataType.J_BuildNo);
-            table.setValueAt(jira.getEstimate(), tableRowSynced, ColumnDataType.J_Dev_Estimate);
-            table.setValueAt(jira.getSpent(), tableRowSynced, ColumnDataType.J_Dev_Spent);
-         }
-
-         public void jiraSyncedCompleted() {
+            // new JiraIssue(jira.getKey(), jira.getSummary(), jira.getStatus(), jira.getResolution(), jira.getStatus(),
+            // jira.getBuildNo(),jira.getEstimate(), jira.getLLUListPriority());
+            table.setValueAt(jira.getKey(), tableRowSynced, Column.Jira);
+            table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
+            table.setValueAt(jira.getType(), tableRowSynced, Column.J_Type);
+            table.setValueAt(jira.getFixVersions(), tableRowSynced, Column.J_FixVersion);
+            table.setValueAt(jira.getStatus(), tableRowSynced, Column.J_Status);
+            table.setValueAt(jira.getResolution(), tableRowSynced, Column.J_Resolution);
+            table.setValueAt(jira.getBuildNo(), tableRowSynced, Column.J_BuildNo);
+            table.setValueAt(jira.getEstimate(), tableRowSynced, Column.J_Dev_Estimate);
+            table.setValueAt(jira.getSpent(), tableRowSynced, Column.J_Dev_Spent);
          }
       };
       listener.addListener(syncWithJiraListener);

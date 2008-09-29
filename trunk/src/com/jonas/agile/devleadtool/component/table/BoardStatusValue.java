@@ -1,6 +1,6 @@
 package com.jonas.agile.devleadtool.component.table;
 
-public enum BoardStatus {
+public enum BoardStatusValue {
 	UnKnown, Empty {
 		@Override
 		public String toString() {

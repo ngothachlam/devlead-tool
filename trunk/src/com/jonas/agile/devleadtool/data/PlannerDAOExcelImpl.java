@@ -18,7 +18,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import com.jonas.agile.devleadtool.component.table.ColumnDataType;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
@@ -38,8 +38,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       this.modelBuilder = modelBuilder;
    }
 
-   private ColumnDataType getHeaderMappingToColumn(String tempString) {
-      return ColumnDataType.getEnum(tempString);
+   private Column getHeaderMappingToColumn(String tempString) {
+      return Column.getEnum(tempString);
    }
 
    protected HSSFSheet getSheet(String sheetName, HSSFWorkbook wb) {
@@ -71,22 +71,24 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       InputStream inp = new FileInputStream(xlsFile);
       HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(inp));
 
-      HSSFSheet sheet = wb.getSheet(sheetName);
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      Vector<ColumnDataType> header = new Vector<ColumnDataType>();
+      Vector<Column> header = new Vector<Column>();
       TableModelDTO dataModelDTO = new TableModelDTO(header, contents);
       int rowCount = -1;
+
+      HSSFSheet sheet = wb.getSheet(sheetName);
       for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {
          rowCount++;
          Vector<Object> rowData = new Vector<Object>();
          HSSFRow row = rit.next();
-         log.debug("Going through rows to load!" + rowCount);
+         log.debug("Going through " + rowCount + " rows to load");
+         int colCount = -1;
          for (Iterator<HSSFCell> cit = row.cellIterator(); cit.hasNext();) {
+            colCount++;
             HSSFCell cell = cit.next();
             int cellType = cell.getCellType();
-            log.debug("Going through columns. Got column of type " + cellType);
+            log.debug("Got cell of type " + cellType + " at row " + rowCount + " and column " + colCount);
             switch (cellType) {
-            // FIXME - don't use the cell type - use the column type!!! Start by mapping sheets to TableModels to get the columns!
             case HSSFCell.CELL_TYPE_BLANK:
                rowData.add(null);
                break;
@@ -94,15 +96,17 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                rowData.add(Boolean.valueOf(cell.getBooleanCellValue()));
                break;
             case HSSFCell.CELL_TYPE_NUMERIC:
-               rowData.add(new Double(cell.getNumericCellValue()));
+               rowData.add(Double.valueOf(cell.getNumericCellValue()));
                break;
             case HSSFCell.CELL_TYPE_STRING:
                HSSFRichTextString cellHeader = cell.getRichStringCellValue();
                String cellHeaderAsString = (cellHeader == null ? "" : cellHeader.getString());
+               // if we're on the column Header!
                if (rowCount == 0)
-                  dataModelDTO.getHeader().add(getHeaderMappingToColumn(cellHeaderAsString));
-               else
-                  rowData.add(cellHeaderAsString);
+                  if (rowCount == 0)
+                     dataModelDTO.getHeader().add(getHeaderMappingToColumn(cellHeaderAsString));
+                  else
+                     rowData.add(cellHeaderAsString);
                break;
             default:
                break;
@@ -126,34 +130,38 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    private void saveModel(File xlsFile, MyTableModel model, String sheetName) throws IOException {
       HSSFWorkbook wb = getWorkBook(xlsFile);
       HSSFSheet sheet = getSheet(sheetName, wb);
+
+      // HSSFCellStyle style_red_background = wb.createCellStyle();
+      // style_red_background.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+      // style_red_background.setFillForegroundColor(new HSSFColor.RED().getIndex());
+
+      // save column Headers
       HSSFRow row = sheet.createRow((short) 0);
-
-      HSSFCellStyle style_red_background = wb.createCellStyle();
-      style_red_background.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-      style_red_background.setFillForegroundColor(new HSSFColor.RED().getIndex());
-
       for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
          HSSFCell cell = row.createCell((short) colCount);
          Object valueAt = model.getColumnName(colCount);
-         if (valueAt instanceof Boolean) {
-            cell.setCellValue(((Boolean) valueAt).booleanValue());
-         } else if (valueAt instanceof String) {
-            cell.setCellValue(new HSSFRichTextString((String) valueAt));
-         }
+         cell.setCellValue(new HSSFRichTextString((String) valueAt));
       }
-      // Create a row and put some cells in it. Rows are 0 based.
+
+      // save all data rows...
       for (int rowCount = 0; rowCount < model.getRowCount(); rowCount++) {
          row = sheet.createRow((short) rowCount + 1);
+         int colFileCount = 0;
          for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
-            HSSFCell cell = row.createCell((short) colCount);
-            Object valueAt = model.getValueAt(rowCount, colCount);
-            log.debug("valueAt: " + valueAt + " row: " + rowCount + "col:" + colCount);
-            if (valueAt == null)
-               cell.setCellValue(new HSSFRichTextString(""));
-            else if (valueAt instanceof Boolean) {
-               cell.setCellValue(((Boolean) valueAt).booleanValue());
-            } else {
-               cell.setCellValue(new HSSFRichTextString(valueAt.toString()));
+            Column column = model.getColumnEnum(colCount);
+            if (column.isSaveable()) {
+               HSSFCell cell = row.createCell((short) colFileCount++);
+               Object valueAt = model.getValueAt(rowCount, colCount);
+               log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
+               if (valueAt == null)
+                  cell.setCellValue(new HSSFRichTextString(""));
+               else if (valueAt instanceof Boolean) {
+                  cell.setCellValue(((Boolean) valueAt).booleanValue());
+               } else if (valueAt instanceof Double) {
+                  cell.setCellValue(((Double) valueAt).doubleValue());
+               } else {
+                  cell.setCellValue(new HSSFRichTextString(valueAt.toString()));
+               }
             }
          }
       }

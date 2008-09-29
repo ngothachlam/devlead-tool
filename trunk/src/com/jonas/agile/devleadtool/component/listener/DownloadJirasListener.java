@@ -86,7 +86,6 @@ public class DownloadJirasListener implements ActionListener {
 					AlertDialog.message(helper, error);
 				} else
 					dialog.setCompleteWithDelay(300);
-				notifyThatJiraSyncFinished();
 			}
 		};
 		worker.execute();
@@ -98,12 +97,6 @@ public class DownloadJirasListener implements ActionListener {
       }
    }
    
-   private void notifyThatJiraSyncFinished() {
-      for (SyncWithJiraActionListenerListener listener : listeners) {
-         listener.jiraSyncedCompleted();
-      }
-   }
-	
 	public void addListener(SyncWithJiraActionListenerListener listener) {
       listeners.add(listener);
    }
