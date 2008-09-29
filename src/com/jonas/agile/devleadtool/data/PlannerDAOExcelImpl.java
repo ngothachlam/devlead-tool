@@ -16,6 +16,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
@@ -144,14 +145,14 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
       HSSFSheet sheet = wb.getSheet(sheetName);
       Map<Integer, Column> columns = new HashMap<Integer, Column>();
-      //for each row in the sheet...
+      // for each row in the sheet...
       for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {
          Vector<Object> rowData = new Vector<Object>();
          rowCount++;
          HSSFRow row = rit.next();
          log.debug("Going through " + rowCount + " rows to load");
          int colCount = -1;
-         //for each column in the row...
+         // for each column in the row...
          for (Iterator<HSSFCell> cit = row.cellIterator(); cit.hasNext();) {
             colCount++;
             HSSFCell cell = cit.next();
@@ -178,9 +179,19 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                   if (column.shouldLoad())
                      dataModelDTO.getHeader().add(getHeaderMappingToColumn(cellContents));
                } else {
-                  log.debug("Getting column from " + colCount + " and it is " + columns.get(colCount) + " and its size is " + columns.size());
-                  if (columns.get(colCount).shouldLoad())
-                     rowData.add(cellContents);
+                  Column column = columns.get(colCount);
+                  log.debug("Getting column from " + colCount + " and it is " + column + " and its size is " + columns.size());
+                  if (column.shouldLoad()) {
+                     // FIXME make dynamic!
+                     switch (column) {
+                     case BoardStatus:
+                        rowData.add(BoardStatusValue.get(cellContents));
+                        break;
+                     default:
+                        rowData.add(cellContents);
+                        break;
+                     }
+                  }
                }
                break;
             default:
