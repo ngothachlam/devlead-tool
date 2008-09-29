@@ -14,7 +14,7 @@ public enum Column {
    Planned_Sprint(String.class, "", true), 
    Resolved_Sprint(String.class, "", true), 
    Closed_Sprint(String.class, "", true), 
-   BoardStatus(BoardStatusValue.class, BoardStatusValue.Empty, true), 
+   BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, true), 
    Dev_Estimate(String.class, "", true), 
    QA_Estimate(String.class, "", true), 
    Dev_Actual(String.class, "", true), 
