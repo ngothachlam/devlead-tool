@@ -1,6 +1,5 @@
 package com.jonas.agile.devleadtool.component.table;
 
-import java.awt.Component;
 import java.util.List;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
@@ -42,13 +41,16 @@ public class MyTable extends JTable {
       // FIXME make this dynamic
       int boardStatus = getColumnIndex(Column.BoardStatus);
       if (boardStatus > -1) {
-         TableColumnModel tcm = getColumnModel();
-         TableColumn tc = tcm.getColumn(boardStatus);
-         DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
-         tc.setCellRenderer(cellRenderer);
+         TableColumn tc = getTableColumn(boardStatus);
+         tc.setCellRenderer(new DefaultTableCellRenderer());
          JComboBox combo = new JComboBox(BoardStatusValue.values());
          tc.setCellEditor(new DefaultCellEditor(combo));
       }
+   }
+
+   private TableColumn getTableColumn(int boardStatus) {
+      TableColumnModel tcm = getColumnModel();
+      return tcm.getColumn(boardStatus);
    }
 
    public void addEmptyRow() {
@@ -95,15 +97,13 @@ public class MyTable extends JTable {
    }
 
    public void setColumnEditor(int i, ComboTableCellEditor editor) {
-      TableColumnModel tcm = getColumnModel();
-      TableColumn tc = tcm.getColumn(i);
+      TableColumn tc = getTableColumn(i);
       tc.setCellEditor(editor);
 
    }
 
    public void setColumnRenderer(int i, TableCellRenderer renderer) {
-      TableColumnModel tcm = getColumnModel();
-      TableColumn tc = tcm.getColumn(i);
+      TableColumn tc = getTableColumn(i);
       tc.setCellRenderer(renderer);
    }
 
