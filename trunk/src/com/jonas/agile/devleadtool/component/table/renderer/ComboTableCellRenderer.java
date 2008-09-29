@@ -12,7 +12,6 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
@@ -34,7 +33,7 @@ public class ComboTableCellRenderer extends JPanel implements TableCellRenderer 
    }
 
    @SuppressWarnings("unchecked")
-   public Component getTableCellRendererComponent(MyTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
       log.debug("Combo for column: " + column + " with value: " + value + " (class: " + debugClassOfValue(value) + ")");
       setFont(table.getFont());
@@ -87,10 +86,5 @@ public class ComboTableCellRenderer extends JPanel implements TableCellRenderer 
       }
    }
 
-   @SuppressWarnings("cast")
-   @Override
-   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-      return this.getTableCellRendererComponent((MyTable) table, value, isSelected, hasFocus, row, column);
-   }
 
 }

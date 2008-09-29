@@ -163,15 +163,6 @@ public class JiraPanel extends MyComponentPanel {
       }
    }
 
-   private final class ClearJirasListener implements ActionListener {
-      public void actionPerformed(ActionEvent e) {
-         MyTableModel model = ((MyTableModel) table.getModel());
-         while (model.getRowCount() > 0) {
-            model.removeRow(0);
-         }
-      }
-   }
-
    private final class RefreshingFixVersionListener implements ActionListener {
       private final JComboBox jiraProjectFixVersionCombo;
       private final JComboBox jiraProjectsCombo;
