@@ -6,6 +6,7 @@ import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.InternalFrame;
 import com.jonas.agile.devleadtool.component.panel.InternalFrameTabPanel;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 
@@ -14,7 +15,8 @@ public class OpenPlannerDialog {
 
       BoardTableModel boardModel = new BoardTableModel();
       PlanTableModel planModel = new PlanTableModel();
-      InternalFrameTabPanel internalFrameTabPanel = new InternalFrameTabPanel(plannerHelper, boardModel, planModel);
+      JiraTableModel jiraModel = new JiraTableModel();
+      InternalFrameTabPanel internalFrameTabPanel = new InternalFrameTabPanel(plannerHelper, boardModel, planModel, jiraModel);
       InternalFrame internalFrame = new InternalFrame(plannerHelper, plannerHelper.getTitle(), internalFrameTabPanel, dao);
       // final InternalFrame internalFrame = new InternalFrame(plannerHelper.getTitle());
       desktopPane.addInternalFrame(internalFrame);

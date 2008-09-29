@@ -27,16 +27,16 @@ public class InternalFrame extends JInternalFrame {
 
    private static Logger log = MyLogger.getLogger(InternalFrame.class);
 
-   private InternalFrameTabPanel internalFrameTabPanel;
-
-   private String excelFile;
-
-   private String originalTitle;
-   private String originalTitleWithDuplicateNumber;
-
    private PlannerHelper client;
 
    private PlannerDAO dao;
+
+   private String excelFile;
+   private InternalFrameTabPanel internalFrameTabPanel;
+
+   private String originalTitle;
+
+   private String originalTitleWithDuplicateNumber;
 
    public InternalFrame(PlannerHelper client, String title, InternalFrameTabPanel internalFrameTabPanel, PlannerDAO dao) {
       this(title, client);
@@ -84,6 +84,10 @@ public class InternalFrame extends JInternalFrame {
       return internalFrames.size();
    }
 
+   public MyTableModel getJiraModel() {
+      return getJiraPanel().getJiraModel();
+   }
+
    public MyTable getJiraTable() {
       return getJiraPanel().getTable();
    }
@@ -117,6 +121,13 @@ public class InternalFrame extends JInternalFrame {
       return internalFrameTabPanel.getPlanPanel();
    }
 
+   private void openSaveDialogForThisInternalFrame() {
+      log.debug("Should Open Save Dialog!!");
+      if (dao != null && client != null) {
+         new SavePlannerDialog(dao, this, client);
+      }
+   }
+
    void close() {
       log.debug("Closing internal frame: " + getTitle());
       openSaveDialogForThisInternalFrame();
@@ -125,13 +136,6 @@ public class InternalFrame extends JInternalFrame {
       }
       internalFrames.remove(this);
       dispose();
-   }
-
-   private void openSaveDialogForThisInternalFrame() {
-      log.debug("Should Open Save Dialog!!");
-      if (dao != null && client != null) {
-         new SavePlannerDialog(dao, this, client);
-      }
    }
 
    String createTitle(String title) {
