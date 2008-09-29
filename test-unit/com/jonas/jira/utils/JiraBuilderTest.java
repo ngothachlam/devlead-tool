@@ -9,7 +9,6 @@ import com.jonas.agile.devleadtool.junitutils.TestIterator;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.TestObjects;
-import com.jonas.jira.access.JiraSoapClient;
 
 public class JiraBuilderTest extends JonasTestCase {
 
@@ -152,10 +151,10 @@ public class JiraBuilderTest extends JonasTestCase {
    public void testShouldBUildJiraOkUsingSoapCall(){
       RemoteIssue mock_remoteIssue = createClassMock(RemoteIssue.class);
       
-      verify();
+      replay();
       
       jiraBuilder.buildJira(mock_remoteIssue, TestObjects.Project_TST1);
       
-      replay();
+      verify();
    }
 }

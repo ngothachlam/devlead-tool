@@ -12,11 +12,10 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
-import com.jonas.agile.devleadtool.component.table.ColumnDataType;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
-import com.jonas.jira.access.JiraIssueNotFoundException;
 import com.jonas.jira.access.JiraListener;
 
 /**
@@ -56,12 +55,6 @@ public class SyncWithJiraActionListener implements ActionListener {
    private void notifyThatJiraSynced(JiraIssue jira, int tableRowSynced) {
       for (SyncWithJiraActionListenerListener listener : listeners) {
          listener.jiraSynced(jira, tableRowSynced);
-      }
-   }
-
-   private void notifyThatJiraSyncFinished() {
-      for (SyncWithJiraActionListenerListener listener : listeners) {
-         listener.jiraSyncedCompleted();
       }
    }
 
@@ -113,7 +106,7 @@ public class SyncWithJiraActionListener implements ActionListener {
                   break;
                // int convertedTableRowToModel = table.convertRowIndexToModel(row);
                // final String jiraToGet = (String) (table.getModel()).getValueAt(convertedTableRowToModel, 0);
-               final String jiraToGet = (String) table.getValueAt(ColumnDataType.Jira, row);
+               final String jiraToGet = (String) table.getValueAt(Column.Jira, row);
                dialog.increseProgress("Syncing " + jiraToGet);
                log.debug("Syncing Jira" + jiraToGet);
                JiraIssue jira;
@@ -137,7 +130,6 @@ public class SyncWithJiraActionListener implements ActionListener {
       public void done() {
          log.debug("Syncing Finished!");
          dialog.setCompleteWithDelay(300);
-         notifyThatJiraSyncFinished();
       }
    }
 }

@@ -11,7 +11,7 @@ import javax.swing.RowFilter;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.table.ColumnDataType;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.string.MyStringParser;
@@ -22,14 +22,14 @@ public class FilterDocumentListenerListener {
    private JTextField filterText;
    private MyTable table;
    private TableRowSorter<TableModel> tableRowSorter;
-   private final ColumnDataType[] columns;
+   private final Column[] columns;
    private int searches = 0;
 
-   FilterDocumentListenerListener(ColumnDataType... columns) {
+   FilterDocumentListenerListener(Column... columns) {
       this.columns = columns;
    }
 
-   public FilterDocumentListenerListener(JTextField filterText, MyTable table, TableRowSorter<TableModel> tableRowSorter, ColumnDataType... columns) {
+   public FilterDocumentListenerListener(JTextField filterText, MyTable table, TableRowSorter<TableModel> tableRowSorter, Column... columns) {
       this(columns);
       this.filterText = filterText;
       this.table = table;
@@ -82,9 +82,9 @@ public class FilterDocumentListenerListener {
       return RowFilter.andFilter(filters);
    }
 
-   int[] getArray(ColumnDataType... columns) {
+   int[] getArray(Column... columns) {
       List<Integer> array = new ArrayList<Integer>();
-      for (ColumnDataType column : columns) {
+      for (Column column : columns) {
          int columnIndex = table.getColumnIndex(column);
          if (columnIndex >= 0) {
             addToArrayIfPositive(columnIndex, array);

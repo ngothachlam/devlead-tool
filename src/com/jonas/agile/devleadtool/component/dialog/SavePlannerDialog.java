@@ -4,35 +4,38 @@ import java.awt.Component;
 import java.io.File;
 import javax.swing.JFileChooser;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
+import com.jonas.agile.devleadtool.data.PlannerDAO;
 
 public class SavePlannerDialog extends JFileChooser {
 
-	public SavePlannerDialog(PlannerDAOExcelImpl dao, Component frame, PlannerHelper plannerHelper) {
-		super(new File("."));
-		File file = plannerHelper.getFile();
-		if (file != null)
-			setSelectedFile(file);
-		
-		// addChoosableFileFilter(new FileFilter() {
-		// public boolean accept(File f) {
-		// if (getTypeDescription(f).equalsIgnoreCase("Microsoft Excel Worksheet") || f.isDirectory())
-		// return true;
-		// return false;
-		// }
-		//
-		// public String getDescription() {
-		// return "XLS files";
-		// }
-		// });
+   public SavePlannerDialog(PlannerDAO dao, Component frame, PlannerHelper plannerHelper) {
+      super(new File("."));
+      if (dao == null || plannerHelper == null) {
+         return;
+      }
+      File file = plannerHelper.getFile();
+      if (file != null)
+         setSelectedFile(file);
 
-		int result = showSaveDialog(frame);
-		if (result == JFileChooser.APPROVE_OPTION) {
-			File selFile = getSelectedFile();
-			plannerHelper.setFile(selFile);
-			dao.setXlsFile(selFile);
-			plannerHelper.saveModels(dao);
-		}
-	}
+      // addChoosableFileFilter(new FileFilter() {
+      // public boolean accept(File f) {
+      // if (getTypeDescription(f).equalsIgnoreCase("Microsoft Excel Worksheet") || f.isDirectory())
+      // return true;
+      // return false;
+      // }
+      //
+      // public String getDescription() {
+      // return "XLS files";
+      // }
+      // });
+
+      int result = showSaveDialog(frame);
+      if (result == JFileChooser.APPROVE_OPTION) {
+         File selFile = getSelectedFile();
+         plannerHelper.setFile(selFile);
+         dao.setXlsFile(selFile);
+         plannerHelper.saveModels(dao);
+      }
+   }
 
 }

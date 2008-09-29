@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import org.easymock.classextension.EasyMock;
-import com.jonas.agile.devleadtool.component.table.ColumnDataType;
-import com.jonas.agile.devleadtool.component.table.ColumnValue;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
@@ -36,13 +35,13 @@ public class MyTableModelTest extends JonasTestCase {
    }
 
    public void testShouldConvertionNumbersWithStandardColumnsOk() {
-      Vector<ColumnDataType> header = new Vector<ColumnDataType>();
-      header.add(ColumnDataType.Description);
-      header.add(ColumnDataType.Jira);
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Description);
+      header.add(Column.Jira);
 
-      Map<ColumnDataType, Integer> columnNames = new LinkedHashMap<ColumnDataType, Integer>();
-      columnNames.put(ColumnDataType.Jira, 0);
-      columnNames.put(ColumnDataType.Description, 1);
+      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+      columnNames.put(Column.Jira, 0);
+      columnNames.put(Column.Description, 1);
 
       List convert = model.getConvertionNumbers(header, columnNames);
 
@@ -52,15 +51,15 @@ public class MyTableModelTest extends JonasTestCase {
    }
 
    public void testShouldConvertionNumbersWithFewerColumnsOk() {
-      Vector<ColumnDataType> header = new Vector<ColumnDataType>();
-      header.add(ColumnDataType.Description);
-      header.add(ColumnDataType.Jira);
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Description);
+      header.add(Column.Jira);
 
-      Map<ColumnDataType, Integer> columnNames = new LinkedHashMap<ColumnDataType, Integer>();
-      columnNames.put(ColumnDataType.Jira, 0);
-      columnNames.put(ColumnDataType.Note, 1);
-      columnNames.put(ColumnDataType.J_BuildNo, 2);
-      columnNames.put(ColumnDataType.Description, 3);
+      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+      columnNames.put(Column.Jira, 0);
+      columnNames.put(Column.Note, 1);
+      columnNames.put(Column.J_BuildNo, 2);
+      columnNames.put(Column.Description, 3);
 
       List convert = model.getConvertionNumbers(header, columnNames);
 
@@ -72,14 +71,14 @@ public class MyTableModelTest extends JonasTestCase {
    }
 
    public void testShouldConvertionNumbersWithMoreColumnsOk() {
-      Vector<ColumnDataType> header = new Vector<ColumnDataType>();
-      header.add(ColumnDataType.Description);
-      header.add(ColumnDataType.Jira);
-      header.add(ColumnDataType.isBug);
+      Vector<Column> header = new Vector<Column>();
+      header.add(Column.Description);
+      header.add(Column.Jira);
+      header.add(Column.isBug);
 
-      Map<ColumnDataType, Integer> columnNames = new LinkedHashMap<ColumnDataType, Integer>();
-      columnNames.put(ColumnDataType.Jira, 0);
-      columnNames.put(ColumnDataType.Description, 1);
+      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+      columnNames.put(Column.Jira, 0);
+      columnNames.put(Column.Description, 1);
 
       List convert = model.getConvertionNumbers(header, columnNames);
 
@@ -123,15 +122,15 @@ public class MyTableModelTest extends JonasTestCase {
    }
 
    public void testShouldReturnFirstOccurenceInSetThatDoesNotExistInVector() {
-      Map<ColumnDataType, Integer> columnNames = new LinkedHashMap<ColumnDataType, Integer>();
-      columnNames.put(ColumnDataType.Dev_Actual, 0);
-      columnNames.put(ColumnDataType.J_BuildNo, 1);
-      columnNames.put(ColumnDataType.Closed_Sprint, 2);
+      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+      columnNames.put(Column.Dev_Actual, 0);
+      columnNames.put(Column.J_BuildNo, 1);
+      columnNames.put(Column.Closed_Sprint, 2);
 
-      Vector<ColumnDataType> vector = new Vector<ColumnDataType>();
-      vector.add(ColumnDataType.J_BuildNo);
-      assertEquals(ColumnDataType.Dev_Actual, model.findIndexThatDoesNotExist(columnNames, vector, 0));
-      assertEquals(ColumnDataType.Closed_Sprint, model.findIndexThatDoesNotExist(columnNames, vector, 1));
+      Vector<Column> vector = new Vector<Column>();
+      vector.add(Column.J_BuildNo);
+      assertEquals(Column.Dev_Actual, model.findIndexThatDoesNotExist(columnNames, vector, 0));
+      assertEquals(Column.Closed_Sprint, model.findIndexThatDoesNotExist(columnNames, vector, 1));
       assertEquals(null, model.findIndexThatDoesNotExist(columnNames, vector, 2));
    }
 
@@ -142,21 +141,21 @@ public class MyTableModelTest extends JonasTestCase {
       originalList.add(0);
       originalList.add(-1);
 
-      Vector<ColumnDataType> mixedRowVector = new Vector<ColumnDataType>();
-      mixedRowVector.add(ColumnDataType.Description);
-      mixedRowVector.add(ColumnDataType.Jira);
+      Vector<Column> mixedRowVector = new Vector<Column>();
+      mixedRowVector.add(Column.Description);
+      mixedRowVector.add(Column.Jira);
 
-      Map<ColumnDataType, Integer> columnNames = new LinkedHashMap<ColumnDataType, Integer>();
-      columnNames.put(ColumnDataType.Jira, 0);
-      columnNames.put(ColumnDataType.Description, 1);
-      columnNames.put(ColumnDataType.J_BuildNo, 2);
-      columnNames.put(ColumnDataType.J_FixVersion, 3);
+      Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+      columnNames.put(Column.Jira, 0);
+      columnNames.put(Column.Description, 1);
+      columnNames.put(Column.J_BuildNo, 2);
+      columnNames.put(Column.J_FixVersion, 3);
 
-      Vector<ColumnDataType> result = model.sortHeaderBasedOnList(originalList, mixedRowVector, columnNames);
-      assertEquals(ColumnDataType.Jira, result.get(0));
-      assertEquals(ColumnDataType.J_BuildNo, result.get(1));
-      assertEquals(ColumnDataType.Description, result.get(2));
-      assertEquals(ColumnDataType.J_FixVersion, result.get(3));
+      Vector<Column> result = model.sortHeaderBasedOnList(originalList, mixedRowVector, columnNames);
+      assertEquals(Column.Jira, result.get(0));
+      assertEquals(Column.J_BuildNo, result.get(1));
+      assertEquals(Column.Description, result.get(2));
+      assertEquals(Column.J_FixVersion, result.get(3));
       assertEquals(4, result.size());
 
    }
@@ -182,19 +181,40 @@ public class MyTableModelTest extends JonasTestCase {
    }
 
    public void testGetEmptyRowFromBoard() {
+      // Column.Jira;
+      // Column.Description;
+      // Column.isOpen;
+      // Column.isBug;
+      // Column.isInProgress;
+      // Column.isResolved;
+      // Column.isComplete;
+      // Column.ListPrio;
+      
       model = new BoardTableModel();
       Object[] emptyRow = model.getEmptyRow();
-      assertEquals(7, emptyRow.length);
+      assertEquals(8, emptyRow.length);
       assertEquals("", emptyRow[0]);
-      assertEquals(Boolean.FALSE, emptyRow[1]);
+      assertEquals("", emptyRow[1]);
       assertEquals(Boolean.FALSE, emptyRow[2]);
-      assertEquals("", emptyRow[3]);
+      assertEquals(Boolean.FALSE, emptyRow[3]);
       assertEquals(Boolean.FALSE, emptyRow[4]);
       assertEquals(Boolean.FALSE, emptyRow[5]);
-      assertEquals(ColumnValue.NA, emptyRow[6]);
+      assertEquals(Boolean.FALSE, emptyRow[6]);
+      assertEquals(null, emptyRow[7]);
    }
 
    public void testGetEmptyRowFromPlan() {
+//      Column.Jira; 
+//      Column.Description; 
+//      Column.J_Type; 
+//      Column.Planned_Sprint; 
+//      Column.Resolved_Sprint; 
+//      Column.Closed_Sprint; 
+//      Column.Dev_Estimate; 
+//      Column.QA_Estimate; 
+//      Column.Dev_Actual; 
+//      Column.Note;
+      
       model = new PlanTableModel();
 
       Object[] emptyRow = model.getEmptyRow();
@@ -204,9 +224,9 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals("", emptyRow[3]);
       assertEquals("", emptyRow[4]);
       assertEquals("", emptyRow[5]);
-      assertEquals(null, emptyRow[6]);
-      assertEquals(null, emptyRow[7]);
-      assertEquals(null, emptyRow[8]);
+      assertEquals("", emptyRow[6]);
+      assertEquals("", emptyRow[7]);
+      assertEquals("", emptyRow[8]);
       assertEquals("", emptyRow[9]);
       assertEquals(10, emptyRow.length);
    }
@@ -214,13 +234,18 @@ public class MyTableModelTest extends JonasTestCase {
    public void testShouldAddJiraOk() {
       model.addJira("llu-1");
 
-      assertEquals("llu-1", model.getValueAt(0, 0));
+      assertEquals("LLU-1", model.getValueAt(0, 0));
       assertEquals("", model.getValueAt(0, 1));
-      assertEquals("", model.getValueAt(0, 2));
+//      assertEquals("", model.getValueAt(0, 2));
       assertEquals("", model.getValueAt(0, 3));
       assertEquals("", model.getValueAt(0, 4));
       assertEquals("", model.getValueAt(0, 5));
-      assertEquals(null, model.getValueAt(0, 6));
+      assertEquals("", model.getValueAt(0, 6));
+      assertEquals("", model.getValueAt(0, 7));
+      assertEquals("", model.getValueAt(0, 8));
+      assertEquals("", model.getValueAt(0, 9));
+      assertEquals("", model.getValueAt(0, 10));
+      assertEquals("", model.getValueAt(0, 11));
    }
 
    public void testShouldCalculateAlreadyExistsOk() {
@@ -231,7 +256,7 @@ public class MyTableModelTest extends JonasTestCase {
    }
 
    public void testShouldGetColumnInfoOk() {
-      assertEquals(0, model.getColumnNo(ColumnDataType.Jira));
+      assertEquals(0, model.getColumnNo(Column.Jira));
    }
 
    public void testShouldAddJiraComplexObjectOk() {
@@ -253,12 +278,12 @@ public class MyTableModelTest extends JonasTestCase {
       verify();
       assertEquals(1, model.getRowCount());
       assertEquals(7, model.getColumnCount());
-      assertModelRow("LLU-1", ColumnDataType.Jira, 0, 0);
-      assertModelRow("Summary1", ColumnDataType.Description, 1, 0);
-      assertModelRow("Status1", ColumnDataType.J_Status, 3, 0);
-      assertModelRow("Resolution1", ColumnDataType.J_Resolution, 4, 0);
-      assertModelRow("BuildNo1", ColumnDataType.J_BuildNo, 5, 0);
-      assertModelRow(1.4f, ColumnDataType.Dev_Estimate, 6, 0);
+      assertModelRow("LLU-1", Column.Jira, 0, 0);
+      assertModelRow("Summary1", Column.Description, 1, 0);
+      assertModelRow("Status1", Column.J_Status, 3, 0);
+      assertModelRow("Resolution1", Column.J_Resolution, 4, 0);
+      assertModelRow("BuildNo1", Column.J_BuildNo, 5, 0);
+      assertModelRow(1.4f, Column.Dev_Estimate, 6, 0);
 
       reset();
       model = new PlanTableModel();
@@ -275,19 +300,19 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals(10, model.getColumnCount());
       // Column.Jira, Column.Description, Column.Type, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Estimate, Column.Actual,
       // Column.Note
-      assertModelRow("LLU-2", ColumnDataType.Jira, 0, 0);
-      assertModelRow("Summary2", ColumnDataType.Description, 1, 0);
-      assertModelRow("Type2", ColumnDataType.J_Type, 2, 0);
-      assertModelRow("", ColumnDataType.Planned_Sprint, 3, 0);
-      assertModelRow("", ColumnDataType.Resolved_Sprint, 4, 0);
-      assertModelRow("", ColumnDataType.Closed_Sprint, 5, 0);
-      assertModelRow(2.4f, ColumnDataType.Dev_Estimate, 6, 0);
-      assertModelRow(0f, ColumnDataType.QA_Estimate, 7, 0);
-      assertModelRow(0f, ColumnDataType.Dev_Actual, 8, 0);
-      assertModelRow("", ColumnDataType.Note, 9, 0);
+      assertModelRow("LLU-2", Column.Jira, 0, 0);
+      assertModelRow("Summary2", Column.Description, 1, 0);
+      assertModelRow("Type2", Column.J_Type, 2, 0);
+      assertModelRow("", Column.Planned_Sprint, 3, 0);
+      assertModelRow("", Column.Resolved_Sprint, 4, 0);
+      assertModelRow("", Column.Closed_Sprint, 5, 0);
+      assertModelRow(2.4f, Column.Dev_Estimate, 6, 0);
+      assertModelRow(0f, Column.QA_Estimate, 7, 0);
+      assertModelRow(0f, Column.Dev_Actual, 8, 0);
+      assertModelRow("", Column.Note, 9, 0);
    }
 
-   private void assertModelRow(Object string, ColumnDataType column, int col, int row) {
+   private void assertModelRow(Object string, Column column, int col, int row) {
       assertEquals(string, model.getValueAt(column, row));
       assertEquals(string, model.getValueAt(row, col));
    }

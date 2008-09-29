@@ -3,7 +3,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 import java.util.List;
 import java.util.Vector;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.table.ColumnDataType;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
@@ -11,13 +11,13 @@ import com.jonas.jira.JiraVersion;
 public class PlanTableModel extends MyTableModel {
 
    private Logger log = MyLogger.getLogger(PlanTableModel.class);
-   private static final ColumnDataType[] columns = { ColumnDataType.Jira, ColumnDataType.Description, ColumnDataType.J_Type, ColumnDataType.Planned_Sprint, ColumnDataType.Resolved_Sprint, ColumnDataType.Closed_Sprint, ColumnDataType.Dev_Estimate, ColumnDataType.QA_Estimate, ColumnDataType.Dev_Actual, ColumnDataType.Note };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Type, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Dev_Estimate, Column.QA_Estimate, Column.Dev_Actual, Column.Note };
 
    public PlanTableModel() {
       super(columns);
    }
 
-   public PlanTableModel(Vector<Vector<Object>> contents, Vector<ColumnDataType> header) {
+   public PlanTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
       super(columns, contents, header);
    }
 
@@ -35,7 +35,7 @@ public class PlanTableModel extends MyTableModel {
       return true;
    }
 
-   public Object getValueAt(ColumnDataType column, String jira) {
+   public Object getValueAt(Column column, String jira) {
       int columnNo = this.getColumnNo(column);
       int rowNo = this.getJiraRow(jira);
       return this.getValueAt(rowNo, columnNo);

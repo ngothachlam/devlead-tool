@@ -17,6 +17,7 @@ import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.agile.devleadtool.component.table.model.TableModelBuilder;
+import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.common.logging.MyLogger;
 
@@ -35,8 +36,11 @@ public class InternalFrame extends JInternalFrame {
 
    private PlannerHelper client;
 
-   public InternalFrame(PlannerHelper client, String title, InternalFrameTabPanel internalFrameTabPanel) {
+   private PlannerDAO dao;
+
+   public InternalFrame(PlannerHelper client, String title, InternalFrameTabPanel internalFrameTabPanel, PlannerDAO dao) {
       this(title, client);
+      this.dao = dao;
 
       this.internalFrameTabPanel = internalFrameTabPanel;
 
@@ -58,7 +62,7 @@ public class InternalFrame extends JInternalFrame {
 
    public static void closeAll() {
       while (internalFrames.size() > 0) {
-         InternalFrame internalFrame = internalFrames.get(internalFrames.size()-1);
+         InternalFrame internalFrame = internalFrames.get(internalFrames.size() - 1);
          internalFrame.close();
       }
    }
@@ -125,8 +129,9 @@ public class InternalFrame extends JInternalFrame {
 
    private void openSaveDialogForThisInternalFrame() {
       log.debug("Should Open Save Dialog!!");
-      final PlannerDAOExcelImpl plannerDAO = new PlannerDAOExcelImpl(new TableModelBuilder());
-      new SavePlannerDialog(plannerDAO, this, client);
+      if (dao != null && client != null) {
+         new SavePlannerDialog(dao, this, client);
+      }
    }
 
    String createTitle(String title) {

@@ -24,7 +24,7 @@ import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
 import com.jonas.agile.devleadtool.component.listener.HyperLinkOpenerAdapter;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
-import com.jonas.agile.devleadtool.component.table.ColumnDataType;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -60,8 +60,7 @@ public class PlanPanel extends MyComponentPanel {
 
       JScrollPane scrollpane = new JScrollPane(table);
 
-      table.addMouseListener(new HyperLinkOpenerAdapter(helper, ColumnDataType.URL, ColumnDataType.Jira));
-
+//      table.addMouseListener(new HyperLinkOpenerAdapter(helper, ColumnDataType.URL, ColumnDataType.Jira));
       this.addCenter(scrollpane);
       this.addSouth(getBottomPanel());
       this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
@@ -82,7 +81,7 @@ public class PlanPanel extends MyComponentPanel {
 
    private JPanel getButtonPanelNorth() {
       JPanel buttonPanel = new JPanel();
-      addFilter(buttonPanel, table, sorter, ColumnDataType.Jira, ColumnDataType.Description);
+      addFilter(buttonPanel, table, sorter, Column.Jira, Column.Description);
       return buttonPanel;
    }
 
@@ -96,8 +95,8 @@ public class PlanPanel extends MyComponentPanel {
          }
 
          public void jiraSynced(JiraIssue jira, int tableRowSynced) {
-            table.setValueAt(jira.getSummary(), tableRowSynced, ColumnDataType.Description);
-            table.setValueAt(jira.getType(), tableRowSynced, ColumnDataType.J_Type);
+            table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
+            table.setValueAt(jira.getType(), tableRowSynced, Column.J_Type);
          }
 
          public void jiraSyncedCompleted() {
