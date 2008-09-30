@@ -18,6 +18,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.IsJiraColumn;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -176,12 +177,14 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                   Column column = Column.getEnum(cellContents);
                   log.debug("Adding column to " + colCount + " and it is " + column + " and its size is currently " + columns.size());
                   columns.put(colCount, column);
-                  if (column.shouldLoad())
+                  // don't add jira columns!
+                  if (!column.isJiraColumn())
                      dataModelDTO.getHeader().add(getHeaderMappingToColumn(cellContents));
                } else {
                   Column column = columns.get(colCount);
                   log.debug("Getting column from " + colCount + " and it is " + column + " and its size is " + columns.size());
-                  if (column.shouldLoad()) {
+                  // don't add jira columns!
+                  if (!column.isJiraColumn()) {
                      // FIXME make dynamic!
                      switch (column) {
                      case BoardStatus:

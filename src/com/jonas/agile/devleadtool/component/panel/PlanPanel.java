@@ -42,7 +42,6 @@ public class PlanPanel extends MyComponentPanel {
    private final PlannerHelper helper;
    private Logger log = MyLogger.getLogger(PlanPanel.class);
    private JFrame planVersionsFrame;
-   private TableRowSorter<TableModel> sorter;
    private MyTable table;
 
    public PlanPanel(PlannerHelper client) {
@@ -53,14 +52,10 @@ public class PlanPanel extends MyComponentPanel {
       super(new BorderLayout());
       this.helper = helper;
       table = new MyTable(planModel);
-      // table.setModel(planModel);
-
-      sorter = new TableRowSorter<TableModel>(table.getModel());
-      table.setRowSorter(sorter);
 
       JScrollPane scrollpane = new JScrollPane(table);
 
-//      table.addMouseListener(new HyperLinkOpenerAdapter(helper, ColumnDataType.URL, ColumnDataType.Jira));
+      // table.addMouseListener(new HyperLinkOpenerAdapter(helper, ColumnDataType.URL, ColumnDataType.Jira));
       this.addCenter(scrollpane);
       this.addSouth(getBottomPanel());
       this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
@@ -81,7 +76,7 @@ public class PlanPanel extends MyComponentPanel {
 
    private JPanel getButtonPanelNorth() {
       JPanel buttonPanel = new JPanel();
-      addFilter(buttonPanel, table, sorter, Column.Jira, Column.Description);
+      addFilter(buttonPanel, table, Column.Jira, Column.Description);
       return buttonPanel;
    }
 

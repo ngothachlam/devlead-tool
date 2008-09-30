@@ -38,7 +38,6 @@ public class JiraPanel extends MyComponentPanel {
 
    private final PlannerHelper helper;
    private Logger log = MyLogger.getLogger(JiraPanel.class);
-   private TableRowSorter<TableModel> sorter;
    private MyTable table;
 
    public JiraPanel(PlannerHelper helper) {
@@ -48,16 +47,11 @@ public class JiraPanel extends MyComponentPanel {
    public JiraPanel(PlannerHelper helper, JiraTableModel jiraModel) {
       super(new BorderLayout());
       this.helper = helper;
-      
+
       table = new MyTable(jiraModel);
-      // table.setModel(new JiraTableModel());
-      
-      // FIXME - the filterer doesn't work
-      // sorter = new TableRowSorter<TableModel>(table.getModel());
-      // table.setRowSorter(sorter);
-      
+
       JScrollPane scrollpane = new MyScrollPane(table);
-      
+
       this.addCenter(scrollpane);
       this.addSouth(getBottomPanel());
       this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
@@ -65,16 +59,16 @@ public class JiraPanel extends MyComponentPanel {
 
    protected JPanel getBottomPanel() {
       MyPanel buttonPanel = new MyPanel(new BorderLayout());
-      // JPanel buttonPanelOne = getButtonPanelNorth();
+      JPanel buttonPanelOne = getButtonPanelNorth();
       JPanel buttonPanelTwo = getButtonPanelSouth();
-      // buttonPanel.addNorth(buttonPanelOne);
+      buttonPanel.addNorth(buttonPanelOne);
       buttonPanel.addSouth(buttonPanelTwo);
       return buttonPanel;
    }
 
    private JPanel getButtonPanelNorth() {
       JPanel buttonPanel = new JPanel();
-      addFilter(buttonPanel, table, sorter, Column.Jira, Column.Description);
+      addFilter(buttonPanel, table, Column.Jira, Column.Description);
       return buttonPanel;
    }
 
@@ -113,7 +107,7 @@ public class JiraPanel extends MyComponentPanel {
       };
       listener.addListener(syncWithJiraListener);
       addButton(topPanel, "Sync", listener);
-      addButton(topPanel, "Open Jiras", new OpenJirasListener(table, helper));
+      addButton(topPanel, "Open", new OpenJirasListener(table, helper));
       addButton(topPanel, "Copy to Board", new CopyToTableListener(table, new DestinationRetriever() {
          public MyTable getDestinationTable() {
             return helper.getActiveInternalFrame().getBoardTable();

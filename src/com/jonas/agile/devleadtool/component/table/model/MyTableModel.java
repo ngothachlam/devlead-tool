@@ -13,14 +13,13 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
 public abstract class MyTableModel extends DefaultTableModel {
-   // public abstract class MyTableModel extends TableSorter {
 
    protected Counter counter = new Counter();
    private Logger log = MyLogger.getLogger(MyTableModel.class);
    protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
    protected boolean editable = true;
 
-   public MyTableModel(Column[] columns) {
+   MyTableModel(Column[] columns) {
       super(columns, 0);
       initiateColumns(columns);
    }
@@ -52,8 +51,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    final public Class<?> getColumnClass(int columnIndex) {
-      Object valueAt = getValueAt(0, columnIndex);
-      return valueAt != null ? getClass(valueAt) : getClassFromColumn(columnIndex);
+      return getClassFromColumn(columnIndex);
    }
 
    final public Column getColumnEnum(int columnNo) {
@@ -73,31 +71,6 @@ public abstract class MyTableModel extends DefaultTableModel {
       return -1;
    }
 
-   // final public Object[] getEmptyRow() {
-   // Map<Column, Integer> colnams = getColumnNames();
-   // Object[] objects = new Object[colnams.size()];
-   // int i = 0;
-   // log.debug("getting Empty Row");
-   // for (Column column : colnams.keySet()) {
-   // ColumnDTO dto = ColumnDTO.getColumnDTO(column);
-   // objects[i++] = dto.getDefaultValue();
-   // log.debug("column: " + column + " containing: " + objects[i - 1]);
-   // }
-   // return objects;
-   // }
-
-   // final public Class[] getEmptyRowClass() {
-   // Map<Column, Integer> colnams = getColumnNames();
-   // Class[] objects = new Object[colnams.size()];
-   // int i = 0;
-   // log.debug("getting Empty Row");
-   // for (Column column : colnams.keySet()) {
-   // ColumnDTO dto = ColumnDTO.getColumnDTO(column);
-   // objects[i++] = dto.getClass();
-   // log.debug("column: " + column + " containing: " + objects[i - 1]);
-   // }
-   // return objects;
-   // }
    final public Object[] getEmptyRow() {
       Map<Column, Integer> colnams = getColumnNames();
       Object[] objects = new Object[colnams.size()];
@@ -140,7 +113,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    final public boolean isCellEditable(int row, int column) {
-      return isEditable() ? true : false;
+      return isEditable() ? getColumnEnum(column).isEditable() : false;
    }
 
    final public boolean isEditable() {
@@ -155,18 +128,12 @@ public abstract class MyTableModel extends DefaultTableModel {
       // TODO need to fireUpdate on Table?
    }
 
-   // Only required if the table is updated by the app so that it becomes visible to the user.
    final public void setValueAt(Object value, int rowIndex, int columnIndex) {
       super.setValueAt(value, rowIndex, columnIndex);
       fireTableRowsUpdated(rowIndex, rowIndex);
    }
 
-   final private Class<?> getClass(Object valueAt) {
-      return valueAt.getClass();
-   }
-
    final private Class<?> getClassFromColumn(int columnIndex) {
-//      return getEmptyRow()[columnIndex].getClass();
       return getColumnEnum(columnIndex).getDefaultClass();
    }
 

@@ -7,8 +7,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
@@ -33,7 +31,6 @@ public class BoardPanel extends MyComponentPanel {
 
    private PlannerHelper helper;
    private Logger log = MyLogger.getLogger(BoardPanel.class);
-   private TableRowSorter<TableModel> sorter;
    public MyTable table;
 
    BoardPanel() {
@@ -54,7 +51,7 @@ public class BoardPanel extends MyComponentPanel {
 
    private JPanel getButtonPanelNorth() {
       JPanel buttonPanel = new JPanel();
-      addFilter(buttonPanel, table, sorter, Column.Jira, Column.Description);
+      addFilter(buttonPanel, table, Column.Jira, Column.Description);
       return buttonPanel;
    }
 
@@ -76,7 +73,7 @@ public class BoardPanel extends MyComponentPanel {
          }
       });
       addButton(buttonPanel, "Sync", listener);
-      addButton(buttonPanel, "Open Jiras", new OpenJirasListener(table, helper));
+      addButton(buttonPanel, "Open", new OpenJirasListener(table, helper));
       addButton(buttonPanel, "Unsort", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -112,9 +109,6 @@ public class BoardPanel extends MyComponentPanel {
 
    protected void makeContent(MyTableModel boardTableModel) {
       table = new MyTable(boardTableModel);
-
-      sorter = new TableRowSorter<TableModel>(table.getModel());
-      table.setRowSorter(sorter);
 
       table.setDefaultRenderer(String.class, new StringTableCellRenderer());
       table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());

@@ -2,11 +2,11 @@ package com.jonas.agile.devleadtool.component.table.renderer;
 
 import java.awt.Component;
 import java.io.Serializable;
-import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.common.ColorUtil;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
 
@@ -18,7 +18,7 @@ public class StringTableCellRenderer extends DefaultTableCellRenderer {
    }
 
    public Component getTableCellRendererComponent(MyTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-      JComponent cell = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       log.debug("String for column: " + column + " with value: " + value + " (class: " + debugClassOfValue(value) + ")");
 
       if (hasFocus) {
@@ -28,6 +28,10 @@ public class StringTableCellRenderer extends DefaultTableCellRenderer {
       } else {
          cell.setBackground(table.getBackground());
       }
+      if (!table.getModel().isCellEditable(row, column) && !hasFocus) {
+         cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -55));
+      }
+
       return cell;
    }
 
