@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.LayoutManager;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
-import com.jonas.agile.devleadtool.component.listener.FilterType;
 import com.jonas.agile.devleadtool.component.listener.RemoveJTableSelectedRowsListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 
@@ -89,8 +87,8 @@ public class MyPanel extends JPanel {
       buttons.add(jiraCommas);
       return jiraCommas;
    }
-   protected JComboBox addComboBox(JPanel buttons, FilterType[] filterTypes) {
-      JComboBox component = new JComboBox(filterTypes);
+   protected JComboBox addComboBox(JPanel buttons, Object[] array) {
+      JComboBox component = new JComboBox(array);
       buttons.add(component);
       return component;
    }

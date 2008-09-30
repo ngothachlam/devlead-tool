@@ -4,15 +4,19 @@ import java.util.List;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
+import com.jonas.agile.devleadtool.component.table.renderer.ComboTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -22,27 +26,34 @@ import com.jonas.testing.TableSorter;
 public class MyTable extends JTable {
 
    private Logger log = MyLogger.getLogger(MyTable.class);
-   private TableSorter sorter = null;
+   private TableRowSorter<TableModel> sorter;
+
    private Object sorterLock = new Object();
 
    public MyTable() {
-      super();
-      setDefaultRenderer(String.class, new StringTableCellRenderer());
-      setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
-      setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
-
-      setDragEnabled(true);
-      setAutoCreateRowSorter(true);
+      this(new DefaultTableModel());
    }
 
    public MyTable(MyTableModel modelModel) {
-      this();
-      setModel(modelModel);
+      this((AbstractTableModel)modelModel);
+   }
+
+   MyTable(AbstractTableModel defaultTableModel) {
+      super(defaultTableModel);
+      setDefaultRenderer(String.class, new StringTableCellRenderer());
+      setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
+      setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
+      
+      // setAutoCreateRowSorter(true);
+      sorter = new TableRowSorter(defaultTableModel);
+      setRowSorter(sorter);
+
+      setDragEnabled(true);
       // FIXME make this dynamic
       int boardStatus = getColumnIndex(Column.BoardStatus);
       if (boardStatus > -1) {
          TableColumn tc = getTableColumn(boardStatus);
-         tc.setCellRenderer(new DefaultTableCellRenderer());
+         tc.setCellRenderer(new ComboTableCellRenderer());
          JComboBox combo = new JComboBox(BoardStatusValue.values());
          tc.setCellEditor(new DefaultCellEditor(combo));
       }
@@ -124,5 +135,9 @@ public class MyTable extends JTable {
 
    public void setValueAt(Object value, int row, int column) {
       super.setValueAt(value, row, column);
+   }
+
+   public TableRowSorter<TableModel> getSorter() {
+      return sorter;
    }
 }
