@@ -21,7 +21,6 @@ import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRende
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
-import com.jonas.testing.TableSorter;
 
 public class MyTable extends JTable {
 
@@ -35,7 +34,7 @@ public class MyTable extends JTable {
    }
 
    public MyTable(MyTableModel modelModel) {
-      this((AbstractTableModel)modelModel);
+      this((AbstractTableModel) modelModel);
    }
 
    MyTable(AbstractTableModel defaultTableModel) {
@@ -43,19 +42,21 @@ public class MyTable extends JTable {
       setDefaultRenderer(String.class, new StringTableCellRenderer());
       setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
       setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
-      
+
       // setAutoCreateRowSorter(true);
       sorter = new TableRowSorter(defaultTableModel);
       setRowSorter(sorter);
 
       setDragEnabled(true);
       // FIXME make this dynamic
-      int boardStatus = getColumnIndex(Column.BoardStatus);
-      if (boardStatus > -1) {
-         TableColumn tc = getTableColumn(boardStatus);
-         tc.setCellRenderer(new ComboTableCellRenderer());
-         JComboBox combo = new JComboBox(BoardStatusValue.values());
-         tc.setCellEditor(new DefaultCellEditor(combo));
+      if (getModel() instanceof MyTableModel) {
+         int boardStatus = getColumnIndex(Column.BoardStatus);
+         if (boardStatus > -1) {
+            TableColumn tc = getTableColumn(boardStatus);
+            tc.setCellRenderer(new ComboTableCellRenderer());
+            JComboBox combo = new JComboBox(BoardStatusValue.values());
+            tc.setCellEditor(new DefaultCellEditor(combo));
+         }
       }
    }
 
@@ -69,27 +70,31 @@ public class MyTable extends JTable {
    }
 
    public void addJira(JiraIssue jiraIssue) {
-      MyTableModel model = (MyTableModel) getModel();
+      MyTableModel model = getMyModel();
       model.addJira(jiraIssue);
    }
 
    public void addJira(String jira) {
-      MyTableModel model = (MyTableModel) getModel();
+      MyTableModel model = getMyModel();
       model.addJira(jira);
    }
 
    public Column getColumnEnum(int itsColumn) {
-      MyTableModel model = (MyTableModel) getModel();
+      MyTableModel model = getMyModel();
       return model.getColumnEnum(convertColumnIndexToModel(itsColumn));
    }
 
    public int getColumnIndex(Column column) {
-      return convertColumnIndexToView(((MyTableModel) getModel()).getColumnNo(column));
+      return convertColumnIndexToView((getMyModel()).getColumnNo(column));
+   }
+
+   private MyTableModel getMyModel() {
+      return (MyTableModel) getModel();
    }
 
    public Object getValueAt(Column column, int rowInView) {
       int colInView = getColumnIndex(column);
-      MyTableModel model = (MyTableModel) getModel();
+      MyTableModel model = getMyModel();
       return model.getValueAt(convertRowIndexToModel(rowInView), convertColumnIndexToModel(colInView));
    }
 
@@ -103,7 +108,7 @@ public class MyTable extends JTable {
          // we can't remove upwards the table and down (from lower to greater index) as the table changes on each delete.
          int tableSelectedRow = selectedRows[count];
          int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
-         ((MyTableModel) getModel()).removeRow(convertRowIndexToModel);
+         (getMyModel()).removeRow(convertRowIndexToModel);
       }
    }
 
