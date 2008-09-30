@@ -1,5 +1,6 @@
 package com.jonas.common;
 
+import java.awt.ComponentOrientation;
 import java.awt.LayoutManager;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -13,8 +14,6 @@ import javax.swing.RowFilter;
 import javax.swing.SwingWorker;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -67,22 +66,23 @@ public class MyComponentPanel extends MyPanel {
       panel.closeListeners.remove(this);
    }
 
-   protected void addFilter(JPanel buttonPanel, final MyTable table, Column... columns) {
+   protected void addFilter(JPanel buttonPanel, final MyTable table, final Column... columns) {
       addLabel(buttonPanel, "Filter:");
       final JTextField filterText = addTextField(buttonPanel, 20);
 
-      final JTextField results = addTextField(buttonPanel, 10);
+      final JTextField results = addTextField(buttonPanel, 6);
+      results.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
       results.setEditable(false);
 
       final KeyAdapter keyAdapter = new KeyAdapter() {
          @Override
          public void keyReleased(KeyEvent e) {
             String text = filterText.getText();
-            log.error("textfield action!  " + text + " and event " + e);
+            log.debug("textfield action!  " + text + " and event " + e);
             if (text.trim().length() == 0) {
                table.getSorter().setRowFilter(null);
             } else {
-               table.getSorter().setRowFilter(RowFilter.regexFilter(text));
+               table.getSorter().setRowFilter(RowFilter.regexFilter("(?i)" + text, getArrayOfIndices(table, columns)));
             }
             results.setText(getResultText(table));
          }
@@ -105,6 +105,26 @@ public class MyComponentPanel extends MyPanel {
          }
       });
 
+   }
+
+   int[] getArrayOfIndices(MyTable table, Column... columns) {
+      List<Integer> array = new ArrayList<Integer>();
+      for (Column column : columns) {
+         int columnIndex = table.getColumnIndex(column);
+         if (columnIndex >= 0) {
+            addToArrayIfPositive(columnIndex, array);
+         }
+      }
+      int[] intArray = new int[array.size()];
+      for (int i = 0; i < intArray.length; i++) {
+         intArray[i] = array.get(i);
+      }
+      return intArray;
+   }
+
+   void addToArrayIfPositive(Integer columnIndexOne, List<Integer> array) {
+      if (columnIndexOne >= 0)
+         array.add(columnIndexOne);
    }
 
    private String getResultText(JTable table) {
