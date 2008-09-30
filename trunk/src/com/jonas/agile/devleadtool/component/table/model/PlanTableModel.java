@@ -36,8 +36,8 @@ public class PlanTableModel extends MyTableModel {
    }
 
    public Object getValueAt(Column column, String jira) {
-      int columnNo = this.getColumnNo(column);
-      int rowNo = this.getJiraRow(jira);
+      int columnNo = this.getColumnIndex(column);
+      int rowNo = this.getRowWithJira(jira, Column.Jira);
       return this.getValueAt(rowNo, columnNo);
    }
 

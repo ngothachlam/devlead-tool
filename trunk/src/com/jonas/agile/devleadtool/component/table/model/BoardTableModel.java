@@ -25,7 +25,7 @@ public class BoardTableModel extends MyTableModel {
    }
 
    public List<BoardStatusValue> getStatus(String jira) {
-      int row = getRowOfSameValueInColumn(jira, Column.Jira);
+      int row = getRowWithJira(jira, Column.Jira);
       log.debug("row: " + row + " for jira: " + jira);
       List<BoardStatusValue> list = new ArrayList<BoardStatusValue>();
       if (row >= 0) {
@@ -51,7 +51,7 @@ public class BoardTableModel extends MyTableModel {
    }
 
    private boolean getBoardStatus(int row, Column column) {
-      int columnTemp = getColumnNo(column);
+      int columnTemp = getColumnIndex(column);
       Boolean valueAt = (Boolean) getValueAt(row, columnTemp);
       return valueAt == null ? false : valueAt.booleanValue();
    }

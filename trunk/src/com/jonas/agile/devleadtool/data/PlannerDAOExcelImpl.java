@@ -89,7 +89,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       // save column Headers
       HSSFRow row = sheet.createRow((short) 0);
       for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
-         Column column = model.getColumnEnum(colCount);
+         Column column = model.getColumn(colCount);
          HSSFCell cell = row.createCell((short) colCount);
          Object valueAt = model.getColumnName(colCount);
          cell.setCellValue(new HSSFRichTextString((String) valueAt));

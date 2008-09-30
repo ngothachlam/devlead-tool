@@ -22,7 +22,7 @@ public class MyTableTest extends JonasTestCase {
 
    public void testShouldIdentifyColumnCorrectly() throws SecurityException, NoSuchMethodException {
       MyTableModel mock_table_model = createClassMock(MyTableModel.class);
-      EasyMock.expect(mock_table_model.getColumnEnum(0)).andReturn(Column.Jira);
+      EasyMock.expect(mock_table_model.getColumn(0)).andReturn(Column.Jira);
 
       // mock out table methods (jtable is a big class!)
       MyTable newtable = createMock(MyTable.class, MyTable.class.getMethod("getModel", MyTableModel.class), MyTable.class.getMethod("convertColumnIndexToModel", int.class));
@@ -38,7 +38,7 @@ public class MyTableTest extends JonasTestCase {
 
    public void testShouldIdentifyColumnInCorrectly() throws SecurityException, NoSuchMethodException {
       MyTableModel mock_table_model = createClassMock(MyTableModel.class);
-      EasyMock.expect(mock_table_model.getColumnEnum(0)).andReturn(Column.Dev_Actual);
+      EasyMock.expect(mock_table_model.getColumn(0)).andReturn(Column.Dev_Actual);
 
       // mock out table methods (jtable is a big class!)
       MyTable newtable = createMock(MyTable.class, MyTable.class.getMethod("getModel", null), MyTable.class.getMethod("convertColumnIndexToModel", int.class));

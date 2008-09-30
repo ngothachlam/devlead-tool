@@ -1,6 +1,7 @@
 package com.jonas.agile.devleadtool.component.table;
 
 import java.util.List;
+import java.util.Map;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
@@ -50,14 +51,14 @@ public class MyTable extends JTable {
       setDragEnabled(true);
       // FIXME make this dynamic
       if (getModel() instanceof MyTableModel) {
-         int boardStatus = getColumnIndex(Column.BoardStatus);
-         if (boardStatus > -1) {
-            TableColumn tc = getTableColumn(boardStatus);
+      int boardStatus = getColumnIndex(Column.BoardStatus);
+      if (boardStatus > -1) {
+         TableColumn tc = getTableColumn(boardStatus);
             tc.setCellRenderer(new ComboTableCellRenderer());
-            JComboBox combo = new JComboBox(BoardStatusValue.values());
-            tc.setCellEditor(new DefaultCellEditor(combo));
-         }
+         JComboBox combo = new JComboBox(BoardStatusValue.values());
+         tc.setCellEditor(new DefaultCellEditor(combo));
       }
+   }
    }
 
    private TableColumn getTableColumn(int boardStatus) {
@@ -81,16 +82,16 @@ public class MyTable extends JTable {
 
    public Column getColumnEnum(int itsColumn) {
       MyTableModel model = getMyModel();
-      return model.getColumnEnum(convertColumnIndexToModel(itsColumn));
-   }
+      return model.getColumn(convertColumnIndexToModel(itsColumn));
+  }
 
    public int getColumnIndex(Column column) {
-      return convertColumnIndexToView((getMyModel()).getColumnNo(column));
+       return convertColumnIndexToView((getMyModel()).getColumnIndex(column));
    }
 
    private MyTableModel getMyModel() {
       return (MyTableModel) getModel();
-   }
+  }
 
    public Object getValueAt(Column column, int rowInView) {
       int colInView = getColumnIndex(column);
@@ -142,7 +143,13 @@ public class MyTable extends JTable {
       super.setValueAt(value, row, column);
    }
 
+
    public TableRowSorter<TableModel> getSorter() {
       return sorter;
+   }
+
+
+   public void addJira(String jira, Map<Column, Object> map) {
+      ((MyTableModel)this.getModel()).addJira(jira, map);
    }
 }
