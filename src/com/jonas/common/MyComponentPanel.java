@@ -89,7 +89,9 @@ public class MyComponentPanel extends MyPanel {
       };
       filterText.addKeyListener(keyAdapter);
 
-      // FIXME doesn't work when adding jiras to an already existing filter as this is done in the wrong order. Works with swingworker temporarily
+      // FIXME doesn't work when adding jiras to an already existing filter as this is done in the wrong order. Works with swingworker
+      // temporarily
+      // FIXME bug here somewhere to not update the correct data all the time - threading issue?
       table.getModel().addTableModelListener(new TableModelListener() {
          public void tableChanged(TableModelEvent e) {
             SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
