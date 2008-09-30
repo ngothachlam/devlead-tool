@@ -68,6 +68,7 @@ public class MyComponentPanel extends MyPanel {
       panel.closeListeners.remove(this);
    }
 
+   @Deprecated
    protected void addFilter(JPanel buttonPanel, final MyTable table, final Column... columns) {
       addLabel(buttonPanel, "Filter:");
       final JTextField filterText = addTextField(buttonPanel, 6);
@@ -76,7 +77,6 @@ public class MyComponentPanel extends MyPanel {
          @Override
          public void keyReleased(KeyEvent e) {
             String text = filterText.getText();
-            log.debug("textfield action!  " + text + " and event " + e);
             if (text.trim().length() == 0) {
                table.setRowFilter(null);
             } else {

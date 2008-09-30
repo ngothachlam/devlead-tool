@@ -232,7 +232,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public void setValueAt(Object value, int rowIndex, int columnIndex) {
       super.setValueAt(value, rowIndex, columnIndex);
-      fireTableRowsUpdated(rowIndex, rowIndex);
+//      fireTableRowsUpdated(rowIndex, rowIndex);
    }
 
    final private Class<?> getClassFromColumn(int columnIndex) {

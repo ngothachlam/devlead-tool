@@ -108,7 +108,7 @@ public class SyncWithJiraActionListener implements ActionListener {
                // final String jiraToGet = (String) (table.getModel()).getValueAt(convertedTableRowToModel, 0);
                final String jiraToGet = (String) table.getValueAt(Column.Jira, row);
                dialog.increseProgress("Syncing " + jiraToGet);
-               log.debug("Syncing Jira" + jiraToGet);
+               log.debug("Syncing Jira" + jiraToGet + " on the selected row " + row + " out of " + rows.length);
                JiraIssue jira;
                try {
                   jira = helper.getJiraIssueFromName(jiraToGet, new JiraListenerImpl(dialog, jiraToGet));
@@ -117,7 +117,7 @@ public class SyncWithJiraActionListener implements ActionListener {
                   e.printStackTrace();
                   continue;
                }
-               log.debug("jira: " + jira + " rowSelected: " + row);
+               log.debug("jiraToGet: " + jiraToGet + " jira: " + jira.getKey() + " rowSelected: " + row);
                notifyThatJiraSynced(jira, row);
             }
          } catch (Exception e) {
