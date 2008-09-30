@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -28,8 +29,6 @@ public class MyTable extends JTable {
    private Logger log = MyLogger.getLogger(MyTable.class);
    private TableRowSorter<TableModel> sorter;
 
-   private Object sorterLock = new Object();
-
    public MyTable() {
       this(new DefaultTableModel());
    }
@@ -45,20 +44,24 @@ public class MyTable extends JTable {
       setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
 
       // setAutoCreateRowSorter(true);
-      sorter = new TableRowSorter(defaultTableModel);
+      sorter = new TableRowSorter<TableModel>(defaultTableModel);
       setRowSorter(sorter);
 
       setDragEnabled(true);
       // FIXME make this dynamic
       if (getModel() instanceof MyTableModel) {
-      int boardStatus = getColumnIndex(Column.BoardStatus);
-      if (boardStatus > -1) {
-         TableColumn tc = getTableColumn(boardStatus);
+         int boardStatus = getColumnIndex(Column.BoardStatus);
+         if (boardStatus > -1) {
+            TableColumn tc = getTableColumn(boardStatus);
             tc.setCellRenderer(new ComboTableCellRenderer());
-         JComboBox combo = new JComboBox(BoardStatusValue.values());
-         tc.setCellEditor(new DefaultCellEditor(combo));
+            JComboBox combo = new JComboBox(BoardStatusValue.values());
+            tc.setCellEditor(new DefaultCellEditor(combo));
+         }
       }
    }
+   
+   public void unSort(){
+      sorter.setSortKeys(null);
    }
 
    private TableColumn getTableColumn(int boardStatus) {
@@ -83,15 +86,15 @@ public class MyTable extends JTable {
    public Column getColumnEnum(int itsColumn) {
       MyTableModel model = getMyModel();
       return model.getColumn(convertColumnIndexToModel(itsColumn));
-  }
+   }
 
    public int getColumnIndex(Column column) {
-       return convertColumnIndexToView((getMyModel()).getColumnIndex(column));
+      return convertColumnIndexToView((getMyModel()).getColumnIndex(column));
    }
 
    private MyTableModel getMyModel() {
       return (MyTableModel) getModel();
-  }
+   }
 
    public Object getValueAt(Column column, int rowInView) {
       int colInView = getColumnIndex(column);
@@ -143,13 +146,15 @@ public class MyTable extends JTable {
       super.setValueAt(value, row, column);
    }
 
-
    public TableRowSorter<TableModel> getSorter() {
       return sorter;
    }
 
-
    public void addJira(String jira, Map<Column, Object> map) {
-      ((MyTableModel)this.getModel()).addJira(jira, map);
+      ((MyTableModel) this.getModel()).addJira(jira, map);
+   }
+
+   public void setRowFilter(RowFilter<Object, Object> rowFilter) {
+      sorter.setRowFilter(rowFilter);      
    }
 }

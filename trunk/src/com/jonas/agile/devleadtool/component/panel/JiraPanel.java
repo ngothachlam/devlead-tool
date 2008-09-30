@@ -117,7 +117,7 @@ public class JiraPanel extends MyComponentPanel {
          public MyTable getDestinationTable() {
             return helper.getActiveInternalFrame().getPlanTable();
          }
-      }, helper, Column.Description, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Dev_Estimate,
+      }, helper, Column.Description, Column.Release, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Dev_Estimate,
             Column.Dev_Actual, Column.Note));
 
       bottomPanel.add(jiraProjectsCombo);

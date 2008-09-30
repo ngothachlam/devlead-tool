@@ -2,6 +2,8 @@ package com.jonas.common;
 
 import java.awt.ComponentOrientation;
 import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -68,25 +70,32 @@ public class MyComponentPanel extends MyPanel {
 
    protected void addFilter(JPanel buttonPanel, final MyTable table, final Column... columns) {
       addLabel(buttonPanel, "Filter:");
-      final JTextField filterText = addTextField(buttonPanel, 20);
-
-      final JTextField results = addTextField(buttonPanel, 6);
-      results.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-      results.setEditable(false);
-
+      final JTextField filterText = addTextField(buttonPanel, 6);
+      final JTextField results = addTextField(buttonPanel, 4);
       final KeyAdapter keyAdapter = new KeyAdapter() {
          @Override
          public void keyReleased(KeyEvent e) {
             String text = filterText.getText();
             log.debug("textfield action!  " + text + " and event " + e);
             if (text.trim().length() == 0) {
-               table.getSorter().setRowFilter(null);
+               table.setRowFilter(null);
             } else {
-               table.getSorter().setRowFilter(RowFilter.regexFilter("(?i)" + text, getArrayOfIndices(table, columns)));
+               table.setRowFilter(RowFilter.regexFilter("(?i)" + text, getArrayOfIndices(table, columns)));
             }
             results.setText(getResultText(table));
          }
       };
+      addButton(buttonPanel, "Clear", new ActionListener(){
+         public void actionPerformed(ActionEvent e) {
+            table.unSort();
+            filterText.setText("");
+            keyAdapter.keyReleased(null);
+         }
+      });
+      
+      results.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+      results.setEditable(false);
+
       filterText.addKeyListener(keyAdapter);
 
       // FIXME doesn't work when adding jiras to an already existing filter as this is done in the wrong order. Works with swingworker
