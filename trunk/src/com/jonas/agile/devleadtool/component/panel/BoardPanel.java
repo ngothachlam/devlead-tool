@@ -122,9 +122,9 @@ public class BoardPanel extends MyComponentPanel {
 
    protected void setButtons() {
       MyPanel buttonPanel = new MyPanel(new BorderLayout());
-      JPanel buttonPanelOne = getButtonPanelNorth();
+//      JPanel buttonPanelOne = getButtonPanelNorth();
+//      buttonPanel.addNorth(buttonPanelOne);
       JPanel buttonPanelTwo = getButtonPanelSouth();
-      buttonPanel.addNorth(buttonPanelOne);
       buttonPanel.addSouth(buttonPanelTwo);
       addSouth(buttonPanel);
    }

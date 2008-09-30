@@ -59,9 +59,9 @@ public class JiraPanel extends MyComponentPanel {
 
    protected JPanel getBottomPanel() {
       MyPanel buttonPanel = new MyPanel(new BorderLayout());
-      JPanel buttonPanelOne = getButtonPanelNorth();
+//      JPanel buttonPanelOne = getButtonPanelNorth();
+//      buttonPanel.addNorth(buttonPanelOne);
       JPanel buttonPanelTwo = getButtonPanelSouth();
-      buttonPanel.addNorth(buttonPanelOne);
       buttonPanel.addSouth(buttonPanelTwo);
       return buttonPanel;
    }
@@ -94,6 +94,7 @@ public class JiraPanel extends MyComponentPanel {
          public void jiraSynced(JiraIssue jira, int tableRowSynced) {
             // new JiraIssue(jira.getKey(), jira.getSummary(), jira.getStatus(), jira.getResolution(), jira.getStatus(),
             // jira.getBuildNo(),jira.getEstimate(), jira.getLLUListPriority());
+            log.debug("jira synced " + jira.getKey() + " on table row " + tableRowSynced);
             table.setValueAt(jira.getKey(), tableRowSynced, Column.Jira);
             table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
             table.setValueAt(jira.getType(), tableRowSynced, Column.J_Type);

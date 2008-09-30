@@ -5,14 +5,11 @@ import java.util.Map;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
-import javax.swing.RowFilter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
@@ -27,7 +24,8 @@ import com.jonas.jira.JiraVersion;
 public class MyTable extends JTable {
 
    private Logger log = MyLogger.getLogger(MyTable.class);
-   private TableRowSorter<TableModel> sorter;
+
+   // private TableRowSorter<TableModel> sorter;
 
    public MyTable() {
       this(new DefaultTableModel());
@@ -43,9 +41,9 @@ public class MyTable extends JTable {
       setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
       setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
 
-      // setAutoCreateRowSorter(true);
-      sorter = new TableRowSorter<TableModel>(defaultTableModel);
-      setRowSorter(sorter);
+      setAutoCreateRowSorter(true);
+      // sorter = new TableRowSorter<TableModel>(defaultTableModel);
+      // setRowSorter(sorter);
 
       setDragEnabled(true);
       // FIXME make this dynamic
@@ -59,9 +57,10 @@ public class MyTable extends JTable {
          }
       }
    }
-   
-   public void unSort(){
-      sorter.setSortKeys(null);
+
+   public void unSort() {
+      setAutoCreateRowSorter(true);
+      // sorter.setSortKeys(null);
    }
 
    private TableColumn getTableColumn(int boardStatus) {
@@ -112,7 +111,7 @@ public class MyTable extends JTable {
          // we can't remove upwards the table and down (from lower to greater index) as the table changes on each delete.
          int tableSelectedRow = selectedRows[count];
          int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
-         (getMyModel()).removeRow(convertRowIndexToModel);
+         getMyModel().removeRow(convertRowIndexToModel);
       }
    }
 
@@ -146,15 +145,15 @@ public class MyTable extends JTable {
       super.setValueAt(value, row, column);
    }
 
-   public TableRowSorter<TableModel> getSorter() {
-      return sorter;
-   }
+   // public TableRowSorter<TableModel> getSorter() {
+   // return sorter;
+   // }
 
    public void addJira(String jira, Map<Column, Object> map) {
       ((MyTableModel) this.getModel()).addJira(jira, map);
    }
 
-   public void setRowFilter(RowFilter<Object, Object> rowFilter) {
-      sorter.setRowFilter(rowFilter);      
-   }
+   // public void setRowFilter(RowFilter<Object, Object> rowFilter) {
+   // sorter.setRowFilter(rowFilter);
+   // }
 }
