@@ -15,6 +15,7 @@ public enum Column {
    QA_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
    Dev_Actual(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
    Note(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
+   Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No),
    J_Status(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes), 
    J_Resolution(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes), 
    J_BuildNo(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes), 
