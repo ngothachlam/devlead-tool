@@ -112,12 +112,13 @@ public class JiraPanel extends MyComponentPanel {
          public MyTable getDestinationTable() {
             return helper.getActiveInternalFrame().getBoardTable();
          }
-      }, helper));
+      }, helper), Column.Description);
       addButton(topPanel, "Copy to Plan", new CopyToTableListener(table, new DestinationRetriever() {
          public MyTable getDestinationTable() {
             return helper.getActiveInternalFrame().getPlanTable();
          }
-      }, helper));
+      }, helper, Column.Description, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Dev_Estimate,
+            Column.Dev_Actual, Column.Note));
 
       bottomPanel.add(jiraProjectsCombo);
       addButton(bottomPanel, "Refresh", new RefreshingFixVersionListener(jiraProjectFixVersionCombo, jiraProjectsCombo));

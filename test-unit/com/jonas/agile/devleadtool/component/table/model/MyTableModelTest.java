@@ -256,7 +256,7 @@ public class MyTableModelTest extends JonasTestCase {
    }
 
    public void testShouldGetColumnInfoOk() {
-      assertEquals(0, model.getColumnNo(Column.Jira));
+      assertEquals(0, model.getColumnIndex(Column.Jira));
    }
 
    public void testShouldAddJiraComplexObjectOk() {
