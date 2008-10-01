@@ -5,14 +5,14 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
@@ -148,14 +148,28 @@ public class JiraPanel extends MyComponentPanel {
 
    private class AlteringProjectListener implements ActionListener {
       private final JComboBox jiraProjectFixVersionCombo;
+      private final Map<JiraProject, JiraVersion[]> state = new HashMap<JiraProject, JiraVersion[]>();
 
       private AlteringProjectListener(JComboBox jiraProjectFixVersionCombo) {
          this.jiraProjectFixVersionCombo = jiraProjectFixVersionCombo;
       }
 
       public void actionPerformed(ActionEvent e) {
+         JComboBox projectsCombo = ((JComboBox)e.getSource());
+         state.put((JiraProject) projectsCombo.getSelectedItem(), getFixVersionsInCombo());
+         
+         //FIXME 111 continue this NOW!!!
          jiraProjectFixVersionCombo.removeAllItems();
          jiraProjectFixVersionCombo.setEditable(false);
+      }
+
+      private JiraVersion[] getFixVersionsInCombo() {
+         JiraVersion[] items = new JiraVersion[jiraProjectFixVersionCombo.getItemCount()];
+         for (int i = 0; i < items.length; i++) {
+            JiraVersion item = (JiraVersion) jiraProjectFixVersionCombo.getItemAt(0);
+            items[i] = item;
+         }
+         return items;
       }
    }
 
