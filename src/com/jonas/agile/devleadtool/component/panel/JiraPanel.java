@@ -177,7 +177,6 @@ public class JiraPanel extends MyComponentPanel {
             }
          }
       }
-
    }
 
    private final class RefreshingFixVersionListener implements ActionListener {
