@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.component.table;
 import java.util.List;
 import java.util.Map;
 import javax.swing.DefaultCellEditor;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
@@ -11,11 +12,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
-import com.jonas.agile.devleadtool.component.table.editor.ComboTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
-import com.jonas.agile.devleadtool.component.table.renderer.ComboTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -39,7 +37,8 @@ public class MyTable extends JTable {
       super(defaultTableModel);
       setDefaultRenderer(String.class, new StringTableCellRenderer());
       setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
-      setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
+//      setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
+      setDefaultEditor(Boolean.class, new DefaultCellEditor(new JCheckBox()));
 
       setAutoCreateRowSorter(true);
       // sorter = new TableRowSorter<TableModel>(defaultTableModel);
@@ -51,7 +50,7 @@ public class MyTable extends JTable {
          int boardStatus = getColumnIndex(Column.BoardStatus);
          if (boardStatus > -1) {
             TableColumn tc = getTableColumn(boardStatus);
-            tc.setCellRenderer(new ComboTableCellRenderer());
+            tc.setCellRenderer(new StringTableCellRenderer());
             JComboBox combo = new JComboBox(BoardStatusValue.values());
             tc.setCellEditor(new DefaultCellEditor(combo));
          }
@@ -113,12 +112,6 @@ public class MyTable extends JTable {
          int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
          getMyModel().removeRow(convertRowIndexToModel);
       }
-   }
-
-   public void setColumnEditor(int i, ComboTableCellEditor editor) {
-      TableColumn tc = getTableColumn(i);
-      tc.setCellEditor(editor);
-
    }
 
    public void setColumnRenderer(int i, TableCellRenderer renderer) {

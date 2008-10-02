@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.JTableHeader;
@@ -112,7 +113,7 @@ public class BoardPanel extends MyComponentPanel {
 
       table.setDefaultRenderer(String.class, new StringTableCellRenderer());
       table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
-      table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
+      table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor(new JCheckBox()));
 
       JScrollPane scrollPane = new MyScrollPane(table);
 

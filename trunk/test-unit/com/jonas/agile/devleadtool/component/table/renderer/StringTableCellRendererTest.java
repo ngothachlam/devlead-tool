@@ -6,7 +6,7 @@ import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class StringTableCellRendererTest extends JonasTestCase {
 
-	private StringTableCellRenderer board;
+	private MyTableCellRenderer board;
 
 	private MyTableModel model;
 
