@@ -55,8 +55,8 @@ public class TopLevelTransferHandlerDemo extends JFrame {
    private static int left;
    private static int top;
    private JCheckBoxMenuItem copyItem;
-   private JCheckBoxMenuItem nullItem;
-   private JCheckBoxMenuItem thItem;
+   private JCheckBoxMenuItem checkBox_removeTHFromListAndText;
+   private JCheckBoxMenuItem checkBox_useTopLevelTH;
 
    private class Doc extends InternalFrameAdapter implements ActionListener {
       String name;
@@ -123,13 +123,13 @@ public class TopLevelTransferHandlerDemo extends JFrame {
                select();
             }
          });
-         nullItem.addActionListener(this);
+         checkBox_removeTHFromListAndText.addActionListener(this);
          setNullTH();
       }
 
       public void internalFrameClosing(InternalFrameEvent event) {
          listModel.removeElement(this);
-         nullItem.removeActionListener(this);
+         checkBox_removeTHFromListAndText.removeActionListener(this);
       }
 
       public void internalFrameOpened(InternalFrameEvent event) {
@@ -159,7 +159,7 @@ public class TopLevelTransferHandlerDemo extends JFrame {
       }
 
       public void setNullTH() {
-         if (nullItem.isSelected()) {
+         if (checkBox_removeTHFromListAndText.isSelected()) {
             area.setTransferHandler(null);
          } else {
             area.setTransferHandler(th);
@@ -244,18 +244,18 @@ public class TopLevelTransferHandlerDemo extends JFrame {
 
       final TransferHandler th = list.getTransferHandler();
 
-      nullItem.addActionListener(new ActionListener() {
+      checkBox_removeTHFromListAndText.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent ae) {
-            if (nullItem.isSelected()) {
+            if (checkBox_removeTHFromListAndText.isSelected()) {
                list.setTransferHandler(null);
             } else {
                list.setTransferHandler(th);
             }
          }
       });
-      thItem.addActionListener(new ActionListener() {
+      checkBox_useTopLevelTH.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent ae) {
-            if (thItem.isSelected()) {
+            if (checkBox_useTopLevelTH.isSelected()) {
                setTransferHandler(handler);
             } else {
                setTransferHandler(null);
@@ -323,13 +323,13 @@ public class TopLevelTransferHandlerDemo extends JFrame {
       demo.setMnemonic(KeyEvent.VK_D);
       mb.add(demo);
 
-      thItem = new JCheckBoxMenuItem("Use Top-Level TransferHandler");
-      thItem.setMnemonic(KeyEvent.VK_T);
-      demo.add(thItem);
+      checkBox_useTopLevelTH = new JCheckBoxMenuItem("Use Top-Level TransferHandler");
+      checkBox_useTopLevelTH.setMnemonic(KeyEvent.VK_T);
+      demo.add(checkBox_useTopLevelTH);
 
-      nullItem = new JCheckBoxMenuItem("Remove TransferHandler from List and Text");
-      nullItem.setMnemonic(KeyEvent.VK_R);
-      demo.add(nullItem);
+      checkBox_removeTHFromListAndText = new JCheckBoxMenuItem("Remove TransferHandler from List and Text");
+      checkBox_removeTHFromListAndText.setMnemonic(KeyEvent.VK_R);
+      demo.add(checkBox_removeTHFromListAndText);
 
       copyItem = new JCheckBoxMenuItem("Use COPY Action");
       copyItem.setMnemonic(KeyEvent.VK_C);
