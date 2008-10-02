@@ -30,7 +30,7 @@ public class ComboTableCellRenderer extends DefaultTableCellRenderer {
       } else {
          cell.setBackground(table.getBackground());
       }
-      if (!table.getModel().isCellEditable(row, column) && !hasFocus) {
+      if (!table.isCellEditable(row, column) && !hasFocus) {
          cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -55));
       }
       

@@ -300,6 +300,7 @@ public class TableSorter extends DefaultTableModel {
    }
 
    public boolean isCellEditable(int row, int column) {
+      //FIXME should this be the table or model row/col index? 
       return tableModel.isCellEditable(modelIndex(row), column);
    }
 
