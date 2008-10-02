@@ -11,7 +11,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import com.jonas.agile.devleadtool.component.DesktopPane;
+import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.dialog.LoadPlannerDialog;
 import com.jonas.agile.devleadtool.component.dialog.OpenPlannerDialog;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
@@ -43,7 +43,7 @@ public class DevLeadTool {
       return fileMenu;
    }
 
-   private JMenuBar createMenuBar(final JFrame frame, DesktopPane desktop) {
+   private JMenuBar createMenuBar(final JFrame frame, MyDesktopPane desktop) {
       JMenu fileMenuFile = createFileMenu("File", getFileMenuItemArray(frame, desktop));
       JMenuBar menuBar = new JMenuBar();
       menuBar.add(fileMenuFile);
@@ -56,7 +56,7 @@ public class DevLeadTool {
       return menuItem;
    }
 
-   private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
+   private JMenuItem[] getFileMenuItemArray(final JFrame frame, final MyDesktopPane desktop) {
       final PlannerDAOExcelImpl plannerDAO = new PlannerDAOExcelImpl(new TableModelBuilder());
 
       JMenuItem planner = createMenuItem("New Planner", new ActionListener() {
@@ -81,7 +81,7 @@ public class DevLeadTool {
       JFrame frame = setLookAndFeel();
       plannerHelper = new PlannerHelper(frame, "Planner");
 
-      DesktopPane desktop = new DesktopPane();
+      MyDesktopPane desktop = new MyDesktopPane();
       JPanel contentPanel = new MyPanel(new BorderLayout());
       contentPanel.add(desktop);
       plannerHelper.setDesktop(desktop);
