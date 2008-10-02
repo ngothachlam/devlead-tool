@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -59,8 +60,8 @@ public class JiraPanel extends MyComponentPanel {
 
    protected JPanel getBottomPanel() {
       MyPanel buttonPanel = new MyPanel(new BorderLayout());
-//      JPanel buttonPanelOne = getButtonPanelNorth();
-//      buttonPanel.addNorth(buttonPanelOne);
+      // JPanel buttonPanelOne = getButtonPanelNorth();
+      // buttonPanel.addNorth(buttonPanelOne);
       JPanel buttonPanelTwo = getButtonPanelSouth();
       buttonPanel.addSouth(buttonPanelTwo);
       return buttonPanel;
@@ -76,13 +77,8 @@ public class JiraPanel extends MyComponentPanel {
       JPanel mainPanel = new JPanel(new BorderLayout());
 
       JPanel topPanel = new JPanel(new FlowLayout());
-      JPanel bottomPanel = new JPanel(new FlowLayout());
 
       Vector<JiraProject> projects = JiraProject.getProjects();
-      final JComboBox jiraProjectsCombo = new JComboBox(projects);
-      final JComboBox jiraProjectFixVersionCombo = new JComboBox();
-
-      jiraProjectsCombo.addActionListener(new AlteringProjectListener(jiraProjectFixVersionCombo));
 
       addPanelWithAddAndRemoveOptions(table, topPanel);
       SyncWithJiraActionListener listener = new SyncWithJiraActionListener(table, helper);
@@ -121,17 +117,30 @@ public class JiraPanel extends MyComponentPanel {
       }, helper, Column.Description, Column.Release, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Dev_Estimate,
             Column.Dev_Actual, Column.Note));
 
-      bottomPanel.add(jiraProjectsCombo);
-      addButton(bottomPanel, "Refresh", new RefreshingFixVersionListener(jiraProjectFixVersionCombo, jiraProjectsCombo));
-      bottomPanel.add(jiraProjectFixVersionCombo);
-      DownloadJirasListener listener2 = new DownloadJirasListener(jiraProjectFixVersionCombo, table, helper);
-      listener2.addListener(syncWithJiraListener);
-      addButton(bottomPanel, "Get Jiras", listener2);
-      // addButton(panel, "Remove Selected", new RemoveJTableSelectedRowsListener(table));
+      JPanel bottomPanel = getFixversionSyncPanel(projects, syncWithJiraListener);
 
       mainPanel.add(topPanel, BorderLayout.NORTH);
       mainPanel.add(bottomPanel, BorderLayout.SOUTH);
       return mainPanel;
+   }
+
+   private JPanel getFixversionSyncPanel(Vector<JiraProject> projects, SyncWithJiraActionListenerListener syncWithJiraListener) {
+      JPanel panel = new JPanel(new FlowLayout());
+      final JComboBox jiraProjectsCombo = new JComboBox(projects);
+      final JComboBox jiraProjectFixVersionCombo = new JComboBox();
+
+      AlteringProjectListener alteringProjectListener = new AlteringProjectListener(jiraProjectFixVersionCombo);
+      RefreshingFixVersionListener refreshFixVersionListener = new RefreshingFixVersionListener(jiraProjectsCombo, jiraProjectFixVersionCombo);
+      DownloadJirasListener downloadJirasListener = new DownloadJirasListener(jiraProjectFixVersionCombo, table, helper);
+
+      downloadJirasListener.addListener(syncWithJiraListener);
+      jiraProjectsCombo.addActionListener(alteringProjectListener);
+
+      panel.add(jiraProjectsCombo);
+      addButton(panel, "Refresh", refreshFixVersionListener);
+      panel.add(jiraProjectFixVersionCombo);
+      addButton(panel, "Get Jiras", downloadJirasListener);
+      return panel;
    }
 
    public MyTableModel getJiraModel() {
@@ -146,62 +155,63 @@ public class JiraPanel extends MyComponentPanel {
       ((MyTableModel) table.getModel()).setEditable(selected);
    }
 
+   private final Map<JiraProject, JiraVersion[]> state = new HashMap<JiraProject, JiraVersion[]>();
+
    private class AlteringProjectListener implements ActionListener {
-      private final JComboBox jiraProjectFixVersionCombo;
-      private final Map<JiraProject, JiraVersion[]> state = new HashMap<JiraProject, JiraVersion[]>();
+      private final JComboBox fixVersionCombo;
 
       private AlteringProjectListener(JComboBox jiraProjectFixVersionCombo) {
-         this.jiraProjectFixVersionCombo = jiraProjectFixVersionCombo;
+         this.fixVersionCombo = jiraProjectFixVersionCombo;
       }
 
       public void actionPerformed(ActionEvent e) {
-         JComboBox projectsCombo = ((JComboBox)e.getSource());
-         state.put((JiraProject) projectsCombo.getSelectedItem(), getFixVersionsInCombo());
-         
-         //FIXME 111 continue this NOW!!!
-         jiraProjectFixVersionCombo.removeAllItems();
-         jiraProjectFixVersionCombo.setEditable(false);
+         fixVersionCombo.setEditable(false);
+         fixVersionCombo.removeAllItems();
+
+         JComboBox projectsCombo = ((JComboBox) e.getSource());
+         JiraVersion[] fixVersions = state.get(projectsCombo.getSelectedItem());
+         Arrays.sort(fixVersions);
+         if (fixVersions != null) {
+            for (JiraVersion jiraVersion : fixVersions) {
+               fixVersionCombo.addItem(jiraVersion);
+            }
+         }
       }
 
-      private JiraVersion[] getFixVersionsInCombo() {
-         JiraVersion[] items = new JiraVersion[jiraProjectFixVersionCombo.getItemCount()];
-         for (int i = 0; i < items.length; i++) {
-            JiraVersion item = (JiraVersion) jiraProjectFixVersionCombo.getItemAt(0);
-            items[i] = item;
-         }
-         return items;
-      }
    }
 
    private final class RefreshingFixVersionListener implements ActionListener {
-      private final JComboBox jiraProjectFixVersionCombo;
-      private final JComboBox jiraProjectsCombo;
+      private final JComboBox projectCombo;
+      private final JComboBox fixVersionCombo;
 
-      private RefreshingFixVersionListener(JComboBox jiraProjectFixVersionCombo, JComboBox jiraProjectsCombo) {
-         this.jiraProjectFixVersionCombo = jiraProjectFixVersionCombo;
-         this.jiraProjectsCombo = jiraProjectsCombo;
+      private RefreshingFixVersionListener(JComboBox jiraProjectsCombo, JComboBox jiraFixVersionCombo) {
+         this.projectCombo = jiraProjectsCombo;
+         this.fixVersionCombo = jiraFixVersionCombo;
       }
 
       public void actionPerformed(ActionEvent e) {
-         log.debug("getting fixVersion : " + jiraProjectsCombo.getSelectedItem());
-         jiraProjectFixVersionCombo.removeAllItems();
-         final Object[] selectedObjects = jiraProjectsCombo.getSelectedObjects();
+         log.debug("getting fixVersion : " + projectCombo.getSelectedItem());
+
+         // store the fix versions
+         state.put((JiraProject) projectCombo.getSelectedItem(), getFixVersionsInCombo());
+
+         fixVersionCombo.removeAllItems();
+         final Object[] selectedObjects = projectCombo.getSelectedObjects();
          final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Refreshing Fix Versions...", "Refreshing Fix Versions...",
                selectedObjects.length);
          SwingWorker worker = new SwingWorker() {
             public Object doInBackground() {
                dialog.setIndeterminate(false);
-               for (int i = 0; i < selectedObjects.length; i++) {
-                  JiraProject selectedProject = (JiraProject) selectedObjects[i];
-                  dialog.setNote("Refreshing Fix Versions for " + selectedProject.getJiraKey() + "...");
-                  try {
-                     JiraVersion[] fixVersions = selectedProject.getJiraClient().getFixVersionsFromProject(selectedProject, false);
-                     for (JiraVersion jiraVersion : fixVersions) {
-                        jiraProjectFixVersionCombo.addItem(jiraVersion);
-                     }
-                  } catch (RemoteException e1) {
-                     AlertDialog.alertException(helper, e1);
+               JiraProject selectedProject = (JiraProject) selectedObjects[0];
+               dialog.setNote("Refreshing Fix Versions for " + selectedProject.getJiraKey() + "...");
+               try {
+                  JiraVersion[] fixVersions = selectedProject.getJiraClient().getFixVersionsFromProject(selectedProject, false);
+//                  Arrays.sort(fixVersions);
+                  for (JiraVersion jiraVersion : fixVersions) {
+                     fixVersionCombo.addItem(jiraVersion);
                   }
+               } catch (RemoteException e1) {
+                  AlertDialog.alertException(helper, e1);
                }
                return null;
             }
@@ -212,6 +222,15 @@ public class JiraPanel extends MyComponentPanel {
             }
          };
          worker.execute();
+      }
+
+      private JiraVersion[] getFixVersionsInCombo() {
+         JiraVersion[] items = new JiraVersion[fixVersionCombo.getItemCount()];
+         for (int i = 0; i < items.length; i++) {
+            JiraVersion item = (JiraVersion) fixVersionCombo.getItemAt(i);
+            items[i] = item;
+         }
+         return items;
       }
    }
 
