@@ -8,7 +8,7 @@ import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 public class InternalFrameTest extends JonasTestCase {
 
    PlannerHelper helperMock = createClassMock(PlannerHelper.class);
-   private List<InternalFrame> internalFrames = new ArrayList<InternalFrame>();
+   private List<MyInternalFrame> internalFrames = new ArrayList<MyInternalFrame>();
 
    protected void tearDown() throws Exception {
       super.tearDown();
@@ -16,19 +16,19 @@ public class InternalFrameTest extends JonasTestCase {
    }
 
    private void clearInternalFrames() {
-      for (InternalFrame internalFrame : internalFrames) {
+      for (MyInternalFrame internalFrame : internalFrames) {
          internalFrame.close();
       }
    }
 
-   private InternalFrame getTestInternalFrame(String title) {
-      InternalFrame internalFrame = new InternalFrame(title, null);
+   private MyInternalFrame getTestInternalFrame(String title) {
+      MyInternalFrame internalFrame = new MyInternalFrame(title, null);
       internalFrames.add(internalFrame);
       return internalFrame;
    }
 
    public void testGetRightMostShouldWork() {
-      InternalFrame internalFrame = getTestInternalFrame("title");
+      MyInternalFrame internalFrame = getTestInternalFrame("title");
 
       assertRightMostFromStringWorks("p.xls", "lludevsup.xls", internalFrame, 5, 0);
       assertRightMostFromStringWorks("p.xls", "p.xls", internalFrame, 5, 0);
@@ -36,7 +36,7 @@ public class InternalFrameTest extends JonasTestCase {
    }
 
    public void testShouldCalculateTitleCorrectly() {
-      InternalFrame internalFrame = getTestInternalFrame("title");
+      MyInternalFrame internalFrame = getTestInternalFrame("title");
       assertEquals("title", internalFrame.getTitle());
 
       internalFrame.setFileName("u.xls", CutoverLength.TEST_5);
@@ -47,11 +47,11 @@ public class InternalFrameTest extends JonasTestCase {
    }
 
    public void testShouldCalculateSameFramesCorrectly() {
-      InternalFrame internalFrame = getTestInternalFrame("title");
+      MyInternalFrame internalFrame = getTestInternalFrame("title");
       assertEquals(1, internalFrame.getCountWithSameTitle("title"));
       assertEquals(0, internalFrame.getCountWithSameTitle("titles"));
 
-      InternalFrame internalFrame2 = getTestInternalFrame("title");
+      MyInternalFrame internalFrame2 = getTestInternalFrame("title");
       assertEquals(2, internalFrame.getCountWithSameTitle("title"));
       assertEquals(0, internalFrame.getCountWithSameTitle("titles"));
       assertEquals(2, internalFrame2.getCountWithSameTitle("title"));
@@ -59,17 +59,17 @@ public class InternalFrameTest extends JonasTestCase {
    }
    
    public void testShouldCreateTitleCorrectly() {
-      InternalFrame internalFrame1 = getTestInternalFrame("title");
+      MyInternalFrame internalFrame1 = getTestInternalFrame("title");
       assertEquals("title", internalFrame1.createTitle("title"));
       
-      InternalFrame internalFrame2 = getTestInternalFrame("title");
+      MyInternalFrame internalFrame2 = getTestInternalFrame("title");
       assertEquals("title (1)", internalFrame2.createTitle("title"));
    }
 
    public void testShouldCalculateTitleCorrectlyWithDuplicates() {
-      InternalFrame internalFrame = getTestInternalFrame("title");
-      InternalFrame internalFrame2 = getTestInternalFrame("titles");
-      InternalFrame internalFrame3 = getTestInternalFrame("title");
+      MyInternalFrame internalFrame = getTestInternalFrame("title");
+      MyInternalFrame internalFrame2 = getTestInternalFrame("titles");
+      MyInternalFrame internalFrame3 = getTestInternalFrame("title");
       
       assertEquals("title", internalFrame.getTitle());
       assertEquals("titles", internalFrame2.getTitle());
@@ -88,7 +88,7 @@ public class InternalFrameTest extends JonasTestCase {
       assertEquals("title (1)", internalFrame3.getTitle());
    }
 
-   private void assertRightMostFromStringWorks(String expected, String fileName, InternalFrame internalFrame, int givenCutoverLength, int lengthDiff) {
+   private void assertRightMostFromStringWorks(String expected, String fileName, MyInternalFrame internalFrame, int givenCutoverLength, int lengthDiff) {
       String string = internalFrame.getRightMostFromString(fileName, givenCutoverLength);
       assertEquals(expected, string);
       assertEquals(givenCutoverLength + lengthDiff, string.length());

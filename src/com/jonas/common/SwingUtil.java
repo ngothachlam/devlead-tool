@@ -12,7 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.InternalFrame;
+import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.common.logging.MyLogger;
 
 public class SwingUtil {

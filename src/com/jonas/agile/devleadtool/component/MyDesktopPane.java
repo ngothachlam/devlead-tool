@@ -4,14 +4,14 @@ import java.awt.Color;
 
 import javax.swing.JDesktopPane;
 
-public class DesktopPane extends JDesktopPane {
+public class MyDesktopPane extends JDesktopPane {
 
-	public DesktopPane() {
+	public MyDesktopPane() {
 		super();
 		setBackground(new Color(188, 218, 241));
 	}
 
-	public void addInternalFrame(InternalFrame internalFrame) {
+	public void addInternalFrame(MyInternalFrame internalFrame) {
 		add(internalFrame);
 		internalFrame.setSize(900, 440);
 		int xLocation = (internalFrame.getInternalFramesCount() - 1) * 20;

@@ -9,8 +9,8 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
 import com.jonas.agile.devleadtool.component.CutoverLength;
-import com.jonas.agile.devleadtool.component.DesktopPane;
-import com.jonas.agile.devleadtool.component.InternalFrame;
+import com.jonas.agile.devleadtool.component.MyDesktopPane;
+import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -27,7 +27,7 @@ public class PlannerHelper {
    Pattern jiraPattern = Pattern.compile("^[A-Z]+\\-\\d+$", Pattern.CASE_INSENSITIVE);
    Matcher match = jiraPattern.matcher("");
 
-   private InternalFrame internalFrame;
+   private MyInternalFrame internalFrame;
 
    private Logger log = MyLogger.getLogger(PlannerHelper.class);
 
@@ -35,7 +35,7 @@ public class PlannerHelper {
 
    private PlannerCommunicator plannerCommunicator = new PlannerCommunicator(this);
 
-   private static DesktopPane desktop;
+   private static MyDesktopPane desktop;
 
    public PlannerHelper(JFrame frame, String title) {
       this.frame = frame;
@@ -46,17 +46,17 @@ public class PlannerHelper {
       return title;
    }
 
-   public void setActiveInternalFrame(InternalFrame internalFrame) {
+   public void setActiveInternalFrame(MyInternalFrame internalFrame) {
       this.internalFrame = internalFrame;
    }
 
-   public InternalFrame getActiveInternalFrame() {
+   public MyInternalFrame getActiveInternalFrame() {
       return internalFrame;
    }
 
    public void saveModels(PlannerDAO dao) {
       try {
-         InternalFrame activeInternalFrame = this.getActiveInternalFrame();
+         MyInternalFrame activeInternalFrame = this.getActiveInternalFrame();
          dao.saveBoardModel(activeInternalFrame.getBoardModel());
          dao.savePlanModel(activeInternalFrame.getPlanModel());
          dao.saveJiraModel(activeInternalFrame.getJiraModel());
@@ -126,11 +126,11 @@ public class PlannerHelper {
       return plannerCommunicator;
    }
 
-   public void setDesktop(DesktopPane desktop) {
+   public void setDesktop(MyDesktopPane desktop) {
       this.desktop = desktop;
    }
 
-   public DesktopPane getDesktop() {
+   public MyDesktopPane getDesktop() {
       return desktop;
    }
 }

@@ -1,7 +1,6 @@
 package com.jonas.agile.devleadtool.component;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameAdapter;
@@ -16,16 +15,14 @@ import com.jonas.agile.devleadtool.component.panel.PlanPanel;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
-import com.jonas.agile.devleadtool.component.table.model.TableModelBuilder;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
-import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.common.logging.MyLogger;
 
-public class InternalFrame extends JInternalFrame {
+public class MyInternalFrame extends JInternalFrame {
 
-   private static List<InternalFrame> internalFrames = new ArrayList<InternalFrame>();
+   private static List<MyInternalFrame> internalFrames = new ArrayList<MyInternalFrame>();
 
-   private static Logger log = MyLogger.getLogger(InternalFrame.class);
+   private static Logger log = MyLogger.getLogger(MyInternalFrame.class);
 
    private PlannerHelper client;
 
@@ -38,7 +35,7 @@ public class InternalFrame extends JInternalFrame {
 
    private String originalTitleWithDuplicateNumber;
 
-   public InternalFrame(PlannerHelper client, String title, InternalFrameTabPanel internalFrameTabPanel, PlannerDAO dao) {
+   public MyInternalFrame(PlannerHelper client, String title, InternalFrameTabPanel internalFrameTabPanel, PlannerDAO dao) {
       this(title, client);
       this.dao = dao;
 
@@ -50,7 +47,7 @@ public class InternalFrame extends JInternalFrame {
       client.setActiveInternalFrame(this);
    }
 
-   InternalFrame(String title, PlannerHelper client) {
+   MyInternalFrame(String title, PlannerHelper client) {
       super("", true, true, true, true);
       this.client = client;
       internalFrames.add(this);
@@ -62,7 +59,7 @@ public class InternalFrame extends JInternalFrame {
 
    public static void closeAll() {
       while (internalFrames.size() > 0) {
-         InternalFrame internalFrame = internalFrames.get(internalFrames.size() - 1);
+         MyInternalFrame internalFrame = internalFrames.get(internalFrames.size() - 1);
          internalFrame.close();
       }
    }
@@ -145,7 +142,7 @@ public class InternalFrame extends JInternalFrame {
 
    int getCountWithSameTitle(String title) {
       int count = 0;
-      for (InternalFrame internalFrame : internalFrames) {
+      for (MyInternalFrame internalFrame : internalFrames) {
          String checkedTitle = internalFrame.originalTitle;
          log.debug("The checked internalFrames title is: " + checkedTitle + " and is it the same as the checked title: " + title);
          if (checkedTitle.equalsIgnoreCase(title)) {
@@ -169,9 +166,9 @@ public class InternalFrame extends JInternalFrame {
    private final class MyInternalFrameListener extends InternalFrameAdapter {
       private final PlannerHelper client;
 
-      private final InternalFrame frame;
+      private final MyInternalFrame frame;
 
-      private MyInternalFrameListener(PlannerHelper client, InternalFrame frame) {
+      private MyInternalFrameListener(PlannerHelper client, MyInternalFrame frame) {
          this.client = client;
          this.frame = frame;
       }
