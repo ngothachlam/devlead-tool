@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -170,7 +171,6 @@ public class JiraPanel extends MyComponentPanel {
 
          JComboBox projectsCombo = ((JComboBox) e.getSource());
          JiraVersion[] fixVersions = state.get(projectsCombo.getSelectedItem());
-         Arrays.sort(fixVersions);
          if (fixVersions != null) {
             for (JiraVersion jiraVersion : fixVersions) {
                fixVersionCombo.addItem(jiraVersion);
@@ -181,6 +181,15 @@ public class JiraPanel extends MyComponentPanel {
    }
 
    private final class RefreshingFixVersionListener implements ActionListener {
+      private final class VersionComparator implements Comparator<JiraVersion> {
+         @Override
+         public int compare(JiraVersion o1, JiraVersion o2) {
+            String name1 = o1.getName();
+            String name2 = o2.getName();
+            return name1.compareToIgnoreCase(name2);
+         }
+      }
+
       private final JComboBox projectCombo;
       private final JComboBox fixVersionCombo;
 
@@ -206,7 +215,7 @@ public class JiraPanel extends MyComponentPanel {
                dialog.setNote("Refreshing Fix Versions for " + selectedProject.getJiraKey() + "...");
                try {
                   JiraVersion[] fixVersions = selectedProject.getJiraClient().getFixVersionsFromProject(selectedProject, false);
-//                  Arrays.sort(fixVersions);
+                  Arrays.sort(fixVersions, new VersionComparator());
                   for (JiraVersion jiraVersion : fixVersions) {
                      fixVersionCombo.addItem(jiraVersion);
                   }
