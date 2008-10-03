@@ -1,4 +1,4 @@
-package com.jonas.guibuilding;
+package com.jonas.guibuilding.basicdnd;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
