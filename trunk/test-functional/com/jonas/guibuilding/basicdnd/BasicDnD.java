@@ -24,9 +24,9 @@ public class BasicDnD extends JPanel {
    public BasicDnD() {
       super(new BorderLayout());
 
-      JPanel panel1 = getBorderPanel(getScrollPaneWithList("1"), "Projects1");
-      JPanel panel2 = getBorderPanel(getScrollPaneWithList("2"), "Projects2");
-      JPanel panel3 = getBorderPanel(getScrollPaneWithTable("3"), "Projects3");
+      JPanel panel1 = getBorderPanel(getScrollPaneWithTable("1"), "Board");
+      JPanel panel2 = getBorderPanel(getScrollPaneWithTable("2"), "Plan");
+      JPanel panel3 = getBorderPanel(getScrollPaneWithTable("3"), "Jira");
 
       JSplitPane tabPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
       JSplitPane tabPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -52,7 +52,7 @@ public class BasicDnD extends JPanel {
       return scrollPane1;
    }
    private JScrollPane getScrollPaneWithTable(String no) {
-      JTable table = getJTable();
+      JTable table = getJTable(no);
       table.setFillsViewportHeight(true);
       table.setTransferHandler(new TableTransferHandler(table));
       JScrollPane scrollPane1 = new JScrollPane(table);
@@ -80,8 +80,8 @@ public class BasicDnD extends JPanel {
       list.setDropMode(DropMode.INSERT);
       return list;
    }
-   private JTable getJTable() {
-      Object[][] values = {getTestArray("3", "1"),getTestArray("3", "2"),getTestArray("3", "3")};
+   private JTable getJTable(String no) {
+      Object[][] values = {getTestArray(no, "1"),getTestArray(no, "2"),getTestArray(no, "3")};
       String[] columnNames = new String[]{"1", "2"};
       DefaultTableModel dm = new DefaultTableModel(values, columnNames);
       JTable table = new JTable( dm);
