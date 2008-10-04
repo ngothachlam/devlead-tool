@@ -12,9 +12,11 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableModel;
 
 public class BasicDnD extends JPanel {
    private static JFrame frame;
@@ -24,7 +26,7 @@ public class BasicDnD extends JPanel {
 
       JPanel panel1 = getBorderPanel(getScrollPaneWithList("1"), "Projects1");
       JPanel panel2 = getBorderPanel(getScrollPaneWithList("2"), "Projects2");
-      JPanel panel3 = getBorderPanel(getScrollPaneWithList("3"), "Projects3");
+      JPanel panel3 = getBorderPanel(getScrollPaneWithTable("3"), "Projects3");
 
       JSplitPane tabPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
       JSplitPane tabPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -44,10 +46,22 @@ public class BasicDnD extends JPanel {
       listModel1.addElement(no+".3");
       listModel1.addElement(no+".4");
       JList list = getJList(listModel1);
-      list.setTransferHandler(new TheTransferHandler(list));
+      list.setTransferHandler(new ListTransferHandler(list));
       JScrollPane scrollPane1 = new JScrollPane(list);
       scrollPane1.setPreferredSize(new Dimension(300, 100));
       return scrollPane1;
+   }
+   private JScrollPane getScrollPaneWithTable(String no) {
+      JTable table = getJTable();
+      table.setFillsViewportHeight(true);
+      table.setTransferHandler(new TableTransferHandler(table));
+      JScrollPane scrollPane1 = new JScrollPane(table);
+      scrollPane1.setPreferredSize(new Dimension(300, 100));
+      return scrollPane1;
+   }
+
+   private String[] getTestArray(String no, String no2) {
+      return new String[]{no+"." + no2+ ".1", no+"."+no2+".2"};
    }
 
    private JPanel getBorderPanel(JScrollPane scrollPane, String string) {
@@ -65,6 +79,17 @@ public class BasicDnD extends JPanel {
       list.setDragEnabled(true);
       list.setDropMode(DropMode.INSERT);
       return list;
+   }
+   private JTable getJTable() {
+      Object[][] values = {getTestArray("3", "1"),getTestArray("3", "2"),getTestArray("3", "3")};
+      String[] columnNames = new String[]{"1", "2"};
+      DefaultTableModel dm = new DefaultTableModel(values, columnNames);
+      JTable table = new JTable( dm);
+      
+      table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      table.setDragEnabled(true);
+      table.setDropMode(DropMode.INSERT);
+      return table;
    }
 
    public static void main(String[] args) {
