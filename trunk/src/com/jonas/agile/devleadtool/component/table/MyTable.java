@@ -147,7 +147,15 @@ public class MyTable extends JTable {
    }
 
    public void insertRow(int index, Vector<Object> rowData) {
-      model.insertRow(convertRowIndexToModel(index), rowData);
+      System.out.println("insertRow");
+//      int convertRowIndexToModel = index;
+      int convertRowIndexToModel = convertRowIndexToModel(index);
+      System.out.println(convertRowIndexToModel);
+      model.insertRow(convertRowIndexToModel, rowData);
+   }
+
+   public void addRow(Vector<Object> rowData) {
+      model.addRow(rowData);
    }
 
    // public void setRowFilter(RowFilter<Object, Object> rowFilter) {
