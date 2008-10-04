@@ -10,6 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 
 final class TableTransferHandler extends TransferHandler {
@@ -51,12 +52,16 @@ final class TableTransferHandler extends TransferHandler {
          // ListElement values = (ListElement) list.getSelectedValues()[0];
          // return values;
       }
-      JTable list = (JTable) c;
+      MyTable list = (MyTable) c;
       if (list.getSelectedRows().length > 1)
          throw new RuntimeException("Can currently not handle moving more than one selection!!");
       int[] values = list.getSelectedRows();
       StringBuffer buff = new StringBuffer();
 
+      Vector<Column> columns = new Vector<Column>();
+      for (int i = 0; i < list.getColumnCount(); i++) {
+         columns.add(list.getColumnEnum(i));
+      }
       Vector<Vector<Object>> data = new Vector<Vector<Object>>();
       for (int i = 0; i < values.length; i++) {
          Vector<Object> row = new Vector<Object>();
@@ -68,7 +73,7 @@ final class TableTransferHandler extends TransferHandler {
          }
          data.add(row);
       }
-      return new TableTransferable(data);
+      return new TableTransferable(columns, data);
    }
 
    protected void exportDone(JComponent source, Transferable data, int action) {
@@ -108,37 +113,38 @@ final class TableTransferHandler extends TransferHandler {
 
       // Get the string that is being dropped.
       Transferable t = info.getTransferable();
-      Vector<Vector<Object>> data;
+      TableDTO transferableDTO;
       try {
-         data = (Vector<Vector<Object>>) t.getTransferData(vectorFlavor);
+         transferableDTO = (TableDTO) t.getTransferData(vectorFlavor);
       } catch (Exception e) {
          e.printStackTrace();
          return false;
       }
 
-      // Display a dialog with the drop information.
-      String dropValue = "\"" + data + "\" dropped ";
-      if (dl.isInsertRow()) {
-         if (index == 0) {
-            BasicDnD.displayDropLocation(dropValue + "at beginning of table");
-         } else if (index >= table.getRowCount()) {
-            BasicDnD.displayDropLocation(dropValue + "at end of table");
-         } else {
-            Object value1 = table.getValueAt(dl.getRow() - 1, 0);
-            Object value2 = table.getValueAt(dl.getRow(), 0);
-            BasicDnD.displayDropLocation(dropValue + "between \"" + value1 + "\" and \"" + value2 + "\"");
-         }
-      } else {
-          Object value = table.getValueAt(index, 0);
-          BasicDnD.displayDropLocation(dropValue + "on top of " + "\"" + value + "\"");
-      }
-
+      String dropValue = "\"" + transferableDTO + "\" dropped ";
       if (insert) {
-         for (Vector<Object> rowData : data) {
-            table.insertRow(index, rowData);
+         for (Vector<Object> rowData : transferableDTO.getData()) {
+            if (index >= table.getRowCount()) {
+               BasicDnD.displayDropLocation(dropValue + "at end of table");
+               table.addRow(rowData);
+               table.addRow(rowData);
+            } else {
+               if (index == 0) {
+                  BasicDnD.displayDropLocation(dropValue + "at beginning of table");
+               } else {
+                  Object value1 = table.getValueAt(dl.getRow() - 1, 0);
+                  Object value2 = table.getValueAt(dl.getRow(), 0);
+                  BasicDnD.displayDropLocation(dropValue + "between \"" + value1 + "\" and \"" + value2 + "\"");
+               }
+               table.insertRow(index, rowData);
+            }
          }
       } else {
-         for (Vector<Object> rowData : data) {
+         Object value = table.getValueAt(index, 0);
+         BasicDnD.displayDropLocation(dropValue + "on top of " + "\"" + value + "\"");
+         for (int i = 0; i < transferableDTO.getData().size(); i++) {
+            Object data = transferableDTO.getData().get(i);
+            Column column = transferableDTO.getColumns().get(i);
             table.insertRow(index, rowData);
          }
       }
