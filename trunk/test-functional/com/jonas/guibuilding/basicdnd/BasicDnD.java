@@ -17,6 +17,11 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
+import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 
 public class BasicDnD extends JPanel {
    private static JFrame frame;
@@ -24,9 +29,9 @@ public class BasicDnD extends JPanel {
    public BasicDnD() {
       super(new BorderLayout());
 
-      JPanel panel1 = getBorderPanel(getScrollPaneWithTable("1"), "Board");
-      JPanel panel2 = getBorderPanel(getScrollPaneWithTable("2"), "Plan");
-      JPanel panel3 = getBorderPanel(getScrollPaneWithTable("3"), "Jira");
+      JPanel panel1 = getBorderPanel(getScrollPaneWithTable(0), "Board");
+      JPanel panel2 = getBorderPanel(getScrollPaneWithTable(1), "Plan");
+      JPanel panel3 = getBorderPanel(getScrollPaneWithTable(2), "Jira");
 
       JSplitPane tabPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
       JSplitPane tabPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -41,27 +46,24 @@ public class BasicDnD extends JPanel {
 
    private JScrollPane getScrollPaneWithList(String no) {
       DefaultListModel listModel1 = new DefaultListModel();
-      listModel1.addElement(no+".1");
-      listModel1.addElement(no+".2");
-      listModel1.addElement(no+".3");
-      listModel1.addElement(no+".4");
+      listModel1.addElement(no + ".1");
+      listModel1.addElement(no + ".2");
+      listModel1.addElement(no + ".3");
+      listModel1.addElement(no + ".4");
       JList list = getJList(listModel1);
       list.setTransferHandler(new ListTransferHandler(list));
       JScrollPane scrollPane1 = new JScrollPane(list);
       scrollPane1.setPreferredSize(new Dimension(300, 100));
       return scrollPane1;
    }
-   private JScrollPane getScrollPaneWithTable(String no) {
-      JTable table = getJTable(no);
+
+   private JScrollPane getScrollPaneWithTable(int no) {
+      MyTable table = getJTable(no);
       table.setFillsViewportHeight(true);
       table.setTransferHandler(new TableTransferHandler(table));
       JScrollPane scrollPane1 = new JScrollPane(table);
       scrollPane1.setPreferredSize(new Dimension(300, 100));
       return scrollPane1;
-   }
-
-   private String[] getTestArray(String no, String no2) {
-      return new String[]{no+"." + no2+ ".1", no+"."+no2+".2"};
    }
 
    private JPanel getBorderPanel(JScrollPane scrollPane, String string) {
@@ -80,15 +82,27 @@ public class BasicDnD extends JPanel {
       list.setDropMode(DropMode.INSERT);
       return list;
    }
-   private JTable getJTable(String no) {
-      Object[][] values = {getTestArray(no, "1"),getTestArray(no, "2"),getTestArray(no, "3")};
-      String[] columnNames = new String[]{"1", "2"};
-      DefaultTableModel dm = new DefaultTableModel(values, columnNames);
-      JTable table = new JTable( dm);
-      
-      table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      table.setDragEnabled(true);
-      table.setDropMode(DropMode.INSERT);
+
+   private MyTable getJTable(int no) {
+      MyTable table = null;
+      MyTableModel model;
+      switch (no) {
+      case 0:
+         model = new BoardTableModel();
+         model.addJira("LLU" + no);
+         table = new MyTable(model);
+         break;
+      case 1:
+         model = new JiraTableModel();
+         model.addJira("LLU" + no);
+         table = new MyTable(model);
+         break;
+      case 2:
+         model = new PlanTableModel();
+         model.addJira("LLU" + no);
+         table = new MyTable(model);
+         break;
+      }
       return table;
    }
 
