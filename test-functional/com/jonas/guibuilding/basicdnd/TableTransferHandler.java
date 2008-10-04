@@ -4,14 +4,13 @@
 package com.jonas.guibuilding.basicdnd;
 
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
-import javax.swing.TransferHandler.DropLocation;
 import javax.swing.table.DefaultTableModel;
+import com.jonas.agile.devleadtool.component.table.MyTable;
 
 final class TableTransferHandler extends TransferHandler {
 
@@ -27,9 +26,11 @@ final class TableTransferHandler extends TransferHandler {
    }
 
    private DefaultTableModel tableModel;
+   private MyTable table;
 
-   public TableTransferHandler(JTable list) {
+   public TableTransferHandler(MyTable list) {
       super();
+      table = list;
       tableModel = (DefaultTableModel) list.getModel();
       // if (vectorFlavor == null) {
       // try {
@@ -96,16 +97,11 @@ final class TableTransferHandler extends TransferHandler {
    }
 
    public boolean importData(TransferSupport info) {
-      System.out.println("1");
       if (!info.isDrop()) {
-         BasicDnD.displayDropLocation("List doesn't accept !isDrop");
+         BasicDnD.displayDropLocation("List doesn't accept drop");
          return false;
       }
-      // Check for String flavor
-      // if (!info.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-      // BasicDnD.displayDropLocation("List doesn't accept a drop of this type.");
-      // return false;
-      // }
+
       JTable.DropLocation dl = (JTable.DropLocation) info.getDropLocation();
       int index = dl.getRow();
       boolean insert = dl.isInsertRow();
@@ -125,38 +121,25 @@ final class TableTransferHandler extends TransferHandler {
       if (dl.isInsertRow()) {
          if (index == 0) {
             BasicDnD.displayDropLocation(dropValue + "at beginning of table");
-         } else if (index >= tableModel.getRowCount()) {
+         } else if (index >= table.getRowCount()) {
             BasicDnD.displayDropLocation(dropValue + "at end of table");
          } else {
-            Object value1 = tableModel.getValueAt(dl.getRow() - 1, 0);
-            Object value2 = tableModel.getValueAt(dl.getRow(), 0);
+            Object value1 = table.getValueAt(dl.getRow() - 1, 0);
+            Object value2 = table.getValueAt(dl.getRow(), 0);
             BasicDnD.displayDropLocation(dropValue + "between \"" + value1 + "\" and \"" + value2 + "\"");
          }
       } else {
-         // Get the current string under the drop.
-         // Object value = tableModel.getValueAt(index, 0);
-         // BasicDnD.displayDropLocation(dropValue + "on top of " + "\"" + value + "\"");
-         return false;
+          Object value = table.getValueAt(index, 0);
+          BasicDnD.displayDropLocation(dropValue + "on top of " + "\"" + value + "\"");
       }
 
-      /**
-       * This is commented out for the basicdemo.html tutorial page. If you add this code snippet back and delete the "return false;" line, the list will accept
-       * drops of type string.
-       * 
-       * // Perform the actual import. if (insert) { listModel.add(index, data); } else { listModel.set(index, data); } return true;
-       */
-      // return false;
-      // Perform the actual import.
-      System.out.println("10");
       if (insert) {
-         // tableModel.addRow(index, data);
          for (Vector<Object> rowData : data) {
-            tableModel.insertRow(index, rowData);
+            table.insertRow(index, rowData);
          }
       } else {
-         tableModel.removeRow(index);
          for (Vector<Object> rowData : data) {
-            tableModel.insertRow(index, rowData);
+            table.insertRow(index, rowData);
          }
       }
       return true;

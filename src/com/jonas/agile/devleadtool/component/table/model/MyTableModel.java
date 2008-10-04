@@ -99,7 +99,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    public void addJira(String jira, Map<Column, Object> map) {
-      //fixme - when not already in table model - raise a dialog and compare the results. 
+      // fixme - when not already in table model - raise a dialog and compare the results.
       addJira(jira);
       int row = getRowWithJira(jira, Column.Jira);
       for (Column column : map.keySet()) {
@@ -134,6 +134,18 @@ public abstract class MyTableModel extends DefaultTableModel {
    // }
    // return objects;
    // }
+
+   @Override
+   public void insertRow(int row, Object[] rowData) {
+      if (!doesJiraExist((String) rowData[0])) 
+       super.insertRow(row, rowData);
+   }
+
+   @Override
+   public void insertRow(int row, Vector rowData) {
+      if (!doesJiraExist((String) rowData.get(0))) 
+       super.insertRow(row, rowData);
+   }
 
    final public Class<?> getColumnClass(int columnIndex) {
       return getClassFromColumn(columnIndex);
@@ -232,7 +244,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public void setValueAt(Object value, int rowIndex, int columnIndex) {
       super.setValueAt(value, rowIndex, columnIndex);
-//      fireTableRowsUpdated(rowIndex, rowIndex);
+      // fireTableRowsUpdated(rowIndex, rowIndex);
    }
 
    final private Class<?> getClassFromColumn(int columnIndex) {
