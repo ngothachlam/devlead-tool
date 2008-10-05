@@ -21,10 +21,10 @@ import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraClient {
 
-   public static final JiraClient JiraClientAolBB = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB), JiraSoapClient
-         .getInstance(ClientConstants.AOLBB_WS), JiraBuilder.getInstance());
-   public static final JiraClient JiraClientAtlassin = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN), JiraSoapClient
-         .getInstance(ClientConstants.ATLASSIN_WS), JiraBuilder.getInstance());
+   public static final JiraClient JiraClientAolBB = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB), new JiraSoapClient(
+         ClientConstants.AOLBB_WS), JiraBuilder.getInstance());
+   public static final JiraClient JiraClientAtlassin = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN), new JiraSoapClient(
+         ClientConstants.ATLASSIN_WS), JiraBuilder.getInstance());
 
    private JiraHttpClient httpClient;
    private JiraBuilder jiraBuilder;
@@ -88,7 +88,8 @@ public class JiraClient {
 
    private void loadJiraTypes() throws RemotePermissionException, RemoteAuthenticationException, java.rmi.RemoteException {
       RemoteIssueType[] remoteTypes = jiraSoapClient.getTypes();
-      JiraType.setTypes(remoteTypes);
+      if (remoteTypes != null)
+         JiraType.setTypes(remoteTypes);
    }
 
    private void loadResolutionsIfRequired() throws RemotePermissionException, RemoteAuthenticationException, java.rmi.RemoteException {

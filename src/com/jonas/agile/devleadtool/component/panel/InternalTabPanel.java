@@ -15,7 +15,6 @@ import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyComponentPanel;
-import com.jonas.guibuilding.basicdnd.PopupListener;
 
 public class InternalTabPanel extends MyComponentPanel {
 
@@ -31,23 +30,23 @@ public class InternalTabPanel extends MyComponentPanel {
 		this(client, null, null, null);
 	}
 
-	public InternalTabPanel(PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel, JiraTableModel jiraModel) {
+	public InternalTabPanel(PlannerHelper helper, BoardTableModel boardModel, PlanTableModel planModel, JiraTableModel jiraModel) {
 		super(new BorderLayout());
 		boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
 		planModel = (planModel == null) ? new PlanTableModel() : planModel;
 		jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 		
-		boardPanel = new BoardPanel(client, boardModel);
-		planPanel = new PlanPanel(client, planModel);
-		jiraPanel = new JiraPanel(client, jiraModel);
+		boardPanel = new BoardPanel(helper, boardModel);
+		planPanel = new PlanPanel(helper, planModel);
+		jiraPanel = new JiraPanel(helper, jiraModel);
 		
       TableAndTitleDTO tableAndTitleDTO1 = new TableAndTitleDTO("Board", boardPanel.getTable());
       TableAndTitleDTO tableAndTitleDTO2 = new TableAndTitleDTO("Plan", planPanel.getTable());
       TableAndTitleDTO tableAndTitleDTO3 = new TableAndTitleDTO("Jira", jiraPanel.getTable());
       
-      new MyTablePopupMenu(boardPanel.getTable(), tableAndTitleDTO2, tableAndTitleDTO3);
-      new MyTablePopupMenu(planPanel.getTable(), tableAndTitleDTO1, tableAndTitleDTO3);
-      new MyTablePopupMenu(jiraPanel.getTable(), tableAndTitleDTO1, tableAndTitleDTO2);
+      new MyTablePopupMenu(boardPanel.getTable(), helper, tableAndTitleDTO2, tableAndTitleDTO3);
+      new MyTablePopupMenu(planPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO3);
+      new MyTablePopupMenu(jiraPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2);
       
 		JPanel panel = new JPanel();
 		checkBox = new JCheckBox("Editable?", true);

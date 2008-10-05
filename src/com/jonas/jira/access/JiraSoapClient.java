@@ -8,7 +8,6 @@ import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
 import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
-import com.atlassian.jira.rpc.soap.beans.RemoteCustomFieldValue;
 import com.atlassian.jira.rpc.soap.beans.RemoteField;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssueType;
@@ -22,39 +21,26 @@ import com.jonas.jira.JiraProject;
  */
 public class JiraSoapClient {
 
-   private static JiraSoapClient instance;
    private static final Logger log = MyLogger.getLogger(JiraSoapClient.class);
    private static final String LOGIN_NAME = "soaptester";
    private static final String LOGIN_PASSWORD = "soaptester";
 
    private JiraSoapService jiraSoapService = null;
    private String token;
+   private static JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
 
-   public JiraSoapClient(JiraSoapService jiraSoapService) {
-      this.jiraSoapService = jiraSoapService;
-   }
-
-   public static JiraSoapClient getInstance(String address) {
-      if (instance == null) {
-         synchronized (JiraSoapClient.class) {
-            if (instance == null) {
-               JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = getLocator(address);
-               JiraSoapService jirasoapserviceV2 = null;
-               try {
-                  jirasoapserviceV2 = jiraSoapServiceServiceLocator.getJirasoapserviceV2();
-                  return new JiraSoapClient(jirasoapserviceV2);
-               } catch (ServiceException e) {
-                  e.printStackTrace();
-               }
-            }
-         }
-      }
-      return instance;
-   }
-
-   private static JiraSoapServiceServiceLocator getLocator(String address) {
-      JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
+   public JiraSoapClient(String address) {
+      jiraSoapServiceServiceLocator = getLocator();
       jiraSoapServiceServiceLocator.setJirasoapserviceV2EndpointAddress(address);
+      try {
+         jiraSoapService = jiraSoapServiceServiceLocator.getJirasoapserviceV2();
+      } catch (ServiceException e) {
+         e.printStackTrace();
+      }
+   }
+
+   private static JiraSoapServiceServiceLocator getLocator() {
+      JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
       log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
       return jiraSoapServiceServiceLocator;
    }
@@ -147,12 +133,19 @@ public class JiraSoapClient {
       JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
          public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
                RemoteException {
+            log.debug("Accessing: " + jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
             return jiraSoapService.getIssueTypes(getToken());
          }
 
       });
       // FIXME doesn't work on TST project!!
-      return (RemoteIssueType[]) command.execute();
+      RemoteIssueType[] execute = null;
+      try {
+         execute = (RemoteIssueType[]) command.execute();
+      } catch (Throwable e) {
+         e.printStackTrace();
+      }
+      return execute;
    }
 
    private String getToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
@@ -212,6 +205,7 @@ public class JiraSoapClient {
 
    /**
     * For testing!!
+    * 
     * @param string
     * @param lluSystemsProvisioning
     * @return
@@ -220,8 +214,8 @@ public class JiraSoapClient {
     * @throws com.atlassian.jira.rpc.exception.RemoteException
     * @throws RemoteException
     */
-   void printAllCustomFieldInfo() throws RemotePermissionException, RemoteAuthenticationException,
-         com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+   void printAllCustomFieldInfo() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
+         RemoteException {
       log.debug("Getting Resolutions");
 
       JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {

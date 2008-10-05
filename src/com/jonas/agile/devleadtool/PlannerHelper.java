@@ -83,7 +83,7 @@ public class PlannerHelper {
          }
          JiraClient client = project.getJiraClient();
          client.login();
-         log.debug("Client: " + client);
+         log.debug("Client: " + client.getJiraUrl());
          return client.getJira(jira, project);
       } finally {
          if (jiraListener != null)
