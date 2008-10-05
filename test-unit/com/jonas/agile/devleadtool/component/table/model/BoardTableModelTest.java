@@ -50,7 +50,7 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(new Integer(4).intValue(), columnNames.get(Column.isInProgress).intValue());
       assertEquals(new Integer(5).intValue(), columnNames.get(Column.isResolved).intValue());
       assertEquals(new Integer(6).intValue(), columnNames.get(Column.isComplete).intValue());
-      assertEquals(new Integer(7).intValue(), columnNames.get(Column.ListPrio).intValue());
+      assertEquals(new Integer(7).intValue(), columnNames.get(Column.prio).intValue());
       assertEquals(8, columnNames.size());
    }
    

@@ -25,7 +25,7 @@ public enum Column {
    J_Dev_Spent(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes),
 
    //Integer
-   ListPrio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes),
+   prio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes),
 
    // Boolean Defaults
    isInProgress(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No), 

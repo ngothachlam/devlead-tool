@@ -3,6 +3,8 @@ package com.jonas.agile.devleadtool.component.panel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -67,7 +69,7 @@ public class BoardPanel extends MyComponentPanel {
 
          public void jiraSynced(JiraIssue jira, int tableRowSynced) {
             table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
-            table.setValueAt(jira.getLLUListPriority(), tableRowSynced, Column.ListPrio);
+            table.setValueAt(jira.getLLUListPriority(), tableRowSynced, Column.prio);
          }
 
          public void jiraSyncedCompleted() {
@@ -81,16 +83,19 @@ public class BoardPanel extends MyComponentPanel {
             // table.clearSorting();
          }
       });
-      addButton(buttonPanel, "Copy to Plan", new CopyToTableListener(table, new DestinationRetriever() {
-         public MyTable getDestinationTable() {
-            return helper.getActiveInternalFrame().getPlanTable();
-         }
-      }, helper));
-      addButton(buttonPanel, "Copy to Jira", new CopyToTableListener(table, new DestinationRetriever() {
+      Map<String, DestinationRetriever> map = new HashMap<String, DestinationRetriever>();
+      map.put("Jira", new DestinationRetriever(){
          public MyTable getDestinationTable() {
             return helper.getActiveInternalFrame().getJiraTable();
          }
-      }, helper));
+      });
+      map.put("Plan", new DestinationRetriever(){
+         public MyTable getDestinationTable() {
+            return helper.getActiveInternalFrame().getPlanTable();
+         }
+      });
+      addButton(buttonPanel, "Copy", new CopyToTableListener(table,map, helper));
+      
       addButton(buttonPanel, "TabCheck", new TabCheckButtonActionListener(helper, table, helper.getPlannerCommunicator()));
       return buttonPanel;
    }

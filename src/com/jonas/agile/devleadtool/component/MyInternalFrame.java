@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.component;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import org.apache.log4j.Logger;
@@ -126,11 +127,28 @@ public class MyInternalFrame extends JInternalFrame {
    }
 
    void close() {
-      log.debug("Closing internal frame: " + getTitle());
-      openSaveDialogForThisInternalFrame();
       if (internalFrameTabPanel != null) {
-         internalFrameTabPanel.close();
+         int result = JOptionPane.showConfirmDialog(internalFrameTabPanel, "Want to Save " + getTitle() + "?", "Save?", JOptionPane.YES_NO_OPTION);
+         log.debug(result + " Yes: " + JOptionPane.YES_OPTION + " No: " + JOptionPane.NO_OPTION + " Cancel: " + JOptionPane.CANCEL_OPTION);
+         switch (result) {
+         case JOptionPane.YES_OPTION:
+            openSaveDialogForThisInternalFrame();
+            closeHard();
+            break;
+         case JOptionPane.NO_OPTION:
+            closeHard();
+            break;
+         case JOptionPane.CANCEL_OPTION:
+            //FIXME doesn't work - the cancel cannot be rewoked - needs fixing.
+            break;
+         default:
+            break;
+         }
       }
+   }
+
+   private void closeHard() {
+      internalFrameTabPanel.close();
       internalFrames.remove(this);
       dispose();
    }

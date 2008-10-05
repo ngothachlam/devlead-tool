@@ -81,8 +81,9 @@ final class TableTransferHandler extends TransferHandler {
       if (action == MOVE) {
          JTable table = (JTable) source;
          if (table.getModel() instanceof DefaultTableModel) {
-            DefaultTableModel model = (DefaultTableModel) table.getModel();
             int selectedIndex = table.getSelectedRow();
+            BasicDnD.debugDropLocation("Deleting source at " + selectedIndex);
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
             model.removeRow(selectedIndex);
          }
       }
@@ -103,7 +104,7 @@ final class TableTransferHandler extends TransferHandler {
 
    public boolean importData(TransferSupport info) {
       if (!info.isDrop()) {
-         BasicDnD.displayDropLocation("List doesn't accept drop");
+         BasicDnD.debugDropLocation("List doesn't accept drop");
          return false;
       }
 
@@ -121,32 +122,28 @@ final class TableTransferHandler extends TransferHandler {
          return false;
       }
 
-      String dropValue = "\"" + transferableDTO + "\" dropped ";
+      String dropValue = "\"" + transferableDTO.getData().get(0) + "\" dropped ";
       if (insert) {
          for (Vector<Object> rowData : transferableDTO.getData()) {
             if (index >= table.getRowCount()) {
-               BasicDnD.displayDropLocation(dropValue + "at end of table");
-               table.addRow(rowData);
+               BasicDnD.debugDropLocation(dropValue + "at end of table");
                table.addRow(rowData);
             } else {
                if (index == 0) {
-                  BasicDnD.displayDropLocation(dropValue + "at beginning of table");
+                  BasicDnD.debugDropLocation(dropValue + "at beginning of table");
+                  table.insertRow(index, rowData);
                } else {
-                  Object value1 = table.getValueAt(dl.getRow() - 1, 0);
-                  Object value2 = table.getValueAt(dl.getRow(), 0);
-                  BasicDnD.displayDropLocation(dropValue + "between \"" + value1 + "\" and \"" + value2 + "\"");
+                  Object value1 = table.getValueAt(index - 1, 0);
+                  Object value2 = table.getValueAt(index, 0);
+                  BasicDnD.debugDropLocation(dropValue + "between \"" + value1 + "\" and \"" + value2 + "\"");
+                  table.insertRow(index, rowData);
                }
-               table.insertRow(index, rowData);
             }
          }
       } else {
          Object value = table.getValueAt(index, 0);
-         BasicDnD.displayDropLocation(dropValue + "on top of " + "\"" + value + "\"");
-         for (int i = 0; i < transferableDTO.getData().size(); i++) {
-            Object data = transferableDTO.getData().get(i);
-            Column column = transferableDTO.getColumns().get(i);
-            table.insertRow(index, rowData);
-         }
+         BasicDnD.debugDropLocation(dropValue + "on top of " + "\"" + value + "\"");
+         throw new RuntimeException("Nothing of insert is currently supported in this TransferHandler");
       }
       return true;
    }
