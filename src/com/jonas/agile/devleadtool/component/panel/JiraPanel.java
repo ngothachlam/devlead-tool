@@ -113,20 +113,6 @@ public class JiraPanel extends MyComponentPanel {
       addButton(topPanel, "Sync", listener);
       addButton(topPanel, "Open", new OpenJirasListener(table, helper));
       
-      
-      Map<String, DestinationRetriever> map = new HashMap<String, DestinationRetriever>();
-      map.put("Board", new DestinationRetriever(){
-         public MyTable getDestinationTable() {
-            return helper.getActiveInternalFrame().getBoardTable();
-         }
-      });
-      map.put("Plan", new DestinationRetriever(){
-         public MyTable getDestinationTable() {
-            return helper.getActiveInternalFrame().getPlanTable();
-         }
-      });
-      addButton(topPanel, "Copy", new CopyToTableListener(table, map, helper));
-
       JPanel bottomPanel = getFixversionSyncPanel(projects, syncWithJiraListener);
 
       mainPanel.add(topPanel, BorderLayout.NORTH);

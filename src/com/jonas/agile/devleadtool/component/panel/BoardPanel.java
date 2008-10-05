@@ -83,18 +83,6 @@ public class BoardPanel extends MyComponentPanel {
             // table.clearSorting();
          }
       });
-      Map<String, DestinationRetriever> map = new HashMap<String, DestinationRetriever>();
-      map.put("Jira", new DestinationRetriever(){
-         public MyTable getDestinationTable() {
-            return helper.getActiveInternalFrame().getJiraTable();
-         }
-      });
-      map.put("Plan", new DestinationRetriever(){
-         public MyTable getDestinationTable() {
-            return helper.getActiveInternalFrame().getPlanTable();
-         }
-      });
-      addButton(buttonPanel, "Copy", new CopyToTableListener(table,map, helper));
       
       addButton(buttonPanel, "TabCheck", new TabCheckButtonActionListener(helper, table, helper.getPlannerCommunicator()));
       return buttonPanel;

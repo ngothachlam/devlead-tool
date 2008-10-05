@@ -87,19 +87,6 @@ public class PlanPanel extends MyComponentPanel {
       addButton(buttons, "Sync", listener);
       addButton(buttons, "Open Jiras", new OpenJirasListener(table, helper));
 
-      Map<String, DestinationRetriever> map = new HashMap<String, DestinationRetriever>();
-      map.put("Board", new DestinationRetriever(){
-         public MyTable getDestinationTable() {
-            return helper.getActiveInternalFrame().getBoardTable();
-         }
-      });
-      map.put("Jira", new DestinationRetriever(){
-         public MyTable getDestinationTable() {
-            return helper.getActiveInternalFrame().getJiraTable();
-         }
-      });
-      addButton(buttons, "Copy", new CopyToTableListener(table,map, helper));
-
       setupPlanVersionsFrame();
       addButton(buttons, "PlanVersions", new ActionListener() {
          public void actionPerformed(ActionEvent e) {
