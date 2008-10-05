@@ -82,7 +82,8 @@ public class BasicDnD extends JPanel {
       TableAndTitleDTO tableAndTitleDTO2 = new TableAndTitleDTO("Plan", planTable);
       TableAndTitleDTO tableAndTitleDTO3 = new TableAndTitleDTO("Jira", jiraTable);
       
-      MyPopupListener myPopupListener = new MyPopupListener(new MyTablePopupMenu(tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3));
+      MyTablePopupMenu myTablePopupMenu = new MyTablePopupMenu(tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
+      MyPopupListener myPopupListener = new MyPopupListener(myTablePopupMenu);
       
       boardTable.addMouseListener(myPopupListener);
       planTable.addMouseListener(myPopupListener);
