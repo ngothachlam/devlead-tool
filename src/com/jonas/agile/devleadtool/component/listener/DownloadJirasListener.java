@@ -69,9 +69,9 @@ public class DownloadJirasListener implements ActionListener {
 							notifyThatJiraAdded(jiraIssue);
 						}
 					} catch (IOException e1) {
-						AlertDialog.alertException(helper, e1);
+						AlertDialog.alertException(helper.getParentFrame(), e1);
 					} catch (JDOMException e1) {
-						AlertDialog.alertException(helper, e1);
+						AlertDialog.alertException(helper.getParentFrame(), e1);
 					}
 				}
 				return null;

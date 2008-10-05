@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -18,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
@@ -33,6 +35,7 @@ import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.guibuilding.basicdnd.MyPopupListener;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
@@ -52,6 +55,8 @@ public class JiraPanel extends MyComponentPanel {
       this.helper = helper;
 
       table = new MyTable(jiraModel);
+      MouseListener popupListener = new MyPopupListener(new MyTablePopupMenu());
+      table.addMouseListener(popupListener);
 
       JScrollPane scrollpane = new MyScrollPane(table);
 
@@ -120,7 +125,7 @@ public class JiraPanel extends MyComponentPanel {
             return helper.getActiveInternalFrame().getPlanTable();
          }
       });
-      addButton(topPanel, "Copy", new CopyToTableListener(table, map, helper), Column.Description);
+      addButton(topPanel, "Copy", new CopyToTableListener(table, map, helper));
 
       JPanel bottomPanel = getFixversionSyncPanel(projects, syncWithJiraListener);
 
@@ -223,7 +228,7 @@ public class JiraPanel extends MyComponentPanel {
                      fixVersionCombo.addItem(jiraVersion);
                   }
                } catch (RemoteException e1) {
-                  AlertDialog.alertException(helper, e1);
+                  AlertDialog.alertException(helper.getParentFrame(), e1);
                }
                return null;
             }

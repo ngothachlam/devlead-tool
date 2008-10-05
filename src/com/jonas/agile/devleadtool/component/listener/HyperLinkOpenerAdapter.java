@@ -40,7 +40,7 @@ public class HyperLinkOpenerAdapter extends MouseAdapter {
 			try {
 				HyperLinker.displayURL(helper.getJiraUrl(jira) + "/browse/" + jira);
 			} catch (NotJiraException e1) {
-				AlertDialog.alertException(helper, e1);
+				AlertDialog.alertException(helper.getParentFrame(), e1);
 			}
 		}
 	}

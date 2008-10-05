@@ -113,7 +113,7 @@ public class SyncWithJiraActionListener implements ActionListener {
                try {
                   jira = helper.getJiraIssueFromName(jiraToGet, new JiraListenerImpl(dialog, jiraToGet));
                } catch (Exception e) {
-                  AlertDialog.alertException(helper, e);
+                  AlertDialog.alertException(helper.getParentFrame(), e);
                   e.printStackTrace();
                   continue;
                }
@@ -121,7 +121,7 @@ public class SyncWithJiraActionListener implements ActionListener {
                notifyThatJiraSynced(jira, row);
             }
          } catch (Exception e) {
-            AlertDialog.alertException(helper, e);
+            AlertDialog.alertException(helper.getParentFrame(), e);
             e.printStackTrace();
          }
          return null;
