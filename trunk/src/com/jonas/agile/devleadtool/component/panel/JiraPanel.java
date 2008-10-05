@@ -87,7 +87,6 @@ public class JiraPanel extends MyComponentPanel {
             table.syncJira(jiraIssue, tableRowSynced);
          }
       };
-      addButton(topPanel, "Open", new OpenJirasListener(table, helper));
       
       JPanel bottomPanel = getFixversionSyncPanel(projects, syncWithJiraListener);
 

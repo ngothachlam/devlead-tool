@@ -12,14 +12,14 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.HyperLinker;
 
-final class OpenJirasListener implements ActionListener {
+public class OpenJirasListener implements ActionListener {
    private final MyTable table;
    private final PlannerHelper helper;
 
    /**
     * @param jiraPanel
     */
-   OpenJirasListener(MyTable tab1e, PlannerHelper helper) {
+   public OpenJirasListener(MyTable tab1e, PlannerHelper helper) {
       this.table = tab1e;
       this.helper = helper;
    }
@@ -29,7 +29,6 @@ final class OpenJirasListener implements ActionListener {
       StringBuffer sb = new StringBuffer();
       for (int j = 0; j < rows.length; j++) {
          String jira = (String) table.getValueAt(Column.Jira, rows[j]);
-//         String jira = (String) table.getModel().getValueAt(table.convertRowIndexToModel(rows[j]), 0);
          String jira_url = null;
          boolean error = false;
          try {
