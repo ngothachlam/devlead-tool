@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
-import com.jonas.agile.devleadtool.component.listener.RemoveJTableSelectedRowsListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 
 public class MyPanel extends JPanel {
@@ -98,6 +97,5 @@ public class MyPanel extends JPanel {
       JTextField jiraPrefix = addTextField(buttons, 5);
       JTextField jiraCommas = addTextField(buttons, 30);
       addButton(buttons, "Add", new AddNewRowActionListener(table, jiraPrefix, jiraCommas));
-      addButton(buttons, "Remove", new RemoveJTableSelectedRowsListener(table));
    }
 }

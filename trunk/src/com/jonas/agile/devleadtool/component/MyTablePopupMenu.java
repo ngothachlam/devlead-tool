@@ -2,7 +2,9 @@ package com.jonas.agile.devleadtool.component;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -12,61 +14,69 @@ import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.guibuilding.basicdnd.PopupListener;
 
 public class MyTablePopupMenu extends JPopupMenu {
 
-   private Map<MyTable, CopyMenuItem> menuTables = new HashMap<MyTable, CopyMenuItem>();
-   private Map<String, MyTable> menuItems = new HashMap<String, MyTable>();
+   private final MyTable sourceTable;
+   
+   private static final List<MyTablePopupMenu> list = new ArrayList<MyTablePopupMenu>();
 
-   public MyTablePopupMenu(TableAndTitleDTO... tables) {
+   public MyTablePopupMenu(MyTable source, TableAndTitleDTO... tables) {
       super();
+      this.sourceTable = source;
+      sourceTable.addMouseListener(new PopupListener(this));
+      
       for (TableAndTitleDTO tableDTO : tables) {
          String menuItemTitle = "Copy to " + tableDTO.getTitle();
-         MyTable table = tableDTO.getTable();
-         CopyMenuItem menuItem = new CopyMenuItem(menuItemTitle, table);
+         CopyMenuItem menuItem = new CopyMenuItem(menuItemTitle, sourceTable, tableDTO.getTable());
+         
          add(menuItem);
-         menuTables.put(table, menuItem);
       }
+
+      addSeparator();
+
+      add(new RemoveMenuItem("Remove", sourceTable));
+      
+      list.add(this);
+   }
+}
+
+class RemoveMenuItem extends JMenuItem implements ActionListener {
+   private MyTable sourceTable;
+
+   public RemoveMenuItem(String string, MyTable sourceTable) {
+      super(string);
+      this.sourceTable = sourceTable;
+      addActionListener(this);
    }
 
-   public void setSourceAndShow(MyTable source, int x, int y) {
-      for (MyTable table : menuTables.keySet()) {
-         CopyMenuItem copyMenuItem = menuTables.get(table);
-         if (source.equals(table)) {
-            copyMenuItem.setEnabled(false);
-         } else {
-            copyMenuItem.setEnabled(true);
-            copyMenuItem.setSource(source);
-         }
-      }
-      show(source, x, y);
+   @Override
+   public void actionPerformed(ActionEvent e) {
+      sourceTable.removeSelectedRows();
    }
 }
 
 
 class CopyMenuItem extends JMenuItem implements ActionListener {
 
-   private final MyTable table;
-   private MyTable source;
+   private final MyTable destinationTable;
+   private MyTable sourceTable;
 
-   public CopyMenuItem(String string, MyTable table) {
+   public CopyMenuItem(String string, MyTable source, MyTable table) {
       super(string);
-      this.table = table;
+      this.sourceTable = source;
+      this.destinationTable = table;
       addActionListener(this);
    }
 
-   public void setSource(MyTable source) {
-      this.source = source;
-   }
-
    public void actionPerformed(ActionEvent e) {
-      final int[] selectedRows = source.getSelectedRows();
-      final ProgressDialog dialog = new ProgressDialog(null, "Copying...", "Copying selected messages from Board to Plan...",
-            selectedRows.length);
+      final int[] selectedRows = sourceTable.getSelectedRows();
+      final ProgressDialog dialog = new ProgressDialog(null, "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length);
       try {
          for (int i = 0; i < selectedRows.length; i++) {
-            String jiraString = (String) source.getValueAt(Column.Jira, selectedRows[i]);
-            addJira(jiraString, table);
+            String jiraString = (String) sourceTable.getValueAt(Column.Jira, selectedRows[i]);
+            addJira(jiraString, destinationTable);
             dialog.increseProgress();
          }
       } catch (Exception ex) {
@@ -78,9 +88,9 @@ class CopyMenuItem extends JMenuItem implements ActionListener {
 
    void addJira(String jiraString, MyTable table) {
       Map<Column, Object> map = new HashMap<Column, Object>();
-      Column[] columns = source.getColumns();
+      Column[] columns = sourceTable.getColumns();
       for (Column column : columns) {
-         MyTableModel model = (MyTableModel) source.getModel();
+         MyTableModel model = (MyTableModel) sourceTable.getModel();
          int row = model.getRowWithJira(jiraString, Column.Jira);
          map.put(column, model.getValueAt(column, row));
       }

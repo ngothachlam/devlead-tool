@@ -15,7 +15,7 @@ import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyComponentPanel;
-import com.jonas.guibuilding.basicdnd.MyPopupListener;
+import com.jonas.guibuilding.basicdnd.PopupListener;
 
 public class InternalTabPanel extends MyComponentPanel {
 
@@ -45,13 +45,10 @@ public class InternalTabPanel extends MyComponentPanel {
       TableAndTitleDTO tableAndTitleDTO2 = new TableAndTitleDTO("Plan", planPanel.getTable());
       TableAndTitleDTO tableAndTitleDTO3 = new TableAndTitleDTO("Jira", jiraPanel.getTable());
       
-      MyTablePopupMenu myTablePopupMenu = new MyTablePopupMenu(tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
-      MyPopupListener myPopupListener = new MyPopupListener(myTablePopupMenu);
+      new MyTablePopupMenu(boardPanel.getTable(), tableAndTitleDTO2, tableAndTitleDTO3);
+      new MyTablePopupMenu(planPanel.getTable(), tableAndTitleDTO1, tableAndTitleDTO3);
+      new MyTablePopupMenu(jiraPanel.getTable(), tableAndTitleDTO1, tableAndTitleDTO2);
       
-      boardPanel.getTable().addMouseListener(myPopupListener);
-      planPanel.getTable().addMouseListener(myPopupListener);
-      jiraPanel.getTable().addMouseListener(myPopupListener);
-
 		JPanel panel = new JPanel();
 		checkBox = new JCheckBox("Editable?", true);
 		panel.add(checkBox);

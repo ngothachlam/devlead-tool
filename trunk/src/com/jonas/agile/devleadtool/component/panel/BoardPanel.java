@@ -15,7 +15,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.listener.CopyToTableListener;
 import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
-import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
+import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.TabCheckButtonActionListener;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -62,8 +62,8 @@ public class BoardPanel extends MyComponentPanel {
       JPanel buttonPanel = new JPanel();
 
       addPanelWithAddAndRemoveOptions(table, buttonPanel);
-      SyncWithJiraActionListener listener = new SyncWithJiraActionListener(table, helper);
-      listener.addListener(new SyncWithJiraActionListenerListener() {
+      SyncWithJiraListener syncWithJiraListener = new SyncWithJiraListener(table, helper);
+      syncWithJiraListener.addListener(new SyncWithJiraActionListenerListener() {
          public void jiraAdded(JiraIssue jiraIssue) {
          }
 
@@ -75,7 +75,7 @@ public class BoardPanel extends MyComponentPanel {
          public void jiraSyncedCompleted() {
          }
       });
-      addButton(buttonPanel, "Sync", listener);
+      addButton(buttonPanel, "Sync", syncWithJiraListener);
       addButton(buttonPanel, "Open", new OpenJirasListener(table, helper));
       addButton(buttonPanel, "Unsort", new ActionListener() {
          @Override

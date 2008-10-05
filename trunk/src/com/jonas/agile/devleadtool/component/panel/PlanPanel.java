@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.listener.CopyToTableListener;
 import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
-import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
+import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -71,7 +71,7 @@ public class PlanPanel extends MyComponentPanel {
       JPanel buttons = new JPanel();
 
       addPanelWithAddAndRemoveOptions(table, buttons);
-      SyncWithJiraActionListener listener = new SyncWithJiraActionListener(table, helper);
+      SyncWithJiraListener listener = new SyncWithJiraListener(table, helper);
       listener.addListener(new SyncWithJiraActionListenerListener() {
          public void jiraAdded(JiraIssue jiraIssue) {
          }

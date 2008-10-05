@@ -26,7 +26,7 @@ import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.listener.CopyToTableListener;
 import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
 import com.jonas.agile.devleadtool.component.listener.DownloadJirasListener;
-import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListener;
+import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -35,7 +35,7 @@ import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.guibuilding.basicdnd.MyPopupListener;
+import com.jonas.guibuilding.basicdnd.PopupListener;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
@@ -55,8 +55,6 @@ public class JiraPanel extends MyComponentPanel {
       this.helper = helper;
 
       table = new MyTable(jiraModel);
-      MouseListener popupListener = new MyPopupListener(new MyTablePopupMenu());
-      table.addMouseListener(popupListener);
 
       JScrollPane scrollpane = new MyScrollPane(table);
 
@@ -88,7 +86,7 @@ public class JiraPanel extends MyComponentPanel {
       Vector<JiraProject> projects = JiraProject.getProjects();
 
       addPanelWithAddAndRemoveOptions(table, topPanel);
-      SyncWithJiraActionListener listener = new SyncWithJiraActionListener(table, helper);
+      SyncWithJiraListener listener = new SyncWithJiraListener(table, helper);
       SyncWithJiraActionListenerListener syncWithJiraListener = new SyncWithJiraActionListenerListener() {
          public void jiraAdded(JiraIssue jiraIssue) {
             table.addJira(jiraIssue);

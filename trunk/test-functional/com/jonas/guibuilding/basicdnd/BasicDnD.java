@@ -78,17 +78,14 @@ public class BasicDnD extends JPanel {
       scrollPane3.setPreferredSize(new Dimension(580, 100));
       JPanel panel3 = getBorderPanel(scrollPane3, "Jira");
       
-      TableAndTitleDTO tableAndTitleDTO1 = new TableAndTitleDTO("Board", boardTable);
-      TableAndTitleDTO tableAndTitleDTO2 = new TableAndTitleDTO("Plan", planTable);
-      TableAndTitleDTO tableAndTitleDTO3 = new TableAndTitleDTO("Jira", jiraTable);
+      TableAndTitleDTO boardDestDTO = new TableAndTitleDTO("Board", boardTable);
+      TableAndTitleDTO planDestDTO = new TableAndTitleDTO("Plan", planTable);
+      TableAndTitleDTO jiraDestDTO = new TableAndTitleDTO("Jira", jiraTable);
       
-      MyTablePopupMenu myTablePopupMenu = new MyTablePopupMenu(tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
-      MyPopupListener myPopupListener = new MyPopupListener(myTablePopupMenu);
+      new MyTablePopupMenu(boardTable, planDestDTO, jiraDestDTO);
+      new MyTablePopupMenu(planTable, boardDestDTO, jiraDestDTO);
+      new MyTablePopupMenu(jiraTable, boardDestDTO, planDestDTO);
       
-      boardTable.addMouseListener(myPopupListener);
-      planTable.addMouseListener(myPopupListener);
-      jiraTable.addMouseListener(myPopupListener);
-
       Component tabPane = combineIntoSplitPane(panel1, panel2, panel3);
 
       add(tabPane, BorderLayout.CENTER);
