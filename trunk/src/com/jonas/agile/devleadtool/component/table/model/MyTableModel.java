@@ -1,12 +1,14 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.logging.MyLogger;
@@ -53,6 +55,9 @@ public abstract class MyTableModel extends DefaultTableModel {
             case Description:
                contents.add(jiraIssue.getSummary());
                break;
+            case J_Type:
+               contents.add(jiraIssue.getType());
+               break;
             case J_FixVersion:
                contents.add(jiraIssue.getFixVersions());
                break;
@@ -74,9 +79,6 @@ public abstract class MyTableModel extends DefaultTableModel {
             case J_Dev_Spent:
                contents.add(jiraIssue.getSpent());
                break;
-            case J_Type:
-               contents.add(jiraIssue.getType());
-               break;
             default:
                contents.add(column.getDefaultValue());
                break;
@@ -96,6 +98,18 @@ public abstract class MyTableModel extends DefaultTableModel {
          log.debug("addJira of row size: " + row.length);
          addRow(row);
       }
+   }
+
+   public void addJira(String jira, Map<Column, Object> map, int row) {
+      // fixme - when not already in table model - raise a dialog and compare the results.
+      addJira(jira);
+      for (Column column : map.keySet()) {
+         Object value = map.get(column);
+         int columnIndex = getColumnIndex(column);
+         if (columnIndex != -1)
+            setValueAt(value, row, columnIndex);
+      }
+      fireTableRowsUpdated(row, row);
    }
 
    public void addJira(String jira, Map<Column, Object> map) {
@@ -342,5 +356,15 @@ public abstract class MyTableModel extends DefaultTableModel {
          result.add(t);
       }
       return result;
+   }
+
+   public void syncJira(JiraIssue jiraIssue, int convertRowIndexToModel) {
+      Map<Column, Object> map = new HashMap<Column, Object>();
+      Set<Column> columns = getColumnNames().keySet();
+      for (Column column : columns) {
+         if (column.isJiraColumn())
+            map.put(column, getValueAt(column, convertRowIndexToModel));
+      }
+      addJira(jiraIssue.getKey(), map, convertRowIndexToModel);
    }
 }

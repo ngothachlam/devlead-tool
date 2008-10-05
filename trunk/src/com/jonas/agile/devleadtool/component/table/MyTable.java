@@ -8,7 +8,6 @@ import javax.swing.DropMode;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -118,17 +117,6 @@ public class MyTable extends JTable {
       tc.setCellRenderer(renderer);
    }
 
-   public void setRow(JiraIssue jira, int i) {
-      log.debug("setRow for jira: " + jira + "i: " + i);
-      setValueAt(jira.getKey(), i, 0);
-      // TODO only works with one fix-version below!!
-      List<JiraVersion> fixVersions = jira.getFixVersions();
-      JiraVersion jiraVersion = fixVersions != null && fixVersions.size() > 0 ? fixVersions.get(0) : null;
-      setValueAt(jiraVersion, i, 1);
-      setValueAt(jira.getStatus(), i, 2);
-      setValueAt(jira.getResolution(), i, 3);
-   }
-
    public void setValueAt(Object value, int row, Column column) {
       setValueAt(value, row, getColumnIndex(column));
    }
@@ -160,6 +148,10 @@ public class MyTable extends JTable {
    public Column[] getColumns() {
       Map<Column, Integer> columnNames = model.getColumnNames();
       return columnNames.keySet().toArray(new Column[columnNames.size()]);
+   }
+
+   public void syncJira(JiraIssue jiraIssue, int tableRowSynced) {
+      model.syncJira(jiraIssue, convertRowIndexToModel(tableRowSynced));
    }
 
 }

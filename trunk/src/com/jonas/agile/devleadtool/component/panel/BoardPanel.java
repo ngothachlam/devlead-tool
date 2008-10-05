@@ -62,20 +62,6 @@ public class BoardPanel extends MyComponentPanel {
       JPanel buttonPanel = new JPanel();
 
       addPanelWithAddAndRemoveOptions(table, buttonPanel);
-      SyncWithJiraListener syncWithJiraListener = new SyncWithJiraListener(table, helper);
-      syncWithJiraListener.addListener(new SyncWithJiraActionListenerListener() {
-         public void jiraAdded(JiraIssue jiraIssue) {
-         }
-
-         public void jiraSynced(JiraIssue jira, int tableRowSynced) {
-            table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
-            table.setValueAt(jira.getLLUListPriority(), tableRowSynced, Column.prio);
-         }
-
-         public void jiraSyncedCompleted() {
-         }
-      });
-      addButton(buttonPanel, "Sync", syncWithJiraListener);
       addButton(buttonPanel, "Open", new OpenJirasListener(table, helper));
       addButton(buttonPanel, "Unsort", new ActionListener() {
          @Override

@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -13,20 +12,15 @@ import java.util.Map;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
-import com.jonas.agile.devleadtool.component.listener.CopyToTableListener;
-import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
 import com.jonas.agile.devleadtool.component.listener.DownloadJirasListener;
-import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -35,7 +29,6 @@ import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.guibuilding.basicdnd.PopupListener;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
@@ -86,29 +79,14 @@ public class JiraPanel extends MyComponentPanel {
       Vector<JiraProject> projects = JiraProject.getProjects();
 
       addPanelWithAddAndRemoveOptions(table, topPanel);
-      SyncWithJiraListener listener = new SyncWithJiraListener(table, helper);
       SyncWithJiraActionListenerListener syncWithJiraListener = new SyncWithJiraActionListenerListener() {
          public void jiraAdded(JiraIssue jiraIssue) {
             table.addJira(jiraIssue);
          }
-
-         public void jiraSynced(JiraIssue jira, int tableRowSynced) {
-            // new JiraIssue(jira.getKey(), jira.getSummary(), jira.getStatus(), jira.getResolution(), jira.getStatus(),
-            // jira.getBuildNo(),jira.getEstimate(), jira.getLLUListPriority());
-            log.debug("jira synced " + jira.getKey() + " on table row " + tableRowSynced);
-            table.setValueAt(jira.getKey(), tableRowSynced, Column.Jira);
-            table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
-            table.setValueAt(jira.getType(), tableRowSynced, Column.J_Type);
-            table.setValueAt(jira.getFixVersions(), tableRowSynced, Column.J_FixVersion);
-            table.setValueAt(jira.getStatus(), tableRowSynced, Column.J_Status);
-            table.setValueAt(jira.getResolution(), tableRowSynced, Column.J_Resolution);
-            table.setValueAt(jira.getBuildNo(), tableRowSynced, Column.J_BuildNo);
-            table.setValueAt(jira.getEstimate(), tableRowSynced, Column.J_Dev_Estimate);
-            table.setValueAt(jira.getSpent(), tableRowSynced, Column.J_Dev_Spent);
+         public void jiraSynced(JiraIssue jiraIssue, int tableRowSynced) {
+            table.syncJira(jiraIssue, tableRowSynced);
          }
       };
-      listener.addListener(syncWithJiraListener);
-      addButton(topPanel, "Sync", listener);
       addButton(topPanel, "Open", new OpenJirasListener(table, helper));
       
       JPanel bottomPanel = getFixversionSyncPanel(projects, syncWithJiraListener);

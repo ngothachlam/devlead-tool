@@ -71,20 +71,6 @@ public class PlanPanel extends MyComponentPanel {
       JPanel buttons = new JPanel();
 
       addPanelWithAddAndRemoveOptions(table, buttons);
-      SyncWithJiraListener listener = new SyncWithJiraListener(table, helper);
-      listener.addListener(new SyncWithJiraActionListenerListener() {
-         public void jiraAdded(JiraIssue jiraIssue) {
-         }
-
-         public void jiraSynced(JiraIssue jira, int tableRowSynced) {
-            table.setValueAt(jira.getSummary(), tableRowSynced, Column.Description);
-            table.setValueAt(jira.getType(), tableRowSynced, Column.J_Type);
-         }
-
-         public void jiraSyncedCompleted() {
-         }
-      });
-      addButton(buttons, "Sync", listener);
       addButton(buttons, "Open Jiras", new OpenJirasListener(table, helper));
 
       setupPlanVersionsFrame();

@@ -19,20 +19,11 @@ public class JiraSoapClientFunctionalTest extends TestCase {
 
    JiraSoapClient client = null;
    JiraSoapClient clientAolBB = null;
-   private JiraSoapService jiraSoapServiceAtlassain;
-   private JiraSoapService jiraSoapServiceAolBB;
 
    protected void setUp() throws Exception {
       super.setUp();
-      JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator1 = new JiraSoapServiceServiceLocator();
-      jiraSoapServiceServiceLocator1.setJirasoapserviceV2EndpointAddress(ClientConstants.JIRA_URL_ATLASSIN + ClientConstants.WS_LOCATION);
-      jiraSoapServiceAtlassain = (jiraSoapServiceServiceLocator1).getJirasoapserviceV2();
-      client = new JiraSoapClient(jiraSoapServiceAtlassain);
-
-      JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator2 = new JiraSoapServiceServiceLocator();
-      jiraSoapServiceServiceLocator2.setJirasoapserviceV2EndpointAddress(ClientConstants.JIRA_URL_AOLBB + ClientConstants.WS_LOCATION);
-      jiraSoapServiceAolBB = (jiraSoapServiceServiceLocator2).getJirasoapserviceV2();
-      clientAolBB = new JiraSoapClient(jiraSoapServiceAolBB);
+      client = new JiraSoapClient(ClientConstants.ATLASSIN_WS);
+      clientAolBB = new JiraSoapClient(ClientConstants.AOLBB_WS);
    }
 
    public void testShouldGetFixVersionsOk() throws Exception {
@@ -97,7 +88,6 @@ public class JiraSoapClientFunctionalTest extends TestCase {
    public void testGetJiraThatDoesNotExist() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException,
          JiraIssueNotFoundException, InterruptedException {
       assertEquals("TST-1", client.getJira("TST-1").getKey());
-      ((Stub) jiraSoapServiceAtlassain).setTimeout(500);
       try {
          assertEquals(null, client.getJira("TST-2"));
          assertTrue(false);
@@ -108,7 +98,6 @@ public class JiraSoapClientFunctionalTest extends TestCase {
    public void testGetJiraThatTimesOut() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException,
          JiraIssueNotFoundException, InterruptedException {
       assertEquals("TST-1", client.getJira("TST-1").getKey());
-      ((Stub) jiraSoapServiceAtlassain).setTimeout(500);
       try {
          assertEquals(null, client.getJira("TST-2"));
          assertTrue(false);

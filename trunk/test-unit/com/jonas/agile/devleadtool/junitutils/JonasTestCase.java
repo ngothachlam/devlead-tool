@@ -17,7 +17,6 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.TestObjects;
-import com.jonas.jira.utils.Factory;
 import com.jonas.jira.utils.JiraBuilder;
 
 public class JonasTestCase extends TestCase {
@@ -25,7 +24,6 @@ public class JonasTestCase extends TestCase {
    private List<Object> classMocks = new ArrayList<Object>();
    private List<Object> interfaceMocks = new ArrayList<Object>();
 
-   protected Factory mockFactory = createInterfaceMock(Factory.class);
    protected JiraBuilder mockJiraBuilder = createClassMock(JiraBuilder.class);
    
    protected JonasTestCase(){

@@ -49,6 +49,7 @@ public class DownloadJirasListener implements ActionListener {
 				for (int i = 0; i < selects.length; i++) {
 					final JiraVersion version = (JiraVersion) selects[i];
 					final JiraClient client = version.getProject().getJiraClient();
+					log.debug("client jira url: " + client.getJiraUrl());
 					try {
 						dialog.setNote("Logging in.");
 						JiraIssue[] jiras;

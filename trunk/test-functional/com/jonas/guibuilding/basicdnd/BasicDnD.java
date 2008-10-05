@@ -22,6 +22,7 @@ import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -82,9 +83,9 @@ public class BasicDnD extends JPanel {
       TableAndTitleDTO planDestDTO = new TableAndTitleDTO("Plan", planTable);
       TableAndTitleDTO jiraDestDTO = new TableAndTitleDTO("Jira", jiraTable);
       
-      new MyTablePopupMenu(boardTable, planDestDTO, jiraDestDTO);
-      new MyTablePopupMenu(planTable, boardDestDTO, jiraDestDTO);
-      new MyTablePopupMenu(jiraTable, boardDestDTO, planDestDTO);
+      new MyTablePopupMenu(boardTable, null, planDestDTO, jiraDestDTO);
+      new MyTablePopupMenu(planTable, null, boardDestDTO, jiraDestDTO);
+      new MyTablePopupMenu(jiraTable, null, boardDestDTO, planDestDTO);
       
       Component tabPane = combineIntoSplitPane(panel1, panel2, panel3);
 
