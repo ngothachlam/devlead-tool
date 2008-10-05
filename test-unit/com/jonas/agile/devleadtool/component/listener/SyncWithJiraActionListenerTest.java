@@ -22,7 +22,7 @@ public class SyncWithJiraActionListenerTest extends JonasTestCase {
       PlannerHelper mock_helper = createClassMock(PlannerHelper.class);
       ActionEvent mock_actionEvent =  createClassMock(ActionEvent.class);
       SyncWithJiraActionListenerListener mock_listener =  createClassMock(SyncWithJiraActionListenerListener.class);
-      SyncWithJiraActionListener listener = new SyncWithJiraActionListener(mock_table, mock_helper);
+      SyncWithJiraListener listener = new SyncWithJiraListener(mock_table, mock_helper);
     
       listener.addListener(mock_listener);
       

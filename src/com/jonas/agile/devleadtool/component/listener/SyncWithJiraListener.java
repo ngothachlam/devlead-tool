@@ -26,13 +26,13 @@ import com.jonas.jira.access.JiraListener;
  * @author Jonas Olofsson
  */
 
-public class SyncWithJiraActionListener implements ActionListener {
-   private static final Logger log = MyLogger.getLogger(SyncWithJiraActionListener.class);
+public class SyncWithJiraListener implements ActionListener {
+   private static final Logger log = MyLogger.getLogger(SyncWithJiraListener.class);
    private final PlannerHelper helper;
    private final List<SyncWithJiraActionListenerListener> listeners = new ArrayList<SyncWithJiraActionListenerListener>();
    private final MyTable table;
 
-   public SyncWithJiraActionListener(MyTable table, PlannerHelper helper) {
+   public SyncWithJiraListener(MyTable table, PlannerHelper helper) {
       this.table = table;
       this.helper = helper;
    }
