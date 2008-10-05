@@ -41,10 +41,9 @@ public class MyTable extends JTable {
       super(defaultTableModel);
       setDefaultRenderer(String.class, new StringTableCellRenderer());
       setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
-//      setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
+      // setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
       setDefaultEditor(Boolean.class, new DefaultCellEditor(new JCheckBox()));
 
-      getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       setDragEnabled(true);
       setDropMode(DropMode.INSERT);
 
@@ -148,7 +147,7 @@ public class MyTable extends JTable {
 
    public void insertRow(int index, Vector<Object> rowData) {
       System.out.println("insertRow");
-//      int convertRowIndexToModel = index;
+      // int convertRowIndexToModel = index;
       int convertRowIndexToModel = convertRowIndexToModel(index);
       System.out.println(convertRowIndexToModel);
       model.insertRow(convertRowIndexToModel, rowData);
@@ -156,6 +155,11 @@ public class MyTable extends JTable {
 
    public void addRow(Vector<Object> rowData) {
       model.addRow(rowData);
+   }
+
+   public Column[] getColumns() {
+      Map<Column, Integer> columnNames = model.getColumnNames();
+      return columnNames.keySet().toArray(new Column[columnNames.size()]);
    }
 
    // public void setRowFilter(RowFilter<Object, Object> rowFilter) {

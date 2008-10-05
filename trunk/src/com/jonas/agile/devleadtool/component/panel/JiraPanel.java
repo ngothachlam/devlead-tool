@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
@@ -106,17 +107,20 @@ public class JiraPanel extends MyComponentPanel {
       listener.addListener(syncWithJiraListener);
       addButton(topPanel, "Sync", listener);
       addButton(topPanel, "Open", new OpenJirasListener(table, helper));
-      addButton(topPanel, "Copy to Board", new CopyToTableListener(table, new DestinationRetriever() {
+      
+      
+      Map<String, DestinationRetriever> map = new HashMap<String, DestinationRetriever>();
+      map.put("Board", new DestinationRetriever(){
          public MyTable getDestinationTable() {
             return helper.getActiveInternalFrame().getBoardTable();
          }
-      }, helper), Column.Description);
-      addButton(topPanel, "Copy to Plan", new CopyToTableListener(table, new DestinationRetriever() {
+      });
+      map.put("Plan", new DestinationRetriever(){
          public MyTable getDestinationTable() {
             return helper.getActiveInternalFrame().getPlanTable();
          }
-      }, helper, Column.Description, Column.Release, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Dev_Estimate,
-            Column.Dev_Actual, Column.Note));
+      });
+      addButton(topPanel, "Copy", new CopyToTableListener(table, map, helper), Column.Description);
 
       JPanel bottomPanel = getFixversionSyncPanel(projects, syncWithJiraListener);
 

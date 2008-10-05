@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.listener.PlanFixVersionListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.data.PlanFixVersion;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
@@ -35,7 +36,7 @@ public class FixVersionsPanel extends MyComponentPanel {
    private void addListeners() {
       PlanFixVersion.addListener(new PlanFixVersionListener() {
          public void planFixVersionAdded(PlanFixVersion fixVersion, JiraProject project) {
-            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            MyTableModel model = (MyTableModel) table.getModel();
             Vector<Object> rowData = getRowData(fixVersion);
             model.addRow(rowData);
          }

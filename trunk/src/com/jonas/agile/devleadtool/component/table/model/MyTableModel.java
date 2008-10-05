@@ -65,7 +65,7 @@ public abstract class MyTableModel extends DefaultTableModel {
             case J_BuildNo:
                contents.add(jiraIssue.getBuildNo());
                break;
-            case ListPrio:
+            case prio:
                contents.add(jiraIssue.getLLUListPriority());
                break;
             case J_Dev_Estimate:
@@ -104,7 +104,9 @@ public abstract class MyTableModel extends DefaultTableModel {
       int row = getRowWithJira(jira, Column.Jira);
       for (Column column : map.keySet()) {
          Object value = map.get(column);
-         setValueAt(value, row, getColumnIndex(column));
+         int columnIndex = getColumnIndex(column);
+         if (columnIndex != -1)
+            setValueAt(value, row, columnIndex);
       }
       fireTableRowsUpdated(row, row);
    }
@@ -137,14 +139,14 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    @Override
    public void insertRow(int row, Object[] rowData) {
-      if (!doesJiraExist((String) rowData[0])) 
-       super.insertRow(row, rowData);
+      if (!doesJiraExist((String) rowData[0]))
+         super.insertRow(row, rowData);
    }
 
    @Override
    public void insertRow(int row, Vector rowData) {
-      if (!doesJiraExist((String) rowData.get(0))) 
-       super.insertRow(row, rowData);
+      // if (!doesJiraExist((String) rowData.get(0)))
+      super.insertRow(row, rowData);
    }
 
    final public Class<?> getColumnClass(int columnIndex) {
@@ -341,5 +343,4 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
       return result;
    }
-
 }

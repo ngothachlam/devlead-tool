@@ -3,6 +3,8 @@ package com.jonas.agile.devleadtool.component.panel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -84,16 +86,19 @@ public class PlanPanel extends MyComponentPanel {
       });
       addButton(buttons, "Sync", listener);
       addButton(buttons, "Open Jiras", new OpenJirasListener(table, helper));
-      addButton(buttons, "Copy to Board", new CopyToTableListener(table, new DestinationRetriever() {
+
+      Map<String, DestinationRetriever> map = new HashMap<String, DestinationRetriever>();
+      map.put("Board", new DestinationRetriever(){
          public MyTable getDestinationTable() {
             return helper.getActiveInternalFrame().getBoardTable();
          }
-      }, helper));
-      addButton(buttons, "Copy to Jira", new CopyToTableListener(table, new DestinationRetriever() {
+      });
+      map.put("Jira", new DestinationRetriever(){
          public MyTable getDestinationTable() {
             return helper.getActiveInternalFrame().getJiraTable();
          }
-      }, helper));
+      });
+      addButton(buttons, "Copy", new CopyToTableListener(table,map, helper));
 
       setupPlanVersionsFrame();
       addButton(buttons, "PlanVersions", new ActionListener() {
