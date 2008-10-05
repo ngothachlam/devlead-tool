@@ -1,10 +1,11 @@
 package com.jonas.agile.devleadtool.component;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -14,86 +15,72 @@ import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
+import com.jonas.agile.devleadtool.component.panel.OpenJirasListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.guibuilding.basicdnd.PopupListener;
 import com.jonas.jira.JiraIssue;
 
 public class MyTablePopupMenu extends JPopupMenu {
 
    private final MyTable sourceTable;
 
-   private static final List<MyTablePopupMenu> list = new ArrayList<MyTablePopupMenu>();
-
    public MyTablePopupMenu(MyTable source, PlannerHelper helper, TableAndTitleDTO... tables) {
       super();
       this.sourceTable = source;
+      
       sourceTable.addMouseListener(new PopupListener(this));
 
       for (TableAndTitleDTO tableDTO : tables) {
-         String menuItemTitle = "Copy to " + tableDTO.getTitle();
-         CopyMenuItem menuItem = new CopyMenuItem(menuItemTitle, sourceTable, tableDTO.getTable());
-
-         add(menuItem);
+         String title = "Copy to Table " + tableDTO.getTitle();
+         add(new MenuItem_Copy((title), sourceTable, tableDTO.getTable()));
       }
 
       addSeparator();
 
-      if (helper != null)
-         add(new SyncMenuItem("Sync", sourceTable, helper));
-      add(new RemoveMenuItem("Remove", sourceTable));
+      add(new MenuItem_Sync("Sync with Jira", sourceTable, helper));
+      add(new MenuItem_Remove("Remove from Table", sourceTable));
+      add(new MenuItem_Open("Open in Browser", sourceTable, helper));
 
-      list.add(this);
-   }
-}
-
-
-class RemoveMenuItem extends JMenuItem implements ActionListener {
-   private MyTable sourceTable;
-
-   public RemoveMenuItem(String string, MyTable sourceTable) {
-      super(string);
-      this.sourceTable = sourceTable;
-      addActionListener(this);
    }
 
    @Override
-   public void actionPerformed(ActionEvent e) {
-      sourceTable.removeSelectedRows();
+   public void show(Component invoker, int x, int y) {
+      if (sourceTable.getSelectedRowCount() > 0)
+         super.show(invoker, x, y);
    }
 }
 
 
-class SyncMenuItem extends JMenuItem {
-   private MyTable sourceTable;
+class PopupListener extends MouseAdapter {
+   private MyTablePopupMenu popup;
 
-   public SyncMenuItem(String string, final MyTable sourceTable, PlannerHelper helper) {
-      super(string);
-      this.sourceTable = sourceTable;
-      SyncWithJiraActionListenerListener syncWithJiraActionListenerListener = new SyncWithJiraActionListenerListener() {
-         public void jiraAdded(JiraIssue jiraIssue) {
-            sourceTable.addJira(jiraIssue);
-         }
+   public PopupListener(MyTablePopupMenu popup) {
+      this.popup = popup;
+   }
 
-         public void jiraSynced(JiraIssue jiraIssue, int tableRowSynced) {
-            sourceTable.addJira(jiraIssue);
-         }
-      };
+   private void maybeShowPopup(MouseEvent e) {
+      if (e.isPopupTrigger()) {
+         popup.show(e.getComponent(), e.getX(), e.getY());
+      }
+   }
 
-      SyncWithJiraListener syncWithJiraListener = new SyncWithJiraListener(sourceTable, helper);
-      syncWithJiraListener.addListener(syncWithJiraActionListenerListener);
-      addActionListener(syncWithJiraListener);
+   public void mousePressed(MouseEvent e) {
+      maybeShowPopup(e);
+   }
+
+   public void mouseReleased(MouseEvent e) {
+      maybeShowPopup(e);
    }
 }
 
 
-class CopyMenuItem extends JMenuItem implements ActionListener {
+class MenuItem_Copy extends JMenuItem implements ActionListener {
 
    private final MyTable destinationTable;
    private MyTable sourceTable;
 
-   public CopyMenuItem(String string, MyTable source, MyTable table) {
+   public MenuItem_Copy(String string, MyTable source, MyTable table) {
       super(string);
       this.sourceTable = source;
       this.destinationTable = table;
@@ -125,5 +112,57 @@ class CopyMenuItem extends JMenuItem implements ActionListener {
          map.put(column, model.getValueAt(column, row));
       }
       table.addJira(jiraString, map);
+   }
+}
+
+
+class MenuItem_Open extends JMenuItem {
+   private MyTable sourceTable;
+
+   public MenuItem_Open(String string, MyTable sourceTable, PlannerHelper helper) {
+      super(string);
+      this.sourceTable = sourceTable;
+      addActionListener(new OpenJirasListener(sourceTable, helper));
+   }
+}
+
+
+class MenuItem_Remove extends JMenuItem implements ActionListener {
+   private MyTable sourceTable;
+
+   public MenuItem_Remove(String string, MyTable sourceTable) {
+      super(string);
+      this.sourceTable = sourceTable;
+      addActionListener(this);
+   }
+
+   @Override
+   public void actionPerformed(ActionEvent e) {
+      sourceTable.removeSelectedRows();
+   }
+}
+
+class MenuItem_Sync extends JMenuItem {
+   private MyTable sourceTable;
+
+   public MenuItem_Sync(String string, final MyTable sourceTable, PlannerHelper helper) {
+      super(string);
+      this.sourceTable = sourceTable;
+      SyncWithJiraActionListenerListener syncWithJiraActionListenerListener = new SyncWithJiraActionListenerListener() {
+         public void jiraAdded(JiraIssue jiraIssue) {
+            sourceTable.addJira(jiraIssue);
+         }
+
+         public void jiraSynced(JiraIssue jiraIssue, int tableRowSynced) {
+            sourceTable.addJira(jiraIssue);
+         }
+      };
+
+      SyncWithJiraListener syncWithJiraListener = new SyncWithJiraListener(sourceTable, helper);
+      syncWithJiraListener.addListener(syncWithJiraActionListenerListener);
+      addActionListener(syncWithJiraListener);
+
+      if (helper != null)
+         setEnabled(false);
    }
 }

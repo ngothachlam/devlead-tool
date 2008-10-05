@@ -3,8 +3,6 @@ package com.jonas.agile.devleadtool.component.panel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -13,10 +11,6 @@ import javax.swing.table.JTableHeader;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
-import com.jonas.agile.devleadtool.component.listener.CopyToTableListener;
-import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
-import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
-import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.TabCheckButtonActionListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -28,7 +22,6 @@ import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRende
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.jira.JiraIssue;
 
 public class BoardPanel extends MyComponentPanel {
 
@@ -62,7 +55,6 @@ public class BoardPanel extends MyComponentPanel {
       JPanel buttonPanel = new JPanel();
 
       addPanelWithAddAndRemoveOptions(table, buttonPanel);
-      addButton(buttonPanel, "Open", new OpenJirasListener(table, helper));
       addButton(buttonPanel, "Unsort", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {

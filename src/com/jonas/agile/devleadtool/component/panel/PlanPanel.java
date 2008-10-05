@@ -71,7 +71,6 @@ public class PlanPanel extends MyComponentPanel {
       JPanel buttons = new JPanel();
 
       addPanelWithAddAndRemoveOptions(table, buttons);
-      addButton(buttons, "Open Jiras", new OpenJirasListener(table, helper));
 
       setupPlanVersionsFrame();
       addButton(buttons, "PlanVersions", new ActionListener() {
