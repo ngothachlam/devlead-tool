@@ -61,7 +61,7 @@ public class DevLeadTool {
 
       JMenuItem planner = createMenuItem("New Planner", new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            new OpenPlannerDialog(frame, desktop, plannerHelper, plannerDAO);
+            new OpenPlannerDialog(desktop, plannerHelper, plannerDAO);
          }
       });
       JMenuItem open = createMenuItem("Open Planner", new ActionListener() {
@@ -84,7 +84,6 @@ public class DevLeadTool {
       MyDesktopPane desktop = new MyDesktopPane();
       JPanel contentPanel = new MyPanel(new BorderLayout());
       contentPanel.add(desktop);
-      plannerHelper.setDesktop(desktop);
       frame.setJMenuBar(createMenuBar(frame, desktop));
       frame.setContentPane(contentPanel);
 

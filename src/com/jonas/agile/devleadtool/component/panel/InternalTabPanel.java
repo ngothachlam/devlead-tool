@@ -8,7 +8,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -18,7 +17,7 @@ import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.guibuilding.basicdnd.MyPopupListener;
 
-public class InternalFrameTabPanel extends MyComponentPanel {
+public class InternalTabPanel extends MyComponentPanel {
 
 	private BoardPanel boardPanel;
 	private PlanPanel planPanel;
@@ -28,11 +27,11 @@ public class InternalFrameTabPanel extends MyComponentPanel {
 
 	private JCheckBox checkBox;
 
-	public InternalFrameTabPanel(PlannerHelper client) {
+	public InternalTabPanel(PlannerHelper client) {
 		this(client, null, null, null);
 	}
 
-	public InternalFrameTabPanel(PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel, JiraTableModel jiraModel) {
+	public InternalTabPanel(PlannerHelper client, BoardTableModel boardModel, PlanTableModel planModel, JiraTableModel jiraModel) {
 		super(new BorderLayout());
 		boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
 		planModel = (planModel == null) ? new PlanTableModel() : planModel;

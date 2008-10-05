@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
 import com.jonas.agile.devleadtool.component.panel.BoardPanel;
-import com.jonas.agile.devleadtool.component.panel.InternalFrameTabPanel;
+import com.jonas.agile.devleadtool.component.panel.InternalTabPanel;
 import com.jonas.agile.devleadtool.component.panel.JiraPanel;
 import com.jonas.agile.devleadtool.component.panel.PlanPanel;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -30,13 +30,13 @@ public class MyInternalFrame extends JInternalFrame {
    private PlannerDAO dao;
 
    private String excelFile;
-   private InternalFrameTabPanel internalFrameTabPanel;
+   private InternalTabPanel internalFrameTabPanel;
 
    private String originalTitle;
 
    private String originalTitleWithDuplicateNumber;
 
-   public MyInternalFrame(PlannerHelper client, String title, InternalFrameTabPanel internalFrameTabPanel, PlannerDAO dao) {
+   public MyInternalFrame(PlannerHelper client, String title, InternalTabPanel internalFrameTabPanel, PlannerDAO dao) {
       this(title, client);
       this.dao = dao;
 

@@ -9,7 +9,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.CutoverLength;
 import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
-import com.jonas.agile.devleadtool.component.panel.InternalFrameTabPanel;
+import com.jonas.agile.devleadtool.component.panel.InternalTabPanel;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
@@ -19,11 +19,8 @@ public class LoadPlannerDialog extends JFileChooser {
 
 	private final PlannerDAOExcelImpl dao;
 
-	private final MyDesktopPane desktopPane;
-
 	public LoadPlannerDialog(MyDesktopPane desktop, PlannerDAOExcelImpl plannerDAO, JFrame frame, PlannerHelper plannerHelper) {
 		super(new File("."));
-		this.desktopPane = desktop;
 		this.dao = plannerDAO;
 
 		addChoosableFileFilter(new FileFilter() {
@@ -48,9 +45,9 @@ public class LoadPlannerDialog extends JFileChooser {
 				PlanTableModel planModel = dao.loadPlanModel();
 				JiraTableModel jiraModel = dao.loadJiraModel();
 				// TODO remove plannerHelper.getTitle?
-				InternalFrameTabPanel internalFrameTabPanel = new InternalFrameTabPanel(plannerHelper, boardModel, planModel, jiraModel);
+				InternalTabPanel internalFrameTabPanel = new InternalTabPanel(plannerHelper, boardModel, planModel, jiraModel);
             MyInternalFrame internalFrame = new MyInternalFrame(plannerHelper, plannerHelper.getTitle(), internalFrameTabPanel, dao);
-				desktopPane.addInternalFrame(internalFrame);
+            desktop.addInternalFrame(internalFrame);
 				internalFrame.setExcelFile(xlsFile.getAbsolutePath(), CutoverLength.DEFAULT);
 
 			} catch (IOException e) {
