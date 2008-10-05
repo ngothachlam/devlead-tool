@@ -35,8 +35,6 @@ public class PlannerHelper {
 
    private PlannerCommunicator plannerCommunicator = new PlannerCommunicator(this);
 
-   private static MyDesktopPane desktop;
-
    public PlannerHelper(JFrame frame, String title) {
       this.frame = frame;
       this.title = title;
@@ -126,11 +124,4 @@ public class PlannerHelper {
       return plannerCommunicator;
    }
 
-   public void setDesktop(MyDesktopPane desktop) {
-      this.desktop = desktop;
-   }
-
-   public MyDesktopPane getDesktop() {
-      return desktop;
-   }
 }
