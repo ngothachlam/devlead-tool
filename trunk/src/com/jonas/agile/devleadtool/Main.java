@@ -9,7 +9,7 @@ public class Main {
       try {
          tool.start();
       } catch (Throwable e) {
-         AlertDialog.alertException(tool.getHelper(), e);
+         AlertDialog.alertException(tool.getHelper().getParentFrame(), e);
       }
    } 
 

@@ -162,7 +162,4 @@ public class MyTable extends JTable {
       return columnNames.keySet().toArray(new Column[columnNames.size()]);
    }
 
-   // public void setRowFilter(RowFilter<Object, Object> rowFilter) {
-   // sorter.setRowFilter(rowFilter);
-   // }
 }

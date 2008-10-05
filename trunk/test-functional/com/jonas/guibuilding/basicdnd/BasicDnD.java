@@ -6,19 +6,24 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
+import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -57,16 +62,36 @@ public class BasicDnD extends JPanel {
 
    public BasicDnD() {
       super(new BorderLayout());
-
-      BoardTableModel testModelBoard = getTestModelBoard();
-      JPanel panel1 = getBorderPanel(getScrollPaneWithTable(testModelBoard), "Board");
-      JPanel panel2 = getBorderPanel(getScrollPaneWithTable(getTestModelPlan()), "Plan");
-      JPanel panel3 = getBorderPanel(getScrollPaneWithTable(getTestModelJira()), "Jira");
+      
+      MyTable boardTable = getTable(getTestModelBoard());
+      JScrollPane scrollPane1 = new JScrollPane(boardTable);
+      scrollPane1.setPreferredSize(new Dimension(580, 100));
+      JPanel panel1 = getBorderPanel(scrollPane1, "Board");
+      
+      MyTable planTable = getTable(getTestModelPlan());
+      JScrollPane scrollPane2 = new JScrollPane(planTable);
+      scrollPane2.setPreferredSize(new Dimension(580, 100));
+      JPanel panel2 = getBorderPanel(scrollPane2, "Plan");
+      
+      MyTable jiraTable = getTable(getTestModelJira());
+      JScrollPane scrollPane3 = new JScrollPane(jiraTable);
+      scrollPane3.setPreferredSize(new Dimension(580, 100));
+      JPanel panel3 = getBorderPanel(scrollPane3, "Jira");
+      
+      TableAndTitleDTO tableAndTitleDTO1 = new TableAndTitleDTO("Board", boardTable);
+      TableAndTitleDTO tableAndTitleDTO2 = new TableAndTitleDTO("Plan", planTable);
+      TableAndTitleDTO tableAndTitleDTO3 = new TableAndTitleDTO("Jira", jiraTable);
+      
+      MyPopupListener myPopupListener = new MyPopupListener(new MyTablePopupMenu(tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3));
+      
+      boardTable.addMouseListener(myPopupListener);
+      planTable.addMouseListener(myPopupListener);
+      jiraTable.addMouseListener(myPopupListener);
 
       Component tabPane = combineIntoSplitPane(panel1, panel2, panel3);
 
       add(tabPane, BorderLayout.CENTER);
-      add(addPanel(testModelBoard), BorderLayout.SOUTH);
+      add(addPanel(getTestModelBoard()), BorderLayout.SOUTH);
       setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
    }
 
@@ -111,13 +136,6 @@ public class BasicDnD extends JPanel {
       panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
       panel.add(createPanelForComponent(scrollPane, string));
       return panel;
-   }
-
-   private JScrollPane getScrollPaneWithTable(MyTableModel model) {
-      MyTable table = getTable(model);
-      JScrollPane scrollPane = new JScrollPane(table);
-      scrollPane.setPreferredSize(new Dimension(580, 100));
-      return scrollPane;
    }
 
    private MyTable getTable(MyTableModel model) {

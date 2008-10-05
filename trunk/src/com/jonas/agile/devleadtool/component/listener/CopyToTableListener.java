@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
@@ -21,13 +22,13 @@ import com.jonas.common.logging.MyLogger;
 public class CopyToTableListener implements ActionListener {
    private Logger log = MyLogger.getLogger(this.getClass());
    private final MyTable sourceTable;
-   private final PlannerHelper helper2;
+   private final PlannerHelper helper;
    private final Map<String, DestinationRetriever> destinationMap;
 
    public CopyToTableListener(MyTable sourceTable, Map<String, DestinationRetriever> destinationMap, PlannerHelper helper) {
       this.sourceTable = sourceTable;
       this.destinationMap = destinationMap;
-      this.helper2 = helper;
+      this.helper = helper;
    }
 
    public void actionPerformed(ActionEvent e) {
@@ -40,7 +41,7 @@ public class CopyToTableListener implements ActionListener {
       DestinationRetriever destinationRetriever = destinationMap.get(s);
 
       final int[] selectedRows = sourceTable.getSelectedRows();
-      final ProgressDialog dialog = new ProgressDialog(helper2.getParentFrame(), "Copying...", "Copying selected messages from Board to Plan...",
+      final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Copying...", "Copying selected messages from Board to Plan...",
             selectedRows.length);
       try {
          for (int i = 0; i < selectedRows.length; i++) {
@@ -49,7 +50,7 @@ public class CopyToTableListener implements ActionListener {
             dialog.increseProgress();
          }
       } catch (Exception ex) {
-         AlertDialog.alertException(helper2, ex);
+         AlertDialog.alertException(helper.getParentFrame(), ex);
          ex.printStackTrace();
       }
       dialog.setCompleteWithDelay(300);
