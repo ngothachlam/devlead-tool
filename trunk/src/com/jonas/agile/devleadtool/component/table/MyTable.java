@@ -13,6 +13,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
@@ -38,8 +39,8 @@ public class MyTable extends JTable {
       super(defaultTableModel);
       setDefaultRenderer(String.class, new StringTableCellRenderer());
       setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
-      // setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor());
-      setDefaultEditor(Boolean.class, new DefaultCellEditor(new JCheckBox()));
+       setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor(new JCheckBox()));
+//      setDefaultEditor(Boolean.class, new DefaultCellEditor(new JCheckBox()));
 
       setDragEnabled(true);
       setDropMode(DropMode.INSERT);

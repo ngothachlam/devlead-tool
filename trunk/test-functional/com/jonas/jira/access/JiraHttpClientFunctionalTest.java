@@ -7,7 +7,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
-import com.jonas.jira.MyJiraFilter;
+import com.jonas.jira.JiraFilter;
 import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraHttpClientFunctionalTest extends TestCase {
@@ -40,7 +40,7 @@ public class JiraHttpClientFunctionalTest extends TestCase {
    }
    
    public void testShouldGetFilter() throws HttpException, IOException, JiraException, JDOMException{
-      List<JiraIssue> jiras = client_Aol.getJirasFromFilter(MyJiraFilter.DevsupportPrioFilter, new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
+      List<JiraIssue> jiras = client_Aol.getJirasFromFilter(JiraFilter.DevsupportPrioFilter, new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
       
       for (JiraIssue jiraIssue : jiras) {
          System.out.println(jiraIssue.getKey());

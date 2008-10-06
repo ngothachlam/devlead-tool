@@ -15,7 +15,7 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
-import com.jonas.jira.MyJiraFilter;
+import com.jonas.jira.JiraFilter;
 import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraHttpClient extends HttpClient {
@@ -142,7 +142,7 @@ public class JiraHttpClient extends HttpClient {
       }
    }
 
-   public List<JiraIssue> getJirasFromFilter(MyJiraFilter devsupportPrioFilter, JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder) throws HttpException, IOException, JiraException, JDOMException {
+   public List<JiraIssue> getJirasFromFilter(JiraFilter devsupportPrioFilter, JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder) throws HttpException, IOException, JiraException, JDOMException {
       log.debug("getting Jiras");
       String url = baseUrl + devsupportPrioFilter.getUrl();
       log.debug("calling " + url);

@@ -1,10 +1,9 @@
 package com.jonas.jira;
 
-public class MyJiraFilter {
+public class JiraFilter {
 
-   private final String url;
 
-   public static final MyJiraFilter DevsupportPrioFilter = new MyJiraFilter("Dev Support (UnClosed)", 
+   public static final JiraFilter DevsupportPrioFilter = new JiraFilter(JiraProject.LLU_DEV_SUPPORT, "Dev Support (UnClosed)", 
          "/secure/IssueNavigator.jspa?view=rss&" +
          "&customfield_10241%3AlessThan=00001000000000.000" +
          "&customfield_10241%3AgreaterThan=00000000000000.000" +
@@ -15,9 +14,12 @@ public class MyJiraFilter {
          "&sorter/order=DESC" +
          "&tempMax=25&reset=true&decorator=none");
 
+   private final String url;
    private final String name;
+   private final JiraProject jiraProject;
 
-   public MyJiraFilter(String name, String url) {
+   public JiraFilter(JiraProject jiraProject, String name, String url) {
+      this.jiraProject = jiraProject;
       this.name = name;
       this.url = url;
    }
@@ -26,8 +28,17 @@ public class MyJiraFilter {
       return name;
    }
 
+   public JiraProject getProject() {
+      return jiraProject;
+   }
+
    public String getUrl() {
       return url;
+   }
+
+   @Override
+   public String toString() {
+      return name;
    }
 
 }

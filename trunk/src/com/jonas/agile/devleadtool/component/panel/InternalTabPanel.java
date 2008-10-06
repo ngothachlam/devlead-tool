@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import javax.swing.JSplitPane;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.dialog.AddDialog;
+import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -65,16 +67,23 @@ public class InternalTabPanel extends MyComponentPanel {
    }
 
    private Component getAddPanel(final JFrame frame, MyTable boardTable, MyTable jiraTable, MyTable planTable) {
-      JPanel panel = new JPanel(new BorderLayout());
+      JPanel panel = new JPanel(new GridLayout(1,2,5,5));
       final List<TableAndTitleDTO> tables = new ArrayList<TableAndTitleDTO>();
       tables.add(new TableAndTitleDTO("Board", boardTable));
       tables.add(new TableAndTitleDTO("Jira", jiraTable));
       tables.add(new TableAndTitleDTO("Plan", planTable));
 
+      final TableAndTitleDTO[] array = tables.toArray(new TableAndTitleDTO[tables.size()]);
       addButton(panel, "Add", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            new AddDialog(frame, tables.toArray(new TableAndTitleDTO[tables.size()]));
+            new AddDialog(frame, array);
+         }
+      });
+      addButton(panel, "Filters", new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            new AddFilterDialog(frame, array);
          }
       });
 

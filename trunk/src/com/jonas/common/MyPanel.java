@@ -94,14 +94,20 @@ public class MyPanel extends JPanel {
    }
 
    public JTextArea addTextArea(JPanel buttons, int rows, int cols, Object constraint) {
-      JTextArea jiraCommas = new JTextArea(rows, cols);
-      buttons.add(new JScrollPane(jiraCommas), constraint);
-      return jiraCommas;
+      JTextArea textArea = new JTextArea(rows, cols);
+      buttons.add(new JScrollPane(textArea), constraint);
+      
+      return textArea;
    }
 
    public JComboBox addComboBox(JPanel buttons, Object[] array) {
       JComboBox component = new JComboBox(array);
       buttons.add(component);
+      return component;
+   }
+   public JComboBox addComboBox(JPanel buttons, Object[] array, Object constraint) {
+      JComboBox component = new JComboBox(array);
+      buttons.add(component, constraint);
       return component;
    }
 
