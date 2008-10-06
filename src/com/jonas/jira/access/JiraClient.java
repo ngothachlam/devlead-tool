@@ -17,7 +17,7 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraResolution;
 import com.jonas.jira.JiraVersion;
-import com.jonas.jira.MyJiraFilter;
+import com.jonas.jira.JiraFilter;
 import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraClient {
@@ -85,7 +85,7 @@ public class JiraClient {
    public JiraIssue[] getJirasFromFilter() throws HttpException, IOException, JiraException, JDOMException{
       loadResolutionsIfRequired();
       loadJiraTypesIfRequired();
-      List<JiraIssue> jiras = httpClient.getJirasFromFilter(MyJiraFilter.DevsupportPrioFilter, JONAS_XPATH_EVALUATOR, jiraBuilder);
+      List<JiraIssue> jiras = httpClient.getJirasFromFilter(JiraFilter.DevsupportPrioFilter, JONAS_XPATH_EVALUATOR, jiraBuilder);
       return (JiraIssue[]) jiras.toArray(new JiraIssue[jiras.size()]);
    }
    

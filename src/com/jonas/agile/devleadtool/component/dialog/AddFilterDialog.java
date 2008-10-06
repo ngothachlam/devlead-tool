@@ -9,29 +9,35 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Enumeration;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
+import org.apache.commons.httpclient.HttpException;
+import org.jdom.JDOMException;
+import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
 import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
-import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
+import com.jonas.jira.JiraFilter;
+import com.jonas.jira.JiraIssue;
+import com.jonas.jira.access.JiraClient;
+import com.jonas.jira.access.JiraException;
+import com.jonas.testHelpers.TryoutTester;
 
-public class AddDialog extends JFrame {
+public class AddFilterDialog extends JFrame {
 
-   public AddDialog(Window frame, TableAndTitleDTO... tables) {
+   public AddFilterDialog(Window frame, TableAndTitleDTO... tables) {
       super();
-      this.setContentPane(new AddPanel(this, tables));
+      this.setContentPane(new AddFilterPanel(this, tables));
       this.pack();
 
       SwingUtil.centreWindowWithinWindow(this, frame);
@@ -39,17 +45,30 @@ public class AddDialog extends JFrame {
    }
 
    public static void main(String[] args) {
-      TableAndTitleDTO list1 = new TableAndTitleDTO("board", new MyTable(new BoardTableModel()));
-      TableAndTitleDTO list2 = new TableAndTitleDTO("Plan", new MyTable(new PlanTableModel()));
-      new AddDialog(new JFrame(), list1, list2);
+      MyTable boardTable = new MyTable(new BoardTableModel());
+      MyTable planTable = new MyTable(new PlanTableModel());
+      
+      TableAndTitleDTO list1 = new TableAndTitleDTO("board", boardTable);
+      TableAndTitleDTO list2 = new TableAndTitleDTO("Plan", planTable);
+      
+      JFrame frame = TryoutTester.getFrame();
+      MyPanel panel = new MyPanel(new GridLayout(2,1));
+
+      frame.setContentPane(panel);
+      frame.setVisible(true);
+      
+      panel.add(boardTable);
+      panel.add(planTable);
+      
+      new AddFilterDialog(frame, list1, list2);
    }
 }
 
 
-class AddPanel extends MyPanel {
+class AddFilterPanel extends MyPanel {
    private ButtonGroup group;
 
-   public AddPanel(final JFrame frame, TableAndTitleDTO... tables) {
+   public AddFilterPanel(final JFrame frame, TableAndTitleDTO... tables) {
       super(new BorderLayout());
       MyPanel panel = new MyPanel(new GridBagLayout());
       GridBagConstraints c = new GridBagConstraints();
@@ -61,23 +80,17 @@ class AddPanel extends MyPanel {
       panel.add(new JLabel("Table:"), c);
       set2ndCol(c);
       panel.add(getTableRadios(tables), c);
-      setNewRow(c);
-      panel.add(new JLabel("Prefix:"), c);
-      set2ndCol(c);
-      JTextField jiraPrefix = panel.addTextField(panel, 10, c);
 
       setNewRow(c);
       panel.add(new JLabel("Numbers:"), c);
       set2ndCol(c);
       c.weighty = 1;
-      JTextArea jiraCommas = panel.addTextArea(panel, 4, 10, c);
-
-      jiraCommas.setLineWrap(true);
-      jiraCommas.setWrapStyleWord(true);
+      Object[] filters = { JiraFilter.DevsupportPrioFilter };
+      JComboBox jiraCommas = panel.addComboBox(panel, filters, c);
 
       MyPanel buttonPanel = new MyPanel(new GridLayout(1, 2, 5, 5));
       buttonPanel.bordered();
-      this.addButton(buttonPanel, "Add", new AddFromRadioButtons(frame, group, jiraPrefix, jiraCommas));
+      this.addButton(buttonPanel, "Add", new AddFilterFromRadioButtons(frame, group, jiraCommas));
       this.addButton(buttonPanel, "Close", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -116,13 +129,14 @@ class AddPanel extends MyPanel {
 }
 
 
-class AddFromRadioButtons extends AddNewRowActionListener {
+class AddFilterFromRadioButtons implements ActionListener {
 
    private ButtonGroup group;
+   private final JComboBox filters;
 
-   public AddFromRadioButtons(Window addPanel, ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas) {
-      super(null, jiraPrefix, jiraCommas);
+   public AddFilterFromRadioButtons(JFrame frame, ButtonGroup group, JComboBox filters) {
       this.group = group;
+      this.filters = filters;
    }
 
    @Override
@@ -135,11 +149,34 @@ class AddFromRadioButtons extends AddNewRowActionListener {
             table = button.getTable();
          }
       }
-      
+
       if (table == null)
          return;
-      super.setTable(table);
-      super.actionPerformed(e);
-   }
 
+      JiraFilter filter = ((JiraFilter) filters.getSelectedItem());
+
+      final JiraClient client = filter.getProject().getJiraClient();
+
+      JiraIssue[] jiras = null;
+      try {
+         client.login();
+         jiras = client.getJirasFromFilter();
+         //FIXME the following won't catch errors!
+      } catch (HttpException e1) {
+         e1.printStackTrace();
+         return;
+      } catch (IOException e1) {
+         e1.printStackTrace();
+         return;
+      } catch (JiraException e1) {
+         e1.printStackTrace();
+         return;
+      } catch (JDOMException e1) {
+         e1.printStackTrace();
+         return;
+      }
+      for (JiraIssue jiraIssue : jiras) {
+         table.addJira(jiraIssue);
+      }
+   }
 }
