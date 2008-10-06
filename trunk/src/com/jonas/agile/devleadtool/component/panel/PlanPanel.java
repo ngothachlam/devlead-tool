@@ -21,7 +21,6 @@ public class PlanPanel extends MyComponentPanel {
 
    private final PlannerHelper helper;
    private Logger log = MyLogger.getLogger(PlanPanel.class);
-   private JFrame planVersionsFrame;
    private MyTable table;
 
    public PlanPanel(PlannerHelper client) {
@@ -37,7 +36,6 @@ public class PlanPanel extends MyComponentPanel {
 
       // table.addMouseListener(new HyperLinkOpenerAdapter(helper, ColumnDataType.URL, ColumnDataType.Jira));
       this.addCenter(scrollpane);
-      this.addSouth(getBottomPanel());
       this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
    }
 
@@ -45,32 +43,10 @@ public class PlanPanel extends MyComponentPanel {
       return ((PlanTableModel) table.getModel()).doesJiraExist(jira);
    }
 
-   protected JPanel getBottomPanel() {
-      MyPanel buttonPanel = new MyPanel(new BorderLayout());
-      // JPanel buttonPanelOne = getButtonPanelNorth();
-      // buttonPanel.addNorth(buttonPanelOne);
-      JPanel buttonPanelTwo = getButtonPanelSouth();
-      buttonPanel.addSouth(buttonPanelTwo);
-      return buttonPanel;
-   }
-
    private JPanel getButtonPanelNorth() {
       JPanel buttonPanel = new JPanel();
       addFilter(buttonPanel, table, Column.Jira, Column.Description);
       return buttonPanel;
-   }
-
-   private JPanel getButtonPanelSouth() {
-      JPanel buttons = new JPanel();
-
-      setupPlanVersionsFrame();
-      addButton(buttons, "PlanVersions", new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            SwingUtil.centreWindowWithinWindow(planVersionsFrame, helper.getParentFrame());
-            planVersionsFrame.setVisible(true);
-         }
-      });
-      return buttons;
    }
 
    public PlanTableModel getPlanModel() {
@@ -84,12 +60,4 @@ public class PlanPanel extends MyComponentPanel {
    public void setEditable(boolean selected) {
       ((PlanTableModel) table.getModel()).setEditable(selected);
    }
-
-   private void setupPlanVersionsFrame() {
-      planVersionsFrame = new JFrame();
-      JPanel contentPanel = new FixVersionsPanel();
-      planVersionsFrame.setContentPane(contentPanel);
-      planVersionsFrame.setSize(450, 210);
-   }
-
 }
