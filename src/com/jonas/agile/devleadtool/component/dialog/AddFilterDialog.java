@@ -47,19 +47,19 @@ public class AddFilterDialog extends JFrame {
    public static void main(String[] args) {
       MyTable boardTable = new MyTable(new BoardTableModel());
       MyTable planTable = new MyTable(new PlanTableModel());
-      
+
       TableAndTitleDTO list1 = new TableAndTitleDTO("board", boardTable);
       TableAndTitleDTO list2 = new TableAndTitleDTO("Plan", planTable);
-      
+
       JFrame frame = TryoutTester.getFrame();
-      MyPanel panel = new MyPanel(new GridLayout(2,1));
+      MyPanel panel = new MyPanel(new GridLayout(2, 1));
 
       frame.setContentPane(panel);
       frame.setVisible(true);
-      
+
       panel.add(boardTable);
       panel.add(planTable);
-      
+
       new AddFilterDialog(frame, list1, list2);
    }
 }
@@ -85,7 +85,10 @@ class AddFilterPanel extends MyPanel {
       panel.add(new JLabel("Numbers:"), c);
       set2ndCol(c);
       c.weighty = 1;
-      Object[] filters = { JiraFilter.DevsupportPrioFilter };
+      Object[] filters = new Object[JiraFilter.getFilters().size()];
+      for (int i = 0; i < filters.length; i++) {
+         filters[i] = JiraFilter.getFilters().get(i);
+      }
       JComboBox jiraCommas = panel.addComboBox(panel, filters, c);
 
       MyPanel buttonPanel = new MyPanel(new GridLayout(1, 2, 5, 5));
@@ -161,7 +164,7 @@ class AddFilterFromRadioButtons implements ActionListener {
       try {
          client.login();
          jiras = client.getJirasFromFilter();
-         //FIXME the following won't catch errors!
+         // FIXME the following won't catch errors!
       } catch (HttpException e1) {
          e1.printStackTrace();
          return;

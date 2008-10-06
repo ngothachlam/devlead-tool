@@ -40,7 +40,7 @@ public class JiraHttpClientFunctionalTest extends TestCase {
    }
    
    public void testShouldGetFilter() throws HttpException, IOException, JiraException, JDOMException{
-      List<JiraIssue> jiras = client_Aol.getJirasFromFilter(JiraFilter.DevsupportPrioFilter, new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
+      List<JiraIssue> jiras = client_Aol.getJirasFromFilter(JiraFilter.DevsupportPrioFilter_UnClosed, new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
       
       for (JiraIssue jiraIssue : jiras) {
          System.out.println(jiraIssue.getKey());

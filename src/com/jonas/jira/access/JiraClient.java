@@ -85,7 +85,7 @@ public class JiraClient {
    public JiraIssue[] getJirasFromFilter() throws HttpException, IOException, JiraException, JDOMException{
       loadResolutionsIfRequired();
       loadJiraTypesIfRequired();
-      List<JiraIssue> jiras = httpClient.getJirasFromFilter(JiraFilter.DevsupportPrioFilter, JONAS_XPATH_EVALUATOR, jiraBuilder);
+      List<JiraIssue> jiras = httpClient.getJirasFromFilter(JiraFilter.DevsupportPrioFilter_UnClosed, JONAS_XPATH_EVALUATOR, jiraBuilder);
       return (JiraIssue[]) jiras.toArray(new JiraIssue[jiras.size()]);
    }
    
