@@ -28,10 +28,10 @@ public class AddNewRowActionListener implements ActionListener {
    public void actionPerformed(@SuppressWarnings("unused")
    ActionEvent e) {
       MyStringParser parser = new MyStringParser();
-      List<String> jiras = parser.separateString(jiraCommas.getText(), " ,;.\t");
+      List<String> jiras = parser.separateString(jiraCommas.getText(), " ,;.\t\n");
       for (String jiraNumber : jiras) {
          String prefix = jiraPrefix.getText();
-         String jiraString = getJiraString(prefix, jiraNumber);
+         String jiraString = getJiraString(prefix, jiraNumber).trim();
 
          table.addJira(jiraString);
          for (AddNewRowActionListenerListener listener : listeners) {

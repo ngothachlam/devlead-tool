@@ -74,8 +74,9 @@ public class PlannerHelper {
       if (jiraListener != null)
          JiraListener.addJiraListener(jiraListener);
       try {
-         JiraProject project = JiraProject.getProjectByKey(getProjectKey(jira));
-         log.debug("Project: " + project + " for jira " + jira);
+         String projectKey = getProjectKey(jira);
+         JiraProject project = JiraProject.getProjectByKey(projectKey);
+         log.debug("Project: " + project + " for jira \"" + jira +"\" with key " + projectKey);
          if (project == null) {
             throw new JiraException("Jira \"" + jira + "\" doesn't have a project related to it!");
          }
