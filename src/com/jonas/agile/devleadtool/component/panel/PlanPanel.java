@@ -1,20 +1,16 @@
 package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyComponentPanel;
-import com.jonas.common.MyPanel;
-import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
 
 public class PlanPanel extends MyComponentPanel {
@@ -27,7 +23,7 @@ public class PlanPanel extends MyComponentPanel {
       this(client, new PlanTableModel());
    }
 
-   public PlanPanel(PlannerHelper helper, PlanTableModel planModel) {
+   public PlanPanel(PlannerHelper helper, MyTableModel planModel) {
       super(new BorderLayout());
       this.helper = helper;
       table = new MyTable(planModel);

@@ -9,7 +9,6 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
 import com.jonas.agile.devleadtool.component.CutoverLength;
-import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.common.logging.MyLogger;
@@ -17,7 +16,6 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraClient;
 import com.jonas.jira.access.JiraException;
-import com.jonas.jira.access.JiraIssueNotFoundException;
 import com.jonas.jira.access.JiraListener;
 
 public class PlannerHelper {
