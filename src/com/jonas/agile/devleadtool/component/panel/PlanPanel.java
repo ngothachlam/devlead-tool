@@ -3,18 +3,12 @@ package com.jonas.agile.devleadtool.component.panel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.listener.CopyToTableListener;
-import com.jonas.agile.devleadtool.component.listener.DestinationRetriever;
-import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
-import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
@@ -22,7 +16,6 @@ import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.jira.JiraIssue;
 
 public class PlanPanel extends MyComponentPanel {
 
@@ -54,8 +47,8 @@ public class PlanPanel extends MyComponentPanel {
 
    protected JPanel getBottomPanel() {
       MyPanel buttonPanel = new MyPanel(new BorderLayout());
-//      JPanel buttonPanelOne = getButtonPanelNorth();
-//      buttonPanel.addNorth(buttonPanelOne);
+      // JPanel buttonPanelOne = getButtonPanelNorth();
+      // buttonPanel.addNorth(buttonPanelOne);
       JPanel buttonPanelTwo = getButtonPanelSouth();
       buttonPanel.addSouth(buttonPanelTwo);
       return buttonPanel;
@@ -69,8 +62,6 @@ public class PlanPanel extends MyComponentPanel {
 
    private JPanel getButtonPanelSouth() {
       JPanel buttons = new JPanel();
-
-      addPanelWithAddAndRemoveOptions(table, buttons);
 
       setupPlanVersionsFrame();
       addButton(buttons, "PlanVersions", new ActionListener() {

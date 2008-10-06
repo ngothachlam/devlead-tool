@@ -1,15 +1,21 @@
 package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
+import com.jonas.agile.devleadtool.component.dialog.AddDialog;
 import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
+import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -44,13 +50,14 @@ public class InternalTabPanel extends MyComponentPanel {
       TableAndTitleDTO tableAndTitleDTO2 = new TableAndTitleDTO("Plan", planPanel.getTable());
       TableAndTitleDTO tableAndTitleDTO3 = new TableAndTitleDTO("Jira", jiraPanel.getTable());
       
-      new MyTablePopupMenu(boardPanel.getTable(), helper, tableAndTitleDTO2, tableAndTitleDTO3);
-      new MyTablePopupMenu(planPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO3);
-      new MyTablePopupMenu(jiraPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2);
+      new MyTablePopupMenu(boardPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
+      new MyTablePopupMenu(planPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
+      new MyTablePopupMenu(jiraPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
       
 		JPanel panel = new JPanel();
 		checkBox = new JCheckBox("Editable?", true);
 		panel.add(checkBox);
+		panel.add(getAddPanel(helper.getParentFrame(), boardPanel.getTable(), jiraPanel.getTable(), planPanel.getTable()));
 		addNorth(panel);
 
 		makeContent(boardModel);
@@ -58,7 +65,24 @@ public class InternalTabPanel extends MyComponentPanel {
 		this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
 	}
 
-	public void makeContent(MyTableModel boardTableModel) {
+   private Component getAddPanel(final JFrame frame, MyTable boardTable, MyTable jiraTable, MyTable planTable) {
+	   JPanel panel = new JPanel(new BorderLayout());
+	   final List<TableAndTitleDTO> tables = new ArrayList<TableAndTitleDTO>();
+      tables.add(new TableAndTitleDTO("Board", boardTable));
+      tables.add(new TableAndTitleDTO("Jira", jiraTable));
+      tables.add(new TableAndTitleDTO("Plan", planTable));
+      
+      addButton(panel, "Add", new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+           new AddDialog(frame, tables.toArray( new TableAndTitleDTO[tables.size()]));
+         }
+      });
+      
+      return panel;
+   }
+
+   public void makeContent(MyTableModel boardTableModel) {
 		tabbedPane = new JTabbedPane(JTabbedPane.VERTICAL);
 		tabbedPane.add(boardPanel, "Board");
 		tabbedPane.add(planPanel, "Plan");

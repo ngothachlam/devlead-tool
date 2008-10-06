@@ -3,6 +3,7 @@ package com.jonas.common;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.GridBagConstraints;
 import java.awt.LayoutManager;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -10,10 +11,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
-import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
-import com.jonas.agile.devleadtool.component.table.MyTable;
 
 public class MyPanel extends JPanel {
 
@@ -75,27 +76,34 @@ public class MyPanel extends JPanel {
       return button;
    }
 
-   protected JLabel addLabel(JPanel buttons, String labelText) {
+   public JLabel addLabel(JPanel buttons, String labelText) {
       JLabel label = new JLabel(labelText);
       buttons.add(label);
       return label;
    }
 
-   protected JTextField addTextField(JPanel buttons, int textFieldLength) {
+   public JTextField addTextField(JPanel buttons, int textFieldLength) {
       JTextField jiraCommas = new JTextField(textFieldLength);
       buttons.add(jiraCommas);
       return jiraCommas;
    }
-   protected JComboBox addComboBox(JPanel buttons, Object[] array) {
+
+   public JTextField addTextField(JPanel buttons, int textFieldLength, Object constraint) {
+      JTextField jiraCommas = new JTextField(textFieldLength);
+      buttons.add(jiraCommas, constraint);
+      return jiraCommas;
+   }
+
+   public JTextArea addTextArea(JPanel buttons, int rows, int cols, Object constraint) {
+      JTextArea jiraCommas = new JTextArea(rows, cols);
+      buttons.add(new JScrollPane(jiraCommas), constraint);
+      return jiraCommas;
+   }
+
+   public JComboBox addComboBox(JPanel buttons, Object[] array) {
       JComboBox component = new JComboBox(array);
       buttons.add(component);
       return component;
    }
 
-   protected void addPanelWithAddAndRemoveOptions(MyTable table, JPanel buttons) {
-      addLabel(buttons, "Prefix:");
-      JTextField jiraPrefix = addTextField(buttons, 5);
-      JTextField jiraCommas = addTextField(buttons, 30);
-      addButton(buttons, "Add", new AddNewRowActionListener(table, jiraPrefix, jiraCommas));
-   }
 }

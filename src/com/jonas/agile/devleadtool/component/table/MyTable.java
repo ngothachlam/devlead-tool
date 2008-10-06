@@ -1,6 +1,5 @@
 package com.jonas.agile.devleadtool.component.table;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import javax.swing.DefaultCellEditor;
@@ -19,7 +18,6 @@ import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRen
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
-import com.jonas.jira.JiraVersion;
 
 public class MyTable extends JTable {
 
@@ -45,7 +43,8 @@ public class MyTable extends JTable {
 
       setDragEnabled(true);
       setDropMode(DropMode.INSERT);
-
+      setFillsViewportHeight(true);
+      
       setAutoCreateRowSorter(true);
       // sorter = new TableRowSorter<TableModel>(defaultTableModel);
       // setRowSorter(sorter);

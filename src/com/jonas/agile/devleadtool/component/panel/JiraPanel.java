@@ -78,16 +78,16 @@ public class JiraPanel extends MyComponentPanel {
 
       Vector<JiraProject> projects = JiraProject.getProjects();
 
-      addPanelWithAddAndRemoveOptions(table, topPanel);
       SyncWithJiraActionListenerListener syncWithJiraListener = new SyncWithJiraActionListenerListener() {
          public void jiraAdded(JiraIssue jiraIssue) {
             table.addJira(jiraIssue);
          }
+
          public void jiraSynced(JiraIssue jiraIssue, int tableRowSynced) {
             table.syncJira(jiraIssue, tableRowSynced);
          }
       };
-      
+
       JPanel bottomPanel = getFixversionSyncPanel(projects, syncWithJiraListener);
 
       mainPanel.add(topPanel, BorderLayout.NORTH);

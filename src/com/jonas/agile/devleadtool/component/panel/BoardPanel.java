@@ -54,7 +54,6 @@ public class BoardPanel extends MyComponentPanel {
    private JPanel getButtonPanelSouth() {
       JPanel buttonPanel = new JPanel();
 
-      addPanelWithAddAndRemoveOptions(table, buttonPanel);
       addButton(buttonPanel, "Unsort", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
