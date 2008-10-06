@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AddDialog;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -21,6 +22,7 @@ import com.jonas.agile.devleadtool.component.panel.OpenJirasListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
 public class MyTablePopupMenu extends JPopupMenu {
@@ -60,6 +62,7 @@ public class MyTablePopupMenu extends JPopupMenu {
 class PopupListener extends MouseAdapter {
    private final MyTablePopupMenu popup;
    private final MyTable sourceTable;
+   private Logger log = MyLogger.getLogger(PopupListener.class);
 
    public PopupListener(MyTable sourceTable, MyTablePopupMenu popup) {
       this.sourceTable = sourceTable;
@@ -67,12 +70,20 @@ class PopupListener extends MouseAdapter {
    }
 
    private void maybeShowPopup(MouseEvent e) {
+      if (log.isDebugEnabled()) {
+         //FIXME right click on empty table doesn't work
+         log.debug(e);
+         boolean b = e.getButton() == MouseEvent.BUTTON3 && e.getComponent() instanceof MyTable;
+         log.debug(b + " " + e.getButton() + " (" + MouseEvent.BUTTON3 + ") " + e.getComponent() + "(" + (e.getComponent() instanceof MyTable)
+               + ")");
+      }
       if (e.isPopupTrigger()) {
          popup.show(sourceTable, e.getX(), e.getY());
       }
    }
 
    public void mousePressed(MouseEvent e) {
+      log.debug("Mouse Pressed!" + e);
       maybeShowPopup(e);
    }
 
@@ -96,7 +107,8 @@ class MenuItem_Copy extends JMenuItem implements ActionListener {
 
    public void actionPerformed(ActionEvent e) {
       final int[] selectedRows = sourceTable.getSelectedRows();
-      final ProgressDialog dialog = new ProgressDialog(null, "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length);
+      final ProgressDialog dialog = new ProgressDialog(null, "Copying...", "Copying selected messages from Board to Plan...",
+            selectedRows.length);
       try {
          for (int i = 0; i < selectedRows.length; i++) {
             String jiraString = (String) sourceTable.getValueAt(Column.Jira, selectedRows[i]);

@@ -37,4 +37,9 @@ public class JiraProjectTest extends JonasTestCase{
 		assertEquals(1, jiraProject.getFixVersions(false).length);
 		assertEquals(1, jiraProject.getFixVersions(true).length);
 	}
+	
+	  public void testShouldExtractProjectFromJiraNameok() {
+	     assertEquals(JiraProject.LLU_SYSTEMS_PROVISIONING, JiraProject.getProjectByKey("LLU"));
+	      assertEquals(JiraProject.LLU_DEV_SUPPORT, JiraProject.getProjectByKey("LLUDEVSUP"));
+	   }
 }
