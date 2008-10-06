@@ -43,7 +43,7 @@ public class JiraPanel extends MyComponentPanel {
       this(helper, new JiraTableModel());
    }
 
-   public JiraPanel(PlannerHelper helper, JiraTableModel jiraModel) {
+   public JiraPanel(PlannerHelper helper, MyTableModel jiraModel) {
       super(new BorderLayout());
       this.helper = helper;
 

@@ -10,6 +10,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.dialog.LoadPlannerDialog;
@@ -32,7 +33,11 @@ public class DevLeadTool {
    }
 
    public void start() {
-      makeUI();
+      SwingUtilities.invokeLater(new Runnable() {
+         public void run() {
+            makeUI();
+         }
+      });
    }
 
    private JMenu createFileMenu(String title, JMenuItem[] menuItemList) {

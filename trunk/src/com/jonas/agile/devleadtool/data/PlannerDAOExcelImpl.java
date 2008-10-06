@@ -175,9 +175,10 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                // if we're on the column Header!
                if (rowCount == 0) {
                   Column column = Column.getEnum(cellContents);
-                  log.debug("Adding column to " + colCount + " and it is " + column + " and its size is currently " + columns.size());
+                  if (column == null){
+                     throw new NullPointerException("Trying to add column (" + cellContents + ") to " + colCount + " and it is " + column + " and its size is currently " + columns.size());
+                  }
                   columns.put(colCount, column);
-                  // don't add jira columns!
                   if (!column.isJiraColumn())
                      dataModelDTO.getHeader().add(getHeaderMappingToColumn(cellContents));
                } else {

@@ -37,7 +37,7 @@ public class InternalTabPanel extends MyComponentPanel {
       this(client, null, null, null);
    }
 
-   public InternalTabPanel(PlannerHelper helper, BoardTableModel boardModel, PlanTableModel planModel, JiraTableModel jiraModel) {
+   public InternalTabPanel(PlannerHelper helper, MyTableModel boardModel, MyTableModel planModel, MyTableModel jiraModel) {
       super(new BorderLayout());
       boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
       planModel = (planModel == null) ? new PlanTableModel() : planModel;
@@ -84,21 +84,20 @@ public class InternalTabPanel extends MyComponentPanel {
    }
 
    public void makeContent(MyTableModel boardTableModel) {
-      // tabbedPane = new JTabbedPane(JTabbedPane.VERTICAL);
-      // tabbedPane.add(boardPanel, "Board");
-      // tabbedPane.add(planPanel, "Plan");
-      // tabbedPane.add(jiraPanel, "Jira");
-      // addCenter(tabbedPane);
       addCenter( combineIntoSplitPane(boardPanel, jiraPanel, planPanel) );
    }
 
    private Component combineIntoSplitPane(JPanel panel1, JPanel panel2, JPanel panel3) {
       JSplitPane tabPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
       JSplitPane tabPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+      
       tabPane.add(panel1);
       tabPane.add(tabPane2);
       tabPane2.add(panel2);
       tabPane2.add(panel3);
+      
+      tabPane.setDividerLocation(400);
+      tabPane2.setDividerLocation(250);
       return tabPane;
    }
 
