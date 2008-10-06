@@ -35,31 +35,67 @@ public class JiraIssue {
    }
 
    public void addFixVersions(JiraVersion fixVersion) {
-      fixVersions.add(fixVersion);
+      if (fixVersion != null)
+         fixVersions.add(fixVersion);
    }
 
-   /**
-    * Returns <code>true</code> if this <code>JiraIssue</code> is the same as the o argument.
-    * 
-    * @return <code>true</code> if this <code>JiraIssue</code> is the same as the o argument.
-    */
-   public boolean equals(Object o) {
-      if (this == o) {
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj)
          return true;
-      }
-      if (o == null) {
+      if (obj == null)
          return false;
-      }
-      if (o.getClass() != getClass()) {
+      if (getClass() != obj.getClass())
          return false;
-      }
-      JiraIssue castedObj = (JiraIssue) o;
-      return ((this.buildNo == null ? castedObj.buildNo == null : this.buildNo.equals(castedObj.buildNo))
-            && (this.fixVersions == null ? castedObj.fixVersions == null : this.fixVersions.equals(castedObj.fixVersions))
-            && (this.key == null ? castedObj.key == null : this.key.equals(castedObj.key))
-            && (this.resolution == null ? castedObj.resolution == null : this.resolution.equals(castedObj.resolution))
-            && (this.status == null ? castedObj.status == null : this.status.equals(castedObj.status)) && (this.summary == null ? castedObj.summary == null
-            : this.summary.equals(castedObj.summary)));
+      JiraIssue other = (JiraIssue) obj;
+      if (buildNo == null) {
+         if (other.buildNo != null)
+            return false;
+      } else if (!buildNo.equals(other.buildNo))
+         return false;
+      if (estimate == null) {
+         if (other.estimate != null)
+            return false;
+      } else if (!estimate.equals(other.estimate))
+         return false;
+      if (fixVersions == null) {
+         if (other.fixVersions != null)
+            return false;
+      } else if (!fixVersions.equals(other.fixVersions))
+         return false;
+      if (key == null) {
+         if (other.key != null)
+            return false;
+      } else if (!key.equals(other.key))
+         return false;
+      if (lluListPriority != other.lluListPriority)
+         return false;
+      if (resolution == null) {
+         if (other.resolution != null)
+            return false;
+      } else if (!resolution.equals(other.resolution))
+         return false;
+      if (spent == null) {
+         if (other.spent != null)
+            return false;
+      } else if (!spent.equals(other.spent))
+         return false;
+      if (status == null) {
+         if (other.status != null)
+            return false;
+      } else if (!status.equals(other.status))
+         return false;
+      if (summary == null) {
+         if (other.summary != null)
+            return false;
+      } else if (!summary.equals(other.summary))
+         return false;
+      if (type == null) {
+         if (other.type != null)
+            return false;
+      } else if (!type.equals(other.type))
+         return false;
+      return true;
    }
 
    public String getBuildNo() {
@@ -102,21 +138,21 @@ public class JiraIssue {
       return type;
    }
 
-   /**
-    * Override hashCode.
-    * 
-    * @return the Objects hashcode.
-    */
+   @Override
    public int hashCode() {
-      int hashCode = 1;
-      hashCode = 31 * hashCode + (log == null ? 0 : log.hashCode());
-      hashCode = 31 * hashCode + (buildNo == null ? 0 : buildNo.hashCode());
-      hashCode = 31 * hashCode + (fixVersions == null ? 0 : fixVersions.hashCode());
-      hashCode = 31 * hashCode + (key == null ? 0 : key.hashCode());
-      hashCode = 31 * hashCode + (resolution == null ? 0 : resolution.hashCode());
-      hashCode = 31 * hashCode + (status == null ? 0 : status.hashCode());
-      hashCode = 31 * hashCode + (summary == null ? 0 : summary.hashCode());
-      return hashCode;
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((buildNo == null) ? 0 : buildNo.hashCode());
+      result = prime * result + ((estimate == null) ? 0 : estimate.hashCode());
+      result = prime * result + ((fixVersions == null) ? 0 : fixVersions.hashCode());
+      result = prime * result + ((key == null) ? 0 : key.hashCode());
+      result = prime * result + lluListPriority;
+      result = prime * result + ((resolution == null) ? 0 : resolution.hashCode());
+      result = prime * result + ((spent == null) ? 0 : spent.hashCode());
+      result = prime * result + ((status == null) ? 0 : status.hashCode());
+      result = prime * result + ((summary == null) ? 0 : summary.hashCode());
+      result = prime * result + ((type == null) ? 0 : type.hashCode());
+      return result;
    }
 
    public void setBuildNo(String buildNo) {

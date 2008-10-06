@@ -13,7 +13,7 @@ public class MyDesktopPane extends JDesktopPane {
 
 	public void addInternalFrame(MyInternalFrame internalFrame) {
 		add(internalFrame);
-		internalFrame.setSize(900, 440);
+		internalFrame.setSize(1050, 700);
 		int xLocation = (internalFrame.getInternalFramesCount() - 1) * 20;
 		int yLocation = (internalFrame.getInternalFramesCount() - 1) * 25;
 

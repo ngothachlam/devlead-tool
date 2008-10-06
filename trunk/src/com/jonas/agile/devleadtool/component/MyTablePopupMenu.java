@@ -31,7 +31,7 @@ public class MyTablePopupMenu extends JPopupMenu {
       super();
       this.sourceTable = source;
 
-      sourceTable.addMouseListener(new PopupListener(this));
+      sourceTable.addMouseListener(new PopupListener(sourceTable, this));
 
       add(new MenuItem_Add("Add Jiras to Table", sourceTable, helper.getParentFrame(), tables));
       add(new MenuItem_Open("Open in Browser", sourceTable, helper));
@@ -58,15 +58,17 @@ public class MyTablePopupMenu extends JPopupMenu {
 
 
 class PopupListener extends MouseAdapter {
-   private MyTablePopupMenu popup;
+   private final MyTablePopupMenu popup;
+   private final MyTable sourceTable;
 
-   public PopupListener(MyTablePopupMenu popup) {
+   public PopupListener(MyTable sourceTable, MyTablePopupMenu popup) {
+      this.sourceTable = sourceTable;
       this.popup = popup;
    }
 
    private void maybeShowPopup(MouseEvent e) {
       if (e.isPopupTrigger()) {
-         popup.show(e.getComponent(), e.getX(), e.getY());
+         popup.show(sourceTable, e.getX(), e.getY());
       }
    }
 
@@ -177,7 +179,7 @@ class MenuItem_Sync extends JMenuItem {
          }
 
          public void jiraSynced(JiraIssue jiraIssue, int tableRowSynced) {
-            sourceTable.addJira(jiraIssue);
+            sourceTable.syncJira(jiraIssue, tableRowSynced);
          }
       };
 

@@ -148,6 +148,13 @@ public class JiraBuilderTest extends JonasTestCase {
       assertEquals("0.125", JiraBuilder.getSecondsAsDays("3600"));
    }
    
+   public void testGetStringAsInt() {
+      assertEquals(50, JiraBuilder.getStringAsIntIfNumeric("50"));
+      assertEquals(50, JiraBuilder.getStringAsIntIfNumeric("50.0"));
+      assertEquals(50, JiraBuilder.getStringAsIntIfNumeric("50.1"));
+      assertEquals(50, JiraBuilder.getStringAsIntIfNumeric("50.99"));
+   }
+   
    public void testShouldBUildJiraOkUsingSoapCall(){
       RemoteIssue mock_remoteIssue = createClassMock(RemoteIssue.class);
       

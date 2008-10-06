@@ -33,11 +33,12 @@ public class JiraBuilder {
             jira.setBuildNo(xpathValue);
          }
       });
-      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_LLULISTPRIO + "']/customfieldvalues/customfieldvalue", new XpathAction() {
-         public void XPathValueFound(String xpathValue, JiraIssue jira) {
-            jira.setLLUListPriority(getStringAsIntIfNumeric(xpathValue));
-         }
-      });
+      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_LLULISTPRIO + "']/customfieldvalues/customfieldvalue",
+            new XpathAction() {
+               public void XPathValueFound(String xpathValue, JiraIssue jira) {
+                  jira.setLLUListPriority(getStringAsIntIfNumeric(xpathValue));
+               }
+            });
       addXpathAction("/item/timeoriginalestimate/@seconds", new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             if (xpathValue != null && xpathValue.trim().length() > 0) {
@@ -88,8 +89,9 @@ public class JiraBuilder {
    public JiraIssue buildJira(Element e, List<JiraVersion> fixVersions) {
       JiraIssue jira = buildJira(e);
       log.debug("building jira " + jira.getKey());
-      jira.addFixVersions(fixVersions.get(0));
-      if (fixVersions.size() > 1) {
+      if (fixVersions.size() == 1) {
+         jira.addFixVersions(fixVersions.get(0));
+      } else if (fixVersions.size() > 1) {
          log.error("Cannot handle more than one fix version at the moment for " + jira.getKey());
       }
       return jira;
@@ -122,19 +124,28 @@ public class JiraBuilder {
       return jira;
    }
 
-   private static int getStringAsIntIfNumeric(String string) {
+   static int getStringAsIntIfNumeric(String string) {
       int intValue = -1;
-      try {
-         intValue = Integer.parseInt(string);
-      } catch (NumberFormatException e) {
-         log.debug("String \"" + string + "\"cannot be transformed to an int!");
-      }
+      if (string != null && !string.isEmpty())
+         try {
+            intValue = (int) Float.parseFloat(string);
+         } catch (NumberFormatException e) {
+            log.debug("String \"" + string + "\" cannot be transformed to an int!");
+         }
       return intValue;
    }
 
    private String getCustomFieldValue(RemoteCustomFieldValue[] customFieldValues, String anObject) {
+      log.debug("Trying to find custom field value: " + anObject);
       for (RemoteCustomFieldValue remoteCustomFieldValue : customFieldValues) {
          String customfieldId = remoteCustomFieldValue.getCustomfieldId();
+         if (log.isDebugEnabled()) {
+            log.debug("\tfound: " + customfieldId);
+            String[] values = remoteCustomFieldValue.getValues();
+            for (int i = 0; i < values.length; i++) {
+               log.debug("\t\tvalue[" + i + "]: " + values[i]);
+            }
+         }
          if (customfieldId.equals(anObject))
             return remoteCustomFieldValue.getValues()[0];
       }

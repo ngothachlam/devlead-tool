@@ -3,7 +3,6 @@
  */
 package com.jonas.agile.devleadtool.component.listener;
 
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -19,10 +18,8 @@ public class AddNewRowActionListener implements ActionListener {
 
    // FIXME merge this with the Syncl....ListenerListener
    private List<AddNewRowActionListenerListener> listeners = new ArrayList<AddNewRowActionListenerListener>();
-   private final Window addPanel;
 
-   public AddNewRowActionListener(Window addPanel, MyTable table, JTextComponent jiraPrefix, JTextComponent jiraCommas) {
-      this.addPanel = addPanel;
+   public AddNewRowActionListener(MyTable table, JTextComponent jiraPrefix, JTextComponent jiraCommas) {
       this.table = table;
       this.jiraPrefix = jiraPrefix;
       this.jiraCommas = jiraCommas;
@@ -44,8 +41,6 @@ public class AddNewRowActionListener implements ActionListener {
       for (AddNewRowActionListenerListener listener : listeners) {
          listener.addedNewRowsCompleted();
       }
-      
-      addPanel.dispose();
    }
 
    public void addListener(AddNewRowActionListenerListener listener) {

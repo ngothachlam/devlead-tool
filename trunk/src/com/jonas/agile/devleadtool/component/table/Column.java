@@ -6,7 +6,7 @@ package com.jonas.agile.devleadtool.component.table;
 public enum Column {
    // String Defaults
    Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
-   Description(String.class, "", IsEditableColumn.No, IsJiraColumn.No), 
+   Description(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes), 
    Planned_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
    Resolved_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
    Closed_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 

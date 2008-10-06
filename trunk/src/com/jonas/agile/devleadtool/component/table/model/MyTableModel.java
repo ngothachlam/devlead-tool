@@ -48,47 +48,53 @@ public abstract class MyTableModel extends DefaultTableModel {
          Set<Column> columnSet = columnNames.keySet();
          Vector<Object> contents = new Vector<Object>();
          for (Column column : columnSet) {
-            switch (column) {
-            case Jira:
-               contents.add(jiraIssue.getKey());
-               break;
-            case Description:
-               contents.add(jiraIssue.getSummary());
-               break;
-            case J_Type:
-               contents.add(jiraIssue.getType());
-               break;
-            case J_FixVersion:
-               contents.add(jiraIssue.getFixVersions());
-               break;
-            case J_Status:
-               contents.add(jiraIssue.getStatus());
-               break;
-            case J_Resolution:
-               contents.add(jiraIssue.getResolution());
-               break;
-            case J_BuildNo:
-               contents.add(jiraIssue.getBuildNo());
-               break;
-            case prio:
-               contents.add(jiraIssue.getLLUListPriority());
-               break;
-            case J_Dev_Estimate:
-               contents.add(jiraIssue.getEstimate());
-               break;
-            case J_Dev_Spent:
-               contents.add(jiraIssue.getSpent());
-               break;
-            default:
-               contents.add(column.getDefaultValue());
-               break;
-            }
+            contents.add(getValueFromIssue(jiraIssue, column));
          }
          // Object[] objects = new Object[] { jiraIssue.getKey(), jiraIssue.getSummary(), jiraIssue.getFixVersions(), jiraIssue.getStatus(),
          // jiraIssue.getResolution(), jiraIssue.getBuildNo(), jiraIssue.getEstimate() };
          // super.addRow(objects);
          super.addRow(contents);
       }
+   }
+
+   private Object getValueFromIssue(JiraIssue jiraIssue, Column column) {
+      Object value;
+      switch (column) {
+      case Jira:
+         value = jiraIssue.getKey();
+         break;
+      case Description:
+         value = jiraIssue.getSummary();
+         break;
+      case J_Type:
+         value = jiraIssue.getType();
+         break;
+      case J_FixVersion:
+         value = jiraIssue.getFixVersions();
+         break;
+      case J_Status:
+         value = jiraIssue.getStatus();
+         break;
+      case J_Resolution:
+         value = jiraIssue.getResolution();
+         break;
+      case J_BuildNo:
+         value = jiraIssue.getBuildNo();
+         break;
+      case prio:
+         value = jiraIssue.getLLUListPriority();
+         break;
+      case J_Dev_Estimate:
+         value = jiraIssue.getEstimate();
+         break;
+      case J_Dev_Spent:
+         value = jiraIssue.getSpent();
+         break;
+      default:
+         value = column.getDefaultValue();
+         break;
+      }
+      return value;
    }
 
    final public void addJira(String jira) {
@@ -106,8 +112,10 @@ public abstract class MyTableModel extends DefaultTableModel {
       for (Column column : map.keySet()) {
          Object value = map.get(column);
          int columnIndex = getColumnIndex(column);
-         if (columnIndex != -1)
+         if (columnIndex != -1) {
+            log.debug("\tSetting value \"" + value + "\" to Column " + column + " (" + jira + ", at " + row + ", col " + columnIndex + ")");
             setValueAt(value, row, columnIndex);
+         }
       }
       fireTableRowsUpdated(row, row);
    }
@@ -358,13 +366,17 @@ public abstract class MyTableModel extends DefaultTableModel {
       return result;
    }
 
-   public void syncJira(JiraIssue jiraIssue, int convertRowIndexToModel) {
+   public void syncJira(JiraIssue jiraIssue, int row) {
+      log.debug("Syncing Jira: " + jiraIssue.getKey());
       Map<Column, Object> map = new HashMap<Column, Object>();
       Set<Column> columns = getColumnNames().keySet();
       for (Column column : columns) {
-         if (column.isJiraColumn())
-            map.put(column, getValueAt(column, convertRowIndexToModel));
+         if (column.isJiraColumn()) {
+            Object valueAt = getValueFromIssue(jiraIssue, column);
+            log.debug("\tPutting " + column + " to \"" + valueAt + "\" for row " + row);
+            map.put(column, valueAt);
+         }
       }
-      addJira(jiraIssue.getKey(), map, convertRowIndexToModel);
+      addJira(jiraIssue.getKey(), map, row);
    }
 }

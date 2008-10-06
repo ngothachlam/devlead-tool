@@ -1,51 +1,52 @@
 package com.jonas.jira.access;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
+import junit.framework.TestCase;
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
+import com.jonas.jira.MyJiraFilter;
 import com.jonas.jira.utils.JiraBuilder;
-import junit.framework.TestCase;
 
 public class JiraHttpClientFunctionalTest extends TestCase {
 
-   JiraHttpClient client;
+   JiraHttpClient client_Atlassain = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
+   JiraHttpClient client_Aol = new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB);
    
-   private String getFileContents(File file) throws IOException {
-      StringBuffer sb = new StringBuffer();
-      BufferedReader input = new BufferedReader(new FileReader(file));
-      try {
-         String line = null; // not declared within while loop
-         while ((line = input.readLine()) != null) {
-            sb.append(line);
-            sb.append(System.getProperty("line.separator"));
-         }
-      } finally {
-         input.close();
-      }
-      return sb.toString();
+   @Override
+   protected void setUp() throws Exception {
+      // TODO Auto-generated method stub
+      super.setUp();
+      //FIXME should not have to login!! Should be automatic in the HTTPClient. 
+      client_Atlassain.loginToJira();
+      client_Aol.loginToJira();
+      
    }
-   
+
    public void testGetJira() throws IOException, HttpException, JiraException, JDOMException {
-      JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
-//      client.loginToJira();
-      JiraIssue jira = client.getJira("TST-124", new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
+      JiraIssue jira = client_Atlassain.getJira("TST-124", new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
       
       assertEquals("what the heck a test", jira.getSummary());
    }
    
    public void testApacheCommonsAttempt() throws IOException, HttpException, JiraException, JDOMException {
-      JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB);
-//      client.loginToJira();
-      JiraIssue jira = client.getJira("LLU-4139", new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
+      JiraIssue jira = client_Aol.getJira("LLU-4139", new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
       
       assertEquals("llu-inventory-build-2933 / llu-master-build-4066", jira.getBuildNo());
       assertEquals("1.0", jira.getEstimate());
       assertEquals("1.0", jira.getSpent());
+   }
+   
+   public void testShouldGetFilter() throws HttpException, IOException, JiraException, JDOMException{
+      List<JiraIssue> jiras = client_Aol.getJirasFromFilter(MyJiraFilter.DevsupportPrioFilter, new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
+      
+      for (JiraIssue jiraIssue : jiras) {
+         System.out.println(jiraIssue.getKey());
+      }
+      
+      assertTrue(jiras.size() > 0);
    }
    
 }
