@@ -37,7 +37,11 @@ public class SwingUtil {
       Point parentLocation = parentWindow.getLocation();
       int x = parentLocation.x + (parentWindow.getWidth() - window.getWidth()) / 2;
       int y = parentLocation.y + (parentWindow.getHeight() - window.getHeight()) / 2;
-      window.setLocation(x, y);
+      window.setLocation(atLeastZero(x), atLeastZero(y));
+   }
+
+   private static int atLeastZero(int no) {
+      return no < 0 ? 0 : no;
    }
 
    public static void locateWindowRelativeToWindow(Component window, Component parentWindow, int xOffset, int yOffset) {

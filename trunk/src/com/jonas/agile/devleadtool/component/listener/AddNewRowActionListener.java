@@ -3,35 +3,39 @@
  */
 package com.jonas.agile.devleadtool.component.listener;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.string.MyStringParser;
 
 public class AddNewRowActionListener implements ActionListener {
-   private final MyTable table;
-   private final JTextField jiraPrefix;
-   private JTextComponent jiraCommas;
+   private MyTable table;
+   private final JTextComponent jiraPrefix;
+   private final JTextComponent jiraCommas;
 
-   //FIXME merge this with the Syncl....ListenerListener
+   // FIXME merge this with the Syncl....ListenerListener
    private List<AddNewRowActionListenerListener> listeners = new ArrayList<AddNewRowActionListenerListener>();
+   private final Window addPanel;
 
-   public AddNewRowActionListener(MyTable table, JTextField jiraPrefix, JTextField jiraCommas) {
+   public AddNewRowActionListener(Window addPanel, MyTable table, JTextComponent jiraPrefix, JTextComponent jiraCommas) {
+      this.addPanel = addPanel;
       this.table = table;
       this.jiraPrefix = jiraPrefix;
       this.jiraCommas = jiraCommas;
    }
 
-   public void actionPerformed(@SuppressWarnings("unused") ActionEvent e) {
+   public void actionPerformed(@SuppressWarnings("unused")
+   ActionEvent e) {
       MyStringParser parser = new MyStringParser();
       List<String> jiras = parser.separateString(jiraCommas.getText(), " ,;.\t");
       for (String jiraNumber : jiras) {
          String prefix = jiraPrefix.getText();
          String jiraString = getJiraString(prefix, jiraNumber);
+
          table.addJira(jiraString);
          for (AddNewRowActionListenerListener listener : listeners) {
             listener.addedNewRow(jiraString, table.getRowCount() - 1, table.getColumnCount());
@@ -40,6 +44,8 @@ public class AddNewRowActionListener implements ActionListener {
       for (AddNewRowActionListenerListener listener : listeners) {
          listener.addedNewRowsCompleted();
       }
+      
+      addPanel.dispose();
    }
 
    public void addListener(AddNewRowActionListenerListener listener) {
@@ -59,5 +65,9 @@ public class AddNewRowActionListener implements ActionListener {
 
    private boolean isEmpty(String jiraPrefix) {
       return (jiraPrefix == null || jiraPrefix.trim().length() == 0);
+   }
+
+   public void setTable(MyTable table) {
+      this.table = table;
    }
 }

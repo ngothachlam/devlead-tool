@@ -7,9 +7,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.dialog.AddDialog;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
@@ -28,20 +30,23 @@ public class MyTablePopupMenu extends JPopupMenu {
    public MyTablePopupMenu(MyTable source, PlannerHelper helper, TableAndTitleDTO... tables) {
       super();
       this.sourceTable = source;
-      
+
       sourceTable.addMouseListener(new PopupListener(this));
 
+      add(new MenuItem_Add("Add Jiras to Table", sourceTable, helper.getParentFrame(), tables));
+      add(new MenuItem_Open("Open in Browser", sourceTable, helper));
+      add(new MenuItem_Sync("Sync with Jira", sourceTable, helper));
+      addSeparator();
+
       for (TableAndTitleDTO tableDTO : tables) {
-         String title = "Copy to Table " + tableDTO.getTitle();
-         add(new MenuItem_Copy((title), sourceTable, tableDTO.getTable()));
+         if (!tableDTO.getTable().equals(source)) {
+            String title = "Copy to Table " + tableDTO.getTitle();
+            add(new MenuItem_Copy((title), sourceTable, tableDTO.getTable()));
+         }
       }
 
       addSeparator();
-
-      add(new MenuItem_Sync("Sync with Jira", sourceTable, helper));
       add(new MenuItem_Remove("Remove from Table", sourceTable));
-      add(new MenuItem_Open("Open in Browser", sourceTable, helper));
-
    }
 
    @Override
@@ -127,6 +132,23 @@ class MenuItem_Open extends JMenuItem {
 }
 
 
+class MenuItem_Add extends JMenuItem {
+   private MyTable sourceTable;
+
+   public MenuItem_Add(String string, MyTable sourceTable, final JFrame frame, final TableAndTitleDTO... dtos) {
+      super(string);
+      this.sourceTable = sourceTable;
+      addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            new AddDialog(frame, dtos);
+         }
+      });
+
+   }
+}
+
+
 class MenuItem_Remove extends JMenuItem implements ActionListener {
    private MyTable sourceTable;
 
@@ -141,6 +163,7 @@ class MenuItem_Remove extends JMenuItem implements ActionListener {
       sourceTable.removeSelectedRows();
    }
 }
+
 
 class MenuItem_Sync extends JMenuItem {
    private MyTable sourceTable;
@@ -161,8 +184,5 @@ class MenuItem_Sync extends JMenuItem {
       SyncWithJiraListener syncWithJiraListener = new SyncWithJiraListener(sourceTable, helper);
       syncWithJiraListener.addListener(syncWithJiraActionListenerListener);
       addActionListener(syncWithJiraListener);
-
-      if (helper != null)
-         setEnabled(false);
    }
 }
