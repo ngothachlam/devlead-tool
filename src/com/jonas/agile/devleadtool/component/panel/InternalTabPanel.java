@@ -10,6 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
@@ -24,97 +25,108 @@ import com.jonas.common.MyComponentPanel;
 
 public class InternalTabPanel extends MyComponentPanel {
 
-	private BoardPanel boardPanel;
-	private PlanPanel planPanel;
-	private JiraPanel jiraPanel;
+   private BoardPanel boardPanel;
+   private PlanPanel planPanel;
+   private JiraPanel jiraPanel;
 
-	private JTabbedPane tabbedPane;
+   private JTabbedPane tabbedPane;
 
-	private JCheckBox checkBox;
+   private JCheckBox checkBox;
 
-	public InternalTabPanel(PlannerHelper client) {
-		this(client, null, null, null);
-	}
+   public InternalTabPanel(PlannerHelper client) {
+      this(client, null, null, null);
+   }
 
-	public InternalTabPanel(PlannerHelper helper, BoardTableModel boardModel, PlanTableModel planModel, JiraTableModel jiraModel) {
-		super(new BorderLayout());
-		boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
-		planModel = (planModel == null) ? new PlanTableModel() : planModel;
-		jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
-		
-		boardPanel = new BoardPanel(helper, boardModel);
-		planPanel = new PlanPanel(helper, planModel);
-		jiraPanel = new JiraPanel(helper, jiraModel);
-		
+   public InternalTabPanel(PlannerHelper helper, BoardTableModel boardModel, PlanTableModel planModel, JiraTableModel jiraModel) {
+      super(new BorderLayout());
+      boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
+      planModel = (planModel == null) ? new PlanTableModel() : planModel;
+      jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
+
+      boardPanel = new BoardPanel(helper, boardModel);
+      planPanel = new PlanPanel(helper, planModel);
+      jiraPanel = new JiraPanel(helper, jiraModel);
+
       TableAndTitleDTO tableAndTitleDTO1 = new TableAndTitleDTO("Board", boardPanel.getTable());
       TableAndTitleDTO tableAndTitleDTO2 = new TableAndTitleDTO("Plan", planPanel.getTable());
       TableAndTitleDTO tableAndTitleDTO3 = new TableAndTitleDTO("Jira", jiraPanel.getTable());
-      
+
       new MyTablePopupMenu(boardPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
       new MyTablePopupMenu(planPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
       new MyTablePopupMenu(jiraPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
-      
-		JPanel panel = new JPanel();
-		checkBox = new JCheckBox("Editable?", true);
-		panel.add(checkBox);
-		panel.add(getAddPanel(helper.getParentFrame(), boardPanel.getTable(), jiraPanel.getTable(), planPanel.getTable()));
-		addNorth(panel);
 
-		makeContent(boardModel);
-		wireUpListeners();
-		this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
-	}
+      JPanel panel = new JPanel();
+      checkBox = new JCheckBox("Editable?", true);
+      panel.add(checkBox);
+      panel.add(getAddPanel(helper.getParentFrame(), boardPanel.getTable(), jiraPanel.getTable(), planPanel.getTable()));
+      addNorth(panel);
+
+      makeContent(boardModel);
+      wireUpListeners();
+      this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
+   }
 
    private Component getAddPanel(final JFrame frame, MyTable boardTable, MyTable jiraTable, MyTable planTable) {
-	   JPanel panel = new JPanel(new BorderLayout());
-	   final List<TableAndTitleDTO> tables = new ArrayList<TableAndTitleDTO>();
+      JPanel panel = new JPanel(new BorderLayout());
+      final List<TableAndTitleDTO> tables = new ArrayList<TableAndTitleDTO>();
       tables.add(new TableAndTitleDTO("Board", boardTable));
       tables.add(new TableAndTitleDTO("Jira", jiraTable));
       tables.add(new TableAndTitleDTO("Plan", planTable));
-      
+
       addButton(panel, "Add", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
-           new AddDialog(frame, tables.toArray( new TableAndTitleDTO[tables.size()]));
+            new AddDialog(frame, tables.toArray(new TableAndTitleDTO[tables.size()]));
          }
       });
-      
+
       return panel;
    }
 
    public void makeContent(MyTableModel boardTableModel) {
-		tabbedPane = new JTabbedPane(JTabbedPane.VERTICAL);
-		tabbedPane.add(boardPanel, "Board");
-		tabbedPane.add(planPanel, "Plan");
-		tabbedPane.add(jiraPanel, "Jira");
-		addCenter(tabbedPane);
-	}
+      // tabbedPane = new JTabbedPane(JTabbedPane.VERTICAL);
+      // tabbedPane.add(boardPanel, "Board");
+      // tabbedPane.add(planPanel, "Plan");
+      // tabbedPane.add(jiraPanel, "Jira");
+      // addCenter(tabbedPane);
+      addCenter( combineIntoSplitPane(boardPanel, jiraPanel, planPanel) );
+   }
 
-	public void wireUpListeners() {
-		// senderPanel.addComponentListener(this);
-		// receiverPanel.addComponentListener(this);
-		checkBox.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				boardPanel.setEditable(checkBox.isSelected());
-				planPanel.setEditable(checkBox.isSelected());
-				jiraPanel.setEditable(checkBox.isSelected());
-			}
-		});
-	}
+   private Component combineIntoSplitPane(JPanel panel1, JPanel panel2, JPanel panel3) {
+      JSplitPane tabPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+      JSplitPane tabPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+      tabPane.add(panel1);
+      tabPane.add(tabPane2);
+      tabPane2.add(panel2);
+      tabPane2.add(panel3);
+      return tabPane;
+   }
 
-	protected void closing() {
-		// client.disconnect();
-	}
+   public void wireUpListeners() {
+      // senderPanel.addComponentListener(this);
+      // receiverPanel.addComponentListener(this);
+      checkBox.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            boardPanel.setEditable(checkBox.isSelected());
+            planPanel.setEditable(checkBox.isSelected());
+            jiraPanel.setEditable(checkBox.isSelected());
+         }
+      });
+   }
 
-	public BoardPanel getBoardPanel() {
-		return boardPanel;
-	}
+   protected void closing() {
+      // client.disconnect();
+   }
 
-	public JiraPanel getJiraPanel() {
-		return jiraPanel;
-	}
+   public BoardPanel getBoardPanel() {
+      return boardPanel;
+   }
 
-	public PlanPanel getPlanPanel() {
-		return planPanel;
-	}
+   public JiraPanel getJiraPanel() {
+      return jiraPanel;
+   }
+
+   public PlanPanel getPlanPanel() {
+      return planPanel;
+   }
 }
