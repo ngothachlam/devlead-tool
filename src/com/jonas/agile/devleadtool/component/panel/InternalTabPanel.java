@@ -11,7 +11,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.dialog.AddDialog;
@@ -29,8 +28,6 @@ public class InternalTabPanel extends MyComponentPanel {
    private PlanPanel planPanel;
    private JiraPanel jiraPanel;
 
-   private JTabbedPane tabbedPane;
-
    private JCheckBox checkBox;
 
    public InternalTabPanel(PlannerHelper client) {
@@ -43,7 +40,7 @@ public class InternalTabPanel extends MyComponentPanel {
       planModel = (planModel == null) ? new PlanTableModel() : planModel;
       jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 
-      boardPanel = new BoardPanel(helper, boardModel);
+      boardPanel = new BoardPanel(boardModel);
       planPanel = new PlanPanel(helper, planModel);
       jiraPanel = new JiraPanel(helper, jiraModel);
 
@@ -51,6 +48,7 @@ public class InternalTabPanel extends MyComponentPanel {
       TableAndTitleDTO tableAndTitleDTO2 = new TableAndTitleDTO("Plan", planPanel.getTable());
       TableAndTitleDTO tableAndTitleDTO3 = new TableAndTitleDTO("Jira", jiraPanel.getTable());
 
+      //FIXME I want to put this into the MyTable instead!! - need to register the other tables with each other!
       new MyTablePopupMenu(boardPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
       new MyTablePopupMenu(planPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
       new MyTablePopupMenu(jiraPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
@@ -96,8 +94,8 @@ public class InternalTabPanel extends MyComponentPanel {
       tabPane2.add(panel2);
       tabPane2.add(panel3);
       
-      tabPane.setDividerLocation(400);
-      tabPane2.setDividerLocation(250);
+      tabPane.setDividerLocation(550);
+      tabPane2.setDividerLocation(350);
       return tabPane;
    }
 

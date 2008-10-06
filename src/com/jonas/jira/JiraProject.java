@@ -68,6 +68,11 @@ public class JiraProject {
       if (getClass() != obj.getClass())
          return false;
       JiraProject other = (JiraProject) obj;
+      if (client == null) {
+         if (other.client != null)
+            return false;
+      } else if (!client.equals(other.client))
+         return false;
       if (fixVersions == null) {
          if (other.fixVersions != null)
             return false;
@@ -125,6 +130,7 @@ public class JiraProject {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
+      result = prime * result + ((client == null) ? 0 : client.hashCode());
       result = prime * result + ((fixVersions == null) ? 0 : fixVersions.hashCode());
       result = prime * result + ((id == null) ? 0 : id.hashCode());
       result = prime * result + ((jiraKey == null) ? 0 : jiraKey.hashCode());

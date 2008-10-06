@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 public class AddNewRowActionListenerTest extends TestCase {
 
 	public void testShouldComputeJiraOk() {
-		AddNewRowActionListener listener = new AddNewRowActionListener(null, null, null, null);
+		AddNewRowActionListener listener = new AddNewRowActionListener(null, null, null);
 
 		assertEquals("llu-1", listener.getJiraString("llu", "1"));
 		assertEquals("llu", listener.getJiraString("llu", null));
@@ -14,7 +14,7 @@ public class AddNewRowActionListenerTest extends TestCase {
 	}
 	
 	public void testShouldComputeBothEmptyOk() {
-		AddNewRowActionListener listener = new AddNewRowActionListener(null, null, null, null);
+		AddNewRowActionListener listener = new AddNewRowActionListener(null, null, null);
 		
 		assertEquals(true, listener.isHyphenRequired("llu", "1"));
 		assertEquals(false, listener.isHyphenRequired("llu", null));

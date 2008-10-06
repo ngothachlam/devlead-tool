@@ -3,13 +3,10 @@ package com.jonas.agile.devleadtool.component.panel;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.JTableHeader;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
-import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -21,29 +18,17 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardPanel extends MyComponentPanel {
 
-   private PlannerHelper helper;
    private Logger log = MyLogger.getLogger(BoardPanel.class);
    public MyTable table;
 
-   BoardPanel() {
-      super(null);
+   public BoardPanel() {
+      this(new BoardTableModel());
    }
 
-   public BoardPanel(PlannerHelper client) {
-      this(client, new BoardTableModel());
-   }
-
-   public BoardPanel(PlannerHelper helper, MyTableModel boardModel) {
+   public BoardPanel(MyTableModel boardModel) {
       super(new BorderLayout());
-      this.helper = helper;
       makeContent(boardModel);
       initialiseTableHeader();
-   }
-
-   private JPanel getButtonPanelNorth() {
-      JPanel buttonPanel = new JPanel();
-      addFilter(buttonPanel, table, Column.Jira, Column.Description);
-      return buttonPanel;
    }
 
    public MyTableModel getModel() {

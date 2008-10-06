@@ -15,6 +15,7 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
+import com.jonas.jira.MyJiraFilter;
 import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraHttpClient extends HttpClient {
@@ -112,7 +113,7 @@ public class JiraHttpClient extends HttpClient {
 
    protected List<JiraIssue> buildJirasFromXML(String string, JiraBuilder jiraBuilder, JonasXpathEvaluator jonasXpathEvaluator) throws JDOMException,
          IOException {
-      log.trace("RSS feed responded with \"" + string + "\"");
+      log.debug("RSS feed responded with \"" + string + "\"");
       JonasXpathEvaluator evaluator = jonasXpathEvaluator;
       List<Element> jiras = evaluator.getXpathElements(string);
 
@@ -139,6 +140,29 @@ public class JiraHttpClient extends HttpClient {
          issue = action.accessJiraAndReturn();
          return issue;
       }
+   }
+
+   public List<JiraIssue> getJirasFromFilter(MyJiraFilter devsupportPrioFilter, JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder) throws HttpException, IOException, JiraException, JDOMException {
+      log.debug("getting Jiras");
+      String url = baseUrl + devsupportPrioFilter.getUrl();
+      log.debug("calling " + url);
+      GetMethod method = new GetMethod(url);
+      executeMethod(method);
+      byte[] responseAsBytes = method.getResponseBody();
+      method.releaseConnection();
+
+      throwJiraExceptionIfRequired(method);
+
+      String string = new String(responseAsBytes);
+      List<JiraIssue> jiras = buildJirasFromXML(string, jiraBuilder, jonasXpathEvaluator);
+
+      if (log.isDebugEnabled()) {
+         for (Iterator<JiraIssue> iterator = jiras.iterator(); iterator.hasNext();) {
+            JiraIssue jira = iterator.next();
+            log.debug(jira);
+         }
+      }
+      return jiras;
    }
 
 }

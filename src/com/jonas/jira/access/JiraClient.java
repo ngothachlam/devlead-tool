@@ -17,10 +17,13 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraResolution;
 import com.jonas.jira.JiraVersion;
+import com.jonas.jira.MyJiraFilter;
 import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraClient {
 
+   private static final JonasXpathEvaluator JONAS_XPATH_EVALUATOR = new JonasXpathEvaluator("/rss/channel/item");
+   
    public static final JiraClient JiraClientAolBB = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB), new JiraSoapClient(
          ClientConstants.AOLBB_WS), JiraBuilder.getInstance());
    public static final JiraClient JiraClientAtlassin = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN), new JiraSoapClient(
@@ -56,7 +59,7 @@ public class JiraClient {
       JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_FIXVERSION);
       loadJiraTypesIfRequired();
       loadResolutionsIfRequired();
-      JiraIssue jiraIssue = httpClient.getJira(jira, new JonasXpathEvaluator("/rss/channel/item"), jiraBuilder);
+      JiraIssue jiraIssue = httpClient.getJira(jira, JONAS_XPATH_EVALUATOR, jiraBuilder);
       return jiraIssue;
       // // TODO thread this!!
       // loadResolutionsIfRequired();
@@ -70,13 +73,22 @@ public class JiraClient {
       // return jiraIssue;
    }
 
+   //FIXME call this from a popup from a "Fix Version" button;
    public JiraIssue[] getJirasFromFixVersion(JiraVersion version) throws HttpException, IOException, JDOMException, JiraException {
       loadResolutionsIfRequired();
       loadJiraTypesIfRequired();
-      List<JiraIssue> jiras = httpClient.getJiras(version, new JonasXpathEvaluator("/rss/channel/item"), jiraBuilder);
+      List<JiraIssue> jiras = httpClient.getJiras(version, JONAS_XPATH_EVALUATOR, jiraBuilder);
       return (JiraIssue[]) jiras.toArray(new JiraIssue[jiras.size()]);
    }
 
+   //FIXME call this from a popup similar to fix version;
+   public JiraIssue[] getJirasFromFilter() throws HttpException, IOException, JiraException, JDOMException{
+      loadResolutionsIfRequired();
+      loadJiraTypesIfRequired();
+      List<JiraIssue> jiras = httpClient.getJirasFromFilter(MyJiraFilter.DevsupportPrioFilter, JONAS_XPATH_EVALUATOR, jiraBuilder);
+      return (JiraIssue[]) jiras.toArray(new JiraIssue[jiras.size()]);
+   }
+   
    public String getJiraUrl() {
       return httpClient.getJiraUrl();
    }
