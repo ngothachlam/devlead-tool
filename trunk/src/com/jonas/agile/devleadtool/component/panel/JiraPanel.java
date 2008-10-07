@@ -102,7 +102,7 @@ public class JiraPanel extends MyComponentPanel {
 
       AlteringProjectListener alteringProjectListener = new AlteringProjectListener(jiraProjectFixVersionCombo);
       RefreshingFixVersionListener refreshFixVersionListener = new RefreshingFixVersionListener(jiraProjectsCombo, jiraProjectFixVersionCombo);
-      DownloadJirasListener downloadJirasListener = new DownloadJirasListener(jiraProjectFixVersionCombo, table, helper);
+      DownloadJirasListener downloadJirasListener = new DownloadJirasListener(jiraProjectFixVersionCombo, helper);
 
       downloadJirasListener.addListener(syncWithJiraListener);
       jiraProjectsCombo.addActionListener(alteringProjectListener);

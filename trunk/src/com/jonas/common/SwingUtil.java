@@ -1,6 +1,5 @@
 package com.jonas.common;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -8,11 +7,8 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
-import javax.swing.JFrame;
-import javax.swing.JTable;
 import javax.swing.UIManager;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.common.logging.MyLogger;
 
 public class SwingUtil {

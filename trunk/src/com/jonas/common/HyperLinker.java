@@ -33,7 +33,6 @@ public class HyperLinker {
 			log.debug("Opening URL " + url + "!!");
 			if (windows) {
 				cmd = WIN_PATH + " " + WIN_FLAG + " " + url;
-				Process p = Runtime.getRuntime().exec(cmd);
 			} else {
 				// Under Unix, Netscape has to be running for the "- remote"
 				// command to work. So, we try sending the command and check for an exit value. If the exit command is
@@ -74,8 +73,7 @@ public class HyperLinker {
 		String os = System.getProperty("os.name");
 		if (os != null && os.startsWith(WIN_ID))
 			return true;
-		else
-			return false;
+      return false;
 	}
 
 }

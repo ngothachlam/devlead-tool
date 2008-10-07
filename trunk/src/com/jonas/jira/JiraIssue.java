@@ -195,8 +195,4 @@ public class JiraIssue {
       buffer.append("]");
       return buffer.toString();
    }
-
-   private void clearFixVersions() {
-      fixVersions.clear();
-   }
 }

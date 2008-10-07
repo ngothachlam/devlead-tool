@@ -31,11 +31,6 @@ public class BoardTableModelTest extends JonasTestCase {
       assertTrue(model.isCellEditable(0, 6));
    }
 
-   private Object[] getEmptyRow() {
-      Object[] newRow = { "", Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE };
-      return newRow;
-   }
-
    public void testShouldHaveEmptyRowAndColumnNamesOfSameSize() {
       assertEquals(model.getColumnNames().size(), model.getEmptyRow().length);
    }

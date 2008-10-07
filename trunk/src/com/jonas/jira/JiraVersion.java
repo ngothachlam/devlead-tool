@@ -57,7 +57,7 @@ public class JiraVersion {
    public static JiraVersion[] getVersionByProject(JiraProject lluSystemsProvisioning) {
       List<JiraVersion> tempVersions = new ArrayList<JiraVersion>();
       for (Iterator<JiraVersion> iterator = versions.values().iterator(); iterator.hasNext();) {
-         JiraVersion version = (JiraVersion) iterator.next();
+         JiraVersion version = iterator.next();
          if (version.getProject().equals(lluSystemsProvisioning)) {
             tempVersions.add(version);
          }

@@ -69,7 +69,6 @@ public class PlanTableModelTest extends JonasTestCase {
    }
 
    public void testShouldGetColumnForJiraOk() {
-      Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       PlanTableModel model = new PlanTableModel();
 
       String jira_one = "llu-1";

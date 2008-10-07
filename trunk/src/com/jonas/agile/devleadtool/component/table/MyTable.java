@@ -12,17 +12,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
-import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
 public class MyTable extends JTable {
 
-   private Logger log = MyLogger.getLogger(MyTable.class);
    private MyTableModel model;
 
    // private TableRowSorter<TableModel> sorter;

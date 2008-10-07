@@ -32,11 +32,10 @@ public class PlannerCommunicator {
 
    private String getColumnValue(String jira, Column column) {
       MyInternalFrame activeFrame = plannerHelper.getActiveInternalFrame();
-      PlanTableModel model = (PlanTableModel) activeFrame.getPlanModel();
+      PlanTableModel model = activeFrame.getPlanModel();
       if (model.doesJiraExist(jira))
          return (String) model.getValueAt(column, jira);
-      else
-         return N_A;
+      return N_A;
    }
 
    public String getClosedSprint(String jira) {

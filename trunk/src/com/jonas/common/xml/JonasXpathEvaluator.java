@@ -47,10 +47,10 @@ public class JonasXpathEvaluator {
          Object xPathNode = getXpathNodesFirstElement(stringRepresentationOfXml);
          if (xPathNode instanceof Element) {
             Element tempElement = (Element) xPathNode;
-            string = xPathNode != null ? tempElement.getText() : null;
+            string = tempElement.getText();
          } else if (xPathNode instanceof Attribute) {
             Attribute tempAttribute = (Attribute) xPathNode;
-            string = xPathNode != null ? tempAttribute.getValue() : null;
+            string = tempAttribute.getValue();
          } else if (xPathNode != null) {
             throw new UnsupportedOperationException("xPathNode is of unsupported class: " + xPathNode.getClass());
          }

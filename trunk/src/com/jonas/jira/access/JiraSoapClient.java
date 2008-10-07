@@ -9,7 +9,6 @@ import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.atlassian.jira.rpc.soap.beans.RemoteField;
 import com.atlassian.jira.rpc.soap.beans.RemoteFilter;
-import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssueType;
 import com.atlassian.jira.rpc.soap.beans.RemoteResolution;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
@@ -87,9 +86,9 @@ public class JiraSoapClient {
       return versions;
    }
 
-   public RemoteFilter getFilter(JiraProject jiraProject, String filterName) throws RemotePermissionException, RemoteAuthenticationException,
+   public RemoteFilter getFilter(String filterName) throws RemotePermissionException, RemoteAuthenticationException,
          com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
-      RemoteFilter[] filters = getFilters(jiraProject);
+      RemoteFilter[] filters = getFilters();
       RemoteFilter filter = null;
       for (RemoteFilter remoteFilter : filters) {
          if (remoteFilter.getName().equals(filterName)) {
@@ -100,7 +99,7 @@ public class JiraSoapClient {
       return filter;
    }
 
-   public RemoteFilter[] getFilters(final JiraProject jiraProject) throws RemotePermissionException, RemoteAuthenticationException,
+   public RemoteFilter[] getFilters() throws RemotePermissionException, RemoteAuthenticationException,
          com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
       log.debug("Getting Fix Versions!");
       JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
@@ -140,8 +139,7 @@ public class JiraSoapClient {
       return (RemoteResolution[]) command.execute();
    }
 
-   public RemoteIssueType[] getTypes() throws RemotePermissionException, RemoteAuthenticationException,
-         com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+   public RemoteIssueType[] getTypes() {
       log.debug("Getting Resolutions");
 
       JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {

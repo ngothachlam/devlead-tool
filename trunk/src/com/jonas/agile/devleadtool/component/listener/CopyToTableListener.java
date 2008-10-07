@@ -8,19 +8,15 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.common.logging.MyLogger;
 
 public class CopyToTableListener implements ActionListener {
-   private Logger log = MyLogger.getLogger(this.getClass());
    private final MyTable sourceTable;
    private final PlannerHelper helper;
    private final Map<String, DestinationRetriever> destinationMap;

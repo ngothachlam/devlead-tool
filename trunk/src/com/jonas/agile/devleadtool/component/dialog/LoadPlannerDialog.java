@@ -10,9 +10,6 @@ import com.jonas.agile.devleadtool.component.CutoverLength;
 import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.panel.InternalTabPanel;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
-import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 
 public class LoadPlannerDialog extends JFileChooser {
