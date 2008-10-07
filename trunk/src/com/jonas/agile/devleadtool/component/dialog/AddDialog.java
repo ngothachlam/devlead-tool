@@ -22,8 +22,6 @@ import com.jonas.agile.devleadtool.component.TableRadioButton;
 import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
 
@@ -36,12 +34,6 @@ public class AddDialog extends JFrame {
 
       SwingUtil.centreWindowWithinWindow(this, frame);
       setVisible(true);
-   }
-
-   public static void main(String[] args) {
-      TableAndTitleDTO list1 = new TableAndTitleDTO("board", new MyTable(new BoardTableModel()));
-      TableAndTitleDTO list2 = new TableAndTitleDTO("Plan", new MyTable(new PlanTableModel()));
-      new AddDialog(new JFrame(), list1, list2);
    }
 }
 

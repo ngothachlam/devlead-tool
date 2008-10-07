@@ -38,14 +38,14 @@ public class MyTable extends JTable {
    MyTable(AbstractTableModel defaultTableModel) {
       super(defaultTableModel);
       setDefaultRenderer(String.class, new StringTableCellRenderer());
-      setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
-       setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor(new JCheckBox()));
-//      setDefaultEditor(Boolean.class, new DefaultCellEditor(new JCheckBox()));
+      setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(defaultTableModel));
+      setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor(new JCheckBox()));
+      // setDefaultEditor(Boolean.class, new DefaultCellEditor(new JCheckBox()));
 
       setDragEnabled(true);
       setDropMode(DropMode.INSERT);
       setFillsViewportHeight(true);
-      
+
       setAutoCreateRowSorter(true);
       // sorter = new TableRowSorter<TableModel>(defaultTableModel);
       // setRowSorter(sorter);

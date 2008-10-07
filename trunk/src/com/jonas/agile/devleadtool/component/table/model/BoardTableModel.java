@@ -12,9 +12,19 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.isOpen, Column.isBug, Column.isInProgress, Column.isResolved, Column.isComplete, Column.Dev_Estimate, Column.Dev_Actual, Column.prio };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.isOpen, Column.isBug, Column.isInProgress,
+         Column.isResolved, Column.isComplete, Column.Dev_Estimate, Column.Dev_Actual, Column.prio };
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
+   private static final List<Column> mutuallyExclusive = new ArrayList<Column>(5);
+
+   static {
+      mutuallyExclusive.add(Column.isOpen);
+      mutuallyExclusive.add(Column.isBug);
+      mutuallyExclusive.add(Column.isInProgress);
+      mutuallyExclusive.add(Column.isResolved);
+      mutuallyExclusive.add(Column.isComplete);
+   }
 
    public BoardTableModel() {
       super(columns);
@@ -37,10 +47,10 @@ public class BoardTableModel extends MyTableModel {
             case isInProgress:
             case isResolved:
             case isComplete:
+            default:
                if (getBoardStatus(row, column)) {
                   list.add(BoardStatusToColumnMap.getBoardStatus(column));
                }
-            default:
                break;
             }
          }
@@ -55,7 +65,32 @@ public class BoardTableModel extends MyTableModel {
       Boolean valueAt = (Boolean) getValueAt(row, columnTemp);
       return valueAt == null ? false : valueAt.booleanValue();
    }
+
+   @Override
+   public boolean isRed(Object value, int row, int column) {
+      boolean result = false;
+      Column columnEnum = getColumn(column);
+      if (columnEnum != null) {
+         if (mutuallyExclusive.contains(columnEnum)) {
+            boolean isThisSet = ((Boolean) value).booleanValue();
+            int countOfMutuallyExclusiveSet = isThisSet ? 1 : 0;
+            for (Column col : mutuallyExclusive) {
+               if (col != columnEnum && ((Boolean) getValueAt(col, row)).booleanValue()) {
+                  countOfMutuallyExclusiveSet++;
+               }
+            }
+
+            if (isThisSet && countOfMutuallyExclusiveSet > 1)
+               result = true;
+            else if (!isThisSet && countOfMutuallyExclusiveSet == 0)
+               result = true;
+            fireTableRowsUpdated(row, row);
+         }
+      }
+      return result;
+   }
 }
+
 
 class BoardStatusToColumnMap {
 
@@ -75,11 +110,14 @@ class BoardStatusToColumnMap {
    }
 }
 
+
 class Counter {
    private int i = 0;
+
    public int getValueAndIncrease() {
       return i++;
    }
+
    public void reset() {
       i = 0;
    }

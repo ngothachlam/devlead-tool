@@ -19,4 +19,9 @@ public class JiraTableModel extends MyTableModel {
    public JiraTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
       super(columns, contents, header);
    }
+
+   @Override
+   public boolean isRed(Object value, int row, int column) {
+      return false;
+   }
 }

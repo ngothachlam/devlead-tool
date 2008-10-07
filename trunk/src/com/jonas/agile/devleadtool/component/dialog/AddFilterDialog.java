@@ -19,19 +19,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
-import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
 import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
 import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.access.JiraClient;
 import com.jonas.jira.access.JiraException;
-import com.jonas.testHelpers.TryoutTester;
 
 public class AddFilterDialog extends JFrame {
 
@@ -42,25 +38,6 @@ public class AddFilterDialog extends JFrame {
 
       SwingUtil.centreWindowWithinWindow(this, frame);
       setVisible(true);
-   }
-
-   public static void main(String[] args) {
-      MyTable boardTable = new MyTable(new BoardTableModel());
-      MyTable planTable = new MyTable(new PlanTableModel());
-
-      TableAndTitleDTO list1 = new TableAndTitleDTO("board", boardTable);
-      TableAndTitleDTO list2 = new TableAndTitleDTO("Plan", planTable);
-
-      JFrame frame = TryoutTester.getFrame();
-      MyPanel panel = new MyPanel(new GridLayout(2, 1));
-
-      frame.setContentPane(panel);
-      frame.setVisible(true);
-
-      panel.add(boardTable);
-      panel.add(planTable);
-
-      new AddFilterDialog(frame, list1, list2);
    }
 }
 

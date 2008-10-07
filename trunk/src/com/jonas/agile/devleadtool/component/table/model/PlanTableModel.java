@@ -41,4 +41,9 @@ public class PlanTableModel extends MyTableModel {
       return this.getValueAt(rowNo, columnNo);
    }
 
+   @Override
+   public boolean isRed(Object value, int row, int column) {
+      return false;
+   }
+
 }

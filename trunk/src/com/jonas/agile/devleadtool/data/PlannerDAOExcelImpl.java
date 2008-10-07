@@ -89,7 +89,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       // save column Headers
       HSSFRow row = sheet.createRow((short) 0);
       for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
-         Column column = model.getColumn(colCount);
          HSSFCell cell = row.createCell((short) colCount);
          Object valueAt = model.getColumnName(colCount);
          cell.setCellValue(new HSSFRichTextString((String) valueAt));
@@ -179,13 +178,13 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                      throw new NullPointerException("Trying to add column (" + cellContents + ") to " + colCount + " and it is " + column + " and its size is currently " + columns.size());
                   }
                   columns.put(colCount, column);
-                  if (!column.isJiraColumn())
+                  if (!column.isToLoad())
                      dataModelDTO.getHeader().add(getHeaderMappingToColumn(cellContents));
                } else {
                   Column column = columns.get(colCount);
                   log.debug("Getting column from " + colCount + " and it is " + column + " and its size is " + columns.size());
                   // don't add jira columns!
-                  if (!column.isJiraColumn()) {
+                  if (!column.isToLoad()) {
                      // FIXME make dynamic!
                      switch (column) {
                      case BoardStatus:
