@@ -56,7 +56,7 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
          checkbox.setEnabled(true);
 
       if (model != null) {
-         if (model.isRed(value, row, column)) {
+         if (model.isRed(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column))) {
             checkbox.setBackground(new Color(200, 0, 0));
          }
       }

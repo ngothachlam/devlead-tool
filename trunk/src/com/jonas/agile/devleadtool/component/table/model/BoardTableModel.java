@@ -12,11 +12,11 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
 
+   private static final List<Column> mutuallyExclusive = new ArrayList<Column>(5);
+
    private static final Column[] columns = { Column.Jira, Column.Description, Column.isOpen, Column.isBug, Column.isInProgress,
          Column.isResolved, Column.isComplete, Column.Dev_Estimate, Column.Dev_Actual, Column.prio };
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
-
-   private static final List<Column> mutuallyExclusive = new ArrayList<Column>(5);
 
    static {
       mutuallyExclusive.add(Column.isOpen);
@@ -71,20 +71,25 @@ public class BoardTableModel extends MyTableModel {
       boolean result = false;
       Column columnEnum = getColumn(column);
       if (columnEnum != null) {
-         if (mutuallyExclusive.contains(columnEnum)) {
-            boolean isThisSet = ((Boolean) value).booleanValue();
-            int countOfMutuallyExclusiveSet = isThisSet ? 1 : 0;
-            for (Column col : mutuallyExclusive) {
-               if (col != columnEnum && ((Boolean) getValueAt(col, row)).booleanValue()) {
-                  countOfMutuallyExclusiveSet++;
+         if (mutuallyExclusive != null && mutuallyExclusive.contains(columnEnum)) {
+            if (value != null && value instanceof Boolean) {
+               boolean isThisSet = ((Boolean) value).booleanValue();
+               int countOfMutuallyExclusiveSet = isThisSet ? 1 : 0;
+               for (Column col : mutuallyExclusive) {
+                  Object valueAt = getValueAt(col, row);
+                  if (valueAt != null && valueAt instanceof Boolean && col != columnEnum && ((Boolean) valueAt).booleanValue()) {
+                     countOfMutuallyExclusiveSet++;
+                  }
+                  if (countOfMutuallyExclusiveSet == 2)
+                     break;
                }
-            }
 
-            if (isThisSet && countOfMutuallyExclusiveSet > 1)
-               result = true;
-            else if (!isThisSet && countOfMutuallyExclusiveSet == 0)
-               result = true;
-            fireTableRowsUpdated(row, row);
+               if (isThisSet && countOfMutuallyExclusiveSet > 1)
+                  result = true;
+               else if (!isThisSet && countOfMutuallyExclusiveSet == 0)
+                  result = true;
+               fireTableRowsUpdated(row, row);
+            }
          }
       }
       return result;

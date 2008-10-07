@@ -140,7 +140,7 @@ class AddFilterFromRadioButtons implements ActionListener {
       JiraIssue[] jiras = null;
       try {
          client.login();
-         jiras = client.getJirasFromFilter();
+         jiras = client.getJirasFromFilter(filter);
          // FIXME the following won't catch errors!
       } catch (HttpException e1) {
          e1.printStackTrace();
