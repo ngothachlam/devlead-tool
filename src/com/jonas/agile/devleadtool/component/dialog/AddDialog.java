@@ -69,7 +69,7 @@ class AddPanel extends MyPanel {
 
       MyPanel buttonPanel = new MyPanel(new GridLayout(1, 2, 5, 5));
       buttonPanel.bordered();
-      this.addButton(buttonPanel, "Add", new AddFromRadioButtons(frame, group, jiraPrefix, jiraCommas));
+      this.addButton(buttonPanel, "Add", new AddFromRadioButtons(group, jiraPrefix, jiraCommas));
       this.addButton(buttonPanel, "Close", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -112,7 +112,7 @@ class AddFromRadioButtons extends AddNewRowActionListener {
 
    private ButtonGroup group;
 
-   public AddFromRadioButtons(Window addPanel, ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas) {
+   public AddFromRadioButtons(ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas) {
       super(null, jiraPrefix, jiraCommas);
       this.group = group;
    }

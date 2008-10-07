@@ -70,7 +70,7 @@ class AddFilterPanel extends MyPanel {
 
       MyPanel buttonPanel = new MyPanel(new GridLayout(1, 2, 5, 5));
       buttonPanel.bordered();
-      this.addButton(buttonPanel, "Add", new AddFilterFromRadioButtons(frame, group, jiraCommas));
+      this.addButton(buttonPanel, "Add", new AddFilterFromRadioButtons(group, jiraCommas));
       this.addButton(buttonPanel, "Close", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -114,7 +114,7 @@ class AddFilterFromRadioButtons implements ActionListener {
    private ButtonGroup group;
    private final JComboBox filters;
 
-   public AddFilterFromRadioButtons(JFrame frame, ButtonGroup group, JComboBox filters) {
+   public AddFilterFromRadioButtons(ButtonGroup group, JComboBox filters) {
       this.group = group;
       this.filters = filters;
    }

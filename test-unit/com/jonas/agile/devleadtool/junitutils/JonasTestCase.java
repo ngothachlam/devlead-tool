@@ -108,7 +108,7 @@ public class JonasTestCase extends TestCase {
       // EasyMock.expect(mockFactory.getJiraBuilder()).andReturn(mockJiraBuilder).anyTimes();
    }
 
-   protected void setupMockActualsForElementExtendedWithEstimate(Element e, String string, String string2, String string3, String string4) {
+   protected void setupMockActualsForElementExtendedWithEstimate(Element e) {
       setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution", "BlahType");
       EasyMock.expect(e.getChildText("timeoriginalestimate")).andReturn("2 days");
    }

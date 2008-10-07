@@ -12,14 +12,11 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.SwingUtil;
-import com.jonas.common.logging.MyLogger;
 
 public class CheckBoxTableCellRenderer extends JPanel implements TableCellRenderer {
 
-   private static final Logger log = MyLogger.getLogger(CheckBoxTableCellRenderer.class);
    private JCheckBox checkbox = new JCheckBox();
    private Border border;
    private Border border2;

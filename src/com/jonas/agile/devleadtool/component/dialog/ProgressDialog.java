@@ -15,7 +15,6 @@ public class ProgressDialog extends JDialog {
 
    private JLabel label;
    private JProgressBar progressBar;
-   private boolean closed = false;
    private final JFrame owner;
 
    public ProgressDialog(JFrame owner, String title, String note, int max) {

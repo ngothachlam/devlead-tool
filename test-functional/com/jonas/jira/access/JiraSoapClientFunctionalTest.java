@@ -36,7 +36,7 @@ public class JiraSoapClientFunctionalTest extends TestCase {
    }
 
    public void testGettingFilters() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
-      RemoteFilter filter = clientAolBB.getFilter(JiraProject.LLU_DEV_SUPPORT, "LLU Dev Support - Priority List (unresolved)");
+      RemoteFilter filter = clientAolBB.getFilter("LLU Dev Support - Priority List (unresolved)");
       System.out.println(filter.getId());
       System.out.println(filter.getXml());
 

@@ -15,7 +15,6 @@ import org.jdom.JDOMException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
-import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
@@ -31,10 +30,8 @@ public class DownloadJirasListener implements ActionListener {
 	private final List<SyncWithJiraActionListenerListener> listeners = new ArrayList<SyncWithJiraActionListenerListener>();
 	private final Logger log = MyLogger.getLogger(DownloadJirasListener.class);
 	
-   private final MyTable table;
-   public DownloadJirasListener(JComboBox jiraProjectFixVersionCombo, MyTable table, PlannerHelper helper) {
+   public DownloadJirasListener(JComboBox jiraProjectFixVersionCombo, PlannerHelper helper) {
 		this.jiraProjectFixVersionCombo = jiraProjectFixVersionCombo;
-		this.table = table;
 		this.helper = helper;
 	}
 

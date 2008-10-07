@@ -3,8 +3,6 @@ package com.jonas.jira.access;
 import java.util.HashMap;
 import java.util.Map;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssueType;
-import com.atlassian.jira.rpc.soap.beans.RemoteResolution;
-import com.jonas.jira.JiraResolution;
 
 public class JiraType {
 

@@ -39,7 +39,6 @@ public class BoardTableModel extends MyTableModel {
       log.debug("row: " + row + " for jira: " + jira);
       List<BoardStatusValue> list = new ArrayList<BoardStatusValue>();
       if (row >= 0) {
-         BoardStatusValue result = null;
          for (Column column : columns) {
             switch (column) {
             case isOpen:

@@ -152,10 +152,6 @@ public class JiraBuilder {
       return "";
    }
 
-   private String getJiraFieldIfNotNull(JiraType type) {
-      return type != null ? type.getName() : null;
-   }
-
    public List<JiraIssue> buildJiras(List<Element> list) {
       List<JiraIssue> jiras = new ArrayList<JiraIssue>();
       log.debug("got " + list.size() + " jiras");

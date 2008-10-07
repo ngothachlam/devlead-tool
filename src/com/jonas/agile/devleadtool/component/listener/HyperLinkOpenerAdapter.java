@@ -27,10 +27,6 @@ public class HyperLinkOpenerAdapter extends MouseAdapter {
 		this.jiraColumn = jiraColumn;
 	}
 
-	public void myMouseClicked(MouseEvent e) throws NotJiraException {
-
-	}
-
 	public void mouseClicked(MouseEvent e) {
 		MyTable table = (MyTable) e.getSource();
 		int itsRow = table.rowAtPoint(e.getPoint());

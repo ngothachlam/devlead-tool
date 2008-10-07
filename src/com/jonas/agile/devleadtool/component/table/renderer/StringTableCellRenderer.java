@@ -2,12 +2,8 @@ package com.jonas.agile.devleadtool.component.table.renderer;
 
 import java.awt.Component;
 import javax.swing.JTable;
-import org.apache.log4j.Logger;
-import com.jonas.common.logging.MyLogger;
 
 public class StringTableCellRenderer extends MyTableCellRenderer {
-
-   private static final Logger log = MyLogger.getLogger(StringTableCellRenderer.class);
 
    public StringTableCellRenderer() {
    }

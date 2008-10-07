@@ -35,7 +35,7 @@ public class MyTablePopupMenu extends JPopupMenu {
 
       sourceTable.addMouseListener(new PopupListener(sourceTable, this));
 
-      add(new MenuItem_Add("Add Jiras to Table", sourceTable, helper.getParentFrame(), tables));
+      add(new MenuItem_Add("Add Jiras to Table", helper.getParentFrame(), tables));
       add(new MenuItem_Open("Open in Browser", sourceTable, helper));
       add(new MenuItem_Sync("Sync with Jira", sourceTable, helper));
       addSeparator();
@@ -136,22 +136,18 @@ class MenuItem_Copy extends JMenuItem implements ActionListener {
 
 
 class MenuItem_Open extends JMenuItem {
-   private MyTable sourceTable;
 
    public MenuItem_Open(String string, MyTable sourceTable, PlannerHelper helper) {
       super(string);
-      this.sourceTable = sourceTable;
       addActionListener(new OpenJirasListener(sourceTable, helper));
    }
 }
 
 
 class MenuItem_Add extends JMenuItem {
-   private MyTable sourceTable;
 
-   public MenuItem_Add(String string, MyTable sourceTable, final JFrame frame, final TableAndTitleDTO... dtos) {
+   public MenuItem_Add(String string, final JFrame frame, final TableAndTitleDTO... dtos) {
       super(string);
-      this.sourceTable = sourceTable;
       addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -180,11 +176,9 @@ class MenuItem_Remove extends JMenuItem implements ActionListener {
 
 
 class MenuItem_Sync extends JMenuItem {
-   private MyTable sourceTable;
 
    public MenuItem_Sync(String string, final MyTable sourceTable, PlannerHelper helper) {
       super(string);
-      this.sourceTable = sourceTable;
       SyncWithJiraActionListenerListener syncWithJiraActionListenerListener = new SyncWithJiraActionListenerListener() {
          public void jiraAdded(JiraIssue jiraIssue) {
             sourceTable.addJira(jiraIssue);

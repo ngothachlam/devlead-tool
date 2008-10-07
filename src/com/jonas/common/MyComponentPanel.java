@@ -23,7 +23,6 @@ import com.jonas.common.logging.MyLogger;
 
 public class MyComponentPanel extends MyPanel {
 
-   private Logger log = MyLogger.getLogger(MyComponentPanel.class);
    private List<MyComponentPanel> changeListeners = new ArrayList<MyComponentPanel>();
    private List<MyComponentPanel> closeListeners = new ArrayList<MyComponentPanel>();
 
