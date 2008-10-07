@@ -3,13 +3,13 @@ package com.jonas.agile.devleadtool.component.table;
 public enum IsEditableColumn {
    Yes(true), No(false);
 
-   private final boolean intValue;
+   private final boolean boolValue;
 
-   IsEditableColumn(boolean intValue) {
-      this.intValue = intValue;
+   IsEditableColumn(boolean boolValue) {
+      this.boolValue = boolValue;
    }
 
-   public boolean intValue() {
-      return intValue;
+   public boolean boolValue() {
+      return boolValue;
    }
 }

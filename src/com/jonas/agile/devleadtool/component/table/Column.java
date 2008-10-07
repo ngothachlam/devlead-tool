@@ -10,7 +10,11 @@ public enum Column {
    Planned_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
    Resolved_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
    Closed_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
-   BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes){
+      public Object parse(String cellContents) {
+         return BoardStatusValue.get(cellContents);
+      }
+   },
    Dev_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
    QA_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
    Dev_Actual(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
@@ -26,14 +30,38 @@ public enum Column {
    J_Dev_Spent(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
 
    //Integer
-   prio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
+   prio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes) {
+      public Object parse(String cellContents) {
+         return Integer.parseInt(cellContents);
+      }
+   },
 
    // Boolean Defaults
-   isInProgress(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
-   isOpen(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
-   isBug(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
-   isResolved(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
-   isComplete(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes);
+   isInProgress(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes){
+      public Object parse(String cellContents) {
+         return Boolean.parseBoolean(cellContents);
+      }
+   }, 
+   isOpen(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes){
+      public Object parse(String cellContents) {
+         return Boolean.parseBoolean(cellContents);
+      }
+   }, 
+   isBug(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes){
+      public Object parse(String cellContents) {
+         return Boolean.parseBoolean(cellContents);
+      }
+   }, 
+   isResolved(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes){
+      public Object parse(String cellContents) {
+         return Boolean.parseBoolean(cellContents);
+      }
+   }, 
+   isComplete(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes){
+      public Object parse(String cellContents) {
+         return Boolean.parseBoolean(cellContents);
+      }
+   };
 
    private final Class defaultClass;
    private final Object defaultValue;
@@ -71,11 +99,16 @@ public enum Column {
    }
 
    public boolean isEditable() {
-      return isEditable.intValue();
+      return isEditable.boolValue();
    }
    
    public boolean isToLoad() {
-      return isToLoad.intValue();
+      return isToLoad.boolValue();
    }
+
+   public Object parse(String cellContents) {
+      return cellContents;
+   }
+   
 
 }

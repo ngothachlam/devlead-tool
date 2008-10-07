@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import org.easymock.classextension.EasyMock;
+import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.jira.JiraIssue;
@@ -22,7 +23,7 @@ public class MyTableModelTest extends JonasTestCase {
 
    protected void setUp() throws Exception {
       super.setUp();
-      model = new JiraTableModel();
+      model = new TestTableModel();
    }
 
    protected void tearDown() throws Exception {
@@ -180,75 +181,13 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals("1235", model.getValueAt(1, 0));
    }
 
-   public void testGetEmptyRowFromBoard() {
-      // Column.Jira;
-      // Column.Description;
-      // Column.isOpen;
-      // Column.isBug;
-      // Column.isInProgress;
-      // Column.isResolved;
-      // Column.isComplete;
-      // Column.ListPrio;
-      
-      model = new BoardTableModel();
-      Object[] emptyRow = model.getEmptyRow();
-      assertEquals(10, emptyRow.length);
-      assertEquals("", emptyRow[0]);
-      assertEquals("", emptyRow[1]);
-      assertEquals(Boolean.FALSE, emptyRow[2]);
-      assertEquals(Boolean.FALSE, emptyRow[3]);
-      assertEquals(Boolean.FALSE, emptyRow[4]);
-      assertEquals(Boolean.FALSE, emptyRow[5]);
-      assertEquals(Boolean.FALSE, emptyRow[6]);
-      assertEquals("", emptyRow[7]);
-      assertEquals("", emptyRow[8]);
-      assertEquals(null, emptyRow[9]);
-   }
-
-   public void testGetEmptyRowFromPlan() {
-//      Column.Jira; 
-//      Column.Description; 
-//      Column.J_Type; 
-//      Column.Planned_Sprint; 
-//      Column.Resolved_Sprint; 
-//      Column.Closed_Sprint; 
-//      Column.Dev_Estimate; 
-//      Column.QA_Estimate; 
-//      Column.Dev_Actual; 
-//      Column.Note;
-      
-      model = new PlanTableModel();
-
-      Object[] emptyRow = model.getEmptyRow();
-      assertEquals("", emptyRow[0]);
-      assertEquals("", emptyRow[1]);
-      assertEquals("", emptyRow[2]);
-      assertEquals("", emptyRow[3]);
-      assertEquals("", emptyRow[4]);
-      assertEquals("", emptyRow[5]);
-      assertEquals("", emptyRow[6]);
-      assertEquals("", emptyRow[7]);
-      assertEquals("", emptyRow[8]);
-      assertEquals("", emptyRow[9]);
-      assertEquals("", emptyRow[10]);
-      assertEquals(11, emptyRow.length);
-   }
-
    public void testShouldAddJiraOk() {
       model.addJira("llu-1");
 
       assertEquals("LLU-1", model.getValueAt(0, 0));
       assertEquals("", model.getValueAt(0, 1));
-//      assertEquals("", model.getValueAt(0, 2));
-      assertEquals("", model.getValueAt(0, 3));
-      assertEquals("", model.getValueAt(0, 4));
-      assertEquals("", model.getValueAt(0, 5));
-      assertEquals("", model.getValueAt(0, 6));
-      assertEquals("", model.getValueAt(0, 7));
-      assertEquals("", model.getValueAt(0, 8));
-      assertEquals("", model.getValueAt(0, 9));
-      assertEquals("", model.getValueAt(0, 10));
-      assertEquals("", model.getValueAt(0, 11));
+      assertEquals(BoardStatusValue.UnKnown, model.getValueAt(0, 2));
+      assertEquals(null, model.getValueAt(0, 3));
    }
 
    public void testShouldCalculateAlreadyExistsOk() {
@@ -261,12 +200,17 @@ public class MyTableModelTest extends JonasTestCase {
    public void testShouldGetColumnInfoOk() {
       assertEquals(0, model.getColumnIndex(Column.Jira));
       assertEquals(1, model.getColumnIndex(Column.Description));
-      assertEquals(5, model.getColumnIndex(Column.J_FixVersion));
+      assertEquals(2, model.getColumnIndex(Column.BoardStatus));
+      assertEquals(3, model.getColumnIndex(Column.prio));
+      assertEquals(4, model.getColumnIndex(Column.Note));
+      assertEquals(5, model.getColumnIndex(Column.J_BuildNo));
+      assertEquals(6, model.getColumnIndex(Column.J_Dev_Estimate));
       assertEquals(-1, model.getColumnIndex(Column.isBug));
    }
 
    public void testShouldAddJiraComplexObjectOk() {
       JiraIssue mock_jiraIssue = createClassMock(JiraIssue.class);
+      
       EasyMock.expect(mock_jiraIssue.getKey()).andReturn("LLU-1").anyTimes();
       EasyMock.expect(mock_jiraIssue.getSummary()).andReturn("Summary1").anyTimes();
       List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
@@ -277,45 +221,22 @@ public class MyTableModelTest extends JonasTestCase {
       EasyMock.expect(mock_jiraIssue.getResolution()).andReturn("Resolution1").anyTimes();
       EasyMock.expect(mock_jiraIssue.getBuildNo()).andReturn("BuildNo1").anyTimes();
       EasyMock.expect(mock_jiraIssue.getEstimate()).andReturn("1.4").anyTimes();
+      EasyMock.expect(mock_jiraIssue.getLLUListPriority()).andReturn(5800).anyTimes();
       replay();
 
       model.addJira(mock_jiraIssue);
 
       verify();
       assertEquals(1, model.getRowCount());
-      assertEquals(7, model.getColumnCount());
+      assertEquals(8, model.getColumnCount());
       assertModelRow("LLU-1", Column.Jira, 0, 0);
       assertModelRow("Summary1", Column.Description, 1, 0);
-      assertModelRow("Status1", Column.J_Status, 3, 0);
-      assertModelRow("Resolution1", Column.J_Resolution, 4, 0);
+      assertModelRow(BoardStatusValue.UnKnown, Column.BoardStatus, 2, 0);
+      assertModelRow(5800, Column.prio, 3, 0);
+      assertModelRow("", Column.Note, 4, 0);
       assertModelRow("BuildNo1", Column.J_BuildNo, 5, 0);
-      assertModelRow(1.4f, Column.Dev_Estimate, 6, 0);
-
-      reset();
-      model = new PlanTableModel();
-      EasyMock.expect(mock_jiraIssue.getKey()).andReturn("LLU-2").anyTimes();
-      EasyMock.expect(mock_jiraIssue.getSummary()).andReturn("Summary2").anyTimes();
-      EasyMock.expect(mock_jiraIssue.getType()).andReturn("Type2").anyTimes();
-      EasyMock.expect(mock_jiraIssue.getEstimate()).andReturn("2.4").anyTimes();
-      replay();
-
-      model.addJira(mock_jiraIssue);
-
-      verify();
-      assertEquals(1, model.getRowCount());
-      assertEquals(10, model.getColumnCount());
-      // Column.Jira, Column.Description, Column.Type, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Estimate, Column.Actual,
-      // Column.Note
-      assertModelRow("LLU-2", Column.Jira, 0, 0);
-      assertModelRow("Summary2", Column.Description, 1, 0);
-      assertModelRow("Type2", Column.J_Type, 2, 0);
-      assertModelRow("", Column.Planned_Sprint, 3, 0);
-      assertModelRow("", Column.Resolved_Sprint, 4, 0);
-      assertModelRow("", Column.Closed_Sprint, 5, 0);
-      assertModelRow(2.4f, Column.Dev_Estimate, 6, 0);
-      assertModelRow(0f, Column.QA_Estimate, 7, 0);
-      assertModelRow(0f, Column.Dev_Actual, 8, 0);
-      assertModelRow("", Column.Note, 9, 0);
+      assertModelRow("1.4", Column.J_Dev_Estimate, 6, 0);
+      assertModelRow(false, Column.isOpen, 7, 0);
    }
 
    private void assertModelRow(Object string, Column column, int col, int row) {

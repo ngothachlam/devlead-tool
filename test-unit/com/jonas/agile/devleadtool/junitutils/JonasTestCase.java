@@ -139,12 +139,12 @@ public class JonasTestCase extends TestCase {
       }
    }
 
-   protected Vector<Object> getTestContentRow(int noOfColumns, String data, int identifier) {
-      Vector<Object> vector = new Vector<Object>();
-      while (noOfColumns > 0) {
-         vector.add(data + identifier);
-         noOfColumns--;
-   
+   protected Vector<Object> getTestContentRow(int noOfColumns, String data) {
+      Vector<Object> vector = new Vector<Object>(noOfColumns);
+      int column = 0;
+      while (column < noOfColumns) {
+         vector.add(data + column);
+         column++;
       }
       return vector;
    }

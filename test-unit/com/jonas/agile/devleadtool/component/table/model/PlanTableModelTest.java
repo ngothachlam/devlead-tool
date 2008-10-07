@@ -6,7 +6,13 @@ import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class PlanTableModelTest extends JonasTestCase {
 
-   PlanTableModel model = new PlanTableModel();
+   PlanTableModel model;
+
+   @Override
+   protected void setUp() throws Exception {
+      super.setUp();
+      model = new PlanTableModel();
+   }
 
    public void testShouldAddJiraAndCalculateIfJiraExistsCorrectly() {
       assertFalse(model.doesJiraExist("llu-1"));
@@ -32,8 +38,8 @@ public class PlanTableModelTest extends JonasTestCase {
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       Vector<Column> header = new Vector<Column>();
       header.add(Column.Jira);
-      contents.add(getTestContentRow(1, "row0-", 0));
-      contents.add(getTestContentRow(1, "row1-", 0));
+      contents.add(getTestContentRow(1, "row0-"));
+      contents.add(getTestContentRow(1, "row1-"));
       PlanTableModel model = new PlanTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
@@ -111,6 +117,22 @@ public class PlanTableModelTest extends JonasTestCase {
       assertEquals("LLU-2", (String) model.getValueAt(Column.Jira, jira_two));
       assertEquals("", (String) model.getValueAt(Column.Description, jira_two));
       assertEquals("blah2", (String) model.getValueAt(Column.J_Type, jira_two));
+   }
+   
+   public void testGetEmptyRowFromPlan() {
+      Object[] emptyRow = model.getEmptyRow();
+      assertEquals("", emptyRow[0]);
+      assertEquals("", emptyRow[1]);
+      assertEquals("", emptyRow[2]);
+      assertEquals("", emptyRow[3]);
+      assertEquals("", emptyRow[4]);
+      assertEquals("", emptyRow[5]);
+      assertEquals("", emptyRow[6]);
+      assertEquals("", emptyRow[7]);
+      assertEquals("", emptyRow[8]);
+      assertEquals("", emptyRow[9]);
+      assertEquals("", emptyRow[10]);
+      assertEquals(11, emptyRow.length);
    }
 
 }

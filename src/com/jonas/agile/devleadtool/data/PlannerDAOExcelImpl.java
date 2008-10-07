@@ -150,18 +150,16 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          Vector<Object> rowData = new Vector<Object>();
          rowCount++;
          HSSFRow row = rit.next();
-         log.debug("Going through " + rowCount + " rows to load");
+         log.debug("Loading row " + rowCount);
          int colCount = -1;
          // for each column in the row...
          for (Iterator<HSSFCell> cit = row.cellIterator(); cit.hasNext();) {
             colCount++;
             HSSFCell cell = cit.next();
             int cellType = cell.getCellType();
-            log.debug("Got cell of type " + cellType + " at row " + rowCount + " and column " + colCount);
+            log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + colCount);
             switch (cellType) {
             case HSSFCell.CELL_TYPE_BLANK:
-               rowData.add(null);
-               break;
             case HSSFCell.CELL_TYPE_BOOLEAN:
                rowData.add(Boolean.valueOf(cell.getBooleanCellValue()));
                break;
@@ -171,30 +169,18 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             case HSSFCell.CELL_TYPE_STRING:
                HSSFRichTextString cellHeader = cell.getRichStringCellValue();
                String cellContents = (cellHeader == null ? "" : cellHeader.getString());
-               // if we're on the column Header!
                if (rowCount == 0) {
+                  log.debug("\tHeader!");
                   Column column = Column.getEnum(cellContents);
-                  if (column == null){
-                     throw new NullPointerException("Trying to add column (" + cellContents + ") to " + colCount + " and it is " + column + " and its size is currently " + columns.size());
+                  if (column == null) {
+                     throw new NullPointerException("Failed to add column (" + cellContents + ") to " + colCount + " of type " + column
+                           + " (size is " + columns.size() + ")");
                   }
                   columns.put(colCount, column);
-                  if (!column.isToLoad())
+                  if (column.isToLoad())
                      dataModelDTO.getHeader().add(getHeaderMappingToColumn(cellContents));
                } else {
-                  Column column = columns.get(colCount);
-                  log.debug("Getting column from " + colCount + " and it is " + column + " and its size is " + columns.size());
-                  // don't add jira columns!
-                  if (!column.isToLoad()) {
-                     // FIXME make dynamic!
-                     switch (column) {
-                     case BoardStatus:
-                        rowData.add(BoardStatusValue.get(cellContents));
-                        break;
-                     default:
-                        rowData.add(cellContents);
-                        break;
-                     }
-                  }
+                  addCellValue(columns, rowData, colCount, cellContents);
                }
                break;
             default:
@@ -207,4 +193,11 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       return dataModelDTO;
    }
 
+   private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, String cellContents) {
+      Column column = columns.get(colCount);
+      log.debug("\tColumn " + column + " (from col " + colCount + ") should " + (!column.isToLoad() ? " not " : "") + " be loaded!");
+      if (column.isToLoad()) {
+         rowData.add(column.parse(cellContents));
+      }
+   }
 }

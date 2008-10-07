@@ -82,10 +82,10 @@ public class JiraClient {
    }
 
    //FIXME call this from a popup similar to fix version;
-   public JiraIssue[] getJirasFromFilter() throws HttpException, IOException, JiraException, JDOMException{
+   public JiraIssue[] getJirasFromFilter(JiraFilter jiraFilter) throws HttpException, IOException, JiraException, JDOMException{
       loadResolutionsIfRequired();
       loadJiraTypesIfRequired();
-      List<JiraIssue> jiras = httpClient.getJirasFromFilter(JiraFilter.DevsupportPrioFilter_UnClosed, JONAS_XPATH_EVALUATOR, jiraBuilder);
+      List<JiraIssue> jiras = httpClient.getJirasFromFilter(jiraFilter, JONAS_XPATH_EVALUATOR, jiraBuilder);
       return (JiraIssue[]) jiras.toArray(new JiraIssue[jiras.size()]);
    }
    

@@ -11,25 +11,35 @@ public class JiraFilter {
          "/secure/IssueNavigator.jspa?view=rss&" +
          "&customfield_10241%3AlessThan=00001000000000.000" +
          "&customfield_10241%3AgreaterThan=00000000000000.000" +
-         "&pid=10192&status=1&status=3&status=4&status=5" +
-         "&sorter/field=created&sorter/order=ASC" +
+         "&pid=10192&status=1" +
+         "&status=3" +
+         "&status=4" +
+         "&status=5" +
+         "&sorter/field=created" +
+         "&sorter/order=ASC" +
          "&sorter/field=customfield_10188" +
-         "&sorter/order=ASC&sorter/field=customfield_10241" +
+         "&sorter/order=ASC" +
+         "&sorter/field=customfield_10241" +
          "&sorter/order=DESC" +
-         "&tempMax=10000&reset=true&decorator=none");
+         "&tempMax=10000" +
+         "&reset=true" +
+         "&decorator=none");
 
    public static final JiraFilter DevsupportPrioFilter_UnResolved = new JiraFilter(JiraProject.LLU_DEV_SUPPORT, "Dev Support (UnResolved)", 
          "/secure/IssueNavigator.jspa?view=rss&" +
          "&customfield_10241%3AlessThan=00001000000000.000" +
          "&customfield_10241%3AgreaterThan=00000000000000.000" +
-         "&pid=10192&resolution=-1" +
+         "&pid=10192" +
+         "&resolution=-1" +
          "&sorter/field=created" +
-         "&sorter/order=ASC&sorter/field=customfield_10188" +
-         "&sorter/order=ASC&sorter/field=customfield_10241" +
+         "&sorter/order=ASC" +
+         "&sorter/field=customfield_10188" +
+         "&sorter/order=ASC" +
+         "&sorter/field=customfield_10241" +
          "&sorter/order=DESC" +
          "&tempMax=10000" +
-         "&reset=true&decorator=none");
-
+         "&reset=true" +
+         "&decorator=none");
    
    private final String url;
    private final String name;
