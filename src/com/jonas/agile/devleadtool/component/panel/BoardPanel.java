@@ -2,17 +2,13 @@ package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
 import javax.swing.JScrollPane;
 import javax.swing.table.JTableHeader;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
-import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
 
@@ -46,10 +42,6 @@ public class BoardPanel extends MyComponentPanel {
 
    protected void makeContent(MyTableModel boardTableModel) {
       table = new MyTable(boardTableModel);
-
-      table.setDefaultRenderer(String.class, new StringTableCellRenderer());
-      table.setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer());
-      table.setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor(new JCheckBox()));
 
       JScrollPane scrollPane = new MyScrollPane(table);
 

@@ -192,7 +192,7 @@ public class MyTableModelTest extends JonasTestCase {
       
       model = new BoardTableModel();
       Object[] emptyRow = model.getEmptyRow();
-      assertEquals(8, emptyRow.length);
+      assertEquals(10, emptyRow.length);
       assertEquals("", emptyRow[0]);
       assertEquals("", emptyRow[1]);
       assertEquals(Boolean.FALSE, emptyRow[2]);
@@ -200,7 +200,9 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals(Boolean.FALSE, emptyRow[4]);
       assertEquals(Boolean.FALSE, emptyRow[5]);
       assertEquals(Boolean.FALSE, emptyRow[6]);
-      assertEquals(null, emptyRow[7]);
+      assertEquals("", emptyRow[7]);
+      assertEquals("", emptyRow[8]);
+      assertEquals(null, emptyRow[9]);
    }
 
    public void testGetEmptyRowFromPlan() {
@@ -228,7 +230,8 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals("", emptyRow[7]);
       assertEquals("", emptyRow[8]);
       assertEquals("", emptyRow[9]);
-      assertEquals(10, emptyRow.length);
+      assertEquals("", emptyRow[10]);
+      assertEquals(11, emptyRow.length);
    }
 
    public void testShouldAddJiraOk() {
@@ -257,6 +260,9 @@ public class MyTableModelTest extends JonasTestCase {
 
    public void testShouldGetColumnInfoOk() {
       assertEquals(0, model.getColumnIndex(Column.Jira));
+      assertEquals(1, model.getColumnIndex(Column.Description));
+      assertEquals(5, model.getColumnIndex(Column.J_FixVersion));
+      assertEquals(-1, model.getColumnIndex(Column.isBug));
    }
 
    public void testShouldAddJiraComplexObjectOk() {

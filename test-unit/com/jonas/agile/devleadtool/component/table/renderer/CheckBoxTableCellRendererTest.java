@@ -28,7 +28,7 @@ public class CheckBoxTableCellRendererTest extends JonasTestCase {
 		super.setUp();
 		myTable_Mock = createClassMock(MyTable.class);
 		myTableModel_Mock = createClassMock(MyTableModel.class);
-		renderer = new CheckBoxTableCellRenderer();
+		renderer = new CheckBoxTableCellRenderer(null);
 
 	}
 

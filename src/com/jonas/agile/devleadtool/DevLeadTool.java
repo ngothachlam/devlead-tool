@@ -92,7 +92,7 @@ public class DevLeadTool {
       frame.setJMenuBar(createMenuBar(frame, desktop));
       frame.setContentPane(contentPanel);
 
-      frame.setSize(new Dimension(1100, 800));
+      frame.setSize(new Dimension(1200, 900));
       frame.setVisible(true);
 
       wireListeners(frame);

@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.logging.MyLogger;
@@ -146,19 +145,6 @@ public abstract class MyTableModel extends DefaultTableModel {
       return Column.getEnum(getColumnName(columnNo));
    }
 
-   // final public Object[] getEmptyRow() {
-   // Map<Column, Integer> colnams = getColumnNames();
-   // Object[] objects = new Object[colnams.size()];
-   // int i = 0;
-   // log.debug("getting Empty Row");
-   // for (Column column : colnams.keySet()) {
-   // ColumnDTO dto = ColumnDTO.getColumnDTO(column);
-   // objects[i++] = dto.getDefaultValue();
-   // log.debug("column: " + column + " containing: " + objects[i - 1]);
-   // }
-   // return objects;
-   // }
-
    @Override
    public void insertRow(int row, Object[] rowData) {
       if (!doesJiraExist((String) rowData[0]))
@@ -176,30 +162,14 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    final public int getColumnIndex(Column column) {
-      for (int col = 0; col < getColumnCount(); col++) {
-         if (getColumnName(col).equals(column.toString())) {
-            return col;
-         }
-      }
-      return -1;
+      Integer index = columnNames.get(column);
+      return index == null ? -1 : index;
    }
 
    final public Map<Column, Integer> getColumnNames() {
       return columnNames;
    }
 
-   // final public Class[] getEmptyRowClass() {
-   // Map<Column, Integer> colnams = getColumnNames();
-   // Class[] objects = new Object[colnams.size()];
-   // int i = 0;
-   // log.debug("getting Empty Row");
-   // for (Column column : colnams.keySet()) {
-   // ColumnDTO dto = ColumnDTO.getColumnDTO(column);
-   // objects[i++] = dto.getClass();
-   // log.debug("column: " + column + " containing: " + objects[i - 1]);
-   // }
-   // return objects;
-   // }
    final public Object[] getEmptyRow() {
       Map<Column, Integer> colnams = getColumnNames();
       Object[] objects = new Object[colnams.size()];
@@ -268,9 +238,12 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public void setValueAt(Object value, int rowIndex, int columnIndex) {
       super.setValueAt(value, rowIndex, columnIndex);
-      // fireTableRowsUpdated(rowIndex, rowIndex);
    }
 
+   final public void setValueAt(Object value, int rowIndex, Column column) {
+      setValueAt(value, rowIndex, getColumnIndex(column));
+   }
+   
    final private Class<?> getClassFromColumn(int columnIndex) {
       return getColumn(columnIndex).getDefaultClass();
    }
@@ -378,5 +351,11 @@ public abstract class MyTableModel extends DefaultTableModel {
          }
       }
       addJira(jiraIssue.getKey(), map, row);
+   }
+
+   public abstract boolean isRed(Object value, int row, int column);
+
+   public boolean isRed(Object value, int row, Column column) {
+      return isRed(value, row, getColumnIndex(column));
    }
 }

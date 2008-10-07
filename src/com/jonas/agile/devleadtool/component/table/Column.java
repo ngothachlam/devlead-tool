@@ -5,45 +5,48 @@ package com.jonas.agile.devleadtool.component.table;
 
 public enum Column {
    // String Defaults
-   Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
-   Description(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes), 
-   Planned_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
-   Resolved_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
-   Closed_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
-   BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No), 
-   Dev_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
-   QA_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
-   Dev_Actual(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
-   Note(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No), 
-   Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No),
-   J_Status(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes), 
-   J_Resolution(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes), 
-   J_BuildNo(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes), 
-   J_FixVersion(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes), 
-   J_Type(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes), 
-   J_Dev_Estimate(String.class,"", IsEditableColumn.No, IsJiraColumn.Yes), 
-   J_Dev_Spent(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes),
+   Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   Description(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   Planned_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   Resolved_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   Closed_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   Dev_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   QA_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   Dev_Actual(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   Note(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
+   
+   J_Status(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   J_Resolution(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   J_BuildNo(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   J_FixVersion(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   J_Type(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   J_Dev_Estimate(String.class,"", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   J_Dev_Spent(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
 
    //Integer
-   prio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes),
+   prio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
 
    // Boolean Defaults
-   isInProgress(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No), 
-   isOpen(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No), 
-   isBug(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No), 
-   isResolved(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No), 
-   isComplete(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No);
+   isInProgress(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   isOpen(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   isBug(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   isResolved(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   isComplete(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes);
 
    private final Class defaultClass;
    private final Object defaultValue;
    private final IsJiraColumn jiraColumn;
    private final IsEditableColumn isEditable;
+   private final ToLoadColumn isToLoad;
 
-   private <T> Column(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn) {
+   private <T> Column(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad) {
       this.defaultClass = defaultClass;
       this.defaultValue = defaultValue;
       this.isEditable = isEditable;
       this.jiraColumn = isJiraColumn;
+      this.isToLoad = isToLoad;
    }
 
    public static Column getEnum(String columnName) {
@@ -70,4 +73,9 @@ public enum Column {
    public boolean isEditable() {
       return isEditable.intValue();
    }
+   
+   public boolean isToLoad() {
+      return isToLoad.intValue();
+   }
+
 }

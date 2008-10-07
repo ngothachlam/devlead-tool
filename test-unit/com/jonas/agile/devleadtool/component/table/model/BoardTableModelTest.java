@@ -3,7 +3,9 @@ package com.jonas.agile.devleadtool.component.table.model;
 import java.util.Map;
 import java.util.Vector;
 import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
+import com.jonas.jira.JiraIssue;
 
 public class BoardTableModelTest extends JonasTestCase {
 
@@ -12,7 +14,7 @@ public class BoardTableModelTest extends JonasTestCase {
    MyTableModel model;
 
    protected void setUp() throws Exception {
-      tableHeader = new String[] { "Jira", "Open", "Bugs", "In-Progress", "Resolved", "Complete" };
+      tableHeader = new String[] { "Jira", "Description", "Open", "Bugs", "In-Progress", "Resolved", "Complete" };
       tableContents = new Object[][] { getEmptyRow() };
       super.setUp();
       model = new BoardTableModel();
@@ -24,7 +26,7 @@ public class BoardTableModelTest extends JonasTestCase {
 
    public void testShouldSetEditableCorrectly() {
       assertTrue(model.isCellEditable(0, 0));
-      assertTrue(model.isCellEditable(0, 1));
+      assertFalse(model.isCellEditable(0, 1));
       assertTrue(model.isCellEditable(0, 2));
       assertTrue(model.isCellEditable(0, 3));
       assertTrue(model.isCellEditable(0, 4));
@@ -50,8 +52,110 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(new Integer(4).intValue(), columnNames.get(Column.isInProgress).intValue());
       assertEquals(new Integer(5).intValue(), columnNames.get(Column.isResolved).intValue());
       assertEquals(new Integer(6).intValue(), columnNames.get(Column.isComplete).intValue());
-      assertEquals(new Integer(7).intValue(), columnNames.get(Column.prio).intValue());
-      assertEquals(8, columnNames.size());
+      assertEquals(new Integer(7).intValue(), columnNames.get(Column.Dev_Estimate).intValue());
+      assertEquals(new Integer(8).intValue(), columnNames.get(Column.Dev_Actual).intValue());
+      assertEquals(new Integer(9).intValue(), columnNames.get(Column.prio).intValue());
+      assertEquals(10, columnNames.size());
+   }
+   
+   public void testShouldSetRedOk() {
+      model.addJira(new JiraIssue("LLU-1", "llu-1 summary", "llu-1 status", "llu-1 resolution", "llu-1 type"));
+      
+      assertEquals(1, model.getRowCount());
+      
+      assertEquals(false, model.isRed("", 0, Column.Jira));
+      assertEquals(false, model.isRed("", 0, Column.Description));
+      assertEquals(false, model.isRed(true, 0, Column.isOpen));
+      assertEquals(false, model.isRed(true, 0, Column.isBug));
+      assertEquals(false, model.isRed(true, 0, Column.isInProgress));
+      assertEquals(false, model.isRed(true, 0, Column.isResolved));
+      assertEquals(false, model.isRed(true, 0, Column.isComplete));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Estimate));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Actual));
+      assertEquals(false, model.isRed(null, 0, Column.prio));
+      
+      assertEquals(false, model.isRed("", 0, Column.Jira));
+      assertEquals(false, model.isRed("", 0, Column.Description));
+      assertEquals(true, model.isRed(false, 0, Column.isOpen));
+      assertEquals(true, model.isRed(false, 0, Column.isBug));
+      assertEquals(true, model.isRed(false, 0, Column.isInProgress));
+      assertEquals(true, model.isRed(false, 0, Column.isResolved));
+      assertEquals(true, model.isRed(false, 0, Column.isComplete));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Estimate));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Actual));
+      assertEquals(false, model.isRed(null, 0, Column.prio));
+      
+      model.setValueAt(true, 0, Column.isBug);
+      
+      assertEquals(false, model.isRed("", 0, Column.Jira));
+      assertEquals(false, model.isRed("", 0, Column.Description));
+      assertEquals(true, model.isRed(true, 0, Column.isOpen));
+      assertEquals(false, model.isRed(true, 0, Column.isBug));
+      assertEquals(true, model.isRed(true, 0, Column.isInProgress));
+      assertEquals(true, model.isRed(true, 0, Column.isResolved));
+      assertEquals(true, model.isRed(true, 0, Column.isComplete));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Estimate));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Actual));
+      assertEquals(false, model.isRed(null, 0, Column.prio));
+      
+      assertEquals(false, model.isRed("", 0, Column.Jira));
+      assertEquals(false, model.isRed("", 0, Column.Description));
+      assertEquals(false, model.isRed(false, 0, Column.isOpen));
+      assertEquals(true, model.isRed(false, 0, Column.isBug));
+      assertEquals(false, model.isRed(false, 0, Column.isInProgress));
+      assertEquals(false, model.isRed(false, 0, Column.isResolved));
+      assertEquals(false, model.isRed(false, 0, Column.isComplete));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Estimate));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Actual));
+      assertEquals(false, model.isRed(null, 0, Column.prio));
+
+      model.setValueAt(true, 0, Column.isInProgress);
+      
+      assertEquals(false, model.isRed("", 0, Column.Jira));
+      assertEquals(false, model.isRed("", 0, Column.Description));
+      assertEquals(true, model.isRed(true, 0, Column.isOpen));
+      assertEquals(true, model.isRed(true, 0, Column.isBug));
+      assertEquals(true, model.isRed(true, 0, Column.isInProgress));
+      assertEquals(true, model.isRed(true, 0, Column.isResolved));
+      assertEquals(true, model.isRed(true, 0, Column.isComplete));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Estimate));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Actual));
+      assertEquals(false, model.isRed(null, 0, Column.prio));
+      
+      assertEquals(false, model.isRed("", 0, Column.Jira));
+      assertEquals(false, model.isRed("", 0, Column.Description));
+      assertEquals(false, model.isRed(false, 0, Column.isOpen));
+      assertEquals(false, model.isRed(false, 0, Column.isBug));
+      assertEquals(false, model.isRed(false, 0, Column.isInProgress));
+      assertEquals(false, model.isRed(false, 0, Column.isResolved));
+      assertEquals(false, model.isRed(false, 0, Column.isComplete));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Estimate));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Actual));
+      assertEquals(false, model.isRed(null, 0, Column.prio));
+      
+      model.setValueAt(true, 0, Column.isResolved);
+      
+      assertEquals(false, model.isRed("", 0, Column.Jira));
+      assertEquals(false, model.isRed("", 0, Column.Description));
+      assertEquals(true, model.isRed(true, 0, Column.isOpen));
+      assertEquals(true, model.isRed(true, 0, Column.isBug));
+      assertEquals(true, model.isRed(true, 0, Column.isInProgress));
+      assertEquals(true, model.isRed(true, 0, Column.isResolved));
+      assertEquals(true, model.isRed(true, 0, Column.isComplete));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Estimate));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Actual));
+      assertEquals(false, model.isRed(null, 0, Column.prio));
+      
+      assertEquals(false, model.isRed("", 0, Column.Jira));
+      assertEquals(false, model.isRed("", 0, Column.Description));
+      assertEquals(false, model.isRed(false, 0, Column.isOpen));
+      assertEquals(false, model.isRed(false, 0, Column.isBug));
+      assertEquals(false, model.isRed(false, 0, Column.isInProgress));
+      assertEquals(false, model.isRed(false, 0, Column.isResolved));
+      assertEquals(false, model.isRed(false, 0, Column.isComplete));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Estimate));
+      assertEquals(false, model.isRed("", 0, Column.Dev_Actual));
+      assertEquals(false, model.isRed(null, 0, Column.prio));
    }
    
    public void testShouldCreateFromConstructorOk() {
@@ -63,7 +167,7 @@ public class BoardTableModelTest extends JonasTestCase {
       MyTableModel model = new BoardTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(8, model.getColumnCount());
+      assertEquals(10, model.getColumnCount());
       assertEquals("row0-0", model.getValueAt(0, 0));
       assertEquals(null, model.getValueAt(0, 1));
       assertEquals(null, model.getValueAt(0, 2));
@@ -86,7 +190,10 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals("isInProgress", model.getColumnName(4));
       assertEquals("isResolved", model.getColumnName(5));
       assertEquals("isComplete", model.getColumnName(6));
-      assertEquals("ListPrio", model.getColumnName(7));
-      
+      assertEquals("Dev_Estimate", model.getColumnName(7));
+      assertEquals("Dev_Actual", model.getColumnName(8));
+      assertEquals("prio", model.getColumnName(9));
    }
+   
+   
 }
