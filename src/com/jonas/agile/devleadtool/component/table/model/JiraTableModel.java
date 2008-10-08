@@ -5,9 +5,10 @@ import com.jonas.agile.devleadtool.component.table.Column;
 
 public class JiraTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.BoardStatus, Column.J_Type, Column.Release, Column.J_FixVersion, Column.Planned_Sprint,
-         Column.Resolved_Sprint, Column.Closed_Sprint, Column.J_Status, Column.J_Resolution, Column.J_BuildNo,
-         Column.Dev_Estimate, Column.Dev_Actual, Column.J_Dev_Estimate, Column.J_Dev_Spent, Column.Note };
+   //FIXME how do you run to get a special column of same object but with different object?
+   
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.BoardStatus, Column.J_Type, Column.Release.getUnEditable(), Column.J_FixVersion, Column.J_Status, Column.J_Resolution, Column.J_BuildNo,
+         Column.J_Dev_Estimate, Column.J_Dev_Spent, Column.Note };
 
    public JiraTableModel() {
       super(columns);
