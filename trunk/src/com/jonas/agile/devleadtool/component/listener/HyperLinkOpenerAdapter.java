@@ -2,6 +2,8 @@ package com.jonas.agile.devleadtool.component.listener;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -34,7 +36,15 @@ public class HyperLinkOpenerAdapter extends MouseAdapter {
 		if (hyperLinkColumn.equals(table.getColumnEnum(itsColumn))) {
 			String jira = (String) table.getValueAt(jiraColumn, itsRow);
 			try {
-				HyperLinker.displayURL(helper.getJiraUrl(jira) + "/browse/" + jira);
+				try {
+               HyperLinker.displayURL(helper.getJiraUrl(jira) + "/browse/" + jira);
+            } catch (URISyntaxException e1) {
+               // TODO Auto-generated catch block
+               e1.printStackTrace();
+            } catch (IOException e1) {
+               // TODO Auto-generated catch block
+               e1.printStackTrace();
+            }
 			} catch (NotJiraException e1) {
 				AlertDialog.alertException(helper.getParentFrame(), e1);
 			}
