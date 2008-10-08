@@ -24,11 +24,12 @@ public class BoardTableModelTest extends JonasTestCase {
    public void testShouldSetEditableCorrectly() {
       assertTrue(model.isCellEditable(0, 0));
       assertFalse(model.isCellEditable(0, 1));
-      assertTrue(model.isCellEditable(0, 2));
+      assertFalse(model.isCellEditable(0, 2));
       assertTrue(model.isCellEditable(0, 3));
       assertTrue(model.isCellEditable(0, 4));
       assertTrue(model.isCellEditable(0, 5));
       assertTrue(model.isCellEditable(0, 6));
+      assertTrue(model.isCellEditable(0, 7));
    }
 
    public void testShouldHaveEmptyRowAndColumnNamesOfSameSize() {
@@ -39,15 +40,16 @@ public class BoardTableModelTest extends JonasTestCase {
       Map<Column, Integer> columnNames = model.getColumnNames();
       assertEquals(new Integer(0).intValue(), columnNames.get(Column.Jira).intValue());
       assertEquals(new Integer(1).intValue(), columnNames.get(Column.Description).intValue());
-      assertEquals(new Integer(2).intValue(), columnNames.get(Column.isOpen).intValue());
-      assertEquals(new Integer(3).intValue(), columnNames.get(Column.isBug).intValue());
-      assertEquals(new Integer(4).intValue(), columnNames.get(Column.isInProgress).intValue());
-      assertEquals(new Integer(5).intValue(), columnNames.get(Column.isResolved).intValue());
-      assertEquals(new Integer(6).intValue(), columnNames.get(Column.isComplete).intValue());
-      assertEquals(new Integer(7).intValue(), columnNames.get(Column.Dev_Estimate).intValue());
-      assertEquals(new Integer(8).intValue(), columnNames.get(Column.Dev_Actual).intValue());
-      assertEquals(new Integer(9).intValue(), columnNames.get(Column.prio).intValue());
-      assertEquals(10, columnNames.size());
+      assertEquals(new Integer(2).intValue(), columnNames.get(Column.J_Resolution).intValue());
+      assertEquals(new Integer(3).intValue(), columnNames.get(Column.isOpen).intValue());
+      assertEquals(new Integer(4).intValue(), columnNames.get(Column.isBug).intValue());
+      assertEquals(new Integer(5).intValue(), columnNames.get(Column.isInProgress).intValue());
+      assertEquals(new Integer(6).intValue(), columnNames.get(Column.isResolved).intValue());
+      assertEquals(new Integer(7).intValue(), columnNames.get(Column.isComplete).intValue());
+      assertEquals(new Integer(8).intValue(), columnNames.get(Column.Dev_Estimate).intValue());
+      assertEquals(new Integer(9).intValue(), columnNames.get(Column.Dev_Actual).intValue());
+      assertEquals(new Integer(10).intValue(), columnNames.get(Column.prio).intValue());
+      assertEquals(11, columnNames.size());
    }
    
    public void testShouldSetRedOk() {
@@ -156,6 +158,7 @@ public class BoardTableModelTest extends JonasTestCase {
       Vector<Column> header = new Vector<Column>();
       header.add(Column.Jira);
       header.add(Column.Description);
+      header.add(Column.J_Resolution);
       header.add(Column.isOpen);
       header.add(Column.isBug);
       header.add(Column.isInProgress);
@@ -164,13 +167,13 @@ public class BoardTableModelTest extends JonasTestCase {
       header.add(Column.Dev_Estimate);
       header.add(Column.Dev_Actual);
       header.add(Column.prio);
-      contents.add(getTestContentRow(10, "0."));
-      contents.add(getTestContentRow(10, "1."));
+      contents.add(getTestContentRow(header.size(), "0."));
+      contents.add(getTestContentRow(header.size(), "1."));
       
       MyTableModel model = new BoardTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(10, model.getColumnCount());
+      assertEquals(11, model.getColumnCount());
       assertEquals("0.0", model.getValueAt(0, 0));
       assertEquals("0.1", model.getValueAt(0, 1));
       assertEquals("0.2", model.getValueAt(0, 2));
@@ -185,21 +188,23 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals("1.4", model.getValueAt(1, 4));
       assertEquals("1.5", model.getValueAt(1, 5));
       assertEquals("1.6", model.getValueAt(1, 6));
+      assertEquals("1.7", model.getValueAt(1, 7));
    }
    
    public void testGetEmptyRowFromBoard() {
       Object[] emptyRow = model.getEmptyRow();
-      assertEquals(10, emptyRow.length);
+      assertEquals(11, emptyRow.length);
       assertEquals("", emptyRow[0]);
       assertEquals("", emptyRow[1]);
-      assertEquals(Boolean.FALSE, emptyRow[2]);
+      assertEquals("", emptyRow[2]);
       assertEquals(Boolean.FALSE, emptyRow[3]);
       assertEquals(Boolean.FALSE, emptyRow[4]);
       assertEquals(Boolean.FALSE, emptyRow[5]);
       assertEquals(Boolean.FALSE, emptyRow[6]);
-      assertEquals("", emptyRow[7]);
+      assertEquals(Boolean.FALSE, emptyRow[7]);
       assertEquals("", emptyRow[8]);
-      assertEquals(null, emptyRow[9]);
+      assertEquals("", emptyRow[9]);
+      assertEquals(null, emptyRow[10]);
    }
    
    

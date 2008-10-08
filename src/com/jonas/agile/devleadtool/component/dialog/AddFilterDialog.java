@@ -67,6 +67,7 @@ class AddFilterPanel extends MyPanel {
          filters[i] = JiraFilter.getFilters().get(i);
       }
       JComboBox jiraCommas = panel.addComboBox(panel, filters, c);
+      jiraCommas.setSelectedItem(JiraFilter.DevsupportPrioFilter_UnResolved);
 
       MyPanel buttonPanel = new MyPanel(new GridLayout(1, 2, 5, 5));
       buttonPanel.bordered();

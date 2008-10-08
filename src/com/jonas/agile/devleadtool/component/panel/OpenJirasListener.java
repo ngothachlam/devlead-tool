@@ -5,6 +5,8 @@ package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -41,7 +43,15 @@ public class OpenJirasListener implements ActionListener {
             error = true;
          }
          if (!error) {
-            HyperLinker.displayURL(jira_url + "/browse/" + jira);
+            try {
+               HyperLinker.displayURL(jira_url + "/browse/" + jira);
+            } catch (URISyntaxException e1) {
+               // TODO Auto-generated catch block
+               e1.printStackTrace();
+            } catch (IOException e1) {
+               // TODO Auto-generated catch block
+               e1.printStackTrace();
+            }
          }
       }
       if (sb.length() > 0) {
