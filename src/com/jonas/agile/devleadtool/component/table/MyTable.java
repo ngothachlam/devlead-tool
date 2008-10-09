@@ -7,6 +7,8 @@ import javax.swing.DropMode;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -34,9 +36,25 @@ public class MyTable extends JTable {
 
    MyTable(AbstractTableModel defaultTableModel) {
       super(defaultTableModel);
-      setDefaultRenderer(String.class, new StringTableCellRenderer());
-      setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(defaultTableModel));
-      setDefaultEditor(Boolean.class, new CheckBoxTableCellEditor(new JCheckBox()));
+      CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
+      CheckBoxTableCellEditor checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
+      StringTableCellRenderer stringRenderer = new StringTableCellRenderer();
+      
+      checkBoxEditor.addCellEditorListener(new CellEditorListener(){
+         @Override
+         public void editingCanceled(ChangeEvent e) {
+         }
+
+         @Override
+         public void editingStopped(ChangeEvent e) {
+            CheckBoxTableCellEditor editor = (CheckBoxTableCellEditor)e.getSource();
+            model.fireTableRowsUpdated(editor.getRowEdited(), editor.getRowEdited());
+         }
+      });
+      
+      setDefaultRenderer(String.class, stringRenderer);
+      setDefaultRenderer(Boolean.class, checkBoxRenderer);
+      setDefaultEditor(Boolean.class, checkBoxEditor);
       // setDefaultEditor(Boolean.class, new DefaultCellEditor(new JCheckBox()));
 
       setDragEnabled(true);
@@ -53,7 +71,7 @@ public class MyTable extends JTable {
          int boardStatus = getColumnIndex(Column.BoardStatus);
          if (boardStatus > -1) {
             TableColumn tc = getTableColumn(boardStatus);
-            tc.setCellRenderer(new StringTableCellRenderer());
+            tc.setCellRenderer(stringRenderer);
             JComboBox combo = new JComboBox(BoardStatusValue.values());
             tc.setCellEditor(new DefaultCellEditor(combo));
          }

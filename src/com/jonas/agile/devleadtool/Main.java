@@ -22,7 +22,7 @@ public class Main {
    // TODO add tooltip to show other tables' entries when hovering.
    // TODO drag'n'drop table rows = all tables!!
    // TODO add function to 'drag' lines (not columns) for prioritisation
-   // TODO when refreshing jira info on Jira tab - update combo box for fixversions for plan
+   // TODO when refreshing jir a info on Jira tab - update combo box for fixversions for plan
    // TODO ... and also save them for the next load session.
    // TODO handle 'issue not found' when syncing to jira and getting info (LLU-2)
    // TODO handle issue moved to other project (LLU-6 that has become LLUOLD-1)
