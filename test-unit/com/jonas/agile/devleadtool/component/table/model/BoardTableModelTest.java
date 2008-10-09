@@ -46,10 +46,11 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(new Integer(5).intValue(), columnNames.get(Column.isInProgress).intValue());
       assertEquals(new Integer(6).intValue(), columnNames.get(Column.isResolved).intValue());
       assertEquals(new Integer(7).intValue(), columnNames.get(Column.isComplete).intValue());
-      assertEquals(new Integer(8).intValue(), columnNames.get(Column.Dev_Estimate).intValue());
-      assertEquals(new Integer(9).intValue(), columnNames.get(Column.Dev_Actual).intValue());
-      assertEquals(new Integer(10).intValue(), columnNames.get(Column.prio).intValue());
-      assertEquals(11, columnNames.size());
+      assertEquals(new Integer(8).intValue(), columnNames.get(Column.Release).intValue());
+      assertEquals(new Integer(9).intValue(), columnNames.get(Column.Dev_Estimate).intValue());
+      assertEquals(new Integer(10).intValue(), columnNames.get(Column.Dev_Actual).intValue());
+      assertEquals(new Integer(11).intValue(), columnNames.get(Column.prio).intValue());
+      assertEquals(12, columnNames.size());
    }
    
    public void testShouldSetRedOk() {
@@ -164,6 +165,7 @@ public class BoardTableModelTest extends JonasTestCase {
       header.add(Column.isInProgress);
       header.add(Column.isResolved);
       header.add(Column.isComplete);
+      header.add(Column.Release);
       header.add(Column.Dev_Estimate);
       header.add(Column.Dev_Actual);
       header.add(Column.prio);
@@ -173,7 +175,7 @@ public class BoardTableModelTest extends JonasTestCase {
       MyTableModel model = new BoardTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(11, model.getColumnCount());
+      assertEquals(12, model.getColumnCount());
       assertEquals("0.0", model.getValueAt(0, 0));
       assertEquals("0.1", model.getValueAt(0, 1));
       assertEquals("0.2", model.getValueAt(0, 2));
@@ -193,7 +195,7 @@ public class BoardTableModelTest extends JonasTestCase {
    
    public void testGetEmptyRowFromBoard() {
       Object[] emptyRow = model.getEmptyRow();
-      assertEquals(11, emptyRow.length);
+      assertEquals(12, emptyRow.length);
       assertEquals("", emptyRow[0]);
       assertEquals("", emptyRow[1]);
       assertEquals("", emptyRow[2]);
@@ -204,7 +206,8 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(Boolean.FALSE, emptyRow[7]);
       assertEquals("", emptyRow[8]);
       assertEquals("", emptyRow[9]);
-      assertEquals(null, emptyRow[10]);
+      assertEquals("", emptyRow[10]);
+      assertEquals(null, emptyRow[11]);
    }
    
    

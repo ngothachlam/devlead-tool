@@ -32,7 +32,7 @@
 			<fileset dir="${dist}" includes="**/*" />
 		</delete>
 	</target>
-	
+
 	<target name="clean.after" description="clean up">
 		<delete includeemptydirs="true">
 			<fileset dir="${build.classes}" includes="**/*" />
@@ -58,7 +58,12 @@
 
 	<target name="dist" depends="compile" description="generate the distribution">
 		<mkdir dir="${dist}" />
-		<jar jarfile="${dist}/devlead-tool-${DSTAMP}.jar" basedir="${build.classes}" />
+		<jar jarfile="${dist}/devlead-tool-${DSTAMP}.jar" basedir="${build.classes}">
+			<manifest>
+				<attribute name="Main-Class" value="com.jonas.agile.devleadtool.Main" />
+			</manifest>
+
+		</jar>
 	</target>
 
 	<target name="compile.tests" depends="dist" description="compile the source ">
@@ -80,7 +85,7 @@
 		</delete>
 		<mkdir dir="${build.tests.results}" />
 		<mkdir dir="bin/junitTemp" />
-		<junit printsummary="yes" haltonfailure="no" tempdir="bin/junitTemp" >
+		<junit printsummary="yes" haltonfailure="no" tempdir="bin/junitTemp">
 			<classpath refid="project.class.path" />
 			<!--
 			<classpath location="${dist}/devlead-tool-${DSTAMP}.jar" />
@@ -90,9 +95,9 @@
 				<pathelement path="bin" />
 			</classpath>
 
-			<formatter  type="plain"  />
+			<formatter type="plain" />
 
-			<batchtest fork="yes" todir="${build.tests.results}" >
+			<batchtest fork="yes" todir="${build.tests.results}">
 				<fileset dir="${src.tests.unit}">
 					<include name="**/*Test.java" />
 					<exclude name="**/*TestScreen.java" />
@@ -100,14 +105,14 @@
 			</batchtest>
 		</junit>
 	</target>
-	
+
 	<target name="run.tests.functional" description="Run functional tests">
 		<delete includeEmptyDirs="true" quiet="true">
 			<fileset dir="${build.tests.results}" includes="**/*" />
 		</delete>
 		<mkdir dir="${build.tests.results}" />
 		<mkdir dir="bin/junitTemp" />
-		<junit printsummary="yes" haltonfailure="no" tempdir="bin/junitTemp" >
+		<junit printsummary="yes" haltonfailure="no" tempdir="bin/junitTemp">
 			<classpath refid="project.class.path" />
 			<!--
 			<classpath location="${dist}/devlead-tool-${DSTAMP}.jar" />
@@ -117,9 +122,9 @@
 				<pathelement path="bin" />
 			</classpath>
 
-			<formatter  type="plain"  />
+			<formatter type="plain" />
 
-			<batchtest fork="yes" todir="${build.tests.results}" >
+			<batchtest fork="yes" todir="${build.tests.results}">
 				<fileset dir="${src.tests.functional}">
 					<include name="**/*Test.java" />
 					<exclude name="**/*TestScreen.java" />
@@ -127,7 +132,7 @@
 			</batchtest>
 		</junit>
 	</target>
-	
+
 	<target name="default" depends="run.tests.unit, run.tests.functional ,dist, clean.after" />
 
 </project>
