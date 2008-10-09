@@ -14,8 +14,8 @@ public class BoardTableModel extends MyTableModel {
 
    private static final List<Column> mutuallyExclusive = new ArrayList<Column>(5);
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.isOpen, Column.isBug, Column.isInProgress,
-         Column.isResolved, Column.isComplete, Column.Dev_Estimate, Column.Dev_Actual, Column.prio };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.isOpen, Column.isBug,
+         Column.isInProgress, Column.isResolved, Column.isComplete, Column.Dev_Estimate, Column.Dev_Actual, Column.prio };
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
    static {
@@ -79,15 +79,26 @@ public class BoardTableModel extends MyTableModel {
                   if (valueAt != null && valueAt instanceof Boolean && col != columnEnum && ((Boolean) valueAt).booleanValue()) {
                      countOfMutuallyExclusiveSet++;
                   }
-                  if (countOfMutuallyExclusiveSet == 2)
+                  if (countOfMutuallyExclusiveSet >= 2)
                      break;
                }
 
-               if (isThisSet && countOfMutuallyExclusiveSet > 1)
+               switch (countOfMutuallyExclusiveSet) {
+               case 0:
+                  break;
+               case 1:
+                  break;
+               case 2:
+                  break;
+               default:
+                  break;
+               }
+               
+               if (isThisSet && countOfMutuallyExclusiveSet > 1){
                   result = true;
+               }
                else if (!isThisSet && countOfMutuallyExclusiveSet == 0)
                   result = true;
-               fireTableRowsUpdated(row, row);
             }
          }
       }

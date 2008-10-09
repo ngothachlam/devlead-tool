@@ -58,12 +58,14 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
          }
       }
 
-      setSelected((value != null && ((Boolean) value).booleanValue()) ? true : false);
+      setSelected((value != null && ((Boolean) value).booleanValue()) ? true : false, row);
+
       return this;
    }
 
-   private void setSelected(boolean b) {
+   private void setSelected(final boolean b, final int row) {
       checkbox.setSelected(b);
+      // model.fireTableRowsUpdated(row, row);
    }
 
    JCheckBox getCheckBox() {
