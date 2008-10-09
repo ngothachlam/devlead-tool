@@ -37,20 +37,8 @@ public class MyTable extends JTable {
    MyTable(AbstractTableModel defaultTableModel) {
       super(defaultTableModel);
       CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
-      CheckBoxTableCellEditor checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
+      CheckBoxTableCellEditor checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox(), getCheckBoxEditorListener());
       StringTableCellRenderer stringRenderer = new StringTableCellRenderer();
-      
-      checkBoxEditor.addCellEditorListener(new CellEditorListener(){
-         @Override
-         public void editingCanceled(ChangeEvent e) {
-         }
-
-         @Override
-         public void editingStopped(ChangeEvent e) {
-            CheckBoxTableCellEditor editor = (CheckBoxTableCellEditor)e.getSource();
-            model.fireTableRowsUpdated(editor.getRowEdited(), editor.getRowEdited());
-         }
-      });
       
       setDefaultRenderer(String.class, stringRenderer);
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
@@ -76,6 +64,19 @@ public class MyTable extends JTable {
             tc.setCellEditor(new DefaultCellEditor(combo));
          }
       }
+   }
+
+   private CellEditorListener getCheckBoxEditorListener() {
+      return new CellEditorListener(){
+         @Override
+         public void editingCanceled(ChangeEvent e) {
+         }
+         @Override
+         public void editingStopped(ChangeEvent e) {
+            CheckBoxTableCellEditor editor = (CheckBoxTableCellEditor)e.getSource();
+            model.fireTableRowsUpdated(editor.getRowEdited(), editor.getRowEdited());
+         }
+      };
    }
 
    public void unSort() {

@@ -5,14 +5,16 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.event.CellEditorListener;
 
 public class CheckBoxTableCellEditor extends DefaultCellEditor {
 
    private int rowEdited;
 
-   public CheckBoxTableCellEditor(JCheckBox box) {
+   public CheckBoxTableCellEditor(JCheckBox box, CellEditorListener checkBoxEditorListener) {
       super(box);
       ((JCheckBox) getComponent()).setHorizontalAlignment(JLabel.CENTER);
+      this.addCellEditorListener(checkBoxEditorListener);
    }
 
    @Override
