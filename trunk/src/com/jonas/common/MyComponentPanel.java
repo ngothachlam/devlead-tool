@@ -77,21 +77,22 @@ public class MyComponentPanel extends MyPanel {
          public void keyReleased(KeyEvent e) {
             String text = filterText.getText();
             if (text.trim().length() == 0) {
-               table.setRowFilter(null);
+               // table.setRowFilter(null);
             } else {
-               table.setRowFilter(RowFilter.regexFilter("(?i)" + text, getArrayOfIndices(table, columns)));
+               // table.setRowFilter(RowFilter.regexFilter("(?i)" + text, getArrayOfIndices(table, columns)));
+               // FIXME!!
             }
             results.setText(getResultText(table));
          }
       };
-      addButton(buttonPanel, "Clear", new ActionListener(){
+      addButton(buttonPanel, "Clear", new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             table.unSort();
             filterText.setText("");
             keyAdapter.keyReleased(null);
          }
       });
-      
+
       results.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
       results.setEditable(false);
 

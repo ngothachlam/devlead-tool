@@ -36,14 +36,15 @@ public class MyTable extends JTable {
 
    MyTable(AbstractTableModel defaultTableModel) {
       super(defaultTableModel);
-      CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
-      CheckBoxTableCellEditor checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox(), getCheckBoxEditorListener());
-      StringTableCellRenderer stringRenderer = new StringTableCellRenderer();
       
-      setDefaultRenderer(String.class, stringRenderer);
+      CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
+      CheckBoxTableCellEditor checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
+      
+      setDefaultRenderer(String.class, new StringTableCellRenderer());
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
       setDefaultEditor(Boolean.class, checkBoxEditor);
-      // setDefaultEditor(Boolean.class, new DefaultCellEditor(new JCheckBox()));
+      
+      checkBoxEditor.addCellEditorListener(getCheckBoxEditorListener());
 
       setDragEnabled(true);
       setDropMode(DropMode.INSERT);
@@ -59,7 +60,7 @@ public class MyTable extends JTable {
          int boardStatus = getColumnIndex(Column.BoardStatus);
          if (boardStatus > -1) {
             TableColumn tc = getTableColumn(boardStatus);
-            tc.setCellRenderer(stringRenderer);
+            tc.setCellRenderer(new StringTableCellRenderer());
             JComboBox combo = new JComboBox(BoardStatusValue.values());
             tc.setCellEditor(new DefaultCellEditor(combo));
          }
