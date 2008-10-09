@@ -14,8 +14,8 @@ public class BoardTableModel extends MyTableModel {
 
    private static final List<Column> mutuallyExclusive = new ArrayList<Column>(5);
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.isOpen, Column.isBug,
-         Column.isInProgress, Column.isResolved, Column.isComplete, Column.Release, Column.Dev_Estimate, Column.Dev_Actual, Column.prio };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.isOpen, Column.isBug,
+         Column.isInProgress, Column.isResolved, Column.isComplete, Column.Dev_Estimate, Column.Dev_Actual, Column.prio };
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
    static {

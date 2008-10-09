@@ -10,17 +10,22 @@ public enum Column {
    Planned_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
    Resolved_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
    Closed_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
-   BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes){
-      public Object parse(String cellContents) {
-         return BoardStatusValue.get(cellContents);
-      }
-   },
+   
    Dev_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
    QA_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
    Dev_Actual(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
    Note(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
    Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
+
+   //Board Sync columns:
+   B_BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.No, IsJiraColumn.No, ToLoadColumn.Yes){
+      public Object parse(String cellContents) {
+         return BoardStatusValue.get(cellContents);
+      }
+   },
+   B_Release(String.class, "", IsEditableColumn.No, IsJiraColumn.No, ToLoadColumn.Yes),
    
+   //Jira Sync columns:
    J_Status(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
    J_Resolution(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
    J_BuildNo(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 

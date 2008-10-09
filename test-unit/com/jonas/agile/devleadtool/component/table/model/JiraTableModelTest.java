@@ -30,7 +30,7 @@ public class JiraTableModelTest extends JonasTestCase {
 
       header.add(Column.Jira);
       header.add(Column.Description);
-      header.add(Column.BoardStatus);
+      header.add(Column.B_BoardStatus);
       header.add(Column.J_Type);
       header.add(Column.Release);
       header.add(Column.J_FixVersion);
@@ -47,7 +47,7 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.Note);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      String[] content = new String[] { "Jira", "Description", "BoardStatus", "J_Type", "Release", "J_FixVersion", "Planned_Sprint",
+      String[] content = new String[] { "Jira", "Description", "B_BoardStatus", "J_Type", "B_Release", "J_FixVersion", "Planned_Sprint",
             "Resolved_Sprint", "Closed_Sprint", "J_Status", "J_Resolution", "J_BuildNo", "Dev_Estimate", "Dev_Actual", "J_Dev_Estimate",
             "J_Dev_Spent", "Note" };
       contents.add(getTestRowVector(content, 0));
@@ -56,7 +56,7 @@ public class JiraTableModelTest extends JonasTestCase {
       model = new JiraTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(17, model.getColumnCount());
+      assertEquals(12, model.getColumnCount());
       assertRow(new String[] { "Jira-0", "Description-0", "BoardStatus-0", "J_Type-0", "Release-0", "J_FixVersion-0", "Planned_Sprint-0",
             "Resolved_Sprint-0", "Closed_Sprint-0", "J_Status-0", "J_Resolution-0", "J_BuildNo-0", "Dev_Estimate-0", "Dev_Actual-0",
             "J_Dev_Estimate-0", "J_Dev_Spent-0", "Note-0" }, model, 0);
