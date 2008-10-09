@@ -57,7 +57,7 @@ public class MyTable extends JTable {
       // FIXME make this dynamic
       if (getModel() instanceof MyTableModel) {
          model = (MyTableModel) getModel();
-         int boardStatus = getColumnIndex(Column.BoardStatus);
+         int boardStatus = getColumnIndex(Column.B_BoardStatus);
          if (boardStatus > -1) {
             TableColumn tc = getTableColumn(boardStatus);
             tc.setCellRenderer(new StringTableCellRenderer());

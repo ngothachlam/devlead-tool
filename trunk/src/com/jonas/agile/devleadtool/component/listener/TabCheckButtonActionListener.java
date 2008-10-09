@@ -42,7 +42,7 @@ public class TabCheckButtonActionListener implements ActionListener {
    public void actionPerformed(ActionEvent e) {
       JFrame newFrame = new JFrame();
       MyPanel contentPane = new MyPanel(new BorderLayout());
-      DefaultTableModel model = new DefaultTableModel(new Column[]{Column.Jira, Column.BoardStatus, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint}, 0);
+      DefaultTableModel model = new DefaultTableModel(new Column[]{Column.Jira, Column.B_BoardStatus, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint}, 0);
       
       for (int i = 0; i < table.getModel().getRowCount(); i++) {
          Vector<String> rowData = new Vector<String>();

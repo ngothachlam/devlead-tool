@@ -7,7 +7,7 @@ public class JiraTableModel extends MyTableModel {
 
    //FIXME how do you run to get a special column of same object but with different object?
    
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.BoardStatus, Column.J_Type, Column.Release.getUnEditable(), Column.J_FixVersion, Column.J_Status, Column.J_Resolution, Column.J_BuildNo,
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.B_BoardStatus, Column.J_Type, Column.B_Release, Column.J_FixVersion, Column.J_Status, Column.J_Resolution, Column.J_BuildNo,
          Column.J_Dev_Estimate, Column.J_Dev_Spent, Column.Note };
 
    public JiraTableModel() {
