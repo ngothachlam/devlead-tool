@@ -2,6 +2,7 @@ package com.jonas.jira;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.jonas.jira.JiraProject;
 
 public class JiraFilter {
 

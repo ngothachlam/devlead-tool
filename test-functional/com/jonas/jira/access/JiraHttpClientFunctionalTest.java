@@ -6,8 +6,8 @@ import junit.framework.TestCase;
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
 import com.jonas.common.xml.JonasXpathEvaluator;
-import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraFilter;
+import com.jonas.jira.JiraIssue;
 import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraHttpClientFunctionalTest extends TestCase {
