@@ -55,15 +55,16 @@ class AddVersionPanel extends MyPanel {
 
       MyTable table = null;
       Enumeration elements = group.getElements();
-      while (elements.hasMoreElements()) {
-         TableRadioButton button = (TableRadioButton) elements.nextElement();
-         if (button.isSelected()) {
-            table = button.getTable();
-         }
-      }
-
-      if (table == null)
-         return;
+      // FIXME !!
+//      while (elements.hasMoreElements()) {
+//         TableRadioButton button = (TableRadioButton) elements.nextElement();
+//         if (button.isSelected()) {
+//            table = button.getTable();
+//         }
+//      }
+//
+//      if (table == null)
+//         return;
       
       Vector<JiraProject> projects = JiraProject.getProjects();
       SyncWithJiraActionListenerListener syncWithJiraListener = new SyncListener(table);
