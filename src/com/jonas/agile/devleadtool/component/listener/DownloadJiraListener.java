@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
-import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.common.logging.MyLogger;
@@ -21,23 +21,20 @@ import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraClient;
 import com.jonas.jira.access.JiraException;
 
-public class DownloadJirasListener implements ActionListener {
-	private final PlannerHelper helper;
-	/**
-	 * 
-	 */
+public class DownloadJiraListener implements ActionListener {
 	private final JComboBox jiraProjectFixVersionCombo;
 	private final List<SyncWithJiraActionListenerListener> listeners = new ArrayList<SyncWithJiraActionListenerListener>();
-	private final Logger log = MyLogger.getLogger(DownloadJirasListener.class);
+	private final Logger log = MyLogger.getLogger(DownloadJiraListener.class);
+	private JFrame parentFrame;
 	
-   public DownloadJirasListener(JComboBox jiraProjectFixVersionCombo, PlannerHelper helper) {
+   public DownloadJiraListener(JComboBox jiraProjectFixVersionCombo, JFrame parentFrame) {
 		this.jiraProjectFixVersionCombo = jiraProjectFixVersionCombo;
-		this.helper = helper;
+		this.parentFrame = parentFrame;
 	}
 
    public void actionPerformed(ActionEvent e) {
 		final Object[] selects = jiraProjectFixVersionCombo.getSelectedObjects();
-		final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Copying Jiras to Tab...", "Logging in...", 0);
+		final ProgressDialog dialog = new ProgressDialog(parentFrame, "Copying Jiras to Tab...", "Logging in...", 0);
 		SwingWorker worker = new SwingWorker() {
 			private String error = null;
 
@@ -47,7 +44,7 @@ public class DownloadJirasListener implements ActionListener {
 					final JiraVersion version = (JiraVersion) selects[i];
 					final JiraClient client = version.getProject().getJiraClient();
 					log.debug("client jira url: " + client.getJiraUrl());
-					try {
+               try {
 						dialog.setNote("Logging in.");
 						JiraIssue[] jiras;
 						try {
@@ -67,9 +64,9 @@ public class DownloadJirasListener implements ActionListener {
 							notifyThatJiraAdded(jiraIssue);
 						}
 					} catch (IOException e1) {
-						AlertDialog.alertException(helper.getParentFrame(), e1);
+						AlertDialog.alertException(parentFrame, e1);
 					} catch (JDOMException e1) {
-						AlertDialog.alertException(helper.getParentFrame(), e1);
+						AlertDialog.alertException(parentFrame, e1);
 					}
 				}
 				return null;
@@ -81,7 +78,7 @@ public class DownloadJirasListener implements ActionListener {
 			public void done() {
 				if (error != null) {
 					dialog.setCompleteWithDelay(0);
-					AlertDialog.message(helper, error);
+					AlertDialog.message(parentFrame, error);
 				} else
 					dialog.setCompleteWithDelay(300);
 			}

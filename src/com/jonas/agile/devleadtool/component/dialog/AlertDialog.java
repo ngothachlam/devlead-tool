@@ -65,7 +65,10 @@ public class AlertDialog extends JDialog {
 	}
 
 	public static AlertDialog message(PlannerHelper helper, String e) {
-		return new AlertDialog(helper != null ? helper.getParentFrame() : null, e);
+		return message(helper != null ? helper.getParentFrame() : null, e);
+	}
+	public static AlertDialog message(JFrame frame, String e) {
+	   return new AlertDialog(frame, e);
 	}
 
 	public void addText(String string) {
