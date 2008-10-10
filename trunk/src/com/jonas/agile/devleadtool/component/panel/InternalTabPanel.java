@@ -86,7 +86,7 @@ public class InternalTabPanel extends MyComponentPanel {
       addButton(panel, "Versions", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            new AddVersionDialog(helper.getParentFrame(), helper, array);
+            new AddVersionDialog(helper.getParentFrame(), array);
          }
       });
 
