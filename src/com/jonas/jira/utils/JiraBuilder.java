@@ -92,7 +92,8 @@ public class JiraBuilder {
       if (fixVersions.size() == 1) {
          jira.addFixVersions(fixVersions.get(0));
       } else if (fixVersions.size() > 1) {
-         log.error("Cannot handle more than one fix version at the moment for " + jira.getKey());
+         jira.addFixVersions(fixVersions.get(0));
+         log.warn("Cannot handle more than one fix version at the moment for " + jira.getKey());
       }
       return jira;
    }

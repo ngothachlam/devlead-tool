@@ -2,7 +2,7 @@ package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,6 +26,9 @@ import com.jonas.agile.devleadtool.component.TableRadioButton;
 import com.jonas.agile.devleadtool.component.listener.DownloadJiraListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
+import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
@@ -36,7 +39,7 @@ import com.jonas.testHelpers.TryoutTester;
 
 public class AddVersionDialog extends JFrame {
 
-   public AddVersionDialog(Window frame, MyTable... tables) {
+   public AddVersionDialog(Window frame, MyTable[] tables) {
       super();
       this.setContentPane(new AddVersionPanel(this, tables));
       this.pack();
@@ -44,75 +47,80 @@ public class AddVersionDialog extends JFrame {
       SwingUtil.centreWindowWithinWindow(this, frame);
       setVisible(true);
    }
-   
-   
-   public static void main(String... args){
+
+   public static void main(String... args) {
       JFrame frame = TryoutTester.getFrame();
       frame.setVisible(true);
-      new AddVersionDialog(frame, new MyTable("A"), new MyTable("B"));
+      MyTable tableA = new MyTable("A", new BoardTableModel());
+      MyTable tableB = new MyTable("B", new JiraTableModel());
+      tableA.addJira("bla-1");
+      tableB.addJira("bla-2");
+
+      MyComponentPanel panel = new MyComponentPanel(new GridLayout(2, 1));
+      panel.add(tableA);
+      panel.add(tableB);
+      frame.setContentPane(panel);
+
+      new AddVersionDialog(frame, new MyTable[]{ tableA, tableB});
    }
 }
 
+
 class AddVersionPanel extends MyPanel {
-   private ButtonGroup group;
+   private final ButtonGroup group = new ButtonGroup();
    private final JFrame frame;
 
    public AddVersionPanel(final JFrame frame, MyTable... tables) {
       super(new BorderLayout());
       this.frame = frame;
       Vector<JiraProject> projects = JiraProject.getProjects();
-      SyncWithJiraActionListenerListener syncWithJiraListener = new SyncListener(group);
-      JPanel bottomPanel = getFixversionSyncPanel(projects, syncWithJiraListener, tables);
+      JPanel bottomPanel = getFixversionSyncPanel(projects, tables);
       add(bottomPanel, BorderLayout.CENTER);
    }
 
-   private JPanel getFixversionSyncPanel(Vector<JiraProject> projects, SyncWithJiraActionListenerListener syncWithJiraListener,
-         MyTable... tables) {
-      JPanel panel = new JPanel(new FlowLayout());
+   private JPanel getFixversionSyncPanel(Vector<JiraProject> projects, MyTable[] tables) {
+      JPanel panel = new JPanel(new GridLayout(5,2));
       final JComboBox jiraProjectsCombo = new JComboBox(projects);
       final JComboBox jiraProjectFixVersionCombo = new JComboBox();
 
       final HashMap<JiraProject, JiraVersion[]> state = new HashMap<JiraProject, JiraVersion[]>();
-      AlterProjectListener alteringProjectListener = new AlterProjectListener(jiraProjectFixVersionCombo, state);
       RefreshVersionListener refreshFixVersionListener = new RefreshVersionListener(jiraProjectsCombo, jiraProjectFixVersionCombo, state, frame);
       DownloadJiraListener downloadJirasListener = new DownloadJiraListener(jiraProjectFixVersionCombo, frame);
 
-      downloadJirasListener.addListener(syncWithJiraListener);
-      jiraProjectsCombo.addActionListener(alteringProjectListener);
-
-      panel.add(getRadiosPanel(tables));
-      panel.add(jiraProjectsCombo);
-      addButton(panel, "Refresh", refreshFixVersionListener);
-      panel.add(jiraProjectFixVersionCombo);
-      addButton(panel, "Get Jiras", downloadJirasListener);
-      return panel;
-   }
-
-   private Component getRadiosPanel(MyTable[] tables) {
-      JPanel panel = new JPanel();
       panel.add(new JLabel("Tables:"));
       panel.add(getTableRadios(tables));
+      panel.add(new JLabel("Projects:"));
+      panel.add(jiraProjectsCombo);
+      panel.add(new JLabel(""));
+      addButton(panel, "Refresh", refreshFixVersionListener);
+      panel.add(new JLabel("FixVersions:"));
+      panel.add(jiraProjectFixVersionCombo);
+      panel.add(new JLabel(""));
+      addButton(panel, "Get Jiras", downloadJirasListener);
+      
+      AlterProjectListener alteringProjectListener = new AlterProjectListener(jiraProjectFixVersionCombo, state);
+      SyncWithJiraActionListenerListener syncWithJiraListener = new SyncListener(group);
+      downloadJirasListener.addListener(syncWithJiraListener);
+      jiraProjectsCombo.addActionListener(alteringProjectListener);
+      
       return panel;
    }
 
-   private Component getTableRadios(MyTable... tables) {
+   private Component getTableRadios(MyTable[] tables) {
       JPanel panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-      group = new ButtonGroup();
-
       for (MyTable myTable : tables) {
          TableRadioButton tableRadioButton = new TableRadioButton(myTable.getTitle(), myTable);
          group.add(tableRadioButton);
          panel.add(tableRadioButton);
       }
-
       return panel;
    }
 
    private class AlterProjectListener implements ActionListener {
+      private Logger log = MyLogger.getLogger(AlterProjectListener.class);
       private final Map<JiraProject, JiraVersion[]> state;
       private final JComboBox fixVersionCombo;
-      private Logger log = MyLogger.getLogger(AlterProjectListener.class);
 
       private AlterProjectListener(JComboBox jiraProjectFixVersionCombo, Map<JiraProject, JiraVersion[]> state) {
          this.fixVersionCombo = jiraProjectFixVersionCombo;
@@ -127,7 +135,7 @@ class AddVersionPanel extends MyPanel {
          log.debug("changed project to " + projectsCombo.getSelectedItem());
          if (fixVersions != null) {
             for (JiraVersion jiraVersion : fixVersions) {
-               log.debug("\tRetrieving from store: "+ jiraVersion);
+               log.debug("\tRetrieving from store: " + jiraVersion);
                fixVersionCombo.addItem(jiraVersion);
             }
          }
@@ -135,11 +143,11 @@ class AddVersionPanel extends MyPanel {
    }
 
    private final class RefreshVersionListener implements ActionListener {
-      private final Map<JiraProject, JiraVersion[]> state;
-      private final JComboBox fixVersionCombo;
       private final Logger log = MyLogger.getLogger(RefreshVersionListener.class);
-      private final JComboBox projectCombo;
+      private final Map<JiraProject, JiraVersion[]> state;
       private JFrame parentFrame;
+      private final JComboBox fixVersionCombo;
+      private final JComboBox projectCombo;
 
       private RefreshVersionListener(JComboBox jiraProjectsCombo, JComboBox jiraFixVersionCombo, Map<JiraProject, JiraVersion[]> state, JFrame parentFrame) {
          this.projectCombo = jiraProjectsCombo;
@@ -153,8 +161,7 @@ class AddVersionPanel extends MyPanel {
 
          fixVersionCombo.removeAllItems();
          final Object[] selectedObjects = projectCombo.getSelectedObjects();
-         final ProgressDialog dialog = new ProgressDialog(parentFrame, "Refreshing Fix Versions...", "Refreshing Fix Versions...",
-               selectedObjects.length);
+         final ProgressDialog dialog = new ProgressDialog(parentFrame, "Refreshing Fix Versions...", "Refreshing Fix Versions...", selectedObjects.length);
          SwingWorker worker = new SwingWorker() {
             public Object doInBackground() {
                dialog.setIndeterminate(false);
@@ -189,7 +196,7 @@ class AddVersionPanel extends MyPanel {
          JiraVersion[] items = new JiraVersion[fixVersionCombo.getItemCount()];
          for (int i = 0; i < items.length; i++) {
             JiraVersion item = (JiraVersion) fixVersionCombo.getItemAt(i);
-            log.debug("\tStoring "+ item);
+            log.debug("\tStoring " + item);
             items[i] = item;
          }
          return items;
@@ -206,6 +213,7 @@ class AddVersionPanel extends MyPanel {
    }
 
    private final class SyncListener implements SyncWithJiraActionListenerListener {
+      private final Logger log = MyLogger.getLogger(SyncListener.class);
       private final ButtonGroup group;
 
       public SyncListener(ButtonGroup group) {
@@ -215,12 +223,14 @@ class AddVersionPanel extends MyPanel {
 
       public void jiraAdded(JiraIssue jiraIssue) {
          MyTable table = getSelectedTable();
+         log.debug("Adding jira to table " + jiraIssue.getKey());
          if (table != null)
             table.addJira(jiraIssue);
       }
 
       public void jiraSynced(JiraIssue jiraIssue, int tableRowSynced) {
          MyTable table = getSelectedTable();
+         log.debug("Syncing jira to table " + jiraIssue.getKey());
          if (table != null)
             table.syncJira(jiraIssue, tableRowSynced);
       }
