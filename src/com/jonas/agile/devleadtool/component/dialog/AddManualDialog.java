@@ -24,11 +24,11 @@ import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
 
-public class AddDialog extends JFrame {
+public class AddManualDialog extends JFrame {
 
-   public AddDialog(Window frame, MyTable... tables) {
+   public AddManualDialog(Window frame, MyTable... tables) {
       super();
-      this.setContentPane(new AddPanel(this, tables));
+      this.setContentPane(new AddManualPanel(this, tables));
       this.pack();
 
       SwingUtil.centreWindowWithinWindow(this, frame);
@@ -37,10 +37,10 @@ public class AddDialog extends JFrame {
 }
 
 
-class AddPanel extends MyPanel {
+class AddManualPanel extends MyPanel {
    private ButtonGroup group;
 
-   public AddPanel(final JFrame frame, MyTable... tables) {
+   public AddManualPanel(final JFrame frame, MyTable... tables) {
       super(new BorderLayout());
       MyPanel panel = new MyPanel(new GridBagLayout());
       GridBagConstraints c = new GridBagConstraints();

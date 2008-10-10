@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
-import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
