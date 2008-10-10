@@ -2,7 +2,6 @@ package com.jonas.agile.devleadtool.component.table;
 
 import org.easymock.EasyMock;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
@@ -13,7 +12,7 @@ public class MyTableTest extends JonasTestCase {
 
    protected void setUp() throws Exception {
       super.setUp();
-      table = new MyTable();
+      table = new MyTable("");
    }
 
    protected void tearDown() throws Exception {

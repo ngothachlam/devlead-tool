@@ -88,8 +88,9 @@ public class DevLeadTool {
 
       MyDesktopPane desktop = new MyDesktopPane();
       JPanel contentPanel = new MyPanel(new BorderLayout());
-      contentPanel.add(desktop);
+      
       frame.setJMenuBar(createMenuBar(frame, desktop));
+      contentPanel.add(desktop);
       frame.setContentPane(contentPanel);
 
       frame.setSize(new Dimension(1200, 900));
