@@ -9,14 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
-import com.jonas.agile.devleadtool.component.dialog.AddDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
-import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
+import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
+import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
@@ -30,7 +29,9 @@ public class InternalTabPanel extends MyComponentPanel {
    private PlanPanel planPanel;
    private JiraPanel jiraPanel;
 
-   private JCheckBox checkBox;
+   private JCheckBox editableCheckBox;
+
+   private List<MyTablePopupMenu> popups = new ArrayList<MyTablePopupMenu>(3);
 
    public InternalTabPanel(PlannerHelper client) {
       this(client, null, null, null);
@@ -46,15 +47,15 @@ public class InternalTabPanel extends MyComponentPanel {
       planPanel = new PlanPanel(helper, planModel);
       jiraPanel = new JiraPanel(helper, jiraModel);
 
-      //FIXME I want to put this into the MyTable instead!! - need to register the other tables with each other!
-      new MyTablePopupMenu(boardPanel.getTable(), helper, boardPanel.getTable(), planPanel.getTable(), jiraPanel.getTable());
-      new MyTablePopupMenu(planPanel.getTable(), helper, boardPanel.getTable(), planPanel.getTable(), jiraPanel.getTable());
-      new MyTablePopupMenu(jiraPanel.getTable(), helper, boardPanel.getTable(), planPanel.getTable(), jiraPanel.getTable());
+      // FIXME I want to put this into the MyTable instead!! - need to register the other tables with each other!
+      popups.add(new MyTablePopupMenu(boardPanel.getTable(), helper, boardPanel.getTable(), planPanel.getTable(), jiraPanel.getTable()));
+      popups.add(new MyTablePopupMenu(planPanel.getTable(), helper, boardPanel.getTable(), planPanel.getTable(), jiraPanel.getTable()));
+      popups.add(new MyTablePopupMenu(jiraPanel.getTable(), helper, boardPanel.getTable(), planPanel.getTable(), jiraPanel.getTable()));
 
       JPanel panel = new JPanel();
-      checkBox = new JCheckBox("Editable?", true);
-      panel.add(checkBox);
-      panel.add(getAddPanel(helper.getParentFrame(), boardPanel.getTable(), jiraPanel.getTable(), planPanel.getTable()));
+      editableCheckBox = new JCheckBox("Editable?", true);
+      panel.add(editableCheckBox);
+      panel.add(getAddPanel(helper, boardPanel.getTable(), jiraPanel.getTable(), planPanel.getTable()));
       addNorth(panel);
 
       makeContent(boardModel);
@@ -62,8 +63,8 @@ public class InternalTabPanel extends MyComponentPanel {
       this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
    }
 
-   private Component getAddPanel(final JFrame frame, MyTable boardTable, MyTable jiraTable, MyTable planTable) {
-      JPanel panel = new JPanel(new GridLayout(1,2,5,5));
+   private Component getAddPanel(final PlannerHelper helper, MyTable boardTable, MyTable jiraTable, MyTable planTable) {
+      JPanel panel = new JPanel(new GridLayout(1, 2, 5, 5));
       final List<MyTable> tables = new ArrayList<MyTable>();
       tables.add(boardTable);
       tables.add(jiraTable);
@@ -73,13 +74,19 @@ public class InternalTabPanel extends MyComponentPanel {
       addButton(panel, "Add", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            new AddDialog(frame, array);
+            new AddManualDialog(helper.getParentFrame(), array);
          }
       });
       addButton(panel, "Filters", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            new AddFilterDialog(frame, array);
+            new AddFilterDialog(helper.getParentFrame(), array);
+         }
+      });
+      addButton(panel, "Versions", new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            new AddVersionDialog(helper.getParentFrame(), helper, array);
          }
       });
 
@@ -87,31 +94,29 @@ public class InternalTabPanel extends MyComponentPanel {
    }
 
    public void makeContent(MyTableModel boardTableModel) {
-      addCenter( combineIntoSplitPane(boardPanel, jiraPanel, planPanel) );
+      addCenter(combineIntoSplitPane(boardPanel, jiraPanel, planPanel));
    }
 
    private Component combineIntoSplitPane(JPanel panel1, JPanel panel2, JPanel panel3) {
       JSplitPane tabPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
       JSplitPane tabPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-      
+
       tabPane.add(panel1);
       tabPane.add(tabPane2);
       tabPane2.add(panel2);
       tabPane2.add(panel3);
-      
+
       tabPane.setDividerLocation(550);
       tabPane2.setDividerLocation(350);
       return tabPane;
    }
 
    public void wireUpListeners() {
-      // senderPanel.addComponentListener(this);
-      // receiverPanel.addComponentListener(this);
-      checkBox.addActionListener(new ActionListener() {
+      editableCheckBox.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            boardPanel.setEditable(checkBox.isSelected());
-            planPanel.setEditable(checkBox.isSelected());
-            jiraPanel.setEditable(checkBox.isSelected());
+            boardPanel.setEditable(editableCheckBox.isSelected());
+            planPanel.setEditable(editableCheckBox.isSelected());
+            jiraPanel.setEditable(editableCheckBox.isSelected());
          }
       });
    }
