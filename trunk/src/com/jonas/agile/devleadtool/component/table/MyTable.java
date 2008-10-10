@@ -23,19 +23,21 @@ import com.jonas.jira.JiraIssue;
 public class MyTable extends JTable {
 
    private MyTableModel model;
+   private String title;
 
    // private TableRowSorter<TableModel> sorter;
 
-   public MyTable() {
-      this(new DefaultTableModel());
+   public MyTable(String title) {
+      this(title, new DefaultTableModel());
    }
 
-   public MyTable(MyTableModel modelModel) {
-      this((AbstractTableModel) modelModel);
+   public MyTable(String title, MyTableModel modelModel) {
+      this(title, (AbstractTableModel) modelModel);
    }
 
-   MyTable(AbstractTableModel defaultTableModel) {
+   MyTable(String title, AbstractTableModel defaultTableModel) {
       super(defaultTableModel);
+      this.title = title;
       
       CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
       CheckBoxTableCellEditor checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
@@ -169,6 +171,10 @@ public class MyTable extends JTable {
 
    public void syncJira(JiraIssue jiraIssue, int tableRowSynced) {
       model.syncJira(jiraIssue, convertRowIndexToModel(tableRowSynced));
+   }
+
+   public String getTitle() {
+      return title;
    }
 
 }

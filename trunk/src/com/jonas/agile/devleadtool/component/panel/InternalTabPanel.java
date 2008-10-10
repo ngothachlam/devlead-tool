@@ -46,14 +46,10 @@ public class InternalTabPanel extends MyComponentPanel {
       planPanel = new PlanPanel(helper, planModel);
       jiraPanel = new JiraPanel(helper, jiraModel);
 
-      TableAndTitleDTO tableAndTitleDTO1 = new TableAndTitleDTO("Board", boardPanel.getTable());
-      TableAndTitleDTO tableAndTitleDTO2 = new TableAndTitleDTO("Plan", planPanel.getTable());
-      TableAndTitleDTO tableAndTitleDTO3 = new TableAndTitleDTO("Jira", jiraPanel.getTable());
-
       //FIXME I want to put this into the MyTable instead!! - need to register the other tables with each other!
-      new MyTablePopupMenu(boardPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
-      new MyTablePopupMenu(planPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
-      new MyTablePopupMenu(jiraPanel.getTable(), helper, tableAndTitleDTO1, tableAndTitleDTO2, tableAndTitleDTO3);
+      new MyTablePopupMenu(boardPanel.getTable(), helper, boardPanel.getTable(), planPanel.getTable(), jiraPanel.getTable());
+      new MyTablePopupMenu(planPanel.getTable(), helper, boardPanel.getTable(), planPanel.getTable(), jiraPanel.getTable());
+      new MyTablePopupMenu(jiraPanel.getTable(), helper, boardPanel.getTable(), planPanel.getTable(), jiraPanel.getTable());
 
       JPanel panel = new JPanel();
       checkBox = new JCheckBox("Editable?", true);
@@ -68,12 +64,12 @@ public class InternalTabPanel extends MyComponentPanel {
 
    private Component getAddPanel(final JFrame frame, MyTable boardTable, MyTable jiraTable, MyTable planTable) {
       JPanel panel = new JPanel(new GridLayout(1,2,5,5));
-      final List<TableAndTitleDTO> tables = new ArrayList<TableAndTitleDTO>();
-      tables.add(new TableAndTitleDTO("Board", boardTable));
-      tables.add(new TableAndTitleDTO("Jira", jiraTable));
-      tables.add(new TableAndTitleDTO("Plan", planTable));
+      final List<MyTable> tables = new ArrayList<MyTable>();
+      tables.add(boardTable);
+      tables.add(jiraTable);
+      tables.add(planTable);
 
-      final TableAndTitleDTO[] array = tables.toArray(new TableAndTitleDTO[tables.size()]);
+      final MyTable[] array = tables.toArray(new MyTable[tables.size()]);
       addButton(panel, "Add", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {

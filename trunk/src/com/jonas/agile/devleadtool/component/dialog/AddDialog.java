@@ -19,7 +19,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
-import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.MyPanel;
@@ -27,7 +26,7 @@ import com.jonas.common.SwingUtil;
 
 public class AddDialog extends JFrame {
 
-   public AddDialog(Window frame, TableAndTitleDTO... tables) {
+   public AddDialog(Window frame, MyTable... tables) {
       super();
       this.setContentPane(new AddPanel(this, tables));
       this.pack();
@@ -41,7 +40,7 @@ public class AddDialog extends JFrame {
 class AddPanel extends MyPanel {
    private ButtonGroup group;
 
-   public AddPanel(final JFrame frame, TableAndTitleDTO... tables) {
+   public AddPanel(final JFrame frame, MyTable... tables) {
       super(new BorderLayout());
       MyPanel panel = new MyPanel(new GridBagLayout());
       GridBagConstraints c = new GridBagConstraints();
@@ -92,13 +91,13 @@ class AddPanel extends MyPanel {
       c.weightx = 0;
    }
 
-   private Component getTableRadios(TableAndTitleDTO... tables) {
+   private Component getTableRadios(MyTable... tables) {
       JPanel panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       group = new ButtonGroup();
 
-      for (TableAndTitleDTO myTable : tables) {
-         TableRadioButton tableRadioButton = new TableRadioButton(myTable.getTitle(), myTable.getTable());
+      for (MyTable myTable : tables) {
+         TableRadioButton tableRadioButton = new TableRadioButton(myTable.getTitle(), myTable);
          group.add(tableRadioButton);
          panel.add(tableRadioButton);
       }

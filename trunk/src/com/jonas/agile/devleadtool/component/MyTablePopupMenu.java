@@ -15,7 +15,6 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AddDialog;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
-import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
 import com.jonas.agile.devleadtool.component.panel.OpenJirasListener;
@@ -29,7 +28,7 @@ public class MyTablePopupMenu extends JPopupMenu {
 
    private final MyTable sourceTable;
 
-   public MyTablePopupMenu(MyTable source, PlannerHelper helper, TableAndTitleDTO... tables) {
+   public MyTablePopupMenu(MyTable source, PlannerHelper helper, MyTable... tables) {
       super();
       this.sourceTable = source;
 
@@ -40,10 +39,10 @@ public class MyTablePopupMenu extends JPopupMenu {
       add(new MenuItem_Sync("Sync with Jira", sourceTable, helper));
       addSeparator();
 
-      for (TableAndTitleDTO tableDTO : tables) {
-         if (!tableDTO.getTable().equals(source)) {
+      for (MyTable tableDTO : tables) {
+         if (!tableDTO.equals(source)) {
             String title = "Copy to Table " + tableDTO.getTitle();
-            add(new MenuItem_Copy((title), sourceTable, tableDTO.getTable()));
+            add(new MenuItem_Copy((title), sourceTable, tableDTO));
          }
       }
 
@@ -146,7 +145,7 @@ class MenuItem_Open extends JMenuItem {
 
 class MenuItem_Add extends JMenuItem {
 
-   public MenuItem_Add(String string, final JFrame frame, final TableAndTitleDTO... dtos) {
+   public MenuItem_Add(String string, final JFrame frame, final MyTable... dtos) {
       super(string);
       addActionListener(new ActionListener() {
          @Override

@@ -79,13 +79,9 @@ public class BasicDnD extends JPanel {
       scrollPane3.setPreferredSize(new Dimension(580, 100));
       JPanel panel3 = getBorderPanel(scrollPane3, "Jira");
       
-      TableAndTitleDTO boardDestDTO = new TableAndTitleDTO("Board", boardTable);
-      TableAndTitleDTO planDestDTO = new TableAndTitleDTO("Plan", planTable);
-      TableAndTitleDTO jiraDestDTO = new TableAndTitleDTO("Jira", jiraTable);
-      
-      new MyTablePopupMenu(boardTable, null, planDestDTO, jiraDestDTO);
-      new MyTablePopupMenu(planTable, null, boardDestDTO, jiraDestDTO);
-      new MyTablePopupMenu(jiraTable, null, boardDestDTO, planDestDTO);
+      new MyTablePopupMenu(boardTable, null, planTable, jiraTable);
+      new MyTablePopupMenu(planTable, null, boardTable, jiraTable);
+      new MyTablePopupMenu(jiraTable, null, boardTable, planTable);
       
       Component tabPane = combineIntoSplitPane(panel1, panel2, panel3);
 
@@ -138,7 +134,7 @@ public class BasicDnD extends JPanel {
    }
 
    private MyTable getTable(MyTableModel model) {
-      MyTable table = new MyTable(model);
+      MyTable table = new MyTable("BasicDND", model);
       table.setFillsViewportHeight(true);
       table.setTransferHandler(new TableTransferHandler(table));
       table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

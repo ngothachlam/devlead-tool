@@ -235,7 +235,7 @@ public class NewJInternalFrame extends javax.swing.JInternalFrame {
                   boardPanel.setLayout(new BorderLayout());
                   jTabbedPane1Left.addTab("Board", null, boardPanel, null);
                   {
-                     boardTable = new MyTable();
+                     boardTable = new MyTable("BoardTable");
                      TableModel boardTableModel = new BoardTableModel();
                      boardPanel.add(boardTable, BorderLayout.CENTER);
                      boardTable.setModel(boardTableModel);
@@ -246,7 +246,7 @@ public class NewJInternalFrame extends javax.swing.JInternalFrame {
                   planPanel.setLayout(new BorderLayout());
                   jTabbedPane1Left.addTab("Plan", null, planPanel, null);
                   {
-                     planTable = new JTable();
+                     planTable = new MyTable("PlanTable");
                      TableModel planTableModel = new PlanTableModel();
                      planPanel.add(planTable, BorderLayout.CENTER);
                      planTable.setModel(planTableModel);
@@ -257,7 +257,7 @@ public class NewJInternalFrame extends javax.swing.JInternalFrame {
                   jiraPanel.setLayout(new BorderLayout());
                   jTabbedPane1Left.addTab("Jira", null, jiraPanel, null);
                   {
-                     jiraTable = new JTable();
+                     jiraTable = new MyTable("JiraTable");
                      TableModel jiraTableModel = new JiraTableModel();
                      jiraPanel.add(jiraTable, BorderLayout.CENTER);
                      jiraTable.setModel(jiraTableModel);

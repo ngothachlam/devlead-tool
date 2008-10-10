@@ -31,7 +31,7 @@ import com.jonas.jira.access.JiraException;
 
 public class AddFilterDialog extends JFrame {
 
-   public AddFilterDialog(Window frame, TableAndTitleDTO... tables) {
+   public AddFilterDialog(Window frame, MyTable... tables) {
       super();
       this.setContentPane(new AddFilterPanel(this, tables));
       this.pack();
@@ -45,7 +45,7 @@ public class AddFilterDialog extends JFrame {
 class AddFilterPanel extends MyPanel {
    private ButtonGroup group;
 
-   public AddFilterPanel(final JFrame frame, TableAndTitleDTO... tables) {
+   public AddFilterPanel(final JFrame frame, MyTable... tables) {
       super(new BorderLayout());
       MyPanel panel = new MyPanel(new GridBagLayout());
       GridBagConstraints c = new GridBagConstraints();
@@ -94,13 +94,13 @@ class AddFilterPanel extends MyPanel {
       c.weightx = 0;
    }
 
-   private Component getTableRadios(TableAndTitleDTO... tables) {
+   private Component getTableRadios(MyTable... tables) {
       JPanel panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       group = new ButtonGroup();
 
-      for (TableAndTitleDTO myTable : tables) {
-         TableRadioButton tableRadioButton = new TableRadioButton(myTable.getTitle(), myTable.getTable());
+      for (MyTable myTable : tables) {
+         TableRadioButton tableRadioButton = new TableRadioButton(myTable.getTitle(), myTable);
          group.add(tableRadioButton);
          panel.add(tableRadioButton);
       }

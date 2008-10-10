@@ -22,7 +22,6 @@ import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.listener.DownloadJirasListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
-import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -47,27 +46,19 @@ public class JiraPanel extends MyComponentPanel {
       super(new BorderLayout());
       this.helper = helper;
 
-      table = new MyTable(jiraModel);
+      table = new MyTable("Jira", jiraModel);
 
       JScrollPane scrollpane = new MyScrollPane(table);
 
-      this.addCenter(scrollpane);
-      this.addSouth(getBottomPanel());
-      this.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 3));
+      addCenter(scrollpane);
+      addSouth(getBottomPanel());
+      setBorder(BorderFactory.createTitledBorder("Jira"));
    }
 
    protected JPanel getBottomPanel() {
       MyPanel buttonPanel = new MyPanel(new BorderLayout());
-      // JPanel buttonPanelOne = getButtonPanelNorth();
-      // buttonPanel.addNorth(buttonPanelOne);
       JPanel buttonPanelTwo = getButtonPanelSouth();
       buttonPanel.addSouth(buttonPanelTwo);
-      return buttonPanel;
-   }
-
-   private JPanel getButtonPanelNorth() {
-      JPanel buttonPanel = new JPanel();
-      addFilter(buttonPanel, table, Column.Jira, Column.Description);
       return buttonPanel;
    }
 
