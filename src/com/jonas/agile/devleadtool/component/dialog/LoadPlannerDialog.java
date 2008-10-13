@@ -10,6 +10,8 @@ import com.jonas.agile.devleadtool.component.CutoverLength;
 import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.panel.InternalTabPanel;
+import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 
 public class LoadPlannerDialog extends JFileChooser {
@@ -86,7 +88,8 @@ public class LoadPlannerDialog extends JFileChooser {
          // PlanTableModel planModel = dao.loadPlanModel();
          // JiraTableModel jiraModel = dao.loadJiraModel();
 
-         InternalTabPanel internalFrameTabPanel = new InternalTabPanel(plannerHelper, runnableDTO1.getModel(), runnableDTO2.getModel(), runnableDTO3.getModel());
+         InternalTabPanel internalFrameTabPanel = new InternalTabPanel(plannerHelper, (BoardTableModel) runnableDTO1.getModel(), runnableDTO2.getModel(),
+               (JiraTableModel) runnableDTO3.getModel());
          MyInternalFrame internalFrame = new MyInternalFrame(plannerHelper, plannerHelper.getTitle(), internalFrameTabPanel, dao);
          desktop.addInternalFrame(internalFrame);
          internalFrame.setExcelFile(xlsFile.getAbsolutePath(), CutoverLength.DEFAULT);

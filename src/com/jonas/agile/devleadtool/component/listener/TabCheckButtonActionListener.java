@@ -27,58 +27,55 @@ public class TabCheckButtonActionListener implements ActionListener {
    private final MyTable table;
    private final PlannerCommunicator plannerCommunicator;
    private final PlannerHelper helper;
-   
+
    /**
-    * @param helper 
+    * @param helper
     * @param boardPanel
     */
-   public TabCheckButtonActionListener(PlannerHelper helper, MyTable table, PlannerCommunicator plannerCommunicator){
+   public TabCheckButtonActionListener(PlannerHelper helper, MyTable table, PlannerCommunicator plannerCommunicator) {
       this.helper = helper;
       this.table = table;
       this.plannerCommunicator = plannerCommunicator;
    }
-   
-   
+
    public void actionPerformed(ActionEvent e) {
       JFrame newFrame = new JFrame();
       MyPanel contentPane = new MyPanel(new BorderLayout());
-      DefaultTableModel model = new DefaultTableModel(new Column[]{Column.Jira, Column.B_BoardStatus, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint}, 0);
-      
+      DefaultTableModel model = new DefaultTableModel(new Column[] { Column.Jira, Column.B_BoardStatus, Column.Planned_Sprint, Column.Resolved_Sprint,
+            Column.Closed_Sprint }, 0);
+
       for (int i = 0; i < table.getModel().getRowCount(); i++) {
          Vector<String> rowData = new Vector<String>();
-         //col 1: 
+         // col 1:
          String jira = (String) table.getValueAt(Column.Jira, i);
          rowData.add(jira);
 
-         //col 2: 
-         List<BoardStatusValue> boardStatus = plannerCommunicator.getJiraStatusFromBoard(jira);
+         // col 2:
+         BoardStatusValue boardStatus = plannerCommunicator.getJiraStatusFromBoard(jira);
          StringBuffer sb = new StringBuffer();
-         for (BoardStatusValue status : boardStatus) {
-            sb.append("[").append(status).append("]");
-         }
+         sb.append("[").append(boardStatus).append("]");
          rowData.add(sb.toString());
 
-         //col 3: 
+         // col 3:
          rowData.add(plannerCommunicator.getPlannedSprint(jira));
-         //col 4: 
+         // col 4:
          rowData.add(plannerCommunicator.getResolvedSprint(jira));
-         //col 5: 
+         // col 5:
          rowData.add(plannerCommunicator.getClosedSprint(jira));
-         
-         
+
          model.addRow(rowData);
       }
-      
+
       JTable tabCheckTable = new JTable(model);
       MyScrollPane scrollpane = new MyScrollPane(tabCheckTable);
-      
+
       contentPane.addNorth(new JLabel("North!"));
       contentPane.addCenter(scrollpane);
       contentPane.addSouth(new JLabel("South!"));
-      
+
       newFrame.setContentPane(contentPane);
       newFrame.setSize(new Dimension(300, 700));
       SwingUtil.locateWindowRelativeToWindow(newFrame, helper.getActiveInternalFrame(), 840, 58);
       newFrame.setVisible(true);
-      }
+   }
 }

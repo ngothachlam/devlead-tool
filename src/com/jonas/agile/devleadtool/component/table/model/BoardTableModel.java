@@ -34,10 +34,9 @@ public class BoardTableModel extends MyTableModel {
       super(columns, contents, header);
    }
 
-   public List<BoardStatusValue> getStatus(String jira) {
+   public BoardStatusValue getStatus(String jira) {
       int row = getRowWithJira(jira, Column.Jira);
       log.debug("row: " + row + " for jira: " + jira);
-      List<BoardStatusValue> list = new ArrayList<BoardStatusValue>();
       if (row >= 0) {
          for (Column column : columns) {
             switch (column) {
@@ -46,17 +45,15 @@ public class BoardTableModel extends MyTableModel {
             case isInProgress:
             case isResolved:
             case isComplete:
-            default:
                if (getBoardStatus(row, column)) {
-                  list.add(BoardStatusToColumnMap.getBoardStatus(column));
+                  return BoardStatusToColumnMap.getBoardStatus(column);
                }
+            default:
                break;
             }
          }
-         if (list.size() == 0)
-            list.add(BoardStatusValue.UnKnown);
       }
-      return list;
+      return BoardStatusValue.UnKnown;
    }
 
    private boolean getBoardStatus(int row, Column column) {
@@ -93,11 +90,10 @@ public class BoardTableModel extends MyTableModel {
                default:
                   break;
                }
-               
-               if (isThisSet && countOfMutuallyExclusiveSet > 1){
+
+               if (isThisSet && countOfMutuallyExclusiveSet > 1) {
                   result = true;
-               }
-               else if (!isThisSet && countOfMutuallyExclusiveSet == 0)
+               } else if (!isThisSet && countOfMutuallyExclusiveSet == 0)
                   result = true;
             }
          }
@@ -122,18 +118,5 @@ class BoardStatusToColumnMap {
 
    public static BoardStatusValue getBoardStatus(Column column) {
       return map.get(column);
-   }
-}
-
-
-class Counter {
-   private int i = 0;
-
-   public int getValueAndIncrease() {
-      return i++;
-   }
-
-   public void reset() {
-      i = 0;
    }
 }

@@ -9,6 +9,7 @@ import javax.swing.JTable;
 public class CheckBoxTableCellEditor extends DefaultCellEditor {
 
    private int rowEdited;
+   private int colEdited;
 
    public CheckBoxTableCellEditor(JCheckBox box) {
       super(box);
@@ -16,12 +17,16 @@ public class CheckBoxTableCellEditor extends DefaultCellEditor {
    }
 
    @Override
-   public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+   public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
       rowEdited = row;
-      return super.getTableCellEditorComponent(table, value, isSelected, row, column);
+      colEdited = col;
+      return super.getTableCellEditorComponent(table, value, isSelected, row, col);
    }
 
    public int getRowEdited() {
       return rowEdited;
+   }
+   public int getColEdited() {
+      return colEdited;
    }
 }

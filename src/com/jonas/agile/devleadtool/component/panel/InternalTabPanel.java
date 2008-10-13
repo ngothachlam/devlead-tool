@@ -11,6 +11,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
@@ -25,6 +27,18 @@ import com.jonas.common.MyComponentPanel;
 
 public class InternalTabPanel extends MyComponentPanel {
 
+   private final class BoardTableModelListener implements TableModelListener {
+      private BoardTableModel boardModel;
+      private JiraTableModel jiraModel;
+      public BoardTableModelListener(BoardTableModel boardModel, JiraTableModel jiraModel) {
+         this.boardModel = boardModel;
+         this.jiraModel = jiraModel;
+      }
+      public void tableChanged(TableModelEvent e) {
+         jiraModel.fireTableDataChanged();
+      }
+   }
+
    private BoardPanel boardPanel;
    private PlanPanel planPanel;
    private JiraPanel jiraPanel;
@@ -37,11 +51,13 @@ public class InternalTabPanel extends MyComponentPanel {
       this(client, null, null, null);
    }
 
-   public InternalTabPanel(PlannerHelper helper, MyTableModel boardModel, MyTableModel planModel, MyTableModel jiraModel) {
+   public InternalTabPanel(PlannerHelper helper, BoardTableModel boardModel, MyTableModel planModel, JiraTableModel jiraModel) {
       super(new BorderLayout());
       boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
       planModel = (planModel == null) ? new PlanTableModel() : planModel;
       jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
+      jiraModel.setBoardModel(boardModel);
+      boardModel.addTableModelListener(new BoardTableModelListener(boardModel, jiraModel));
 
       boardPanel = new BoardPanel(boardModel);
       planPanel = new PlanPanel(helper, planModel);

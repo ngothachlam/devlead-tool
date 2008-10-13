@@ -27,15 +27,15 @@ public class OpenPlannerDialog {
             setModel(new JiraTableModel());
          }
       };
-      
+
       Thread t1 = new Thread(runnableDTO1);
       Thread t2 = new Thread(runnableDTO2);
       Thread t3 = new Thread(runnableDTO3);
-      
+
       t1.start();
       t2.start();
       t3.start();
-      
+
       try {
          t1.join();
          t2.join();
@@ -43,8 +43,9 @@ public class OpenPlannerDialog {
       } catch (InterruptedException e) {
          e.printStackTrace();
       }
-      
-      InternalTabPanel internalFrameTabPanel = new InternalTabPanel(plannerHelper, runnableDTO1.getModel(), runnableDTO2.getModel(), runnableDTO3.getModel());
+
+      InternalTabPanel internalFrameTabPanel = new InternalTabPanel(plannerHelper, (BoardTableModel) runnableDTO1.getModel(), runnableDTO2.getModel(),
+            (JiraTableModel) runnableDTO3.getModel());
       MyInternalFrame internalFrame = new MyInternalFrame(plannerHelper, plannerHelper.getTitle(), internalFrameTabPanel, dao);
       desktopPane.addInternalFrame(internalFrame);
 
@@ -55,14 +56,14 @@ public class OpenPlannerDialog {
 
 
 abstract class RunnableDTO implements Runnable {
-   private MyTableModel boardTableModel;
+   private MyTableModel model;
 
    protected void setModel(MyTableModel boardTableModel) {
-      this.boardTableModel = boardTableModel;
+      this.model = boardTableModel;
    }
 
    public MyTableModel getModel() {
-      return boardTableModel;
+      return model;
    }
 
    public abstract void run();
