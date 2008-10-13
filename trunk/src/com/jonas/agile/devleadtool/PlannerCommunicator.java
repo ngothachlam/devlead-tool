@@ -16,7 +16,7 @@ public class PlannerCommunicator {
       this.plannerHelper = plannerHelper;
    }
 
-   public List<BoardStatusValue> getJiraStatusFromBoard(String jira) {
+   public BoardStatusValue getJiraStatusFromBoard(String jira) {
       MyInternalFrame activeFrame = plannerHelper.getActiveInternalFrame();
       BoardTableModel boardModel = (BoardTableModel) activeFrame.getBoardModel();
       return boardModel.getStatus(jira);

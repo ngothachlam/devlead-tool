@@ -360,3 +360,15 @@ public abstract class MyTableModel extends DefaultTableModel {
       return isRed(value, row, getColumnIndex(column));
    }
 }
+
+class Counter {
+   private int i = 0;
+
+   public int getValueAndIncrease() {
+      return i++;
+   }
+
+   public void reset() {
+      i = 0;
+   }
+}
