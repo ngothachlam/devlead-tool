@@ -1,10 +1,19 @@
-rem start "C:\Program Files\Java\jdk1.6.0_07\bin\javaw.exe" -classpath devlead-tool-20081009.jar com.jonas.agile.devleadtool.Main
+@echo off
+echo Use by placing a shortcut to this bat file and run!
+echo.
+echo This script automatically finds all jars in the lib folder, adds them to the classpath and runs the
+echo devlead-tool.jar in the dist directory using current java command (java_home).
+echo.
+echo Author: Jonas Olofsson
+echo.
+echo Lets go!!
+echo.
 
-for /f %%a IN ('dir /b lib *.jar') do set jars
+SETLOCAL ENABLEDELAYEDEXPANSION
+set FILES=
+for /f %%a IN ('dir /b lib *.jar') do set FILES=!FILES!;lib\%%a
+   
+@echo on
+java -cp dist\devlead-tool.jar%FILES% com.jonas.agile.devleadtool.Main
 
 pause
-
-java -cp dist\devlead-tool-20081009.jar;lib\axis-1.4.jar;lib\cglib-nodep-2.1_3.jar;lib\commons-codec-1.3.jar com.jonas.agile.devleadtool.Main
-
-pause
-cls
