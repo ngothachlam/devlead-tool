@@ -26,16 +26,12 @@ import com.jonas.agile.devleadtool.component.TableRadioButton;
 import com.jonas.agile.devleadtool.component.listener.DownloadJiraListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
-import com.jonas.common.MyComponentPanel;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
-import com.jonas.testHelpers.TryoutTester;
 
 public class AddVersionDialog extends JFrame {
 
@@ -47,24 +43,7 @@ public class AddVersionDialog extends JFrame {
       SwingUtil.centreWindowWithinWindow(this, frame);
       setVisible(true);
    }
-
-   public static void main(String... args) {
-      JFrame frame = TryoutTester.getFrame();
-      frame.setVisible(true);
-      MyTable tableA = new MyTable("A", new BoardTableModel());
-      MyTable tableB = new MyTable("B", new JiraTableModel());
-      tableA.addJira("bla-1");
-      tableB.addJira("bla-2");
-
-      MyComponentPanel panel = new MyComponentPanel(new GridLayout(2, 1));
-      panel.add(tableA);
-      panel.add(tableB);
-      frame.setContentPane(panel);
-
-      new AddVersionDialog(frame, new MyTable[]{ tableA, tableB});
-   }
 }
-
 
 class AddVersionPanel extends MyPanel {
    private final ButtonGroup group = new ButtonGroup();
