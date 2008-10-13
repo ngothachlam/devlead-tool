@@ -25,10 +25,10 @@
 	</path>
 
 	<target name="clean" description="clean up">
-		<delete includeemptydirs="true">
+		<delete includeemptydirs="true" failonerror="false">
 			<fileset dir="${build}" includes="**/*" />
 		</delete>
-		<delete includeEmptyDirs="true">
+		<delete includeEmptyDirs="true" failonerror="false">
 			<fileset dir="${dist}" includes="**/*" />
 		</delete>
 	</target>
@@ -64,6 +64,7 @@
 			</manifest>
 
 		</jar>
+		<copy file="${dist}/devlead-tool-${DSTAMP}.jar" tofile="${dist}/devlead-tool.jar" overwrite="true" />
 	</target>
 
 	<target name="compile.tests" depends="dist" description="compile the source ">
