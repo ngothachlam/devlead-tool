@@ -45,8 +45,12 @@ public class JiraTableModel extends MyTableModel {
          switch (column2) {
          case B_BoardStatus:
             BoardStatusValue status = boardModel.getStatus((String) getValueAt(Column.Jira, row));
-            log.debug("with status " + status);
+            log.debug("with Status " + status);
             return status;
+         case B_Release:
+            String release = (String) getValueAt(Column.Release, row);
+            log.debug("with Release " + release);
+            return release;
          default:
             break;
          }
