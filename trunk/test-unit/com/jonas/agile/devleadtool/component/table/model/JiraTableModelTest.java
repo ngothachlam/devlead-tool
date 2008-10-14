@@ -57,10 +57,10 @@ public class JiraTableModelTest extends JonasTestCase {
 
       assertEquals(2, model.getRowCount());
       assertEquals(12, model.getColumnCount());
-      assertRow(new String[] { "Jira-0", "Description-0", "BoardStatus-0", "J_Type-0", "Release-0", "J_FixVersion-0", "Planned_Sprint-0",
+      assertRow(new String[] { "Jira-0", "Description-0", "B_BoardStatus-0", "J_Type-0", "Release-0", "J_FixVersion-0", "Planned_Sprint-0",
             "Resolved_Sprint-0", "Closed_Sprint-0", "J_Status-0", "J_Resolution-0", "J_BuildNo-0", "Dev_Estimate-0", "Dev_Actual-0",
             "J_Dev_Estimate-0", "J_Dev_Spent-0", "Note-0" }, model, 0);
-      assertRow(new String[] { "Jira-1", "Description-1", "BoardStatus-1", "J_Type-1", "Release-1", "J_FixVersion-1", "Planned_Sprint-1",
+      assertRow(new String[] { "Jira-1", "Description-1", "B_BoardStatus-1", "J_Type-1", "Release-1", "J_FixVersion-1", "Planned_Sprint-1",
             "Resolved_Sprint-1", "Closed_Sprint-1", "J_Status-1", "J_Resolution-1", "J_BuildNo-1", "Dev_Estimate-1", "Dev_Actual-1",
             "J_Dev_Estimate-1", "J_Dev_Spent-1", "Note-1" }, model, 1);
    }

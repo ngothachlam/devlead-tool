@@ -42,6 +42,11 @@ public enum Column {
    },
 
    // Boolean Defaults
+   isParked(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes){
+      public Object parse(String cellContents) {
+         return Boolean.parseBoolean(cellContents);
+      }
+   }, 
    isInProgress(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes){
       public Object parse(String cellContents) {
          return Boolean.parseBoolean(cellContents);

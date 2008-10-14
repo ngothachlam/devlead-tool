@@ -1,11 +1,15 @@
 package com.jonas.agile.devleadtool;
 
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
+import com.jonas.common.logging.MyLogger;
 
 public class Main {
 
    public static void main(String[] args) {
       DevLeadTool tool = new DevLeadTool();
+      if(args.length > 0){
+         MyLogger.setup(args[0]);
+      }
       try {
          tool.start();
       } catch (Throwable e) {

@@ -5,7 +5,7 @@ import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 public class ColumnDataTypeTest extends JonasTestCase {
 
    public void testShouldHaveAllColumns() {
-      assertEquals(23, Column.values().length);
+      assertEquals(26, Column.values().length);
    }
       
    public void testGettersShouldWork() {

@@ -14,6 +14,6 @@ set FILES=
 for /f %%a IN ('dir /b lib *.jar') do set FILES=!FILES!;lib\%%a
    
 @echo on
-java -cp dist\devlead-tool.jar%FILES% com.jonas.agile.devleadtool.Main
+java -cp dist\devlead-tool.jar%FILES% com.jonas.agile.devleadtool.Main properties/log4j-prod.properties
 
 pause

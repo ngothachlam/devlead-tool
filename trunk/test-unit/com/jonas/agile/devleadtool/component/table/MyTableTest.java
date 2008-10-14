@@ -1,9 +1,8 @@
 package com.jonas.agile.devleadtool.component.table;
 
 import org.easymock.EasyMock;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
+import com.jonas.agile.devleadtool.component.table.model.TestTableModel;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class MyTableTest extends JonasTestCase {
@@ -20,39 +19,29 @@ public class MyTableTest extends JonasTestCase {
    }
 
    public void testShouldIdentifyColumnCorrectly() throws SecurityException, NoSuchMethodException {
-      MyTableModel mock_table_model = createClassMock(MyTableModel.class);
-      EasyMock.expect(mock_table_model.getColumn(0)).andReturn(Column.Jira);
+      MyTableModel model = new TestTableModel();
+      table.setModel(model);
 
-      // mock out table methods (jtable is a big class!)
-      MyTable newtable = createMock(MyTable.class, MyTable.class.getMethod("getModel", MyTableModel.class), MyTable.class.getMethod("convertColumnIndexToModel", int.class));
-      EasyMock.expect(newtable.getModel()).andReturn(mock_table_model).anyTimes();
-      EasyMock.expect(newtable.convertColumnIndexToModel(0)).andReturn(0).anyTimes();
-
-      replay();
-
-      assertTrue(newtable.isColumn(Column.Jira, 0));
-
-      verify();
+      assertEquals(Column.Jira, table.getColumnEnum(0));
+      assertEquals(Column.Description, table.getColumnEnum(1));
+      assertEquals(Column.B_BoardStatus, table.getColumnEnum(2));
+      
+      assertEquals(0, table.getColumnIndex(Column.Jira));
+      assertEquals(1, table.getColumnIndex(Column.Description));
+      assertEquals(2, table.getColumnIndex(Column.B_BoardStatus));
    }
 
    public void testShouldIdentifyColumnInCorrectly() throws SecurityException, NoSuchMethodException {
-      MyTableModel mock_table_model = createClassMock(MyTableModel.class);
-      EasyMock.expect(mock_table_model.getColumn(0)).andReturn(Column.Dev_Actual);
-
-      // mock out table methods (jtable is a big class!)
-      MyTable newtable = createMock(MyTable.class, MyTable.class.getMethod("getModel", null), MyTable.class.getMethod("convertColumnIndexToModel", int.class));
-      EasyMock.expect(newtable.getModel()).andReturn(mock_table_model).anyTimes();
-      EasyMock.expect(newtable.convertColumnIndexToModel(0)).andReturn(0).anyTimes();
-
-      replay();
-
-      assertFalse(newtable.isColumn(Column.Jira, 0));
-
-      verify();
+      MyTableModel model = new TestTableModel();
+      table.setModel(model);
+      
+      assertEquals(null, table.getColumnEnum(-1));
+      
+      assertEquals(-1, table.getColumnIndex(Column.B_Release));
    }
    
    public void testShouldGetCorrectColumnIndex(){
-      MyTableModel model = new BoardTableModel();
+      MyTableModel model = new TestTableModel();
       table.setModel(model);
       
       assertEquals(0,table.getColumnIndex(Column.Jira));
@@ -61,39 +50,36 @@ public class MyTableTest extends JonasTestCase {
    }
    
    public void testShouldSetValueUsingColumnDataCorrectly(){
-      MyTableModel model = new PlanTableModel();
+      MyTableModel model = new TestTableModel();
       table.setModel(model);
       
       table.addEmptyRow();
       
       assertEquals(1, table.getRowCount());
-      assertEquals(10, table.getColumnCount());
+      assertEquals(9, table.getColumnCount());
       assertEquals("", table.getValueAt(0, 0));
       assertEquals("", table.getValueAt(0, 1));
-      assertEquals("", table.getValueAt(0, 2));
-      assertEquals("", table.getValueAt(0, 3));
+      assertEquals(BoardStatusValue.UnKnown, table.getValueAt(0, 2));
+      assertEquals(null, table.getValueAt(0, 3));
       assertEquals("", table.getValueAt(0, 4));
       assertEquals("", table.getValueAt(0, 5));
       assertEquals("", table.getValueAt(0, 6));
-      assertEquals("", table.getValueAt(0, 7));
+      assertEquals(false, table.getValueAt(0, 7));
       assertEquals("", table.getValueAt(0, 8));
-      assertEquals("", table.getValueAt(0, 9));
       
       table.setValueAt("newValue", 0, Column.Description);
       table.setValueAt(1f, 0, Column.Dev_Estimate);
       
       assertEquals(1, table.getRowCount());
-      assertEquals(10, table.getColumnCount());
+      assertEquals(9, table.getColumnCount());
       assertEquals("", table.getValueAt(0, 0));
       assertEquals("newValue", table.getValueAt(0, 1));
-      assertEquals("", table.getValueAt(0, 2));
-      assertEquals("", table.getValueAt(0, 3));
+      assertEquals(BoardStatusValue.UnKnown, table.getValueAt(0, 2));
+      assertEquals(null, table.getValueAt(0, 3));
       assertEquals("", table.getValueAt(0, 4));
       assertEquals("", table.getValueAt(0, 5));
-      assertEquals(1f, table.getValueAt(0, 6));
-      assertEquals("", table.getValueAt(0, 7));
-      assertEquals("", table.getValueAt(0, 8));
-      assertEquals("", table.getValueAt(0, 9));
-      
+      assertEquals("", table.getValueAt(0, 6));
+      assertEquals(false, table.getValueAt(0, 7));
+      assertEquals(1.0f, table.getValueAt(0, 8));
    }
 }
