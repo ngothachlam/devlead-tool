@@ -71,10 +71,7 @@ class PopupListener extends MouseAdapter {
    private void maybeShowPopup(MouseEvent e) {
       if (log.isDebugEnabled()) {
          //FIXME right click on empty table doesn't work
-         log.debug(e);
          boolean b = e.getButton() == MouseEvent.BUTTON3 && e.getComponent() instanceof MyTable;
-         log.debug(b + " " + e.getButton() + " (" + MouseEvent.BUTTON3 + ") " + e.getComponent() + "(" + (e.getComponent() instanceof MyTable)
-               + ")");
       }
       if (e.isPopupTrigger()) {
          popup.show(sourceTable, e.getX(), e.getY());

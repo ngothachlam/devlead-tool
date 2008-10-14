@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.component;
 import java.awt.Color;
 
 import javax.swing.JDesktopPane;
+import com.jonas.common.SwingUtil;
 
 public class MyDesktopPane extends JDesktopPane {
 

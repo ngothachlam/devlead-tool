@@ -10,8 +10,8 @@ public class JiraTableModel extends MyTableModel {
 
    // FIXME how do you run to get a special column of same object but with different object?
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.B_BoardStatus, Column.J_Type, Column.B_Release, Column.J_FixVersion,
-         Column.J_Status, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent, Column.Note };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.B_BoardStatus, Column.J_Type, Column.B_Release, Column.J_Sprint,
+         Column.J_FixVersion, Column.J_Status, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent, Column.Note };
    private BoardTableModel boardModel;
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
 
@@ -42,14 +42,21 @@ public class JiraTableModel extends MyTableModel {
       if (boardModel != null) {
          Column column2 = getColumn(column);
          log.debug("for column " + column2);
+         String jira = "";
          switch (column2) {
          case B_BoardStatus:
-            BoardStatusValue status = boardModel.getStatus((String) getValueAt(Column.Jira, row));
+            jira = (String) getValueAt(Column.Jira, row);
+            BoardStatusValue status = boardModel.getStatus(jira);
             log.debug("with Status " + status);
             return status;
          case B_Release:
-            String release = (String) boardModel.getValueAt(Column.Release, row);
-            log.debug("with Release " + release);
+            String release = "N/A";
+            jira = (String) getValueAt(Column.Jira, row);
+            int boardRowWithJira = boardModel.getRowWithJira(jira, Column.Jira);
+            if (boardRowWithJira >= 0) {
+               release = (String) boardModel.getValueAt(Column.Release, boardRowWithJira);
+            }
+            log.debug("Getting jira " + jira + " from jira Row " + row + ", contained on the boardModel row " + boardRowWithJira + " which has release " + release);
             return release;
          default:
             break;
