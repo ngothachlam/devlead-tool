@@ -228,7 +228,7 @@ public class MyTableModelTest extends JonasTestCase {
 
       verify();
       assertEquals(1, model.getRowCount());
-      assertEquals(8, model.getColumnCount());
+      assertEquals(9, model.getColumnCount());
       assertModelRow("LLU-1", Column.Jira, 0, 0);
       assertModelRow("Summary1", Column.Description, 1, 0);
       assertModelRow(BoardStatusValue.UnKnown, Column.B_BoardStatus, 2, 0);
@@ -237,9 +237,11 @@ public class MyTableModelTest extends JonasTestCase {
       assertModelRow("BuildNo1", Column.J_BuildNo, 5, 0);
       assertModelRow("1.4", Column.J_Dev_Estimate, 6, 0);
       assertModelRow(false, Column.isOpen, 7, 0);
+      assertModelRow("", Column.Dev_Estimate, 8, 0);
    }
 
    private void assertModelRow(Object string, Column column, int col, int row) {
+      assertEquals("col " + col + " is " + model.getColumn(col) + " not " + column + "!", col, model.getColumnIndex(column));
       assertEquals(string, model.getValueAt(column, row));
       assertEquals(string, model.getValueAt(row, col));
    }

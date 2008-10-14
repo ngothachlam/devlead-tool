@@ -39,6 +39,7 @@ public class JiraTableModel extends MyTableModel {
    @Override
    public Object getValueAt(int row, int column) {
       log.debug("getValueAt for row " + row + " column " + column);
+      //FIXME make this prettier!
       if (boardModel != null) {
          Column column2 = getColumn(column);
          log.debug("for column " + column2);
