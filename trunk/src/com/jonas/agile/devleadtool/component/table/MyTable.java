@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.component.table;
 
+import java.awt.event.MouseEvent;
 import java.util.Map;
 import java.util.Vector;
 import javax.swing.DefaultCellEditor;
@@ -11,10 +12,10 @@ import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
@@ -25,8 +26,6 @@ public class MyTable extends JTable {
 
    private MyTableModel model;
    private String title;
-
-   // private TableRowSorter<TableModel> sorter;
 
    public MyTable(String title) {
       this(title, new DefaultTableModel());
@@ -39,14 +38,14 @@ public class MyTable extends JTable {
    MyTable(String title, AbstractTableModel defaultTableModel) {
       super(defaultTableModel);
       this.title = title;
-      
+
       CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
       CheckBoxTableCellEditor checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
-      
+
       setDefaultRenderer(String.class, new StringTableCellRenderer());
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
       setDefaultEditor(Boolean.class, checkBoxEditor);
-      
+
       checkBoxEditor.addCellEditorListener(getCheckBoxEditorListener());
 
       setDragEnabled(true);
@@ -57,9 +56,9 @@ public class MyTable extends JTable {
       // sorter = new TableRowSorter<TableModel>(defaultTableModel);
       // setRowSorter(sorter);
 
-      // FIXME make this dynamic
       if (getModel() instanceof MyTableModel) {
          model = (MyTableModel) getModel();
+         // FIXME make this dynamic
          int boardStatus = getColumnIndex(Column.B_BoardStatus);
          if (boardStatus > -1) {
             TableColumn tc = getTableColumn(boardStatus);
@@ -68,16 +67,29 @@ public class MyTable extends JTable {
             tc.setCellEditor(new DefaultCellEditor(combo));
          }
       }
+
+      // TODO add tooltip for the contents of the table as well by owerriding the getToolTipText method in MyTable (or create JiraTable...)
+      setTableHeader(new JTableHeader(columnModel){
+         @Override
+         public String getToolTipText(MouseEvent e) {
+            java.awt.Point p = e.getPoint();
+            int rowIndex = rowAtPoint(p);
+            int colIndex = columnAtPoint(p);
+            String tip = getColumnName(colIndex);
+            return tip;
+         }
+      });
    }
 
    private CellEditorListener getCheckBoxEditorListener() {
-      return new CellEditorListener(){
+      return new CellEditorListener() {
          @Override
          public void editingCanceled(ChangeEvent e) {
          }
+
          @Override
          public void editingStopped(ChangeEvent e) {
-            CheckBoxTableCellEditor editor = (CheckBoxTableCellEditor)e.getSource();
+            CheckBoxTableCellEditor editor = (CheckBoxTableCellEditor) e.getSource();
             model.fireTableRowsUpdated(editor.getRowEdited(), editor.getRowEdited());
          }
       };
