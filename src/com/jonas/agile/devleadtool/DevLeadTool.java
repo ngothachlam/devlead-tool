@@ -20,6 +20,7 @@ import com.jonas.agile.devleadtool.component.listener.MainFrameListener;
 import com.jonas.agile.devleadtool.component.table.model.TableModelBuilder;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.common.MyPanel;
+import com.jonas.common.SwingUtil;
 
 public class DevLeadTool {
 
@@ -88,12 +89,16 @@ public class DevLeadTool {
 
       MyDesktopPane desktop = new MyDesktopPane();
       JPanel contentPanel = new MyPanel(new BorderLayout());
-      
+
       frame.setJMenuBar(createMenuBar(frame, desktop));
       contentPanel.add(desktop);
       frame.setContentPane(contentPanel);
 
       frame.setSize(new Dimension(1200, 900));
+
+      SwingUtil.sizeFrameRelativeToScreen(frame, 20, 55);
+      SwingUtil.centreWindowWithHeightOffset(frame, 55);
+
       frame.setVisible(true);
 
       wireListeners(frame);

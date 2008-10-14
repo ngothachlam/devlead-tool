@@ -43,7 +43,7 @@ public class PlanTableModelTest extends JonasTestCase {
       PlanTableModel model = new PlanTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(10, model.getColumnCount());
+      assertEquals(11, model.getColumnCount());
       assertEquals("row0-0", model.getValueAt(0, 0));
       assertEquals(null, model.getValueAt(0, 1));
       assertEquals(null, model.getValueAt(0, 2));
@@ -77,7 +77,7 @@ public class PlanTableModelTest extends JonasTestCase {
       assertFalse(model.doesJiraExist(jira_one));
       assertFalse(model.doesJiraExist(jira_two));
       assertEquals(0, model.getRowCount());
-      assertEquals(10, model.getColumnCount());
+      assertEquals(11, model.getColumnCount());
 
       model.addJira(jira_one);
       model.addJira(jira_two);
@@ -86,7 +86,7 @@ public class PlanTableModelTest extends JonasTestCase {
       assertTrue(model.doesJiraExist(jira_two));
 
       assertEquals(2, model.getRowCount());
-      assertEquals(10, model.getColumnCount());
+      assertEquals(11, model.getColumnCount());
       assertEquals("LLU-1", model.getValueAt(0, 0));
       assertEquals("", model.getValueAt(0, 1));
       assertEquals("", model.getValueAt(0, 2));

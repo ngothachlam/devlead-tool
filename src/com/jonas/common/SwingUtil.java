@@ -13,20 +13,38 @@ import com.jonas.common.logging.MyLogger;
 
 public class SwingUtil {
 
-   private static final Logger log = MyLogger.getLogger(SwingUtil.class);
-
    public static final Color COLOR_RED_1 = new Color(200, 0, 0);
    public static final Color COLOR_RED_2 = new Color(225, 0, 0);
    public static final Color COLOR_RED_3 = new Color(250, 0, 0);
+   private static Object lock = new Object();
+
+   private static final Logger log = MyLogger.getLogger(SwingUtil.class);
 
    private static Color selectionBackground = null;
 
-   private static Object lock = new Object();
+   private static int atLeastZero(int no) {
+      return no < 0 ? 0 : no;
+   }
 
    public static void centreWindow(Window window) {
       Toolkit toolkit = window.getToolkit();
       Dimension screenSize = toolkit.getScreenSize();
       window.setLocation((screenSize.width - window.getWidth()) / 2, (screenSize.height - window.getHeight()) / 2);
+   }
+
+   public static void centreWindowWithHeightOffset(Window window, int startMenuSize) {
+      Toolkit toolkit = window.getToolkit();
+      Dimension screenSize = toolkit.getScreenSize();
+      window.setLocation(getRelativeXLocationConsideringStartMenu(screenSize.width, window.getWidth()), getRelativeYLocationConsideringStartMenu(
+            screenSize.height, window.getHeight(), startMenuSize));
+   }
+
+   static int getRelativeXLocationConsideringStartMenu(int screenWidth, int windowWidth) {
+      return (screenWidth - windowWidth) / 2;
+   }
+
+   static int getRelativeYLocationConsideringStartMenu(int screenHeight, int windowHeight, int startMenuSize) {
+      return ((screenHeight - (windowHeight + startMenuSize)) / 2);
    }
 
    public static void centreWindowWithinWindow(Window window, Window parentWindow) {
@@ -36,29 +54,6 @@ public class SwingUtil {
       window.setLocation(atLeastZero(x), atLeastZero(y));
    }
 
-   private static int atLeastZero(int no) {
-      return no < 0 ? 0 : no;
-   }
-
-   public static void locateWindowRelativeToWindow(Component window, Component parentWindow, int xOffset, int yOffset) {
-      Point parentLocation = parentWindow.getLocation();
-      int parentx = parentLocation.x;
-      int parenty = parentLocation.y;
-      int destinationx = parentx + xOffset;
-      int destinationy = parenty + yOffset;
-      
-      log.debug("parent location : " + parentx + ", " + parenty);
-      log.debug("setting location : " + destinationx + ", " + destinationy);
-      
-      Toolkit defaultToolkit = java.awt.Toolkit.getDefaultToolkit();
-      Dimension screenSize = defaultToolkit.getScreenSize();
-      
-      log.debug("Screen Size: " + screenSize.width + ", " + screenSize.height);
-      log.debug("component width: " + window.getWidth() + ", " + window.getHeight());
-      
-      window.setLocation(destinationx, destinationy);
-   }
-   
    public static MyPanel getGridPanel(int rows, int cols, int hgap, int vgap) {
       return new MyPanel(new GridLayout(rows, cols, hgap, vgap));
    }
@@ -74,4 +69,30 @@ public class SwingUtil {
       }
       return selectionBackground;
    }
+
+   public static void locateWindowRelativeToWindow(Component window, Component parentWindow, int xOffset, int yOffset) {
+      Point parentLocation = parentWindow.getLocation();
+      int parentx = parentLocation.x;
+      int parenty = parentLocation.y;
+      int destinationx = parentx + xOffset;
+      int destinationy = parenty + yOffset;
+
+      log.debug("parent location : " + parentx + ", " + parenty);
+      log.debug("setting location : " + destinationx + ", " + destinationy);
+
+      Toolkit defaultToolkit = java.awt.Toolkit.getDefaultToolkit();
+      Dimension screenSize = defaultToolkit.getScreenSize();
+
+      log.debug("Screen Size: " + screenSize.width + ", " + screenSize.height);
+      log.debug("component width: " + window.getWidth() + ", " + window.getHeight());
+
+      window.setLocation(destinationx, destinationy);
+   }
+
+   public static void sizeFrameRelativeToScreen(Window window, int offset, int startMenuHeight) {
+      Toolkit toolkit = window.getToolkit();
+      Dimension screenSize = toolkit.getScreenSize();
+      window.setSize(screenSize.width - offset * 2, screenSize.height - offset * 2 - startMenuHeight);
+   }
+
 }

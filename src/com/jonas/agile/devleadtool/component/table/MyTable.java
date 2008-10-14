@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
@@ -175,6 +176,11 @@ public class MyTable extends JTable {
 
    public String getTitle() {
       return title;
+   }
+
+   public void setModel(MyTableModel model) {
+      this.model = model;
+      super.setModel(model);
    }
 
 }
