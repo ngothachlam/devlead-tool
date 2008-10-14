@@ -26,7 +26,7 @@ public class JiraFilter {
          "&reset=true" +
          "&decorator=none");
    
-   //FIXME use generic filter to get the sprint start!!
+   //FIXME use Dynamic filter to get the sprint start!!
    public static final JiraFilter Sprint_Specific = new JiraFilter(JiraProject.LLU_SYSTEMS_PROVISIONING, "Sprint Specific", 
          "/secure/IssueNavigator.jspa?view=rss&" +
          "&customfield_10282=12.4" +
