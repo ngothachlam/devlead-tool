@@ -25,6 +25,15 @@ public class JiraFilter {
          "&tempMax=10000" +
          "&reset=true" +
          "&decorator=none");
+   
+   //FIXME use generic filter to get the sprint start!!
+   public static final JiraFilter Sprint_Specific = new JiraFilter(JiraProject.LLU_SYSTEMS_PROVISIONING, "Sprint Specific", 
+         "/secure/IssueNavigator.jspa?view=rss&" +
+         "&customfield_10282=12.4" +
+         "&pid=10070" +
+         "&tempMax=1000" +
+         "&reset=true" +
+         "&decorator=none");
 
    public static final JiraFilter DevsupportPrioFilter_UnResolved = new JiraFilter(JiraProject.LLU_DEV_SUPPORT, "Dev Support (UnResolved)", 
          "/secure/IssueNavigator.jspa?view=rss&" +

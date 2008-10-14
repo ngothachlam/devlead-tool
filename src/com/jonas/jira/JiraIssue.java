@@ -18,6 +18,7 @@ public class JiraIssue {
    private final String status;
    private final String summary;
    private final String type;
+   private String sprint;
 
    public JiraIssue(String key, String summary, String status, String resolution, String type) {
       this.key = key;
@@ -27,10 +28,11 @@ public class JiraIssue {
       this.type = type;
    }
 
-   public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate, int listPrio) {
+   public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate, int listPrio, String sprint) {
       this(key, summary, status, resolution, type);
       this.buildNo = buildNo;
       this.estimate = estimate;
+      this.sprint = sprint;
       this.lluListPriority = listPrio;
    }
 
@@ -162,6 +164,9 @@ public class JiraIssue {
    public void setEstimate(String days) {
       this.estimate = days;
    }
+   public void setSprint(String sprint) {
+      this.sprint = sprint;
+   }
 
    public void setLLUListPriority(int lluListPriority) {
       this.lluListPriority = lluListPriority;
@@ -194,5 +199,9 @@ public class JiraIssue {
       buffer.append(summary);
       buffer.append("]");
       return buffer.toString();
+   }
+
+   public String getSprint() {
+      return sprint;
    }
 }
