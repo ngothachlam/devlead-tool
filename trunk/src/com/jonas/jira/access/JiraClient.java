@@ -70,7 +70,6 @@ public class JiraClient {
       // return jiraIssue;
    }
 
-   //FIXME call this from a popup from a "Fix Version" button;
    public JiraIssue[] getJirasFromFixVersion(JiraVersion version) throws HttpException, IOException, JDOMException, JiraException {
       loadResolutionsIfRequired();
       loadJiraTypesIfRequired();
@@ -78,7 +77,6 @@ public class JiraClient {
       return jiras.toArray(new JiraIssue[jiras.size()]);
    }
 
-   //FIXME call this from a popup similar to fix version;
    public JiraIssue[] getJirasFromFilter(JiraFilter jiraFilter) throws HttpException, IOException, JiraException, JDOMException{
       loadResolutionsIfRequired();
       loadJiraTypesIfRequired();

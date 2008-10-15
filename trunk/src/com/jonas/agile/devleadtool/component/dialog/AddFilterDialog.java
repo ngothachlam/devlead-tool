@@ -17,6 +17,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
@@ -70,7 +71,7 @@ class AddFilterPanel extends MyPanel {
 
       MyPanel buttonPanel = new MyPanel(new GridLayout(1, 2, 5, 5));
       buttonPanel.bordered();
-      this.addButton(buttonPanel, "Add", new AddFilterFromRadioButtons(group, jiraCommas));
+      this.addButton(buttonPanel, "Add", new AddFilterFromRadioButtons(group, jiraCommas, frame));
       this.addButton(buttonPanel, "Close", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -111,12 +112,39 @@ class AddFilterPanel extends MyPanel {
 
 class AddFilterFromRadioButtons implements ActionListener {
 
+   private final class SwingWorkerImpl extends SwingWorker {
+      private final JiraFilter filter;
+      private final MyTable table;
+      private final JiraClient client;
+
+      private SwingWorkerImpl(JiraFilter filter, MyTable table, JiraClient client) {
+         this.filter = filter;
+         this.table = table;
+         this.client = client;
+      }
+
+      public Object doInBackground() {
+         try {
+            client.login();
+            JiraIssue[] jiras = client.getJirasFromFilter(filter);
+            for (JiraIssue jiraIssue : jiras) {
+               table.addJira(jiraIssue);
+            }
+         } catch (Throwable e1) {
+            AlertDialog.alertException(parentFrame, e1);
+         }
+         return null;
+      }
+   }
+
    private ButtonGroup group;
    private final JComboBox filters;
+   private final JFrame parentFrame;
 
-   public AddFilterFromRadioButtons(ButtonGroup group, JComboBox filters) {
+   public AddFilterFromRadioButtons(ButtonGroup group, JComboBox filters, JFrame frame) {
       this.group = group;
       this.filters = filters;
+      this.parentFrame = frame;
    }
 
    @Override
@@ -133,30 +161,11 @@ class AddFilterFromRadioButtons implements ActionListener {
       if (table == null)
          return;
 
-      JiraFilter filter = ((JiraFilter) filters.getSelectedItem());
-
+      final JiraFilter filter = ((JiraFilter) filters.getSelectedItem());
       final JiraClient client = filter.getProject().getJiraClient();
 
-      JiraIssue[] jiras = null;
-      try {
-         client.login();
-         jiras = client.getJirasFromFilter(filter);
-         // FIXME the following won't catch errors!
-      } catch (HttpException e1) {
-         e1.printStackTrace();
-         return;
-      } catch (IOException e1) {
-         e1.printStackTrace();
-         return;
-      } catch (JiraException e1) {
-         e1.printStackTrace();
-         return;
-      } catch (JDOMException e1) {
-         e1.printStackTrace();
-         return;
-      }
-      for (JiraIssue jiraIssue : jiras) {
-         table.addJira(jiraIssue);
-      }
+      //FIXME add progress!!
+      SwingWorker worker = new SwingWorkerImpl(filter, table, client);
+      worker.execute();
    }
 }

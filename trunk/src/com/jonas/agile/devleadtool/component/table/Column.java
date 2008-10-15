@@ -121,10 +121,4 @@ public enum Column {
       return cellContents;
    }
 
-   public Column getUnEditable() {
-      // FIXME a way to just get this column, but as uneditable format - how?
-      return this;
-   }
-   
-
 }
