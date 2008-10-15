@@ -20,7 +20,7 @@ public class AlertDialog extends JDialog {
 	private JTextArea textArea;
 
 	private AlertDialog(JFrame parent, String alertMessage) {
-		super(parent, "Alert ...", true);
+		super(parent, "Alert...", true);
 
 		MyPanel panel = new MyPanel(new BorderLayout()).bordered(15, 15, 15, 15);
 		textArea = new JTextArea(alertMessage);
@@ -52,16 +52,11 @@ public class AlertDialog extends JDialog {
 		StringWriter sw = new StringWriter();
 		e.printStackTrace(new PrintWriter(sw));
 		String stacktrace = sw.toString();
-		alertException(parentFrame, stacktrace);
+		alertMessage(parentFrame, stacktrace);
 	}
 
-	public static void alertException(PlannerHelper helper, String e) {
-		alertException(helper.getParentFrame(), e);
-	}
-
-	private static void alertException(JFrame parentFrame, String e) {
+	public static void alertMessage(JFrame parentFrame, String e) {
 		new AlertDialog(parentFrame, e);
-
 	}
 
 	public static AlertDialog message(PlannerHelper helper, String e) {
