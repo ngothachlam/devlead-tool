@@ -56,7 +56,7 @@ public class OpenJirasListener implements ActionListener {
       }
       if (sb.length() > 0) {
          sb.append(" are incorrect!");
-         AlertDialog.alertException(helper, e.toString());
+         AlertDialog.alertMessage(helper.getParentFrame(), sb.toString());
       }
    }
 }
