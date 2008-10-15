@@ -5,10 +5,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import org.apache.log4j.Logger;
 import org.easymock.classextension.EasyMock;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.TestObjects;
@@ -210,7 +212,7 @@ public class MyTableModelTest extends JonasTestCase {
 
    public void testShouldAddJiraComplexObjectOk() {
       JiraIssue mock_jiraIssue = createClassMock(JiraIssue.class);
-      
+
       EasyMock.expect(mock_jiraIssue.getKey()).andReturn("LLU-1").anyTimes();
       EasyMock.expect(mock_jiraIssue.getSummary()).andReturn("Summary1").anyTimes();
       List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
@@ -245,4 +247,45 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals(string, model.getValueAt(column, row));
       assertEquals(string, model.getValueAt(row, col));
    }
+
+   public void testShouldGetValueOfSameClassAsColumnType() {
+      MyTableModel model = new TestTableModelTwo();
+
+      JiraIssue jiraIssue = new JiraIssue("key", "summary", "status", "resolution", "type", "buildNo", "estimate", 1, "sprint");
+      assertEquals("key", model.getValueFromIssue(jiraIssue, Column.Jira));
+      assertEquals("key", Column.Jira.parse("key"));
+      assertEquals("summary", model.getValueFromIssue(jiraIssue, Column.Description));
+      assertEquals("type", model.getValueFromIssue(jiraIssue, Column.J_Type));
+      assertTrue(model.getValueFromIssue(jiraIssue, Column.J_FixVersion) instanceof List);
+      assertEquals("status", model.getValueFromIssue(jiraIssue, Column.J_Status));
+      assertEquals("resolution", model.getValueFromIssue(jiraIssue, Column.J_Resolution));
+      assertEquals("buildNo", model.getValueFromIssue(jiraIssue, Column.J_BuildNo));
+      assertEquals(1, model.getValueFromIssue(jiraIssue, Column.prio));
+      assertEquals("estimate", model.getValueFromIssue(jiraIssue, Column.J_Dev_Estimate));
+      assertEquals("sprint", model.getValueFromIssue(jiraIssue, Column.J_Sprint));
+      assertEquals(null, model.getValueFromIssue(jiraIssue, Column.J_Dev_Spent));
+      assertEquals(BoardStatusValue.UnKnown, model.getValueFromIssue(jiraIssue, Column.B_BoardStatus));
+   }
+}
+
+
+class TestTableModelTwo extends MyTableModel {
+
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.B_BoardStatus, Column.prio, Column.Note, Column.J_BuildNo,
+         Column.J_Dev_Estimate, Column.isOpen, Column.Dev_Estimate };
+   private Logger log = MyLogger.getLogger(JiraTableModel.class);
+
+   public TestTableModelTwo() {
+      super(columns);
+   }
+
+   public TestTableModelTwo(Vector<Vector<Object>> contents, Vector<Column> header) {
+      super(columns, contents, header);
+   }
+
+   @Override
+   public boolean isRed(Object value, int row, int column) {
+      return false;
+   }
+
 }

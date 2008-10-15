@@ -56,7 +56,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
    }
 
-   private Object getValueFromIssue(JiraIssue jiraIssue, Column column) {
+   Object getValueFromIssue(JiraIssue jiraIssue, Column column) {
       Object value;
       //FIXME add testcoverage to ensure this method returns the same type (int, boolean, etc) as the Column.parse method is!!
       switch (column) {
