@@ -56,7 +56,7 @@
 		</javac>
 	</target>
 
-	<target name="dist" depends="compile" description="generate the distribution">
+	<target name="dist" depends="compile, run.tests.unit" description="generate the distribution">
 		<mkdir dir="${dist}" />
 		<jar jarfile="${dist}/devlead-tool-${DSTAMP}.jar" basedir="${build.classes}">
 			<manifest>

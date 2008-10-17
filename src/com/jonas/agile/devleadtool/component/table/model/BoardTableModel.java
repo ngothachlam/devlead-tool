@@ -66,8 +66,11 @@ public class BoardTableModel extends MyTableModel {
    public boolean isRed(Object value, int row, int column) {
       boolean result = false;
       Column columnEnum = getColumn(column);
-      if (columnEnum != null) {
-         if (mutuallyExclusive != null && mutuallyExclusive.contains(columnEnum)) {
+      if (columnEnum == null) {
+         return false;
+      }
+      if (mutuallyExclusive != null) {
+         if (mutuallyExclusive.contains(columnEnum)) {
             if (value != null && value instanceof Boolean) {
                boolean isThisSet = ((Boolean) value).booleanValue();
                int countOfMutuallyExclusiveSet = isThisSet ? 1 : 0;
@@ -80,43 +83,64 @@ public class BoardTableModel extends MyTableModel {
                      break;
                }
 
-               switch (countOfMutuallyExclusiveSet) {
-               case 0:
-                  break;
-               case 1:
-                  break;
-               case 2:
-                  break;
-               default:
-                  break;
-               }
-
                if (isThisSet && countOfMutuallyExclusiveSet > 1) {
                   result = true;
                } else if (!isThisSet && countOfMutuallyExclusiveSet == 0)
                   result = true;
             }
+         } else {
+            String stringValue = "";
+            switch (columnEnum) {
+            case Dev_Estimate:
+               stringValue = (String) value;
+               if (stringValue == null || stringValue.trim().length() <= 0) {
+                  if (howManyTrue(row, Column.isOpen, Column.isInProgress, Column.isResolved, Column.isParked, Column.isComplete) == 1) {
+                     return true;
+                  }
+               }
+               break;
+            case Dev_Actual:
+               stringValue = (String) value;
+               if (stringValue == null || stringValue.trim().length() <= 0) {
+                  if (howManyTrue(row, Column.isResolved, Column.isComplete) == 1) {
+                     return true;
+                  }
+               } else{
+                  if (howManyTrue(row, Column.isBug, Column.isOpen, Column.isParked, Column.isInProgress) == 1) {
+                     return true;
+                  }
+               }
+               break;
+            default:
+               break;
+            }
          }
       }
       return result;
    }
-}
 
-
-class BoardStatusToColumnMap {
-
-   private static final Map<Column, BoardStatusValue> map = new HashMap<Column, BoardStatusValue>();
-   private static final BoardStatusToColumnMap mapping1 = new BoardStatusToColumnMap(Column.isOpen, BoardStatusValue.Open);
-   private static final BoardStatusToColumnMap mapping2 = new BoardStatusToColumnMap(Column.isBug, BoardStatusValue.Bugs);
-   private static final BoardStatusToColumnMap mapping3 = new BoardStatusToColumnMap(Column.isInProgress, BoardStatusValue.InProgress);
-   private static final BoardStatusToColumnMap mapping4 = new BoardStatusToColumnMap(Column.isResolved, BoardStatusValue.Resolved);
-   private static final BoardStatusToColumnMap mapping5 = new BoardStatusToColumnMap(Column.isComplete, BoardStatusValue.Complete);
-
-   public BoardStatusToColumnMap(Column column, BoardStatusValue status) {
-      map.put(column, status);
+   int howManyTrue(int row, Column... boolColumns){
+      int j = 0;
+      for (int i = 0; i < boolColumns.length; i++) {
+         Column column = boolColumns[i];
+         if (getColumnIndex(column) >= 0) {
+            Boolean value = (Boolean) getValueAt(column, row);
+            if (value.booleanValue() == true)
+               j++;
+         }
+      }
+      return j;
    }
-
-   public static BoardStatusValue getBoardStatus(Column column) {
-      return map.get(column);
+   
+   boolean isAnyTrue(int row, Column... boolColumns) {
+      for (int i = 0; i < boolColumns.length; i++) {
+         Column column = boolColumns[i];
+         if (getColumnIndex(column) >= 0) {
+            Boolean value = (Boolean) getValueAt(column, row);
+            if (value.booleanValue() == true)
+               return true;
+         }
+      }
+      return false;
    }
 }

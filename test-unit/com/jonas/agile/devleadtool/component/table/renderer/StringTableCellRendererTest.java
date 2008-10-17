@@ -13,7 +13,7 @@ public class StringTableCellRendererTest extends JonasTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		model = new BoardTableModel();
-		board = new StringTableCellRenderer();
+		board = new StringTableCellRenderer(null);
 	}
 
 	protected void tearDown() throws Exception {

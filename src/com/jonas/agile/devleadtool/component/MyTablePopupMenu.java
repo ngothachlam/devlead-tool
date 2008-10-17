@@ -31,10 +31,11 @@ public class MyTablePopupMenu extends JPopupMenu {
    public MyTablePopupMenu(MyTable source, PlannerHelper helper, MyTable... tables) {
       super();
       this.sourceTable = source;
+      JFrame parentFrame = helper.getParentFrame();
 
       sourceTable.addMouseListener(new PopupListener(sourceTable, this));
 
-      add(new MenuItem_Add("Add Jiras to Table", helper.getParentFrame(), tables));
+      add(new MenuItem_Add("Add Jiras to Table", parentFrame, tables));
       add(new MenuItem_Open("Open in Browser", sourceTable, helper));
       add(new MenuItem_Sync("Sync with Jira", sourceTable, helper));
       addSeparator();
@@ -42,7 +43,7 @@ public class MyTablePopupMenu extends JPopupMenu {
       for (MyTable tableDTO : tables) {
          if (!tableDTO.equals(source)) {
             String title = "Copy to Table " + tableDTO.getTitle();
-            add(new MenuItem_Copy((title), sourceTable, tableDTO));
+            add(new MenuItem_Copy(parentFrame, title, sourceTable, tableDTO));
          }
       }
 
@@ -93,9 +94,11 @@ class MenuItem_Copy extends JMenuItem implements ActionListener {
 
    private final MyTable destinationTable;
    private MyTable sourceTable;
+   private JFrame frame;
 
-   public MenuItem_Copy(String string, MyTable source, MyTable table) {
+   public MenuItem_Copy(JFrame frame, String string, MyTable source, MyTable table) {
       super(string);
+      this.frame = frame;
       this.sourceTable = source;
       this.destinationTable = table;
       addActionListener(this);
@@ -103,7 +106,7 @@ class MenuItem_Copy extends JMenuItem implements ActionListener {
 
    public void actionPerformed(ActionEvent e) {
       final int[] selectedRows = sourceTable.getSelectedRows();
-      final ProgressDialog dialog = new ProgressDialog(null, "Copying...", "Copying selected messages from Board to Plan...",
+      final ProgressDialog dialog = new ProgressDialog(frame, "Copying...", "Copying selected messages from Board to Plan...",
             selectedRows.length);
       try {
          for (int i = 0; i < selectedRows.length; i++) {

@@ -24,8 +24,7 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 
    public CheckBoxTableCellRenderer(AbstractTableModel model) {
       super(new BorderLayout());
-      if (model instanceof MyTableModel)
-         this.model = (MyTableModel) model;
+      this.model = (MyTableModel) model;
       checkbox.setHorizontalAlignment(JLabel.CENTER);
       this.add(checkbox, SwingUtilities.CENTER);
       border = UIManager.getBorder("Table.focusCellHighlightBorder");

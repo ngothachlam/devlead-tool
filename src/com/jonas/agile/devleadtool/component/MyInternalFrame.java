@@ -128,7 +128,7 @@ public class MyInternalFrame extends JInternalFrame {
 
    void close() {
       if (internalFrameTabPanel != null) {
-         int result = JOptionPane.showConfirmDialog(internalFrameTabPanel, "Want to Save " + getTitle() + "?", "Save?", JOptionPane.YES_NO_OPTION);
+         int result = showConfirmDialogAndGetResults();
          log.debug(result + " Yes: " + JOptionPane.YES_OPTION + " No: " + JOptionPane.NO_OPTION + " Cancel: " + JOptionPane.CANCEL_OPTION);
          switch (result) {
          case JOptionPane.YES_OPTION:
@@ -145,6 +145,10 @@ public class MyInternalFrame extends JInternalFrame {
             break;
          }
       }
+   }
+
+   private int showConfirmDialogAndGetResults() {
+      return JOptionPane.showConfirmDialog(internalFrameTabPanel, "Want to Save " + getTitle() + "?", "Save?", JOptionPane.YES_NO_OPTION);
    }
 
    private void closeHard() {
