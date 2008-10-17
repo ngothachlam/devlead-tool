@@ -130,6 +130,7 @@ public class AddFilterDialog extends JFrame {
          progressDialog = new ProgressDialog(this.parentFrame, "Getting Jiras from Filter!", "Getting Jiras!", 7);
          table = getTableToAddJirasTo();
          if (table == null) {
+            progressDialog.setCompleteWithDelay(300);
             AlertDialog.alertMessage(parentFrame, "Select a table first!");
             return;
          }

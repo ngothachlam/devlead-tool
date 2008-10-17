@@ -189,7 +189,6 @@ public class JiraBuilder {
          Element element = iterator2.next();
          JiraVersion versionByName = JiraVersion.getVersionByName(element.getText());
          if (versionByName == null) {
-            // FIXME use id to get JiraVersion!!
             JiraProject projectByKey = JiraProject.getProjectByKey(PlannerHelper.getProjectKey(get(e, "key")));
             try {
                JiraClient jiraClient = projectByKey.getJiraClient();

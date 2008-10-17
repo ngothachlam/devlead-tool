@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.easymock.classextension.EasyMock;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
@@ -23,6 +24,7 @@ public class InternalFrameTest extends JonasTestCase {
 
    private MyInternalFrame getTestInternalFrame(String title) {
       MyInternalFrame internalFrame = new MyInternalFrame(title, null);
+      
       internalFrames.add(internalFrame);
       return internalFrame;
    }

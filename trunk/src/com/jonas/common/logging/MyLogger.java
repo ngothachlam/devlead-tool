@@ -7,17 +7,21 @@ import org.apache.log4j.PropertyConfigurator;
 
 public class MyLogger {
 
+   private static String log4jPropertyLocation = "properties/log4j.properties";
+
    static {
-      BasicConfigurator.configure();
-      PropertyConfigurator.configure("properties/log4j.properties");
+      setup(log4jPropertyLocation);
    }
 
    public static Logger getLogger(Class className) {
       return Logger.getLogger(className);
    }
 
-   public static void setup(String log4jPropertyLocation) {
-      System.out.println("Setting up log4j property location \"" + log4jPropertyLocation + "\" " + new File(log4jPropertyLocation).exists());
+   public static void setup(String log4jPropertyLoc) {
+      log4jPropertyLocation = log4jPropertyLoc;
+      boolean exists = new File(log4jPropertyLocation).exists();
+      System.out.println("Setting up log4j property location \"" + log4jPropertyLocation + "\" and it is " + (!exists ? "NOT " : "") + "a file!");
+      BasicConfigurator.configure();
       PropertyConfigurator.configure(log4jPropertyLocation);
    }
 }

@@ -6,13 +6,16 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 
-public class CheckBoxTableCellEditor extends DefaultCellEditor {
+public class CheckBoxTableCellEditor extends DefaultCellEditor implements MyEditor {
 
    private int rowEdited;
    private int colEdited;
+   private Object value;
+   private final JCheckBox box;
 
    public CheckBoxTableCellEditor(JCheckBox box) {
       super(box);
+      this.box = box;
       ((JCheckBox) getComponent()).setHorizontalAlignment(JLabel.CENTER);
    }
 
@@ -21,6 +24,11 @@ public class CheckBoxTableCellEditor extends DefaultCellEditor {
       rowEdited = row;
       colEdited = col;
       return super.getTableCellEditorComponent(table, value, isSelected, row, col);
+   }
+
+   public Object getValue() {
+      stopCellEditing();
+      return box.getText();
    }
 
    public int getRowEdited() {

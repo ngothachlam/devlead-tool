@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.component.table;
 
+import java.awt.TextField;
 import java.awt.event.MouseEvent;
 import java.util.Map;
 import java.util.Vector;
@@ -8,15 +9,20 @@ import javax.swing.DropMode;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import com.jonas.agile.devleadtool.component.table.editor.BoardStatusCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
+import com.jonas.agile.devleadtool.component.table.editor.MyDefaultCellEditor;
+import com.jonas.agile.devleadtool.component.table.editor.MyEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
@@ -42,7 +48,7 @@ public class MyTable extends JTable {
       CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
       CheckBoxTableCellEditor checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
 
-      setDefaultRenderer(String.class, new StringTableCellRenderer());
+      setDefaultRenderer(String.class, new StringTableCellRenderer(defaultTableModel));
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
       setDefaultEditor(Boolean.class, checkBoxEditor);
 
@@ -59,12 +65,17 @@ public class MyTable extends JTable {
       if (getModel() instanceof MyTableModel) {
          model = (MyTableModel) getModel();
          // FIXME make this dynamic
-         int boardStatus = getColumnIndex(Column.B_BoardStatus);
-         if (boardStatus > -1) {
-            TableColumn tc = getTableColumn(boardStatus);
-            tc.setCellRenderer(new StringTableCellRenderer());
+         int colIndex = getColumnIndex(Column.B_BoardStatus);
+         if (colIndex > -1) {
+            TableColumn tc = getTableColumn(colIndex);
+            tc.setCellRenderer(new StringTableCellRenderer(model));
             JComboBox combo = new JComboBox(BoardStatusValue.values());
-            tc.setCellEditor(new DefaultCellEditor(combo));
+            tc.setCellEditor(new BoardStatusCellEditor(combo));
+         }
+         colIndex = getColumnIndex(Column.Release);
+         if (colIndex > -1) {
+            TableColumn tc = getTableColumn(colIndex);
+            tc.setCellEditor(new MyDefaultCellEditor(new JTextField()));
          }
       }
 
@@ -89,7 +100,7 @@ public class MyTable extends JTable {
 
          @Override
          public void editingStopped(ChangeEvent e) {
-            CheckBoxTableCellEditor editor = (CheckBoxTableCellEditor) e.getSource();
+            MyEditor editor = (MyEditor) e.getSource();
             model.fireTableRowsUpdated(editor.getRowEdited(), editor.getRowEdited());
          }
       };
@@ -100,7 +111,16 @@ public class MyTable extends JTable {
       // sorter.setSortKeys(null);
    }
 
-   private TableColumn getTableColumn(int boardStatus) {
+   private TableColumn getTableColumn(int colIndex) {
+      TableColumnModel tcm = getColumnModel();
+      return tcm.getColumn(colIndex);
+   }
+   
+   public TableCellEditor getTableColumnEditor(int colIndex) {
+      return getTableColumn(colIndex).getCellEditor();
+   }
+   
+   public TableColumn getTableEditor(int boardStatus) {
       TableColumnModel tcm = getColumnModel();
       return tcm.getColumn(boardStatus);
    }
