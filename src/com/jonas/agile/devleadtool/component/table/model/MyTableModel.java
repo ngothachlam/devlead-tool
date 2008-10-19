@@ -58,7 +58,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    Object getValueFromIssue(JiraIssue jiraIssue, Column column) {
       Object value;
-      //FIXME add testcoverage to ensure this method returns the same type (int, boolean, etc) as the Column.parse method is!!
+      // FIXME add testcoverage to ensure this method returns the same type (int, boolean, etc) as the Column.parse method is!!
       switch (column) {
       case Jira:
          value = jiraIssue.getKey();
@@ -101,10 +101,11 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    final public void addJira(String jira) {
+      jira = jira.toUpperCase();
       if (!doesJiraExist(jira)) {
          Object[] row = getEmptyRow();
-         row[0] = jira.toUpperCase();
-         log.debug("addJira of row size: " + row.length);
+         row[0] = jira;
+         log.debug("adding Jira " + jira + " of row size: " + row.length);
          addRow(row);
       }
    }
@@ -222,7 +223,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    final public Object getValueAt(Column column, int row) {
       return getValueAt(row, getColumnIndex(column));
    }
-   
+
    final public Object getValueAt(Column column, String jira) {
       return getValueAt(column, getRowWithJira(jira));
    }
@@ -250,7 +251,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    final public void setValueAt(Object value, int rowIndex, Column column) {
       setValueAt(value, rowIndex, getColumnIndex(column));
    }
-   
+
    final private Class<?> getClassFromColumn(int columnIndex) {
       return getColumn(columnIndex).getDefaultClass();
    }
@@ -366,6 +367,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       return isRed(value, row, getColumnIndex(column));
    }
 }
+
 
 class Counter {
    private int i = 0;

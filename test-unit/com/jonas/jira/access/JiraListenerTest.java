@@ -1,6 +1,7 @@
 package com.jonas.jira.access;
 
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
+import com.jonas.jira.access.listener.JiraListener;
 
 public class JiraListenerTest extends JonasTestCase {
 

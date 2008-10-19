@@ -1,6 +1,8 @@
 package com.jonas.agile.devleadtool.component.table;
 
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import javax.swing.DropMode;
@@ -16,6 +18,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.listener.MyTableListener;
 import com.jonas.agile.devleadtool.component.table.editor.BoardStatusCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.MyDefaultCellEditor;
@@ -30,6 +33,7 @@ public class MyTable extends JTable {
    private MyTableModel model;
    private String title;
    private Logger log = MyLogger.getLogger(MyTable.class);
+   private List<MyTableListener> listeners = new ArrayList<MyTableListener>();
 
    public MyTable(String title) {
       this(title, new DefaultTableModel());
@@ -67,7 +71,7 @@ public class MyTable extends JTable {
             tc.setCellRenderer(new StringTableCellRenderer(model));
             JComboBox combo = new JComboBox(BoardStatusValue.values());
             tc.setCellEditor(new BoardStatusCellEditor(combo));
-         }
+          }
          colIndex = getColumnIndex(Column.Release);
          if (colIndex > -1) {
             TableColumn tc = getTableColumn(colIndex);
@@ -143,10 +147,17 @@ public class MyTable extends JTable {
    public void removeSelectedRows() {
       int[] selectedRows = getSelectedRows(); // Need to store this before hand or the last selected row seems to disappear!
       for (int count = selectedRows.length - 1; count > -1; count--) {
-         // we can't remove upwards the table and down (from lower to greater index) as the table changes on each delete.
          int tableSelectedRow = selectedRows[count];
+         String jira = (String) getValueAt(Column.Jira, tableSelectedRow);
          int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
          model.removeRow(convertRowIndexToModel);
+         notifyAllListenersThatJiraWasRemoved(jira);
+      }
+   }
+
+   private void notifyAllListenersThatJiraWasRemoved(String jira) {
+      for (MyTableListener listener : listeners) {
+         listener.jiraRemoved(jira);
       }
    }
 
@@ -160,9 +171,9 @@ public class MyTable extends JTable {
    }
 
    public void setValueAt(Object value, String jira, Column column) {
-      int row = getRowWithJira(jira);
+      int row = getRowWithJira(jira.toUpperCase());
       if (row < 0) {
-         log.warn("The jira doesn't exist in the table so I cannot setValue(" + value + "," + jira + "," + column + ")");
+         log.warn("Jira " + jira + " doesn't exist in table " + title + " so I cannot setValue(" + value + "," + jira + "," + column + ")");
          return;
       }
       log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\"");
@@ -223,4 +234,7 @@ public class MyTable extends JTable {
       return model.getValueAt(release, jira);
    }
 
+   public void addListener(MyTableListener myTableListener) {
+      listeners.add(myTableListener);
+   }
 }

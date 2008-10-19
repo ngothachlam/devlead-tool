@@ -11,16 +11,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
-import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.listener.BoardTableModelListener;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
@@ -31,37 +28,7 @@ import com.jonas.common.logging.MyLogger;
 
 public class InternalTabPanel extends MyComponentPanel {
 
-   private Logger log = MyLogger.getLogger(InternalTabPanel.class);
-
-   /**
-    * When the Board Table values are updated, we need to update the JiraTable's Release and BoardStatus values.
-    */
-   private final class BoardTableModelListener implements TableModelListener {
-      private final MyTable boardTable;
-      private final MyTable jiraTable;
-      private final BoardTableModel boardModel;
-
-      public BoardTableModelListener(MyTable boardTable, MyTable jiraTable, BoardTableModel boardModel) {
-         this.boardTable = boardTable;
-         this.jiraTable = jiraTable;
-         this.boardModel = boardModel;
-      }
-
-      public void tableChanged(TableModelEvent e) {
-         log.debug(e.getFirstRow() + " - " + e.getLastRow() + " : " + e.getType());
-         updateJiraTable(e);
-      }
-
-      private void updateJiraTable(TableModelEvent e) {
-         for (int row = e.getFirstRow(); row <= e.getLastRow(); row++) {
-            String jira = (String) boardTable.getValueAt(Column.Jira, row);
-            BoardStatusValue status = boardModel.getStatus(jira);
-            jiraTable.setValueAt(status, jira, Column.B_BoardStatus);
-            String release = (String) boardTable.getValueAt(Column.Release, jira);
-            jiraTable.setValueAt(release, jira, Column.B_Release);
-         }
-      }
-   }
+   Logger log = MyLogger.getLogger(InternalTabPanel.class);
 
    private BoardPanel boardPanel;
    private PlanPanel planPanel;
@@ -80,7 +47,6 @@ public class InternalTabPanel extends MyComponentPanel {
       boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
       planModel = (planModel == null) ? new PlanTableModel() : planModel;
       jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
-      jiraModel.setBoardModel(boardModel);
 
       boardPanel = new BoardPanel(boardModel);
       planPanel = new PlanPanel(helper, planModel);
@@ -93,8 +59,6 @@ public class InternalTabPanel extends MyComponentPanel {
       popups.add(new MyTablePopupMenu(boardTable, helper, boardTable, planPanel.getTable(), jiraPanel.getTable()));
       popups.add(new MyTablePopupMenu(planPanel.getTable(), helper, boardTable, planPanel.getTable(), jiraPanel.getTable()));
       popups.add(new MyTablePopupMenu(jiraPanel.getTable(), helper, boardTable, planPanel.getTable(), jiraPanel.getTable()));
-
-      // addEditorListenerToUpdateJiraTableWhenBoardTableChanges(boardTable);
 
       JPanel panel = new JPanel();
       editableCheckBox = new JCheckBox("Editable?", true);

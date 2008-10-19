@@ -4,17 +4,19 @@ import java.awt.Component;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import org.apache.log4j.Logger;
+import com.jonas.common.logging.MyLogger;
 
 public class MyDefaultCellEditor extends DefaultCellEditor implements MyEditor {
 
-
+   private Logger log = MyLogger.getLogger(MyDefaultCellEditor.class);
    private int colEdited;
    private int rowEdited;
 
    public MyDefaultCellEditor(JTextField field) {
       super(field);
    }
-   
+
    @Override
    public int getColEdited() {
       return colEdited;
@@ -34,8 +36,8 @@ public class MyDefaultCellEditor extends DefaultCellEditor implements MyEditor {
    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
       rowEdited = row;
       colEdited = column;
+      log.debug(value + " is being edited on row " + row + " and column " + column);
       return super.getTableCellEditorComponent(table, value, isSelected, row, column);
    }
-   
-   
+
 }
