@@ -9,19 +9,28 @@ public class MyLogger {
 
    private static String log4jPropertyLocation = "properties/log4j.properties";
 
-   static {
-      setup(log4jPropertyLocation);
-   }
+   private static boolean setup = false;
 
    public static Logger getLogger(Class className) {
+      if (!setup) {
+         synchronized (MyLogger.class) {
+            if (!setup) {
+               setup = true;
+               setup(log4jPropertyLocation);
+            }
+         }
+      }
       return Logger.getLogger(className);
    }
 
    public static void setup(String log4jPropertyLoc) {
-      log4jPropertyLocation = log4jPropertyLoc;
-      boolean exists = new File(log4jPropertyLocation).exists();
-      System.out.println("Setting up log4j property location \"" + log4jPropertyLocation + "\" and it is " + (!exists ? "NOT " : "") + "a file!");
+      synchronized (MyLogger.class) {
+         setup = true;
+      }
+      MyLogger.log4jPropertyLocation = log4jPropertyLoc;
+      boolean exists = new File(log4jPropertyLoc).exists();
+      System.out.println("Setting up log4j property location \"" + log4jPropertyLoc + "\" and it is " + (!exists ? "NOT " : "") + "a file!");
       BasicConfigurator.configure();
-      PropertyConfigurator.configure(log4jPropertyLocation);
+      PropertyConfigurator.configure(log4jPropertyLoc);
    }
 }

@@ -57,7 +57,7 @@ public class CopyToTableListener implements ActionListener {
       Column[] columns = sourceTable.getColumns();
       for (Column column : columns) {
          MyTableModel model = (MyTableModel) sourceTable.getModel();
-         int row = model.getRowWithJira(jiraString, Column.Jira);
+         int row = model.getRowWithJira(jiraString);
          map.put(column, model.getValueAt(column, row));
       }
       destinationRetriever.getDestinationTable().addJira(jiraString, map);

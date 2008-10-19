@@ -35,7 +35,7 @@ public class BoardTableModel extends MyTableModel {
    }
 
    public BoardStatusValue getStatus(String jira) {
-      int row = getRowWithJira(jira, Column.Jira);
+      int row = getRowWithJira(jira);
       log.debug("row: " + row + " for jira: " + jira);
       if (row >= 0) {
          for (Column column : columns) {
