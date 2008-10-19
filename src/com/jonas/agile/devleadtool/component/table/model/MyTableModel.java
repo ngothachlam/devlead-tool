@@ -120,13 +120,12 @@ public abstract class MyTableModel extends DefaultTableModel {
             setValueAt(value, row, columnIndex);
          }
       }
-      fireTableRowsUpdated(row, row);
    }
 
    public void addJira(String jira, Map<Column, Object> map) {
       // fixme - when not already in table model - raise a dialog and compare the results.
       addJira(jira);
-      int row = getRowWithJira(jira, Column.Jira);
+      int row = getRowWithJira(jira);
       for (Column column : map.keySet()) {
          Object value = map.get(column);
          int columnIndex = getColumnIndex(column);
@@ -211,9 +210,9 @@ public abstract class MyTableModel extends DefaultTableModel {
       return -1;
    }
 
-   final public int getRowWithJira(String name, Column jiraColumn) {
+   final public int getRowWithJira(String name) {
       for (int row = 0; row < getRowCount(); row++) {
-         if (name.equalsIgnoreCase((String) getValueAt(jiraColumn, row))) {
+         if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
             return row;
          }
       }
@@ -222,6 +221,10 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public Object getValueAt(Column column, int row) {
       return getValueAt(row, getColumnIndex(column));
+   }
+   
+   final public Object getValueAt(Column column, String jira) {
+      return getValueAt(column, getRowWithJira(jira));
    }
 
    final public boolean isCellEditable(int row, int column) {

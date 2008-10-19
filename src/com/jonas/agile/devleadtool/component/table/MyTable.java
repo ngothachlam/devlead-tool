@@ -1,17 +1,13 @@
 package com.jonas.agile.devleadtool.component.table;
 
-import java.awt.TextField;
 import java.awt.event.MouseEvent;
 import java.util.Map;
 import java.util.Vector;
-import javax.swing.DefaultCellEditor;
 import javax.swing.DropMode;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -19,19 +15,21 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.editor.BoardStatusCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.MyDefaultCellEditor;
-import com.jonas.agile.devleadtool.component.table.editor.MyEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
 public class MyTable extends JTable {
 
    private MyTableModel model;
    private String title;
+   private Logger log = MyLogger.getLogger(MyTable.class);
 
    public MyTable(String title) {
       this(title, new DefaultTableModel());
@@ -51,8 +49,6 @@ public class MyTable extends JTable {
       setDefaultRenderer(String.class, new StringTableCellRenderer(defaultTableModel));
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
       setDefaultEditor(Boolean.class, checkBoxEditor);
-
-      checkBoxEditor.addCellEditorListener(getCheckBoxEditorListener());
 
       setDragEnabled(true);
       setDropMode(DropMode.INSERT);
@@ -80,7 +76,7 @@ public class MyTable extends JTable {
       }
 
       // TODO add tooltip for the contents of the table as well by owerriding the getToolTipText method in MyTable (or create JiraTable...)
-      setTableHeader(new JTableHeader(columnModel){
+      setTableHeader(new JTableHeader(columnModel) {
          @Override
          public String getToolTipText(MouseEvent e) {
             java.awt.Point p = e.getPoint();
@@ -92,18 +88,8 @@ public class MyTable extends JTable {
       });
    }
 
-   private CellEditorListener getCheckBoxEditorListener() {
-      return new CellEditorListener() {
-         @Override
-         public void editingCanceled(ChangeEvent e) {
-         }
-
-         @Override
-         public void editingStopped(ChangeEvent e) {
-            MyEditor editor = (MyEditor) e.getSource();
-            model.fireTableRowsUpdated(editor.getRowEdited(), editor.getRowEdited());
-         }
-      };
+   protected void fireTableRowsUpdated(int rowEdited, int rowEdited2) {
+      model.fireTableRowsUpdated(convertRowIndexToModel(rowEdited), convertRowIndexToModel(rowEdited2));
    }
 
    public void unSort() {
@@ -115,11 +101,11 @@ public class MyTable extends JTable {
       TableColumnModel tcm = getColumnModel();
       return tcm.getColumn(colIndex);
    }
-   
+
    public TableCellEditor getTableColumnEditor(int colIndex) {
       return getTableColumn(colIndex).getCellEditor();
    }
-   
+
    public TableColumn getTableEditor(int boardStatus) {
       TableColumnModel tcm = getColumnModel();
       return tcm.getColumn(boardStatus);
@@ -173,6 +159,24 @@ public class MyTable extends JTable {
       setValueAt(value, row, getColumnIndex(column));
    }
 
+   public void setValueAt(Object value, String jira, Column column) {
+      int row = getRowWithJira(jira);
+      if (row < 0) {
+         log.warn("The jira doesn't exist in the table so I cannot setValue(" + value + "," + jira + "," + column + ")");
+         return;
+      }
+      log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\"");
+      setValueAt(value, row, column);
+   }
+
+   private int getRowWithJira(String jira) {
+      int modelRow = model.getRowWithJira(jira);
+      if (modelRow < 0) {
+         return -1;
+      }
+      return convertRowIndexToView(modelRow);
+   }
+
    public void setValueAt(Object value, int row, int column) {
       super.setValueAt(value, row, column);
    }
@@ -213,6 +217,10 @@ public class MyTable extends JTable {
    public void setModel(MyTableModel model) {
       this.model = model;
       super.setModel(model);
+   }
+
+   public Object getValueAt(Column release, String jira) {
+      return model.getValueAt(release, jira);
    }
 
 }

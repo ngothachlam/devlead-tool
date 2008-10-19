@@ -126,7 +126,7 @@ class MenuItem_Copy extends JMenuItem implements ActionListener {
       Column[] columns = sourceTable.getColumns();
       for (Column column : columns) {
          MyTableModel model = (MyTableModel) sourceTable.getModel();
-         int row = model.getRowWithJira(jiraString, Column.Jira);
+         int row = model.getRowWithJira(jiraString);
          map.put(column, model.getValueAt(column, row));
       }
       table.addJira(jiraString, map);

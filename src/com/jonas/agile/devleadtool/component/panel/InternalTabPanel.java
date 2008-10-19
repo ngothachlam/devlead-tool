@@ -11,11 +11,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.TableCellEditor;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
@@ -25,8 +22,6 @@ import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.editor.MyEditor;
-import com.jonas.agile.devleadtool.component.table.model.BoardStatusToColumnMap;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -36,101 +31,35 @@ import com.jonas.common.logging.MyLogger;
 
 public class InternalTabPanel extends MyComponentPanel {
 
-   private final class BoardEditorListener implements CellEditorListener {
+   private Logger log = MyLogger.getLogger(InternalTabPanel.class);
+
+   /**
+    * When the Board Table values are updated, we need to update the JiraTable's Release and BoardStatus values.
+    */
+   private final class BoardTableModelListener implements TableModelListener {
       private final MyTable boardTable;
       private final MyTable jiraTable;
-      private MyTableModel jiraModel;
-      private MyTableModel boardModel;
-      private Logger log = MyLogger.getLogger(BoardEditorListener.class);
+      private final BoardTableModel boardModel;
 
-      public BoardEditorListener(MyTable boardTable, MyTable jiraTable) {
+      public BoardTableModelListener(MyTable boardTable, MyTable jiraTable, BoardTableModel boardModel) {
          this.boardTable = boardTable;
          this.jiraTable = jiraTable;
-         boardModel = (MyTableModel) boardTable.getModel();
-         jiraModel = (MyTableModel) jiraTable.getModel();
-      }
-
-      @Override
-      public void editingCanceled(ChangeEvent e) {
-      }
-
-      @Override
-      public void editingStopped(ChangeEvent e) {
-         log.debug(e);
-         Object editorObject = e.getSource();
-         MyEditor editor;
-         if (editorObject instanceof MyEditor) {
-            editor = (MyEditor) editorObject;
-         } else {
-            log.warn(editorObject + " needs to implemnet interface MyEditor to be used in this context!");
-            return;
-         }
-
-         String jira = (String) boardModel.getValueAt(Column.Jira, editor.getRowEdited());
-         Column boardColumn = boardTable.getColumnEnum(editor.getColEdited());
-         log.debug("Edited column " + boardColumn + " and its jira is " + jira);
-
-         int jiraModelRowWithJira = jiraModel.getRowWithJira(jira, Column.Jira);
-         switch (boardColumn) {
-         case isOpen:
-         case isBug:
-         case isComplete:
-         case isInProgress:
-         case isParked:
-         case isResolved:
-            jiraTable.setValueAt(getStatus(editor), jiraModelRowWithJira, Column.B_BoardStatus);
-            jiraModel.fireTableRowsUpdated(editor.getRowEdited(), editor.getRowEdited());
-            break;
-         case Release:
-            String release = (String) editor.getValue();
-            jiraModel.setValueAt(release, jiraModelRowWithJira, Column.B_Release);
-            jiraModel.fireTableRowsUpdated(jiraModelRowWithJira, jiraModelRowWithJira);
-            log.debug("Setting Release to " + release + " on jiraModel row " + jiraModelRowWithJira);
-            break;
-         default:
-            break;
-         }
-      }
-
-      public BoardStatusValue getStatus(MyEditor editor) {
-         int row = editor.getRowEdited();
-         if (row >= 0) {
-            for (Column column : boardTable.getColumns()) {
-               switch (column) {
-               case isOpen:
-               case isBug:
-               case isInProgress:
-               case isResolved:
-               case isComplete:
-                  if (getBoardStatus(row, column)) {
-                     return BoardStatusToColumnMap.getBoardStatus(column);
-                  }
-               default:
-                  break;
-               }
-            }
-         }
-         return BoardStatusValue.UnKnown;
-      }
-
-      private boolean getBoardStatus(int row, Column column) {
-         int columnTemp = boardTable.getColumnIndex(column);
-         Boolean valueAt = (Boolean) boardTable.getValueAt(row, columnTemp);
-         return valueAt == null ? false : valueAt.booleanValue();
-      }
-   }
-
-   private final class BoardTableModelListener implements TableModelListener {
-      private BoardTableModel boardModel;
-      private JiraTableModel jiraModel;
-
-      public BoardTableModelListener(BoardTableModel boardModel, JiraTableModel jiraModel) {
          this.boardModel = boardModel;
-         this.jiraModel = jiraModel;
       }
 
       public void tableChanged(TableModelEvent e) {
-         jiraModel.fireTableDataChanged();
+         log.debug(e.getFirstRow() + " - " + e.getLastRow() + " : " + e.getType());
+         updateJiraTable(e);
+      }
+
+      private void updateJiraTable(TableModelEvent e) {
+         for (int row = e.getFirstRow(); row <= e.getLastRow(); row++) {
+            String jira = (String) boardTable.getValueAt(Column.Jira, row);
+            BoardStatusValue status = boardModel.getStatus(jira);
+            jiraTable.setValueAt(status, jira, Column.B_BoardStatus);
+            String release = (String) boardTable.getValueAt(Column.Release, jira);
+            jiraTable.setValueAt(release, jira, Column.B_Release);
+         }
       }
    }
 
@@ -152,11 +81,12 @@ public class InternalTabPanel extends MyComponentPanel {
       planModel = (planModel == null) ? new PlanTableModel() : planModel;
       jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
       jiraModel.setBoardModel(boardModel);
-      boardModel.addTableModelListener(new BoardTableModelListener(boardModel, jiraModel));
 
       boardPanel = new BoardPanel(boardModel);
       planPanel = new PlanPanel(helper, planModel);
       jiraPanel = new JiraPanel(helper, jiraModel);
+
+      boardModel.addTableModelListener(new BoardTableModelListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
 
       // FIXME I want to put this into the MyTable instead!! - need to register the other tables with each other!
       MyTable boardTable = boardPanel.getTable();
@@ -164,7 +94,7 @@ public class InternalTabPanel extends MyComponentPanel {
       popups.add(new MyTablePopupMenu(planPanel.getTable(), helper, boardTable, planPanel.getTable(), jiraPanel.getTable()));
       popups.add(new MyTablePopupMenu(jiraPanel.getTable(), helper, boardTable, planPanel.getTable(), jiraPanel.getTable()));
 
-      addEditorListenerToUpdateJiraTableWhenBoardTableChanges(boardTable);
+      // addEditorListenerToUpdateJiraTableWhenBoardTableChanges(boardTable);
 
       JPanel panel = new JPanel();
       editableCheckBox = new JCheckBox("Editable?", true);
@@ -175,14 +105,6 @@ public class InternalTabPanel extends MyComponentPanel {
       makeContent(boardModel);
       wireUpListeners();
       this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
-   }
-
-   private void addEditorListenerToUpdateJiraTableWhenBoardTableChanges(MyTable boardTable) {
-      BoardEditorListener boardTableEditorListener = new BoardEditorListener(boardTable, jiraPanel.getTable());
-      for (int i = 0; i < boardTable.getColumnCount(); i++) {
-         TableCellEditor cellEditor = boardTable.getCellEditor(0, i);
-         cellEditor.addCellEditorListener(boardTableEditorListener);
-      }
    }
 
    private Component getAddPanel(final PlannerHelper helper, MyTable boardTable, MyTable jiraTable, MyTable planTable) {

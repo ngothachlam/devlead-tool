@@ -35,12 +35,6 @@ public class PlanTableModel extends MyTableModel {
       return true;
    }
 
-   public Object getValueAt(Column column, String jira) {
-      int columnNo = this.getColumnIndex(column);
-      int rowNo = this.getRowWithJira(jira, Column.Jira);
-      return this.getValueAt(rowNo, columnNo);
-   }
-
    @Override
    public boolean isRed(Object value, int row, int column) {
       return false;

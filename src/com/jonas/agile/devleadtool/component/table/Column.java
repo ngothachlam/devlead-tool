@@ -76,7 +76,7 @@ public enum Column {
    private final IsEditableColumn isEditable;
    private final ToLoadColumn isToLoad;
 
-   private static Map<String, Column> columns;
+   // private static Map<String, Column> columns;
 
    private <T> Column(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad) {
       this.defaultClass = defaultClass;
@@ -84,24 +84,24 @@ public enum Column {
       this.isEditable = isEditable;
       this.jiraColumn = isJiraColumn;
       this.isToLoad = isToLoad;
-      if (Column.columns == null) {
-         synchronized (Column.class) {
-            if (Column.columns == null) {
-               Column.columns = new HashMap<String, Column>(30);
-            }
-         }
-      }
-      Column.columns.put(this.toString(), this);
+      // if (Column.columns == null) {
+      // synchronized (Column.class) {
+      // if (Column.columns == null) {
+      // Column.columns = new HashMap<String, Column>(30);
+      // }
+      // }
+      // }
+      // Column.columns.put(this.toString(), this);
    }
 
    public static Column getEnum(String columnName) {
-      // for (Column col : Column.values()) {
-      // if (col.toString().equals(columnName)) {
-      // return col;
-      // }
-      // }
-      // return null;
-      return Column.columns.get(columnName);
+      for (Column col : Column.values()) {
+         if (col.toString().equals(columnName)) {
+            return col;
+         }
+      }
+      return null;
+      // return Column.columns.get(columnName);
    }
 
    public Object getDefaultValue() {
