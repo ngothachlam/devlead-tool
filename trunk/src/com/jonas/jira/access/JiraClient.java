@@ -16,6 +16,7 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraResolution;
 import com.jonas.jira.JiraVersion;
+import com.jonas.jira.access.listener.JiraListener;
 import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraClient {

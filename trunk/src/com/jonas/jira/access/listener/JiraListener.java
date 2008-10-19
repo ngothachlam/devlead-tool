@@ -1,4 +1,4 @@
-package com.jonas.jira.access;
+package com.jonas.jira.access.listener;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,7 +16,7 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
-import com.jonas.jira.access.JiraListener;
+import com.jonas.jira.access.listener.JiraListener;
 
 /**
  * This class syncs for a given MyTable the selected rows and gets the relevant JiraIssues.

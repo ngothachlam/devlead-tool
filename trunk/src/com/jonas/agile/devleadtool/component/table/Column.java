@@ -17,7 +17,7 @@ public enum Column {
          IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
 
    // Board Sync columns:
-   B_BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.No, IsJiraColumn.No, ToLoadColumn.Yes) {
+   B_BoardStatus(BoardStatusValue.class, BoardStatusValue.NA, IsEditableColumn.No, IsJiraColumn.No, ToLoadColumn.Yes) {
       public Object parse(String cellContents) {
          return BoardStatusValue.get(cellContents);
       }
