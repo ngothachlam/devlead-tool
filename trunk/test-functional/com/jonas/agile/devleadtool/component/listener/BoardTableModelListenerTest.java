@@ -92,7 +92,9 @@ public class BoardTableModelListenerTest extends JonasTestCase {
       assertEquals(BoardStatusValue.NA, jiraTable.getValueAt(Column.B_BoardStatus, "llu-2"));
       assertEquals("", jiraTable.getValueAt(Column.B_Release, "llu-2"));
 
+      //fixme - need to simulate updating a value in a jTable
       boardTable.setValueAt("LLU-2", "llu-1", Column.Jira);
+      ((MyTableModel)boardTable.getModel()).fireTableCellUpdated(0, 0);
       System.out.println(editor.getCellEditorValue());
 
       assertEquals(1, boardTable.getRowCount());

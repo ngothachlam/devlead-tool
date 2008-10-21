@@ -27,7 +27,6 @@ public class CheckBoxTableCellEditor extends DefaultCellEditor implements MyEdit
    }
 
    public Object getValue() {
-      stopCellEditing();
       return box.getText();
    }
 

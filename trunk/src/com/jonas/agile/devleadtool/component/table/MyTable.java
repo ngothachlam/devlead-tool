@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.listener.MyTableListener;
 import com.jonas.agile.devleadtool.component.table.editor.BoardStatusCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
+import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.MyDefaultCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
@@ -52,6 +53,8 @@ public class MyTable extends JTable {
 
       setDefaultRenderer(String.class, new StringTableCellRenderer(defaultTableModel));
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
+      setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(new JComboBox(BoardStatusValue.values())));
+
       setDefaultEditor(Boolean.class, checkBoxEditor);
 
       setDragEnabled(true);
@@ -65,17 +68,15 @@ public class MyTable extends JTable {
       if (getModel() instanceof MyTableModel) {
          model = (MyTableModel) getModel();
          // FIXME make this dynamic
-         int colIndex = getColumnIndex(Column.B_BoardStatus);
-         if (colIndex > -1) {
-            TableColumn tc = getTableColumn(colIndex);
-            tc.setCellRenderer(new StringTableCellRenderer(model));
-            JComboBox combo = new JComboBox(BoardStatusValue.values());
-            tc.setCellEditor(new BoardStatusCellEditor(combo));
-          }
-         colIndex = getColumnIndex(Column.Release);
+         int colIndex = getColumnIndex(Column.Release);
          if (colIndex > -1) {
             TableColumn tc = getTableColumn(colIndex);
             tc.setCellEditor(new MyDefaultCellEditor(new JTextField()));
+         }
+         colIndex = getColumnIndex(Column.Jira);
+         if (colIndex > -1) {
+            TableColumn tc = getTableColumn(colIndex);
+            tc.setCellEditor(new JiraCellEditor(new JTextField()));
          }
       }
 
