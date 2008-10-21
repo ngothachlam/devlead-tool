@@ -1,10 +1,14 @@
 package com.jonas.agile.devleadtool.component.listener;
 
+import java.util.EventObject;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.TableCellEditor;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.MyDefaultCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
@@ -77,7 +81,6 @@ public class BoardTableModelListenerTest extends JonasTestCase {
    }
 
    public void testShouldUpdateJiraWhenJiraUpdatedInBoard() {
-      TableCellEditor editor = boardTable.getCellEditor(0, boardTable.getColumnIndex(Column.Jira));
 
       boardTable.addJira("llu-1");
       jiraTable.addJira("llu-1");
@@ -92,10 +95,7 @@ public class BoardTableModelListenerTest extends JonasTestCase {
       assertEquals(BoardStatusValue.NA, jiraTable.getValueAt(Column.B_BoardStatus, "llu-2"));
       assertEquals("", jiraTable.getValueAt(Column.B_Release, "llu-2"));
 
-      //fixme - need to simulate updating a value in a jTable
-      boardTable.setValueAt("LLU-2", "llu-1", Column.Jira);
-      ((MyTableModel)boardTable.getModel()).fireTableCellUpdated(0, 0);
-      System.out.println(editor.getCellEditorValue());
+      simulateEditToTable(boardTable, "LLU-2", 0, Column.Jira);
 
       assertEquals(1, boardTable.getRowCount());
       assertEquals("LLU-2", boardTable.getValueAt(Column.Jira, "llu-2"));
@@ -104,5 +104,13 @@ public class BoardTableModelListenerTest extends JonasTestCase {
       assertEquals(BoardStatusValue.NA, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
       assertEquals("", jiraTable.getValueAt(Column.B_Release, "llu-1"));
 
+   }
+
+   private void simulateEditToTable(MyTable table, String value, int row, Column column) {
+      int columnIndex = table.getColumnIndex(column);
+      JiraCellEditor editor = (JiraCellEditor) table.getCellEditor(row, columnIndex);
+      boardTable.editCellAt(0, 0);
+      editor.getTableCellEditorComponent(boardTable, value, true, row, columnIndex);
+      boardTable.editingStopped(new ChangeEvent(editor));
    }
 }
