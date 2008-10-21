@@ -49,12 +49,11 @@ public class MyTable extends JTable {
       this.title = title;
 
       CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
-      CheckBoxTableCellEditor checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
+      CheckBoxTableCellEditor checkBoxEditor = new CheckBoxTableCellEditor(defaultTableModel, new JCheckBox());
 
       setDefaultRenderer(String.class, new StringTableCellRenderer(defaultTableModel));
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
       setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(new JComboBox(BoardStatusValue.values())));
-
       setDefaultEditor(Boolean.class, checkBoxEditor);
 
       setDragEnabled(true);
