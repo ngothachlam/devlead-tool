@@ -25,6 +25,10 @@ public class SwingUtil {
    private static int atLeastZero(int no) {
       return no < 0 ? 0 : no;
    }
+   
+   private static int noMoreThan(int no, int max) {
+      return no > max ? max : no;
+   }
 
    public static void centreWindow(Window window) {
       Toolkit toolkit = window.getToolkit();
