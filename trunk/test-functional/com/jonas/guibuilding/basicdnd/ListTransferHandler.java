@@ -9,9 +9,7 @@ import java.awt.datatransfer.Transferable;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
-import javax.swing.JTable;
 import javax.swing.TransferHandler;
-import javax.swing.table.DefaultTableModel;
 
 final class ListTransferHandler extends TransferHandler {
 
