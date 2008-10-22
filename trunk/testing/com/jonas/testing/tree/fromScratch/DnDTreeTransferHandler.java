@@ -1,5 +1,6 @@
 package com.jonas.testing.tree.fromScratch;
 
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -7,6 +8,9 @@ import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JTree;
 import javax.swing.TransferHandler;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
@@ -14,12 +18,15 @@ import com.jonas.common.logging.MyLogger;
 public class DnDTreeTransferHandler extends TransferHandler {
 
    private Logger log = MyLogger.getLogger(DnDTreeTransferHandler.class);
+   private Toolkit toolkit = Toolkit.getDefaultToolkit();
 
-   private DataFlavor[] dataFlavor = new DataFlavor[1];
+   private DataFlavor dataFlavor;
+   private DnDTree tree;
 
-   public DnDTreeTransferHandler() {
+   public DnDTreeTransferHandler(DnDTree tree) {
+      this.tree = tree;
       try {
-         dataFlavor[0] = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=java.util.ArrayList");
+         dataFlavor = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=" + TransferableDTO.class.getName());
       } catch (ClassNotFoundException e) {
          e.printStackTrace();
       }
@@ -30,7 +37,6 @@ public class DnDTreeTransferHandler extends TransferHandler {
    @Override
    final protected Transferable createTransferable(JComponent c) {
       log.debug("createTransferable: JComponent:" + c);
-      Transferable tr = null;
 
       if (c instanceof JTree) {
          final JTree tree = (JTree) c;
@@ -38,36 +44,29 @@ public class DnDTreeTransferHandler extends TransferHandler {
          if ((path == null) || (path.getPathCount() <= 1)) {
             return null;
          }
-         tr = new Transferable() {
-            @Override
-            public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-               return tree.getSelectionModel();
-            }
-
-            @Override
-            public DataFlavor[] getTransferDataFlavors() {
-               return dataFlavor;
-            }
-
-            @Override
-            public boolean isDataFlavorSupported(DataFlavor flavor) {
-               return dataFlavor[0].equals(flavor);
-            }
-         };
+         return new DnDTransferable(tree, dataFlavor);
       }
-      return tr;
 
+      return null;
    }
 
    @Override
-   final protected void exportDone(JComponent source, Transferable data, int action) {
-      log.debug("exportDone: Source:" + source + " Data: " + data + " Action: " + action);
-      if (action == MOVE) {
-         if (c instanceof JTree) {
-            final JTree tree = (JTree) c;
-            TreePath path = tree.getSelectionPath();
-            tree.removeSelectionPath();
+   final protected void exportDone(JComponent source, Transferable transferable, int action) {
+      log.debug("exportDone: Source:" + source + " Data: " + transferable + " Action: " + action);
+      try {
+         if (action == MOVE) {
+            if (source instanceof JTree) {
+               final JTree tree = (JTree) source;
+               TransferableDTO dto;
+               dto = (TransferableDTO) transferable.getTransferData(dataFlavor);
+               DefaultTreeModel treeModel = dto.getModel();
+               treeModel.removeNodeFromParent(dto.getNewNode());
+            }
          }
+      } catch (UnsupportedFlavorException e) {
+         e.printStackTrace();
+      } catch (IOException e) {
+         e.printStackTrace();
       }
    }
 
@@ -83,7 +82,7 @@ public class DnDTreeTransferHandler extends TransferHandler {
    final public boolean canImport(TransferSupport supp) {
       log.debug("canImport");
 
-      if (!supp.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+      if (!supp.isDataFlavorSupported(dataFlavor)) {
          return false;
       }
       log.debug("canImport returning true");
@@ -91,22 +90,41 @@ public class DnDTreeTransferHandler extends TransferHandler {
    }
 
    @Override
-   final public boolean importData(TransferSupport supp) {
-      log.debug("importData");
-      if (!canImport(supp)) {
-         return false;
+   public boolean importData(TransferHandler.TransferSupport support) {
+      try {
+         if (!canImport(support)) {
+            return false;
+         }
+
+         JTree.DropLocation dropLocation = (JTree.DropLocation) support.getDropLocation();
+
+         TreePath path = dropLocation.getPath();
+
+         Transferable transferable = support.getTransferable();
+         TransferableDTO transferableDTO;
+         transferableDTO = (TransferableDTO) transferable.getTransferData(dataFlavor);
+         DefaultTreeModel model = transferableDTO.getModel();
+         int childIndex = dropLocation.getChildIndex();
+         if (childIndex == -1) {
+            childIndex = model.getChildCount(path.getLastPathComponent());
+         }
+
+         DefaultMutableTreeNode newNode = (DefaultMutableTreeNode) transferableDTO.getNewNode().clone();
+         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+         log.debug("Parent is : " + parentNode + " and the new Element is: " + newNode + " and the childindex is : " + childIndex);
+         model.insertNodeInto(newNode, parentNode, childIndex);
+
+         TreePath newPath = path.pathByAddingChild(newNode);
+         tree.makeVisible(newPath);
+         tree.scrollRectToVisible(tree.getPathBounds(newPath));
+
+         return true;
+      } catch (UnsupportedFlavorException e) {
+         e.printStackTrace();
+      } catch (IOException e) {
+         e.printStackTrace();
       }
-
-      // Fetch the Transferable and its data
-      Transferable t = supp.getTransferable();
-      String data = (String) t.getTransferData(DataFlavor.stringFlavor);
-
-      // Fetch the drop location
-      DropLocation loc = supp.getDropLocation();
-
-      // Insert the data at this location
-      insertAt(loc, data);
-
-      return true;
+      return false;
    }
+
 }

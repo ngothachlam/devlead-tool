@@ -213,10 +213,8 @@ public class MyTable extends JTable {
    }
 
    public void insertRow(int index, Vector<Object> rowData) {
-      System.out.println("insertRow");
-      // int convertRowIndexToModel = index;
       int convertRowIndexToModel = convertRowIndexToModel(index);
-      System.out.println(convertRowIndexToModel);
+      System.out.println("insertRow for model row: " + convertRowIndexToModel);
       model.insertRow(convertRowIndexToModel, rowData);
    }
 
