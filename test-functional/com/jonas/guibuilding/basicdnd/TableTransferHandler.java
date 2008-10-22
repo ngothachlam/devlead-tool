@@ -10,6 +10,8 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 
@@ -29,10 +31,10 @@ final class TableTransferHandler extends TransferHandler {
    private DefaultTableModel tableModel;
    private MyTable table;
 
-   public TableTransferHandler(MyTable list) {
+   public TableTransferHandler(MyTable table) {
       super();
-      table = list;
-      tableModel = (DefaultTableModel) list.getModel();
+      this.table = table;
+      tableModel = (DefaultTableModel) table.getModel();
    }
 
    public int getSourceActions(JComponent c) {
@@ -40,21 +42,21 @@ final class TableTransferHandler extends TransferHandler {
    }
 
    protected Transferable createTransferable(JComponent c) {
-      MyTable list = (MyTable) c;
-      if (list.getSelectedRows().length > 1)
+      MyTable table = (MyTable) c;
+      if (table.getSelectedRows().length > 1)
          throw new RuntimeException("Can currently not handle moving more than one selection!!");
-      int[] values = list.getSelectedRows();
+      int[] values = table.getSelectedRows();
       StringBuffer buff = new StringBuffer();
 
       Vector<Column> columns = new Vector<Column>();
-      for (int i = 0; i < list.getColumnCount(); i++) {
-         columns.add(list.getColumnEnum(i));
+      for (int i = 0; i < table.getColumnCount(); i++) {
+         columns.add(table.getColumnEnum(i));
       }
       Vector<Vector<Object>> data = new Vector<Vector<Object>>();
       for (int i = 0; i < values.length; i++) {
          Vector<Object> row = new Vector<Object>();
-         for (int j = 0; j < list.getColumnCount(); j++) {
-            Object val = list.getValueAt(values[i], j);
+         for (int j = 0; j < table.getColumnCount(); j++) {
+            Object val = table.getValueAt(values[i], j);
             row.add(val);
             // FIXME remove:
             continue;
@@ -72,7 +74,7 @@ final class TableTransferHandler extends TransferHandler {
             int selectedIndex = table.getSelectedRow();
             BasicDnD.debugDropLocation("Deleting source at " + selectedIndex);
             DefaultTableModel model = (DefaultTableModel) table.getModel();
-            model.removeRow(selectedIndex);
+            model.removeRow(table.convertRowIndexToView(selectedIndex));
          }
       }
    }

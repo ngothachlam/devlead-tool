@@ -17,11 +17,9 @@ public class DnDTree extends JTree {
    private void setDnD() {
       setDragEnabled(true);
       setDropMode(DropMode.INSERT);
-      setTransferHandler(new DnDTreeTransferHandler());
+      setTransferHandler(new DnDTreeTransferHandler(this));
 
       setEditable(false);
       getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-
    }
-
 }
