@@ -17,10 +17,10 @@ public class DnDTreeBuilder {
       root = new DefaultMutableTreeNode("LLU");
       DefaultTreeModel dndTreeModel = new DefaultTreeModel(root);
 
-      createFixVersion(dndTreeModel, "Sprint 1", "LLU 11.1");
-      createFixVersion(dndTreeModel, "Sprint 2", "LLU 11.2");
-      createFixVersion(dndTreeModel, "Sprint 3", "LLU 11.2");
-      createFixVersion(dndTreeModel, "Sprint 3", "LLU 12");
+      createJira(dndTreeModel, "Sprint 1", "LLU 11.1", "LLU-1");
+      createJira(dndTreeModel, "Sprint 1", "LLU 12", "LLU-2");
+      createJira(dndTreeModel, "Sprint 2", "LLU 12", "LLU-3");
+      createJira(dndTreeModel, "Sprint 2", "LLU 11.2", "LLU-4");
       
       DnDTree dnDTree = new DnDTree(dndTreeModel);
 
@@ -43,5 +43,16 @@ public class DnDTreeBuilder {
       model.insertNodeInto(fixVersionNode, parent, parent.getChildCount());
       sprints.put(fixVersionName, fixVersionNode);
       return fixVersionNode;
+   }
+   
+   public DefaultMutableTreeNode createJira(DefaultTreeModel model, String sprintName, String fixVersionName, String jira){
+      DefaultMutableTreeNode jiraNode = new DefaultMutableTreeNode(jira);
+      MutableTreeNode parent = fixVersions.get(fixVersionName);
+      if (parent == null){
+         parent = createFixVersion(model, sprintName, fixVersionName);
+      }
+      model.insertNodeInto(jiraNode, parent, parent.getChildCount());
+      sprints.put(fixVersionName, jiraNode);
+      return jiraNode;
    }
 }

@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JTree;
 import javax.swing.TransferHandler;
+import javax.swing.JTree.DropLocation;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -80,13 +81,29 @@ public class DnDTreeTransferHandler extends TransferHandler {
 
    @Override
    final public boolean canImport(TransferSupport supp) {
-      log.debug("canImport");
-
       if (!supp.isDataFlavorSupported(dataFlavor)) {
          return false;
       }
-      log.debug("canImport returning true");
-      return true;
+      try {
+         JTree.DropLocation dropLocation = (JTree.DropLocation) supp.getDropLocation();
+         TreePath path = dropLocation.getPath();
+         DefaultMutableTreeNode lastPathComponent = (DefaultMutableTreeNode) path.getLastPathComponent();
+         Transferable transferable = supp.getTransferable();
+         TransferableDTO dto = (TransferableDTO) transferable.getTransferData(dataFlavor);
+         dto.getNewNode().getLevel();
+         //FIXME I believe the next step is to make a fix version always a node (not leaf) even when they have no children
+         log.debug("CanImport: " + lastPathComponent + " leafCount : " + lastPathComponent.getLeafCount() +" parent Depth: " + lastPathComponent.getLevel() + " nodeDepth : " + dto.getNewNode().getLevel());
+         if (lastPathComponent.getLevel() + 1 == dto.getNewNode().getLevel()) {
+            return true;
+         }
+      } catch (UnsupportedFlavorException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (IOException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      return false;
    }
 
    @Override
