@@ -37,6 +37,8 @@ public class BoardTableModel extends MyTableModel {
    public BoardStatusValue getStatus(String jira) {
       int row = getRowWithJira(jira);
       log.debug("row: " + row + " for jira: " + jira);
+      int count = 0;
+      Column col = null;
       if (row >= 0) {
          for (Column column : columns) {
             switch (column) {
@@ -45,20 +47,25 @@ public class BoardTableModel extends MyTableModel {
             case isInProgress:
             case isResolved:
             case isComplete:
-               if (getBoardStatus(row, column)) {
-                  return BoardStatusToColumnMap.getBoardStatus(column);
+               if (isColumnSet(row, column)) {
+                  count++;
+                  col = column;
                }
             default:
                break;
             }
          }
+         if (count == 1) {
+            return BoardStatusToColumnMap.getBoardStatus(col);
+         }
+         return BoardStatusValue.UnKnown;
       }
-      return BoardStatusValue.UnKnown;
+      return BoardStatusValue.NA;
    }
 
-   private boolean getBoardStatus(int row, Column column) {
-      int columnTemp = getColumnIndex(column);
-      Boolean valueAt = (Boolean) getValueAt(row, columnTemp);
+   private boolean isColumnSet(int row, Column column) {
+      int colIndex = getColumnIndex(column);
+      Boolean valueAt = (Boolean) getValueAt(row, colIndex);
       return valueAt == null ? false : valueAt.booleanValue();
    }
 
@@ -105,7 +112,7 @@ public class BoardTableModel extends MyTableModel {
                   if (howManyTrue(row, Column.isResolved, Column.isComplete) == 1) {
                      return true;
                   }
-               } else{
+               } else {
                   if (howManyTrue(row, Column.isBug, Column.isOpen, Column.isParked, Column.isInProgress) == 1) {
                      return true;
                   }
@@ -119,7 +126,7 @@ public class BoardTableModel extends MyTableModel {
       return result;
    }
 
-   int howManyTrue(int row, Column... boolColumns){
+   int howManyTrue(int row, Column... boolColumns) {
       int j = 0;
       for (int i = 0; i < boolColumns.length; i++) {
          Column column = boolColumns[i];
@@ -131,16 +138,10 @@ public class BoardTableModel extends MyTableModel {
       }
       return j;
    }
-   
-   boolean isAnyTrue(int row, Column... boolColumns) {
-      for (int i = 0; i < boolColumns.length; i++) {
-         Column column = boolColumns[i];
-         if (getColumnIndex(column) >= 0) {
-            Boolean value = (Boolean) getValueAt(column, row);
-            if (value.booleanValue() == true)
-               return true;
-         }
-      }
-      return false;
+
+   public String getRelease(String jira) {
+      if (doesJiraExist(jira))
+         return (String) getValueAt(Column.Release, jira);
+      return "";
    }
 }

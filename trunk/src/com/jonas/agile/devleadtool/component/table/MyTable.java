@@ -10,6 +10,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.CellEditorListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -35,6 +36,8 @@ public class MyTable extends JTable {
    private String title;
    private Logger log = MyLogger.getLogger(MyTable.class);
    private List<MyTableListener> listeners = new ArrayList<MyTableListener>();
+   private JiraCellEditor jiraEditor;
+   private CheckBoxTableCellEditor checkBoxEditor;
 
    public MyTable(String title) {
       this(title, new DefaultTableModel());
@@ -49,7 +52,7 @@ public class MyTable extends JTable {
       this.title = title;
 
       CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
-      CheckBoxTableCellEditor checkBoxEditor = new CheckBoxTableCellEditor(defaultTableModel, new JCheckBox());
+      checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
 
       setDefaultRenderer(String.class, new StringTableCellRenderer(defaultTableModel));
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
@@ -74,8 +77,9 @@ public class MyTable extends JTable {
          }
          colIndex = getColumnIndex(Column.Jira);
          if (colIndex > -1) {
+            jiraEditor = new JiraCellEditor(new JTextField());
             TableColumn tc = getTableColumn(colIndex);
-            tc.setCellEditor(new JiraCellEditor(new JTextField()));
+            tc.setCellEditor(jiraEditor);
          }
       }
 
@@ -90,6 +94,13 @@ public class MyTable extends JTable {
             return tip;
          }
       });
+   }
+   
+   public void addJiraEditorListener(CellEditorListener cellEditorListener){
+      jiraEditor.addCellEditorListener(cellEditorListener);
+   }
+   public void addCheckBoxEditorListener(CellEditorListener cellEditorListener){
+      checkBoxEditor.addCellEditorListener(cellEditorListener);
    }
 
    protected void fireTableRowsUpdated(int rowEdited, int rowEdited2) {
@@ -236,5 +247,9 @@ public class MyTable extends JTable {
 
    public void addListener(MyTableListener myTableListener) {
       listeners.add(myTableListener);
+   }
+
+   public boolean doesJiraExist(String jira) {
+      return model.doesJiraExist(jira);
    }
 }

@@ -5,7 +5,6 @@ package com.jonas.agile.devleadtool.component.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.text.JTextComponent;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -15,9 +14,6 @@ public class AddNewRowActionListener implements ActionListener {
    private MyTable table;
    private final JTextComponent jiraPrefix;
    private final JTextComponent jiraCommas;
-
-   // FIXME merge this with the Syncl....ListenerListener
-   private List<AddNewRowActionListenerListener> listeners = new ArrayList<AddNewRowActionListenerListener>();
 
    public AddNewRowActionListener(MyTable table, JTextComponent jiraPrefix, JTextComponent jiraCommas) {
       this.table = table;
@@ -34,18 +30,7 @@ public class AddNewRowActionListener implements ActionListener {
          String jiraString = getJiraString(prefix, jiraNumber).trim();
 
          table.addJira(jiraString);
-         for (AddNewRowActionListenerListener listener : listeners) {
-            listener.addedNewRow(jiraString, table.getRowCount() - 1, table.getColumnCount());
-         }
       }
-      for (AddNewRowActionListenerListener listener : listeners) {
-         listener.addedNewRowsCompleted();
-      }
-   }
-
-   public void addListener(AddNewRowActionListenerListener listener) {
-      if (listener != null)
-         listeners.add(listener);
    }
 
    protected String getJiraString(String jiraPrefix, String jiraNumber) {

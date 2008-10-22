@@ -1,10 +1,12 @@
-package com.jonas.agile.devleadtool.component.listener;
+package com.jonas.devleadtool.testing.ui;
 
 import java.util.EventObject;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.TableCellEditor;
+import com.jonas.agile.devleadtool.component.listener.BoardAndJiraSyncListener;
+import com.jonas.agile.devleadtool.component.listener.MyTableListener;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -34,7 +36,7 @@ public class BoardTableModelListenerTest extends JonasTestCase {
          }
       });
 
-      BoardTableModelListener boardTableModelListener = new BoardTableModelListener(boardTable, jiraTable, boardModel);
+      BoardAndJiraSyncListener boardTableModelListener = new BoardAndJiraSyncListener(boardTable, jiraTable, boardModel);
       boardModel.addTableModelListener(boardTableModelListener);
 
       super.setUp();
