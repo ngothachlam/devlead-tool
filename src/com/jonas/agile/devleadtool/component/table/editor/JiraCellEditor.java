@@ -12,6 +12,7 @@ public class JiraCellEditor extends DefaultCellEditor implements MyEditor {
    private Logger log = MyLogger.getLogger(JiraCellEditor.class);
    private int col;
    private int row;
+   private Object value;
    
    public JiraCellEditor(JTextField textField) {
       super(textField);
@@ -21,6 +22,9 @@ public class JiraCellEditor extends DefaultCellEditor implements MyEditor {
    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
       this.row = row;
       this.col = column;
+      this.value = value;
+      log.debug("Editing value " + value);
+      //FIXME prevent same jira numbers to be edited in or alert!
       return super.getTableCellEditorComponent(table, value, isSelected, row, column);
    }
 
@@ -37,6 +41,9 @@ public class JiraCellEditor extends DefaultCellEditor implements MyEditor {
    @Override
    public Object getValue() {
       return getCellEditorValue();
+   }
+   public Object getOldValue() {
+      return value;
    }
 
 

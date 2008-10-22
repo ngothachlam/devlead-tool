@@ -11,14 +11,23 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
-import com.jonas.agile.devleadtool.component.listener.BoardTableModelListener;
+import com.jonas.agile.devleadtool.component.listener.BoardAndJiraSyncListener;
+import com.jonas.agile.devleadtool.component.listener.MyTableListener;
+import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
+import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
+import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -52,7 +61,8 @@ public class InternalTabPanel extends MyComponentPanel {
       planPanel = new PlanPanel(helper, planModel);
       jiraPanel = new JiraPanel(helper, jiraModel);
 
-      boardModel.addTableModelListener(new BoardTableModelListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
+      setBoardDataListeners(boardModel);
+      setJiraDataListener(jiraModel, boardModel);
 
       // FIXME I want to put this into the MyTable instead!! - need to register the other tables with each other!
       MyTable boardTable = boardPanel.getTable();
@@ -69,6 +79,72 @@ public class InternalTabPanel extends MyComponentPanel {
       makeContent(boardModel);
       wireUpListeners();
       this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
+   }
+
+   private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel) {
+      // add listener when added or updated rows from addDialog;
+      jiraModel.addTableModelListener(new BoardAndJiraSyncListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
+      // add listener when updating jira;
+      jiraPanel.getTable().addJiraEditorListener(new CellEditorListener() {
+         public void editingCanceled(ChangeEvent e) {
+         }
+
+         public void editingStopped(ChangeEvent e) {
+            JiraCellEditor editor = (JiraCellEditor) e.getSource();
+            log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \"" + editor.getValue()
+                  + "\" and old value: \"" + editor.getOldValue() + "\"");
+            MyTable jiraTable = jiraPanel.getTable();
+
+            String jira = (String) editor.getValue();
+
+            BoardStatusValue status = boardModel.getStatus(jira);
+            String release = boardModel.getRelease(jira);
+
+            jiraTable.setValueAt(status, (String) editor.getOldValue(), Column.B_BoardStatus);
+            jiraTable.setValueAt(release, (String) editor.getOldValue(), Column.B_Release);
+         }
+      });
+   }
+
+   private void setBoardDataListeners(BoardTableModel boardModel) {
+      // add listener when added or updated rows from addDialog;
+      boardModel.addTableModelListener(new BoardAndJiraSyncListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
+      // add listener when removed from popup menu;
+      boardPanel.getTable().addListener(new MyTableListener() {
+         @Override
+         public void jiraRemoved(String jira) {
+            MyTable jiraTable = jiraPanel.getTable();
+            jiraTable.setValueAt(BoardStatusValue.NA, jira, Column.B_BoardStatus);
+            jiraTable.setValueAt("", jira, Column.B_Release);
+         }
+
+      });
+      // add listener when updating jira;
+      boardPanel.getTable().addJiraEditorListener(new CellEditorListener() {
+         public void editingCanceled(ChangeEvent e) {
+         }
+
+         public void editingStopped(ChangeEvent e) {
+            JiraCellEditor editor = (JiraCellEditor) e.getSource();
+            log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \"" + editor.getValue()
+                  + "\" and old value: \"" + editor.getOldValue() + "\"");
+            MyTable jiraTable = jiraPanel.getTable();
+            jiraTable.setValueAt(BoardStatusValue.NA, (String) editor.getOldValue(), Column.B_BoardStatus);
+            jiraTable.setValueAt("", (String) editor.getOldValue(), Column.B_Release);
+         }
+      });
+      // add listener to update all colors when checkbox is ticked.
+      boardPanel.getTable().addCheckBoxEditorListener(new CellEditorListener() {
+         public void editingCanceled(ChangeEvent e) {
+         }
+
+         public void editingStopped(ChangeEvent e) {
+            CheckBoxTableCellEditor editor = (CheckBoxTableCellEditor) e.getSource();
+            MyTable table = boardPanel.getTable();
+            MyTableModel model = (MyTableModel) table.getModel();
+            model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor.getColEdited()));
+         }
+      });
    }
 
    private Component getAddPanel(final PlannerHelper helper, MyTable boardTable, MyTable jiraTable, MyTable planTable) {

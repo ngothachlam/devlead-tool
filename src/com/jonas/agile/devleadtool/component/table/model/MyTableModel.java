@@ -366,6 +366,13 @@ public abstract class MyTableModel extends DefaultTableModel {
    public boolean isRed(Object value, int row, Column column) {
       return isRed(value, row, getColumnIndex(column));
    }
+
+   public void fireTableCellUpdatedExceptThisOne(int row, int col) {
+      for (int i = 0; i < getColumnCount(); i++) {
+         if (i != col )
+            fireTableCellUpdated(row, i);
+      }
+   }
 }
 
 

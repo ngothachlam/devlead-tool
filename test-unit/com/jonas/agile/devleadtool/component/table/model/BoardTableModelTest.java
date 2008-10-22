@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.Map;
 import java.util.Vector;
+import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.jira.JiraIssue;
@@ -32,6 +33,19 @@ public class BoardTableModelTest extends JonasTestCase {
       assertTrue(model.isCellEditable(0, 7));
    }
 
+   public void testShouldGetStatusOk(){
+      assertEquals(BoardStatusValue.NA, model.getStatus("llu-1"));
+      
+      model.addJira("llu-1");
+      assertEquals(BoardStatusValue.UnKnown, model.getStatus("llu-1"));
+      
+      model.setValueAt(Boolean.TRUE, 0, Column.isOpen);
+      assertEquals(BoardStatusValue.Open, model.getStatus("llu-1"));
+      
+      model.setValueAt(Boolean.TRUE, 0, Column.isBug);
+      assertEquals(BoardStatusValue.UnKnown, model.getStatus("llu-1"));
+   }
+   
    public void testShouldHaveEmptyRowAndColumnNamesOfSameSize() {
       assertEquals(model.getColumnNames().size(), model.getEmptyRow().length);
    }
@@ -217,15 +231,17 @@ public class BoardTableModelTest extends JonasTestCase {
       
       assertEquals(1, model.getRowCount());
       
-      assertEquals(false, model.isAnyTrue(0, Column.isBug, Column.isComplete, Column.isInProgress, Column.isParked));
+      assertEquals(0, model.howManyTrue(0, Column.isBug, Column.isComplete, Column.isInProgress, Column.isParked));
 
       //setToOpen
       model.setValueAt(Boolean.TRUE, 0, Column.isOpen);
-      assertEquals(true, model.isAnyTrue(0, Column.isOpen));
-      assertEquals(false, model.isAnyTrue(0, Column.isBug, Column.isComplete, Column.isInProgress, Column.isParked, Column.isResolved));
-      assertEquals(true, model.isAnyTrue(0, Column.isBug, Column.isComplete, Column.isInProgress, Column.isParked, Column.isResolved, Column.isOpen));
-      assertEquals(true, model.isAnyTrue(0, Column.isOpen, Column.isBug, Column.isComplete, Column.isInProgress, Column.isParked, Column.isResolved));
-      assertEquals(true, model.isAnyTrue(0, Column.isBug, Column.isComplete, Column.isOpen, Column.isInProgress, Column.isParked, Column.isResolved));
+      assertEquals(1, model.howManyTrue(0, Column.isOpen));
+      assertEquals(0, model.howManyTrue(0, Column.isBug, Column.isComplete, Column.isInProgress, Column.isParked, Column.isResolved));
+      assertEquals(1, model.howManyTrue(0, Column.isBug, Column.isComplete, Column.isInProgress, Column.isParked, Column.isResolved, Column.isOpen));
+      assertEquals(1, model.howManyTrue(0, Column.isOpen, Column.isBug, Column.isComplete, Column.isInProgress, Column.isParked, Column.isResolved));
+      assertEquals(1, model.howManyTrue(0, Column.isBug, Column.isComplete, Column.isOpen, Column.isInProgress, Column.isParked, Column.isResolved));
+      model.setValueAt(Boolean.TRUE, 0, Column.isComplete);
+      assertEquals(2, model.howManyTrue(0, Column.isBug, Column.isComplete, Column.isOpen, Column.isInProgress, Column.isParked, Column.isResolved));
    }
    
    
