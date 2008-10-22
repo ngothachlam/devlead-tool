@@ -132,7 +132,7 @@ public class BoardTableModel extends MyTableModel {
          Column column = boolColumns[i];
          if (getColumnIndex(column) >= 0) {
             Boolean value = (Boolean) getValueAt(column, row);
-            if (value.booleanValue() == true)
+            if (value != null && value.booleanValue() == true)
                j++;
          }
       }

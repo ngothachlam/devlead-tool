@@ -95,11 +95,12 @@ public class MyTable extends JTable {
          }
       });
    }
-   
-   public void addJiraEditorListener(CellEditorListener cellEditorListener){
+
+   public void addJiraEditorListener(CellEditorListener cellEditorListener) {
       jiraEditor.addCellEditorListener(cellEditorListener);
    }
-   public void addCheckBoxEditorListener(CellEditorListener cellEditorListener){
+
+   public void addCheckBoxEditorListener(CellEditorListener cellEditorListener) {
       checkBoxEditor.addCellEditorListener(cellEditorListener);
    }
 
@@ -252,4 +253,5 @@ public class MyTable extends JTable {
    public boolean doesJiraExist(String jira) {
       return model.doesJiraExist(jira);
    }
+
 }

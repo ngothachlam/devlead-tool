@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jonas.guibuilding.basicdnd;
+package com.jonas.guibuilding.basicdnd.list;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -10,6 +10,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.TransferHandler;
+import com.jonas.guibuilding.basicdnd.BasicDnD;
 
 final class ListTransferHandler extends TransferHandler {
 
@@ -74,7 +75,7 @@ final class ListTransferHandler extends TransferHandler {
 
    public boolean importData(TransferSupport info) {
       if (!info.isDrop()) {
-         BasicDnD.debugDropLocation("List doesn't accept !isDrop");
+         System.out.println("List doesn't accept !isDrop");
          return false;
       }
       // Check for String flavor
@@ -101,18 +102,18 @@ final class ListTransferHandler extends TransferHandler {
          String dropValue = "\"" + data + "\" dropped ";
          if (dl.isInsert()) {
             if (index == 0) {
-               BasicDnD.debugDropLocation(dropValue + "at beginning of list");
+               System.out.println(dropValue + "at beginning of list");
             } else if (index >= listModel.getSize()) {
-               BasicDnD.debugDropLocation(dropValue + "at end of list");
+               System.out.println(dropValue + "at end of list");
             } else {
                Object value1 = listModel.getElementAt(dl.getIndex() - 1);
                Object value2 = listModel.getElementAt(dl.getIndex());
-               BasicDnD.debugDropLocation(dropValue + "between \"" + value1 + "\" and \"" + value2 + "\"");
+               System.out.println(dropValue + "between \"" + value1 + "\" and \"" + value2 + "\"");
             }
          } else {
             // Get the current string under the drop.
             Object value = listModel.getElementAt(index);
-            BasicDnD.debugDropLocation(dropValue + "on top of " + "\"" + value + "\"");
+            System.out.println(dropValue + "on top of " + "\"" + value + "\"");
          }
 
          /**

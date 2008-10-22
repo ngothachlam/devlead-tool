@@ -110,7 +110,7 @@ public class InternalTabPanel extends MyComponentPanel {
       // add listener when added or updated rows from addDialog;
       boardModel.addTableModelListener(new BoardAndJiraSyncListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
       // add listener when removed from popup menu;
-      boardPanel.getTable().addListener(new MyTableListener() {
+      MyTableListener myTableListener = new MyTableListener() {
          @Override
          public void jiraRemoved(String jira) {
             MyTable jiraTable = jiraPanel.getTable();
@@ -118,7 +118,8 @@ public class InternalTabPanel extends MyComponentPanel {
             jiraTable.setValueAt("", jira, Column.B_Release);
          }
 
-      });
+      };
+      boardPanel.getTable().addListener(myTableListener);
       // add listener when updating jira;
       boardPanel.getTable().addJiraEditorListener(new CellEditorListener() {
          public void editingCanceled(ChangeEvent e) {
