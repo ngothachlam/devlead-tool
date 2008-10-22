@@ -33,25 +33,13 @@ final class TableTransferHandler extends TransferHandler {
       super();
       table = list;
       tableModel = (DefaultTableModel) list.getModel();
-      // if (vectorFlavor == null) {
-      // try {
-      // vectorFlavor = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + Vector.class.getName() + "\"");
-      // } catch (ClassNotFoundException e) {
-      // e.printStackTrace();
-      // }
-      // }
    }
 
-   // On the source object:
    public int getSourceActions(JComponent c) {
       return MOVE;
    }
 
    protected Transferable createTransferable(JComponent c) {
-      {
-         // ListElement values = (ListElement) list.getSelectedValues()[0];
-         // return values;
-      }
       MyTable list = (MyTable) c;
       if (list.getSelectedRows().length > 1)
          throw new RuntimeException("Can currently not handle moving more than one selection!!");
