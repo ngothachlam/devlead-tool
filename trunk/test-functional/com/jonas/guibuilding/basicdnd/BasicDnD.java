@@ -6,25 +6,19 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
-import com.jonas.agile.devleadtool.component.dnd.TableAndTitleDTO;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -78,10 +72,6 @@ public class BasicDnD extends JPanel {
       JScrollPane scrollPane3 = new JScrollPane(jiraTable);
       scrollPane3.setPreferredSize(new Dimension(580, 100));
       JPanel panel3 = getBorderPanel(scrollPane3, "Jira");
-      
-      new MyTablePopupMenu(boardTable, null, planTable, jiraTable);
-      new MyTablePopupMenu(planTable, null, boardTable, jiraTable);
-      new MyTablePopupMenu(jiraTable, null, boardTable, planTable);
       
       Component tabPane = combineIntoSplitPane(panel1, panel2, panel3);
 
