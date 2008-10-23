@@ -5,8 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import org.apache.log4j.Logger;
@@ -16,6 +18,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import com.jonas.agile.devleadtool.component.listener.DaoListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
@@ -31,6 +34,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    private Logger log = MyLogger.getLogger(PlannerDAOExcelImpl.class);
    private TableModelBuilder modelBuilder;
    private File xlsFile;
+   private List<DaoListener> listeners = new ArrayList<DaoListener>();
 
    public PlannerDAOExcelImpl(TableModelBuilder modelBuilder) {
       super();
@@ -42,16 +46,19 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    public BoardTableModel loadBoardModel() throws IOException {
+      notifyListeners(DaoListenerEvent.LoadingModelStarted, "Loading Board Started");
       TableModelDTO dto = loadModel(xlsFile, "board");
       return new BoardTableModel(dto.getContents(), dto.getHeader());
    }
 
    public JiraTableModel loadJiraModel() throws IOException {
+      notifyListeners(DaoListenerEvent.LoadingModelStarted, "Loading Jira Started");
       TableModelDTO dto = loadModel(xlsFile, "jira");
       return new JiraTableModel(dto.getContents(), dto.getHeader());
    }
 
    public PlanTableModel loadPlanModel() throws IOException {
+      notifyListeners(DaoListenerEvent.LoadingModelStarted, "Loading Plan Started");
       TableModelDTO dto = loadModel(xlsFile, "plan");
       return modelBuilder.buildPlanTableModel(dto);
    }
@@ -77,43 +84,48 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    private void saveModel(File xlsFile, MyTableModel model, String sheetName) throws IOException {
-      HSSFWorkbook wb = getWorkBook(xlsFile);
-      HSSFSheet sheet = getSheet(sheetName, wb);
+      notifyListeners(DaoListenerEvent.SavingModelStarted, "Saving " + sheetName + " Started");
+      FileOutputStream fileOut = null;
+      try {
+         HSSFWorkbook wb = getWorkBook(xlsFile);
+         HSSFSheet sheet = getSheet(sheetName, wb);
 
-      // HSSFCellStyle style_red_background = wb.createCellStyle();
-      // style_red_background.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-      // style_red_background.setFillForegroundColor(new HSSFColor.RED().getIndex());
+         // HSSFCellStyle style_red_background = wb.createCellStyle();
+         // style_red_background.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+         // style_red_background.setFillForegroundColor(new HSSFColor.RED().getIndex());
 
-      // save column Headers
-      HSSFRow row = sheet.createRow((short) 0);
-      for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
-         HSSFCell cell = row.createCell((short) colCount);
-         Object valueAt = model.getColumnName(colCount);
-         cell.setCellValue(new HSSFRichTextString((String) valueAt));
-      }
-
-      // save all data rows...
-      for (int rowCount = 0; rowCount < model.getRowCount(); rowCount++) {
-         row = sheet.createRow((short) rowCount + 1);
+         // save column Headers
+         HSSFRow row = sheet.createRow((short) 0);
          for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
             HSSFCell cell = row.createCell((short) colCount);
-            Object valueAt = model.getValueAt(rowCount, colCount);
-            log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
-            if (valueAt == null)
-               cell.setCellValue(new HSSFRichTextString(""));
-            else if (valueAt instanceof Boolean) {
-               cell.setCellValue(((Boolean) valueAt).booleanValue());
-            } else if (valueAt instanceof Double) {
-               cell.setCellValue(((Double) valueAt).doubleValue());
-            } else {
-               cell.setCellValue(new HSSFRichTextString(valueAt.toString()));
+            Object valueAt = model.getColumnName(colCount);
+            cell.setCellValue(new HSSFRichTextString((String) valueAt));
+         }
+
+         // save all data rows...
+         for (int rowCount = 0; rowCount < model.getRowCount(); rowCount++) {
+            row = sheet.createRow((short) rowCount + 1);
+            for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
+               HSSFCell cell = row.createCell((short) colCount);
+               Object valueAt = model.getValueAt(rowCount, colCount);
+               log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
+               if (valueAt == null)
+                  cell.setCellValue(new HSSFRichTextString(""));
+               else if (valueAt instanceof Boolean) {
+                  cell.setCellValue(((Boolean) valueAt).booleanValue());
+               } else if (valueAt instanceof Double) {
+                  cell.setCellValue(((Double) valueAt).doubleValue());
+               } else {
+                  cell.setCellValue(new HSSFRichTextString(valueAt.toString()));
+               }
             }
          }
-      }
 
-      FileOutputStream fileOut = new FileOutputStream(xlsFile);
-      wb.write(fileOut);
-      fileOut.close();
+         fileOut = new FileOutputStream(xlsFile);
+         wb.write(fileOut);
+      } finally {
+         fileOut.close();
+      }
    }
 
    protected HSSFSheet getSheet(String sheetName, HSSFWorkbook wb) {
@@ -133,12 +145,12 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException {
       log.debug("Loading Model from " + xlsFile.getAbsolutePath() + " and sheet: " + sheetName);
-      InputStream inp = new FileInputStream(xlsFile);
-      HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(inp));
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       Vector<Column> header = new Vector<Column>();
       TableModelDTO dataModelDTO = new TableModelDTO(header, contents);
+      InputStream inp = new FileInputStream(xlsFile);
+      HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(inp));
       int rowCount = -1;
 
       HSSFSheet sheet = wb.getSheet(sheetName);
@@ -171,8 +183,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                   log.debug("\tHeader!");
                   Column column = Column.getEnum(cellContents);
                   if (column == null) {
-                     throw new NullPointerException("Failed to add column (" + cellContents + ") to " + colCount + " of type " + column
-                           + " (size is " + columns.size() + ")");
+                     throw new NullPointerException("Failed to add column (" + cellContents + ") to " + colCount + " of type " + column + " (size is "
+                           + columns.size() + ")");
                   }
                   columns.put(colCount, column);
                   if (column.isToLoad())
@@ -197,5 +209,45 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       if (column.isToLoad()) {
          rowData.add(column.parse(cellContents));
       }
+   }
+
+   public void notifyListeners(DaoListenerEvent event, String message) {
+      for (DaoListener listener : listeners) {
+         listener.notify(event, message);
+      }
+   }
+
+   @Override
+   public void addListener(DaoListener daoListener) {
+      log.debug("adding Listener");
+      listeners.add(daoListener);
+   }
+
+   @Override
+   public void removeListener(DaoListener daoListener) {
+      log.debug("removing Listener");
+      listeners.remove(daoListener);
+   }
+
+   public void notifyLoadingFinished() {
+      log.debug("notifyLoadingFinished");
+      notifyListeners(DaoListenerEvent.LoadingFinished, "Loading Finished!");
+   }
+
+   public void notifyLoadingStarted() {
+      log.debug("notifyLoadingStarted");
+      notifyListeners(DaoListenerEvent.LoadingStarted, "Loading Started!");
+   }
+
+   @Override
+   public void notifySavingFinished() {
+      log.debug("notifySavingFinished");
+      notifyListeners(DaoListenerEvent.SavingFinished, "Saving Finished!");
+   }
+
+   @Override
+   public void notifySavingStarted() {
+      log.debug("notifySavingStarted");
+      notifyListeners(DaoListenerEvent.SavingStarted, "Saving Started!");
    }
 }
