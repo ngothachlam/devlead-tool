@@ -5,9 +5,9 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 
-public class Main extends JFrame {
+public class DnDTreeMain extends JFrame {
 
-   private Main(){
+   private DnDTreeMain(){
       super("Rearrangeable Tree");
       setSize(300, 200);
       setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -20,6 +20,6 @@ public class Main extends JFrame {
    }
    
    public static void main(String... args){
-      Main main = new Main();
+      DnDTreeMain main = new DnDTreeMain();
    }
 }

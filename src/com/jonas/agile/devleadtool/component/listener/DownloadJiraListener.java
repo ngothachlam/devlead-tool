@@ -75,7 +75,7 @@ public class DownloadJiraListener implements ActionListener {
          public void done() {
             if (error != null) {
                dialog.setCompleteWithDelay(0);
-               AlertDialog.message(parentFrame, error);
+               AlertDialog.alertMessage(parentFrame, error);
             } else
                dialog.setCompleteWithDelay(300);
          }

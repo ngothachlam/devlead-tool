@@ -1,6 +1,7 @@
 package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -59,15 +60,7 @@ public class AlertDialog extends JDialog {
 		new AlertDialog(parentFrame, e);
 	}
 
-	public static AlertDialog message(PlannerHelper helper, String e) {
-		return message(helper != null ? helper.getParentFrame() : null, e);
-	}
-	public static AlertDialog message(JFrame frame, String e) {
-	   return new AlertDialog(frame, e);
-	}
-
 	public void addText(String string) {
 		textArea.setText(textArea.getText() + string);
 	}
-
 }

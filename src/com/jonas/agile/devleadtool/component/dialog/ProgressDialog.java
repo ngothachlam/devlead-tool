@@ -114,6 +114,7 @@ public class ProgressDialog extends JDialog {
       f.setVisible(true);
 
       int count = 5;
+      ProgressDialog progress2 = new ProgressDialog(f, "Working...", "Copying Messages to Panel...", 0);
       ProgressDialog progress = new ProgressDialog(f, "Working...", "Copying Messages to Panel...", count);
       for (int i = 1; i <= count; i++) {
          try {
@@ -128,7 +129,7 @@ public class ProgressDialog extends JDialog {
          }
       }
       progress.setCompleteWithDelay(300);
-
+      progress2.setCompleteWithDelay(300);
    }
 
    public void increaseMax(final String string, final int length) {
