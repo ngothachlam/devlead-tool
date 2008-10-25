@@ -1,6 +1,7 @@
 package com.jonas.agile.devleadtool;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,6 +38,7 @@ public class DevLeadTool {
 
    DevLeadTool() {
    }
+   
    private JMenu createFileMenu(String title, JMenuItem[] menuItemList) {
       JMenu fileMenu = new JMenu(title);
       for (int i = 0; i < menuItemList.length; i++) {
@@ -78,7 +80,8 @@ public class DevLeadTool {
       JPanel contentPanel = new MyPanel(new BorderLayout());
 
       frame.setJMenuBar(createMenuBar(frame, desktop));
-      contentPanel.add(desktop);
+      contentPanel.add(desktop, BorderLayout.CENTER);
+      contentPanel.add(MyStatusBar.getInstance(), BorderLayout.SOUTH);
       frame.setContentPane(contentPanel);
 
       frame.setSize(new Dimension(1200, 900));

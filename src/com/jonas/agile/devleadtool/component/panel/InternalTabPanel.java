@@ -16,6 +16,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
@@ -106,7 +107,7 @@ public class InternalTabPanel extends MyComponentPanel {
       });
    }
 
-   private void setBoardDataListeners(BoardTableModel boardModel) {
+   private void setBoardDataListeners(final BoardTableModel boardModel) {
       // add listener when added or updated rows from addDialog;
       boardModel.addTableModelListener(new BoardAndJiraSyncListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
       // add listener when removed from popup menu;
@@ -119,6 +120,12 @@ public class InternalTabPanel extends MyComponentPanel {
          }
 
       };
+      boardModel.addTableModelListener(new TableModelListener(){
+         @Override
+         public void tableChanged(TableModelEvent e) {
+            MyStatusBar.getInstance().setMessage("Board Data Changed!");
+         }
+      });
       boardPanel.getTable().addListener(myTableListener);
       // add listener when updating jira;
       boardPanel.getTable().addJiraEditorListener(new CellEditorListener() {
