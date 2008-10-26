@@ -1,6 +1,7 @@
 package com.jonas.testing.tree.fromScratch.xml;
 
 import java.io.IOException;
+import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.common.logging.MyLogger;
@@ -18,13 +19,20 @@ public class DnDTreeBuilder {
    }
 
    public void buildTree(DnDTree tree) {
-      try {
-         parser.parse();
-      } catch (IOException e) {
-         e.printStackTrace();
-      } catch (SAXException e) {
-         e.printStackTrace();
-      }
+      SwingWorker worker = new SwingWorker() {
+         @Override
+         protected Object doInBackground() {
+            try {
+               parser.parse();
+            } catch (IOException e) {
+               e.printStackTrace();
+            } catch (SAXException e) {
+               e.printStackTrace();
+            }
+            return null;
+         }
+      };
+      worker.execute();
    }
 
 }
