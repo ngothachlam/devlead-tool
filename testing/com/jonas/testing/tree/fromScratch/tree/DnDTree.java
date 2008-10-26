@@ -53,6 +53,6 @@ public class DnDTree extends JTree {
    }
 
    public void createJira(JiraDTO jira) {
-      model.createJira(jira);
+      model.addJira(jira);
    }
 }
