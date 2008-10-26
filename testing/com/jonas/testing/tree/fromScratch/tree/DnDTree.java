@@ -6,6 +6,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 
 public class DnDTree extends JTree {
 
@@ -41,5 +42,17 @@ public class DnDTree extends JTree {
 
       setEditable(false);
       getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+   }
+
+   public void removeAllChildren() {
+      model.removeAllChildren();
+   }
+
+   public void reload() {
+      model.reload();
+   }
+
+   public void createJira(JiraDTO jira) {
+      model.createJira(jira);
    }
 }

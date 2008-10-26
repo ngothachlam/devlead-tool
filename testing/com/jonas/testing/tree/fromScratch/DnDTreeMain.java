@@ -109,10 +109,6 @@ class JiraParseListenerImpl implements JiraParseListener {
 
    private Logger log = MyLogger.getLogger(JiraParseListenerImpl.class);
 
-   private Map<String, DefaultMutableTreeNode> fixVersions = new HashMap<String, DefaultMutableTreeNode>();
-   private Map<String, DefaultMutableTreeNode> jiras = new HashMap<String, DefaultMutableTreeNode>();
-   private Map<String, DefaultMutableTreeNode> sprints = new HashMap<String, DefaultMutableTreeNode>();
-   
    private DnDTree tree;
 
    public JiraParseListenerImpl(DnDTree tree) {
@@ -120,46 +116,13 @@ class JiraParseListenerImpl implements JiraParseListener {
       this.tree = tree;
    }
 
-   public DefaultMutableTreeNode createFixVersion(DefaultTreeModel model, String sprintName, String fixVersionName) {
-      DefaultMutableTreeNode fixVersionNode = new DefaultMutableTreeNode(fixVersionName);
-      MutableTreeNode parent = sprints.get(sprintName);
-      if (parent == null) {
-         parent = createSprint(model, sprintName);
-      }
-      model.insertNodeInto(fixVersionNode, parent, parent.getChildCount());
-      fixVersions.put(fixVersionName, fixVersionNode);
-      return fixVersionNode;
-   }
-
-   public DefaultMutableTreeNode createJira(DefaultTreeModel model, String sprintName, String fixVersionName, String jira) {
-      DefaultMutableTreeNode jiraNode = new DefaultMutableTreeNode(jira);
-      MutableTreeNode parent = fixVersions.get(fixVersionName);
-      if (parent == null) {
-         parent = createFixVersion(model, sprintName, fixVersionName);
-      }
-      if (jiras.get(jira) == null) {
-         model.insertNodeInto(jiraNode, parent, parent.getChildCount());
-         jiras.put(jira, jiraNode);
-      } else {
-         log.warn("Jira " + jira + " is not added to Model as it already exists!");
-      }
-      return jiraNode;
-   }
-
-   public DefaultMutableTreeNode createSprint(DefaultTreeModel model, String sprintName) {
-      DefaultMutableTreeNode sprintNode = new DefaultMutableTreeNode(sprintName);
-      DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
-      model.insertNodeInto(sprintNode, root, root.getChildCount());
-      sprints.put(sprintName, sprintNode);
-      return sprintNode;
-   }
 
    @Override
    public void notifyParsed(final JiraDTO jira) {
       runInEventDispatchThread(new Runnable() {
          @Override
          public void run() {
-            createJira(tree.getModel(), jira.getSprint(), jira.getFixVersion(), jira.getKey());
+            tree.createJira(jira);
          }
       });
    }
@@ -169,7 +132,7 @@ class JiraParseListenerImpl implements JiraParseListener {
       runInEventDispatchThread(new Runnable() {
          @Override
          public void run() {
-            tree.getModel().reload();
+            tree.reload();
          }
       });
    }
@@ -179,13 +142,7 @@ class JiraParseListenerImpl implements JiraParseListener {
       runInEventDispatchThread(new Runnable() {
          @Override
          public void run() {
-            int noOfRootChildren = tree.getModel().getChildCount(tree.getModel().getRoot());
-            for (int child = 0; child < noOfRootChildren; child++) {
-               tree.getModel().removeNodeFromParent((MutableTreeNode) tree.getModel().getChild(tree.getModel().getRoot(), child));
-            }
-            jiras.clear();
-            fixVersions.clear();
-            sprints.clear();
+            tree.removeAllChildren();
          }
       });
    }
