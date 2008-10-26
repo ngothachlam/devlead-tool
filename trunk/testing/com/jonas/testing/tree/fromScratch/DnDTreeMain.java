@@ -5,18 +5,11 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
@@ -28,7 +21,6 @@ import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 import com.jonas.testing.tree.fromScratch.xml.JiraParseListener;
 import com.jonas.testing.tree.fromScratch.xml.JiraSaxHandler;
 import com.jonas.testing.tree.fromScratch.xml.XmlParser;
-import com.jonas.testing.tree.fromScratch.xml.XmlParserLargeMock;
 import com.jonas.testing.tree.fromScratch.xml.XmlParserSmallMock;
 
 public class DnDTreeMain extends JFrame {
