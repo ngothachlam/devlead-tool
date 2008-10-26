@@ -39,14 +39,16 @@ public class DnDTreeModel extends DefaultTreeModel {
       if (parent == null) {
          parent = createSprint(sprintName);
       }
-      insertNodeInto(fixVersionNode, parent, parent.getChildCount());
-      fixVersions.put(fixVersionName, fixVersionNode);
+       insertNodeInto(fixVersionNode, parent, parent.getChildCount());
+      fixVersions.put(sprintName + "@#@" + fixVersionName, fixVersionNode);
+//      fixVersions.put(fixVersionName, fixVersionNode);
       return fixVersionNode;
    }
 
    void createJira(String sprintName, String fixVersionName, String jira) {
       DefaultMutableTreeNode jiraNode = new DefaultMutableTreeNode(jira);
-      MutableTreeNode parent = fixVersions.get(fixVersionName);
+      // MutableTreeNode parent = fixVersions.get(fixVersionName);
+      MutableTreeNode parent = fixVersions.get(sprintName + "@#@" + fixVersionName);
       if (parent == null) {
          parent = createFixVersion(sprintName, fixVersionName);
       }
