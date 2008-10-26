@@ -1,4 +1,4 @@
-package com.jonas.testing.tree.fromScratch.tree;
+package com.jonas.testing.tree.fromScratch.tree.dnd;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -15,6 +15,7 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.testing.tree.fromScratch.tree.DnDTree;
 
 public class DnDTreeTransferHandler extends TransferHandler {
 
@@ -91,7 +92,6 @@ public class DnDTreeTransferHandler extends TransferHandler {
          Transferable transferable = supp.getTransferable();
          TransferableDTO dto = (TransferableDTO) transferable.getTransferData(dataFlavor);
          dto.getNewNode().getLevel();
-         //FIXME I believe the next step is to make a fix version always a node (not leaf) even when they have no children
          log.debug("CanImport: " + lastPathComponent + " leafCount : " + lastPathComponent.getLeafCount() +" parent Depth: " + lastPathComponent.getLevel() + " nodeDepth : " + dto.getNewNode().getLevel());
          if (lastPathComponent.getLevel() + 1 == dto.getNewNode().getLevel()) {
             return true;

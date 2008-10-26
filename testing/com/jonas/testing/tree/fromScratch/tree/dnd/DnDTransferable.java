@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jonas.testing.tree.fromScratch.tree;
+package com.jonas.testing.tree.fromScratch.tree.dnd;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;

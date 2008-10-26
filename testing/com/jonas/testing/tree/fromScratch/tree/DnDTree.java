@@ -6,6 +6,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.testing.tree.fromScratch.tree.dnd.DnDTreeTransferHandler;
 import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 
 public class DnDTree extends JTree {
