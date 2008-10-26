@@ -7,18 +7,22 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.testing.tree.fromScratch.tree.nodes.FixVersionNode;
+import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
+import com.jonas.testing.tree.fromScratch.tree.nodes.SprintNode;
 import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 
 public class DnDTreeModel extends DefaultTreeModel {
 
    private Logger log = MyLogger.getLogger(DnDTreeModel.class);
 
-   private Map<String, DefaultMutableTreeNode> fixVersions = new HashMap<String, DefaultMutableTreeNode>();
-   private Map<String, DefaultMutableTreeNode> jiras = new HashMap<String, DefaultMutableTreeNode>();
-   private Map<String, DefaultMutableTreeNode> sprints = new HashMap<String, DefaultMutableTreeNode>();
+   private Map<String, JiraNode> jiras = new HashMap<String, JiraNode>();
+   private Map<String, FixVersionNode> fixVersions = new HashMap<String, FixVersionNode>();
+   private Map<String, SprintNode> sprints = new HashMap<String, SprintNode>();
 
    public DnDTreeModel(String rootName) {
       super(new DefaultMutableTreeNode(rootName));
+      setAsksAllowsChildren(true);
    }
 
    public void removeAllChildren() {
@@ -33,22 +37,20 @@ public class DnDTreeModel extends DefaultTreeModel {
       sprints.clear();
    }
 
-   DefaultMutableTreeNode createFixVersion(String sprintName, String fixVersionName) {
-      DefaultMutableTreeNode fixVersionNode = new DefaultMutableTreeNode(fixVersionName);
-      MutableTreeNode parent = sprints.get(sprintName);
+   FixVersionNode createFixVersion(String sprintName, String fixVersionName) {
+      FixVersionNode fixVersionNode = new FixVersionNode(fixVersionName);
+      SprintNode parent = sprints.get(sprintName);
       if (parent == null) {
          parent = createSprint(sprintName);
       }
        insertNodeInto(fixVersionNode, parent, parent.getChildCount());
       fixVersions.put(sprintName + "@#@" + fixVersionName, fixVersionNode);
-//      fixVersions.put(fixVersionName, fixVersionNode);
       return fixVersionNode;
    }
 
    void createJira(String sprintName, String fixVersionName, String jira) {
-      DefaultMutableTreeNode jiraNode = new DefaultMutableTreeNode(jira);
-      // MutableTreeNode parent = fixVersions.get(fixVersionName);
-      MutableTreeNode parent = fixVersions.get(sprintName + "@#@" + fixVersionName);
+      JiraNode jiraNode = new JiraNode(jira);
+      FixVersionNode parent = fixVersions.get(sprintName + "@#@" + fixVersionName);
       if (parent == null) {
          parent = createFixVersion(sprintName, fixVersionName);
       }
@@ -61,8 +63,8 @@ public class DnDTreeModel extends DefaultTreeModel {
       }
    }
 
-   DefaultMutableTreeNode createSprint(String sprintName) {
-      DefaultMutableTreeNode sprintNode = new DefaultMutableTreeNode(sprintName);
+   SprintNode createSprint(String sprintName) {
+      SprintNode sprintNode = new SprintNode(sprintName);
       DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
       insertNodeInto(sprintNode, root, root.getChildCount());
       if (!sprints.containsKey(sprintName))
