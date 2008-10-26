@@ -23,6 +23,7 @@ public class MyStatusBar extends JPanel {
    private MyStatusBar() {
       super();
       statusMessage = new JLabel("");
+      this.add(statusMessage);
    }
 
    public void setMessage(String message) {
