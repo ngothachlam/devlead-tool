@@ -7,7 +7,7 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 import com.jonas.common.logging.MyLogger;
 
-public class SaxHandler extends DefaultHandler {
+public class JiraSaxHandler extends DefaultHandler {
 
    private static final String CUSTOMFIELDNAME = "customfieldname";
    private static final Object CUSTOMFIELDVALUE = "customfieldvalue";
@@ -21,7 +21,7 @@ public class SaxHandler extends DefaultHandler {
    private int nodeCount;
    private StringBuffer sb = new StringBuffer();
    private boolean sprintNextValue = false;
-   private Logger log = MyLogger.getLogger(SaxHandler.class);
+   private Logger log = MyLogger.getLogger(JiraSaxHandler.class);
    private String element;
 
    public void addJiraParseListener(JiraParseListener jiraParseListener) {
