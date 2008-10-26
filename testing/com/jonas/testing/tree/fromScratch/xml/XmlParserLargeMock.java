@@ -5,11 +5,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-public class XmlParserMock implements XmlParser {
+public class XmlParserLargeMock implements XmlParser {
 
    private XMLReader reader;
 
-   public XmlParserMock(JiraSaxHandler nodeCounter) throws SAXException {
+   public XmlParserLargeMock(JiraSaxHandler nodeCounter) throws SAXException {
       super();
       reader = XMLReaderFactory.createXMLReader();
       reader.setContentHandler(nodeCounter);

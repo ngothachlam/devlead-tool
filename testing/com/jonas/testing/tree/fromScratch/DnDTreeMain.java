@@ -28,7 +28,8 @@ import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 import com.jonas.testing.tree.fromScratch.xml.JiraParseListener;
 import com.jonas.testing.tree.fromScratch.xml.JiraSaxHandler;
 import com.jonas.testing.tree.fromScratch.xml.XmlParser;
-import com.jonas.testing.tree.fromScratch.xml.XmlParserMock;
+import com.jonas.testing.tree.fromScratch.xml.XmlParserLargeMock;
+import com.jonas.testing.tree.fromScratch.xml.XmlParserSmallMock;
 
 public class DnDTreeMain extends JFrame {
 
@@ -45,7 +46,7 @@ public class DnDTreeMain extends JFrame {
          tree = new DnDTree(model);
 
          JiraSaxHandler saxHandler = new JiraSaxHandler();
-         XmlParser parser = new XmlParserMock(saxHandler);
+         XmlParser parser = new XmlParserSmallMock(saxHandler);
          dndTreeBuilder = new DnDTreeBuilder(parser);
 
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree));
@@ -149,7 +150,13 @@ class JiraParseListenerImpl implements JiraParseListener {
 
    private void runInEventDispatchThread(Runnable runnableInEventDispatchThread) {
       if (SwingUtilities.isEventDispatchThread()) {
-         SwingUtilities.invokeLater(runnableInEventDispatchThread);
+         try {
+            SwingUtilities.invokeAndWait(runnableInEventDispatchThread);
+         } catch (InterruptedException e) {
+            e.printStackTrace();
+         } catch (InvocationTargetException e) {
+            e.printStackTrace();
+         }
       } else {
          runnableInEventDispatchThread.run();
       }

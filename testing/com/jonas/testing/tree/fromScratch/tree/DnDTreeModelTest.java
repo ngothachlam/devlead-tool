@@ -104,6 +104,25 @@ public class DnDTreeModelTest extends TestCase {
       DefaultMutableTreeNode jiraOne = assertChild(model, fixVOne, 0, "Jira 1", 0);
       DefaultMutableTreeNode jiraTwo = assertChild(model, fixVTwo, 0, "Jira 2", 0);
    }
+   
+   public void testShouldAddJirasOkFromDTOs() {
+      DnDTreeModel model = new DnDTreeModel("LLU");
+      
+      assertEquals(0, model.getChildCount(model.getRoot()));
+      
+      JiraDTO jiraDto1 = getTestJiraDto("Sprint 1", "FixVersion 1", "Jira 1");
+      JiraDTO jiraDto2 = getTestJiraDto("Sprint 2", "FixVersion 1", "Jira 2");
+      model.addJira(jiraDto1);
+      model.addJira(jiraDto2);
+      
+      assertEquals(2, model.getChildCount(model.getRoot()));
+      DefaultMutableTreeNode spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 1);
+      DefaultMutableTreeNode spriTwo = assertChild(model, model.getRoot(), 1, "Sprint 2", 1);
+      DefaultMutableTreeNode fixVOne = assertChild(model, spriOne, 0, "FixVersion 1", 1);
+      DefaultMutableTreeNode fixVTwo = assertChild(model, spriTwo, 1, "FixVersion 1", 1);
+      DefaultMutableTreeNode jiraOne = assertChild(model, fixVOne, 0, "Jira 1", 0);
+      DefaultMutableTreeNode jiraTwo = assertChild(model, fixVTwo, 0, "Jira 2", 0);
+   }
 
    private DefaultMutableTreeNode assertChild(DnDTreeModel model, Object parent, int childIndex, String expectedChildName, int expectedCountOfChildsChildren) {
       DefaultMutableTreeNode child;
