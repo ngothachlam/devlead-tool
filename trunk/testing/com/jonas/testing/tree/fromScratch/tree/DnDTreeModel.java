@@ -44,19 +44,19 @@ public class DnDTreeModel extends DefaultTreeModel {
       return fixVersionNode;
    }
 
-   DefaultMutableTreeNode createJira(String sprintName, String fixVersionName, String jira) {
+   void createJira(String sprintName, String fixVersionName, String jira) {
       DefaultMutableTreeNode jiraNode = new DefaultMutableTreeNode(jira);
       MutableTreeNode parent = fixVersions.get(fixVersionName);
       if (parent == null) {
          parent = createFixVersion(sprintName, fixVersionName);
       }
-      if (jiras.get(jira) == null) {
+      if (!jiras.containsKey(jira)) {
          insertNodeInto(jiraNode, parent, parent.getChildCount());
+         log.debug("Adding jira " + jira);
          jiras.put(jira, jiraNode);
       } else {
          log.warn("Jira " + jira + " is not added to Model as it already exists!");
       }
-      return jiraNode;
    }
 
    DefaultMutableTreeNode createSprint(String sprintName) {
@@ -67,8 +67,15 @@ public class DnDTreeModel extends DefaultTreeModel {
       return sprintNode;
    }
 
-   public void createJira(JiraDTO jira) {
+   public void addJira(JiraDTO jira) {
       createJira(jira.getSprint(), jira.getFixVersion(), jira.getKey());
+   }
+
+   public void removeJira(String jira) {
+      DefaultMutableTreeNode node = jiras.get(jira);
+      log.debug(node);
+      removeNodeFromParent(node);
+      jiras.remove(jira);
    }
 
 }
