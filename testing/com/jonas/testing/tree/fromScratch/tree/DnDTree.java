@@ -1,4 +1,4 @@
-package com.jonas.testing.tree.fromScratch;
+package com.jonas.testing.tree.fromScratch.tree;
 
 import javax.swing.DropMode;
 import javax.swing.JTree;

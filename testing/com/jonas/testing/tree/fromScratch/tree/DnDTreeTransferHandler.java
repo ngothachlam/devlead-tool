@@ -1,4 +1,4 @@
-package com.jonas.testing.tree.fromScratch;
+package com.jonas.testing.tree.fromScratch.tree;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;

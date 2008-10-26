@@ -4,7 +4,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.testing.tree.fromScratch.DnDTree;
+import com.jonas.testing.tree.fromScratch.tree.DnDTree;
 
 public class DnDTreeBuilder {
 

@@ -17,6 +17,7 @@ import javax.swing.tree.MutableTreeNode;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.testing.tree.fromScratch.tree.DnDTree;
 import com.jonas.testing.tree.fromScratch.xml.DnDTreeBuilder;
 import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 import com.jonas.testing.tree.fromScratch.xml.JiraParseListener;
