@@ -92,7 +92,7 @@
 
          <version>LLU 12</version>
 
-         <fixVersion>LLU 12</fixVersion>
+         <fixVersion>LLU 12</fixVersion> 
 
          <component>Conan</component>
 
@@ -104,7 +104,7 @@
                <customfieldname>Sprint</customfieldname>
 
                <customfieldvalues>
-                  <customfieldvalue>12.4</customfieldvalue>
+                  <customfieldvalue>12.5</customfieldvalue>
                </customfieldvalues>
             </customfield>
          </customfields>

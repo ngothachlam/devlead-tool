@@ -38,4 +38,17 @@ public class JiraDTO {
       this.sprint = sprint;
    }
 
+   public String toString() {
+      StringBuffer sb = new StringBuffer();
+      sb.append("[JiraDTO ");
+      sb.append("Key: ");
+      sb.append(key);
+      sb.append(", FixVersion: ");
+      sb.append(fixVersion);
+      sb.append(", Sprint: ");
+      sb.append(sprint);
+      sb.append("]");
+      return sb.toString();
+   }
+
 }

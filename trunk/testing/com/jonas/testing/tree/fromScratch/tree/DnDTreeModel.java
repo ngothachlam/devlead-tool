@@ -63,11 +63,13 @@ public class DnDTreeModel extends DefaultTreeModel {
       DefaultMutableTreeNode sprintNode = new DefaultMutableTreeNode(sprintName);
       DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
       insertNodeInto(sprintNode, root, root.getChildCount());
-      sprints.put(sprintName, sprintNode);
+      if (!sprints.containsKey(sprintName))
+         sprints.put(sprintName, sprintNode);
       return sprintNode;
    }
 
    public void addJira(JiraDTO jira) {
+      log.debug(jira);
       createJira(jira.getSprint(), jira.getFixVersion(), jira.getKey());
    }
 
