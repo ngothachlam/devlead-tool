@@ -123,7 +123,7 @@ public class InternalTabPanel extends MyComponentPanel {
       boardModel.addTableModelListener(new TableModelListener(){
          @Override
          public void tableChanged(TableModelEvent e) {
-            MyStatusBar.getInstance().setMessage("Board Data Changed!");
+            MyStatusBar.getInstance().setMessage("Board Data Changed!", true);
          }
       });
       boardPanel.getTable().addListener(myTableListener);

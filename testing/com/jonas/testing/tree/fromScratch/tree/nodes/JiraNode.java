@@ -4,8 +4,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class JiraNode extends DefaultMutableTreeNode {
 
-   public JiraNode(String jira) {
+   private final FixVersionNode parent;
+
+   public JiraNode(String jira, FixVersionNode parent) {
       super(jira);
+      this.parent = parent;
    }
 
    @Override
