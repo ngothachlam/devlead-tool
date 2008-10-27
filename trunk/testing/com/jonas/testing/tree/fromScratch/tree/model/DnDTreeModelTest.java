@@ -124,14 +124,14 @@ public class DnDTreeModelTest extends TestCase {
       DefaultMutableTreeNode jiraTwo = assertChild(model, fixVTwo, 0, "Jira 2", 0);
       
       JiraDTO jiraDto3 = getTestJiraDto("Sprint 2", null, "Jira 2");
-      model.addJira(jiraDto2);
+      model.addJira(jiraDto3);
       
       assertEquals(2, model.getChildCount(model.getRoot()));
       spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 1);
-      spriTwo = assertChild(model, model.getRoot(), 1, "Sprint 2", 1);
+      spriTwo = assertChild(model, model.getRoot(), 1, "Sprint 2", 2);
       fixVOne = assertChild(model, spriOne, 0, "FixVersion 1", 1);
       fixVTwo = assertChild(model, spriTwo, 0, "FixVersion 2", 0);
-      DefaultMutableTreeNode fixVTrh = assertChild(model, spriTwo, 1, "<UnKnown FixVesion>", 1);
+      DefaultMutableTreeNode fixVTrh = assertChild(model, spriTwo, 1, "<UnKnown FixVersion>", 1);
       jiraOne = assertChild(model, fixVOne, 0, "Jira 1", 0);
       jiraTwo = assertChild(model, fixVTrh, 0, "Jira 2", 0);
    }

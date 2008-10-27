@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.testing.tree.fromScratch.tree.nodes.FixVersionNode;
@@ -52,17 +53,26 @@ public class DnDTreeModel extends DefaultTreeModel {
       return fixVersionNode;
    }
 
-   void createJira(String sprintName, String fixVersionName, String jira, boolean isMovable) {
+   void createJira(String sprintName, String fixVersionName, String jira) {
       FixVersionNode parent = fixVersions.get(sprintName + "@#@" + fixVersionName);
       if (parent == null) {
          parent = createFixVersion(sprintName, fixVersionName);
       }
-      if (!jiras.containsKey(jira)) {
-         JiraNode jiraNode = new JiraNode(jira, parent);
+      JiraNode jiraNode = jiras.get(jira);
+      if (jiraNode == null) {
+         jiraNode = new JiraNode(jira, parent);
          insertNodeInto(jiraNode, parent, parent.getChildCount());
          jiras.put(jira, jiraNode);
       } else {
-         log.warn("Jira " + jira + " is not added to Model as it already exists!");
+         TreeNode parent2 = jiraNode.getParent();
+         System.out.println("blah!!");
+         // FIXME not working when moving one jira to anoother fixversion and then refreshing.
+         if (parent2 != parent || parent2.getParent() != parent.getParent()) {
+            removeNodeFromParent(jiraNode);
+            insertNodeInto(jiraNode, parent, parent.getChildCount());
+            // } else{
+            // log.warn("Jira " + jira + " is not added to Model as it already exists in this position!");
+         }
       }
    }
 
@@ -86,20 +96,7 @@ public class DnDTreeModel extends DefaultTreeModel {
       if (fixVersion == null) {
          fixVersion = UNKNOWN_FIXVERSION;
       }
-      createJira(sprint, fixVersion, jira.getKey(), false);
-   }
-   
-   public void addJira(JiraDTO jira, boolean isMovable) {
-      log.debug(jira);
-      String sprint = jira.getSprint();
-      if (sprint == null) {
-         sprint = UNKNOWN_SPRINT;
-      }
-      String fixVersion = jira.getFixVersion();
-      if (fixVersion == null) {
-         fixVersion = UNKNOWN_FIXVERSION;
-      }
-      createJira(sprint, fixVersion, jira.getKey(), isMovable);
+      createJira(sprint, fixVersion, jira.getKey());
    }
 
    public void removeJira(String jira) {
