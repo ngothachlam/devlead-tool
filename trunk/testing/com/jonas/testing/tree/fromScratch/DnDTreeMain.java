@@ -27,7 +27,7 @@ import com.jonas.testing.tree.fromScratch.xml.XmlParserSmallMock;
 public class DnDTreeMain extends JFrame {
 
    private Logger log = MyLogger.getLogger(DnDTreeMain.class);
-   
+
    private DnDTree tree;
    private DnDTreeBuilder dndTreeBuilder;
 
@@ -91,9 +91,8 @@ public class DnDTreeMain extends JFrame {
       @Override
       public void actionPerformed(ActionEvent e) {
          log.debug("Refresh Button Pressed!");
-         MyStatusBar.getInstance().setMessage("Starting to Build Table...");
+         MyStatusBar.getInstance().setMessage("Starting to Build Table...", false);
          dndTreeBuilder.buildTree(tree);
-         MyStatusBar.getInstance().setMessage("Finished Building Table!");
       }
    }
 }
@@ -104,18 +103,23 @@ class JiraParseListenerImpl implements JiraParseListener {
    private Logger log = MyLogger.getLogger(JiraParseListenerImpl.class);
 
    private DnDTree tree;
+   private int count;
 
    public JiraParseListenerImpl(DnDTree tree) {
       super();
       this.tree = tree;
    }
 
-
    @Override
    public void notifyParsed(final JiraDTO jira) {
       runInEventDispatchThread(new Runnable() {
+
          @Override
          public void run() {
+            StringBuffer sb = new StringBuffer("Starting to Build Table... (");
+            sb.append(++count);
+            sb.append(")");
+            MyStatusBar.getInstance().setMessage(sb.toString(), false);
             tree.createJira(jira);
          }
       });
@@ -123,16 +127,11 @@ class JiraParseListenerImpl implements JiraParseListener {
 
    @Override
    public void notifyParsingFinished() {
-      runInEventDispatchThread(new Runnable() {
-         @Override
-         public void run() {
-            tree.reload();
-         }
-      });
    }
 
    @Override
    public void notifyParsingStarted() {
+      count = 0;
       runInEventDispatchThread(new Runnable() {
          @Override
          public void run() {

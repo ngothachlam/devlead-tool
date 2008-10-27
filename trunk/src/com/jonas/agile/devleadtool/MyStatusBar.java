@@ -18,7 +18,7 @@ public class MyStatusBar extends JPanel {
 
    private MessageClearer messageClearer;
    private JLabel statusMessage;
-   
+
    private MyStatusBar() {
       super(new GridLayout(0, 1, 0, 0));
       statusMessage = new JLabel(" ");
@@ -40,27 +40,30 @@ public class MyStatusBar extends JPanel {
       return instance;
    }
 
-   public void setMessage(final String message) {
+   public void setMessage(final String message, boolean isToBeClosedSoon) {
       statusMessage.setText(message);
-      messageClearer.clearMessageAfterDelay();
+      if (isToBeClosedSoon) {
+         messageClearer.clearMessageAfterDelay();
+      }
    }
 }
 
+
 class MessageClearer implements ActionListener {
-   
+
    private Logger log = MyLogger.getLogger(MessageClearer.class);
-   
+
    private final int delay;
    private volatile int queue = 0;
    private JLabel statusMessage;
-   
+
    public MessageClearer(int delay, JLabel statusMessage) {
       this.delay = delay;
       this.statusMessage = statusMessage;
       if (delay < 1)
          throw new RuntimeException("Delay has to be higher than zero!");
    }
-   
+
    @Override
    public void actionPerformed(ActionEvent e) {
       queue--;
@@ -68,7 +71,7 @@ class MessageClearer implements ActionListener {
          statusMessage.setText(" ");
       log.debug("clearing message! Queue is now " + queue);
    }
-   
+
    public void clearMessageAfterDelay() {
       queue++;
       log.debug("setting message to! Queue is now " + queue);

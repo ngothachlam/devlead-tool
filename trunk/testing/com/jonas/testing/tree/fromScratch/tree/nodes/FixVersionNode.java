@@ -4,8 +4,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class FixVersionNode extends DefaultMutableTreeNode {
 
-   public FixVersionNode(String fixVersionName) {
+   private final SprintNode parent;
+
+   public FixVersionNode(String fixVersionName, SprintNode parent) {
       super(fixVersionName);
+      this.parent = parent;
    }
 
    @Override

@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
+import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.testing.tree.fromScratch.tree.DnDTree;
 
@@ -30,6 +31,11 @@ public class DnDTreeBuilder {
                e.printStackTrace();
             }
             return null;
+         }
+
+         @Override
+         protected void done() {
+            MyStatusBar.getInstance().setMessage("Finished Building Table!", true);
          }
       };
       worker.execute();

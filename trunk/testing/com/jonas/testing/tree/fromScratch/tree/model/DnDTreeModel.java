@@ -9,10 +9,14 @@ import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.testing.tree.fromScratch.tree.nodes.FixVersionNode;
 import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
+import com.jonas.testing.tree.fromScratch.tree.nodes.ProjectNode;
 import com.jonas.testing.tree.fromScratch.tree.nodes.SprintNode;
 import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 
 public class DnDTreeModel extends DefaultTreeModel {
+
+   private static final String UNKNOWN_FIXVERSION = "<UnKnown FixVersion>";
+   private static final String UNKNOWN_SPRINT = "<UnKnown Sprint>";
 
    private Logger log = MyLogger.getLogger(DnDTreeModel.class);
 
@@ -21,14 +25,14 @@ public class DnDTreeModel extends DefaultTreeModel {
    private Map<String, SprintNode> sprints = new HashMap<String, SprintNode>();
 
    public DnDTreeModel(String rootName) {
-      super(new DefaultMutableTreeNode(rootName));
+      super(new ProjectNode(rootName));
       setAsksAllowsChildren(true);
    }
 
    public void removeAllChildren() {
-      int noOfRootChildren = getChildCount(root);
+      int noOfRootChildren = getChildCount(getRoot());
       for (int child = 0; child < noOfRootChildren; child++) {
-         MutableTreeNode tempChild = (MutableTreeNode) getChild(root, child);
+         MutableTreeNode tempChild = (MutableTreeNode) getChild(getRoot(), child);
          removeNodeFromParent(tempChild);
       }
 
@@ -38,25 +42,24 @@ public class DnDTreeModel extends DefaultTreeModel {
    }
 
    FixVersionNode createFixVersion(String sprintName, String fixVersionName) {
-      FixVersionNode fixVersionNode = new FixVersionNode(fixVersionName);
       SprintNode parent = sprints.get(sprintName);
       if (parent == null) {
          parent = createSprint(sprintName);
       }
-       insertNodeInto(fixVersionNode, parent, parent.getChildCount());
+      FixVersionNode fixVersionNode = new FixVersionNode(fixVersionName, parent);
+      insertNodeInto(fixVersionNode, parent, parent.getChildCount());
       fixVersions.put(sprintName + "@#@" + fixVersionName, fixVersionNode);
       return fixVersionNode;
    }
 
-   void createJira(String sprintName, String fixVersionName, String jira) {
-      JiraNode jiraNode = new JiraNode(jira);
+   void createJira(String sprintName, String fixVersionName, String jira, boolean isMovable) {
       FixVersionNode parent = fixVersions.get(sprintName + "@#@" + fixVersionName);
       if (parent == null) {
          parent = createFixVersion(sprintName, fixVersionName);
       }
       if (!jiras.containsKey(jira)) {
+         JiraNode jiraNode = new JiraNode(jira, parent);
          insertNodeInto(jiraNode, parent, parent.getChildCount());
-         log.debug("Adding jira " + jira);
          jiras.put(jira, jiraNode);
       } else {
          log.warn("Jira " + jira + " is not added to Model as it already exists!");
@@ -64,11 +67,12 @@ public class DnDTreeModel extends DefaultTreeModel {
    }
 
    SprintNode createSprint(String sprintName) {
+      ProjectNode root = (ProjectNode) getRoot();
       SprintNode sprintNode = new SprintNode(sprintName);
-      DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
       insertNodeInto(sprintNode, root, root.getChildCount());
-      if (!sprints.containsKey(sprintName))
+      if (!sprints.containsKey(sprintName)) {
          sprints.put(sprintName, sprintNode);
+      }
       return sprintNode;
    }
 
@@ -76,13 +80,26 @@ public class DnDTreeModel extends DefaultTreeModel {
       log.debug(jira);
       String sprint = jira.getSprint();
       if (sprint == null) {
-         sprint = "<UnKnown Sprint>";
+         sprint = UNKNOWN_SPRINT;
       }
       String fixVersion = jira.getFixVersion();
       if (fixVersion == null) {
-         fixVersion = "<UnKnown FixVersion>";
+         fixVersion = UNKNOWN_FIXVERSION;
       }
-      createJira(sprint, fixVersion, jira.getKey());
+      createJira(sprint, fixVersion, jira.getKey(), false);
+   }
+   
+   public void addJira(JiraDTO jira, boolean isMovable) {
+      log.debug(jira);
+      String sprint = jira.getSprint();
+      if (sprint == null) {
+         sprint = UNKNOWN_SPRINT;
+      }
+      String fixVersion = jira.getFixVersion();
+      if (fixVersion == null) {
+         fixVersion = UNKNOWN_FIXVERSION;
+      }
+      createJira(sprint, fixVersion, jira.getKey(), isMovable);
    }
 
    public void removeJira(String jira) {
