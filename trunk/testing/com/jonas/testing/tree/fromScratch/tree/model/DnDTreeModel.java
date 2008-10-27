@@ -53,16 +53,16 @@ public class DnDTreeModel extends DefaultTreeModel {
       return fixVersionNode;
    }
 
-   void createJira(String sprintName, String fixVersionName, String jira) {
+   void createJira(String sprintName, String fixVersionName, JiraDTO jira) {
       FixVersionNode parent = fixVersions.get(sprintName + "@#@" + fixVersionName);
       if (parent == null) {
          parent = createFixVersion(sprintName, fixVersionName);
       }
-      JiraNode jiraNode = jiras.get(jira);
+      JiraNode jiraNode = jiras.get(jira.getKey());
       if (jiraNode == null) {
-         jiraNode = new JiraNode(jira, parent);
+         jiraNode = new JiraNode(jira.getKey(), parent, jira.getResolution(), jira.getStatus(), jira.getSummary());
          insertNodeInto(jiraNode, parent, parent.getChildCount());
-         jiras.put(jira, jiraNode);
+         jiras.put(jira.getKey(), jiraNode);
       } else {
          TreeNode parent2 = jiraNode.getParent();
          System.out.println("blah!!");
@@ -96,7 +96,7 @@ public class DnDTreeModel extends DefaultTreeModel {
       if (fixVersion == null) {
          fixVersion = UNKNOWN_FIXVERSION;
       }
-      createJira(sprint, fixVersion, jira.getKey());
+      createJira(sprint, fixVersion, jira);
    }
 
    public void removeJira(String jira) {

@@ -9,13 +9,14 @@ public class XmlParserSmallMock implements XmlParser {
 
    private XMLReader reader;
 
-   public XmlParserSmallMock(JiraSaxHandler nodeCounter) throws SAXException {
+   public XmlParserSmallMock(JiraSaxHandler saxHandler) throws SAXException {
       super();
       reader = XMLReaderFactory.createXMLReader();
-      reader.setContentHandler(nodeCounter);
+      reader.setContentHandler(saxHandler);
    }
 
    public void parse() throws IOException, SAXException {
+      System.out.println("parsing!");
       reader.parse("test-data/ListOfSprintJiras.xml");
    }
 }

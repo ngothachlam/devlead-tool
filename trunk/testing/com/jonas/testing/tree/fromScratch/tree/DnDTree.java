@@ -41,21 +41,27 @@ public class DnDTree extends JTree {
       if (path != null) {
          DefaultMutableTreeNode nodeTemp = (DefaultMutableTreeNode) (path.getLastPathComponent());
          String str = null;
-         if (nodeTemp instanceof JiraNode){
+         if (nodeTemp instanceof JiraNode) {
             JiraNode node = (JiraNode) nodeTemp;
-            str = node.getUserObject().toString();
-         }
-         else if (nodeTemp instanceof SprintNode){
+            str = appendStrings(node.getUserObject().toString(), " ", node.getDescription(), " (Status: ", node.getStatus(), ", Resolution: ", node.getResolution(), ")");
+         } else if (nodeTemp instanceof SprintNode) {
             SprintNode node = (SprintNode) nodeTemp;
-            str = node.getUserObject().toString();
-         }
-         else if (nodeTemp instanceof FixVersionNode){
+            str = appendStrings(node.getUserObject().toString(), " (Total: ", node.getChildCount(), ")");
+         } else if (nodeTemp instanceof FixVersionNode) {
             FixVersionNode node = (FixVersionNode) nodeTemp;
-            str = node.getUserObject().toString();
+            str = appendStrings(node.getUserObject().toString(), " (Total: ", node.getChildCount(), ")");
          }
          return str;
       }
       return null;
+   }
+
+   public String appendStrings(Object... strings) {
+      StringBuffer sb = new StringBuffer();
+      for (int i = 0; i < strings.length; i++) {
+         sb.append(strings[i].toString());
+      }
+      return sb.toString();
    }
 
    public void removeJira(String jira) {

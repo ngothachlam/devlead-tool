@@ -9,6 +9,9 @@ import com.jonas.common.logging.MyLogger;
 
 public class JiraSaxHandler extends DefaultHandler {
 
+   private static final String SUMMARY = "summary";
+   private static final String RESOLUTION = "resolution";
+   private static final String STATUS = "status";
    private static final String CUSTOMFIELDNAME = "customfieldname";
    private static final Object CUSTOMFIELDVALUE = "customfieldvalue";
    private static final String FIXVERSION = "fixVersion";
@@ -49,16 +52,17 @@ public class JiraSaxHandler extends DefaultHandler {
 
    public void endElement(String uri, String name, String qName) {
       String value = sb.toString().trim();
-      // System.out.println("\tValue : " + value);
-      // if ("".equals(uri))
-      // System.out.println("End element: " + qName);
-      // else
-      // System.out.println("End element: {" + uri + "}" + name);
       if (KEY.equals(qName)) {
          log.debug("JiraKey: " + value);
          jira.setKey(value);
       } else if (FIXVERSION.equals(qName)) {
          jira.setFixVersion(value);
+      } else if (SUMMARY.equals(qName)) {
+         jira.setSummary(value);
+      } else if (STATUS.equals(qName)) {
+         jira.setStatus(value);
+      } else if (RESOLUTION.equals(qName)) {
+         jira.setResolution(value);
       } else if (SPRINT.equals(value) && CUSTOMFIELDNAME.equals(element)) {
          sprintNextValue = true;
       } else if (CUSTOMFIELDVALUE.equals(qName) && sprintNextValue) {
@@ -71,21 +75,18 @@ public class JiraSaxHandler extends DefaultHandler {
    }
 
    private void notifyJiraParsed(JiraDTO jira) {
-      // log.debug("Parsing Jira " + jira.getKey());
       for (JiraParseListener listener : jiraParseListeners) {
          listener.notifyParsed(jira);
       }
    }
 
    private void notifyParsingFinished() {
-      // log.debug("Parsing Finished!");
       for (JiraParseListener listener : jiraParseListeners) {
          listener.notifyParsingFinished();
       }
    }
 
    private void notifyParsingStarted() {
-      // log.debug("Parsing Started!");
       for (JiraParseListener listener : jiraParseListeners) {
          listener.notifyParsingStarted();
       }
@@ -97,16 +98,7 @@ public class JiraSaxHandler extends DefaultHandler {
    }
 
    public void startElement(String uri, String name, String qName, Attributes atts) throws SAXException {
-      // if ("".equals(uri))
-      // System.out.println("Start element: " + qName);
-      // else
-      // System.out.println("Start element: {" + uri + "}" + name);
-      // for (int i = 0; i < atts.getLength(); i++) {
-      // System.out.println("\tAtt : " + atts.getLocalName(i) + " - " + atts.getValue(i));
-      // }
-
       if (ITEM.equals(qName)) {
-         // log.debug("creating Jira!");
          jira = new JiraDTO();
       }
       element = qName;
