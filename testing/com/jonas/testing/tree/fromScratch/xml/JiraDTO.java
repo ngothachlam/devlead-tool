@@ -1,15 +1,18 @@
 package com.jonas.testing.tree.fromScratch.xml;
 
-import org.apache.log4j.Logger;
-import com.jonas.common.logging.MyLogger;
 
 public class JiraDTO {
 
-   private Logger log = MyLogger.getLogger(JiraDTO.class);
-
+   private String summary;
    private String fixVersion;
    private String key;
+   private String resolution;
    private String sprint;
+   private String status;
+
+   public String getSummary() {
+      return summary;
+   }
 
    public String getFixVersion() {
       return fixVersion;
@@ -19,23 +22,44 @@ public class JiraDTO {
       return key;
    }
 
+   public String getResolution() {
+      return resolution;
+   }
+
    public String getSprint() {
       return sprint;
    }
 
+   public String getStatus() {
+      return status;
+   }
+
+   public void setSummary(String summary) {
+      this.summary = cutString( summary, 70);
+   }
+
+   String cutString(String string, int i) {
+      return string.length() > i ? string.substring(0, i) + "..." : string;
+   }
+
    public void setFixVersion(String fixVersion) {
-      // log.debug("setFixVersion: " + fixVersion);
       this.fixVersion = fixVersion;
    }
 
    public void setKey(String key) {
-      // log.debug("setKey: " + key);
       this.key = key;
    }
 
+   public void setResolution(String resolution) {
+      this.resolution = resolution;
+   }
+
    public void setSprint(String sprint) {
-      // log.debug("setSprint: " + sprint);
       this.sprint = sprint;
+   }
+
+   public void setStatus(String status) {
+      this.status = status;
    }
 
    public String toString() {
