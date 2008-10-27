@@ -1,6 +1,5 @@
 package com.jonas.testing.tree.fromScratch.tree.dnd;
 
-import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -20,7 +19,6 @@ import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
 public class DnDTreeTransferHandler extends TransferHandler {
 
    private Logger log = MyLogger.getLogger(DnDTreeTransferHandler.class);
-   private Toolkit toolkit = Toolkit.getDefaultToolkit();
 
    private DataFlavor dataFlavor;
    private DnDTree tree;
