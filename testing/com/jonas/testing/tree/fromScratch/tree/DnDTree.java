@@ -24,11 +24,18 @@ public class DnDTree extends JTree {
 
    private DnDTreeModel model;
 
+   private DnDTreeJiraToolTipFacade tooltipFacade;
+
    public DnDTree(DnDTreeModel model) {
       super(model);
       setDnD();
       ToolTipManager.sharedInstance().registerComponent(this);
       setCellRenderer(new DnDTreeCellRenderer());
+      tooltipFacade = new DnDTreeJiraToolTipFacade(this);
+   }
+
+   public void createJira(JiraDTO jira) {
+      model.addJira(jira);
    }
 
    public DnDTreeModel getModel() {
@@ -37,45 +44,19 @@ public class DnDTree extends JTree {
 
    @Override
    public String getToolTipText(MouseEvent event) {
-      if (event == null)
-         return null;
-      TreePath path = getPathForLocation(event.getX(), event.getY());
-      if (path != null) {
-         DefaultMutableTreeNode nodeTemp = (DefaultMutableTreeNode) (path.getLastPathComponent());
-         String str = null;
-         if (nodeTemp instanceof JiraNode) {
-            JiraNode node = (JiraNode) nodeTemp;
-            str = appendStrings(node.getUserObject().toString(), " ", node.getDescription(), " (Status: ", node.getStatus(), ", Resolution: ", node.getResolution(), ")");
-         } else if (nodeTemp instanceof SprintNode) {
-            SprintNode node = (SprintNode) nodeTemp;
-            str = appendStrings(node.getUserObject().toString(), " (Total: ", node.getChildCount(), ")");
-         } else if (nodeTemp instanceof FixVersionNode) {
-            FixVersionNode node = (FixVersionNode) nodeTemp;
-            str = appendStrings(node.getUserObject().toString(), " (Total: ", node.getChildCount(), ")");
-         }
-         return str;
-      }
-      return null;
+      return tooltipFacade.getToolTipText(event);
    }
 
-   public String appendStrings(Object... strings) {
-      StringBuffer sb = new StringBuffer();
-      for (int i = 0; i < strings.length; i++) {
-         sb.append(strings[i].toString());
-      }
-      return sb.toString();
+   public void reload() {
+      model.reload();
+   }
+
+   public void removeAllChildren() {
+      model.removeAllChildren();
    }
 
    public void removeJira(String jira) {
       throw new UnsupportedOperationException("not implemented yet!");
-   }
-
-   @Override
-   public void setModel(TreeModel newModel) {
-      if (!(newModel instanceof DnDTreeModel))
-         throw new RuntimeException("Only handles DefaultTreeModel!");
-      super.setModel(newModel);
-      model = (DnDTreeModel) newModel;
    }
 
    private void setDnD() {
@@ -87,15 +68,53 @@ public class DnDTree extends JTree {
       getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
    }
 
-   public void removeAllChildren() {
-      model.removeAllChildren();
+   @Override
+   public void setModel(TreeModel newModel) {
+      if (!(newModel instanceof DnDTreeModel))
+         throw new RuntimeException("Only handles DefaultTreeModel!");
+      super.setModel(newModel);
+      model = (DnDTreeModel) newModel;
+   }
+}
+
+
+class DnDTreeJiraToolTipFacade {
+
+   private final DnDTree dnDTree;
+
+   public DnDTreeJiraToolTipFacade(DnDTree dnDTree) {
+      this.dnDTree = dnDTree;
    }
 
-   public void reload() {
-      model.reload();
+   private String appendStrings(Object... strings) {
+      StringBuffer sb = new StringBuffer();
+      for (int i = 0; i < strings.length; i++) {
+         sb.append(strings[i].toString());
+      }
+      return sb.toString();
    }
 
-   public void createJira(JiraDTO jira) {
-      model.addJira(jira);
+   public String getToolTipText(MouseEvent event) {
+      if (event == null)
+         return null;
+      TreePath path = dnDTree.getPathForLocation(event.getX(), event.getY());
+      if (path != null) {
+         DefaultMutableTreeNode nodeTemp = (DefaultMutableTreeNode) (path.getLastPathComponent());
+         String str = null;
+         if (nodeTemp instanceof JiraNode) {
+            JiraNode node = (JiraNode) nodeTemp;
+            str = appendStrings(node.getUserObject().toString(), " ", node.getDescription(), " (Status: ", node.getStatus(), ", Resolution: ", node
+                  .getResolution(), ")");
+         } else if (nodeTemp instanceof SprintNode) {
+            SprintNode node = (SprintNode) nodeTemp;
+            str = appendStrings(node.getUserObject().toString(), " (Total: ", node.getChildCount(), ")");
+         } else if (nodeTemp instanceof FixVersionNode) {
+            FixVersionNode node = (FixVersionNode) nodeTemp;
+            str = appendStrings(node.getUserObject().toString(), " (Total: ", node.getChildCount(), ")");
+         }
+         return str;
+      }
+      return null;
+
    }
 }

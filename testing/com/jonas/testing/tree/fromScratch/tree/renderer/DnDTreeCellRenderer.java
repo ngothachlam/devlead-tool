@@ -11,8 +11,6 @@ import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
 
 public class DnDTreeCellRenderer extends DefaultTreeCellRenderer {
 
-   private static final File FILE = new File("icons/green_tick.png");
-
    private static final ImageIcon IMAGE_ICON_WHITE = new ImageIcon("icons/white_tick.png");
    private static final ImageIcon IMAGE_ICON_GREEN = new ImageIcon("icons/green_tick.png");
    private static final ImageIcon IMAGE_ICON_BLUE = new ImageIcon("icons/blue_tick.png");
@@ -26,7 +24,6 @@ public class DnDTreeCellRenderer extends DefaultTreeCellRenderer {
       // log.debug("getTreeCellRendererComponent");
       if (value instanceof JiraNode) {
          JiraNode jira = (JiraNode) value;
-         // log.debug(jira.gedettUserObject() + " of status " + jira.getStatus() + " " + FILE.exists() + " " + FILE.getAbsolutePath());
          if ("Closed".equalsIgnoreCase(jira.getStatus())) {
             setIcon(IMAGE_ICON_GREEN);
          } else if ("Resolved".equalsIgnoreCase(jira.getStatus())) {
