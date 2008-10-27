@@ -74,7 +74,15 @@ public class DnDTreeModel extends DefaultTreeModel {
 
    public void addJira(JiraDTO jira) {
       log.debug(jira);
-      createJira(jira.getSprint(), jira.getFixVersion(), jira.getKey());
+      String sprint = jira.getSprint();
+      if (sprint == null) {
+         sprint = "<UnKnown Sprint>";
+      }
+      String fixVersion = jira.getFixVersion();
+      if (fixVersion == null) {
+         fixVersion = "<UnKnown FixVersion>";
+      }
+      createJira(sprint, fixVersion, jira.getKey());
    }
 
    public void removeJira(String jira) {
