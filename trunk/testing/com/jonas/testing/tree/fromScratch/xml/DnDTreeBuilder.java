@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.access.JiraException;
 import com.jonas.testing.tree.fromScratch.tree.DnDTree;
 
 public class DnDTreeBuilder {
@@ -28,6 +29,8 @@ public class DnDTreeBuilder {
             } catch (IOException e) {
                e.printStackTrace();
             } catch (SAXException e) {
+               e.printStackTrace();
+            } catch (JiraException e) {
                e.printStackTrace();
             }
             return null;

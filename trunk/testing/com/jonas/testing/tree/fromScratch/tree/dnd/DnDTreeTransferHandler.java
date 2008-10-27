@@ -82,7 +82,7 @@ public class DnDTreeTransferHandler extends TransferHandler {
       try {
          DefaultMutableTreeNode mouseOverParentNode = getParentNode(supp);
          DefaultMutableTreeNode draggedNode = getDraggedNode(supp);
-         
+
          return isParentMouseOverOfTypeFixVersionAndDragedNodeIsJiraType(mouseOverParentNode, draggedNode);
       } catch (UnsupportedFlavorException e) {
          e.printStackTrace();
@@ -108,7 +108,12 @@ public class DnDTreeTransferHandler extends TransferHandler {
 
    private boolean isParentMouseOverOfTypeFixVersionAndDragedNodeIsJiraType(DefaultMutableTreeNode parentNode, DefaultMutableTreeNode newNode) {
       if (parentNode instanceof FixVersionNode && newNode instanceof JiraNode) {
-         return true;
+         FixVersionNode parent = (FixVersionNode) parentNode;
+         JiraNode child = (JiraNode) newNode;
+         FixVersionNode childsParent = (FixVersionNode) child.getParent();
+         log.debug("Parent : " + parent.getUserObject() + " Childs parent: " + childsParent.getUserObject());
+         if (parent.getUserObject().equals((childsParent).getUserObject()))
+            return true;
       }
       return false;
    }
