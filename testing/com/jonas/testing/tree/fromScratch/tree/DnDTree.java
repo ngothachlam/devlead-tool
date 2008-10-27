@@ -107,10 +107,10 @@ class DnDTreeJiraToolTipFacade {
                   .getResolution(), ")");
          } else if (nodeTemp instanceof SprintNode) {
             SprintNode node = (SprintNode) nodeTemp;
-            str = appendStrings(node.getUserObject().toString(), " (Total: ", node.getChildCount(), ")");
+            str = appendStrings(node.getUserObject().toString(), " (Children: ", node.getChildCount(), ")");
          } else if (nodeTemp instanceof FixVersionNode) {
             FixVersionNode node = (FixVersionNode) nodeTemp;
-            str = appendStrings(node.getUserObject().toString(), " (Total: ", node.getChildCount(), ")");
+            str = appendStrings(node.getUserObject().toString(), " (Children: ", node.getChildCount(), ")");
          }
          return str;
       }
