@@ -15,6 +15,7 @@ import com.jonas.testing.tree.fromScratch.tree.model.DnDTreeModel;
 import com.jonas.testing.tree.fromScratch.tree.nodes.FixVersionNode;
 import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
 import com.jonas.testing.tree.fromScratch.tree.nodes.SprintNode;
+import com.jonas.testing.tree.fromScratch.tree.renderer.DnDTreeCellRenderer;
 import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 
 public class DnDTree extends JTree {
@@ -27,6 +28,7 @@ public class DnDTree extends JTree {
       super(model);
       setDnD();
       ToolTipManager.sharedInstance().registerComponent(this);
+      setCellRenderer(new DnDTreeCellRenderer());
    }
 
    public DnDTreeModel getModel() {
