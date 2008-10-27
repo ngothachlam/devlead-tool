@@ -8,14 +8,14 @@ import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JTree;
 import javax.swing.TransferHandler;
-import javax.swing.JTree.DropLocation;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.testing.tree.fromScratch.tree.DnDTree;
+import com.jonas.testing.tree.fromScratch.tree.nodes.FixVersionNode;
+import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
 
 public class DnDTreeTransferHandler extends TransferHandler {
 
@@ -33,8 +33,6 @@ public class DnDTreeTransferHandler extends TransferHandler {
          e.printStackTrace();
       }
    }
-
-   // EXPORT:
 
    @Override
    final protected Transferable createTransferable(JComponent c) {
@@ -78,30 +76,41 @@ public class DnDTreeTransferHandler extends TransferHandler {
       return MOVE;
    }
 
-   // IMPORT:
-
    @Override
    final public boolean canImport(TransferSupport supp) {
       if (!supp.isDataFlavorSupported(dataFlavor)) {
          return false;
       }
       try {
-         JTree.DropLocation dropLocation = (JTree.DropLocation) supp.getDropLocation();
-         TreePath path = dropLocation.getPath();
-         DefaultMutableTreeNode lastPathComponent = (DefaultMutableTreeNode) path.getLastPathComponent();
-         Transferable transferable = supp.getTransferable();
-         TransferableDTO dto = (TransferableDTO) transferable.getTransferData(dataFlavor);
-         dto.getNewNode().getLevel();
-         log.debug("CanImport: " + lastPathComponent + " leafCount : " + lastPathComponent.getLeafCount() +" parent Depth: " + lastPathComponent.getLevel() + " nodeDepth : " + dto.getNewNode().getLevel());
-         if (lastPathComponent.getLevel() + 1 == dto.getNewNode().getLevel()) {
-            return true;
-         }
+         DefaultMutableTreeNode mouseOverParentNode = getParentNode(supp);
+         DefaultMutableTreeNode draggedNode = getDraggedNode(supp);
+         
+         return isParentMouseOverOfTypeFixVersionAndDragedNodeIsJiraType(mouseOverParentNode, draggedNode);
       } catch (UnsupportedFlavorException e) {
-         // TODO Auto-generated catch block
          e.printStackTrace();
       } catch (IOException e) {
-         // TODO Auto-generated catch block
          e.printStackTrace();
+      }
+      return false;
+   }
+
+   private DefaultMutableTreeNode getDraggedNode(TransferSupport supp) throws UnsupportedFlavorException, IOException {
+      Transferable transferable = supp.getTransferable();
+      TransferableDTO dto = (TransferableDTO) transferable.getTransferData(dataFlavor);
+      DefaultMutableTreeNode newNode = dto.getNewNode();
+      return newNode;
+   }
+
+   private DefaultMutableTreeNode getParentNode(TransferSupport supp) {
+      JTree.DropLocation dropLocation = (JTree.DropLocation) supp.getDropLocation();
+      TreePath path = dropLocation.getPath();
+      DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+      return parentNode;
+   }
+
+   private boolean isParentMouseOverOfTypeFixVersionAndDragedNodeIsJiraType(DefaultMutableTreeNode parentNode, DefaultMutableTreeNode newNode) {
+      if (parentNode instanceof FixVersionNode && newNode instanceof JiraNode) {
+         return true;
       }
       return false;
    }
