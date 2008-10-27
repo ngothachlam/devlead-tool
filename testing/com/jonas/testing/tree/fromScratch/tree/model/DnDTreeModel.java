@@ -1,4 +1,4 @@
-package com.jonas.testing.tree.fromScratch.tree;
+package com.jonas.testing.tree.fromScratch.tree.model;
 
 import java.util.HashMap;
 import java.util.Map;

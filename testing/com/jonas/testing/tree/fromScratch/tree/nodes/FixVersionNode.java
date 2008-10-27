@@ -12,4 +12,9 @@ public class FixVersionNode extends DefaultMutableTreeNode {
    public boolean getAllowsChildren() {
       return true;
    }
+
+   @Override
+   public String toString() {
+      return super.toString();
+   }
 }

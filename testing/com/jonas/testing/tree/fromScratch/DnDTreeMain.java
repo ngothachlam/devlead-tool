@@ -15,7 +15,7 @@ import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.testing.tree.fromScratch.tree.DnDTree;
-import com.jonas.testing.tree.fromScratch.tree.DnDTreeModel;
+import com.jonas.testing.tree.fromScratch.tree.model.DnDTreeModel;
 import com.jonas.testing.tree.fromScratch.xml.DnDTreeBuilder;
 import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 import com.jonas.testing.tree.fromScratch.xml.JiraParseListener;

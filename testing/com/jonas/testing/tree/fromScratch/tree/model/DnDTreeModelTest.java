@@ -1,4 +1,4 @@
-package com.jonas.testing.tree.fromScratch.tree;
+package com.jonas.testing.tree.fromScratch.tree.model;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import junit.framework.TestCase;
