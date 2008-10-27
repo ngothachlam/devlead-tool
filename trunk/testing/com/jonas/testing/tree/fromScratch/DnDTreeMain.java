@@ -21,6 +21,7 @@ import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 import com.jonas.testing.tree.fromScratch.xml.JiraParseListener;
 import com.jonas.testing.tree.fromScratch.xml.JiraSaxHandler;
 import com.jonas.testing.tree.fromScratch.xml.XmlParser;
+import com.jonas.testing.tree.fromScratch.xml.XmlParserAtlassain;
 import com.jonas.testing.tree.fromScratch.xml.XmlParserSmallMock;
 
 public class DnDTreeMain extends JFrame {
@@ -38,7 +39,7 @@ public class DnDTreeMain extends JFrame {
          tree = new DnDTree(model);
 
          JiraSaxHandler saxHandler = new JiraSaxHandler();
-         XmlParser parser = new XmlParserSmallMock(saxHandler);
+         XmlParser parser = new XmlParserAtlassain(saxHandler);
          dndTreeBuilder = new DnDTreeBuilder(parser);
 
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree));
