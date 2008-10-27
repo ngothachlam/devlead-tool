@@ -13,6 +13,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.JiraException;
 
@@ -33,19 +34,17 @@ public class XmlParserImpl extends HttpClient implements XmlParser {
    public void parse() throws IOException, SAXException, JiraException {
       GetMethod method = null;
       try {
-         String url = baseUrl + "/secure/IssueNavigator.jspa?view=rss&&fixfor=-2&pid=10070&reset=true&decorator=none";
+         String url = baseUrl + "/secure/IssueNavigator.jspa?view=rss&&fixfor=-2&pid=10070&reset=true&decorator=none&tempMax=2000";
          log.debug("calling " + url);
          login();
 
+         MyStatusBar.getInstance().setMessage("Accessing Jiras...", false);
          method = new GetMethod(url);
          executeMethod(method);
-         byte[] responseAsBytes = method.getResponseBody();
 
          Reader reader2 = new InputStreamReader(method.getResponseBodyAsStream(), method.getResponseCharSet());
-         // consume the response entity
 
          xmlReader.parse(new InputSource(reader2));
-         // reader.parse(reader2);
       } finally {
          if (method != null)
             method.releaseConnection();
@@ -53,7 +52,7 @@ public class XmlParserImpl extends HttpClient implements XmlParser {
    }
 
    public void login() throws IOException, HttpException, JiraException {
-      log.debug("Logging onto Jira");
+      MyStatusBar.getInstance().setMessage("Logging in to Jira...", false);
       PostMethod loginMethod = new PostMethod(baseUrl + "/login.jsp");
       loginMethod.addParameter("os_username", "soaptester");
       loginMethod.addParameter("os_password", "soaptester");

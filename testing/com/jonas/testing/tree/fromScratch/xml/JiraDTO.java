@@ -24,17 +24,17 @@ public class JiraDTO {
    }
 
    public void setFixVersion(String fixVersion) {
-      log.debug("setFixVersion: " + fixVersion);
+      // log.debug("setFixVersion: " + fixVersion);
       this.fixVersion = fixVersion;
    }
 
    public void setKey(String key) {
-      log.debug("setKey: " + key);
+      // log.debug("setKey: " + key);
       this.key = key;
    }
 
    public void setSprint(String sprint) {
-      log.debug("setSprint: " + sprint);
+      // log.debug("setSprint: " + sprint);
       this.sprint = sprint;
    }
 
