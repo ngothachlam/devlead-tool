@@ -1,6 +1,7 @@
 package com.jonas.testing.tree.fromScratch.tree.renderer;
 
 import java.awt.Component;
+import java.awt.Font;
 import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
@@ -30,8 +31,13 @@ public class DnDTreeCellRenderer extends DefaultTreeCellRenderer {
             setIcon(IMAGE_ICON_BLUE);
          } else if ("Reopened".equalsIgnoreCase(jira.getStatus())) {
             setIcon(IMAGE_ICON_RED);
-         } else{
+         } else {
             setIcon(IMAGE_ICON_WHITE);
+         }
+         log.debug("jira rendering: " + jira.isToSync());
+         if (jira.isToSync()) {
+            Font oldFont = getFont();
+            setFont(new Font(oldFont.getName(), Font.ITALIC, oldFont.getSize()));
          }
       }
       return this;

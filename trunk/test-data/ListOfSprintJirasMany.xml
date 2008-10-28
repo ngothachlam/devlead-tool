@@ -1141,6 +1141,7 @@
          <version>LLU 11</version>
 
          <fixVersion>LLU 12</fixVersion>
+         <fixVersion>LLU 11.2</fixVersion>
 
          <component>Service Management</component>
 
@@ -1196,7 +1197,7 @@
                <customfieldname>Sprint</customfieldname>
 
                <customfieldvalues>
-                  <customfieldvalue>12.4</customfieldvalue>
+                  <customfieldvalue>12.3</customfieldvalue>
                </customfieldvalues>
             </customfield>
          </customfields>

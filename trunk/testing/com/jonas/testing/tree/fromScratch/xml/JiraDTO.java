@@ -1,7 +1,6 @@
 package com.jonas.testing.tree.fromScratch.xml;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class JiraDTO {
@@ -12,6 +11,7 @@ public class JiraDTO {
    private String resolution;
    private String sprint;
    private String status;
+   private boolean isToSync = false;
 
    public String getSummary() {
       return summary;
@@ -80,6 +80,14 @@ public class JiraDTO {
       sb.append(sprint);
       sb.append("]");
       return sb.toString();
+   }
+
+   public void setToSync(Boolean isToSync) {
+      this.isToSync = isToSync;
+   }
+
+   public boolean getSyncable() {
+      return isToSync;
    }
 
 }

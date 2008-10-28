@@ -3,7 +3,6 @@ package com.jonas.testing.tree.fromScratch.tree.model;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -37,8 +36,9 @@ public class DnDTreeModel extends DefaultTreeModel {
 
    public void removeAllChildren() {
       int noOfRootChildren = getChildCount(getRoot());
-      for (int child = 0; child < noOfRootChildren; child++) {
+      for (int child = noOfRootChildren - 1; child >= 0; child--) {
          MutableTreeNode tempChild = (MutableTreeNode) getChild(getRoot(), child);
+         log.debug("Removing " + tempChild);
          removeNodeFromParent(tempChild);
       }
 
@@ -64,7 +64,7 @@ public class DnDTreeModel extends DefaultTreeModel {
       String jiraListName = getSeparatedName(jira.getKey(), fixVersionName);
       JiraNode jiraNode = jiras.get(jiraListName);
       if (jiraNode == null) {
-         jiraNode = new JiraNode(jira.getKey(), parent, jira.getResolution(), jira.getStatus(), jira.getSummary());
+         jiraNode = new JiraNode(jira.getKey(), parent, jira.getResolution(), jira.getStatus(), jira.getSummary(), jira.getSprint(), jira.getFixVersions(), jira.getSyncable());
          insertNodeInto(jiraNode, parent, parent.getChildCount());
          jiras.put(jiraListName, jiraNode);
       } else {
@@ -132,13 +132,12 @@ public class DnDTreeModel extends DefaultTreeModel {
 
    public List<JiraNode> getJiraNodes(String jira) {
       DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
-      DefaultMutableTreeNode node = null;
       List<JiraNode> jiraNodes = new ArrayList<JiraNode>();
 
-      for (Enumeration e = root.preorderEnumeration(); e.hasMoreElements();) {
+      for (Enumeration<?> e = root.preorderEnumeration(); e.hasMoreElements();) {
          DefaultMutableTreeNode current = (DefaultMutableTreeNode) e.nextElement();
          System.out.println("current: " + current.getUserObject());
-         if (jira.equals(current.getUserObject())) {
+         if (current instanceof JiraNode && jira.equals(current.getUserObject())) {
             jiraNodes.add((JiraNode) current);
          }
       }
