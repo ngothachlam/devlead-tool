@@ -20,7 +20,7 @@ public class DnDTreeModelTest extends TestCase {
       DefaultMutableTreeNode jiraOne = assertChild(model, fixVOne, 0, "Jira 1", 0);
 
       // remove Jira
-      model.removeJira("Jira 1");
+      model.removeJira("Jira 1", "FixVersion 1");
 
       assertEquals(1, model.getChildCount(model.getRoot()));
       spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 1);
@@ -29,6 +29,29 @@ public class DnDTreeModelTest extends TestCase {
       // add Jira again
       model.addJira(jiraDto);
 
+      assertEquals(1, model.getChildCount(model.getRoot()));
+      spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 1);
+      fixVOne = assertChild(model, spriOne, 0, "FixVersion 1", 1);
+      jiraOne = assertChild(model, fixVOne, 0, "Jira 1", 0);
+   }
+   
+   public void testShouldAddJiraToAnotherSprintShouldFail() {
+      DnDTreeModel model = new DnDTreeModel("LLU");
+      JiraDTO jiraDto = getTestJiraDto("Sprint 1", "FixVersion 1", "Jira 1");
+      
+      assertEquals(0, model.getChildCount(model.getRoot()));
+      // add Jira
+      model.addJira(jiraDto);
+      
+      assertEquals(1, model.getChildCount(model.getRoot()));
+      DefaultMutableTreeNode spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 1);
+      DefaultMutableTreeNode fixVOne = assertChild(model, spriOne, 0, "FixVersion 1", 1);
+      DefaultMutableTreeNode jiraOne = assertChild(model, fixVOne, 0, "Jira 1", 0);
+      
+      // add Jira again
+      jiraDto = getTestJiraDto("Sprint 2", "FixVersion 1", "Jira 1");
+      model.addJira(jiraDto);
+      
       assertEquals(1, model.getChildCount(model.getRoot()));
       spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 1);
       fixVOne = assertChild(model, spriOne, 0, "FixVersion 1", 1);
@@ -148,9 +171,10 @@ public class DnDTreeModelTest extends TestCase {
       spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 1);
       spriTwo = assertChild(model, model.getRoot(), 1, "Sprint 2", 2);
       fixVOne = assertChild(model, spriOne, 0, "FixVersion 1", 1);
-      fixVTwo = assertChild(model, spriTwo, 0, "FixVersion 2", 0);
+      fixVTwo = assertChild(model, spriTwo, 0, "FixVersion 2", 1);
       DefaultMutableTreeNode fixVTrh = assertChild(model, spriTwo, 1, "<UnKnown FixVersion>", 1);
       jiraOne = assertChild(model, fixVOne, 0, "Jira 1", 0);
+      jiraTwo = assertChild(model, fixVTwo, 0, "Jira 2", 0);
       jiraTwo = assertChild(model, fixVTrh, 0, "Jira 2", 0);
    }
 
