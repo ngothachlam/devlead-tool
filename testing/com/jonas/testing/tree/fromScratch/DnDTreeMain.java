@@ -129,11 +129,21 @@ public class DnDTreeMain extends JFrame {
 
          List<JiraNode> jiraNodes = tree.getJiraNodes();
          StringBuffer sb = new StringBuffer("The following Jiras needs to have their sprint updated!");
+         int noOfErrors = 0;
          for (JiraNode jiraNode : jiraNodes) {
-            if (jiraNode.isToSync()) {
-               sb.append(jiraNode.getKey()).append(" to sprint ").append(jiraNode.getSprint()).append("\n");
+            try {
+               if (jiraNode.isToSync()) {
+                  sb.append(jiraNode.getKey()).append(" to sprint ").append(jiraNode.getSprint()).append("\n");
+               }
+               jiraNode.setToSynced();
+            } catch (Throwable ex) {
+               noOfErrors++;
+               JOptionPane.showMessageDialog(parent, ex, "Exception!", JOptionPane.ERROR_MESSAGE);
             }
-            jiraNode.setToSynced();
+            if (noOfErrors >= 3) {
+               JOptionPane.showMessageDialog(parent, "Error Happened susequent times - abandoned!", "Exception!", JOptionPane.ERROR_MESSAGE);
+               break;
+            }
          }
          tree.treeDidChange();
          JOptionPane.showMessageDialog(parent, sb.toString());
