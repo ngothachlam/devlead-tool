@@ -92,7 +92,7 @@ public class DnDTreeModel extends DefaultTreeModel {
       if (sprint == null) {
          sprint = UNKNOWN_SPRINT;
       }
-      String fixVersion = jira.getFixVersion();
+      String fixVersion = jira.getFixVersions().get(0);
       if (fixVersion == null) {
          fixVersion = UNKNOWN_FIXVERSION;
       }
