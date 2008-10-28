@@ -8,7 +8,9 @@ import _105._38._155._10.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceService
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.atlassian.jira.rpc.soap.beans.RemoteField;
+import com.atlassian.jira.rpc.soap.beans.RemoteFieldValue;
 import com.atlassian.jira.rpc.soap.beans.RemoteFilter;
+import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssueType;
 import com.atlassian.jira.rpc.soap.beans.RemoteResolution;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
@@ -44,8 +46,8 @@ public class JiraSoapClient {
       return jiraSoapServiceServiceLocator;
    }
 
-   public RemoteVersion getFixVersion(final String fixName, JiraProject jiraProject) throws RemotePermissionException,
-         RemoteAuthenticationException, RemoteException {
+   public RemoteVersion getFixVersion(final String fixName, JiraProject jiraProject) throws RemotePermissionException, RemoteAuthenticationException,
+         RemoteException {
       log.debug("Getting FixVersion");
 
       RemoteVersion[] versions = getFixVersions(jiraProject);
@@ -63,8 +65,8 @@ public class JiraSoapClient {
          com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
       log.debug("Getting Fix Versions!");
       JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
-         public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
-               com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+         public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
+               RemoteException {
             return jiraSoapService.getVersions(getToken(), jiraProject.getJiraKey());
          }
 
@@ -86,6 +88,56 @@ public class JiraSoapClient {
       return versions;
    }
 
+   public RemoteField[] getFieldsForEdit(final String jiraKey) throws RemotePermissionException, RemoteAuthenticationException,
+         com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+      log.debug("getFieldsForEdit!");
+      JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
+         public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
+               RemoteException {
+            return jiraSoapService.getFieldsForEdit(getToken(), jiraKey);
+         }
+
+      });
+      RemoteField[] versions = (RemoteField[]) command.execute();
+      if (log.isDebugEnabled()) {
+         log.debug("Getting Editable fields Done!");
+         for (int i = 0; i < versions.length; i++) {
+            StringBuffer sb = new StringBuffer();
+            sb.append("RemoteField").append(i).append("] {");
+            sb.append("name=").append(versions[i].getName());
+            sb.append(",id=").append(versions[i].getId());
+            sb.append("}");
+            log.debug(sb.toString());
+
+         }
+      }
+
+      return versions;
+   }
+
+   public void updateSprint(final String jiraKey, final String sprint) throws RemotePermissionException, RemoteAuthenticationException,
+         com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+      JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
+         public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
+               RemoteException {
+            String[] values = new String[] { sprint };
+            RemoteFieldValue remoteFieldValue = new RemoteFieldValue("customfield_10282", values);
+            // RemoteField9] {name=Sprint,id=customfield_10282}
+            RemoteFieldValue[] remoteFieldValues = new RemoteFieldValue[] { remoteFieldValue };
+            return jiraSoapService.updateIssue(getToken(), jiraKey, remoteFieldValues);
+         }
+
+      });
+      RemoteIssue issue = (RemoteIssue) command.execute();
+      if (log.isDebugEnabled()) {
+            StringBuffer sb = new StringBuffer();
+            sb.append("RemoteIssue{");
+            sb.append("Key=").append(issue.getKey());
+            sb.append(",id=").append(issue.getId());
+            sb.append("}");
+      }
+   }
+
    public RemoteFilter getFilter(String filterName) throws RemotePermissionException, RemoteAuthenticationException,
          com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
       RemoteFilter[] filters = getFilters();
@@ -99,12 +151,12 @@ public class JiraSoapClient {
       return filter;
    }
 
-   public RemoteFilter[] getFilters() throws RemotePermissionException, RemoteAuthenticationException,
-         com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+   public RemoteFilter[] getFilters() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
+         RemoteException {
       log.debug("Getting Fix Versions!");
       JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
-         public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
-               com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+         public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
+               RemoteException {
             return jiraSoapService.getSavedFilters(getToken());
          }
 
@@ -130,8 +182,8 @@ public class JiraSoapClient {
       log.debug("Getting Resolutions");
 
       JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
-         public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
-               com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+         public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
+               RemoteException {
             return jiraSoapService.getResolutions(getToken());
          }
 
@@ -143,8 +195,8 @@ public class JiraSoapClient {
       log.debug("Getting Resolutions");
 
       JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
-         public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
-               com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+         public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
+               RemoteException {
             log.debug("Accessing: " + jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
             return jiraSoapService.getIssueTypes(getToken());
          }
@@ -176,16 +228,15 @@ public class JiraSoapClient {
       return token;
    }
 
-   private synchronized void renewToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
-         RemoteException {
+   private synchronized void renewToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
       log.debug("Renewing Token");
       token = jiraSoapService.login(LOGIN_NAME, LOGIN_PASSWORD);
       log.debug("Renewing Token Done!");
    }
 
    interface JiraAccessAction {
-      Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
-            com.atlassian.jira.rpc.exception.RemoteException, RemoteException;
+      Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
+            RemoteException;
    }
 
    class JiraTokenCommand {
@@ -227,8 +278,8 @@ public class JiraSoapClient {
     * @throws com.atlassian.jira.rpc.exception.RemoteException
     * @throws RemoteException
     */
-   void printAllCustomFieldInfo() throws RemotePermissionException, RemoteAuthenticationException,
-         com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+   void printAllCustomFieldInfo() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
+         RemoteException {
       log.debug("Getting Resolutions");
 
       JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {

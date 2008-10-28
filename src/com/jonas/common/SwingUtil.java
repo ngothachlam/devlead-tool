@@ -51,7 +51,7 @@ public class SwingUtil {
       return ((screenHeight - (windowHeight + startMenuSize)) / 2);
    }
 
-   public static void centreWindowWithinWindow(Window window, Window parentWindow) {
+   public static void centreWindowWithinWindow(Component window, Component parentWindow) {
       Point parentLocation = parentWindow.getLocation();
       int x = parentLocation.x + (parentWindow.getWidth() - window.getWidth()) / 2;
       int y = parentLocation.y + (parentWindow.getHeight() - window.getHeight()) / 2;

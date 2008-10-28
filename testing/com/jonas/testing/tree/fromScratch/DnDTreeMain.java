@@ -2,6 +2,7 @@ package com.jonas.testing.tree.fromScratch;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +18,11 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
+import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.access.ClientConstants;
+import com.jonas.jira.access.JiraClient;
+import com.jonas.jira.access.JiraSoapClient;
 import com.jonas.testing.tree.fromScratch.tree.DnDTree;
 import com.jonas.testing.tree.fromScratch.tree.model.DnDTreeModel;
 import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
@@ -111,10 +116,10 @@ public class DnDTreeMain extends JFrame {
    }
 
    private final class UploadToJiraButton extends JButton implements ActionListener {
-      private final Component parent;
+      private final Frame parent;
       private final DnDTree tree;
 
-      private UploadToJiraButton(String text, Component parent, DnDTree tree) {
+      private UploadToJiraButton(String text, Frame parent, DnDTree tree) {
          super(text);
 
          this.parent = parent;
@@ -130,15 +135,18 @@ public class DnDTreeMain extends JFrame {
          List<JiraNode> jiraNodes = tree.getJiraNodes();
          StringBuffer sb = new StringBuffer("The following Jiras needs to have their sprint updated!");
          int noOfErrors = 0;
+         JiraSoapClient soapClient = new JiraSoapClient(ClientConstants.AOLBB_WS);
          for (JiraNode jiraNode : jiraNodes) {
             try {
                if (jiraNode.isToSync()) {
-                  sb.append(jiraNode.getKey()).append(" to sprint ").append(jiraNode.getSprint()).append("\n");
+                  // soapClient.getFieldsForEdit(jiraNode.getKey());
+                  soapClient.updateSprint(jiraNode.getKey(), jiraNode.getSprint());
+                  sb.append("\n").append(jiraNode.getKey()).append(" to sprint ").append(jiraNode.getSprint());
                }
                jiraNode.setToSynced();
             } catch (Throwable ex) {
                noOfErrors++;
-               JOptionPane.showMessageDialog(parent, ex, "Exception!", JOptionPane.ERROR_MESSAGE);
+               AlertDialog.alertException(parent, ex);
             }
             if (noOfErrors >= 3) {
                JOptionPane.showMessageDialog(parent, "Error Happened susequent times - abandoned!", "Exception!", JOptionPane.ERROR_MESSAGE);

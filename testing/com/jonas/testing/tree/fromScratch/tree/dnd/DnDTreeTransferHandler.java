@@ -118,8 +118,10 @@ public class DnDTreeTransferHandler extends TransferHandler {
          if (parent.equals(childsParent))
             return true;
       } else if (mouseOverParentNode instanceof SprintNode && newNode instanceof JiraNode) {
-         SprintNode parent = (SprintNode) mouseOverParentNode;
          JiraNode child = (JiraNode) newNode;
+         if ("Closed".equals(child.getStatus()))
+            return false;
+         SprintNode parent = (SprintNode) mouseOverParentNode;
          SprintNode childsSprint = (SprintNode) child.getParent().getParent();
          if (!parent.equals(childsSprint))
             return true;

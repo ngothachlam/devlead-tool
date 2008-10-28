@@ -657,7 +657,7 @@
 
          <priority id="8">Sev 3 - Medium</priority>
 
-         <status id="5">Resolved</status>
+         <status id="5">Closed</status>
 
          <resolution id="1">Fixed</resolution>
 
@@ -1141,6 +1141,7 @@
          <version>LLU 11</version>
 
          <fixVersion>LLU 12</fixVersion>
+
          <fixVersion>LLU 11.2</fixVersion>
 
          <component>Service Management</component>
@@ -1198,6 +1199,79 @@
 
                <customfieldvalues>
                   <customfieldvalue>12.3</customfieldvalue>
+               </customfieldvalues>
+            </customfield>
+         </customfields>
+      </item>
+
+      <item>
+         <title>[LLU-4243] test</title>
+
+         <link>http://10.155.38.105/jira/browse/LLU-4243</link>
+
+         <description>
+         </description>
+
+         <environment>
+         </environment>
+
+         <key id="42028">LLU-4243</key>
+
+         <summary>test</summary>
+
+         <type id="1">Bug</type>
+
+         <priority id="8">Sev 3 - Medium</priority>
+
+         <status id="1">Open</status>
+
+         <resolution>Unresolved</resolution>
+
+         <assignee>Unassigned</assignee>
+
+         <reporter username="jonasjolofsson">Jonas Olofsson</reporter>
+
+         <created>Tue, 28 Oct 2008 17:43:18 +0000 (GMT)</created>
+
+         <updated>Tue, 28 Oct 2008 17:43:18 +0000 (GMT)</updated>
+
+         <version>LLU 11</version>
+
+         <version>LLU 11.2</version>
+
+         <fixVersion>LLU 12</fixVersion>
+
+         <component>Appointments</component>
+
+         <due>
+         </due>
+
+         <customfields>
+            <customfield id="customfield_10030" key="com.atlassian.jira.plugin.system.customfieldtypes:select">
+               <customfieldname>Component</customfieldname>
+
+               <customfieldvalues>
+                  <customfieldvalue>
+                     <![CDATA[Order Processing - General]]>
+                  </customfieldvalue>
+               </customfieldvalues>
+            </customfield>
+
+            <customfield id="customfield_10060" key="com.atlassian.jira.plugin.system.customfieldtypes:select">
+               <customfieldname>Triage Performed</customfieldname>
+
+               <customfieldvalues>
+                  <customfieldvalue>
+                     <![CDATA[false]]>
+                  </customfieldvalue>
+               </customfieldvalues>
+            </customfield>
+
+            <customfield id="customfield_10282" key="com.atlassian.jira.plugin.system.customfieldtypes:textfield">
+               <customfieldname>Sprint</customfieldname>
+
+               <customfieldvalues>
+                  <customfieldvalue>test sprint</customfieldvalue>
                </customfieldvalues>
             </customfield>
          </customfields>
