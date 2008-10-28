@@ -1,11 +1,25 @@
 package com.jonas.testing.tree.fromScratch.tree.model;
 
+import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 import junit.framework.TestCase;
+import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
 import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 
 public class DnDTreeModelTest extends TestCase {
 
+   public void testShouldReturnJiraNodesOk() {
+      DnDTreeModel model = new DnDTreeModel("LLU");
+      JiraDTO jiraDto1 = getTestJiraDto("Sprint 1", "FixVersion 1", "Jira 1");
+      JiraDTO jiraDto2 = getTestJiraDto("Sprint 1", "FixVersion 2", "Jira 1");
+      
+      model.addJira(jiraDto1);
+      model.addJira(jiraDto2);
+      
+      List<JiraNode> jiraNodes = model.getJiraNodes("Jira 1");
+      assertEquals(2, jiraNodes.size());
+   }
+   
    public void testShouldAddAndRemoveJiraOk() {
       DnDTreeModel model = new DnDTreeModel("LLU");
       JiraDTO jiraDto = getTestJiraDto("Sprint 1", "FixVersion 1", "Jira 1");
