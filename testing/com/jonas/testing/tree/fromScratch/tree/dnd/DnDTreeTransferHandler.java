@@ -4,6 +4,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JTree;
 import javax.swing.TransferHandler;
@@ -15,6 +16,8 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.testing.tree.fromScratch.tree.DnDTree;
 import com.jonas.testing.tree.fromScratch.tree.nodes.FixVersionNode;
 import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
+import com.jonas.testing.tree.fromScratch.tree.nodes.SprintNode;
+import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 
 public class DnDTreeTransferHandler extends TransferHandler {
 
@@ -106,13 +109,19 @@ public class DnDTreeTransferHandler extends TransferHandler {
       return parentNode;
    }
 
-   private boolean isParentMouseOverOfTypeFixVersionAndDragedNodeIsJiraType(DefaultMutableTreeNode parentNode, DefaultMutableTreeNode newNode) {
-      if (parentNode instanceof FixVersionNode && newNode instanceof JiraNode) {
-         FixVersionNode parent = (FixVersionNode) parentNode;
+   private boolean isParentMouseOverOfTypeFixVersionAndDragedNodeIsJiraType(DefaultMutableTreeNode mouseOverParentNode, DefaultMutableTreeNode newNode) {
+      if (mouseOverParentNode instanceof FixVersionNode && newNode instanceof JiraNode) {
+         FixVersionNode parent = (FixVersionNode) mouseOverParentNode;
          JiraNode child = (JiraNode) newNode;
          FixVersionNode childsParent = (FixVersionNode) child.getParent();
-         log.debug("Parent : " + parent.getUserObject() + " Childs parent: " + childsParent.getUserObject());
-         if (parent.getUserObject().equals((childsParent).getUserObject()))
+         // log.debug("Parent : " + parent.getUserObject() + " Childs parent: " + childsParent.getUserObject());
+         if (parent.equals(childsParent))
+            return true;
+      } else if (mouseOverParentNode instanceof SprintNode && newNode instanceof JiraNode) {
+         SprintNode parent = (SprintNode) mouseOverParentNode;
+         JiraNode child = (JiraNode) newNode;
+         SprintNode childsSprint = (SprintNode) child.getParent().getParent();
+         if (!parent.equals(childsSprint))
             return true;
       }
       return false;
@@ -138,16 +147,34 @@ public class DnDTreeTransferHandler extends TransferHandler {
             childIndex = model.getChildCount(path.getLastPathComponent());
          }
 
-         DefaultMutableTreeNode newNode = (DefaultMutableTreeNode) transferableDTO.getNewNode().clone();
-         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-         log.debug("Parent is : " + parentNode + " and the new Element is: " + newNode + " and the childindex is : " + childIndex);
-         model.insertNodeInto(newNode, parentNode, childIndex);
-
-         TreePath newPath = path.pathByAddingChild(newNode);
-         tree.makeVisible(newPath);
-         tree.scrollRectToVisible(tree.getPathBounds(newPath));
-
-         return true;
+         if (transferableDTO.getNewNode() instanceof JiraNode) {
+            JiraNode newNode = (JiraNode) transferableDTO.getNewNode().clone();
+            if (path.getLastPathComponent() instanceof FixVersionNode) {
+               FixVersionNode parentNode = (FixVersionNode) path.getLastPathComponent();
+               log.debug("Parent is : " + parentNode + " and the new Element is: " + newNode + " and the childindex is : " + childIndex);
+               model.insertNodeInto(newNode, parentNode, childIndex);
+            } else if (path.getLastPathComponent() instanceof SprintNode) {
+               SprintNode sprintNode = (SprintNode) path.getLastPathComponent();
+               JiraDTO jiraDTO = new JiraDTO();
+               jiraDTO.setKey(newNode.getKey());
+               jiraDTO.setResolution(newNode.getResolution());
+               jiraDTO.setSprint((String) sprintNode.getUserObject());
+               jiraDTO.setStatus(newNode.getStatus());
+               jiraDTO.setSummary(newNode.getDescription());
+               log.debug("setting to syncable!!");
+               jiraDTO.setToSync(true);
+               List<String> fixVersions = newNode.getFixVersions();
+               for (String fixVersion : fixVersions) {
+                  jiraDTO.addFixVersion(fixVersion);
+               }
+               tree.getModel().addJira(jiraDTO);
+            }
+            TreePath newPath = path.pathByAddingChild(newNode);
+            tree.makeVisible(newPath);
+            tree.scrollRectToVisible(tree.getPathBounds(newPath));
+            return true;
+         }
+         return false;
       } catch (UnsupportedFlavorException e) {
          e.printStackTrace();
       } catch (IOException e) {

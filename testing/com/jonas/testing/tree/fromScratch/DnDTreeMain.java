@@ -22,7 +22,7 @@ import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 import com.jonas.testing.tree.fromScratch.xml.JiraParseListener;
 import com.jonas.testing.tree.fromScratch.xml.JiraSaxHandler;
 import com.jonas.testing.tree.fromScratch.xml.XmlParser;
-import com.jonas.testing.tree.fromScratch.xml.XmlParserImpl;
+import com.jonas.testing.tree.fromScratch.xml.XmlParserLargeMock;
 
 public class DnDTreeMain extends JFrame {
 
@@ -39,8 +39,8 @@ public class DnDTreeMain extends JFrame {
          tree = new DnDTree(model);
 
          JiraSaxHandler saxHandler = new JiraSaxHandler();
-         XmlParser parser = new XmlParserImpl(saxHandler);
-//         XmlParser parser = new XmlParserLargeMock(saxHandler);
+//         XmlParser parser = new XmlParserImpl(saxHandler);
+         XmlParser parser = new XmlParserLargeMock(saxHandler);
          dndTreeBuilder = new DnDTreeBuilder(parser);
 
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree));
@@ -66,7 +66,7 @@ public class DnDTreeMain extends JFrame {
    private Component getButtonPanel() {
       JPanel panel = new JPanel(new GridLayout(1, 2, 5, 5));
 
-      JButton refreshButton = new RefreshButton("Refresh", this, dndTreeBuilder, tree);
+      JButton refreshButton = new RefreshButton("Download from Jira", this, dndTreeBuilder, tree);
       JButton clearTreeButton = new ClearTreeButton("Clear Tree", this, tree);
       
       panel.add(refreshButton);
@@ -75,7 +75,7 @@ public class DnDTreeMain extends JFrame {
    }
 
    private void makeUI() {
-      setSize(300, 200);
+      setSize(400, 700);
       setDefaultCloseOperation(EXIT_ON_CLOSE);
 
       getContentPane().add(new JScrollPane(tree), BorderLayout.CENTER);
