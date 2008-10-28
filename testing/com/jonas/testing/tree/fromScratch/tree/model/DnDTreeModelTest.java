@@ -72,6 +72,41 @@ public class DnDTreeModelTest extends TestCase {
       jiraOne = assertChild(model, fixVOne, 0, "Jira 1", 0);
    }
 
+   public void testShouldAddJiraWithDifferentFixVersionsOk() {
+      DnDTreeModel model = new DnDTreeModel("LLU");
+      
+      assertEquals(0, model.getChildCount(model.getRoot()));
+      
+      JiraDTO jiraDto1 = getTestJiraDto("Sprint 1", "FixVersion 1", "Jira 1");
+      jiraDto1.addFixVersion("FixVersion 2");
+      
+      model.addJira(jiraDto1);
+      
+      assertEquals(1, model.getChildCount(model.getRoot()));
+      DefaultMutableTreeNode spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 2);
+      DefaultMutableTreeNode fixVOne = assertChild(model, spriOne, 0, "FixVersion 1", 1);
+      DefaultMutableTreeNode fixVTwo = assertChild(model, spriOne, 1, "FixVersion 2", 1);
+      assertChild(model, fixVOne, 0, "Jira 1", 0);
+      assertChild(model, fixVTwo, 0, "Jira 1", 0);
+      
+      jiraDto1 = getTestJiraDto("Sprint 2", "FixVersion 1", "Jira 1");
+      jiraDto1.addFixVersion("FixVersion 2");
+      
+      //adding same jira again with two fix versions to another sprint should delete the other sprint. 
+      model.addJira(jiraDto1);
+      
+      assertEquals(2, model.getChildCount(model.getRoot()));
+      spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 2);
+      fixVOne = assertChild(model, spriOne, 0, "FixVersion 1", 0);
+      fixVTwo = assertChild(model, spriOne, 1, "FixVersion 2", 0);
+      
+      DefaultMutableTreeNode spriTwo = assertChild(model, model.getRoot(), 1, "Sprint 2", 2);
+      fixVOne = assertChild(model, spriTwo, 0, "FixVersion 1", 1);
+      fixVTwo = assertChild(model, spriTwo, 1, "FixVersion 2", 1);
+      assertChild(model, fixVOne, 0, "Jira 1", 0);
+      assertChild(model, fixVTwo, 0, "Jira 1", 0);
+   }
+   
    public void testShouldAddDuplicateJiraToDifferentFixVersions() {
       DnDTreeModel model = new DnDTreeModel("LLU");
       

@@ -3,6 +3,7 @@ package com.jonas.testing.tree.fromScratch.tree.model;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -99,12 +100,14 @@ public class DnDTreeModel extends DefaultTreeModel {
    public void addJira(JiraDTO jira) {
       log.debug(jira);
       String sprint = setSprintToUnkownIfDoesntExist(jira);
-      String fixVersion = setFixVersionToUnKnownIfDoesntExist(jira);
-      createJira(sprint, fixVersion, jira);
+      List<String> tempFixVersions = jira.getFixVersions();
+      for (String string : tempFixVersions) {
+         String fixVersion = setFixVersionToUnKnownIfDoesntExist(jira, string);
+         createJira(sprint, fixVersion, jira);
+      }
    }
 
-   private String setFixVersionToUnKnownIfDoesntExist(JiraDTO jira) {
-      String fixVersion = jira.getFixVersions().get(0);
+   private String setFixVersionToUnKnownIfDoesntExist(JiraDTO jira, String fixVersion) {
       if (fixVersion == null) {
          fixVersion = UNKNOWN_FIXVERSION;
       }

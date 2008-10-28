@@ -56,6 +56,7 @@ public class JiraSaxHandler extends DefaultHandler {
          log.debug("JiraKey: " + value);
          jira.setKey(value);
       } else if (FIXVERSION.equals(qName)) {
+         log.debug("Adding fixVersion: " + value + " to jira " + jira.getKey());
          jira.addFixVersion(value);
       } else if (SUMMARY.equals(qName)) {
          jira.setSummary(value);
