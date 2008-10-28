@@ -64,7 +64,8 @@ public class DnDTreeModel extends DefaultTreeModel {
       String jiraListName = getSeparatedName(jira.getKey(), fixVersionName);
       JiraNode jiraNode = jiras.get(jiraListName);
       if (jiraNode == null) {
-         jiraNode = new JiraNode(jira.getKey(), parent, jira.getResolution(), jira.getStatus(), jira.getSummary(), jira.getSprint(), jira.getFixVersions(), jira.getSyncable());
+         jiraNode = new JiraNode(jira.getKey(), parent, jira.getResolution(), jira.getStatus(), jira.getSummary(), jira.getSprint(), jira.getFixVersions(),
+               jira.getSyncable());
          insertNodeInto(jiraNode, parent, parent.getChildCount());
          jiras.put(jiraListName, jiraNode);
       } else {
@@ -74,9 +75,10 @@ public class DnDTreeModel extends DefaultTreeModel {
          if (oldParent != parent || oldParent.getParent() != parent.getParent()) {
             removeNodeFromParent(jiraNode);
             jiras.remove(jiraListName);
-            
+
             jiraListName = getSeparatedName(jira.getKey(), fixVersionName);
-            jiraNode = new JiraNode(jira.getKey(), parent, jira.getResolution(), jira.getStatus(), jira.getSummary(), jira.getSprint(), jira.getFixVersions(), jira.getSyncable());
+            jiraNode = new JiraNode(jira.getKey(), parent, jira.getResolution(), jira.getStatus(), jira.getSummary(), jira.getSprint(), jira.getFixVersions(),
+                  jira.getSyncable());
             insertNodeInto(jiraNode, parent, parent.getChildCount());
             jiras.put(jiraListName, jiraNode);
          }
@@ -143,6 +145,20 @@ public class DnDTreeModel extends DefaultTreeModel {
          DefaultMutableTreeNode current = (DefaultMutableTreeNode) e.nextElement();
          System.out.println("current: " + current.getUserObject());
          if (current instanceof JiraNode && jira.equals(current.getUserObject())) {
+            jiraNodes.add((JiraNode) current);
+         }
+      }
+      return jiraNodes;
+   }
+
+   public List<JiraNode> getJiraNodes() {
+      DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
+      List<JiraNode> jiraNodes = new ArrayList<JiraNode>();
+
+      for (Enumeration<?> e = root.preorderEnumeration(); e.hasMoreElements();) {
+         DefaultMutableTreeNode current = (DefaultMutableTreeNode) e.nextElement();
+         System.out.println("current: " + current.getUserObject());
+         if (current instanceof JiraNode) {
             jiraNodes.add((JiraNode) current);
          }
       }

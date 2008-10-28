@@ -6,8 +6,11 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -17,6 +20,7 @@ import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.testing.tree.fromScratch.tree.DnDTree;
 import com.jonas.testing.tree.fromScratch.tree.model.DnDTreeModel;
+import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
 import com.jonas.testing.tree.fromScratch.xml.DnDTreeBuilder;
 import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 import com.jonas.testing.tree.fromScratch.xml.JiraParseListener;
@@ -39,7 +43,7 @@ public class DnDTreeMain extends JFrame {
          tree = new DnDTree(model);
 
          JiraSaxHandler saxHandler = new JiraSaxHandler();
-//         XmlParser parser = new XmlParserImpl(saxHandler);
+         // XmlParser parser = new XmlParserImpl(saxHandler);
          XmlParser parser = new XmlParserLargeMock(saxHandler);
          dndTreeBuilder = new DnDTreeBuilder(parser);
 
@@ -64,13 +68,16 @@ public class DnDTreeMain extends JFrame {
    }
 
    private Component getButtonPanel() {
-      JPanel panel = new JPanel(new GridLayout(1, 2, 5, 5));
+      JPanel panel = new JPanel(new GridLayout(2, 2, 5, 5));
 
       JButton refreshButton = new RefreshButton("Download from Jira", this, dndTreeBuilder, tree);
+      JButton uploadToJiraButton = new UploadToJiraButton("Upload to Jira", this, tree);
       JButton clearTreeButton = new ClearTreeButton("Clear Tree", this, tree);
-      
+      // JButton button = new JButton("<ToBeDefined>");
+
       panel.add(refreshButton);
       panel.add(clearTreeButton);
+      panel.add(uploadToJiraButton);
       return panel;
    }
 
@@ -100,6 +107,36 @@ public class DnDTreeMain extends JFrame {
       public void actionPerformed(ActionEvent e) {
          MyStatusBar.getInstance().setMessage("Clearing tree...", true);
          tree.removeAllChildren();
+      }
+   }
+
+   private final class UploadToJiraButton extends JButton implements ActionListener {
+      private final Component parent;
+      private final DnDTree tree;
+
+      private UploadToJiraButton(String text, Component parent, DnDTree tree) {
+         super(text);
+
+         this.parent = parent;
+         this.tree = tree;
+
+         this.addActionListener(this);
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         MyStatusBar.getInstance().setMessage("Uploading to Jira...", true);
+
+         List<JiraNode> jiraNodes = tree.getJiraNodes();
+         StringBuffer sb = new StringBuffer("The following Jiras needs to have their sprint updated!");
+         for (JiraNode jiraNode : jiraNodes) {
+            if (jiraNode.isToSync()) {
+               sb.append(jiraNode.getKey()).append(" to sprint ").append(jiraNode.getSprint()).append("\n");
+            }
+            jiraNode.setToSynced();
+         }
+         tree.treeDidChange();
+         JOptionPane.showMessageDialog(parent, sb.toString());
       }
    }
 

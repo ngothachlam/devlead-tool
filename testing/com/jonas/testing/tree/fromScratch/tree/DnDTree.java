@@ -1,6 +1,7 @@
 package com.jonas.testing.tree.fromScratch.tree;
 
 import java.awt.event.MouseEvent;
+import java.util.List;
 import javax.swing.DropMode;
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
@@ -74,6 +75,10 @@ public class DnDTree extends JTree {
          throw new RuntimeException("Only handles DefaultTreeModel!");
       super.setModel(newModel);
       model = (DnDTreeModel) newModel;
+   }
+
+   public List<JiraNode> getJiraNodes() {
+      return model.getJiraNodes();
    }
 }
 
