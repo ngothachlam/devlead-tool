@@ -1,10 +1,13 @@
 package com.jonas.testing.tree.fromScratch.xml;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class JiraDTO {
 
    private String summary;
-   private String fixVersion;
+   private List<String> fixVersions = new ArrayList<String>();
    private String key;
    private String resolution;
    private String sprint;
@@ -14,8 +17,8 @@ public class JiraDTO {
       return summary;
    }
 
-   public String getFixVersion() {
-      return fixVersion;
+   public List<String> getFixVersions() {
+      return fixVersions;
    }
 
    public String getKey() {
@@ -35,15 +38,15 @@ public class JiraDTO {
    }
 
    public void setSummary(String summary) {
-      this.summary = cutString( summary, 70);
+      this.summary = cutString(summary, 70);
    }
 
    String cutString(String string, int i) {
       return string.length() > i ? string.substring(0, i) + "..." : string;
    }
 
-   public void setFixVersion(String fixVersion) {
-      this.fixVersion = fixVersion;
+   public void addFixVersion(String fixVersion) {
+      this.fixVersions.add(fixVersion);
    }
 
    public void setKey(String key) {
@@ -67,9 +70,13 @@ public class JiraDTO {
       sb.append("[JiraDTO ");
       sb.append("Key: ");
       sb.append(key);
-      sb.append(", FixVersion: ");
-      sb.append(fixVersion);
-      sb.append(", Sprint: ");
+      sb.append(", [");
+      for (String fixVersion : fixVersions) {
+         sb.append("FixVersion: ");
+         sb.append(fixVersion);
+         sb.append(" ");
+      }
+      sb.append("], Sprint: ");
       sb.append(sprint);
       sb.append("]");
       return sb.toString();
