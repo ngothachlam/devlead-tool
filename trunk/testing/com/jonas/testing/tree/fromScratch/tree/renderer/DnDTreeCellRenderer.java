@@ -35,10 +35,17 @@ public class DnDTreeCellRenderer extends DefaultTreeCellRenderer {
             setIcon(IMAGE_ICON_WHITE);
          }
          log.debug("jira rendering: " + jira.isToSync());
+
          if (jira.isToSync()) {
             Font oldFont = getFont();
             setFont(new Font(oldFont.getName(), Font.ITALIC, oldFont.getSize()));
+         } else {
+            Font oldFont = getFont();
+            setFont(new Font(oldFont.getName(), Font.PLAIN, oldFont.getSize()));
          }
+      } else {
+         Font oldFont = getFont();
+         setFont(new Font(oldFont.getName(), Font.PLAIN, oldFont.getSize()));
       }
       return this;
    }

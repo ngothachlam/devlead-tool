@@ -73,7 +73,12 @@ public class DnDTreeModel extends DefaultTreeModel {
          // FIXME not working when moving one jira to anoother fixversion and then refreshing.
          if (oldParent != parent || oldParent.getParent() != parent.getParent()) {
             removeNodeFromParent(jiraNode);
+            jiras.remove(jiraListName);
+            
+            jiraListName = getSeparatedName(jira.getKey(), fixVersionName);
+            jiraNode = new JiraNode(jira.getKey(), parent, jira.getResolution(), jira.getStatus(), jira.getSummary(), jira.getSprint(), jira.getFixVersions(), jira.getSyncable());
             insertNodeInto(jiraNode, parent, parent.getChildCount());
+            jiras.put(jiraListName, jiraNode);
          }
       }
    }
