@@ -164,5 +164,9 @@ public class JiraHttpClient extends HttpClient {
       }
       return jiras;
    }
+   
+   public void updateSprint(){
+      
+   }
 
 }
