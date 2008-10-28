@@ -16,6 +16,7 @@ import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 
 public class DnDTreeModel extends DefaultTreeModel {
 
+   private static final String SEPARATOR = "@#@";
    private static final String UNKNOWN_FIXVERSION = "<UnKnown FixVersion>";
    private static final String UNKNOWN_SPRINT = "<UnKnown Sprint>";
 
@@ -49,20 +50,23 @@ public class DnDTreeModel extends DefaultTreeModel {
       }
       FixVersionNode fixVersionNode = new FixVersionNode(fixVersionName, parent);
       insertNodeInto(fixVersionNode, parent, parent.getChildCount());
-      fixVersions.put(sprintName + "@#@" + fixVersionName, fixVersionNode);
+      String fixVersionListName = getSeparatedName(sprintName, fixVersionName);
+      fixVersions.put(fixVersionListName, fixVersionNode);
       return fixVersionNode;
    }
 
    void createJira(String sprintName, String fixVersionName, JiraDTO jira) {
-      FixVersionNode parent = fixVersions.get(sprintName + "@#@" + fixVersionName);
+      String fixVersionListName = getSeparatedName(sprintName, fixVersionName);
+      FixVersionNode parent = fixVersions.get(fixVersionListName);
       if (parent == null) {
          parent = createFixVersion(sprintName, fixVersionName);
       }
-      JiraNode jiraNode = jiras.get(jira.getKey());
+      String jiraListName = getSeparatedName(jira.getKey(), fixVersionName);
+      JiraNode jiraNode = jiras.get(jiraListName);
       if (jiraNode == null) {
          jiraNode = new JiraNode(jira.getKey(), parent, jira.getResolution(), jira.getStatus(), jira.getSummary());
          insertNodeInto(jiraNode, parent, parent.getChildCount());
-         jiras.put(jira.getKey(), jiraNode);
+         jiras.put(jiraListName, jiraNode);
       } else {
          TreeNode parent2 = jiraNode.getParent();
          System.out.println("blah!!");
@@ -99,11 +103,16 @@ public class DnDTreeModel extends DefaultTreeModel {
       createJira(sprint, fixVersion, jira);
    }
 
-   public void removeJira(String jira) {
-      DefaultMutableTreeNode node = jiras.get(jira);
+   public void removeJira(String jira, String fixVersion) {
+      String jiraListName = getSeparatedName(jira, fixVersion);
+      DefaultMutableTreeNode node = jiras.get(jiraListName);
       log.debug(node);
       removeNodeFromParent(node);
-      jiras.remove(jira);
+      jiras.remove(jiraListName);
    }
-
+   protected String getSeparatedName(String stringOne, String stringTwo){
+      StringBuffer sb = new StringBuffer(stringOne);
+      sb.append(SEPARATOR).append(stringTwo);
+      return sb.toString();
+   }
 }
