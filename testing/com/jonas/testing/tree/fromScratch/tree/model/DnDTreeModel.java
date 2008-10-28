@@ -1,6 +1,9 @@
 package com.jonas.testing.tree.fromScratch.tree.model;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -123,7 +126,23 @@ public class DnDTreeModel extends DefaultTreeModel {
       removeNodeFromParent(node);
       jiras.remove(jiraListName);
    }
-   protected String getSeparatedName(String stringOne, String stringTwo){
+
+   public List<JiraNode> getJiraNodes(String jira) {
+      DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
+      DefaultMutableTreeNode node = null;
+      List<JiraNode> jiraNodes = new ArrayList<JiraNode>();
+
+      for (Enumeration e = root.preorderEnumeration(); e.hasMoreElements();) {
+         DefaultMutableTreeNode current = (DefaultMutableTreeNode) e.nextElement();
+         System.out.println("current: " + current.getUserObject());
+         if (jira.equals(current.getUserObject())) {
+            jiraNodes.add((JiraNode) current);
+         }
+      }
+      return jiraNodes;
+   }
+
+   protected String getSeparatedName(String stringOne, String stringTwo) {
       StringBuffer sb = new StringBuffer(stringOne);
       sb.append(SEPARATOR).append(stringTwo);
       return sb.toString();
