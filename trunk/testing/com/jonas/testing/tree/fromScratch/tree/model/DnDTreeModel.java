@@ -56,11 +56,7 @@ public class DnDTreeModel extends DefaultTreeModel {
    }
 
    void createJira(String sprintName, String fixVersionName, JiraDTO jira) {
-      String fixVersionListName = getSeparatedName(sprintName, fixVersionName);
-      FixVersionNode parent = fixVersions.get(fixVersionListName);
-      if (parent == null) {
-         parent = createFixVersion(sprintName, fixVersionName);
-      }
+      FixVersionNode parent = getParent(sprintName, fixVersionName);
       String jiraListName = getSeparatedName(jira.getKey(), fixVersionName);
       JiraNode jiraNode = jiras.get(jiraListName);
       if (jiraNode == null) {
@@ -68,16 +64,23 @@ public class DnDTreeModel extends DefaultTreeModel {
          insertNodeInto(jiraNode, parent, parent.getChildCount());
          jiras.put(jiraListName, jiraNode);
       } else {
-         TreeNode parent2 = jiraNode.getParent();
+         TreeNode oldParent = jiraNode.getParent();
          System.out.println("blah!!");
          // FIXME not working when moving one jira to anoother fixversion and then refreshing.
-         if (parent2 != parent || parent2.getParent() != parent.getParent()) {
+         if (oldParent != parent || oldParent.getParent() != parent.getParent()) {
             removeNodeFromParent(jiraNode);
             insertNodeInto(jiraNode, parent, parent.getChildCount());
-            // } else{
-            // log.warn("Jira " + jira + " is not added to Model as it already exists in this position!");
          }
       }
+   }
+
+   private FixVersionNode getParent(String sprintName, String fixVersionName) {
+      String fixVersionListName = getSeparatedName(sprintName, fixVersionName);
+      FixVersionNode parent = fixVersions.get(fixVersionListName);
+      if (parent == null) {
+         parent = createFixVersion(sprintName, fixVersionName);
+      }
+      return parent;
    }
 
    SprintNode createSprint(String sprintName) {
@@ -92,15 +95,25 @@ public class DnDTreeModel extends DefaultTreeModel {
 
    public void addJira(JiraDTO jira) {
       log.debug(jira);
-      String sprint = jira.getSprint();
-      if (sprint == null) {
-         sprint = UNKNOWN_SPRINT;
-      }
+      String sprint = setSprintToUnkownIfDoesntExist(jira);
+      String fixVersion = setFixVersionToUnKnownIfDoesntExist(jira);
+      createJira(sprint, fixVersion, jira);
+   }
+
+   private String setFixVersionToUnKnownIfDoesntExist(JiraDTO jira) {
       String fixVersion = jira.getFixVersions().get(0);
       if (fixVersion == null) {
          fixVersion = UNKNOWN_FIXVERSION;
       }
-      createJira(sprint, fixVersion, jira);
+      return fixVersion;
+   }
+
+   private String setSprintToUnkownIfDoesntExist(JiraDTO jira) {
+      String sprint = jira.getSprint();
+      if (sprint == null) {
+         sprint = UNKNOWN_SPRINT;
+      }
+      return sprint;
    }
 
    public void removeJira(String jira, String fixVersion) {
