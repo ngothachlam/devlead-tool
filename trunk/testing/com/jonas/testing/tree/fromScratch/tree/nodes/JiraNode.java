@@ -8,7 +8,7 @@ public class JiraNode extends DefaultMutableTreeNode {
 
    private final String description;
    private final List<String> fixVersions = new ArrayList<String>();
-   private final boolean isToSync;
+   private boolean isToSync;
    private final String key;
    private final FixVersionNode parent;
    private final String resolution;
@@ -60,5 +60,9 @@ public class JiraNode extends DefaultMutableTreeNode {
 
    public boolean isToSync() {
       return isToSync;
+   }
+
+   public void setToSynced() {
+      isToSync = false;
    }
 }
