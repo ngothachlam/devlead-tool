@@ -35,7 +35,7 @@ public class DnDTreeModelTest extends TestCase {
       jiraOne = assertChild(model, fixVOne, 0, "Jira 1", 0);
    }
    
-   public void testShouldAddJiraToAnotherSprintShouldFail() {
+   public void testShouldAddJiraToAnotherSprintShouldMoveFixVersionsAsWell() {
       DnDTreeModel model = new DnDTreeModel("LLU");
       JiraDTO jiraDto = getTestJiraDto("Sprint 1", "FixVersion 1", "Jira 1");
       
@@ -53,8 +53,8 @@ public class DnDTreeModelTest extends TestCase {
       model.addJira(jiraDto);
       
       assertEquals(1, model.getChildCount(model.getRoot()));
-      spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 1);
-      fixVOne = assertChild(model, spriOne, 0, "FixVersion 1", 1);
+      DefaultMutableTreeNode spriTwo = assertChild(model, model.getRoot(), 0, "Sprint 2", 1);
+      fixVOne = assertChild(model, spriTwo, 0, "FixVersion 1", 1);
       jiraOne = assertChild(model, fixVOne, 0, "Jira 1", 0);
    }
 
