@@ -156,6 +156,9 @@ public class DnDTreeTransferHandler extends TransferHandler {
                log.debug("Parent is : " + parentNode + " and the new Element is: " + newNode + " and the childindex is : " + childIndex);
                model.insertNodeInto(newNode, parentNode, childIndex);
             } else if (path.getLastPathComponent() instanceof SprintNode) {
+//               SprintNode sprintNode = (SprintNode) path.getLastPathComponent();
+//               JiraDTO jiraDTO = new JiraDTO(newNode.getKey(), newNode.getId(), newNode.getDescription(), newNode.getFixVersions(), (String) sprintNode.getUserObject(), newNode.getStatus(), newNode.getResolution(), true);
+//               tree.getModel().addJira(jiraDTO);
                SprintNode sprintNode = (SprintNode) path.getLastPathComponent();
                JiraDTO jiraDTO = new JiraDTO();
                jiraDTO.setKey(newNode.getKey());
@@ -163,13 +166,14 @@ public class DnDTreeTransferHandler extends TransferHandler {
                jiraDTO.setSprint((String) sprintNode.getUserObject());
                jiraDTO.setStatus(newNode.getStatus());
                jiraDTO.setSummary(newNode.getDescription());
-               log.debug("setting to syncable!!");
+               jiraDTO.setId(newNode.getId());
                jiraDTO.setToSync(true);
                List<String> fixVersions = newNode.getFixVersions();
                for (String fixVersion : fixVersions) {
                   jiraDTO.addFixVersion(fixVersion);
                }
                tree.getModel().addJira(jiraDTO);
+
             }
             TreePath newPath = path.pathByAddingChild(newNode);
             tree.makeVisible(newPath);

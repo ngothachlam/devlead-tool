@@ -14,8 +14,9 @@ public class JiraNode extends DefaultMutableTreeNode {
    private final String resolution;
    private final String sprint;
    private final String status;
+   private final String id;
 
-   public JiraNode(String jira, FixVersionNode parent, String resolution, String status, String description, String sprint, List<String> fixVersions, boolean isToSync) {
+   public JiraNode(String jira, String id, String description, FixVersionNode parent, String resolution, String status, String sprint, List<String> fixVersions, boolean isToSync) {
       super(jira);
       this.key = jira;
       this.parent = parent;
@@ -24,9 +25,14 @@ public class JiraNode extends DefaultMutableTreeNode {
       this.description = description;
       this.sprint = sprint;
       this.isToSync = isToSync;
+      this.id = id;
       for (String string : fixVersions) {
          this.fixVersions.add(string);
       }
+   }
+
+   public String getId() {
+      return id;
    }
 
    @Override

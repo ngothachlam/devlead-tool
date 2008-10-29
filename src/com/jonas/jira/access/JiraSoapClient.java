@@ -111,31 +111,28 @@ public class JiraSoapClient {
 
          }
       }
-
       return versions;
    }
 
    public void updateSprint(final String jiraKey, final String sprint) throws RemotePermissionException, RemoteAuthenticationException,
          com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+      RemoteIssue issue = updateCustomField(jiraKey, sprint, update_with_Sprints_CustomField);
+   }
+
+   private RemoteIssue updateCustomField(final String jiraKey, final String sprint, final String customField) throws RemotePermissionException,
+         RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
       JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
          public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
                RemoteException {
             String[] values = new String[] { sprint };
-            RemoteFieldValue remoteFieldValue = new RemoteFieldValue("customfield_10282", values);
-            // RemoteField9] {name=Sprint,id=customfield_10282}
+            RemoteFieldValue remoteFieldValue = new RemoteFieldValue(customField, values);
             RemoteFieldValue[] remoteFieldValues = new RemoteFieldValue[] { remoteFieldValue };
             return jiraSoapService.updateIssue(getToken(), jiraKey, remoteFieldValues);
          }
 
       });
       RemoteIssue issue = (RemoteIssue) command.execute();
-      if (log.isDebugEnabled()) {
-            StringBuffer sb = new StringBuffer();
-            sb.append("RemoteIssue{");
-            sb.append("Key=").append(issue.getKey());
-            sb.append(",id=").append(issue.getId());
-            sb.append("}");
-      }
+      return issue;
    }
 
    public RemoteFilter getFilter(String filterName) throws RemotePermissionException, RemoteAuthenticationException,
