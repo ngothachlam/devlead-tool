@@ -7,9 +7,10 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -21,7 +22,7 @@ import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.ClientConstants;
-import com.jonas.jira.access.JiraClient;
+import com.jonas.jira.access.JiraHttpClient;
 import com.jonas.jira.access.JiraSoapClient;
 import com.jonas.testing.tree.fromScratch.tree.DnDTree;
 import com.jonas.testing.tree.fromScratch.tree.model.DnDTreeModel;
@@ -31,7 +32,7 @@ import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
 import com.jonas.testing.tree.fromScratch.xml.JiraParseListener;
 import com.jonas.testing.tree.fromScratch.xml.JiraSaxHandler;
 import com.jonas.testing.tree.fromScratch.xml.XmlParser;
-import com.jonas.testing.tree.fromScratch.xml.XmlParserLargeMock;
+import com.jonas.testing.tree.fromScratch.xml.XmlParserAtlassain;
 
 public class DnDTreeMain extends JFrame {
 
@@ -49,7 +50,8 @@ public class DnDTreeMain extends JFrame {
 
          JiraSaxHandler saxHandler = new JiraSaxHandler();
          // XmlParser parser = new XmlParserImpl(saxHandler);
-         XmlParser parser = new XmlParserLargeMock(saxHandler);
+         // XmlParser parser = new XmlParserLargeMock(saxHandler);
+         XmlParser parser = new XmlParserAtlassain(saxHandler);
          dndTreeBuilder = new DnDTreeBuilder(parser);
 
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree));
@@ -78,11 +80,12 @@ public class DnDTreeMain extends JFrame {
       JButton refreshButton = new RefreshButton("Download from Jira", this, dndTreeBuilder, tree);
       JButton uploadToJiraButton = new UploadToJiraButton("Upload to Jira", this, tree);
       JButton clearTreeButton = new ClearTreeButton("Clear Tree", this, tree);
-      // JButton button = new JButton("<ToBeDefined>");
+      JButton addSprintButton = new AddSprintButton("Add Sprint", this, tree);
 
       panel.add(refreshButton);
-      panel.add(clearTreeButton);
       panel.add(uploadToJiraButton);
+      panel.add(clearTreeButton);
+      panel.add(addSprintButton);
       return panel;
    }
 
@@ -115,6 +118,25 @@ public class DnDTreeMain extends JFrame {
       }
    }
 
+   private final class AddSprintButton extends JButton implements ActionListener {
+      private final Component parent;
+      private final DnDTree tree;
+
+      private AddSprintButton(String text, Component parent, DnDTree tree) {
+         super(text);
+
+         this.parent = parent;
+         this.tree = tree;
+
+         this.addActionListener(this);
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         tree.getModel().createSprint("Test");
+      }
+   }
+
    private final class UploadToJiraButton extends JButton implements ActionListener {
       private final Frame parent;
       private final DnDTree tree;
@@ -133,28 +155,34 @@ public class DnDTreeMain extends JFrame {
          MyStatusBar.getInstance().setMessage("Uploading to Jira...", true);
 
          List<JiraNode> jiraNodes = tree.getJiraNodes();
-         StringBuffer sb = new StringBuffer("The following Jiras needs to have their sprint updated!");
+         StringBuffer sb = new StringBuffer("The following Jiras had their sprints updated:");
          int noOfErrors = 0;
          JiraSoapClient soapClient = new JiraSoapClient(ClientConstants.AOLBB_WS);
-         for (JiraNode jiraNode : jiraNodes) {
-            try {
-               if (jiraNode.isToSync()) {
-                  // soapClient.getFieldsForEdit(jiraNode.getKey());
-                  soapClient.updateSprint(jiraNode.getKey(), jiraNode.getSprint());
-                  sb.append("\n").append(jiraNode.getKey()).append(" to sprint ").append(jiraNode.getSprint());
+         try {
+            List<String> jiras = new ArrayList<String>();
+            for (JiraNode jiraNode : jiraNodes) {
+               try {
+                  if (jiraNode.isToSync() && !jiras.contains(jiraNode.getKey())) {
+                     soapClient.updateSprint(jiraNode.getKey(), jiraNode.getSprint());
+                     sb.append("\n").append(jiraNode.getKey()).append(" was moved to sprint ").append(jiraNode.getSprint());
+                     jiras.add(jiraNode.getKey());
+                  }
+                  jiraNode.setToSynced();
+               } catch (Throwable ex) {
+                  noOfErrors++;
+                  AlertDialog.alertException(parent, ex);
                }
-               jiraNode.setToSynced();
-            } catch (Throwable ex) {
-               noOfErrors++;
-               AlertDialog.alertException(parent, ex);
+               if (noOfErrors >= 3) {
+                  JOptionPane.showMessageDialog(parent, "Error Happened susequent times - abandoned!", "Exception!", JOptionPane.ERROR_MESSAGE);
+                  break;
+               }
             }
-            if (noOfErrors >= 3) {
-               JOptionPane.showMessageDialog(parent, "Error Happened susequent times - abandoned!", "Exception!", JOptionPane.ERROR_MESSAGE);
-               break;
-            }
+            tree.treeDidChange();
+            JOptionPane.showMessageDialog(parent, sb.toString());
+         } catch (Exception e1) {
+            e1.printStackTrace();
+            AlertDialog.alertException(parent, e1);
          }
-         tree.treeDidChange();
-         JOptionPane.showMessageDialog(parent, sb.toString());
       }
    }
 

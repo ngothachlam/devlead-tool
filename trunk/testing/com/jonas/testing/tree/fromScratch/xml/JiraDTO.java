@@ -12,6 +12,23 @@ public class JiraDTO {
    private String sprint;
    private String status;
    private boolean isToSync = false;
+   private String id;
+
+   public JiraDTO() {
+   }
+
+   public JiraDTO(String key, String id, String summary, List<String> list, String sprint, String status, String resolution, boolean isToSync) {
+      this.key = key;
+      this.resolution = resolution;
+      this.sprint = sprint;
+      this.status = status;
+      this.summary = summary;
+      this.id = id;
+      this.isToSync = isToSync;
+      for (String fixVersion : fixVersions) {
+         addFixVersion(fixVersion);
+      }
+   }
 
    public String getSummary() {
       return summary;
@@ -88,6 +105,14 @@ public class JiraDTO {
 
    public boolean getSyncable() {
       return isToSync;
+   }
+
+   public String getId() {
+      return id;
+   }
+
+   public void setId(String id) {
+      this.id = id;
    }
 
 }

@@ -22,11 +22,7 @@ public class XmlParserAtlassain extends HttpClient implements XmlParser {
    }
 
    public void parse() throws IOException, SAXException {
-      
-      String baseUrl = "http://jira.atlassian.com";
-      String url = baseUrl + "/secure/IssueNavigator.jspa?view=rss&&sorter/field=issuekey&sorter/order=DESC&tempMax=" + MAX_RESULTS + "&reset=true&decorator=none";
-      log.debug("calling " + url);
-      reader.parse(url);
+      reader.parse("test-data/ListOfAtlassinJira.xml");
    }
 
 }

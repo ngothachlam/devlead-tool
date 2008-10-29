@@ -64,8 +64,8 @@ public class DnDTreeModel extends DefaultTreeModel {
       String jiraListName = getSeparatedName(jira.getKey(), fixVersionName);
       JiraNode jiraNode = jiras.get(jiraListName);
       if (jiraNode == null) {
-         jiraNode = new JiraNode(jira.getKey(), parent, jira.getResolution(), jira.getStatus(), jira.getSummary(), jira.getSprint(), jira.getFixVersions(),
-               jira.getSyncable());
+         jiraNode = new JiraNode(jira.getKey(), jira.getId(), jira.getSummary(), parent, jira.getResolution(), jira.getStatus(), jira.getSprint(),
+               jira.getFixVersions(), jira.getSyncable());
          insertNodeInto(jiraNode, parent, parent.getChildCount());
          jiras.put(jiraListName, jiraNode);
       } else {
@@ -77,8 +77,8 @@ public class DnDTreeModel extends DefaultTreeModel {
             jiras.remove(jiraListName);
 
             jiraListName = getSeparatedName(jira.getKey(), fixVersionName);
-            jiraNode = new JiraNode(jira.getKey(), parent, jira.getResolution(), jira.getStatus(), jira.getSummary(), jira.getSprint(), jira.getFixVersions(),
-                  jira.getSyncable());
+            jiraNode = new JiraNode(jira.getKey(), jira.getId(), jira.getSummary(), parent, jira.getResolution(), jira.getStatus(), jira.getSprint(),
+                  jira.getFixVersions(), jira.getSyncable());
             insertNodeInto(jiraNode, parent, parent.getChildCount());
             jiras.put(jiraListName, jiraNode);
          }
@@ -94,7 +94,7 @@ public class DnDTreeModel extends DefaultTreeModel {
       return parent;
    }
 
-   SprintNode createSprint(String sprintName) {
+   public SprintNode createSprint(String sprintName) {
       ProjectNode root = (ProjectNode) getRoot();
       SprintNode sprintNode = new SprintNode(sprintName);
       insertNodeInto(sprintNode, root, root.getChildCount());

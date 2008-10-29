@@ -101,6 +101,8 @@ public class JiraSaxHandler extends DefaultHandler {
    public void startElement(String uri, String name, String qName, Attributes atts) throws SAXException {
       if (ITEM.equals(qName)) {
          jira = new JiraDTO();
+      } else if (KEY.equals(qName)) {
+         jira.setId(atts.getValue("id"));
       }
       element = qName;
       nodeCount++;
