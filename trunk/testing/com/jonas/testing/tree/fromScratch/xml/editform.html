@@ -1,0 +1,815 @@
+<HTML>
+<HEAD>
+<TITLE>Edit Issue: [LLU-4243]</TITLE>
+</HEAD>
+<BODY>
+<TABLE cellpadding="0" cellspacing="0" border="0" width="100%">
+	<TR>
+		<TD width="200" bgcolor="f0f0f0" valign="top">
+		<TABLE cellpadding="3" cellspacing="0" border="0" width="200">
+			<TR>
+				<TD bgcolor="dddddd"><SPAN style="float: left"><B>Issue
+				Details</B></SPAN> <SPAN class="small" style="float: right">[<A
+					href="/jira/browse/LLU-4243?decorator=none&amp;view=rss"
+					class="small">XML</A>]</SPAN> <B></B></TD>
+			</TR>
+		</TABLE>
+		<IMG src="/jira/images/bluepixel.gif" width="200" height="1"
+			border="0" alt=""><BR>
+		<TABLE cellpadding="3" cellspacing="0" border="0">
+			<TR>
+				<TD valign="top" colspan="2"><B>Summary:</B> test</TD>
+			</TR>
+			<TR>
+				<TD valign="top" width="1%"><B>Key:</B></TD>
+				<TD valign="top" width="100%"><B><A id="issue_key_LLU-4243"
+					href="/jira/browse/LLU-4243">LLU-4243</A></B></TD>
+			</TR>
+			<TR>
+				<TD valign="top"><B>Type:</B></TD>
+				<TD valign="top"><IMG src="/jira/images/icons/bug.gif"
+					height="16" width="16" border="0" align="absmiddle" alt="Bug"
+					title="Bug - A problem which impairs or prevents the functions of the product.">
+				Bug</TD>
+			</TR>
+			<TR>
+				<TD valign="top"><B>Status:</B></TD>
+				<TD valign="top"><IMG src="/jira/images/icons/status_open.gif"
+					height="16" width="16" border="0" align="absmiddle" alt="Open"
+					title="Open - The issue is open and ready for the assignee to start work on it.">
+				Open</TD>
+			</TR>
+			<TR>
+				<TD valign="top"><B>Priority:</B></TD>
+				<TD valign="top"><IMG
+					src="/jira/images/icons/priority_major.gif" height="16" width="16"
+					border="0" align="absmiddle" alt="Sev 3 - Medium"
+					title="Sev 3 - Medium - Major loss of function."> Sev 3 -
+				Medium</TD>
+			</TR>
+			<TR>
+				<TD valign="top"><B>Assignee:</B></TD>
+				<TD valign="top">Unassigned</TD>
+			</TR>
+			<TR>
+				<TD valign="top"><B>Reporter:</B></TD>
+				<TD valign="top"><A
+					href="/jira/secure/ViewProfile.jspa?name=jonasjolofsson">Jonas
+				Olofsson</A></TD>
+			</TR>
+			<TR>
+				<TD valign="top"><B>Watchers:</B></TD>
+				<TD valign="top">0</TD>
+			</TR>
+		</TABLE>
+		</TD>
+		<TD bgcolor="ffffff" valign="top">
+		<TABLE width="100%" cellpadding="10" cellspacing="0" border="0">
+			<TR>
+				<TD>
+				<FORM action="EditIssue.jspa" method="post" name="jiraform"
+					onsubmit="if (this.submitted) return false; this.submitted = true; return true"
+					ENCTYPE="multipart/form-data">
+				<TABLE class="jiraform maxWidth" id="">
+					<TR>
+						<TD colspan="2" class="jiraformheader">
+						<H3 class="formtitle">Edit Issue</H3>
+						</TD>
+					</TR>
+					<TR>
+						<TD colspan="2" class="jiraformheader">Use this form to edit
+						the fields of this issue. You can optionally add a comment at the
+						same time explaining your changes.</TD>
+					</TR>
+					<SCRIPT language="javascript" type="text/javascript">
+function openDateRangePicker(formName, previousFieldName, nextFieldName, fieldId)
+{
+    var previousFieldValue = document.forms[formName].elements[previousFieldName].value;
+    var nextFieldValue = document.forms[formName].elements[nextFieldName].value;
+    var url = '/jira/secure/popups/DateRangePicker.jspa?';
+    url += 'formName=' + formName + '&';
+    url += 'previousFieldName=' + escape(previousFieldName) + '&';
+    url += 'nextFieldName=' + escape(nextFieldName) + '&';
+    url += 'previousFieldValue=' + escape(previousFieldValue) + '&';
+    url += 'nextFieldValue=' + escape(nextFieldValue) + '&';
+    url += 'fieldId=' + escape(fieldId);
+    var vWinUsers = window.open(url, 'DateRangePopup', 'status=no,resizable=yes,top=100,left=200,width=580,height=400,scrollbars=yes');
+    vWinUsers.opener = self;
+    vWinUsers.focus();
+}
+function show_calendar2(formName, fieldName)
+{
+    var form = document.forms[formName];
+    var element = form.elements[fieldName];
+    var vWinCal = window.open('/jira/secure/popups/Calendar.jspa?form=' + formName + '&field=' + fieldName + '&value=' + escape(element.value) + '&decorator=none', 'Calendar','width=230,height=170,status=no,resizable=yes,top=220,left=200');
+    vWinCal.opener = self;
+    vWinCal.focus();
+}
+</SCRIPT>
+					<STYLE type="text/css">
+<!--
+.fieldLabelArea {
+	width: 20% !important;
+}
+.fieldValueArea {
+	width: 80% !important;
+}
+-->
+</STYLE>
+					<TR class="fieldArea" id="summaryFieldArea">
+						<TD class="fieldLabelArea"><LABEL for="summary"> <SPAN
+							class="required" title="Fields in italics are required"><SUP>*</SUP>
+						Summary: </SPAN> </LABEL></TD>
+						<TD class="fieldValueArea"><INPUT type="text" name="summary"
+							id="summary" class="textfield" value="test" maxlength="255">
+						</TD>
+					</TR>
+					<TR class="fieldArea" id="issuetypeFieldArea">
+						<TD class="fieldLabelArea"><LABEL for="issuetype"> <SPAN
+							class="required" title="Fields in italics are required"><SUP>*</SUP>
+						Issue Type: </SPAN> </LABEL></TD>
+						<TD class="fieldValueArea"><SELECT name="issuetype"
+							id="issuetype" class="imagebacked">
+							<OPTION id="issuetype1014211" class="10142" value="11"
+								style='background-image: url(/jira/images/icons/bug.gif);'>Action</OPTION>
+							<OPTION id="issuetype101421" class="10142" value="1"
+								style='background-image: url(/jira/images/icons/bug.gif);'
+								selected="selected">Bug</OPTION>
+							<OPTION id="issuetype1014212" class="10142" value="12"
+								style='background-image: url(/jira/images/icons/newfeature.gif);'>Change
+							Request</OPTION>
+							<OPTION id="issuetype1014221" class="10142" value="21"
+								style='background-image: url(/jira/images/icons/task.gif);'>Data
+							Fix</OPTION>
+							<OPTION id="issuetype1014210" class="10142" value="10"
+								style='background-image: url(/jira/images/icons/genericissue.gif);'>Deployment</OPTION>
+							<OPTION id="issuetype1014224" class="10142" value="24"
+								style='background-image: url(/jira/images/icons/bug.gif);'>Environment
+							Issue</OPTION>
+							<OPTION id="issuetype1014233" class="10142" value="33"
+								style='background-image: url(/jira/images/icons/improvement.gif);'>Epic</OPTION>
+							<OPTION id="issuetype101425" class="10142" value="5"
+								style='background-image: url(/jira/images/icons/genericissue.gif);'>Issue</OPTION>
+							<OPTION id="issuetype1014213" class="10142" value="13"
+								style='background-image: url(/jira/images/icons/merge.gif);'>Merge</OPTION>
+							<OPTION id="issuetype1014214" class="10142" value="14"
+								style='background-image: url(/jira/images/icons/bug.gif);'>Production
+							Issue</OPTION>
+							<OPTION id="issuetype101426" class="10142" value="6"
+								style='background-image: url(/jira/images/icons/risk.gif);'>Risk</OPTION>
+							<OPTION id="issuetype101428" class="10142" value="8"
+								style='background-image: url(/jira/images/icons/newfeature.gif);'>Story</OPTION>
+							<OPTION id="issuetype101423" class="10142" value="3"
+								style='background-image: url(/jira/images/icons/task.gif);'>Task</OPTION>
+							<OPTION id="issuetype1014215" class="10142" value="15"
+								style='background-image: url(/jira/images/icons/improvement.gif);'>Technical
+							Debt</OPTION>
+							<OPTION id="issuetype1014216" class="10142" value="16"
+								style='background-image: url(/jira/images/icons/newfeature.gif);'>Technology
+							Request (TR)</OPTION>
+							<OPTION id="issuetype1014223" class="10142" value="23"
+								style='background-image: url(/jira/images/icons/genericissue.gif);'>Test
+							Story</OPTION>
+							<OPTION id="issuetype1014232" class="10142" value="32"
+								style='background-image: url(/jira/images/icons/improvement.gif);'>Theme</OPTION>
+						</SELECT> <A class="localHelp"
+							href="/jira/ShowConstantsHelp.jspa?decorator=popup#IssueTypes"
+							onclick="var child = window.open('/jira/ShowConstantsHelp.jspa?decorator=popup#IssueTypes', 'jiraLocalHelp', 'width=600, height=500, resizable, scrollbars=yes'); child.focus(); return false;"><IMG
+							src="/jira/images/icons/help_blue.gif"
+							title="Get online help about Issue Type " alt="" /></A></TD>
+					</TR>
+					<TR class="fieldArea" id="priorityFieldArea">
+						<TD class="fieldLabelArea"><LABEL for="priority">
+						Priority: </LABEL></TD>
+						<TD class="fieldValueArea"><SELECT name="priority"
+							id="priority">
+							<OPTION value="1" class="imagebacked"
+								style='background-image: url(/jira/images/icons/priority_blocker.gif);'>Sev
+							1 - High</OPTION>
+							<OPTION value="2" class="imagebacked"
+								style='background-image: url(/jira/images/icons/priority_critical.gif);'>Sev
+							2 - High</OPTION>
+							<OPTION value="7" class="imagebacked"
+								style='background-image: url(/jira/images/icons/priority_critical.gif);'>Sev
+							2 - Medium</OPTION>
+							<OPTION value="10" class="imagebacked"
+								style='background-image: url(/jira/images/icons/priority_critical.gif);'>Sev
+							2 - Low</OPTION>
+							<OPTION value="3" class="imagebacked"
+								style='background-image: url(/jira/images/icons/priority_major.gif);'>Sev
+							3 - High</OPTION>
+							<OPTION value="8" class="imagebacked"
+								style='background-image: url(/jira/images/icons/priority_major.gif);'
+								selected>Sev 3 - Medium</OPTION>
+							<OPTION value="9" class="imagebacked"
+								style='background-image: url(/jira/images/icons/priority_major.gif);'>Sev
+							3 - Low</OPTION>
+							<OPTION value="6" class="imagebacked"
+								style='background-image: url(/jira/images/icons/priority_minor.gif);'>Sev
+							4 - High</OPTION>
+							<OPTION value="4" class="imagebacked"
+								style='background-image: url(/jira/images/icons/priority_minor.gif);'>Sev
+							5 - High</OPTION>
+							<OPTION value="5" class="imagebacked"
+								style='background-image: url(/jira/images/icons/priority_trivial.gif);'>Trivial</OPTION>
+						</SELECT> <A class="localHelp"
+							href="/jira/ShowConstantsHelp.jspa?decorator=popup#PriorityLevels"
+							onclick="var child = window.open('/jira/ShowConstantsHelp.jspa?decorator=popup#PriorityLevels', 'jiraLocalHelp', 'width=600, height=500, resizable, scrollbars=yes'); child.focus(); return false;"><IMG
+							src="/jira/images/icons/help_blue.gif"
+							title="Get online help about Priority " alt="" /></A></TD>
+					</TR>
+					<TR class="fieldArea" id="componentsFieldArea">
+						<TD class="fieldLabelArea"><LABEL for="components">
+						Component/s: </LABEL></TD>
+						<TD class="fieldValueArea"><SELECT multiple name="components"
+							id="components" size=" 5 ">
+							<OPTION value="-1">Unknown</OPTION>
+							<OPTION value="10448"
+								title="Activation  - Activation of circuits via FENS">Activation</OPTION>
+							<OPTION value="10261" title="Appointments " selected>Appointments</OPTION>
+							<OPTION value="10254" title="Architecture/Documentation  -  ">Architecture/Documentation</OPTION>
+							<OPTION value="10518" title="BBMS Adapter  -  ">BBMS
+							Adapter</OPTION>
+							<OPTION value="10211" title="BT LiSA ">BT LiSA</OPTION>
+							<OPTION value="10355" title="Build Environment  -  ">Build
+							Environment</OPTION>
+							<OPTION value="10212" title="Bulk Migration ">Bulk
+							Migration</OPTION>
+							<OPTION value="10546" title="Conan  -  ">Conan</OPTION>
+							<OPTION value="10374" title="DLM  - Dynamic Line Management">DLM</OPTION>
+							<OPTION value="10547" title="DLM PreProd  -  ">DLM
+							PreProd</OPTION>
+							<OPTION value="10322" title="EMP  -  ">EMP</OPTION>
+							<OPTION value="10511" title="EMP Simulator  -  ">EMP
+							Simulator</OPTION>
+							<OPTION value="10544" title="EbXML  -  ">EbXML</OPTION>
+							<OPTION value="10215" title="Fault Management ">Fault
+							Management</OPTION>
+							<OPTION value="10414" title="IMS  - Inventory Management System">IMS</OPTION>
+							<OPTION value="10524"
+								title="JMS Messaging GUI  - This Gui allows us to send messages onto a topic/queue used for daily support">JMS
+							Messaging GUI</OPTION>
+							<OPTION value="10412" title="LTT  - Line Test Tool">LTT</OPTION>
+							<OPTION value="10532" title="MAC  -  ">MAC</OPTION>
+							<OPTION value="10510" title="MockServer  -  ">MockServer</OPTION>
+							<OPTION value="10413" title="NM  - Network Monitoring">NM</OPTION>
+							<OPTION value="10484" title="Northbound Interface  -  ">Northbound
+							Interface</OPTION>
+							<OPTION value="10253" title="Operations ">Operations</OPTION>
+							<OPTION value="10180" title="Order Management ">Order
+							Management</OPTION>
+							<OPTION value="10255" title="Processes ">Processes</OPTION>
+							<OPTION value="10569" title="RBAC  -  ">RBAC</OPTION>
+							<OPTION value="10260" title="Reporting ">Reporting</OPTION>
+							<OPTION value="10230" title="Service Management ">Service
+							Management</OPTION>
+							<OPTION value="10545" title="Sonic  -  ">Sonic</OPTION>
+							<OPTION value="10373"
+								title="Tactical AC  - Tactical Availability Checker">Tactical
+							AC</OPTION>
+							<OPTION value="10391"
+								title="ZZ - REDUNDANT - Strategic AC  - Strategic Availability Checker allows for available Product Catalogue to be provided for a given DN or postcode">ZZ
+							- REDUNDANT - Strategic AC</OPTION>
+						</SELECT></TD>
+					</TR>
+					<TR class="fieldArea" id="versionsFieldArea">
+						<TD class="fieldLabelArea"><LABEL for="versions">
+						Affects Version/s: </LABEL></TD>
+						<TD class="fieldValueArea"><SELECT multiple name="versions"
+							size="6" id="versions">
+							<OPTION value="-1">Unknown</OPTION>
+							<OPTGROUP label="Released Versions">
+								<OPTION value="11499">LLU 11.1</OPTION>
+								<OPTION value="11449" selected>LLU 11</OPTION>
+							</OPTGROUP>
+							<OPTGROUP label="Unreleased Versions">
+								<OPTION value="11520" selected>LLU 11.2</OPTION>
+								<OPTION value="11484">LLU 12</OPTION>
+								<OPTION value="11514">LLU 12 - Sprint 5 (next)</OPTION>
+								<OPTION value="11507">Backlog - Stable</OPTION>
+								<OPTION value="11388">Backlog</OPTION>
+								<OPTION value="11458">Pam's Backlog</OPTION>
+							</OPTGROUP>
+						</SELECT></TD>
+					</TR>
+					<TR class="fieldArea" id="fixVersionsFieldArea">
+						<TD class="fieldLabelArea"><LABEL for="fixVersions">
+						Fix Version/s: </LABEL></TD>
+						<TD class="fieldValueArea"><SELECT multiple
+							name="fixVersions" size="6" id="fixVersions">
+							<OPTION value="-1">Unknown</OPTION>
+							<OPTGROUP label="Unreleased Versions">
+								<OPTION value="11520">LLU 11.2</OPTION>
+								<OPTION value="11484" selected>LLU 12</OPTION>
+								<OPTION value="11514">LLU 12 - Sprint 5 (next)</OPTION>
+								<OPTION value="11507">Backlog - Stable</OPTION>
+								<OPTION value="11388">Backlog</OPTION>
+								<OPTION value="11458">Pam's Backlog</OPTION>
+							</OPTGROUP>
+							<OPTGROUP label="Released Versions">
+								<OPTION value="11499">LLU 11.1</OPTION>
+								<OPTION value="11449">LLU 11</OPTION>
+							</OPTGROUP>
+						</SELECT></TD>
+					</TR>
+					<TR class="fieldArea" id="assigneeFieldArea">
+						<TD class="fieldLabelArea"><LABEL for="assignee">
+						Assign To: </LABEL></TD>
+						<TD class="fieldValueArea"><SELECT name="assignee"
+							id="assignee">
+							<OPTION value="">Unassigned</OPTION>
+							<OPTION value="-1">- Automatic -</OPTION>
+							<OPTION value="jonasjolofsson">Jonas Olofsson</OPTION>
+							<OPTGROUP label="---------------">
+							</OPTGROUP>
+							<OPTION value="sysops">(NO ASSIGN) System Operations</OPTION>
+							<OPTION value="bbmsperf">- BBMS Perf</OPTION>
+							<OPTION value="bugs">- Bug Queue</OPTION>
+							<OPTION value="builddabqueue">- Build & DBA queue</OPTION>
+							<OPTION value="devqueue">- DEV Queue</OPTION>
+							<OPTION value="bugsbbmsr2">- Development Support Dev
+							Queue</OPTION>
+							<OPTION value="productionsupportqaqueue">- Development
+							Support QA Queue</OPTION>
+							<OPTION value="dev queue">- LLU - Dev Queue</OPTION>
+							<OPTION value="qa queue">- LLU - QA Queue</OPTION>
+							<OPTION value="lludevsupportdev">- LLU DEV SUPPORT - Dev
+							Queue</OPTION>
+							<OPTION value="lludevsupportqa">- LLU DEV SUPPORT - QA
+							Queue</OPTION>
+							<OPTION value="ocbugs">- Order Capture Bug Queue</OPTION>
+							<OPTION value="qa-queue">- QA queue</OPTION>
+							<OPTION value="ukremedyqueue">- UK Remedy issue queue</OPTION>
+							<OPTION value="abdulrahimx">Abdul Rahim</OPTION>
+							<OPTION value="adriandonnelly">Adrian Donnelly</OPTION>
+							<OPTION value="awynter606">Adrian Wynter</OPTION>
+							<OPTION value="amathur">Ajay Mathur</OPTION>
+							<OPTION value="ukpronetalan">Alan Crookes</OPTION>
+							<OPTION value="alan">Alan Francis</OPTION>
+							<OPTION value="apannone1207">Alessandro Pannone</OPTION>
+							<OPTION value="afarquhar1207">Alex Farquhar</OPTION>
+							<OPTION value="aharin">Alex Harin</OPTION>
+							<OPTION value="alexrichardson">Alex Richardson</OPTION>
+							<OPTION value="afrancisuk">Alison Francis</OPTION>
+							<OPTION value="allanschweitz507">Allan Schweitz</OPTION>
+							<OPTION value="ukpronetallister">Allister Strachan</OPTION>
+							<OPTION value="alpeshdesaiuk">Alpesh Desai</OPTION>
+							<OPTION value="andrewmutton">Andrew Mutton</OPTION>
+							<OPTION value="andrewplattap">Andrew Platt</OPTION>
+							<OPTION value="andymyersam">Andy Myers</OPTION>
+							<OPTION value="aedge1005">Anthony Edge</OPTION>
+							<OPTION value="azahri">Anthony Zahri</OPTION>
+							<OPTION value="tangapril">April Tang</OPTION>
+							<OPTION value="abartish307">Arran Bartish</OPTION>
+							<OPTION value="abalakrishnan">Arsha Balakrishnan</OPTION>
+							<OPTION value="apatel1008">Arven Patel</OPTION>
+							<OPTION value="uksarfraz">Asad Sarfraz</OPTION>
+							<OPTION value="asiashahzad">Asia Shahzad</OPTION>
+							<OPTION value="ukwakeham">Ben Wakeham</OPTION>
+							<OPTION value="bdoncieu">Benoit D'Oncieu</OPTION>
+							<OPTION value="billmackie">Bill Mackie</OPTION>
+							<OPTION value="bcropper306">Brian Cropper</OPTION>
+							<OPTION value="bsears905">Brian Sears</OPTION>
+							<OPTION value="brianvs306">Brian Van Stratten</OPTION>
+							<OPTION value="bmills1008">Brock Mills</OPTION>
+							<OPTION value="bwurruk">Bruce Wurr</OPTION>
+							<OPTION value="chaughian1207@aol.com">Cairan Haughian</OPTION>
+							<OPTION value="carlede">Carl Ede</OPTION>
+							<OPTION value="carljansen">Carl Jansen</OPTION>
+							<OPTION value="carolyn">Carolyn Choy</OPTION>
+							<OPTION value="ukpronetcephas">Cephas Jacob</OPTION>
+							<OPTION value="chijin805">Chiji Nwankwo</OPTION>
+							<OPTION value="chiragshahcs">Chirag Shah - voice
+							business PM</OPTION>
+							<OPTION value="cahern106">Chris Ahern</OPTION>
+							<OPTION value="chrisgamecg">Chris Game</OPTION>
+							<OPTION value="chrishawkes">Chris Hawkes</OPTION>
+							<OPTION value="cparsonsuk">Chris Parsons</OPTION>
+							<OPTION value="chrismartincm907">ChrisMartinCM907@aol.com</OPTION>
+							<OPTION value="christopherlc905">Christopher
+							Leigh-Currill</OPTION>
+							<OPTION value="ukdw_test_ci_user">CI Test User</OPTION>
+							<OPTION value="celtringhamuk">Colin Eltringham</OPTION>
+							<OPTION value="cpsbugs">CPS Bugs</OPTION>
+							<OPTION value="crisbiguzzi">Cris Biguzzi</OPTION>
+							<OPTION value="dsawdon406">Dale Sawdon</OPTION>
+							<OPTION value="damoneellisx">Damon Ellis</OPTION>
+							<OPTION value="lanigandp">Dan Lanigan</OPTION>
+							<OPTION value="dbawden107">Darren Bawden</OPTION>
+							<OPTION value="dheaphyuk">Darren Heaphy</OPTION>
+							<OPTION value="dwitham">Darren Witham</OPTION>
+							<OPTION value="ddove805">Dave Dove</OPTION>
+							<OPTION value="dhunt0408">Dave Hunt</OPTION>
+							<OPTION value="dskelly1206">Dave Skelly</OPTION>
+							<OPTION value="davewatlerx">Dave Watler</OPTION>
+							<OPTION value="davidanderson706">David Anderson</OPTION>
+							<OPTION value="davidchambers905">David Chambers</OPTION>
+							<OPTION value="dhargreavesx">David Hargreaves</OPTION>
+							<OPTION value="ukpronetdavid">DAVID MCGEE</OPTION>
+							<OPTION value="dporter805">David Porter</OPTION>
+							<OPTION value="dreed1207">David Reed</OPTION>
+							<OPTION value="dschofield805">David Schofield</OPTION>
+							<OPTION value="daviemoston">Davie Moston</OPTION>
+							<OPTION value="ukpronetdeclan">Declan Hearne</OPTION>
+							<OPTION value="dnolan1106">Declan Nolan</OPTION>
+							<OPTION value="ddave1106">Dhiren Dave</OPTION>
+							<OPTION value="donnahenry">Donna Henry</OPTION>
+							<OPTION value="dougthorndyke">Doug Thorndyke</OPTION>
+							<OPTION value="edistojicevices">edi stojicevic</OPTION>
+							<OPTION value="edward_idowu">edward idowu</OPTION>
+							<OPTION value="edrenshaw306">Edward Renshaw</OPTION>
+							<OPTION value="ekonie506">Elisabeth Konie</OPTION>
+							<OPTION value="emclean208">Emily McLean</OPTION>
+							<OPTION value="emilymclean">Emily Mclean</OPTION>
+							<OPTION value="emmagracewatson">Emma Grace-Watson</OPTION>
+							<OPTION value="eoinkuk">Eoin Kennedy</OPTION>
+							<OPTION value="farshiddehmeshki">FARSHID DEHMESHKI</OPTION>
+							<OPTION value="gtodd">Glen Todd</OPTION>
+							<OPTION value="grahambasonuk">Graham Bason</OPTION>
+							<OPTION value="gurus108@aol.com">Guruprasad Sudheendrra</OPTION>
+							<OPTION value="hbath1106">Hardeep Bath</OPTION>
+							<OPTION value="hshimizu406">Hayato Shimizu</OPTION>
+							<OPTION value="holyzaman">Holy Zaman</OPTION>
+							<OPTION value="iblackford106">Ian Blackford</OPTION>
+							<OPTION value="ianerrington1107@aol.com">Ian Errington</OPTION>
+							<OPTION value="ianspence606">Ian Spence</OPTION>
+							<OPTION value="iwong">Ian Wong</OPTION>
+							<OPTION value="ipatel106">Imran Patel</OPTION>
+							<OPTION value="isembi206">Inderjit Sembi</OPTION>
+							<OPTION value="iqbalshaikh">Iqbal Shaikh</OPTION>
+							<OPTION value="ireneml1105">Irene Martinez</OPTION>
+							<OPTION value="jlechockiuk">Jacek Lechoki</OPTION>
+							<OPTION value="jgorton206">Jackie Gorton</OPTION>
+							<OPTION value="jakewaudby">Jake Waudby</OPTION>
+							<OPTION value="jamescadex">James Cade</OPTION>
+							<OPTION value="jamesdmahon">James Mahon</OPTION>
+							<OPTION value="jamespuddy">James Puddy</OPTION>
+							<OPTION value="jdosanjh706">Jasbir</OPTION>
+							<OPTION value="jqureshi805">Javed Qureshi</OPTION>
+							<OPTION value="jcrozier1005">Jenny Lee Crozier</OPTION>
+							<OPTION value="jeremyleicester">Jeremy Leicester</OPTION>
+							<OPTION value="jriga">Jerome Riga</OPTION>
+							<OPTION value="ukpronetjerome">Jerome Troy</OPTION>
+							<OPTION value="jfakoya206">Jide Fakoya</OPTION>
+							<OPTION value="jimnormanjn">Jim Norman</OPTION>
+							<OPTION value="jimmyg706">Jimmy Guilfoyle</OPTION>
+							<OPTION value="jmarnane">Jo Marnane</OPTION>
+							<OPTION value="jvanzyl705">Joanne Van Zyl</OPTION>
+							<OPTION value="jpopli1105">Joe Popli</OPTION>
+							<OPTION value="jkorn905">Joel Korn</OPTION>
+							<OPTION value="gardnerjuk">John Gardner</OPTION>
+							<OPTION value="jkiddle807">John Kiddle</OPTION>
+							<OPTION value="staytjohn">John Stayt</OPTION>
+							<OPTION value="johnthomas1005">John Thomas</OPTION>
+							<OPTION value="jrasmussen905">Jon Rasmussen</OPTION>
+							<OPTION value="jfletcherjf506">Jonathon Fletcher</OPTION>
+							<OPTION value="jyoungman805">Joy Youngman</OPTION>
+							<OPTION value="julieboormanx">Julie Boorman</OPTION>
+							<OPTION value="jmoxon805">Justin Moxon</OPTION>
+							<OPTION value="kaif.sajid">Kaif Sajid</OPTION>
+							<OPTION value="karlteaika">Karl Te Aika</OPTION>
+							<OPTION value="ksutton1005">Kate Sutton</OPTION>
+							<OPTION value="kshellardks">Katie Shellard</OPTION>
+							<OPTION value="kenmartinuk">Ken Martin</OPTION>
+							<OPTION value="kinshukgarai">Kinshuk Garai</OPTION>
+							<OPTION value="kimyanitov108">Konstantin Imyanitov</OPTION>
+							<OPTION value="kadesola106">Kunle Adesola</OPTION>
+							<OPTION value="laitanglt">Lai Tang</OPTION>
+							<OPTION value="lauradavidsonuk">Laura Davidson</OPTION>
+							<OPTION value="lslaurencesmith">Laurence Smith</OPTION>
+							<OPTION value="lhendle705">Lee Hendle</OPTION>
+							<OPTION value="leelakumarlk">Leela Kumar</OPTION>
+							<OPTION value="leiatarrant">Leia Tarrant</OPTION>
+							<OPTION value="leondavisld">Leon Davis</OPTION>
+							<OPTION value="leonardvitarana">Leonard Vitarana</OPTION>
+							<OPTION value="lifecycle">lifecycle software ltd</OPTION>
+							<OPTION value="lindamaccs605">Linda MacCallum Stewart</OPTION>
+							<OPTION value="linleysmithls">Linley Smith</OPTION>
+							<OPTION value="jonesa106">LLU Alistair Jones</OPTION>
+							<OPTION value="ukpronetloughlin">Loughlin Moore</OPTION>
+							<OPTION value="lucyljoyce">Lucy Joyce</OPTION>
+							<OPTION value="mrondel306">Mandie Rondel</OPTION>
+							<OPTION value="mansoorfeziluk">Mansoor Fazil</OPTION>
+							<OPTION value="msauer1207">Marcel Sauer</OPTION>
+							<OPTION value="markd308">Mark Daniels</OPTION>
+							<OPTION value="markdavis">Mark Davis</OPTION>
+							<OPTION value="markdavis206">Mark Davis</OPTION>
+							<OPTION value="mgilby1007@aol.com">Mark Gilby</OPTION>
+							<OPTION value="mmaiolo1008">Mark Maiolo</OPTION>
+							<OPTION value="markoliver206">Mark Olliver</OPTION>
+							<OPTION value="mparrish0808">Mark Parrish</OPTION>
+							<OPTION value="ukmquinn">Martin Quinn</OPTION>
+							<OPTION value="martinreidmr">Martin Reid</OPTION>
+							<OPTION value="mwalsh">Martin Walsh</OPTION>
+							<OPTION value="ukpronetmartin">Martin Walshe</OPTION>
+							<OPTION value="matlewis905">Matt Lewis</OPTION>
+							<OPTION value="matthewmiller">Matthew Millar</OPTION>
+							<OPTION value="melaniegodfray">Melanie Godfrey</OPTION>
+							<OPTION value="mchung0908">michael chung</OPTION>
+							<OPTION value="mcray705">Michael Cray</OPTION>
+							<OPTION value="michaelhunterward">Michael Hunter Ward</OPTION>
+							<OPTION value="msheinberg1007">Michael Sheinberg</OPTION>
+							<OPTION value="michellec1206">Michelle Copeland</OPTION>
+							<OPTION value="mikek1006">Mike Keenan</OPTION>
+							<OPTION value="mknight1007@aol.com">Miles Knight</OPTION>
+							<OPTION value="macharya">Mukesh Acharya</OPTION>
+							<OPTION value="mukesh606">Mukesh Khandelwal</OPTION>
+							<OPTION value="nsingh308">Nandkishore Singh</OPTION>
+							<OPTION value="nkye906">Nanette Kye</OPTION>
+							<OPTION value="nrande905">Natalie Rande</OPTION>
+							<OPTION value="nateaustin">Nate Austin</OPTION>
+							<OPTION value="nfay1005">Nathan Fay</OPTION>
+							<OPTION value="ndickens207">Neil Dickens</OPTION>
+							<OPTION value="neildupres">Neil Dupres</OPTION>
+							<OPTION value="ukpronetneil">Neil McGrath</OPTION>
+							<OPTION value="nfinucane1205">Niall Finucane</OPTION>
+							<OPTION value="ukpronetnick">Nicholas Gordan</OPTION>
+							<OPTION value="nworrow">Nicholas Worrow</OPTION>
+							<OPTION value="nbateman">Nick Bateman</OPTION>
+							<OPTION value="nikhilnssharma">Nikhil Sharma</OPTION>
+							<OPTION value="nprice1207">Nina Price</OPTION>
+							<OPTION value="nitinkalaiyank">Nitin Kalaiya</OPTION>
+							<OPTION value="onwajei506">Obi Nwajei</OPTION>
+							<OPTION value="oliverlynchqa">Oliver Lynch</OPTION>
+							<OPTION value="orlad">orla doyle</OPTION>
+							<OPTION value="owenbx">Owen Benneyworth</OPTION>
+							<OPTION value="pleong0708">Pam Leong</OPTION>
+							<OPTION value="pgupta1005">Pardeep Gupta</OPTION>
+							<OPTION value="parthisankarps">parthi sankar</OPTION>
+							<OPTION value="pfogartyuk">Pat Fogarty</OPTION>
+							<OPTION value="pconlonuk">Patrick Conlon</OPTION>
+							<OPTION value="paulbennett505">Paul Bennett</OPTION>
+							<OPTION value="paulbuk">Paul Brennan</OPTION>
+							<OPTION value="ukpaulab">Paul Brennan</OPTION>
+							<OPTION value="pclarkepc407">Paul Clarke</OPTION>
+							<OPTION value="pauldaviesuk">Paul Davies</OPTION>
+							<OPTION value="pjacobs506">Paul Jacobs</OPTION>
+							<OPTION value="pkrause805">Paul Krause</OPTION>
+							<OPTION value="petercrisppc">Peter Crisp</OPTION>
+							<OPTION value="pcullenpc">Peter Cullen</OPTION>
+							<OPTION value="plast606">Peter Last</OPTION>
+							<OPTION value="ukpjdavies">Phil Davies</OPTION>
+							<OPTION value="phenry306">Phil Henry</OPTION>
+							<OPTION value="priteshpuk">Pritesh Patel</OPTION>
+							<OPTION value="ppatel1006">Priya Patel</OPTION>
+							<OPTION value="radkacharkovarc">Radka Charkova</OPTION>
+							<OPTION value="ravikumarasinge">Ravi Kumarasinghe</OPTION>
+							<OPTION value="rpankajakshan">Ravi Pankajakshan</OPTION>
+							<OPTION value="raybyuk">Ray Barry</OPTION>
+							<OPTION value="raymondelliotuk">Raymond Elliot</OPTION>
+							<OPTION value="rconnors1005">Richard Connors</OPTION>
+							<OPTION value="rcoomber506">Richard Coomber</OPTION>
+							<OPTION value="richardonlyne">Richard Lyne</OPTION>
+							<OPTION value="rmanning807">Richard Manning</OPTION>
+							<OPTION value="richardvinall">Richard Vinall</OPTION>
+							<OPTION value="richardhead306">richardhead</OPTION>
+							<OPTION value="rickreesrr">Rick Rees</OPTION>
+							<OPTION value="rhabib705">Rima Habib</OPTION>
+							<OPTION value="rcampbell1005">Rob Campbell</OPTION>
+							<OPTION value="rclarke1105">Rob Clarke</OPTION>
+							<OPTION value="rbradshawuk">Robert Bradshaw</OPTION>
+							<OPTION value="roberthoweuk">Robert Howe</OPTION>
+							<OPTION value="rstevenson">Robert Stevenson</OPTION>
+							<OPTION value="rferrar406">Robyn Ferrar</OPTION>
+							<OPTION value="rarmstronguk">Rodney Armstrong</OPTION>
+							<OPTION value="rossellman607">Ross Ellman</OPTION>
+							<OPTION value="ryangreenhall">Ryan Greenhall</OPTION>
+							<OPTION value="ryanwilliamsonx">Ryan Williamson</OPTION>
+							<OPTION value="sthajudeen0508">Sabu thajudeen</OPTION>
+							<OPTION value="snarayananx">Saishree Narayanan</OPTION>
+							<OPTION value="sdaire108@aol.com">Samantha Daire</OPTION>
+							<OPTION value="svelamarthix">Santhosh Velamarthi</OPTION>
+							<OPTION value="sarahtaylorst">Sarah Taylor</OPTION>
+							<OPTION value="srooney1005">Scott Rooney</OPTION>
+							<OPTION value="sodiomasaigh">Seighin Ó Díomasaigh</OPTION>
+							<OPTION value="shahidawansa">Shahid Awan</OPTION>
+							<OPTION value="scorbettuk">Shane Corbett</OPTION>
+							<OPTION value="sjackmanuk">Shea Jackman</OPTION>
+							<OPTION value="sheameehan1005">Shea Meehan</OPTION>
+							<OPTION value="sturner605">Shelley Turner</OPTION>
+							<OPTION value="shilpaalag">Shilpa Alag</OPTION>
+							<OPTION value="sliew1207@aol.com">Siaw Liew</OPTION>
+							<OPTION value="sgauld406">Simon Gauld</OPTION>
+							<OPTION value="skent">Simon Kent</OPTION>
+							<OPTION value="slow012008">Simon Low</OPTION>
+							<OPTION value="staing108">Sivvoy Taing</OPTION>
+							<OPTION value="staing108@aol.com">Sivvoy Taing</OPTION>
+							<OPTION value="soaptester">SoapTester (Jonas')</OPTION>
+							<OPTION value="sonalsawhney">Sonal Sawhney</OPTION>
+							<OPTION value="sfaulkner207">Sophie Faulkner</OPTION>
+							<OPTION value="stacycurl">Stacy Curl</OPTION>
+							<OPTION value="swright">Stella Wright</OPTION>
+							<OPTION value="saliu0808">Stephen Aliu</OPTION>
+							<OPTION value="sbotchey">Stephen Botchey</OPTION>
+							<OPTION value="ukpronetstephenc">Stephen Cahill</OPTION>
+							<OPTION value="scolchester705">Stephen Colchester</OPTION>
+							<OPTION value="clarkestevesc">Steve Clarke</OPTION>
+							<OPTION value="scoulbourne">Steve Coulbourne</OPTION>
+							<OPTION value="stevehutchings">Steve Hutchings</OPTION>
+							<OPTION value="skissock1005">Steve Kissock</OPTION>
+							<OPTION value="stevelissenden">Steve Lissenden</OPTION>
+							<OPTION value="spoulton108@aol.com">Steve Poulton</OPTION>
+							<OPTION value="ssonic1206">Stuart Sonic</OPTION>
+							<OPTION value="suedoyleuk">Sue Doyle</OPTION>
+							<OPTION value="susansr1206">Susan Rutherford</OPTION>
+							<OPTION value="swetapateluk">Sweta Patel</OPTION>
+							<OPTION value="talk lrt - opened incidents">Talk LRT -
+							Opened Incidents</OPTION>
+							<OPTION value="talk lrt - resolved incidents">Talk LRT -
+							Resolved Incidents</OPTION>
+							<OPTION value="talktest18">talktest18</OPTION>
+							<OPTION value="talktest19">talktest19</OPTION>
+							<OPTION value="talktest20">talktest20</OPTION>
+							<OPTION value="tmurphy1205">Tama Murphy</OPTION>
+							<OPTION value="tayos1006">Tayo Shobowale</OPTION>
+							<OPTION value="tsugiarto">Teow Sugiarto</OPTION>
+							<OPTION value="terrynwezetn">Terry Nweze</OPTION>
+							<OPTION value="thakshiveeragathipillai">Thakshi
+							Veeragathipillai</OPTION>
+							<OPTION value="tinahunteu">Tina Hunt</OPTION>
+							<OPTION value="tomkp706">Tom Kemp-Potter</OPTION>
+							<OPTION value="odempseyuk">Tom O'Dempsey</OPTION>
+							<OPTION value="ukpronetthomas">Tom Simpson</OPTION>
+							<OPTION value="sa">UK Host & Database Operations</OPTION>
+							<OPTION value="admin">UK Operations</OPTION>
+							<OPTION value="ukpronet">UK Pronet</OPTION>
+							<OPTION value="ukproneteoin">ukproneteoin</OPTION>
+							<OPTION value="valmondw1006">Valmond Williams</OPTION>
+							<OPTION value="vanessao407">Vanessa Oakes</OPTION>
+							<OPTION value="vikramsheorey">Vikram Sheorey</OPTION>
+							<OPTION value="vincentm1106">Vincent McGrath</OPTION>
+							<OPTION value="wsarwar1207">Waseem Sarwar</OPTION>
+							<OPTION value="waynehuk">Wayne Halloran</OPTION>
+							<OPTION value="wparton">Will Parton</OPTION>
+							<OPTION value="youcefbichbiche">Youcef Bichbiche</OPTION>
+							<OPTION value="zlawal805">Zak Lawal</OPTION>
+						</SELECT> <A class="subText" title="Assign this issue to me"
+							onclick="document.getElementById('assignee').value = 'soaptester';return false;"
+							href="#">Assign to me</A></TD>
+					</TR>
+					<TR class="fieldArea" id="descriptionFieldArea">
+						<TD class="fieldLabelArea"><LABEL for="description">
+						Description: </LABEL></TD>
+						<TD class="fieldValueArea"><TEXTAREA name="description"
+							id="description" rows="12" wrap="virtual" class="textarea"
+							cols=""></TEXTAREA></TD>
+					</TR>
+					<TR class="fieldArea" id="attachmentFieldArea">
+						<TD class="fieldLabelArea"><LABEL for="attachment">
+						Attachment: </LABEL></TD>
+						<TD class="fieldValueArea"><SCRIPT language="JavaScript"
+							type="text/javascript">
+    function openAnother(index, nextIndex)
+    {
+        var currentBox = document.getElementById('attachment_box.' + index);
+        var currentValue = currentBox.value;
+        if (currentValue != null)
+        {
+            currentValue = currentValue.replace(/^[\s]+/g,"");
+            currentValue = currentValue.replace(/[\s]+$/g,"");
+            if (currentValue.length > 0)
+            {
+                var nextDiv = document.getElementById('attachment_div.' + nextIndex);
+                if (nextDiv != null)
+                {
+                    nextDiv.style.display = 'block';
+                }
+            }
+        }
+    }
+</SCRIPT>
+						<DIV id="attachment_div.1"><INPUT id="attachment_box.1"
+							type="file" name="attachment_field.1" value="" size="30"
+							onChange="openAnother(1, 2);" onKeyPress="openAnother(1, 2);">
+						<BR>
+						</DIV>
+						<DIV id="attachment_div.2" style="display: none;"><INPUT
+							id="attachment_box.2" type="file" name="attachment_field.2"
+							value="" size="30" onChange="openAnother(2, 3);"
+							onKeyPress="openAnother(2, 3);"> <BR>
+						</DIV>
+						<DIV id="attachment_div.3" style="display: none;"><INPUT
+							id="attachment_box.3" type="file" name="attachment_field.3"
+							value="" size="30" onChange="openAnother(3, 4);"
+							onKeyPress="openAnother(3, 4);"> <BR>
+						</DIV>
+						<SPAN class="small">The maximum file upload size is 10.00
+						Mb. Please zip files larger than this.</SPAN><BR>
+						</TD>
+					</TR>
+					<TR class="fieldArea" id="timetrackingFieldArea">
+						<TD class="fieldLabelArea"><LABEL for="timetracking">
+						Original Estimate: </LABEL></TD>
+						<TD class="fieldValueArea"><INPUT type="text"
+							name="timetracking" id="timetracking" value="" size="20">
+						<DIV class="fieldDescription">An estimate of how much work
+						remains until this issue will be resolved.<BR>
+						The format of this is ' *w *d *h *m ' (representing weeks, days,
+						hours and minutes - where * can be any number)<BR>
+						Examples: 4d, 5h 30m, 60m and 3w.<BR>
+						</DIV>
+						</TD>
+					</TR>
+					<TR class="fieldArea" id="duedateFieldArea">
+						<TD class="fieldLabelArea"><LABEL for="duedate"> Due
+						Date: </LABEL></TD>
+						<TD class="fieldValueArea"><INPUT type="text" name="duedate"
+							id="duedate" value="" size="10"> <IMG
+							id="duedate_trigger_c" src="/jira/images/icons/cal.gif"
+							width="16" height="16" border="0" alt="Pick a date"
+							title="Select a date"> <SCRIPT type="text/javascript">
+    Calendar.setup({
+        firstDay       :    0,                  // first day of the week
+        inputField     :    "duedate",     // id of the input field
+        button         :    "duedate_trigger_c",  // trigger for the calendar (button ID)
+        align          :    "Tl",           // alignment (defaults to "Bl")
+        singleClick    :    true,
+             ifFormat       : "%e-%b-%Y"      // our date only format
+         });
+</SCRIPT></TD>
+					</TR>
+					<TR class="fieldArea" id="customfield_10160FieldArea">
+						<TD class="fieldLabelArea"><LABEL for="customfield_10160">
+						Build Number: </LABEL></TD>
+						<TD class="fieldValueArea"><INPUT type="text"
+							name="customfield_10160" value="" id="customfield_10160"
+							class="textfield" maxlength="254" />
+						<DIV class="fieldDescription">All relevant projects build
+						numbers (Cruise's CVS tag)</DIV>
+						</TD>
+					</TR>
+					<TR class="fieldArea" id="customfield_10281FieldArea">
+						<TD class="fieldLabelArea"><LABEL for="customfield_10281">
+						List Priority: </LABEL></TD>
+						<TD class="fieldValueArea"><INPUT type="text"
+							name="customfield_10281" id="customfield_10281" value="" />
+						<DIV class="fieldDescription">To prioritise backlog items</DIV>
+						</TD>
+					</TR>
+					<TR class="fieldArea" id="customfield_10282FieldArea">
+						<TD class="fieldLabelArea"><LABEL for="customfield_10282">
+						Sprint: </LABEL></TD>
+						<TD class="fieldValueArea"><INPUT type="text"
+							name="customfield_10282" value="test sprint"
+							id="customfield_10282" class="textfield" maxlength="254" />
+						<DIV class="fieldDescription">This is the Sprint that
+						Development Start</DIV>
+						</TD>
+					</TR>
+					<TR>
+						<TD colspan="2" bgcolor="ffffff">&nbsp;
+						<STYLE type="">
+<!--
+.fieldLabelArea {
+	width: 30%;
+}
+-->
+</STYLE>
+						</TD>
+					</TR>
+					<TR>
+						<TD colspan="2" bgcolor="f0f0f0"><B>Comment</B>: (an optional
+						comment describing this update)</TD>
+					</TR>
+					<TR>
+						<TD class="fieldLabelArea">Update comment</TD>
+						<TD><TEXTAREA name="comment" id="comment" rows="15"
+							wrap="virtual" cols="" accesskey="m" class="textarea"></TEXTAREA>
+						</TD>
+					</TR>
+					<TR>
+						<TD class="fieldLabelArea">Comment Viewable By:</TD>
+						<TD bgcolor="ffffff" class="fieldValueArea"><SELECT
+							name="commentLevel" id="commentLevel_select">
+							<OPTION value="">All Users</OPTION>
+							<OPTION value="jira-users">jira-users</OPTION>
+							<OPTION value="Access">Access</OPTION>
+							<OPTION value="jira-developers">jira-developers</OPTION>
+							<OPTION value="llu-users">llu-users</OPTION>
+							<OPTION value="jira-administrators">jira-administrators</OPTION>
+						</SELECT> <SPAN class="selectDescription" id="commentLevel_summary"></SPAN>
+						</TD>
+					</TR>
+					<TR class="hidden">
+						<TD><INPUT type="hidden" id="id" name="id" value="42028" />
+						</TD>
+					</TR>
+					<TR>
+						<TD colspan="2" class="fullyCentered jiraformfooter"><INPUT
+							type="submit" name="Update" value="Update" accesskey="S"
+							title="Press Alt+S to submit form" class="spaced" /> <INPUT
+							id="cancelButton" type="button" accesskey="`"
+							title="Cancel (Alt + `)" name="/jira/browse/LLU-4243"
+							value="Cancel" onclick="location.href='/jira/browse/LLU-4243'" />
+						</TD>
+					</TR>
+				</TABLE>
+				</FORM>
+				</TD>
+			</TR>
+		</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+</BODY>
+</HTML>
