@@ -8,14 +8,15 @@ import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 
 public interface PlannerDAO {
 
-	public MyTableModel loadBoardModel() throws IOException;
-	public PlanTableModel loadPlanModel() throws IOException;
-	public void saveBoardModel(MyTableModel modelToSaveFrom) throws IOException;
-	public void saveJiraModel(MyTableModel planModel) throws IOException;
-   public void savePlanModel(MyTableModel planModel) throws IOException;
+   public MyTableModel loadBoardModel() throws IOException;
+
+   public void saveBoardModel(MyTableModel modelToSaveFrom) throws IOException;
+   public void saveJiraModel(MyTableModel planModel) throws IOException;
+
+   public void removeListener(DaoListener daoListener);
    public void setXlsFile(File selFile);
    public void addListener(DaoListener daoListener);
-   public void removeListener(DaoListener daoListener);
+
    public void notifySavingStarted();
    public void notifySavingFinished();
 

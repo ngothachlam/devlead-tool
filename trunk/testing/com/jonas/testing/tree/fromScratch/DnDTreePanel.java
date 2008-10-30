@@ -32,16 +32,16 @@ import com.jonas.testing.tree.fromScratch.xml.JiraSaxHandler;
 import com.jonas.testing.tree.fromScratch.xml.XmlParser;
 import com.jonas.testing.tree.fromScratch.xml.XmlParserImpl;
 
-public class DnDTreeMain extends JPanel {
+public class DnDTreePanel extends JPanel {
 
-   private Logger log = MyLogger.getLogger(DnDTreeMain.class);
+   private Logger log = MyLogger.getLogger(DnDTreePanel.class);
 
    private DnDTree tree;
    private DnDTreeBuilder dndTreeBuilder;
 
    private final JFrame parentFrame;
 
-   private DnDTreeMain(DnDTree tree, DnDTreeBuilder dndTreeBuilder, JFrame parent) {
+   public DnDTreePanel(DnDTree tree, DnDTreeBuilder dndTreeBuilder, JFrame parent) {
       super(new BorderLayout());
       this.tree = tree;
       this.dndTreeBuilder = dndTreeBuilder;
@@ -64,7 +64,7 @@ public class DnDTreeMain extends JPanel {
 
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
 
-         DnDTreeMain main = new DnDTreeMain(tree, dndTreeBuilder, frame);
+         DnDTreePanel main = new DnDTreePanel(tree, dndTreeBuilder, frame);
 
          frame.setSize(400, 700);
          frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -218,63 +218,9 @@ public class DnDTreeMain extends JPanel {
          dndTreeBuilder.buildTree(tree);
       }
    }
-}
 
-
-class JiraParseListenerImpl implements JiraParseListener {
-
-   private Logger log = MyLogger.getLogger(JiraParseListenerImpl.class);
-
-   private DnDTree tree;
-   private int count;
-
-   public JiraParseListenerImpl(DnDTree tree) {
-      super();
-      this.tree = tree;
-   }
-
-   @Override
-   public void notifyParsed(final JiraDTO jira) {
-      runInEventDispatchThread(new Runnable() {
-         @Override
-         public void run() {
-            StringBuffer sb = new StringBuffer("Building Table... (");
-            sb.append(++count);
-            sb.append(")");
-            MyStatusBar.getInstance().setMessage(sb.toString(), false);
-            tree.createJira(jira);
-         }
-      });
-   }
-
-   @Override
-   public void notifyParsingFinished() {
-      runInEventDispatchThread(new Runnable() {
-         @Override
-         public void run() {
-            StringBuffer sb = new StringBuffer("Jiras Loaded: ");
-            sb.append(++count);
-            MyStatusBar.getInstance().setMessage(sb.toString(), true);
-         }
-      });
-   }
-
-   @Override
-   public void notifyParsingStarted() {
-      count = 0;
-   }
-
-   private void runInEventDispatchThread(Runnable runnableInEventDispatchThread) {
-      if (SwingUtilities.isEventDispatchThread()) {
-         try {
-            SwingUtilities.invokeAndWait(runnableInEventDispatchThread);
-         } catch (InterruptedException e) {
-            e.printStackTrace();
-         } catch (InvocationTargetException e) {
-            e.printStackTrace();
-         }
-      } else {
-         runnableInEventDispatchThread.run();
-      }
+   public void setEditable(boolean selected) {
+      tree.setDnDEnabled(selected);
    }
 }
+

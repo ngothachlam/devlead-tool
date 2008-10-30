@@ -168,18 +168,6 @@ public class MyInternalFrame extends JInternalFrame {
       return getJiraPanel().getTable();
    }
 
-   public PlanTableModel getPlanModel() {
-      return getPlanPanel().getPlanModel();
-   }
-
-   private PlanPanel getPlanPanel() {
-      return internalFrameTabPanel.getPlanPanel();
-   }
-
-   public MyTable getPlanTable() {
-      return getPlanPanel().getTable();
-   }
-
    public String getRightMostFromString(String string, int i) {
       return string.length() > i ? string.substring(string.length() - i, string.length()) : string;
    }

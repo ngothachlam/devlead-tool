@@ -80,6 +80,10 @@ public class DnDTree extends JTree {
    public List<JiraNode> getJiraNodes() {
       return model.getJiraNodes();
    }
+   
+   public void setDnDEnabled(boolean setDndEnabled){
+      setDragEnabled(setDndEnabled);
+   }
 }
 
 

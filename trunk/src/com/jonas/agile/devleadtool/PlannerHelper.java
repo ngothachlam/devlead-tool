@@ -64,7 +64,6 @@ public class PlannerHelper {
                dao.notifySavingStarted();
 
                dao.saveBoardModel(activeInternalFrame.getBoardModel());
-               dao.savePlanModel(activeInternalFrame.getPlanModel());
                dao.saveJiraModel(activeInternalFrame.getJiraModel());
                
             } catch (IOException e) {
