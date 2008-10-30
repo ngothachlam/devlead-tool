@@ -70,65 +70,9 @@
 				<FORM action="EditIssue.jspa" method="post" name="jiraform"
 					onsubmit="if (this.submitted) return false; this.submitted = true; return true"
 					ENCTYPE="multipart/form-data">
-				<TABLE class="jiraform maxWidth" id="">
-					<TR>
-						<TD colspan="2" class="jiraformheader">
-						<H3 class="formtitle">Edit Issue</H3>
-						</TD>
-					</TR>
-					<TR>
-						<TD colspan="2" class="jiraformheader">Use this form to edit
-						the fields of this issue. You can optionally add a comment at the
-						same time explaining your changes.</TD>
-					</TR>
-					<SCRIPT language="javascript" type="text/javascript">
-function openDateRangePicker(formName, previousFieldName, nextFieldName, fieldId)
-{
-    var previousFieldValue = document.forms[formName].elements[previousFieldName].value;
-    var nextFieldValue = document.forms[formName].elements[nextFieldName].value;
-    var url = '/jira/secure/popups/DateRangePicker.jspa?';
-    url += 'formName=' + formName + '&';
-    url += 'previousFieldName=' + escape(previousFieldName) + '&';
-    url += 'nextFieldName=' + escape(nextFieldName) + '&';
-    url += 'previousFieldValue=' + escape(previousFieldValue) + '&';
-    url += 'nextFieldValue=' + escape(nextFieldValue) + '&';
-    url += 'fieldId=' + escape(fieldId);
-    var vWinUsers = window.open(url, 'DateRangePopup', 'status=no,resizable=yes,top=100,left=200,width=580,height=400,scrollbars=yes');
-    vWinUsers.opener = self;
-    vWinUsers.focus();
-}
-function show_calendar2(formName, fieldName)
-{
-    var form = document.forms[formName];
-    var element = form.elements[fieldName];
-    var vWinCal = window.open('/jira/secure/popups/Calendar.jspa?form=' + formName + '&field=' + fieldName + '&value=' + escape(element.value) + '&decorator=none', 'Calendar','width=230,height=170,status=no,resizable=yes,top=220,left=200');
-    vWinCal.opener = self;
-    vWinCal.focus();
-}
-</SCRIPT>
-					<STYLE type="text/css">
-<!--
-.fieldLabelArea {
-	width: 20% !important;
-}
-.fieldValueArea {
-	width: 80% !important;
-}
--->
-</STYLE>
-					<TR class="fieldArea" id="summaryFieldArea">
-						<TD class="fieldLabelArea"><LABEL for="summary"> <SPAN
-							class="required" title="Fields in italics are required"><SUP>*</SUP>
-						Summary: </SPAN> </LABEL></TD>
-						<TD class="fieldValueArea"><INPUT type="text" name="summary"
+<INPUT type="text" name="summary"
 							id="summary" class="textfield" value="test" maxlength="255">
-						</TD>
-					</TR>
-					<TR class="fieldArea" id="issuetypeFieldArea">
-						<TD class="fieldLabelArea"><LABEL for="issuetype"> <SPAN
-							class="required" title="Fields in italics are required"><SUP>*</SUP>
-						Issue Type: </SPAN> </LABEL></TD>
-						<TD class="fieldValueArea"><SELECT name="issuetype"
+<SELECT name="issuetype"
 							id="issuetype" class="imagebacked">
 							<OPTION id="issuetype1014211" class="10142" value="11"
 								style='background-image: url(/jira/images/icons/bug.gif);'>Action</OPTION>
@@ -172,16 +116,8 @@ function show_calendar2(formName, fieldName)
 							Story</OPTION>
 							<OPTION id="issuetype1014232" class="10142" value="32"
 								style='background-image: url(/jira/images/icons/improvement.gif);'>Theme</OPTION>
-						</SELECT> <A class="localHelp"
-							href="/jira/ShowConstantsHelp.jspa?decorator=popup#IssueTypes"
-							onclick="var child = window.open('/jira/ShowConstantsHelp.jspa?decorator=popup#IssueTypes', 'jiraLocalHelp', 'width=600, height=500, resizable, scrollbars=yes'); child.focus(); return false;"><IMG
-							src="/jira/images/icons/help_blue.gif"
-							title="Get online help about Issue Type " alt="" /></A></TD>
-					</TR>
-					<TR class="fieldArea" id="priorityFieldArea">
-						<TD class="fieldLabelArea"><LABEL for="priority">
-						Priority: </LABEL></TD>
-						<TD class="fieldValueArea"><SELECT name="priority"
+						</SELECT> 
+						<SELECT name="priority"
 							id="priority">
 							<OPTION value="1" class="imagebacked"
 								style='background-image: url(/jira/images/icons/priority_blocker.gif);'>Sev
@@ -212,16 +148,8 @@ function show_calendar2(formName, fieldName)
 							5 - High</OPTION>
 							<OPTION value="5" class="imagebacked"
 								style='background-image: url(/jira/images/icons/priority_trivial.gif);'>Trivial</OPTION>
-						</SELECT> <A class="localHelp"
-							href="/jira/ShowConstantsHelp.jspa?decorator=popup#PriorityLevels"
-							onclick="var child = window.open('/jira/ShowConstantsHelp.jspa?decorator=popup#PriorityLevels', 'jiraLocalHelp', 'width=600, height=500, resizable, scrollbars=yes'); child.focus(); return false;"><IMG
-							src="/jira/images/icons/help_blue.gif"
-							title="Get online help about Priority " alt="" /></A></TD>
-					</TR>
-					<TR class="fieldArea" id="componentsFieldArea">
-						<TD class="fieldLabelArea"><LABEL for="components">
-						Component/s: </LABEL></TD>
-						<TD class="fieldValueArea"><SELECT multiple name="components"
+						</SELECT> 
+						<SELECT multiple name="components"
 							id="components" size=" 5 ">
 							<OPTION value="-1">Unknown</OPTION>
 							<OPTION value="10448"
@@ -270,12 +198,8 @@ function show_calendar2(formName, fieldName)
 							<OPTION value="10391"
 								title="ZZ - REDUNDANT - Strategic AC  - Strategic Availability Checker allows for available Product Catalogue to be provided for a given DN or postcode">ZZ
 							- REDUNDANT - Strategic AC</OPTION>
-						</SELECT></TD>
-					</TR>
-					<TR class="fieldArea" id="versionsFieldArea">
-						<TD class="fieldLabelArea"><LABEL for="versions">
-						Affects Version/s: </LABEL></TD>
-						<TD class="fieldValueArea"><SELECT multiple name="versions"
+						</SELECT>
+<SELECT multiple name="versions"
 							size="6" id="versions">
 							<OPTION value="-1">Unknown</OPTION>
 							<OPTGROUP label="Released Versions">
@@ -290,12 +214,8 @@ function show_calendar2(formName, fieldName)
 								<OPTION value="11388">Backlog</OPTION>
 								<OPTION value="11458">Pam's Backlog</OPTION>
 							</OPTGROUP>
-						</SELECT></TD>
-					</TR>
-					<TR class="fieldArea" id="fixVersionsFieldArea">
-						<TD class="fieldLabelArea"><LABEL for="fixVersions">
-						Fix Version/s: </LABEL></TD>
-						<TD class="fieldValueArea"><SELECT multiple
+						</SELECT>
+						<SELECT multiple
 							name="fixVersions" size="6" id="fixVersions">
 							<OPTION value="-1">Unknown</OPTION>
 							<OPTGROUP label="Unreleased Versions">
@@ -310,12 +230,8 @@ function show_calendar2(formName, fieldName)
 								<OPTION value="11499">LLU 11.1</OPTION>
 								<OPTION value="11449">LLU 11</OPTION>
 							</OPTGROUP>
-						</SELECT></TD>
-					</TR>
-					<TR class="fieldArea" id="assigneeFieldArea">
-						<TD class="fieldLabelArea"><LABEL for="assignee">
-						Assign To: </LABEL></TD>
-						<TD class="fieldValueArea"><SELECT name="assignee"
+						</SELECT>
+						<SELECT name="assignee"
 							id="assignee">
 							<OPTION value="">Unassigned</OPTION>
 							<OPTION value="-1">- Automatic -</OPTION>
@@ -643,105 +559,22 @@ function show_calendar2(formName, fieldName)
 							<OPTION value="wparton">Will Parton</OPTION>
 							<OPTION value="youcefbichbiche">Youcef Bichbiche</OPTION>
 							<OPTION value="zlawal805">Zak Lawal</OPTION>
-						</SELECT> <A class="subText" title="Assign this issue to me"
-							onclick="document.getElementById('assignee').value = 'soaptester';return false;"
-							href="#">Assign to me</A></TD>
-					</TR>
-					<TR class="fieldArea" id="descriptionFieldArea">
-						<TD class="fieldLabelArea"><LABEL for="description">
-						Description: </LABEL></TD>
-						<TD class="fieldValueArea"><TEXTAREA name="description"
+						</SELECT> 
+						<TEXTAREA name="description"
 							id="description" rows="12" wrap="virtual" class="textarea"
-							cols=""></TEXTAREA></TD>
-					</TR>
-					<TR class="fieldArea" id="attachmentFieldArea">
-						<TD class="fieldLabelArea"><LABEL for="attachment">
-						Attachment: </LABEL></TD>
-						<TD class="fieldValueArea"><SCRIPT language="JavaScript"
-							type="text/javascript">
-    function openAnother(index, nextIndex)
-    {
-        var currentBox = document.getElementById('attachment_box.' + index);
-        var currentValue = currentBox.value;
-        if (currentValue != null)
-        {
-            currentValue = currentValue.replace(/^[\s]+/g,"");
-            currentValue = currentValue.replace(/[\s]+$/g,"");
-            if (currentValue.length > 0)
-            {
-                var nextDiv = document.getElementById('attachment_div.' + nextIndex);
-                if (nextDiv != null)
-                {
-                    nextDiv.style.display = 'block';
-                }
-            }
-        }
-    }
-</SCRIPT>
-						<DIV id="attachment_div.1"><INPUT id="attachment_box.1"
-							type="file" name="attachment_field.1" value="" size="30"
-							onChange="openAnother(1, 2);" onKeyPress="openAnother(1, 2);">
-						<BR>
-						</DIV>
-						<DIV id="attachment_div.2" style="display: none;"><INPUT
-							id="attachment_box.2" type="file" name="attachment_field.2"
-							value="" size="30" onChange="openAnother(2, 3);"
-							onKeyPress="openAnother(2, 3);"> <BR>
-						</DIV>
-						<DIV id="attachment_div.3" style="display: none;"><INPUT
-							id="attachment_box.3" type="file" name="attachment_field.3"
-							value="" size="30" onChange="openAnother(3, 4);"
-							onKeyPress="openAnother(3, 4);"> <BR>
-						</DIV>
-						<SPAN class="small">The maximum file upload size is 10.00
-						Mb. Please zip files larger than this.</SPAN><BR>
-						</TD>
-					</TR>
-					<TR class="fieldArea" id="timetrackingFieldArea">
-						<TD class="fieldLabelArea"><LABEL for="timetracking">
-						Original Estimate: </LABEL></TD>
-						<TD class="fieldValueArea"><INPUT type="text"
+							cols=""></TEXTAREA>
+							<INPUT type="text"
 							name="timetracking" id="timetracking" value="" size="20">
-						<DIV class="fieldDescription">An estimate of how much work
-						remains until this issue will be resolved.<BR>
-						The format of this is ' *w *d *h *m ' (representing weeks, days,
-						hours and minutes - where * can be any number)<BR>
-						Examples: 4d, 5h 30m, 60m and 3w.<BR>
-						</DIV>
-						</TD>
-					</TR>
-					<TR class="fieldArea" id="duedateFieldArea">
-						<TD class="fieldLabelArea"><LABEL for="duedate"> Due
-						Date: </LABEL></TD>
-						<TD class="fieldValueArea"><INPUT type="text" name="duedate"
+						
+						<INPUT type="text" name="duedate"
 							id="duedate" value="" size="10"> <IMG
 							id="duedate_trigger_c" src="/jira/images/icons/cal.gif"
 							width="16" height="16" border="0" alt="Pick a date"
-							title="Select a date"> <SCRIPT type="text/javascript">
-    Calendar.setup({
-        firstDay       :    0,                  // first day of the week
-        inputField     :    "duedate",     // id of the input field
-        button         :    "duedate_trigger_c",  // trigger for the calendar (button ID)
-        align          :    "Tl",           // alignment (defaults to "Bl")
-        singleClick    :    true,
-             ifFormat       : "%e-%b-%Y"      // our date only format
-         });
-</SCRIPT></TD>
-					</TR>
-					<TR class="fieldArea" id="customfield_10160FieldArea">
-						<TD class="fieldLabelArea"><LABEL for="customfield_10160">
-						Build Number: </LABEL></TD>
-						<TD class="fieldValueArea"><INPUT type="text"
+							title="Select a date"> 
+							<INPUT type="text"
 							name="customfield_10160" value="" id="customfield_10160"
 							class="textfield" maxlength="254" />
-						<DIV class="fieldDescription">All relevant projects build
-						numbers (Cruise's CVS tag)</DIV>
-						</TD>
-					</TR>
-					<TR class="fieldArea" id="customfield_10281FieldArea">
-						<TD class="fieldLabelArea"><LABEL for="customfield_10281">
-						List Priority: </LABEL></TD>
-						<TD class="fieldValueArea"><INPUT type="text"
+						<INPUT type="text"
 							name="customfield_10281" id="customfield_10281" value="" />
 						<DIV class="fieldDescription">To prioritise backlog items</DIV>
 						</TD>

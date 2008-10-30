@@ -1,13 +1,10 @@
 package com.jonas.jira.access;
 
-import java.lang.reflect.Method;
 import junit.framework.TestCase;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
-import com.atlassian.jira.rpc.soap.beans.RemoteCustomFieldValue;
 import com.atlassian.jira.rpc.soap.beans.RemoteFilter;
-import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.jira.JiraProject;
 
@@ -27,7 +24,7 @@ public class JiraSoapClientFunctionalTest extends TestCase {
 
    public void testShouldGetSingleFixVersionOk() throws Exception {
       // TODO optimise this call = re-do in httpClient if XML can be found?
-      RemoteVersion fixVersion = clientAtlassain.getFixVersion("Dev", JiraProject.ATLASSIN_TST);
+      RemoteVersion fixVersion = clientAtlassain.getFixVersion("Dev Version", JiraProject.ATLASSIN_TST);
       assertTrue(fixVersion != null);
    }
 
