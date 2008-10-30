@@ -17,10 +17,6 @@ public class PlanPanel extends MyComponentPanel {
    private Logger log = MyLogger.getLogger(PlanPanel.class);
    private MyTable table;
 
-   public PlanPanel(PlannerHelper client) {
-      this(client, new PlanTableModel());
-   }
-
    public PlanPanel(PlannerHelper helper, MyTableModel planModel) {
       super(new BorderLayout());
       this.helper = helper;
