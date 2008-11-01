@@ -30,33 +30,6 @@ public class MyComponentPanel extends MyPanel {
       super(layoutManager);
    }
 
-   protected void savePreferences() {
-      // override as needed
-   }
-
-   public final void close() {
-      for (Iterator<MyComponentPanel> iterator = closeListeners.iterator(); iterator.hasNext();) {
-         iterator.next().close();
-      }
-      savePreferences();
-      closing();
-   }
-
-   protected void closing() {
-      // override as needed
-   }
-
-   protected void fireComponentChanged() {
-      componentChanged();
-      for (Iterator<MyComponentPanel> iterator = changeListeners.iterator(); iterator.hasNext();) {
-         iterator.next().fireComponentChanged();
-      }
-   }
-
-   protected void componentChanged() {
-      // override as needed
-   }
-
    public final void addComponentListener(MyComponentPanel panel) {
       changeListeners.add(panel);
       panel.closeListeners.add(this);

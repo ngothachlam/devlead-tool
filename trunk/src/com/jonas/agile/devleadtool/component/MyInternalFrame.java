@@ -1,23 +1,26 @@
 package com.jonas.agile.devleadtool.component;
 
+import java.awt.Component;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
 import com.jonas.agile.devleadtool.component.listener.DaoListener;
 import com.jonas.agile.devleadtool.component.panel.BoardPanel;
 import com.jonas.agile.devleadtool.component.panel.InternalTabPanel;
 import com.jonas.agile.devleadtool.component.panel.JiraPanel;
-import com.jonas.agile.devleadtool.component.panel.PlanPanel;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.agile.devleadtool.data.DaoListenerEvent;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.common.logging.MyLogger;
@@ -28,17 +31,10 @@ public class MyInternalFrame extends JInternalFrame {
 
    static Logger log = MyLogger.getLogger(MyInternalFrame.class);
 
-   public static void closeAll() {
-      while (internalFrames.size() > 0) {
-         MyInternalFrame internalFrame = internalFrames.get(internalFrames.size() - 1);
-         internalFrame.close();
-      }
-   }
-
    private PlannerHelper client;
 
    private PlannerDAO dao;
-   private String excelFile;
+   private File excelFile;
    private InternalTabPanel internalFrameTabPanel;
 
    private String originalTitle;
@@ -51,32 +47,32 @@ public class MyInternalFrame extends JInternalFrame {
       this(title, client);
       this.dao = dao;
       this.internalFrameTabPanel = internalFrameTabPanel;
-      this.addInternalFrameListener(new MyInternalFrameListener(client, this));
+      this.addInternalFrameListener(new MyInternalFrameListener(client.getParentFrame()));
 
       setContentPane(internalFrameTabPanel);
       setFocusable(true);
-      client.setActiveInternalFrame(this);
+      // client.setActiveInternalFrame(this);
 
       daoListener = new DaoListener() {
          private ProgressDialog dialog;
 
-            @Override
-            public void notify(DaoListenerEvent event, String message) {
-               switch (event) {
-               case SavingStarted:
-                  dialog = new ProgressDialog(client.getParentFrame(), "Saving Planner", "Saving Planner", 0);
-                  break;
-               case SavingModelStarted:
-                  dialog.setNote(message);
-                  break;
-               case SavingFinished:
-                  dialog.setNote(message);
-                  dialog.setCompleteWithDelay(300);
-                  break;
-               default:
-                  break;
-               }
+         @Override
+         public void notify(DaoListenerEvent event, String message) {
+            switch (event) {
+            case SavingStarted:
+               dialog = new ProgressDialog(client.getParentFrame(), "Saving Planner", "Saving Planner", 0);
+               break;
+            case SavingModelStarted:
+               dialog.setNote(message);
+               break;
+            case SavingFinished:
+               dialog.setNote(message);
+               dialog.setCompleteWithDelay(300);
+               break;
+            default:
+               break;
             }
+         }
       };
       addKeyListener(new SaveKeyListener(dao, client.getParentFrame(), client, daoListener));
    }
@@ -89,33 +85,6 @@ public class MyInternalFrame extends JInternalFrame {
       originalTitleWithDuplicateNumber = createTitle(title);
       log.debug("created and setting Title: " + originalTitleWithDuplicateNumber);
       this.setTitle(originalTitleWithDuplicateNumber);
-   }
-
-   void close() {
-      if (internalFrameTabPanel != null) {
-         int result = showConfirmDialogAndGetResults();
-         log.debug(result + " Yes: " + JOptionPane.YES_OPTION + " No: " + JOptionPane.NO_OPTION + " Cancel: " + JOptionPane.CANCEL_OPTION);
-         switch (result) {
-         case JOptionPane.YES_OPTION:
-            saveBoardsWithoutConfirmation();
-            closeHard();
-            break;
-         case JOptionPane.NO_OPTION:
-            closeHard();
-            break;
-         case JOptionPane.CANCEL_OPTION:
-            // FIXME doesn't work - the cancel cannot be rewoked - needs fixing.
-            break;
-         default:
-            break;
-         }
-      }
-   }
-
-   private void closeHard() {
-      internalFrameTabPanel.close();
-      internalFrames.remove(this);
-      dispose();
    }
 
    String createTitle(String title) {
@@ -148,7 +117,7 @@ public class MyInternalFrame extends JInternalFrame {
       return count;
    }
 
-   public String getExcelFile() {
+   public File getExcelFile() {
       return excelFile;
    }
 
@@ -172,18 +141,12 @@ public class MyInternalFrame extends JInternalFrame {
       return string.length() > i ? string.substring(string.length() - i, string.length()) : string;
    }
 
-   private void saveBoardsWithoutConfirmation() {
-      if (dao != null && client != null) {
-         new SavePlannerDialog(dao, this, client, false, daoListener);
-      }
+   void setExcelFile(File file, CutoverLength cutoverLength) {
+      excelFile = file;
+      setTitleFileName(file.getAbsolutePath(), cutoverLength);
    }
 
-   public void setExcelFile(String fileName, CutoverLength cutoverLength) {
-      excelFile = fileName;
-      setFileName(fileName, cutoverLength);
-   }
-
-   void setFileName(String fileName, CutoverLength cutoverLength) {
+   void setTitleFileName(String fileName, CutoverLength cutoverLength) {
       String rightMostFromString = getRightMostFromString(fileName, cutoverLength.value());
       StringBuffer sb = new StringBuffer(this.originalTitleWithDuplicateNumber);
       sb.append(" - ");
@@ -194,27 +157,71 @@ public class MyInternalFrame extends JInternalFrame {
       this.setTitle(sb.toString());
    }
 
-   private int showConfirmDialogAndGetResults() {
-      return JOptionPane.showConfirmDialog(internalFrameTabPanel, "Want to Save " + getTitle() + "?", "Save?", JOptionPane.YES_NO_OPTION);
-   }
-
    private final class MyInternalFrameListener extends InternalFrameAdapter {
-      private final PlannerHelper client;
+      // private final PlannerHelper client;
+      private final Component parent;
 
-      private final MyInternalFrame frame;
-
-      private MyInternalFrameListener(PlannerHelper client, MyInternalFrame frame) {
-         this.client = client;
-         this.frame = frame;
+      private MyInternalFrameListener(Component parent) {
+         this.parent = parent;
       }
 
       public void internalFrameActivated(InternalFrameEvent e) {
-         client.setActiveInternalFrame(frame);
+         log.debug("Frame Activated " + getTitle());
+         client.setActiveInternalFrame((MyInternalFrame) e.getSource());
       }
 
       public void internalFrameClosing(InternalFrameEvent ife) {
-         close();
+         log.debug("Frame closing " + getTitle());
+         MyInternalFrame frameClosing = (MyInternalFrame) ife.getSource();
+         int resultFromDialog = JOptionPane.showConfirmDialog(internalFrameTabPanel, "Save " + getTitle() + "?", "Save?", JOptionPane.YES_NO_CANCEL_OPTION);
+         switch (resultFromDialog) {
+         case JOptionPane.YES_OPTION:
+            saveWithoutConfirmation(frameClosing);
+         case JOptionPane.NO_OPTION:
+            internalFrames.remove(this);
+            break;
+         case JOptionPane.CANCEL_OPTION:
+            break;
+         default:
+            break;
+         }
+      }
+
+      private void saveWithoutConfirmation(MyInternalFrame frameClosing) {
+         if (dao != null && client != null) {
+            new SavePlannerDialog(dao, client.getParentFrame(), frameClosing, false, daoListener);
+         }
       }
    }
 
+   public File getFile() {
+      return excelFile;
+   }
+
+   public void setSaveFile(File file) {
+      setExcelFile(file, CutoverLength.DEFAULT);
+   }
+
+   public void saveModels(final PlannerDAO dao, final DaoListener daoListener) {
+      SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+         @Override
+         protected Object doInBackground() throws Exception {
+            try {
+               dao.notifySavingStarted();
+               dao.addListener(daoListener);
+
+               dao.saveBoardModel(getBoardModel());
+               dao.saveJiraModel(getJiraModel());
+
+            } catch (IOException e) {
+               AlertDialog.alertException(client.getParentFrame(), e);
+            } finally {
+               dao.notifySavingFinished();
+               dao.removeListener(daoListener);
+            }
+            return null;
+         }
+      };
+      worker.execute();
+   }
 }

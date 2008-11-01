@@ -1,8 +1,8 @@
 package com.jonas.agile.devleadtool.component;
 
+import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.List;
-import org.easymock.classextension.EasyMock;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
@@ -16,9 +16,9 @@ public class InternalFrameTest extends JonasTestCase {
       clearInternalFrames();
    }
 
-   private void clearInternalFrames() {
+   private void clearInternalFrames() throws PropertyVetoException {
       for (MyInternalFrame internalFrame : internalFrames) {
-         internalFrame.close();
+         internalFrame.setClosed(true);
       }
    }
 
@@ -41,10 +41,10 @@ public class InternalFrameTest extends JonasTestCase {
       MyInternalFrame internalFrame = getTestInternalFrame("title");
       assertEquals("title", internalFrame.getTitle());
 
-      internalFrame.setFileName("u.xls", CutoverLength.TEST_5);
+      internalFrame.setTitleFileName("u.xls", CutoverLength.TEST_5);
       assertEquals("title - u.xls", internalFrame.getTitle());
       
-      internalFrame.setFileName("C:\\Documents\\lludevsup.xls", CutoverLength.TEST_5);
+      internalFrame.setTitleFileName("C:\\Documents\\lludevsup.xls", CutoverLength.TEST_5);
       assertEquals("title - ...p.xls", internalFrame.getTitle());
    }
 
@@ -77,13 +77,13 @@ public class InternalFrameTest extends JonasTestCase {
       assertEquals("titles", internalFrame2.getTitle());
       assertEquals("title (1)", internalFrame3.getTitle());
 
-      internalFrame.setExcelFile("C:\\Documents and Settings\\jonasjolofsson\\lludevsup.xls", CutoverLength.TEST_5);
+      internalFrame.setTitleFileName("C:\\Documents and Settings\\jonasjolofsson\\lludevsup.xls", CutoverLength.TEST_5);
 
       assertEquals("title - ...p.xls", internalFrame.getTitle());
       assertEquals("titles", internalFrame2.getTitle());
       assertEquals("title (1)", internalFrame3.getTitle());
       
-      internalFrame.setExcelFile("C:\\Documents and Settings\\jonasjolofsson\\lludevsup.xls", CutoverLength.TEST_5);
+      internalFrame.setTitleFileName("C:\\Documents and Settings\\jonasjolofsson\\lludevsup.xls", CutoverLength.TEST_5);
       
       assertEquals("title - ...p.xls", internalFrame.getTitle());
       assertEquals("titles", internalFrame2.getTitle());

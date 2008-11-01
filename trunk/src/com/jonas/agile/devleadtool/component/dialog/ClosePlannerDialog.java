@@ -22,8 +22,6 @@ public class ClosePlannerDialog extends JDialog {
       pack();
       SwingUtil.centreWindowWithinWindow(this, parent);
 
-      plannerHelper.getActiveInternalFrame().closeAll();
-
       new Thread(new Runnable() {
          public void run() {
             SystemProperties.close();

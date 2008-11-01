@@ -34,7 +34,7 @@ public class SaveKeyListener implements KeyListener {
          if (e.getKeyCode() == e.VK_S) {
             pressed = true;
             MyInternalFrame.log.debug("***");
-            new SavePlannerDialog(dao, frame, helper, false, daoListener);
+            new SavePlannerDialog(dao, helper.getParentFrame(), helper.getActiveInternalFrame(), false, daoListener);
          }
       }
    }
