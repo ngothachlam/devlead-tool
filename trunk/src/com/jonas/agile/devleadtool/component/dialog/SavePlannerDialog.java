@@ -5,7 +5,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
-import com.jonas.agile.devleadtool.component.listener.DaoListener;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.common.logging.MyLogger;
 
@@ -13,7 +12,7 @@ public class SavePlannerDialog extends JFileChooser {
 
    private Logger log = MyLogger.getLogger(SavePlannerDialog.class);
 
-   public SavePlannerDialog(PlannerDAO dao, JFrame parent, MyInternalFrame internalFrame, boolean isFileChoosable, DaoListener daoListener) {
+   public SavePlannerDialog(PlannerDAO dao, JFrame parent, MyInternalFrame internalFrame, boolean isFileChoosable) {
       super(new File("."));
       if (dao == null || internalFrame == null) {
          return;
@@ -52,7 +51,7 @@ public class SavePlannerDialog extends JFileChooser {
 
          internalFrame.setSaveFile(file);
          dao.setXlsFile(file);
-         internalFrame.saveModels(dao, daoListener);
+         internalFrame.saveModels(dao);
       }
    }
 }

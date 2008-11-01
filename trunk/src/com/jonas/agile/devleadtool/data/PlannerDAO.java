@@ -15,14 +15,8 @@ public interface PlannerDAO {
    public void saveBoardModel(MyTableModel modelToSaveFrom) throws IOException;
    public void saveJiraModel(MyTableModel planModel) throws IOException;
 
-   public void removeListener(DaoListener daoListener);
    public void setXlsFile(File selFile);
+
    public void addListener(DaoListener daoListener);
-
-   public void notifySavingStarted();
-   public void notifySavingFinished();
-   public void notifyLoadingStarted();
-   public void notifyLoadingFinished();
-
-
+   public void removeListener(DaoListener daoListener);
 }

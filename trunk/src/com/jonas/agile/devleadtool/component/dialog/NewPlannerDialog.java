@@ -9,8 +9,8 @@ import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 
-public class OpenPlannerDialog {
-   public OpenPlannerDialog(final MyDesktopPane desktopPane, final PlannerHelper plannerHelper, final PlannerDAOExcelImpl dao) {
+public class NewPlannerDialog {
+   public NewPlannerDialog(final MyDesktopPane desktopPane, final PlannerHelper plannerHelper, final PlannerDAOExcelImpl dao) {
 
       SwingWorker<ModelDTO, Object> worker = new SwingWorker<ModelDTO, Object>() {
          protected ModelDTO doInBackground() throws Exception {
@@ -31,8 +31,9 @@ public class OpenPlannerDialog {
             }
          }
 
+
+
       };
       worker.execute();
    }
-
 }

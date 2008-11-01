@@ -9,16 +9,14 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.DesktopManager;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.component.dialog.PlannerListeners;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
 import com.jonas.agile.devleadtool.component.listener.DaoListener;
@@ -44,10 +42,8 @@ public class MyInternalFrame extends JInternalFrame {
    private InternalTabPanel internalFrameTabPanel;
 
    private String originalTitle;
-
    private String originalTitleWithDuplicateNumber;
 
-   private DaoListener daoListener;
 
    public MyInternalFrame(final PlannerHelper client, String title, InternalTabPanel internalFrameTabPanel, PlannerDAO dao) {
       this(title, client);
@@ -58,29 +54,9 @@ public class MyInternalFrame extends JInternalFrame {
       setFocusable(true);
       client.setActiveInternalFrame(this);
 
-      daoListener = new DaoListener() {
-         private ProgressDialog dialog;
-
-         @Override
-         public void notify(DaoListenerEvent event, String message) {
-            switch (event) {
-            case SavingStarted:
-               dialog = new ProgressDialog(client.getParentFrame(), "Saving Planner", "Saving Planner", 0);
-               break;
-            case SavingModelStarted:
-               dialog.setNote(message);
-               break;
-            case SavingFinished:
-               dialog.setNote(message);
-               dialog.setCompleteWithDelay(300);
-               break;
-            default:
-               break;
-            }
-         }
-      };
-      addKeyListener(new SaveKeyListener(dao, client.getParentFrame(), client, daoListener));
+      addKeyListener(new SaveKeyListener(dao, client.getParentFrame(), client));
       addVetoableChangeListener(new VetoListener(this, client.getParentFrame()));
+      PlannerListeners.notifyListenersThatFrameWasCreated(this);
    }
 
    MyInternalFrame(String title, PlannerHelper client) {
@@ -100,6 +76,12 @@ public class MyInternalFrame extends JInternalFrame {
 
    public MyTableModel getBoardModel() {
       return getBoardPanel().getModel();
+   }
+
+   @Override
+   public void setTitle(String title) {
+      super.setTitle(title);
+      PlannerListeners.notifyListenersThatFrameChangedTitle(this);
    }
 
    private BoardPanel getBoardPanel() {
@@ -198,13 +180,14 @@ public class MyInternalFrame extends JInternalFrame {
          if (evt.getPropertyName().equals(IS_CLOSED_PROPERTY)) {
             boolean changed = ((Boolean) evt.getNewValue()).booleanValue();
             if (changed) {
-               int resultFromDialog = JOptionPane.showOptionDialog(parent, "Close " + internalFrame.getTitle() + "?", "Close Confirmation",
+               int resultFromDialog = JOptionPane.showOptionDialog(parent, "Save " + internalFrame.getTitle() + "?", "Save Confirmation",
                      JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
                switch (resultFromDialog) {
                case JOptionPane.YES_OPTION:
                   saveWithoutConfirmation(internalFrame);
                case JOptionPane.NO_OPTION:
+                  PlannerListeners.notifyListenersThatFrameWasClosed(internalFrame);
                   internalFrames.remove(this);
                   break;
                case JOptionPane.CANCEL_OPTION:
@@ -218,7 +201,7 @@ public class MyInternalFrame extends JInternalFrame {
 
       private void saveWithoutConfirmation(MyInternalFrame frameClosing) {
          if (dao != null && client != null) {
-            new SavePlannerDialog(dao, client.getParentFrame(), frameClosing, false, daoListener);
+            new SavePlannerDialog(dao, client.getParentFrame(), frameClosing, false);
          }
       }
    }
@@ -231,23 +214,16 @@ public class MyInternalFrame extends JInternalFrame {
       setExcelFile(file, CutoverLength.DEFAULT);
    }
 
-   public void saveModels(final PlannerDAO dao, final DaoListener daoListener) {
+   public void saveModels(final PlannerDAO dao) {
       SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
          @Override
          protected Object doInBackground() throws Exception {
             try {
-               dao.notifySavingStarted();
-               dao.addListener(daoListener);
-
                dao.saveBoardModel(getBoardModel());
                dao.saveJiraModel(getJiraModel());
-
             } catch (IOException e) {
                AlertDialog.alertException(client.getParentFrame(), e);
-            } finally {
-               dao.notifySavingFinished();
-               dao.removeListener(daoListener);
-            }
+            } 
             return null;
          }
       };
