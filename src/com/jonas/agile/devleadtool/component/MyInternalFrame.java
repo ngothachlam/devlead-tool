@@ -6,11 +6,13 @@ import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DesktopManager;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
@@ -51,7 +53,6 @@ public class MyInternalFrame extends JInternalFrame {
       this(title, client);
       this.dao = dao;
       this.internalFrameTabPanel = internalFrameTabPanel;
-      // this.addInternalFrameListener(new MyInternalFrameListener(client.getParentFrame()));
 
       setContentPane(internalFrameTabPanel);
       setFocusable(true);
@@ -162,6 +163,25 @@ public class MyInternalFrame extends JInternalFrame {
       this.setTitle(sb.toString());
    }
 
+   private static final class SwingRunnable implements Runnable {
+      private boolean allClosed;
+
+      public boolean isAllClosed() {
+         return allClosed;
+      }
+
+      @Override
+      public void run() {
+         try {
+            closeAllAgain();
+            allClosed = true;
+         } catch (PropertyVetoException e) {
+            e.printStackTrace();
+            allClosed = false;
+         }
+      }
+   }
+
    private final class VetoListener implements VetoableChangeListener {
 
       private MyInternalFrame internalFrame;
@@ -203,44 +223,6 @@ public class MyInternalFrame extends JInternalFrame {
       }
    }
 
-   private final class MyInternalFrameListener extends InternalFrameAdapter {
-      // private final PlannerHelper client;
-      private final Component parent;
-
-      private MyInternalFrameListener(Component parent) {
-         this.parent = parent;
-      }
-
-      public void internalFrameActivated(InternalFrameEvent e) {
-         log.debug("Frame Activated " + getTitle());
-         client.setActiveInternalFrame((MyInternalFrame) e.getSource());
-      }
-
-      public void internalFrameClosing(InternalFrameEvent ife) {
-         log.debug("Frame closing " + getTitle());
-         MyInternalFrame frameClosing = (MyInternalFrame) ife.getSource();
-         int resultFromDialog = JOptionPane.showConfirmDialog(internalFrameTabPanel, "Save " + getTitle() + "?", "Save?", JOptionPane.YES_NO_CANCEL_OPTION);
-         switch (resultFromDialog) {
-         case JOptionPane.YES_OPTION:
-            saveWithoutConfirmation(frameClosing);
-         case JOptionPane.NO_OPTION:
-            internalFrames.remove(this);
-            break;
-         case JOptionPane.CANCEL_OPTION:
-            // throw new PropertyVetoException("Cancelled!", null);
-            break;
-         default:
-            break;
-         }
-      }
-
-      private void saveWithoutConfirmation(MyInternalFrame frameClosing) {
-         if (dao != null && client != null) {
-            new SavePlannerDialog(dao, client.getParentFrame(), frameClosing, false, daoListener);
-         }
-      }
-   }
-
    public File getFile() {
       return excelFile;
    }
@@ -272,12 +254,39 @@ public class MyInternalFrame extends JInternalFrame {
       worker.execute();
    }
 
-   public static void closeAll() {
-      DesktopManager desktopManager = null;
-      for (MyInternalFrame internalFrame : internalFrames) {
-         if (desktopManager == null)
-            desktopManager = internalFrame.getDesktopPane().getDesktopManager();
-         desktopManager.closeFrame(internalFrame);
+   public static void closeAll() throws PropertyVetoException {
+      if (!SwingUtilities.isEventDispatchThread()) {
+         closeInEventThread();
+      } else {
+         closeAllAgain();
       }
+   }
+
+   private static void closeInEventThread() throws PropertyVetoException {
+      try {
+         SwingRunnable doRun = new SwingRunnable();
+         SwingUtilities.invokeAndWait(doRun);
+         if (!doRun.isAllClosed()) {
+            throw new PropertyVetoException("Cancelled!", null);
+         }
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      } catch (InvocationTargetException e) {
+         e.printStackTrace();
+      }
+   }
+
+   private static void closeAllAgain() throws PropertyVetoException {
+      // DesktopManager desktopManager = null;
+      for (int i = internalFrames.size() - 1; i >= 0; i--) {
+         MyInternalFrame internalFrame = internalFrames.get(i);
+         internalFrame.setClosed(true);
+         internalFrames.remove(internalFrame);
+      }
+      // for (MyInternalFrame internalFrame : internalFrames) {
+      // if (desktopManager == null)
+      // desktopManager = internalFrame.getDesktopPane().getDesktopManager();
+      // desktopManager.closeFrame(internalFrame);
+      // }
    }
 }
