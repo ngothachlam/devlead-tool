@@ -14,8 +14,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.MyDesktopPane;
+import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.dialog.LoadPlannerDialog;
-import com.jonas.agile.devleadtool.component.dialog.OpenPlannerDialog;
+import com.jonas.agile.devleadtool.component.dialog.NewPlannerDialog;
+import com.jonas.agile.devleadtool.component.dialog.PlannerListener;
+import com.jonas.agile.devleadtool.component.dialog.PlannerListeners;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
 import com.jonas.agile.devleadtool.component.listener.DaoListener;
@@ -65,7 +68,7 @@ public class DevLeadTool {
    private JMenuItem[] getFileMenuItemArray(final JFrame frame, final MyDesktopPane desktop) {
       plannerDAO = new PlannerDAOExcelImpl();
       JMenuItem planner = createMenuItem("New Planner", new NewPlannerActionListener(desktop));
-      JMenuItem open = createMenuItem("Open Planner", new OpenPlannerActionListener(desktop, frame));
+      JMenuItem open = createMenuItem("Open Planner", new LoadPlannerActionListener(desktop, frame));
       JMenuItem save = createMenuItem("Save Planner", new SavePlannerActionListener(frame, false));
       JMenuItem saveAs = createMenuItem("Save Planner As", new SavePlannerActionListener(frame, true));
       return new JMenuItem[] { planner, open, save, saveAs };
@@ -121,8 +124,61 @@ public class DevLeadTool {
       });
    }
 
-   private void wireListeners(JFrame frame) {
+   private void wireListeners(final JFrame frame) {
+      PlannerListeners.addListener(new PlannerListener() {
+         @Override
+         public void frameWasClosed(MyInternalFrame internalFrame) {
+            windowMenu.remove(InternalFrameMenuItem.get(internalFrame));
+         }
+
+         @Override
+         public void frameWasCreated(MyInternalFrame internalFrame) {
+            InternalFrameMenuItem windowMenuItem = new InternalFrameMenuItem(internalFrame);
+            windowMenu.add(windowMenuItem);
+         }
+
+         @Override
+         public void frameChangedTitle(MyInternalFrame internalFrame) {
+            InternalFrameMenuItem internalFrameMenuItem = InternalFrameMenuItem.get(internalFrame);
+            if (internalFrameMenuItem != null)
+               internalFrameMenuItem.titleChanged();
+         }
+      });
       frame.addWindowListener(new MainFrameListener(frame, plannerHelper));
+      plannerDAO.addListener(new DaoListener() {
+         ProgressDialog dialog;
+
+         @Override
+         public void notify(DaoListenerEvent event, String message) {
+            switch (event) {
+            case SavingStarted:
+               dialog = new ProgressDialog(frame, "Saving Planner", "Saving Planner", 0);
+               dialog.setIndeterminate(false);
+               break;
+            case SavingModelStarted:
+               dialog.setNote(message);
+               break;
+            case SavingFinished:
+               dialog.setNote(message);
+               dialog.setCompleteWithDelay(300);
+               break;
+            case LoadingFinished:
+               dialog.setNote(message);
+               dialog.setCompleteWithDelay(300);
+               break;
+            case LoadingModelStarted:
+               dialog.setNote(message);
+               dialog.setCompleteWithDelay(300);
+               break;
+            case LoadingStarted:
+               dialog.setNote(message);
+               dialog.setCompleteWithDelay(300);
+               break;
+            default:
+               break;
+            }
+         }
+      });
    }
 
    private final class NewPlannerActionListener implements ActionListener {
@@ -133,22 +189,20 @@ public class DevLeadTool {
       }
 
       public void actionPerformed(ActionEvent e) {
-         new OpenPlannerDialog(desktop, plannerHelper, plannerDAO);
-         JMenuItem windowMenuItem = new JMenuItem("Nnew Internal Frame");
-         windowMenu.add(windowMenuItem);
+         new NewPlannerDialog(desktop, plannerHelper, plannerDAO);
       }
    }
 
-   private final class OpenPlannerActionListener implements ActionListener {
+   private final class LoadPlannerActionListener implements ActionListener {
       private final MyDesktopPane desktop;
       private final JFrame frame;
       private DaoListener daoListener;
       private LoadPlannerDialog loadPlanner;
 
-      private OpenPlannerActionListener(MyDesktopPane desktop, final JFrame frame) {
+      private LoadPlannerActionListener(MyDesktopPane desktop, final JFrame frame) {
          daoListener = new DaoListener() {
             ProgressDialog dialog;
-            
+
             @Override
             public void notify(DaoListenerEvent event, String message) {
                switch (event) {
@@ -188,28 +242,7 @@ public class DevLeadTool {
       }
 
       public void actionPerformed(ActionEvent e) {
-         new SavePlannerDialog(plannerDAO, frame, plannerHelper.getActiveInternalFrame(), chooseFile, new DaoListener() {
-            ProgressDialog dialog;
-
-            @Override
-            public void notify(DaoListenerEvent event, String message) {
-               switch (event) {
-               case SavingStarted:
-                  dialog = new ProgressDialog(frame, "Saving Planner", "Saving Planner", 0);
-                  dialog.setIndeterminate(false);
-                  break;
-               case SavingModelStarted:
-                  dialog.setNote(message);
-                  break;
-               case SavingFinished:
-                  dialog.setNote(message);
-                  dialog.setCompleteWithDelay(300);
-                  break;
-               default:
-                  break;
-               }
-            }
-         });
+         new SavePlannerDialog(plannerDAO, frame, plannerHelper.getActiveInternalFrame(), chooseFile);
       }
    }
 

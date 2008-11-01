@@ -54,21 +54,10 @@ public class LoadPlannerDialog extends JFileChooser {
          SwingWorker<ModelDTO, Object> swingWorker = new SwingWorker<ModelDTO, Object>() {
             @Override
             protected ModelDTO doInBackground() throws Exception {
-               ModelDTO modelDto = null;
-               try {
-                  dao.addListener(daoListener);
-                  dao.notifyLoadingStarted();
+               BoardTableModel boardModel = dao.loadBoardModel();
+               JiraTableModel jiraModel = dao.loadJiraModel();
 
-                  BoardTableModel boardModel = dao.loadBoardModel();
-                  JiraTableModel jiraModel = dao.loadJiraModel();
-
-                  modelDto = new ModelDTO(boardModel, jiraModel);
-
-               } finally {
-                  dao.notifyLoadingFinished();
-                  dao.removeListener(daoListener);
-               }
-               return modelDto;
+               return new ModelDTO(boardModel, jiraModel);
             }
 
             @Override

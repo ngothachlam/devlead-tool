@@ -8,7 +8,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
-import com.jonas.agile.devleadtool.component.listener.DaoListener;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 
 public class SaveKeyListener implements KeyListener {
@@ -16,14 +15,12 @@ public class SaveKeyListener implements KeyListener {
    private Component frame;
    private PlannerHelper helper;
    private boolean pressed = false;
-   private DaoListener daoListener;
 
-   public SaveKeyListener(PlannerDAO dao, Component frame, PlannerHelper helper, DaoListener daoListener) {
+   public SaveKeyListener(PlannerDAO dao, Component frame, PlannerHelper helper) {
       super();
       this.dao = dao;
       this.frame = frame;
       this.helper = helper;
-      this.daoListener = daoListener;
    }
 
    @Override
@@ -34,7 +31,7 @@ public class SaveKeyListener implements KeyListener {
          if (e.getKeyCode() == e.VK_S) {
             pressed = true;
             MyInternalFrame.log.debug("***");
-            new SavePlannerDialog(dao, helper.getParentFrame(), helper.getActiveInternalFrame(), false, daoListener);
+            new SavePlannerDialog(dao, helper.getParentFrame(), helper.getActiveInternalFrame(), false);
          }
       }
    }

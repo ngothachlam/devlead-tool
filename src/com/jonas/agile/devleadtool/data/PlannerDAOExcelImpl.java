@@ -32,6 +32,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    private Logger log = MyLogger.getLogger(PlannerDAOExcelImpl.class);
    private File xlsFile;
    private List<DaoListener> listeners = new ArrayList<DaoListener>();
+   private int savesNow = 0;
+   private int loadingNow = 0;
 
    public PlannerDAOExcelImpl() {
       super();
@@ -41,29 +43,34 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       return xlsFile;
    }
 
-
    @Override
    public BoardTableModel loadBoardModel() throws IOException {
-      notifyListeners(DaoListenerEvent.LoadingModelStarted, "Loading Board Started");
+      notifyLoadingStarted();
       TableModelDTO dto = loadModel(xlsFile, "board");
+      notifyLoadingFinished();
       return new BoardTableModel(dto.getContents(), dto.getHeader());
    }
 
    @Override
    public JiraTableModel loadJiraModel() throws IOException {
-      notifyListeners(DaoListenerEvent.LoadingModelStarted, "Loading Jira Started");
+      notifyLoadingStarted();
       TableModelDTO dto = loadModel(xlsFile, "jira");
+      notifyLoadingFinished();
       return new JiraTableModel(dto.getContents(), dto.getHeader());
    }
 
    @Override
    public void saveBoardModel(MyTableModel model) throws IOException {
+      notifySavingStarted();
       saveModel(xlsFile, model, "board");
+      notifySavingFinished();
    }
 
    @Override
    public void saveJiraModel(MyTableModel model) throws IOException {
+      notifySavingStarted();
       saveModel(xlsFile, model, "jira");
+      notifySavingFinished();
    }
 
    @Override
@@ -79,6 +86,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       notifyListeners(DaoListenerEvent.SavingModelStarted, "Saving " + sheetName + " Started");
       FileOutputStream fileOut = null;
       try {
+         log.debug("Saving to " + xlsFile.getAbsolutePath());
          HSSFWorkbook wb = getWorkBook(xlsFile);
          HSSFSheet sheet = getSheet(sheetName, wb);
 
@@ -137,6 +145,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException {
       log.debug("Loading Model from " + xlsFile.getAbsolutePath() + " and sheet: " + sheetName);
+      notifyListeners(DaoListenerEvent.LoadingModelStarted, "Loading " + sheetName + " Started");
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       Vector<Column> header = new Vector<Column>();
@@ -221,27 +230,31 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       listeners.remove(daoListener);
    }
 
-   @Override
-   public void notifyLoadingFinished() {
-      log.debug("notifyLoadingFinished");
-      notifyListeners(DaoListenerEvent.LoadingFinished, "Loading Finished!");
+   private void notifyLoadingFinished() {
+      if (loadingNow-- == 1) {
+         log.debug("notifyLoadingFinished");
+         notifyListeners(DaoListenerEvent.LoadingFinished, "Loading Finished!");
+      }
    }
 
-   @Override
-   public void notifyLoadingStarted() {
-      log.debug("notifyLoadingStarted");
-      notifyListeners(DaoListenerEvent.LoadingStarted, "Loading Started!");
+   private void notifyLoadingStarted() {
+      if (loadingNow ++ == 0) {
+         log.debug("notifyLoadingStarted");
+         notifyListeners(DaoListenerEvent.LoadingStarted, "Loading Started!");
+      }
    }
 
-   @Override
-   public void notifySavingFinished() {
-      log.debug("notifySavingFinished");
-      notifyListeners(DaoListenerEvent.SavingFinished, "Saving Finished!");
+   private void notifySavingFinished() {
+      if (savesNow-- == 1) {
+         log.debug("notifySavingFinished");
+         notifyListeners(DaoListenerEvent.SavingFinished, "Saving Finished!");
+      }
    }
 
-   @Override
-   public void notifySavingStarted() {
-      log.debug("notifySavingStarted");
-      notifyListeners(DaoListenerEvent.SavingStarted, "Saving Started!");
+   private void notifySavingStarted() {
+      if (savesNow++ == 0) {
+         log.debug("notifySavingStarted");
+         notifyListeners(DaoListenerEvent.SavingStarted, "Saving Started!");
+      }
    }
 }
