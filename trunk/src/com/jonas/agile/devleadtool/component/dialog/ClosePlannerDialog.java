@@ -6,13 +6,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.data.SystemProperties;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
 
 public class ClosePlannerDialog extends JDialog {
 
-   public ClosePlannerDialog(JFrame parent, PlannerHelper plannerHelper) {
+   public ClosePlannerDialog(final JFrame parent, final PlannerHelper plannerHelper) {
       super(parent, "Closing...", true);
       setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -24,6 +25,7 @@ public class ClosePlannerDialog extends JDialog {
 
       new Thread(new Runnable() {
          public void run() {
+            MyInternalFrame.closeAll();
             SystemProperties.close();
             System.exit(0);
          }

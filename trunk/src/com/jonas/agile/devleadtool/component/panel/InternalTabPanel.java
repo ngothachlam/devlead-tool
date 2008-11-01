@@ -33,7 +33,6 @@ import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.testing.tree.fromScratch.DnDTreePanel;
@@ -59,14 +58,13 @@ public class InternalTabPanel extends MyComponentPanel {
    private DnDTreePanel sprintPanel;
 
    public InternalTabPanel(PlannerHelper client) {
-      this(client, null, null, null);
+      this(client, null, null);
    }
 
-   public InternalTabPanel(PlannerHelper helper, BoardTableModel boardModel, MyTableModel planModel, JiraTableModel jiraModel) {
+   public InternalTabPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel) {
       super(new BorderLayout());
       try {
          boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
-         planModel = (planModel == null) ? new PlanTableModel() : planModel;
          jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 
          DnDTreeModel model = new DnDTreeModel("LLU");

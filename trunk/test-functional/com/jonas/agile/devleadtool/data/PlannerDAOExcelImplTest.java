@@ -4,16 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.easymock.classextension.EasyMock;
-import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
 import com.jonas.agile.devleadtool.component.table.model.TableModelDTO;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class PlannerDAOExcelImplTest extends JonasTestCase {
    File xlsFile = new File("bin\\test.xls");
    
-   PlannerDAOExcelImpl dao = new PlannerDAOExcelImpl(null);
+   PlannerDAOExcelImpl dao = new PlannerDAOExcelImpl();
 
    // TODO assert on saving cell background colors.
 
@@ -44,57 +41,6 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
       assertNotSame(wb, wb4);
    }
 
-   public void testSouldSaveAndLoadPlanCorrectly() throws IOException {
-      MyTableModel model_original = createClassMock(PlanTableModel.class);
-
-       // setup expectations for header
-       EasyMock.expect(model_original.getColumnCount()).andReturn(4).anyTimes();
-       EasyMock.expect(model_original.getColumnName(0)).andReturn("Jira").anyTimes();
-       EasyMock.expect(model_original.getColumnName(1)).andReturn("Description").anyTimes();
-       EasyMock.expect(model_original.getColumnName(2)).andReturn("prio").anyTimes();
-       EasyMock.expect(model_original.getColumnName(3)).andReturn("isInProgress").anyTimes();
-      
-       // setup expectations for number of data rows
-       EasyMock.expect(model_original.getRowCount()).andReturn(2).anyTimes();
-       // setup expectations for first data row
-       EasyMock.expect(model_original.getValueAt(0, 0)).andReturn("Row0-Col0").anyTimes();
-       EasyMock.expect(model_original.getValueAt(0, 1)).andReturn("Row0-Col1").anyTimes();
-       EasyMock.expect(model_original.getValueAt(0, 2)).andReturn("1").anyTimes();
-       EasyMock.expect(model_original.getValueAt(0, 3)).andReturn("TRUE").anyTimes();
-       // setup expectations for first data row when checking color.
-       // setup expectations for first data row
-       EasyMock.expect(model_original.getValueAt(1, 0)).andReturn("Row1-Col0").anyTimes();
-       EasyMock.expect(model_original.getValueAt(1, 1)).andReturn("Row1-Col1").anyTimes();
-       EasyMock.expect(model_original.getValueAt(1, 2)).andReturn("2").anyTimes();
-       EasyMock.expect(model_original.getValueAt(1, 3)).andReturn("FALSE").anyTimes();
-       // setup expectations for first data row when checking color.
-
-      replay();
-
-      // Save and Load on new file
-      dao.setXlsFile(xlsFile);
-      dao.savePlanModel(model_original);
-      TableModelDTO dtoLoaded = dao.loadModel(xlsFile, "plan");
-
-      verify();
-
-      assertEquals(4, dtoLoaded.getHeader().size());
-      
-      assertEquals(2, dtoLoaded.getContents().size());
-      
-      assertEquals(4, dtoLoaded.getContents().get(0).size());
-      assertEquals("Row0-Col0", dtoLoaded.getContents().get(0).get(0));
-      assertEquals("Row0-Col1", dtoLoaded.getContents().get(0).get(1));
-      assertEquals(1, dtoLoaded.getContents().get(0).get(2));
-      assertEquals(Boolean.TRUE, dtoLoaded.getContents().get(0).get(3));
-      
-      assertEquals(4, dtoLoaded.getContents().get(1).size());
-      assertEquals("Row1-Col0", dtoLoaded.getContents().get(1).get(0));
-      assertEquals("Row1-Col1", dtoLoaded.getContents().get(1).get(1));
-      assertEquals(2, dtoLoaded.getContents().get(1).get(2));
-      assertEquals(Boolean.FALSE, dtoLoaded.getContents().get(1).get(3));
-   }
-   
    public void testShouldBlah() throws IOException{
       TableModelDTO dtoLoaded = dao.loadModel(new File("bin\\lludevsup.xls"), "board");
 

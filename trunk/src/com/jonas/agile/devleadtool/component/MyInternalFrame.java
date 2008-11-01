@@ -1,10 +1,14 @@
 package com.jonas.agile.devleadtool.component;
 
 import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.DesktopManager;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
@@ -47,11 +51,11 @@ public class MyInternalFrame extends JInternalFrame {
       this(title, client);
       this.dao = dao;
       this.internalFrameTabPanel = internalFrameTabPanel;
-      this.addInternalFrameListener(new MyInternalFrameListener(client.getParentFrame()));
+      // this.addInternalFrameListener(new MyInternalFrameListener(client.getParentFrame()));
 
       setContentPane(internalFrameTabPanel);
       setFocusable(true);
-      // client.setActiveInternalFrame(this);
+      client.setActiveInternalFrame(this);
 
       daoListener = new DaoListener() {
          private ProgressDialog dialog;
@@ -75,6 +79,7 @@ public class MyInternalFrame extends JInternalFrame {
          }
       };
       addKeyListener(new SaveKeyListener(dao, client.getParentFrame(), client, daoListener));
+      addVetoableChangeListener(new VetoListener(this, client.getParentFrame()));
    }
 
    MyInternalFrame(String title, PlannerHelper client) {
@@ -157,6 +162,47 @@ public class MyInternalFrame extends JInternalFrame {
       this.setTitle(sb.toString());
    }
 
+   private final class VetoListener implements VetoableChangeListener {
+
+      private MyInternalFrame internalFrame;
+      private Component parent;
+
+      public VetoListener(MyInternalFrame internalFrame, Component parent) {
+         super();
+         this.internalFrame = internalFrame;
+         this.parent = parent;
+      }
+
+      @Override
+      public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
+         if (evt.getPropertyName().equals(IS_CLOSED_PROPERTY)) {
+            boolean changed = ((Boolean) evt.getNewValue()).booleanValue();
+            if (changed) {
+               int resultFromDialog = JOptionPane.showOptionDialog(parent, "Close " + internalFrame.getTitle() + "?", "Close Confirmation",
+                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+               switch (resultFromDialog) {
+               case JOptionPane.YES_OPTION:
+                  saveWithoutConfirmation(internalFrame);
+               case JOptionPane.NO_OPTION:
+                  internalFrames.remove(this);
+                  break;
+               case JOptionPane.CANCEL_OPTION:
+                  throw new PropertyVetoException("Cancelled!", null);
+               default:
+                  break;
+               }
+            }
+         }
+      }
+
+      private void saveWithoutConfirmation(MyInternalFrame frameClosing) {
+         if (dao != null && client != null) {
+            new SavePlannerDialog(dao, client.getParentFrame(), frameClosing, false, daoListener);
+         }
+      }
+   }
+
    private final class MyInternalFrameListener extends InternalFrameAdapter {
       // private final PlannerHelper client;
       private final Component parent;
@@ -181,6 +227,7 @@ public class MyInternalFrame extends JInternalFrame {
             internalFrames.remove(this);
             break;
          case JOptionPane.CANCEL_OPTION:
+            // throw new PropertyVetoException("Cancelled!", null);
             break;
          default:
             break;
@@ -223,5 +270,14 @@ public class MyInternalFrame extends JInternalFrame {
          }
       };
       worker.execute();
+   }
+
+   public static void closeAll() {
+      DesktopManager desktopManager = null;
+      for (MyInternalFrame internalFrame : internalFrames) {
+         if (desktopManager == null)
+            desktopManager = internalFrame.getDesktopPane().getDesktopManager();
+         desktopManager.closeFrame(internalFrame);
+      }
    }
 }

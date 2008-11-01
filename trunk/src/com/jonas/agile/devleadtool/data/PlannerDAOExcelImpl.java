@@ -23,8 +23,6 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
-import com.jonas.agile.devleadtool.component.table.model.TableModelBuilder;
 import com.jonas.agile.devleadtool.component.table.model.TableModelDTO;
 import com.jonas.common.logging.MyLogger;
 
@@ -32,49 +30,43 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    private static Map<File, HSSFWorkbook> fileOrganiser = new HashMap<File, HSSFWorkbook>();
    private Logger log = MyLogger.getLogger(PlannerDAOExcelImpl.class);
-   private TableModelBuilder modelBuilder;
    private File xlsFile;
    private List<DaoListener> listeners = new ArrayList<DaoListener>();
 
-   public PlannerDAOExcelImpl(TableModelBuilder modelBuilder) {
+   public PlannerDAOExcelImpl() {
       super();
-      this.modelBuilder = modelBuilder;
    }
 
    public File getXlsFile() {
       return xlsFile;
    }
 
+
+   @Override
    public BoardTableModel loadBoardModel() throws IOException {
       notifyListeners(DaoListenerEvent.LoadingModelStarted, "Loading Board Started");
       TableModelDTO dto = loadModel(xlsFile, "board");
       return new BoardTableModel(dto.getContents(), dto.getHeader());
    }
 
+   @Override
    public JiraTableModel loadJiraModel() throws IOException {
       notifyListeners(DaoListenerEvent.LoadingModelStarted, "Loading Jira Started");
       TableModelDTO dto = loadModel(xlsFile, "jira");
       return new JiraTableModel(dto.getContents(), dto.getHeader());
    }
 
-   public PlanTableModel loadPlanModel() throws IOException {
-      notifyListeners(DaoListenerEvent.LoadingModelStarted, "Loading Plan Started");
-      TableModelDTO dto = loadModel(xlsFile, "plan");
-      return modelBuilder.buildPlanTableModel(dto);
-   }
-
+   @Override
    public void saveBoardModel(MyTableModel model) throws IOException {
       saveModel(xlsFile, model, "board");
    }
 
+   @Override
    public void saveJiraModel(MyTableModel model) throws IOException {
       saveModel(xlsFile, model, "jira");
    }
 
-   public void savePlanModel(MyTableModel model) throws IOException {
-      saveModel(xlsFile, model, "plan");
-   }
-
+   @Override
    public void setXlsFile(File xlsFile) {
       this.xlsFile = xlsFile;
    }
@@ -229,11 +221,13 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       listeners.remove(daoListener);
    }
 
+   @Override
    public void notifyLoadingFinished() {
       log.debug("notifyLoadingFinished");
       notifyListeners(DaoListenerEvent.LoadingFinished, "Loading Finished!");
    }
 
+   @Override
    public void notifyLoadingStarted() {
       log.debug("notifyLoadingStarted");
       notifyListeners(DaoListenerEvent.LoadingStarted, "Loading Started!");

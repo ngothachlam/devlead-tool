@@ -13,16 +13,17 @@ public class SavePlannerDialog extends JFileChooser {
 
    private Logger log = MyLogger.getLogger(SavePlannerDialog.class);
 
-   public SavePlannerDialog(PlannerDAO dao, JFrame parent, MyInternalFrame plannerHelper, boolean isFileChoosable, DaoListener daoListener) {
+   public SavePlannerDialog(PlannerDAO dao, JFrame parent, MyInternalFrame internalFrame, boolean isFileChoosable, DaoListener daoListener) {
       super(new File("."));
-      if (dao == null || plannerHelper == null) {
+      if (dao == null || internalFrame == null) {
          return;
       }
-      File file = plannerHelper.getFile();
+      File file = internalFrame.getFile();
       boolean goAheadAndSave = true;
       if (isFileChoosable || file == null) {
-         if (file != null)
+         if (file != null) {
             setSelectedFile(file);
+         }
          // addChoosableFileFilter(new FileFilter() {
          // public boolean accept(File f) {
          // if (getTypeDescription(f).equalsIgnoreCase("Microsoft Excel Worksheet") || f.isDirectory())
@@ -42,16 +43,16 @@ public class SavePlannerDialog extends JFileChooser {
             goAheadAndSave = false;
          }
       }
-      
+
       if (goAheadAndSave) {
          log.debug("saving!");
-         if (file == null){
+         if (file == null) {
             AlertDialog.alertMessage(parent, "Can't save file choose another one!");
          }
 
-         plannerHelper.setSaveFile(file);
+         internalFrame.setSaveFile(file);
          dao.setXlsFile(file);
-         plannerHelper.saveModels(dao, daoListener);
+         internalFrame.saveModels(dao, daoListener);
       }
    }
 }
