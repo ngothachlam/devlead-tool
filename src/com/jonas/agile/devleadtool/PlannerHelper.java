@@ -1,20 +1,13 @@
 package com.jonas.agile.devleadtool;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JFrame;
-import javax.swing.SwingWorker;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
-import com.jonas.agile.devleadtool.component.CutoverLength;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
-import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.component.listener.DaoListener;
-import com.jonas.agile.devleadtool.data.DaoListenerEvent;
-import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
@@ -54,38 +47,6 @@ public class PlannerHelper {
       return internalFrame;
    }
 
-   public void saveModels(final PlannerDAO dao, final DaoListener daoListener) {
-      final MyInternalFrame activeInternalFrame = this.getActiveInternalFrame();
-      SwingWorker worker = new SwingWorker() {
-         @Override
-         protected Object doInBackground() throws Exception {
-            try {
-               dao.addListener(daoListener);
-               dao.notifySavingStarted();
-
-               dao.saveBoardModel(activeInternalFrame.getBoardModel());
-               dao.saveJiraModel(activeInternalFrame.getJiraModel());
-               
-            } catch (IOException e) {
-               AlertDialog.alertException(frame, e);
-            } finally {
-               dao.notifySavingFinished();
-               dao.removeListener(daoListener);
-            }
-            return null;
-         }
-      };
-      worker.execute();
-   }
-
-   public File getFile() {
-      String excelFile = this.getActiveInternalFrame().getExcelFile();
-      return excelFile != null ? new File(excelFile) : null;
-   }
-
-   public void setFile(File file) {
-      this.getActiveInternalFrame().setExcelFile(file.getAbsolutePath(), CutoverLength.DEFAULT);
-   }
 
    public JiraIssue getJiraIssueFromName(String jira, JiraListener jiraListener) throws JiraException, HttpException, IOException, JDOMException {
       if (jiraListener != null)

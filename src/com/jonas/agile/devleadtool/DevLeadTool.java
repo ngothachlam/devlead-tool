@@ -1,7 +1,6 @@
 package com.jonas.agile.devleadtool;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,6 +35,8 @@ public class DevLeadTool {
 
    private PlannerHelper plannerHelper;
 
+   private JMenu windowMenu;
+
    DevLeadTool() {
    }
    
@@ -48,8 +49,10 @@ public class DevLeadTool {
    }
    private JMenuBar createMenuBar(final JFrame frame, MyDesktopPane desktop) {
       JMenu fileMenuFile = createFileMenu("File", getFileMenuItemArray(frame, desktop));
+      windowMenu = new JMenu("Windows");
       JMenuBar menuBar = new JMenuBar();
       menuBar.add(fileMenuFile);
+      menuBar.add(windowMenu);
       return menuBar;
    }
 
@@ -131,6 +134,11 @@ public class DevLeadTool {
 
       public void actionPerformed(ActionEvent e) {
          new OpenPlannerDialog(desktop, plannerHelper, plannerDAO);
+         JMenuItem windowMenuItem = new JMenuItem("New Menu Item");
+         windowMenu.add(windowMenuItem); 
+         
+//         JMenuItem windowMenuItem = new JMenuItem(menuTitle);
+//         windowMenuItem.addActionListener(actionListener);
       }
    }
 
@@ -178,7 +186,7 @@ public class DevLeadTool {
       }
 
       public void actionPerformed(ActionEvent e) {
-         new SavePlannerDialog(plannerDAO, frame, plannerHelper, chooseFile, new DaoListener() {
+         new SavePlannerDialog(plannerDAO, frame, plannerHelper.getActiveInternalFrame(), chooseFile, new DaoListener() {
             ProgressDialog dialog;
             @Override
             public void notify(DaoListenerEvent event, String message) {

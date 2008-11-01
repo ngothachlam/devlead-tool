@@ -239,10 +239,6 @@ public class InternalTabPanel extends MyComponentPanel {
       });
    }
 
-   protected void closing() {
-      // client.disconnect();
-   }
-
    public BoardPanel getBoardPanel() {
       return boardPanel;
    }
