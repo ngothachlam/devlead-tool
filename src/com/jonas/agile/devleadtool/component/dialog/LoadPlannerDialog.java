@@ -12,17 +12,23 @@ import com.jonas.agile.devleadtool.component.listener.DaoListener;
 import com.jonas.agile.devleadtool.component.panel.InternalTabPanel;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
-import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
-import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
+import com.jonas.agile.devleadtool.data.PlannerDAO;
 
 public class LoadPlannerDialog extends JFileChooser {
 
-   private final PlannerDAOExcelImpl dao;
+   private final PlannerDAO dao;
+   private final JFrame frame;
+   private final DaoListener daoListener;
+   private final PlannerHelper plannerHelper;
+   private final MyDesktopPane desktop;
 
-   public LoadPlannerDialog(final MyDesktopPane desktop, PlannerDAOExcelImpl plannerDAO, JFrame frame, final PlannerHelper plannerHelper, final DaoListener daoListener) {
+   public LoadPlannerDialog(MyDesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper plannerHelper, DaoListener daoListener) {
       super(new File("."));
+      this.desktop = desktop;
       this.dao = plannerDAO;
+      this.frame = frame;
+      this.plannerHelper = plannerHelper;
+      this.daoListener = daoListener;
 
       addChoosableFileFilter(new FileFilter() {
          public boolean accept(File f) {
@@ -35,71 +41,55 @@ public class LoadPlannerDialog extends JFileChooser {
             return "XLS files";
          }
       });
+   }
+
+   public void start() {
       int result = showOpenDialog(frame);
 
       if (result == JFileChooser.APPROVE_OPTION) {
          final File xlsFile = getSelectedFile();
 
          dao.setXlsFile(xlsFile);
-         
-         SwingWorker swingWorker = new SwingWorker() {
+
+         SwingWorker<ModelDTO, Object> swingWorker = new SwingWorker<ModelDTO, Object>() {
             @Override
-            protected Object doInBackground() throws Exception {
+            protected ModelDTO doInBackground() throws Exception {
+               ModelDTO modelDto = null;
                try {
                   dao.addListener(daoListener);
                   dao.notifyLoadingStarted();
 
                   BoardTableModel boardModel = dao.loadBoardModel();
                   JiraTableModel jiraModel = dao.loadJiraModel();
-                  PlanTableModel planModel = dao.loadPlanModel();
 
-                  ModelDto modelDto = new ModelDto(boardModel, jiraModel, planModel);
-                  
-                  return modelDto;
+                  modelDto = new ModelDTO(boardModel, jiraModel);
+
                } finally {
                   dao.notifyLoadingFinished();
                   dao.removeListener(daoListener);
                }
+               return modelDto;
             }
 
             @Override
             protected void done() {
-               ModelDto modelDto;
                try {
-                  modelDto = (ModelDto) get();
-                  InternalTabPanel internalFrameTabPanel = new InternalTabPanel(plannerHelper, modelDto.getBoardModel(), modelDto.getPlanModel(), modelDto.getJiraModel());
-                  MyInternalFrame internalFrame = new MyInternalFrame(plannerHelper, plannerHelper.getTitle(), internalFrameTabPanel, dao);
-                  desktop.addInternalFrame(internalFrame);
-                  internalFrame.setSaveFile(xlsFile);
+                  ModelDTO dto = get();
+                  if (dto != null) {
+                     InternalTabPanel internalFrameTabPanel = new InternalTabPanel(plannerHelper, dto.getBoardModel(), dto.getJiraModel());
+                     MyInternalFrame internalFrame = new MyInternalFrame(plannerHelper, plannerHelper.getTitle(), internalFrameTabPanel, dao);
+                     desktop.addInternalFrame(internalFrame);
+                     internalFrame.setSaveFile(xlsFile);
+                  }
+                  super.done();
                } catch (Throwable e) {
                   AlertDialog.alertException(plannerHelper.getParentFrame(), e);
                   e.printStackTrace();
                }
-               super.done();
             }
          };
 
          swingWorker.execute();
-      }
-   }
-   
-   private class ModelDto{
-      private final BoardTableModel boardModel;
-      private final JiraTableModel jiraModel;
-      private final MyTableModel planModel;
-      public ModelDto(BoardTableModel boardModel, JiraTableModel jiraModel, MyTableModel planModel) {
-         this.boardModel = boardModel;
-         this.jiraModel = jiraModel;
-         this.planModel = planModel;
-      }
-      public BoardTableModel getBoardModel() {
-         return boardModel;
-      }
-      public JiraTableModel getJiraModel() {
-         return jiraModel;
-      }
-      public MyTableModel getPlanModel() {
-         return planModel;
       }
    }
 }
