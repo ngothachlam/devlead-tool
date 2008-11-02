@@ -1,4 +1,4 @@
-package com.jonas.testing.tree.fromScratch.xml;
+package com.jonas.testing.tree.fromScratch.tree.xml;
 
 public enum JiraElement {
    fixVersion, key, Sprint, item, status, resolution, description;

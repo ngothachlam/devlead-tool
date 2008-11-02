@@ -18,7 +18,7 @@ import com.jonas.testing.tree.fromScratch.tree.nodes.FixVersionNode;
 import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
 import com.jonas.testing.tree.fromScratch.tree.nodes.SprintNode;
 import com.jonas.testing.tree.fromScratch.tree.renderer.DnDTreeCellRenderer;
-import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
+import com.jonas.testing.tree.fromScratch.tree.xml.JiraDTO;
 
 public class DnDTree extends JTree {
 
