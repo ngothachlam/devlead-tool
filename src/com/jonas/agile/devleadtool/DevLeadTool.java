@@ -71,7 +71,7 @@ public class DevLeadTool {
       JMenuItem planner = createMenuItem("New Planner", new NewPlannerActionListener(newPlannerDialog));
       DaoListener daoListener = new DaoListenerImpl(frame);
       LoadPlannerDialog loadPlannerDialog = new LoadPlannerDialog(desktop, plannerDAO, frame, helper, daoListener, savePlannerDialog, saveKeyListener);
-      JMenuItem open = createMenuItem("Open Planner", new LoadPlannerActionListener( loadPlannerDialog));
+      JMenuItem open = createMenuItem("Open Planner", new LoadPlannerActionListener(loadPlannerDialog));
       JMenuItem save = createMenuItem("Save Planner", new SavePlannerActionListener(false, savePlannerDialog));
       JMenuItem saveAs = createMenuItem("Save Planner As", new SavePlannerActionListener(true, savePlannerDialog));
       return new JMenuItem[] { planner, open, save, saveAs };
@@ -148,6 +148,7 @@ public class DevLeadTool {
       plannerDAO.addListener(new DaoListener() {
          ProgressDialog dialog;
 
+         // FIXME - not very well done!
          @Override
          public void notify(DaoListenerEvent event, String message) {
             switch (event) {
@@ -162,15 +163,14 @@ public class DevLeadTool {
                dialog.setNote(message);
                dialog.setCompleteWithDelay(300);
                break;
-            case LoadingFinished:
-               dialog.setNote(message);
-               dialog.setCompleteWithDelay(300);
+            case LoadingStarted:
+               dialog = new ProgressDialog(frame, "Loading Planner", "Loading Planner", 0);
+               dialog.setIndeterminate(false);
                break;
             case LoadingModelStarted:
                dialog.setNote(message);
-               dialog.setCompleteWithDelay(300);
                break;
-            case LoadingStarted:
+            case LoadingFinished:
                dialog.setNote(message);
                dialog.setCompleteWithDelay(300);
                break;

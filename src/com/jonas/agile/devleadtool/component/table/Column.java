@@ -12,9 +12,9 @@ public enum Column {
          ToLoadColumn.Yes), Planned_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Resolved_Sprint(String.class, "",
          IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Closed_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
 
-   Dev_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), QA_Estimate(String.class, "", IsEditableColumn.Yes,
-         IsJiraColumn.No, ToLoadColumn.Yes), Dev_Actual(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Note(String.class, "",
-         IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
+   Dev_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), QA_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No,
+         ToLoadColumn.Yes), Dev_Actual(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Note(String.class, "", IsEditableColumn.Yes,
+         IsJiraColumn.No, ToLoadColumn.Yes), Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
 
    // Board Sync columns:
    B_BoardStatus(BoardStatusValue.class, BoardStatusValue.NA, IsEditableColumn.No, IsJiraColumn.No, ToLoadColumn.Yes) {
@@ -34,6 +34,8 @@ public enum Column {
    // Integer
    prio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes) {
       public Object parse(String cellContents) {
+         if (cellContents == null || cellContents.trim().length() == 0)
+            return -1;
          return Integer.parseInt(cellContents);
       }
    },
