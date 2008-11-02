@@ -1,6 +1,7 @@
 package com.jonas.testing.tree.fromScratch.tree;
 
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DropMode;
 import javax.swing.JTree;
@@ -83,6 +84,17 @@ public class DnDTree extends JTree {
    
    public void setDnDEnabled(boolean setDndEnabled){
       setDragEnabled(setDndEnabled);
+   }
+
+   public List<TreePath> getJiraPath(String jira) {
+      List<TreePath> result = new ArrayList<TreePath>();
+      List<JiraNode> nodes = getJiraNodes();
+      for (JiraNode jiraNode : nodes) {
+         if (jiraNode.getUserObject().equals(jira)){
+            result.add(new TreePath(jiraNode.getPath()));
+         }
+      }
+      return result;
    }
 }
 

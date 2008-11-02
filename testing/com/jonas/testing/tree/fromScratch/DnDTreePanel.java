@@ -6,7 +6,6 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
@@ -14,7 +13,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
@@ -26,8 +24,6 @@ import com.jonas.testing.tree.fromScratch.tree.DnDTree;
 import com.jonas.testing.tree.fromScratch.tree.model.DnDTreeModel;
 import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
 import com.jonas.testing.tree.fromScratch.xml.DnDTreeBuilder;
-import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
-import com.jonas.testing.tree.fromScratch.xml.JiraParseListener;
 import com.jonas.testing.tree.fromScratch.xml.JiraSaxHandler;
 import com.jonas.testing.tree.fromScratch.xml.XmlParser;
 import com.jonas.testing.tree.fromScratch.xml.XmlParserImpl;
@@ -221,6 +217,10 @@ public class DnDTreePanel extends JPanel {
 
    public void setEditable(boolean selected) {
       tree.setDnDEnabled(selected);
+   }
+
+   public DnDTree getTree() {
+      return tree;
    }
 }
 
