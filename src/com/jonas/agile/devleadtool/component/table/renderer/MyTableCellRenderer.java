@@ -18,7 +18,7 @@ public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
          cell.setBackground(table.getBackground());
       }
       if (!table.isCellEditable(row, column) && !hasFocus) {
-         // FIXME make this red for jiratable as well!
+         // USABILITY make this red for jiratable as well!
          // if (model.isRed(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column))) {
          // if (isSelected) {
          // if (hasFocus) {
