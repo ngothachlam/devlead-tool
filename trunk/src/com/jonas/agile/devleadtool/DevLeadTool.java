@@ -67,10 +67,11 @@ public class DevLeadTool {
 
    private JMenuItem[] getFileMenuItemArray(final JFrame frame, final MyDesktopPane desktop) {
       plannerDAO = new PlannerDAOExcelImpl();
-      JMenuItem planner = createMenuItem("New Planner", new NewPlannerActionListener(desktop));
-      JMenuItem open = createMenuItem("Open Planner", new LoadPlannerActionListener(desktop, frame));
-      JMenuItem save = createMenuItem("Save Planner", new SavePlannerActionListener(frame, false));
-      JMenuItem saveAs = createMenuItem("Save Planner As", new SavePlannerActionListener(frame, true));
+      SavePlannerDialog savePlannerDialog = new SavePlannerDialog(plannerDAO, frame);
+      JMenuItem planner = createMenuItem("New Planner", new NewPlannerActionListener(desktop, savePlannerDialog));
+      JMenuItem open = createMenuItem("Open Planner", new LoadPlannerActionListener(desktop, frame, savePlannerDialog));
+      JMenuItem save = createMenuItem("Save Planner", new SavePlannerActionListener(frame, false, savePlannerDialog));
+      JMenuItem saveAs = createMenuItem("Save Planner As", new SavePlannerActionListener(frame, true, savePlannerDialog));
       return new JMenuItem[] { planner, open, save, saveAs };
    }
 
@@ -183,13 +184,15 @@ public class DevLeadTool {
 
    private final class NewPlannerActionListener implements ActionListener {
       private final MyDesktopPane desktop;
+      private SavePlannerDialog savePlannerDialog;
 
-      private NewPlannerActionListener(MyDesktopPane desktop) {
+      private NewPlannerActionListener(MyDesktopPane desktop, SavePlannerDialog savePlannerDialog) {
          this.desktop = desktop;
+         this.savePlannerDialog = savePlannerDialog;
       }
 
       public void actionPerformed(ActionEvent e) {
-         new NewPlannerDialog(desktop, plannerHelper, plannerDAO);
+         new NewPlannerDialog(desktop, plannerHelper, plannerDAO, savePlannerDialog);
       }
    }
 
@@ -199,7 +202,7 @@ public class DevLeadTool {
       private DaoListener daoListener;
       private LoadPlannerDialog loadPlanner;
 
-      private LoadPlannerActionListener(MyDesktopPane desktop, final JFrame frame) {
+      private LoadPlannerActionListener(MyDesktopPane desktop, final JFrame frame, SavePlannerDialog savePlannerDialog) {
          daoListener = new DaoListener() {
             ProgressDialog dialog;
 
@@ -224,7 +227,7 @@ public class DevLeadTool {
          };
          this.desktop = desktop;
          this.frame = frame;
-         loadPlanner = new LoadPlannerDialog(desktop, plannerDAO, frame, plannerHelper, daoListener);
+         loadPlanner = new LoadPlannerDialog(desktop, plannerDAO, frame, plannerHelper, daoListener, savePlannerDialog);
       }
 
       public void actionPerformed(ActionEvent e) {
@@ -235,14 +238,16 @@ public class DevLeadTool {
    private final class SavePlannerActionListener implements ActionListener {
       private boolean chooseFile;
       private final JFrame frame;
+      private SavePlannerDialog savePlannerDialog;
 
-      private SavePlannerActionListener(JFrame frame, boolean chooseFile) {
+      private SavePlannerActionListener(JFrame frame, boolean chooseFile, SavePlannerDialog savePlannerDialog) {
          this.frame = frame;
          this.chooseFile = chooseFile;
+         this.savePlannerDialog = savePlannerDialog;
       }
 
       public void actionPerformed(ActionEvent e) {
-         new SavePlannerDialog(plannerDAO, frame, plannerHelper.getActiveInternalFrame(), chooseFile);
+         savePlannerDialog.save(plannerHelper.getActiveInternalFrame(), chooseFile);
       }
    }
 

@@ -11,12 +11,10 @@ import com.jonas.common.logging.MyLogger;
 public class SavePlannerDialog extends JFileChooser {
 
    private Logger log = MyLogger.getLogger(SavePlannerDialog.class);
+   private final PlannerDAO dao;
+   private final JFrame parent;
 
-   public SavePlannerDialog(PlannerDAO dao, JFrame parent, MyInternalFrame internalFrame, boolean isFileChoosable) {
-      super(new File("."));
-      if (dao == null || internalFrame == null) {
-         return;
-      }
+   public void save(MyInternalFrame internalFrame, boolean isFileChoosable){
       File file = internalFrame.getFile();
       boolean goAheadAndSave = true;
       if (isFileChoosable || file == null) {
@@ -34,7 +32,7 @@ public class SavePlannerDialog extends JFileChooser {
          // return "XLS files";
          // }
          // });
-
+         
          int result = showSaveDialog(parent);
          if (result == JFileChooser.APPROVE_OPTION) {
             file = getSelectedFile();
@@ -42,16 +40,22 @@ public class SavePlannerDialog extends JFileChooser {
             goAheadAndSave = false;
          }
       }
-
+      
       if (goAheadAndSave) {
          log.debug("saving!");
          if (file == null) {
             AlertDialog.alertMessage(parent, "Can't save file choose another one!");
          }
-
+         
          internalFrame.setSaveFile(file);
          dao.setXlsFile(file);
          internalFrame.saveModels(dao);
       }
+   }
+   
+   public SavePlannerDialog(PlannerDAO dao, JFrame parent) {
+      super(new File("."));
+      this.dao = dao;
+      this.parent = parent;
    }
 }
