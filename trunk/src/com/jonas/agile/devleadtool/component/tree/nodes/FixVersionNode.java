@@ -20,4 +20,9 @@ public class FixVersionNode extends DefaultMutableTreeNode {
    public String toString() {
       return super.toString();
    }
+
+   public boolean isReleased() {
+      //FIXME this should be set to be released. 
+      return false;
+   }
 }

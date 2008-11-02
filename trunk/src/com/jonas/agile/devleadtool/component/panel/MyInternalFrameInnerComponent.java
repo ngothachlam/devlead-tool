@@ -42,7 +42,7 @@ import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
-import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
+import com.jonas.agile.devleadtool.component.tree.xml.XmlParserLargeMock;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
 
@@ -75,8 +75,8 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
          JiraSaxHandler saxHandler = new JiraSaxHandler();
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree));
 
-         XmlParser parser = new XmlParserImpl(saxHandler);
-//          XmlParser parser = new XmlParserLargeMock(saxHandler);
+//         XmlParser parser = new XmlParserImpl(saxHandler);
+          XmlParser parser = new XmlParserLargeMock(saxHandler);
          // XmlParser parser = new XmlParserAtlassain(saxHandler);
 
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
