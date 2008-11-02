@@ -6,7 +6,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 
 final class DnDTransferable implements Transferable {
    private final JTree tree;
@@ -20,7 +19,7 @@ final class DnDTransferable implements Transferable {
    @Override
    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
       DefaultMutableTreeNode lastPathComponent = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
-      return new TransferableDTO((DefaultTreeModel) tree.getModel(), lastPathComponent);
+      return new TransferableDTO(lastPathComponent);
    }
 
    @Override

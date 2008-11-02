@@ -37,8 +37,6 @@ public class DnDTreeTransferHandler extends TransferHandler {
 
    @Override
    final protected Transferable createTransferable(JComponent c) {
-      log.debug("createTransferable: JComponent:" + c);
-
       if (c instanceof JTree) {
          final JTree tree = (JTree) c;
          TreePath path = tree.getSelectionPath();
@@ -58,10 +56,15 @@ public class DnDTreeTransferHandler extends TransferHandler {
          if (action == MOVE) {
             if (source instanceof JTree) {
                final JTree tree = (JTree) source;
-               TransferableDTO dto;
-               dto = (TransferableDTO) transferable.getTransferData(dataFlavor);
-               DefaultTreeModel treeModel = dto.getModel();
-               treeModel.removeNodeFromParent(dto.getNewNode());
+               Object transferDto = transferable.getTransferData(dataFlavor);
+               if (transferDto instanceof TransferableDTO) {
+                  TransferableDTO dto = (TransferableDTO) transferDto;
+                  DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
+                  treeModel.removeNodeFromParent(dto.getNewNode());
+               } else {
+                  log
+                        .warn("The transfer object is not an instance of TransferableDTO but the source is a JTree object. We therefore don't know what to do on the exportDone");
+               }
             }
          }
       } catch (UnsupportedFlavorException e) {
@@ -73,7 +76,6 @@ public class DnDTreeTransferHandler extends TransferHandler {
 
    @Override
    final public int getSourceActions(JComponent c) {
-      log.debug("getSourceActions: JComponent:" + c);
       return MOVE;
    }
 
@@ -143,7 +145,7 @@ public class DnDTreeTransferHandler extends TransferHandler {
          Transferable transferable = support.getTransferable();
          TransferableDTO transferableDTO;
          transferableDTO = (TransferableDTO) transferable.getTransferData(dataFlavor);
-         DefaultTreeModel model = transferableDTO.getModel();
+         DefaultTreeModel model = ((DnDTree) support.getComponent()).getModel();
          int childIndex = dropLocation.getChildIndex();
          if (childIndex == -1) {
             childIndex = model.getChildCount(path.getLastPathComponent());
@@ -156,22 +158,9 @@ public class DnDTreeTransferHandler extends TransferHandler {
                log.debug("Parent is : " + parentNode + " and the new Element is: " + newNode + " and the childindex is : " + childIndex);
                model.insertNodeInto(newNode, parentNode, childIndex);
             } else if (path.getLastPathComponent() instanceof SprintNode) {
-//               SprintNode sprintNode = (SprintNode) path.getLastPathComponent();
-//               JiraDTO jiraDTO = new JiraDTO(newNode.getKey(), newNode.getId(), newNode.getDescription(), newNode.getFixVersions(), (String) sprintNode.getUserObject(), newNode.getStatus(), newNode.getResolution(), true);
-//               tree.getModel().addJira(jiraDTO);
                SprintNode sprintNode = (SprintNode) path.getLastPathComponent();
-               JiraDTO jiraDTO = new JiraDTO();
-               jiraDTO.setKey(newNode.getKey());
-               jiraDTO.setResolution(newNode.getResolution());
-               jiraDTO.setSprint((String) sprintNode.getUserObject());
-               jiraDTO.setStatus(newNode.getStatus());
-               jiraDTO.setSummary(newNode.getDescription());
-               jiraDTO.setId(newNode.getId());
-               jiraDTO.setToSync(true);
-               List<String> fixVersions = newNode.getFixVersions();
-               for (String fixVersion : fixVersions) {
-                  jiraDTO.addFixVersion(fixVersion);
-               }
+               JiraDTO jiraDTO = new JiraDTO(newNode.getKey(), newNode.getId(), newNode.getDescription(), newNode.getFixVersions(), (String) sprintNode
+                     .getUserObject(), newNode.getStatus(), newNode.getResolution(), true);
                tree.getModel().addJira(jiraDTO);
 
             }
