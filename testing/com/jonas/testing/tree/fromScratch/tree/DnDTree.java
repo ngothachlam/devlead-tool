@@ -67,7 +67,7 @@ public class DnDTree extends JTree {
       setTransferHandler(new DnDTreeTransferHandler(this));
 
       setEditable(false);
-      getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+      getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
    }
 
    @Override

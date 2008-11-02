@@ -207,26 +207,25 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
          SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-               highlightInJiraPanel(e);
+               highlightInOtherPanels(e);
             }
          });
       }
 
-      private void highlightInJiraPanel(ListSelectionEvent e) {
+      private void highlightInOtherPanels(ListSelectionEvent e) {
          if (e.getValueIsAdjusting()) {
             return;
          }
          jiraTable.clearSelection();
+         sprintTree.clearSelection();
          if (!lsm.isSelectionEmpty()) {
             int minIndex = lsm.getMinSelectionIndex();
             int maxIndex = lsm.getMaxSelectionIndex();
-            // int oldJiraRow = jiraTable.getRowCount();
             for (int i = minIndex; i <= maxIndex; i++) {
                if (lsm.isSelectedIndex(i)) {
                   String jira = (String) boardTable.getValueAt(Column.Jira, i);
                   selectInJiraTable(jira);
                   selectInSprintTree(jira);
-                  // log.debug("Row " + i + " is selected. It is jira " + jira + " should select " + jiraRow + " in jira!");
                }
             }
          }
@@ -234,9 +233,12 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
 
       private void selectInSprintTree(String jira) {
          List<TreePath> jiraPathList = sprintTree.getJiraPath(jira);
-         sprintTree.setSelectionPaths(jiraPathList.toArray(new TreePath[jiraPathList.size()]));
-         if (jiraPathList.size() > 0) {
-            sprintTree.scrollPathToVisible(jiraPathList.get(0));
+         TreePath[] jiraTreePath = jiraPathList.toArray(new TreePath[jiraPathList.size()]);
+         sprintTree.addSelectionPaths(jiraTreePath);
+         if (jiraTreePath.length > 0) {
+            for (TreePath treePath : jiraTreePath) {
+               sprintTree.scrollPathToVisible(treePath);
+            }
          }
       }
 
@@ -244,10 +246,7 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
          int jiraRow = jiraTable.getRowWithJira(jira);
          if (jiraRow != -1) {
             jiraTable.addRowSelectionInterval(jiraRow, jiraRow);
-            // if (jiraRow < oldJiraRow) {
             jiraTable.scrollRectToVisible(jiraTable.getCellRect(jiraRow, 0, true));
-            // oldJiraRow = jiraRow;
-            // }
          }
       }
    }
