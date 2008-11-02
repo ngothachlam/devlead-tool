@@ -13,6 +13,7 @@ import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.common.ColorUtil;
 import com.jonas.common.SwingUtil;
 
 public class CheckBoxTableCellRenderer extends JPanel implements TableCellRenderer {
@@ -54,7 +55,15 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 
       if (model != null) {
          if (model.isRed(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column))) {
-            checkbox.setBackground(new Color(200, 0, 0));
+            if (isSelected) {
+               if (hasFocus) {
+                  checkbox.setBackground(ColorUtil.darkenColor(new Color(200, 0, 0), +25));
+               } else {
+                  checkbox.setBackground(ColorUtil.darkenColor(new Color(200, 0, 0), -55));
+               }
+            } else {
+               checkbox.setBackground(new Color(200, 0, 0));
+            }
          }
       }
 
