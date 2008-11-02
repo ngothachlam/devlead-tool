@@ -4,7 +4,7 @@ import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 import junit.framework.TestCase;
 import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
-import com.jonas.testing.tree.fromScratch.xml.JiraDTO;
+import com.jonas.testing.tree.fromScratch.tree.xml.JiraDTO;
 
 public class DnDTreeModelTest extends TestCase {
 

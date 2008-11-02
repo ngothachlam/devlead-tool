@@ -1,4 +1,4 @@
-package com.jonas.testing.tree.fromScratch.xml;
+package com.jonas.testing.tree.fromScratch.tree.xml;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
