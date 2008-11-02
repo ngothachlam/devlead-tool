@@ -45,7 +45,7 @@ public class MyInternalFrame extends JInternalFrame {
    private String originalTitleWithDuplicateNumber;
 
 
-   public MyInternalFrame(final PlannerHelper client, String title, InternalTabPanel internalFrameTabPanel, PlannerDAO dao) {
+   public MyInternalFrame(final PlannerHelper client, String title, InternalTabPanel internalFrameTabPanel, PlannerDAO dao, SavePlannerDialog savePlannerDialog) {
       this(title, client);
       this.dao = dao;
       this.internalFrameTabPanel = internalFrameTabPanel;
@@ -54,8 +54,12 @@ public class MyInternalFrame extends JInternalFrame {
       setFocusable(true);
       client.setActiveInternalFrame(this);
 
-      addKeyListener(new SaveKeyListener(dao, client.getParentFrame(), client));
-      addVetoableChangeListener(new VetoListener(this, client.getParentFrame()));
+      SaveKeyListener saveKeyListener = new SaveKeyListener(dao, client.getParentFrame(), client, savePlannerDialog);
+      VetoListener vetoListener = new VetoListener(this, client.getParentFrame(), savePlannerDialog);
+      
+      addKeyListener(saveKeyListener);
+      addVetoableChangeListener(vetoListener);
+      
       PlannerListeners.notifyListenersThatFrameWasCreated(this);
    }
 
@@ -168,11 +172,13 @@ public class MyInternalFrame extends JInternalFrame {
 
       private MyInternalFrame internalFrame;
       private Component parent;
+      private SavePlannerDialog savePlannerDialog;
 
-      public VetoListener(MyInternalFrame internalFrame, Component parent) {
+      public VetoListener(MyInternalFrame internalFrame, Component parent, SavePlannerDialog savePlannerDialog) {
          super();
          this.internalFrame = internalFrame;
          this.parent = parent;
+         this.savePlannerDialog = savePlannerDialog;
       }
 
       @Override
@@ -201,7 +207,7 @@ public class MyInternalFrame extends JInternalFrame {
 
       private void saveWithoutConfirmation(MyInternalFrame frameClosing) {
          if (dao != null && client != null) {
-            new SavePlannerDialog(dao, client.getParentFrame(), frameClosing, false);
+            savePlannerDialog.save(frameClosing, false);
          }
       }
    }

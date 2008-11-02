@@ -15,12 +15,14 @@ public class SaveKeyListener implements KeyListener {
    private Component frame;
    private PlannerHelper helper;
    private boolean pressed = false;
+   private SavePlannerDialog savePlannerDialog;
 
-   public SaveKeyListener(PlannerDAO dao, Component frame, PlannerHelper helper) {
+   public SaveKeyListener(PlannerDAO dao, Component frame, PlannerHelper helper, SavePlannerDialog savePlannerDialog) {
       super();
       this.dao = dao;
       this.frame = frame;
       this.helper = helper;
+      this.savePlannerDialog = savePlannerDialog;
    }
 
    @Override
@@ -31,7 +33,7 @@ public class SaveKeyListener implements KeyListener {
          if (e.getKeyCode() == e.VK_S) {
             pressed = true;
             MyInternalFrame.log.debug("***");
-            new SavePlannerDialog(dao, helper.getParentFrame(), helper.getActiveInternalFrame(), false);
+            savePlannerDialog.save(helper.getActiveInternalFrame(), false);
          }
       }
    }

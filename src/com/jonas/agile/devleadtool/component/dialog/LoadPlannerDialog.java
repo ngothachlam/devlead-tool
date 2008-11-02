@@ -19,16 +19,18 @@ public class LoadPlannerDialog extends JFileChooser {
    private final PlannerDAO dao;
    private final JFrame frame;
    private final DaoListener daoListener;
-   private final PlannerHelper plannerHelper;
+   private final PlannerHelper helper;
    private final MyDesktopPane desktop;
+   private SavePlannerDialog savePlannerDialog;
 
-   public LoadPlannerDialog(MyDesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper plannerHelper, DaoListener daoListener) {
+   public LoadPlannerDialog(MyDesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper helper, DaoListener daoListener, SavePlannerDialog savePlannerDialog) {
       super(new File("."));
       this.desktop = desktop;
       this.dao = plannerDAO;
       this.frame = frame;
-      this.plannerHelper = plannerHelper;
+      this.helper = helper;
       this.daoListener = daoListener;
+      this.savePlannerDialog = savePlannerDialog;
 
       addChoosableFileFilter(new FileFilter() {
          public boolean accept(File f) {
@@ -65,14 +67,14 @@ public class LoadPlannerDialog extends JFileChooser {
                try {
                   ModelDTO dto = get();
                   if (dto != null) {
-                     InternalTabPanel internalFrameTabPanel = new InternalTabPanel(plannerHelper, dto.getBoardModel(), dto.getJiraModel());
-                     MyInternalFrame internalFrame = new MyInternalFrame(plannerHelper, plannerHelper.getTitle(), internalFrameTabPanel, dao);
+                     InternalTabPanel internalFrameTabPanel = new InternalTabPanel(helper, dto.getBoardModel(), dto.getJiraModel());
+                     MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog);
                      desktop.addInternalFrame(internalFrame);
                      internalFrame.setSaveFile(xlsFile);
                   }
                   super.done();
                } catch (Throwable e) {
-                  AlertDialog.alertException(plannerHelper.getParentFrame(), e);
+                  AlertDialog.alertException(helper.getParentFrame(), e);
                   e.printStackTrace();
                }
             }
