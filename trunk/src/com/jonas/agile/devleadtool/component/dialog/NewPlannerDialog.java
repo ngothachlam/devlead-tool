@@ -37,8 +37,7 @@ public class NewPlannerDialog {
             try {
                ModelDTO dto = get();
                InternalTabPanel internalFrameTabPanel = new InternalTabPanel(helper, dto.getBoardModel(), dto.getJiraModel());
-               MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog, saveKeyListener);
-               desktopPane.addInternalFrame(internalFrame);
+               MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog, saveKeyListener, desktopPane);
                internalFrame.setVisible(true);
             } catch (Throwable e) {
                AlertDialog.alertException(helper.getParentFrame(), e);

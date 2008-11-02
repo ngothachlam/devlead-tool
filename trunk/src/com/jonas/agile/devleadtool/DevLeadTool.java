@@ -33,11 +33,8 @@ import com.jonas.common.logging.MyLogger;
 public class DevLeadTool {
 
    private Logger log = MyLogger.getLogger(DevLeadTool.class);
-
    private PlannerDAOExcelImpl plannerDAO;
-
    private PlannerHelper helper;
-
    private JMenu windowMenu;
 
    DevLeadTool() {
@@ -107,16 +104,13 @@ public class DevLeadTool {
    }
 
    private JFrame setLookAndFeel() {
-      JFrame frame = new JFrame("Jonas' Dev Lead Tool");
-      // Use the Java look and feel.
+      JFrame frame = new JFrame("Jonas' Sprint Manager");
       try {
          String laf = UIManager.getCrossPlatformLookAndFeelClassName();
          laf = UIManager.getSystemLookAndFeelClassName();
          UIManager.setLookAndFeel(laf);
       } catch (Exception e) {
       }
-
-      // Make sure we have nice window decorations.
       JFrame.setDefaultLookAndFeelDecorated(true);
       JDialog.setDefaultLookAndFeelDecorated(true);
       return frame;
@@ -228,7 +222,6 @@ public class DevLeadTool {
    }
 
    private final class LoadPlannerActionListener implements ActionListener {
-      private DaoListener daoListener;
       private LoadPlannerDialog loadPlannerDialog;
 
       private LoadPlannerActionListener(LoadPlannerDialog loadPlannerDialog) {
