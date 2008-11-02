@@ -17,13 +17,12 @@ import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
-import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.DnDTreePanel;
+import com.jonas.agile.devleadtool.component.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
@@ -38,17 +37,14 @@ import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.component.tree.model.DnDTree;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.testing.tree.fromScratch.DnDTreePanel;
-import com.jonas.testing.tree.fromScratch.JiraParseListenerImpl;
-import com.jonas.testing.tree.fromScratch.tree.DnDTree;
 import com.jonas.testing.tree.fromScratch.tree.model.DnDTreeModel;
-import com.jonas.testing.tree.fromScratch.xml.DnDTreeBuilder;
-import com.jonas.testing.tree.fromScratch.xml.JiraSaxHandler;
-import com.jonas.testing.tree.fromScratch.xml.XmlParser;
-import com.jonas.testing.tree.fromScratch.xml.XmlParserImpl;
-import com.jonas.testing.tree.fromScratch.xml.XmlParserLargeMock;
+import com.jonas.testing.tree.fromScratch.tree.xml.DnDTreeBuilder;
+import com.jonas.testing.tree.fromScratch.tree.xml.JiraSaxHandler;
+import com.jonas.testing.tree.fromScratch.tree.xml.XmlParser;
+import com.jonas.testing.tree.fromScratch.tree.xml.XmlParserImpl;
 
 public class MyInternalFrameInnerComponent extends MyComponentPanel {
 
