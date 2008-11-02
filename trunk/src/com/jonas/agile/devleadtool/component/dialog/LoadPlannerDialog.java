@@ -8,6 +8,7 @@ import javax.swing.filechooser.FileFilter;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
+import com.jonas.agile.devleadtool.component.SaveKeyListener;
 import com.jonas.agile.devleadtool.component.listener.DaoListener;
 import com.jonas.agile.devleadtool.component.panel.InternalTabPanel;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -22,8 +23,9 @@ public class LoadPlannerDialog extends JFileChooser {
    private final PlannerHelper helper;
    private final MyDesktopPane desktop;
    private SavePlannerDialog savePlannerDialog;
+   private SaveKeyListener saveKeyListener;
 
-   public LoadPlannerDialog(MyDesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper helper, DaoListener daoListener, SavePlannerDialog savePlannerDialog) {
+   public LoadPlannerDialog(MyDesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper helper, DaoListener daoListener, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener) {
       super(new File("."));
       this.desktop = desktop;
       this.dao = plannerDAO;
@@ -31,6 +33,8 @@ public class LoadPlannerDialog extends JFileChooser {
       this.helper = helper;
       this.daoListener = daoListener;
       this.savePlannerDialog = savePlannerDialog;
+      this.saveKeyListener = saveKeyListener;
+
 
       addChoosableFileFilter(new FileFilter() {
          public boolean accept(File f) {
@@ -45,7 +49,7 @@ public class LoadPlannerDialog extends JFileChooser {
       });
    }
 
-   public void start() {
+   public void load() {
       int result = showOpenDialog(frame);
 
       if (result == JFileChooser.APPROVE_OPTION) {
@@ -68,8 +72,11 @@ public class LoadPlannerDialog extends JFileChooser {
                   ModelDTO dto = get();
                   if (dto != null) {
                      InternalTabPanel internalFrameTabPanel = new InternalTabPanel(helper, dto.getBoardModel(), dto.getJiraModel());
-                     MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog);
+                     
+                     MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog, saveKeyListener);
+
                      desktop.addInternalFrame(internalFrame);
+                     
                      internalFrame.setSaveFile(xlsFile);
                   }
                   super.done();

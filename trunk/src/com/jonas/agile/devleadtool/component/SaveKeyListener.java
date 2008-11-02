@@ -3,24 +3,18 @@
  */
 package com.jonas.agile.devleadtool.component;
 
-import java.awt.Component;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
-import com.jonas.agile.devleadtool.data.PlannerDAO;
 
-public class SaveKeyListener implements KeyListener {
-   private final PlannerDAO dao;
-   private Component frame;
+public class SaveKeyListener extends KeyAdapter {
    private PlannerHelper helper;
    private boolean pressed = false;
    private SavePlannerDialog savePlannerDialog;
 
-   public SaveKeyListener(PlannerDAO dao, Component frame, PlannerHelper helper, SavePlannerDialog savePlannerDialog) {
+   public SaveKeyListener(PlannerHelper helper, SavePlannerDialog savePlannerDialog) {
       super();
-      this.dao = dao;
-      this.frame = frame;
       this.helper = helper;
       this.savePlannerDialog = savePlannerDialog;
    }
@@ -45,9 +39,5 @@ public class SaveKeyListener implements KeyListener {
          // log.debug("Release!");
          pressed = false;
       }
-   }
-
-   @Override
-   public void keyTyped(KeyEvent e) {
    }
 }

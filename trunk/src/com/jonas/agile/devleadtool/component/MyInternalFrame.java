@@ -35,7 +35,7 @@ public class MyInternalFrame extends JInternalFrame {
 
    static Logger log = MyLogger.getLogger(MyInternalFrame.class);
 
-   private PlannerHelper client;
+   private PlannerHelper helper;
 
    private PlannerDAO dao;
    private File excelFile;
@@ -45,7 +45,7 @@ public class MyInternalFrame extends JInternalFrame {
    private String originalTitleWithDuplicateNumber;
 
 
-   public MyInternalFrame(final PlannerHelper client, String title, InternalTabPanel internalFrameTabPanel, PlannerDAO dao, SavePlannerDialog savePlannerDialog) {
+   public MyInternalFrame(final PlannerHelper client, String title, InternalTabPanel internalFrameTabPanel, PlannerDAO dao, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener) {
       this(title, client);
       this.dao = dao;
       this.internalFrameTabPanel = internalFrameTabPanel;
@@ -54,18 +54,16 @@ public class MyInternalFrame extends JInternalFrame {
       setFocusable(true);
       client.setActiveInternalFrame(this);
 
-      SaveKeyListener saveKeyListener = new SaveKeyListener(dao, client.getParentFrame(), client, savePlannerDialog);
       VetoListener vetoListener = new VetoListener(this, client.getParentFrame(), savePlannerDialog);
       
-      addKeyListener(saveKeyListener);
       addVetoableChangeListener(vetoListener);
-      
       PlannerListeners.notifyListenersThatFrameWasCreated(this);
+      addKeyListener(saveKeyListener);
    }
 
-   MyInternalFrame(String title, PlannerHelper client) {
+   MyInternalFrame(String title, PlannerHelper helper) {
       super("", true, true, true, true);
-      this.client = client;
+      this.helper = helper;
       internalFrames.add(this);
       this.originalTitle = title;
       originalTitleWithDuplicateNumber = createTitle(title);
@@ -206,7 +204,7 @@ public class MyInternalFrame extends JInternalFrame {
       }
 
       private void saveWithoutConfirmation(MyInternalFrame frameClosing) {
-         if (dao != null && client != null) {
+         if (dao != null && helper != null) {
             savePlannerDialog.save(frameClosing, false);
          }
       }
@@ -228,7 +226,7 @@ public class MyInternalFrame extends JInternalFrame {
                dao.saveBoardModel(getBoardModel());
                dao.saveJiraModel(getJiraModel());
             } catch (IOException e) {
-               AlertDialog.alertException(client.getParentFrame(), e);
+               AlertDialog.alertException(helper.getParentFrame(), e);
             } 
             return null;
          }
