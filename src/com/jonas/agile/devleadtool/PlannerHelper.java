@@ -17,57 +17,6 @@ import com.jonas.jira.access.listener.JiraListener;
 
 public class PlannerHelper {
 
-   private String title;
-
-   Pattern jiraPattern = Pattern.compile("^[A-Z]+\\-\\d+$", Pattern.CASE_INSENSITIVE);
-   Matcher match = jiraPattern.matcher("");
-
-   private MyInternalFrame internalFrame;
-
-   private Logger log = MyLogger.getLogger(PlannerHelper.class);
-
-   private JFrame frame;
-
-   private PlannerCommunicator plannerCommunicator = new PlannerCommunicator(this);
-
-   public PlannerHelper(JFrame frame, String title) {
-      this.frame = frame;
-      this.title = title;
-   }
-
-   public String getTitle() {
-      return title;
-   }
-
-   public void setActiveInternalFrame(MyInternalFrame internalFrame) {
-      this.internalFrame = internalFrame;
-   }
-
-   public MyInternalFrame getActiveInternalFrame() {
-      return internalFrame;
-   }
-
-
-   public JiraIssue getJiraIssueFromName(String jira, JiraListener jiraListener) throws JiraException, HttpException, IOException, JDOMException {
-      if (jiraListener != null)
-         JiraListener.addJiraListener(jiraListener);
-      try {
-         String projectKey = getProjectKey(jira);
-         JiraProject project = JiraProject.getProjectByKey(projectKey);
-         log.debug("Project: " + project + " for jira \"" + jira + "\" with key " + projectKey);
-         if (project == null) {
-            throw new JiraException("Jira \"" + jira + "\" doesn't have a project related to it!");
-         }
-         JiraClient client = project.getJiraClient();
-         client.login();
-         log.debug("Client: " + client.getJiraUrl());
-         return client.getJira(jira);
-      } finally {
-         if (jiraListener != null)
-            JiraListener.removeJiraListener(jiraListener);
-      }
-   }
-
    public static String getProjectKey(String jira) {
       if (jira.contains("-")) {
          return jira.substring(0, jira.indexOf("-"));
@@ -75,9 +24,47 @@ public class PlannerHelper {
       return jira;
    }
 
-   public JFrame getParentFrame() {
-      return frame;
+   private JFrame frame;
+   private MyInternalFrame internalFrame;
+
+   Pattern jiraPattern = Pattern.compile("^[A-Z]+\\-\\d+$", Pattern.CASE_INSENSITIVE);
+
+   private Logger log = MyLogger.getLogger(PlannerHelper.class);
+
+   Matcher match = jiraPattern.matcher("");
+
+   private PlannerCommunicator plannerCommunicator = new PlannerCommunicator(this);
+
+   private String title;
+
+   public PlannerHelper(JFrame frame, String title) {
+      this.frame = frame;
+      this.title = title;
    }
+
+   public MyInternalFrame getActiveInternalFrame() {
+      return internalFrame;
+   }
+
+   public JiraIssue getJiraIssueFromName(String jira, JiraListener jiraListener) throws JiraException, HttpException, IOException, JDOMException {
+      if (jiraListener != null)
+         JiraListener.addJiraListener(jiraListener);
+      try {
+         String projectKey = getProjectKey(jira);
+         JiraProject project = JiraProject.getProjectByKey(projectKey);
+         if (project == null) {
+            throw new JiraException("Jira \"" + jira + "\" doesn't have a project related to it!");
+         }
+         JiraClient client = project.getJiraClient();
+         //FIXME how often to login!
+         client.login();
+         return client.getJira(jira);
+      } finally {
+         if (jiraListener != null)
+            JiraListener.removeJiraListener(jiraListener);
+      }
+   }
+
 
    public String getJiraUrl(String jira) throws NotJiraException {
       log.debug("getting Jira URL for " + jira);
@@ -89,6 +76,18 @@ public class PlannerHelper {
       return project.getJiraClient().getJiraUrl();
    }
 
+   public JFrame getParentFrame() {
+      return frame;
+   }
+
+   public PlannerCommunicator getPlannerCommunicator() {
+      return plannerCommunicator;
+   }
+
+   public String getTitle() {
+      return title;
+   }
+
    protected boolean isJiraString(String jiraNo) {
       match.reset(jiraNo);
       if (match.matches()) {
@@ -97,8 +96,8 @@ public class PlannerHelper {
       return false;
    }
 
-   public PlannerCommunicator getPlannerCommunicator() {
-      return plannerCommunicator;
+   public void setActiveInternalFrame(MyInternalFrame internalFrame) {
+      this.internalFrame = internalFrame;
    }
 
 }

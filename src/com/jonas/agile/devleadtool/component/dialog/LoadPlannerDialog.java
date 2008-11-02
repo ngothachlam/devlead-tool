@@ -72,11 +72,7 @@ public class LoadPlannerDialog extends JFileChooser {
                   ModelDTO dto = get();
                   if (dto != null) {
                      InternalTabPanel internalFrameTabPanel = new InternalTabPanel(helper, dto.getBoardModel(), dto.getJiraModel());
-                     
-                     MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog, saveKeyListener);
-
-                     desktop.addInternalFrame(internalFrame);
-                     
+                     MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog, saveKeyListener, desktop);
                      internalFrame.setSaveFile(xlsFile);
                   }
                   super.done();
