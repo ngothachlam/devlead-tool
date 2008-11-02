@@ -12,6 +12,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
@@ -185,40 +186,48 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
    private final class MyBoardSelectionListener implements ListSelectionListener {
       private final MyTable boardTable;
       private final MyTable jiraTable;
+      private ListSelectionModel lsm;
 
       public MyBoardSelectionListener(MyTable boardTable, MyTable jiraTable) {
          this.boardTable = boardTable;
          this.jiraTable = jiraTable;
+         lsm = boardTable.getSelectionModel();
       }
 
       @Override
-      public void valueChanged(ListSelectionEvent e) {
-         ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+      public void valueChanged(final ListSelectionEvent e) {
+         SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+               highlightInJiraPanel(e);
+            }
+         });
+      }
+
+      private void highlightInJiraPanel(ListSelectionEvent e) {
          if (e.getValueIsAdjusting()) {
             return;
          }
          jiraTable.clearSelection();
-         if (lsm.isSelectionEmpty()) {
-         } else {
+         if (!lsm.isSelectionEmpty()) {
             int minIndex = lsm.getMinSelectionIndex();
             int maxIndex = lsm.getMaxSelectionIndex();
-//            int oldJiraRow = jiraTable.getRowCount();
+            // int oldJiraRow = jiraTable.getRowCount();
             for (int i = minIndex; i <= maxIndex; i++) {
                if (lsm.isSelectedIndex(i)) {
                   String jira = (String) boardTable.getValueAt(Column.Jira, i);
                   int jiraRow = jiraTable.getRowWithJira(jira);
                   if (jiraRow != -1) {
                      jiraTable.addRowSelectionInterval(jiraRow, jiraRow);
-//                     if (jiraRow < oldJiraRow) {
-                        jiraTable.scrollRectToVisible(jiraTable.getCellRect(jiraRow, 0, true));
+                     // if (jiraRow < oldJiraRow) {
+                     jiraTable.scrollRectToVisible(jiraTable.getCellRect(jiraRow, 0, true));
                      // oldJiraRow = jiraRow;
                      // }
                   }
-                  log.debug("Row " + i + " is selected. It is jira " + jira + " should select " + jiraRow + " in jira!");
+                  // log.debug("Row " + i + " is selected. It is jira " + jira + " should select " + jiraRow + " in jira!");
                }
             }
          }
-
       }
    }
 
@@ -294,6 +303,7 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
    private final class MyTableModelListener implements TableModelListener {
       @Override
       public void tableChanged(TableModelEvent e) {
+         // FIXME is this needed?
          MyStatusBar.getInstance().setMessage("Board Data Changed!", true);
       }
    }
