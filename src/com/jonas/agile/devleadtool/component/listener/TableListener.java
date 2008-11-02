@@ -1,6 +1,6 @@
 package com.jonas.agile.devleadtool.component.listener;
 
-public interface MyTableListener {
+public interface TableListener {
 
    public void jiraRemoved(String jira);
 
