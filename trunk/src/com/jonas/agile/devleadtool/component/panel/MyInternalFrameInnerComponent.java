@@ -19,6 +19,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
@@ -47,6 +48,7 @@ import com.jonas.testing.tree.fromScratch.xml.DnDTreeBuilder;
 import com.jonas.testing.tree.fromScratch.xml.JiraSaxHandler;
 import com.jonas.testing.tree.fromScratch.xml.XmlParser;
 import com.jonas.testing.tree.fromScratch.xml.XmlParserImpl;
+import com.jonas.testing.tree.fromScratch.xml.XmlParserLargeMock;
 
 public class MyInternalFrameInnerComponent extends MyComponentPanel {
 
@@ -78,7 +80,7 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree));
 
          XmlParser parser = new XmlParserImpl(saxHandler);
-         // XmlParser parser = new XmlParserLargeMock(saxHandler);
+//          XmlParser parser = new XmlParserLargeMock(saxHandler);
          // XmlParser parser = new XmlParserAtlassain(saxHandler);
 
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
@@ -150,25 +152,25 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
 
       // FIXME I want to put this into the MyTable instead!! - need to register the other tables with each other!
       MyTable boardTable = boardPanel.getTable();
-      popups.add(new MyTablePopupMenu(boardTable, helper, boardTable, jiraPanel.getTable()));
-      popups.add(new MyTablePopupMenu(jiraPanel.getTable(), helper, boardTable, jiraPanel.getTable()));
+      MyTable jiraTable = jiraPanel.getTable();
+      popups.add(new MyTablePopupMenu(boardTable, helper, boardTable, jiraTable));
+      popups.add(new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable));
 
       JPanel panel = new JPanel();
       editableCheckBox = new JCheckBox("Editable?", true);
       panel.add(editableCheckBox);
-      panel.add(getAddPanel(helper, boardTable, jiraPanel.getTable()));
+      panel.add(getAddPanel(helper, boardTable, jiraTable));
       addNorth(panel);
 
       addCenter(combineIntoSplitPane(boardPanel, jiraPanel, sprintPanel));
    }
 
-   private void setBoardDataListeners(final BoardTableModel boardModel) {
-      boardModel.addTableModelListener(new BoardAndJiraSyncListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
-      boardModel.addTableModelListener(new MyTableModelListener());
-      boardPanel.getTable().getSelectionModel().addListSelectionListener(new MyBoardSelectionListener(boardPanel.getTable(), jiraPanel.getTable()));
-      boardPanel.getTable().addListener(new MyTableListener());
-      boardPanel.getTable().addJiraEditorListener(new MyJiraCellEditorListener());
-      boardPanel.getTable().addCheckBoxEditorListener(new MyCheckboxCellEditorListener());
+   private void setBoardDataListeners(final BoardTableModel boardModel, MyTable boardTable, MyTable jiraTable, DnDTree sprintTree) {
+      boardModel.addTableModelListener(new BoardAndJiraSyncListener(boardTable, jiraTable, boardModel));
+      boardTable.getSelectionModel().addListSelectionListener(new MyBoardSelectionListener(boardTable, jiraTable, sprintTree));
+      boardTable.addListener(new MyTableListener());
+      boardTable.addJiraEditorListener(new MyJiraCellEditorListener());
+      boardTable.addCheckBoxEditorListener(new MyCheckboxCellEditorListener());
    }
 
    private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel) {
@@ -177,7 +179,11 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
    }
 
    public void wireUpListeners(BoardTableModel boardModel, JiraTableModel jiraModel) {
-      setBoardDataListeners(boardModel);
+      MyTable boardTable = boardPanel.getTable();
+      MyTable jiraTable = jiraPanel.getTable();
+      DnDTree sprintTree = sprintPanel.getTree();
+      
+      setBoardDataListeners(boardModel, boardTable, jiraTable, sprintTree);
       setJiraDataListener(jiraModel, boardModel);
 
       editableCheckBox.addActionListener(new EditableListener());
@@ -187,10 +193,12 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
       private final MyTable boardTable;
       private final MyTable jiraTable;
       private ListSelectionModel lsm;
+      private final DnDTree sprintTree;
 
-      public MyBoardSelectionListener(MyTable boardTable, MyTable jiraTable) {
+      public MyBoardSelectionListener(MyTable boardTable, MyTable jiraTable, DnDTree sprintTree) {
          this.boardTable = boardTable;
          this.jiraTable = jiraTable;
+         this.sprintTree = sprintTree;
          lsm = boardTable.getSelectionModel();
       }
 
@@ -216,17 +224,30 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
             for (int i = minIndex; i <= maxIndex; i++) {
                if (lsm.isSelectedIndex(i)) {
                   String jira = (String) boardTable.getValueAt(Column.Jira, i);
-                  int jiraRow = jiraTable.getRowWithJira(jira);
-                  if (jiraRow != -1) {
-                     jiraTable.addRowSelectionInterval(jiraRow, jiraRow);
-                     // if (jiraRow < oldJiraRow) {
-                     jiraTable.scrollRectToVisible(jiraTable.getCellRect(jiraRow, 0, true));
-                     // oldJiraRow = jiraRow;
-                     // }
-                  }
+                  selectInJiraTable(jira);
+                  selectInSprintTree(jira);
                   // log.debug("Row " + i + " is selected. It is jira " + jira + " should select " + jiraRow + " in jira!");
                }
             }
+         }
+      }
+
+      private void selectInSprintTree(String jira) {
+         List<TreePath> jiraPathList = sprintTree.getJiraPath(jira);
+         sprintTree.setSelectionPaths(jiraPathList.toArray(new TreePath[jiraPathList.size()]));
+         if (jiraPathList.size() > 0) {
+            sprintTree.scrollPathToVisible(jiraPathList.get(0));
+         }
+      }
+
+      private void selectInJiraTable(String jira) {
+         int jiraRow = jiraTable.getRowWithJira(jira);
+         if (jiraRow != -1) {
+            jiraTable.addRowSelectionInterval(jiraRow, jiraRow);
+            // if (jiraRow < oldJiraRow) {
+            jiraTable.scrollRectToVisible(jiraTable.getCellRect(jiraRow, 0, true));
+            // oldJiraRow = jiraRow;
+            // }
          }
       }
    }
@@ -297,14 +318,6 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
          MyTable jiraTable = jiraPanel.getTable();
          jiraTable.setValueAt(BoardStatusValue.NA, jira, Column.B_BoardStatus);
          jiraTable.setValueAt("", jira, Column.B_Release);
-      }
-   }
-
-   private final class MyTableModelListener implements TableModelListener {
-      @Override
-      public void tableChanged(TableModelEvent e) {
-         // FIXME is this needed?
-         MyStatusBar.getInstance().setMessage("Board Data Changed!", true);
       }
    }
 }
