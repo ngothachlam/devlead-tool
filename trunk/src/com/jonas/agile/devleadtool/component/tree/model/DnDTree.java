@@ -11,14 +11,13 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.table.renderer.DnDTreeCellRenderer;
+import com.jonas.agile.devleadtool.component.tree.dnd.DnDTreeTransferHandler;
+import com.jonas.agile.devleadtool.component.tree.nodes.FixVersionNode;
+import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
+import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
+import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.testing.tree.fromScratch.tree.dnd.DnDTreeTransferHandler;
-import com.jonas.testing.tree.fromScratch.tree.model.DnDTreeModel;
-import com.jonas.testing.tree.fromScratch.tree.nodes.FixVersionNode;
-import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
-import com.jonas.testing.tree.fromScratch.tree.nodes.SprintNode;
-import com.jonas.testing.tree.fromScratch.tree.renderer.DnDTreeCellRenderer;
-import com.jonas.testing.tree.fromScratch.tree.xml.JiraDTO;
 
 public class DnDTree extends JTree {
 

@@ -1,4 +1,4 @@
-package com.jonas.testing.tree.fromScratch.tree.dnd;
+package com.jonas.agile.devleadtool.component.tree.dnd;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;

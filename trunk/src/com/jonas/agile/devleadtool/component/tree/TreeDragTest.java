@@ -1,4 +1,4 @@
-package com.jonas.testing.tree;
+package com.jonas.agile.devleadtool.component.tree;
 
    /*
    Java Swing, 2nd Edition

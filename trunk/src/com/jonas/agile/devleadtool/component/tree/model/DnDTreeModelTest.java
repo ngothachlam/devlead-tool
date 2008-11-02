@@ -1,10 +1,10 @@
-package com.jonas.testing.tree.fromScratch.tree.model;
+package com.jonas.agile.devleadtool.component.tree.model;
 
 import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 import junit.framework.TestCase;
-import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
-import com.jonas.testing.tree.fromScratch.tree.xml.JiraDTO;
+import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
+import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
 
 public class DnDTreeModelTest extends TestCase {
 

@@ -1,7 +1,4 @@
-/**
- * 
- */
-package com.jonas.testing.tree.fromScratch.tree.dnd;
+package com.jonas.agile.devleadtool.component.tree.dnd;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;

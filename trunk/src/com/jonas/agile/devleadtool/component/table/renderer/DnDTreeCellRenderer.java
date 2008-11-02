@@ -1,4 +1,4 @@
-package com.jonas.testing.tree.fromScratch.tree.renderer;
+package com.jonas.agile.devleadtool.component.table.renderer;
 
 import java.awt.Component;
 import java.awt.Font;
@@ -7,8 +7,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
 
 public class DnDTreeCellRenderer extends DefaultTreeCellRenderer {
 
