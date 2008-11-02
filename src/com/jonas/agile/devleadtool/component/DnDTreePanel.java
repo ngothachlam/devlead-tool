@@ -18,15 +18,15 @@ import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTree;
+import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
+import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
+import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
+import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
+import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
+import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.ClientConstants;
 import com.jonas.jira.access.JiraSprintUpdater;
-import com.jonas.testing.tree.fromScratch.tree.model.DnDTreeModel;
-import com.jonas.testing.tree.fromScratch.tree.nodes.JiraNode;
-import com.jonas.testing.tree.fromScratch.tree.xml.DnDTreeBuilder;
-import com.jonas.testing.tree.fromScratch.tree.xml.JiraSaxHandler;
-import com.jonas.testing.tree.fromScratch.tree.xml.XmlParser;
-import com.jonas.testing.tree.fromScratch.tree.xml.XmlParserImpl;
 
 public class DnDTreePanel extends JPanel {
 

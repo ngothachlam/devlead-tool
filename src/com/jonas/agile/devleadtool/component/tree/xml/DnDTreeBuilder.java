@@ -1,4 +1,4 @@
-package com.jonas.testing.tree.fromScratch.tree.xml;
+package com.jonas.agile.devleadtool.component.tree.xml;
 
 import java.io.IOException;
 import javax.swing.SwingWorker;
