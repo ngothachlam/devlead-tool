@@ -21,7 +21,7 @@ import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.PlannerListeners;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
 import com.jonas.agile.devleadtool.component.panel.BoardPanel;
-import com.jonas.agile.devleadtool.component.panel.InternalTabPanel;
+import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerComponent;
 import com.jonas.agile.devleadtool.component.panel.JiraPanel;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -34,6 +34,36 @@ public class MyInternalFrame extends JInternalFrame {
 
    static Logger log = MyLogger.getLogger(MyInternalFrame.class);
 
+   private PlannerDAO dao;
+
+   private File excelFile;
+   private PlannerHelper helper;
+   private MyInternalFrameInnerComponent internalFrameTabPanel;
+   private String originalTitle;
+   private String originalTitleWithDuplicateNumber;
+   public MyInternalFrame(final PlannerHelper client, String title, MyInternalFrameInnerComponent internalFrameTabPanel, PlannerDAO dao, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener, MyDesktopPane desktop) {
+      this(title, client);
+      this.dao = dao;
+      this.internalFrameTabPanel = internalFrameTabPanel;
+      desktop.addInternalFrame(this);
+      
+      setContentPane(internalFrameTabPanel);
+      setFocusable(true);
+      client.setActiveInternalFrame(this);
+
+      wireListeners(client, savePlannerDialog, saveKeyListener);
+      
+      PlannerListeners.notifyListenersThatFrameWasCreated(this);
+   }
+   MyInternalFrame(String title, PlannerHelper helper) {
+      super("", true, true, true, true);
+      this.helper = helper;
+      internalFrames.add(this);
+      this.originalTitle = title;
+      originalTitleWithDuplicateNumber = createTitle(title);
+      log.debug("created and setting Title: " + originalTitleWithDuplicateNumber);
+      this.setTitle(originalTitleWithDuplicateNumber);
+   }
    public static void closeAll() throws PropertyVetoException {
       if (!SwingUtilities.isEventDispatchThread()) {
          closeInEventThread();
@@ -55,6 +85,7 @@ public class MyInternalFrame extends JInternalFrame {
       // desktopManager.closeFrame(internalFrame);
       // }
    }
+
    private static void closeInEventThread() throws PropertyVetoException {
       try {
          SwingRunnable doRun = new SwingRunnable();
@@ -68,66 +99,14 @@ public class MyInternalFrame extends JInternalFrame {
          e.printStackTrace();
       }
    }
-   private PlannerDAO dao;
-   private File excelFile;
-   private PlannerHelper helper;
-   private InternalTabPanel internalFrameTabPanel;
-   private String originalTitle;
-   private String originalTitleWithDuplicateNumber;
-
-   public MyInternalFrame(final PlannerHelper client, String title, InternalTabPanel internalFrameTabPanel, PlannerDAO dao, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener, MyDesktopPane desktop) {
-      this(title, client);
-      this.dao = dao;
-      this.internalFrameTabPanel = internalFrameTabPanel;
-      desktop.addInternalFrame(this);
-      
-      setContentPane(internalFrameTabPanel);
-      setFocusable(true);
-      client.setActiveInternalFrame(this);
-
-      wireListeners(client, savePlannerDialog, saveKeyListener);
-      
-      PlannerListeners.notifyListenersThatFrameWasCreated(this);
-   }
-
-   MyInternalFrame(String title, PlannerHelper helper) {
-      super("", true, true, true, true);
-      this.helper = helper;
-      internalFrames.add(this);
-      this.originalTitle = title;
-      originalTitleWithDuplicateNumber = createTitle(title);
-      log.debug("created and setting Title: " + originalTitleWithDuplicateNumber);
-      this.setTitle(originalTitleWithDuplicateNumber);
-   }
-
-   String createTitle(String title) {
-      int countOfSameTitles = getCountWithSameTitle(title);
-      return title + (countOfSameTitles > 1 ? " (" + (countOfSameTitles - 1) + ")" : "");
-   }
 
    public MyTableModel getBoardModel() {
       return getBoardPanel().getModel();
    }
 
-   private BoardPanel getBoardPanel() {
-      return internalFrameTabPanel.getBoardPanel();
-   }
-
    public MyTable getBoardTable() {
       return getBoardPanel().getTable();
 
-   }
-
-   int getCountWithSameTitle(String title) {
-      int count = 0;
-      for (MyInternalFrame internalFrame : internalFrames) {
-         String checkedTitle = internalFrame.originalTitle;
-         log.debug("The checked internalFrames title is: " + checkedTitle + " and is it the same as the checked title: " + title);
-         if (checkedTitle.equalsIgnoreCase(title)) {
-            count++;
-         }
-      }
-      return count;
    }
 
    public File getExcelFile() {
@@ -144,10 +123,6 @@ public class MyInternalFrame extends JInternalFrame {
 
    public MyTableModel getJiraModel() {
       return getJiraPanel().getJiraModel();
-   }
-
-   private JiraPanel getJiraPanel() {
-      return internalFrameTabPanel.getJiraPanel();
    }
 
    public MyTable getJiraTable() {
@@ -174,11 +149,6 @@ public class MyInternalFrame extends JInternalFrame {
       worker.execute();
    }
 
-   void setExcelFile(File file, CutoverLength cutoverLength) {
-      excelFile = file;
-      setTitleFileName(file.getAbsolutePath(), cutoverLength);
-   }
-
    public void setSaveFile(File file) {
       setExcelFile(file, CutoverLength.DEFAULT);
    }
@@ -187,6 +157,45 @@ public class MyInternalFrame extends JInternalFrame {
    public void setTitle(String title) {
       super.setTitle(title);
       PlannerListeners.notifyListenersThatFrameChangedTitle(this);
+   }
+
+   private BoardPanel getBoardPanel() {
+      return internalFrameTabPanel.getBoardPanel();
+   }
+
+   private JiraPanel getJiraPanel() {
+      return internalFrameTabPanel.getJiraPanel();
+   }
+
+   private void wireListeners(final PlannerHelper client, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener) {
+      MyInternalFrameListener myInternalFrameListener = new MyInternalFrameListener(this, helper);
+      VetoListener vetoListener = new VetoListener(this, client.getParentFrame(), savePlannerDialog);
+      
+      addInternalFrameListener( myInternalFrameListener);
+      addVetoableChangeListener(vetoListener);
+      addKeyListener(saveKeyListener);
+   }
+
+   String createTitle(String title) {
+      int countOfSameTitles = getCountWithSameTitle(title);
+      return title + (countOfSameTitles > 1 ? " (" + (countOfSameTitles - 1) + ")" : "");
+   }
+
+   int getCountWithSameTitle(String title) {
+      int count = 0;
+      for (MyInternalFrame internalFrame : internalFrames) {
+         String checkedTitle = internalFrame.originalTitle;
+         log.debug("The checked internalFrames title is: " + checkedTitle + " and is it the same as the checked title: " + title);
+         if (checkedTitle.equalsIgnoreCase(title)) {
+            count++;
+         }
+      }
+      return count;
+   }
+
+   void setExcelFile(File file, CutoverLength cutoverLength) {
+      excelFile = file;
+      setTitleFileName(file.getAbsolutePath(), cutoverLength);
    }
 
    void setTitleFileName(String fileName, CutoverLength cutoverLength) {
@@ -198,15 +207,6 @@ public class MyInternalFrame extends JInternalFrame {
       }
       sb.append(rightMostFromString);
       this.setTitle(sb.toString());
-   }
-
-   private void wireListeners(final PlannerHelper client, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener) {
-      MyInternalFrameListener myInternalFrameListener = new MyInternalFrameListener(this, helper);
-      VetoListener vetoListener = new VetoListener(this, client.getParentFrame(), savePlannerDialog);
-      
-      addInternalFrameListener( myInternalFrameListener);
-      addVetoableChangeListener(vetoListener);
-      addKeyListener(saveKeyListener);
    }
 
    private final class MyInternalFrameListener extends InternalFrameAdapter {
@@ -255,12 +255,6 @@ public class MyInternalFrame extends JInternalFrame {
          this.savePlannerDialog = savePlannerDialog;
       }
 
-      private void saveWithoutConfirmation(MyInternalFrame frameClosing) {
-         if (dao != null && helper != null) {
-            savePlannerDialog.save(frameClosing, false);
-         }
-      }
-
       @Override
       public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
          if (evt.getPropertyName().equals(IS_CLOSED_PROPERTY)) {
@@ -282,6 +276,12 @@ public class MyInternalFrame extends JInternalFrame {
                   break;
                }
             }
+         }
+      }
+
+      private void saveWithoutConfirmation(MyInternalFrame frameClosing) {
+         if (dao != null && helper != null) {
+            savePlannerDialog.save(frameClosing, false);
          }
       }
    }

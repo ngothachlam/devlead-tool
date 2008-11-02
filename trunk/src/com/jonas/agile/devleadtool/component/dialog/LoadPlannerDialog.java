@@ -10,7 +10,7 @@ import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.SaveKeyListener;
 import com.jonas.agile.devleadtool.component.listener.DaoListener;
-import com.jonas.agile.devleadtool.component.panel.InternalTabPanel;
+import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerComponent;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
@@ -71,7 +71,7 @@ public class LoadPlannerDialog extends JFileChooser {
                try {
                   ModelDTO dto = get();
                   if (dto != null) {
-                     InternalTabPanel internalFrameTabPanel = new InternalTabPanel(helper, dto.getBoardModel(), dto.getJiraModel());
+                     MyInternalFrameInnerComponent internalFrameTabPanel = new MyInternalFrameInnerComponent(helper, dto.getBoardModel(), dto.getJiraModel());
                      MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog, saveKeyListener, desktop);
                      internalFrame.setSaveFile(xlsFile);
                   }

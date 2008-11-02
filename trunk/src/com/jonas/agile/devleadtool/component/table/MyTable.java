@@ -10,6 +10,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +19,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.tree.TreeSelectionModel;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
 import com.jonas.agile.devleadtool.component.table.editor.BoardStatusCellEditor;
@@ -50,6 +52,9 @@ public class MyTable extends JTable {
    MyTable(String title, AbstractTableModel defaultTableModel) {
       super(defaultTableModel);
       this.title = title;
+      getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+      setColumnSelectionAllowed(false);
+      setRowSelectionAllowed(true);
 
       CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
       checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
@@ -192,7 +197,7 @@ public class MyTable extends JTable {
       setValueAt(value, row, column);
    }
 
-   private int getRowWithJira(String jira) {
+   public int getRowWithJira(String jira) {
       int modelRow = model.getRowWithJira(jira);
       if (modelRow < 0) {
          return -1;

@@ -5,7 +5,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.SaveKeyListener;
-import com.jonas.agile.devleadtool.component.panel.InternalTabPanel;
+import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerComponent;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
@@ -36,7 +36,7 @@ public class NewPlannerDialog {
          protected void done() {
             try {
                ModelDTO dto = get();
-               InternalTabPanel internalFrameTabPanel = new InternalTabPanel(helper, dto.getBoardModel(), dto.getJiraModel());
+               MyInternalFrameInnerComponent internalFrameTabPanel = new MyInternalFrameInnerComponent(helper, dto.getBoardModel(), dto.getJiraModel());
                MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog, saveKeyListener, desktopPane);
                internalFrame.setVisible(true);
             } catch (Throwable e) {
