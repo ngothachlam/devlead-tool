@@ -19,7 +19,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.listener.MyTableListener;
+import com.jonas.agile.devleadtool.component.listener.TableListener;
 import com.jonas.agile.devleadtool.component.table.editor.BoardStatusCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
@@ -35,7 +35,7 @@ public class MyTable extends JTable {
    private MyTableModel model;
    private String title;
    private Logger log = MyLogger.getLogger(MyTable.class);
-   private List<MyTableListener> listeners = new ArrayList<MyTableListener>();
+   private List<TableListener> listeners = new ArrayList<TableListener>();
    private JiraCellEditor jiraEditor;
    private CheckBoxTableCellEditor checkBoxEditor;
 
@@ -168,7 +168,7 @@ public class MyTable extends JTable {
    }
 
    private void notifyAllListenersThatJiraWasRemoved(String jira) {
-      for (MyTableListener listener : listeners) {
+      for (TableListener listener : listeners) {
          listener.jiraRemoved(jira);
       }
    }
@@ -244,7 +244,7 @@ public class MyTable extends JTable {
       return model.getValueAt(release, jira);
    }
 
-   public void addListener(MyTableListener myTableListener) {
+   public void addListener(TableListener myTableListener) {
       listeners.add(myTableListener);
    }
 
