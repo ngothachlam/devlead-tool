@@ -22,6 +22,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
+import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.DnDTreePanel;
 import com.jonas.agile.devleadtool.component.JiraParseListenerImpl;
@@ -41,6 +42,7 @@ import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTree;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
+import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
@@ -165,10 +167,14 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
    private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, MyTable jiraTable, DnDTree sprintTree) {
       boardModel.addTableModelListener(new BoardAndJiraSyncListener(boardTable, jiraTable, boardModel));
       boardTable.getSelectionModel().addListSelectionListener(new MyBoardSelectionListener(boardTable, jiraTable, sprintTree));
-      boardTable.addKeyListener(new BoardTableKeyListener(boardTable.getSelectionModel()));
+      boardTable.addKeyListener(new KeyMaskValueAdjusterListener(boardTable.getSelectionModel()));
       boardTable.addListener(new MyTableListener());
       boardTable.addJiraEditorListener(new MyJiraCellEditorListener());
       boardTable.addCheckBoxEditorListener(new MyCheckboxCellEditorListener());
+   }
+
+   private void setSprintDataListener(final DnDTree sprintTree, final MyTable boardTable) {
+      sprintTree.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(boardTable, sprintTree));
    }
 
    private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel) {
@@ -183,14 +189,74 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
 
       setBoardDataListeners(boardModel, boardTable, jiraTable, sprintTree);
       setJiraDataListener(jiraModel, boardModel);
+      setSprintDataListener(sprintTree, boardTable);
 
       editableCheckBox.addActionListener(new EditableListener());
    }
 
-   private final class BoardTableKeyListener extends KeyAdapter {
+   private final class KeyListenerToHighlightSprintSelectionElsewhere extends KeyAdapter {
+      private final MyTable boardTable;
+      private final DnDTree sprintTree;
+      private boolean pressed = false;
+
+      private KeyListenerToHighlightSprintSelectionElsewhere(MyTable boardTable, DnDTree sprintTree) {
+         this.boardTable = boardTable;
+         this.sprintTree = sprintTree;
+      }
+
+      @Override
+      public void keyPressed(KeyEvent e) {
+         if (e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
+            if (e.getKeyCode() == KeyEvent.VK_F) {
+               if (!pressed) {
+                  boardTable.clearSelection();
+                  pressed = true;
+                  TreePath[] jiraTreePaths = sprintTree.getSelectionPaths();
+                  ListSelectionModel selectionModel = boardTable.getSelectionModel();
+                  selectionModel.setValueIsAdjusting(true);
+                  for (int i = 0; i < jiraTreePaths.length; i++) {
+                     TreePath jiraTreePath = jiraTreePaths[i];
+                     Object lastPathComponent = jiraTreePath.getLastPathComponent();
+                     if (lastPathComponent instanceof JiraNode) {
+                        JiraNode jiraNode = (JiraNode) lastPathComponent;
+                        int row = boardTable.getRowWithJira(jiraNode.getKey());
+                        if (row > -1)
+                           boardTable.addRowSelectionInterval(row, row);
+                        else
+                           MyStatusBar.getInstance().setMessage("Jira " + jiraNode.getKey() + " not found on the board", true);
+                     }
+                  }
+                  selectionModel.setValueIsAdjusting(true);
+                  scrollToSelection(boardTable);
+               }
+            }
+         }
+      }
+
+      private void scrollToSelection(final MyTable table) {
+         int[] selectedRows = table.getSelectedRows();
+         if (selectedRows.length > 0)
+            table.scrollRectToVisible(table.getCellRect(selectedRows[0], 0, true));
+         if (selectedRows.length > 1)
+            table.scrollRectToVisible(table.getCellRect(selectedRows[selectedRows.length - 1], 0, true));
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+         if (e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK || e.getKeyCode() == KeyEvent.VK_F) {
+            pressed = false;
+         }
+      }
+
+      @Override
+      public void keyTyped(KeyEvent e) {
+      }
+   }
+
+   private final class KeyMaskValueAdjusterListener extends KeyAdapter {
       private ListSelectionModel selectionModel;
 
-      private BoardTableKeyListener(ListSelectionModel selectionModel) {
+      private KeyMaskValueAdjusterListener(ListSelectionModel selectionModel) {
          this.selectionModel = selectionModel;
       }
 
@@ -243,13 +309,13 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
                if (lsm.isSelectedIndex(i)) {
                   String jira = (String) boardTable.getValueAt(Column.Jira, i);
                   selectInJiraTable(jira);
-                  selectInSprintTree(jira);
+                  selectInSprintTree(sprintTree, jira);
                }
             }
          }
       }
 
-      private void selectInSprintTree(String jira) {
+      private void selectInSprintTree(DnDTree sprintTree, String jira) {
          List<TreePath> jiraPathList = sprintTree.getJiraPath(jira);
          TreePath[] jiraTreePath = jiraPathList.toArray(new TreePath[jiraPathList.size()]);
          sprintTree.addSelectionPaths(jiraTreePath);
