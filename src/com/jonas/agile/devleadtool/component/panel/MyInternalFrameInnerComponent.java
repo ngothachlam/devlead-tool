@@ -312,25 +312,39 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
                   selectInSprintTree(sprintTree, jira);
                }
             }
+            scrollToSelection(jiraTable);
+            scrollToSelection(sprintTree);
          }
+      }
+
+      private void scrollToSelection(final MyTable table) {
+         int[] selectedRows = table.getSelectedRows();
+         if (selectedRows.length > 0)
+            table.scrollRectToVisible(table.getCellRect(selectedRows[0], 0, true));
+         if (selectedRows.length > 1)
+            table.scrollRectToVisible(table.getCellRect(selectedRows[selectedRows.length - 1], 0, true));
+      }
+
+      private void scrollToSelection(DnDTree tree) {
+      //FIXME - merge into one abstract class for scrollToSelection... methods
+      //USABILITY - add an inidcator that there is a selected row (both in tree and table) outside of the scrollpane
+         TreePath[] paths = tree.getSelectionPaths();
+         if (paths != null && paths.length > -1)
+            sprintTree.scrollPathToVisible(paths[0]);
+         if (paths != null && paths.length > 0)
+            sprintTree.scrollPathToVisible(paths[paths.length - 1]);
       }
 
       private void selectInSprintTree(DnDTree sprintTree, String jira) {
          List<TreePath> jiraPathList = sprintTree.getJiraPath(jira);
          TreePath[] jiraTreePath = jiraPathList.toArray(new TreePath[jiraPathList.size()]);
          sprintTree.addSelectionPaths(jiraTreePath);
-         if (jiraTreePath.length > 0) {
-            for (TreePath treePath : jiraTreePath) {
-               sprintTree.scrollPathToVisible(treePath);
-            }
-         }
       }
 
       private void selectInJiraTable(String jira) {
          int jiraRow = jiraTable.getRowWithJira(jira);
          if (jiraRow != -1) {
             jiraTable.addRowSelectionInterval(jiraRow, jiraRow);
-            jiraTable.scrollRectToVisible(jiraTable.getCellRect(jiraRow, 0, true));
          }
       }
    }
