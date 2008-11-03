@@ -17,6 +17,9 @@ public class Main {
       }
    }
 
+   // USABILITY add color coding to the JiraPanel 1) Where Dev/Actuals are incorrect, 2) Where sprint is incorrect 3) Where fix Version is incorrect
+   // USABILITY use ListSelectionModel.html#setValueIsAdjusting(boolean) function not to force selects in other tables until required or a checkbox that forces this.
+   // FIXME checking the setEditable checkbox resets the table column widths - it shouldn't!
    // TODO add a checkbox at the top for finding jiras! When ticked - all selects in tables are propagated to other tables and highlighted
    // TODO add a Window menu that allows you to see all open windows and swap to them
    // TODO add a status bar at the bottom showing the total of 1) selected, 2) table entries and 3) model entries for 4)each table

@@ -239,7 +239,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    final public void setEditable(boolean selected) {
       editable = selected;
       if (getRowCount() > 0) {
-         fireTableStructureChanged();
+         fireTableDataChanged();
       }
       // TODO need to fireUpdate on Table?
    }
