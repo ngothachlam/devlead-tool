@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -42,7 +44,7 @@ import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
-import com.jonas.agile.devleadtool.component.tree.xml.XmlParserLargeMock;
+import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
 
@@ -75,9 +77,8 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
          JiraSaxHandler saxHandler = new JiraSaxHandler();
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree));
 
-//         XmlParser parser = new XmlParserImpl(saxHandler);
-          XmlParser parser = new XmlParserLargeMock(saxHandler);
-         // XmlParser parser = new XmlParserAtlassain(saxHandler);
+         XmlParser parser = new XmlParserImpl(saxHandler);
+         // XmlParser parser = new XmlParserLargeMock(saxHandler);
 
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
 
@@ -161,9 +162,10 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
       addCenter(combineIntoSplitPane(boardPanel, jiraPanel, sprintPanel));
    }
 
-   private void setBoardDataListeners(final BoardTableModel boardModel, MyTable boardTable, MyTable jiraTable, DnDTree sprintTree) {
+   private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, MyTable jiraTable, DnDTree sprintTree) {
       boardModel.addTableModelListener(new BoardAndJiraSyncListener(boardTable, jiraTable, boardModel));
       boardTable.getSelectionModel().addListSelectionListener(new MyBoardSelectionListener(boardTable, jiraTable, sprintTree));
+      boardTable.addKeyListener(new BoardTableKeyListener(boardTable.getSelectionModel()));
       boardTable.addListener(new MyTableListener());
       boardTable.addJiraEditorListener(new MyJiraCellEditorListener());
       boardTable.addCheckBoxEditorListener(new MyCheckboxCellEditorListener());
@@ -178,11 +180,31 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
       MyTable boardTable = boardPanel.getTable();
       MyTable jiraTable = jiraPanel.getTable();
       DnDTree sprintTree = sprintPanel.getTree();
-      
+
       setBoardDataListeners(boardModel, boardTable, jiraTable, sprintTree);
       setJiraDataListener(jiraModel, boardModel);
 
       editableCheckBox.addActionListener(new EditableListener());
+   }
+
+   private final class BoardTableKeyListener extends KeyAdapter {
+      private ListSelectionModel selectionModel;
+
+      private BoardTableKeyListener(ListSelectionModel selectionModel) {
+         this.selectionModel = selectionModel;
+      }
+
+      @Override
+      public void keyPressed(KeyEvent e) {
+         selectionModel.setValueIsAdjusting(true);
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+         if (e.getModifiersEx() == 0) {
+            selectionModel.setValueIsAdjusting(false);
+         }
+      }
    }
 
    private final class MyBoardSelectionListener implements ListSelectionListener {
