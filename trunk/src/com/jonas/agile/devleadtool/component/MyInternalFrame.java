@@ -21,8 +21,8 @@ import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.PlannerListeners;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
 import com.jonas.agile.devleadtool.component.panel.BoardPanel;
-import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerComponent;
 import com.jonas.agile.devleadtool.component.panel.JiraPanel;
+import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerComponent;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
@@ -73,17 +73,11 @@ public class MyInternalFrame extends JInternalFrame {
    }
 
    private static void closeAllAgain() throws PropertyVetoException {
-      // DesktopManager desktopManager = null;
       for (int i = internalFrames.size() - 1; i >= 0; i--) {
          MyInternalFrame internalFrame = internalFrames.get(i);
          internalFrame.setClosed(true);
          internalFrames.remove(internalFrame);
       }
-      // for (MyInternalFrame internalFrame : internalFrames) {
-      // if (desktopManager == null)
-      // desktopManager = internalFrame.getDesktopPane().getDesktopManager();
-      // desktopManager.closeFrame(internalFrame);
-      // }
    }
 
    private static void closeInEventThread() throws PropertyVetoException {
