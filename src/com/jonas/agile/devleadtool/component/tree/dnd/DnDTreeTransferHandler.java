@@ -13,6 +13,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTree;
+import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.nodes.FixVersionNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
@@ -21,9 +22,9 @@ import com.jonas.common.logging.MyLogger;
 
 public class DnDTreeTransferHandler extends TransferHandler {
 
-   private Logger log = MyLogger.getLogger(DnDTreeTransferHandler.class);
-
    private DataFlavor dataFlavor;
+
+   private Logger log = MyLogger.getLogger(DnDTreeTransferHandler.class);
    private DnDTree tree;
 
    public DnDTreeTransferHandler(DnDTree tree) {
@@ -33,50 +34,6 @@ public class DnDTreeTransferHandler extends TransferHandler {
       } catch (ClassNotFoundException e) {
          e.printStackTrace();
       }
-   }
-
-   @Override
-   final protected Transferable createTransferable(JComponent c) {
-      if (c instanceof JTree) {
-         final JTree tree = (JTree) c;
-         TreePath path = tree.getSelectionPath();
-         if ((path == null) || (path.getPathCount() <= 1)) {
-            return null;
-         }
-         return new DnDTransferable(tree, dataFlavor);
-      }
-
-      return null;
-   }
-
-   @Override
-   final protected void exportDone(JComponent source, Transferable transferable, int action) {
-      log.debug("exportDone: Source:" + source + " Data: " + transferable + " Action: " + action);
-      try {
-         if (action == MOVE) {
-            if (source instanceof JTree) {
-               final JTree tree = (JTree) source;
-               Object transferDto = transferable.getTransferData(dataFlavor);
-               if (transferDto instanceof TransferableDTO) {
-                  TransferableDTO dto = (TransferableDTO) transferDto;
-                  DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
-                  treeModel.removeNodeFromParent(dto.getNewNode());
-               } else {
-                  log
-                        .warn("The transfer object is not an instance of TransferableDTO but the source is a JTree object. We therefore don't know what to do on the exportDone");
-               }
-            }
-         }
-      } catch (UnsupportedFlavorException e) {
-         e.printStackTrace();
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
-   }
-
-   @Override
-   final public int getSourceActions(JComponent c) {
-      return MOVE;
    }
 
    @Override
@@ -97,38 +54,9 @@ public class DnDTreeTransferHandler extends TransferHandler {
       return false;
    }
 
-   private DefaultMutableTreeNode getDraggedNode(TransferSupport supp) throws UnsupportedFlavorException, IOException {
-      Transferable transferable = supp.getTransferable();
-      TransferableDTO dto = (TransferableDTO) transferable.getTransferData(dataFlavor);
-      DefaultMutableTreeNode newNode = dto.getNewNode();
-      return newNode;
-   }
-
-   private DefaultMutableTreeNode getParentNode(TransferSupport supp) {
-      JTree.DropLocation dropLocation = (JTree.DropLocation) supp.getDropLocation();
-      TreePath path = dropLocation.getPath();
-      DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-      return parentNode;
-   }
-
-   private boolean isParentMouseOverOfTypeFixVersionAndDragedNodeIsJiraType(DefaultMutableTreeNode mouseOverParentNode, DefaultMutableTreeNode newNode) {
-      if (mouseOverParentNode instanceof FixVersionNode && newNode instanceof JiraNode) {
-         FixVersionNode parent = (FixVersionNode) mouseOverParentNode;
-         JiraNode child = (JiraNode) newNode;
-         FixVersionNode childsParent = (FixVersionNode) child.getParent();
-         // log.debug("Parent : " + parent.getUserObject() + " Childs parent: " + childsParent.getUserObject());
-         if (parent.equals(childsParent))
-            return true;
-      } else if (mouseOverParentNode instanceof SprintNode && newNode instanceof JiraNode) {
-         JiraNode child = (JiraNode) newNode;
-         if ("Closed".equals(child.getStatus()))
-            return false;
-         SprintNode parent = (SprintNode) mouseOverParentNode;
-         SprintNode childsSprint = (SprintNode) child.getParent().getParent();
-         if (!parent.equals(childsSprint))
-            return true;
-      }
-      return false;
+   @Override
+   final public int getSourceActions(JComponent c) {
+      return MOVE;
    }
 
    @Override
@@ -176,6 +104,83 @@ public class DnDTreeTransferHandler extends TransferHandler {
          e.printStackTrace();
       }
       return false;
+   }
+
+   private DefaultMutableTreeNode getDraggedNode(TransferSupport supp) throws UnsupportedFlavorException, IOException {
+      Transferable transferable = supp.getTransferable();
+      TransferableDTO dto = (TransferableDTO) transferable.getTransferData(dataFlavor);
+      DefaultMutableTreeNode newNode = dto.getNewNode();
+      return newNode;
+   }
+
+   private DefaultMutableTreeNode getParentNode(TransferSupport supp) {
+      JTree.DropLocation dropLocation = (JTree.DropLocation) supp.getDropLocation();
+      TreePath path = dropLocation.getPath();
+      DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+      return parentNode;
+   }
+
+   private boolean isParentMouseOverOfTypeFixVersionAndDragedNodeIsJiraType(DefaultMutableTreeNode mouseOverParentNode, DefaultMutableTreeNode newNode) {
+      if (mouseOverParentNode instanceof FixVersionNode && newNode instanceof JiraNode) {
+         FixVersionNode parent = (FixVersionNode) mouseOverParentNode;
+         JiraNode child = (JiraNode) newNode;
+         FixVersionNode childsParent = (FixVersionNode) child.getParent();
+         // log.debug("Parent : " + parent.getUserObject() + " Childs parent: " + childsParent.getUserObject());
+         if (parent.equals(childsParent))
+            return true;
+      } else if (mouseOverParentNode instanceof SprintNode && newNode instanceof JiraNode) {
+         JiraNode child = (JiraNode) newNode;
+         if ("Closed".equals(child.getStatus()))
+            return false;
+         SprintNode parent = (SprintNode) mouseOverParentNode;
+         SprintNode childsSprint = (SprintNode) child.getParent().getParent();
+         if (!parent.equals(childsSprint))
+            return true;
+      }
+      return false;
+   }
+
+   @Override
+   final protected Transferable createTransferable(JComponent c) {
+      if (c instanceof JTree) {
+         final JTree tree = (JTree) c;
+         TreePath path = tree.getSelectionPath();
+         if ((path == null) || (path.getPathCount() <= 1)) {
+            return null;
+         }
+         return new DnDTransferable(tree, dataFlavor);
+      }
+
+      return null;
+   }
+
+   @Override
+   final protected void exportDone(JComponent source, Transferable transferable, int action) {
+      log.debug("exportDone: Source:" + source + " Data: " + transferable + " Action: " + action);
+      try {
+         if (action == MOVE) {
+            if (source instanceof JTree) {
+               final JTree tree = (JTree) source;
+               Object transferDto = transferable.getTransferData(dataFlavor);
+               if (transferDto instanceof TransferableDTO) {
+                  TransferableDTO dto = (TransferableDTO) transferDto;
+                  //USABILITY fix so that 1: when selecting a node in tree that has several fixversions - select all of them. 
+                  //USABILITY fix so that 2: when dragging several nodes in the tree and dropping them - created (target) and deleted(source) correctly 
+                  DnDTreeModel treeModel = (DnDTreeModel) tree.getModel();
+                  List<JiraNode> jiraNodes = treeModel.getJiraNodes((String) dto.getNewNode().getUserObject());
+                  for (JiraNode jiraNode : jiraNodes) {
+                     treeModel.removeNodeFromParent(jiraNode);
+                  }
+               } else {
+                  log.warn("The transfer object is not an instance of TransferableDTO but the source is JTree. Don't know what to do on exportDone!");
+               }
+            }
+         }
+      } catch (UnsupportedFlavorException e) {
+         e.printStackTrace();
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
    }
 
 }
