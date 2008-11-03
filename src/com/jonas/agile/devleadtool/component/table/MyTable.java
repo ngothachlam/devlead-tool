@@ -257,4 +257,24 @@ public class MyTable extends JTable {
       return model.doesJiraExist(jira);
    }
 
+   public void scrollToSelection() {
+      int[] selectedRows = getSelectedRows();
+      if (selectedRows.length > 0) {
+         scrollRectToVisible(getCellRect(selectedRows[0], 0, true));
+      }
+      if (selectedRows.length > 1) {
+         scrollRectToVisible(getCellRect(selectedRows[selectedRows.length - 1], 0, true));
+      }
+
+   }
+
+   public boolean addSelection(String jira) {
+      int jiraRow = getRowWithJira(jira);
+      if (jiraRow != -1) {
+         addRowSelectionInterval(jiraRow, jiraRow);
+         return true;
+      }
+      return false;
+   }
+
 }

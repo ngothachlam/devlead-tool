@@ -80,20 +80,35 @@ public class DnDTree extends JTree {
    public List<JiraNode> getJiraNodes() {
       return model.getJiraNodes();
    }
-   
-   public void setDnDEnabled(boolean setDndEnabled){
+
+   public void setDnDEnabled(boolean setDndEnabled) {
       setDragEnabled(setDndEnabled);
    }
 
-   public List<TreePath> getJiraPath(String jira) {
+   public List<TreePath> getJiraPaths(String jira) {
       List<TreePath> result = new ArrayList<TreePath>();
       List<JiraNode> nodes = getJiraNodes();
       for (JiraNode jiraNode : nodes) {
-         if (jiraNode.getUserObject().equals(jira)){
+         if (jiraNode.getUserObject().equals(jira)) {
             result.add(new TreePath(jiraNode.getPath()));
          }
       }
       return result;
+   }
+
+   public void scrollToSelection() {
+      // USABILITY - add an inidcator that there is a selected row (both in tree and table) outside of the scrollpane
+      TreePath[] paths = getSelectionPaths();
+      if (paths != null && paths.length > -1)
+         scrollPathToVisible(paths[0]);
+      if (paths != null && paths.length > 0)
+         scrollPathToVisible(paths[paths.length - 1]);
+   }
+
+   public void addSelection(String jira) {
+      List<TreePath> jiraPathList = getJiraPaths(jira);
+      TreePath[] jiraTreePath = jiraPathList.toArray(new TreePath[jiraPathList.size()]);
+      addSelectionPaths(jiraTreePath);
    }
 }
 
@@ -123,8 +138,8 @@ class DnDTreeJiraToolTipFacade {
          String str = null;
          if (nodeTemp instanceof JiraNode) {
             JiraNode node = (JiraNode) nodeTemp;
-            str = appendStrings(node.getUserObject().toString(), " ", node.getDescription(), " (Status: ", node.getStatus(), ", Resolution: ", node
-                  .getResolution(), ")");
+            str = appendStrings(node.getUserObject().toString(), " ", node.getDescription(), " (Status: ", node.getStatus(), ", Resolution: ",
+                  node.getResolution(), ")");
          } else if (nodeTemp instanceof SprintNode) {
             SprintNode node = (SprintNode) nodeTemp;
             str = appendStrings(node.getUserObject().toString(), " (Children: ", node.getChildCount(), ")");
