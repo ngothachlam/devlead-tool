@@ -14,11 +14,11 @@ import com.jonas.common.string.MyStringParser;
 import com.jonas.jira.JiraIssue;
 
 public class AddNewRowActionListener implements ActionListener {
-   private MyTable table;
-   private final JTextComponent jiraPrefix;
    private final JTextComponent jiraCommas;
+   private final JTextComponent jiraPrefix;
    private Logger log = MyLogger.getLogger(AddNewRowActionListener.class);
    private MyStringParser parser;
+   private MyTable table;
 
    public AddNewRowActionListener(MyTable table, JTextComponent jiraPrefix, JTextComponent jiraCommas) {
       this.table = table;
@@ -48,13 +48,11 @@ public class AddNewRowActionListener implements ActionListener {
    }
 
    public String getActualString(String jiraNumber) {
-      List<String> split = parser.separateString(jiraNumber, "'");
-      return getIndexInSplit(split, 2);
+      return getJiraSplit(jiraNumber, 2);
    }
 
    public String getEstimateString(String jiraNumber) {
-      List<String> split = parser.separateString(jiraNumber, "'");
-      return getIndexInSplit(split, 1);
+      return getJiraSplit(jiraNumber, 1);
    }
 
    private String getIndexInSplit(List<String> split, int i) {
@@ -65,18 +63,15 @@ public class AddNewRowActionListener implements ActionListener {
 
    /**
     * Overide as required
-    * 
-    * @param actual
-    * @param estimate
-    */
-   public void jiraAdded(String jiraStringm, MyTable table, String estimate, String actual) {
-   }
-
-   /**
-    * Overide as required
     */
    public JiraIssue getJiraIssue(String jira) {
       return null;
+   }
+
+   private String getJiraSplit(String jiraNumber, int i) {
+      if (jiraNumber == null)
+         return "";
+      return parser.getRegexGroup(jiraNumber, i);
    }
 
    protected String getJiraString(String jiraPrefix, String jiraNumber) {
@@ -87,12 +82,21 @@ public class AddNewRowActionListener implements ActionListener {
       return jiraPrefix + (isHyphenRequired(jiraPrefix, jiraNumber) ? "-" : "") + jiraNumber;
    }
 
+   private boolean isEmpty(String jiraPrefix) {
+      return (jiraPrefix == null || jiraPrefix.trim().length() == 0);
+   }
+
    protected boolean isHyphenRequired(String jiraPrefix, String jiraNumber) {
       return !isEmpty(jiraPrefix) && !isEmpty(jiraNumber);
    }
 
-   private boolean isEmpty(String jiraPrefix) {
-      return (jiraPrefix == null || jiraPrefix.trim().length() == 0);
+   /**
+    * Overide as required
+    * 
+    * @param actual
+    * @param estimate
+    */
+   public void jiraAdded(String jiraStringm, MyTable table, String estimate, String actual) {
    }
 
    public void setTable(MyTable table) {
