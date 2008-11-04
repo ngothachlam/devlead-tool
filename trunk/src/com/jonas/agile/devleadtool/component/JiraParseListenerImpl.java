@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.MyStatusBar;
-import com.jonas.agile.devleadtool.component.tree.model.DnDTree;
+import com.jonas.agile.devleadtool.component.tree.DnDTree;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraParseListener;
 import com.jonas.common.logging.MyLogger;

@@ -4,7 +4,7 @@ import java.io.IOException;
 import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
-import com.jonas.agile.devleadtool.component.tree.model.DnDTree;
+import com.jonas.agile.devleadtool.component.tree.DnDTree;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.JiraException;
 

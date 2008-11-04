@@ -40,13 +40,14 @@ import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.component.tree.model.DnDTree;
+import com.jonas.agile.devleadtool.component.tree.DnDTree;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
+import com.jonas.agile.devleadtool.component.tree.xml.XmlParserLargeMock;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
 
@@ -79,8 +80,8 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
          JiraSaxHandler saxHandler = new JiraSaxHandler();
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree));
 
-         XmlParser parser = new XmlParserImpl(saxHandler);
-         // XmlParser parser = new XmlParserLargeMock(saxHandler);
+         // XmlParser parser = new XmlParserImpl(saxHandler);
+         XmlParser parser = new XmlParserLargeMock(saxHandler);
 
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
 
@@ -166,15 +167,14 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
 
    private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, MyTable jiraTable, DnDTree sprintTree) {
       boardModel.addTableModelListener(new BoardAndJiraSyncListener(boardTable, jiraTable, boardModel));
-      boardTable.getSelectionModel().addListSelectionListener(new MyBoardSelectionListener(boardTable, jiraTable, sprintTree));
-      boardTable.addKeyListener(new KeyMaskValueAdjusterListener(boardTable.getSelectionModel()));
+      boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
       boardTable.addListener(new MyTableListener());
       boardTable.addJiraEditorListener(new MyJiraCellEditorListener());
       boardTable.addCheckBoxEditorListener(new MyCheckboxCellEditorListener());
    }
 
-   private void setSprintDataListener(final DnDTree sprintTree, final MyTable boardTable) {
-      sprintTree.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(boardTable, sprintTree));
+   private void setSprintDataListener(final DnDTree sprintTree, final MyTable boardTable, final MyTable jiraTable) {
+      sprintTree.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
    }
 
    private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel) {
@@ -189,45 +189,80 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
 
       setBoardDataListeners(boardModel, boardTable, jiraTable, sprintTree);
       setJiraDataListener(jiraModel, boardModel);
-      setSprintDataListener(sprintTree, boardTable);
+      setSprintDataListener(sprintTree, boardTable, jiraTable);
 
       editableCheckBox.addActionListener(new EditableListener());
    }
 
    private final class KeyListenerToHighlightSprintSelectionElsewhere extends KeyAdapter {
-      private final MyTable boardTable;
       private final DnDTree sprintTree;
+      private final MyTable boardTable;
+      private final MyTable jiraTable;
       private boolean pressed = false;
+      private ListSelectionModel lsm;
 
-      private KeyListenerToHighlightSprintSelectionElsewhere(MyTable boardTable, DnDTree sprintTree) {
-         this.boardTable = boardTable;
+      private KeyListenerToHighlightSprintSelectionElsewhere(DnDTree sprintTree, MyTable boardTable, MyTable jiraTable) {
          this.sprintTree = sprintTree;
+         this.boardTable = boardTable;
+         this.jiraTable = jiraTable;
+         lsm = boardTable.getSelectionModel();
       }
 
       @Override
       public void keyPressed(KeyEvent e) {
-         if (e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
-            if (e.getKeyCode() == KeyEvent.VK_F) {
-               if (!pressed) {
-                  boardTable.clearSelection();
-                  ListSelectionModel selectionModel = boardTable.getSelectionModel();
-                  selectionModel.setValueIsAdjusting(true);
-                  pressed = true;
-                  TreePath[] jiraTreePaths = sprintTree.getSelectionPaths();
-                  for (int i = 0; i < jiraTreePaths.length; i++) {
-                     TreePath jiraTreePath = jiraTreePaths[i];
-                     Object lastPathComponent = jiraTreePath.getLastPathComponent();
-                     if (lastPathComponent instanceof JiraNode) {
-                        JiraNode jiraNode = (JiraNode) lastPathComponent;
-                        if (!boardTable.addSelection(jiraNode.getKey()))
-                           MyStatusBar.getInstance().setMessage("Jira " + jiraNode.getKey() + " not found on the board", true);
-                     }
-                  }
-                  selectionModel.setValueIsAdjusting(false);
-                  boardTable.scrollToSelection();
+         if (e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK && e.getKeyCode() == KeyEvent.VK_F && !pressed) {
+            pressed = true;
+            ListSelectionModel boardSelectionModel = boardTable.getSelectionModel();
+            ListSelectionModel jiraSelectionModel = jiraTable.getSelectionModel();
+            boardSelectionModel.setValueIsAdjusting(true);
+            jiraSelectionModel.setValueIsAdjusting(true);
+            log.debug("KeyPressed Source: " + e.getSource());
+            jiraTable.clearSelection();
+            if (e.getSource() instanceof DnDTree)
+               setSelectionToOthersIfSourceisTree();
+            else if (e.getSource() instanceof MyTable)
+               setSelectionToOthersIfSourceisTable();
+            jiraTable.scrollToSelection();
+            boardSelectionModel.setValueIsAdjusting(false);
+            jiraSelectionModel.setValueIsAdjusting(false);
+         }
+      }
+
+      private void setSelectionToOthersIfSourceisTable() {
+         sprintTree.clearSelection();
+         if (!lsm.isSelectionEmpty()) {
+            for (int i = lsm.getMinSelectionIndex(); i <= lsm.getMaxSelectionIndex(); i++) {
+               if (lsm.isSelectedIndex(i)) {
+                  String jira = (String) boardTable.getValueAt(Column.Jira, i);
+                  jiraTable.addSelection(jira);
+                  sprintTree.addSelection(jira);
                }
             }
+            sprintTree.scrollToSelection();
          }
+      }
+
+      private void setSelectionToOthersIfSourceisTree() {
+         boardTable.clearSelection();
+         TreePath[] jiraTreePaths = sprintTree.getSelectionPaths();
+         StringBuffer boardSb = new StringBuffer("");
+         StringBuffer jiraSb = new StringBuffer("");
+         for (int i = 0; i < jiraTreePaths.length; i++) {
+            TreePath jiraTreePath = jiraTreePaths[i];
+            Object lastPathComponent = jiraTreePath.getLastPathComponent();
+            if (lastPathComponent instanceof JiraNode) {
+               JiraNode jiraNode = (JiraNode) lastPathComponent;
+               sprintTree.addSelection(jiraNode.getKey());
+               if (!boardTable.addSelection(jiraNode.getKey()))
+                  boardSb.append(jiraNode.getKey()).append(", ");
+               if (!jiraTable.addSelection(jiraNode.getKey()))
+                  jiraSb.append(jiraNode.getKey()).append(", ");
+            }
+         }
+         boardTable.scrollToSelection();
+         sprintTree.scrollToSelection();
+         boardSb.append(" not found on 'Board' and ").append(jiraSb).append(" not found on 'Jira'");
+         MyStatusBar.getInstance().setMessage(boardSb.toString(), true);
       }
 
       @Override
@@ -239,60 +274,6 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
 
       @Override
       public void keyTyped(KeyEvent e) {
-      }
-   }
-
-   private final class KeyMaskValueAdjusterListener extends KeyAdapter {
-      private ListSelectionModel selectionModel;
-
-      private KeyMaskValueAdjusterListener(ListSelectionModel selectionModel) {
-         this.selectionModel = selectionModel;
-      }
-
-      @Override
-      public void keyPressed(KeyEvent e) {
-         selectionModel.setValueIsAdjusting(true);
-      }
-
-      @Override
-      public void keyReleased(KeyEvent e) {
-         if (e.getModifiersEx() == 0) {
-            selectionModel.setValueIsAdjusting(false);
-         }
-      }
-   }
-
-   private final class MyBoardSelectionListener implements ListSelectionListener {
-      private final MyTable boardTable;
-      private final MyTable jiraTable;
-      private ListSelectionModel lsm;
-      private final DnDTree sprintTree;
-
-      public MyBoardSelectionListener(MyTable boardTable, MyTable jiraTable, DnDTree sprintTree) {
-         this.boardTable = boardTable;
-         this.jiraTable = jiraTable;
-         this.sprintTree = sprintTree;
-         lsm = boardTable.getSelectionModel();
-      }
-
-      @Override
-      public void valueChanged(final ListSelectionEvent e) {
-         if (e.getValueIsAdjusting()) {
-            return;
-         }
-         jiraTable.clearSelection();
-         sprintTree.clearSelection();
-         if (!lsm.isSelectionEmpty()) {
-            for (int i = lsm.getMinSelectionIndex(); i <= lsm.getMaxSelectionIndex(); i++) {
-               if (lsm.isSelectedIndex(i)) {
-                  String jira = (String) boardTable.getValueAt(Column.Jira, i);
-                  jiraTable.addSelection(jira);
-                  sprintTree.addSelection(jira);
-               }
-            }
-            jiraTable.scrollToSelection();
-            sprintTree.scrollToSelection();
-         }
       }
    }
 
