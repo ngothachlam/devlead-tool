@@ -21,16 +21,17 @@ public class AddNewRowActionListenerTest extends TestCase {
 	   assertEquals("", listener.getEstimateString("1"));
 	   assertEquals("2", listener.getEstimateString("1'2"));
 	   assertEquals("2", listener.getEstimateString("1'2'3"));
+	   assertEquals("2.3", listener.getEstimateString("1'2.3'3"));
 	}
 	
 	public void testShouldComputeActualsOk() {
 	   AddNewRowActionListener listener = new AddNewRowActionListener(null, null, null);
-	   assertEquals("", listener.getAtualString(null));
-	   assertEquals("", listener.getAtualString(""));
-	   assertEquals("", listener.getAtualString("1"));
-	   assertEquals("", listener.getAtualString("1'2"));
-	   assertEquals("3", listener.getAtualString("1'2'3"));
-	   assertEquals("3", listener.getAtualString("1'2'3'4"));
+	   assertEquals("", listener.getActualString(null));
+	   assertEquals("", listener.getActualString(""));
+	   assertEquals("", listener.getActualString("1"));
+	   assertEquals("", listener.getActualString("1'2"));
+	   assertEquals("3", listener.getActualString("1'2'3"));
+	   assertEquals("3.5", listener.getActualString("1'2'3.5'4"));
 	}
 	
 	public void testShouldComputeBothEmptyOk() {

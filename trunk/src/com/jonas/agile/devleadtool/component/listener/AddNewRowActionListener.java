@@ -29,12 +29,12 @@ public class AddNewRowActionListener implements ActionListener {
 
    public void actionPerformed(@SuppressWarnings("unused")
    ActionEvent e) {
-      List<String> jiras = parser.separateString(jiraCommas.getText(), " ,;.\t\n");
+      List<String> jiras = parser.separateString(jiraCommas.getText(), " ;\t\n");
       for (String jiraNumber : jiras) {
          String prefix = jiraPrefix.getText();
          String jiraString = getJiraString(prefix, jiraNumber).trim();
          String estimate = getEstimateString(jiraNumber).trim();
-         String actual = getAtualString(jiraNumber).trim();
+         String actual = getActualString(jiraNumber).trim();
          JiraIssue jiraIssue = getJiraIssue(jiraString);
          if (jiraIssue == null) {
             log.debug("jiraIssue is null!");
@@ -47,7 +47,7 @@ public class AddNewRowActionListener implements ActionListener {
       }
    }
 
-   public String getAtualString(String jiraNumber) {
+   public String getActualString(String jiraNumber) {
       List<String> split = parser.separateString(jiraNumber, "'");
       return getIndexInSplit(split, 2);
    }

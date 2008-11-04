@@ -66,15 +66,18 @@ class AddManualPanel extends MyPanel {
       panel.add(new JLabel("Prefix:"), c);
       set2ndCol(c);
       jiraPrefix = panel.addTextField(panel, 10, c);
+      
       setNewRow(c);
       panel.add(new JLabel("Default Release:"), c);
       set2ndCol(c);
       defaultRelease = panel.addTextField(panel, 10, c);
+      
       setNewRow(c);
       panel.add(new JLabel("Default Status:"), c);
       set2ndCol(c);
       Column[] values = new Column[] { Column.isOpen, Column.isBug, Column.isInProgress, Column.isResolved, Column.isComplete };
       statusCombo = panel.addComboBox(panel, values, c);
+      
       setNewRow(c);
       panel.add(new JLabel("Numbers:"), c);
       set2ndCol(c);
