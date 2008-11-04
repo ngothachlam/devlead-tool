@@ -19,6 +19,7 @@ public class JiraIssue {
    private final String summary;
    private final String type;
    private String sprint;
+   private String release = "";
 
    public JiraIssue(String key, String summary, String status, String resolution, String type) {
       this.key = key;
@@ -34,6 +35,12 @@ public class JiraIssue {
       this.estimate = estimate;
       this.sprint = sprint;
       this.lluListPriority = listPrio;
+   }
+
+   public JiraIssue(String key, String release) {
+      this(key, "", "", "", "");
+      this.release = release;
+      log.debug("Setting release to " + this.release + " = " + release);
    }
 
    public void addFixVersions(JiraVersion fixVersion) {
@@ -203,5 +210,9 @@ public class JiraIssue {
 
    public String getSprint() {
       return sprint;
+   }
+
+   public String getRelease() {
+      return release;
    }
 }

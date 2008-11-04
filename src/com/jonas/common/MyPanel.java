@@ -3,6 +3,7 @@ package com.jonas.common;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.LayoutManager;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -16,6 +17,8 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 public class MyPanel extends JPanel {
+
+   private Font defaultFont;
 
    public MyPanel(LayoutManager layoutManager) {
       super(layoutManager);
@@ -88,15 +91,24 @@ public class MyPanel extends JPanel {
    }
 
    public JTextField addTextField(JPanel buttons, int textFieldLength, Object constraint) {
-      JTextField jiraCommas = new JTextField(textFieldLength);
-      buttons.add(jiraCommas, constraint);
-      return jiraCommas;
+      JTextField textField = new JTextField(textFieldLength);
+      if (defaultFont == null)
+         setDefaultFont(textField.getFont());
+      buttons.add(textField, constraint);
+      return textField;
+   }
+
+   private void setDefaultFont(Font font) {
+      defaultFont = font;
    }
 
    public JTextArea addTextArea(JPanel buttons, int rows, int cols, Object constraint) {
       JTextArea textArea = new JTextArea(rows, cols);
+      if (defaultFont == null){
+         setDefaultFont(new JTextField().getFont());
+      }
+      textArea.setFont(defaultFont);
       buttons.add(new JScrollPane(textArea), constraint);
-      
       return textArea;
    }
 
@@ -105,6 +117,7 @@ public class MyPanel extends JPanel {
       buttons.add(component);
       return component;
    }
+
    public JComboBox addComboBox(JPanel buttons, Object[] array, Object constraint) {
       JComboBox component = new JComboBox(array);
       buttons.add(component, constraint);
