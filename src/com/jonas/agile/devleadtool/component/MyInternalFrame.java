@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -55,6 +56,7 @@ public class MyInternalFrame extends JInternalFrame {
       
       PlannerListeners.notifyListenersThatFrameWasCreated(this);
    }
+   
    MyInternalFrame(String title, PlannerHelper helper) {
       super("", true, true, true, true);
       this.helper = helper;
@@ -64,6 +66,7 @@ public class MyInternalFrame extends JInternalFrame {
       log.debug("created and setting Title: " + originalTitleWithDuplicateNumber);
       this.setTitle(originalTitleWithDuplicateNumber);
    }
+   
    public static void closeAll() throws PropertyVetoException {
       if (!SwingUtilities.isEventDispatchThread()) {
          closeInEventThread();
@@ -141,6 +144,13 @@ public class MyInternalFrame extends JInternalFrame {
          }
       };
       worker.execute();
+      try {
+         worker.get();
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      } catch (ExecutionException e) {
+         e.printStackTrace();
+      }
    }
 
    public void setSaveFile(File file) {

@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.component.dialog;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.filechooser.FileFilter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
@@ -10,29 +11,26 @@ import com.jonas.common.logging.MyLogger;
 
 public class SavePlannerDialog extends JFileChooser {
 
-   private Logger log = MyLogger.getLogger(SavePlannerDialog.class);
    private final PlannerDAO dao;
-   private final JFrame parent;
 
-   public void save(MyInternalFrame internalFrame, boolean isFileChoosable){
+   private Logger log = MyLogger.getLogger(SavePlannerDialog.class);
+   private final JFrame parent;
+   public SavePlannerDialog(PlannerDAO dao, JFrame parent) {
+      super(new File("."));
+      this.dao = dao;
+      this.parent = parent;
+      addChoosableFileFilter(new XLSFileFilter());
+   }
+
+   public void save(MyInternalFrame internalFrame, boolean isFileChoosable) {
       File file = internalFrame.getFile();
       boolean goAheadAndSave = true;
       if (isFileChoosable || file == null) {
          if (file != null) {
             setSelectedFile(file);
          }
-         // addChoosableFileFilter(new FileFilter() {
-         // public boolean accept(File f) {
-         // if (getTypeDescription(f).equalsIgnoreCase("Microsoft Excel Worksheet") || f.isDirectory())
-         // return true;
-         // return false;
-         // }
-         //
-         // public String getDescription() {
-         // return "XLS files";
-         // }
-         // });
-         
+
+
          int result = showSaveDialog(parent);
          if (result == JFileChooser.APPROVE_OPTION) {
             file = getSelectedFile();
@@ -40,22 +38,29 @@ public class SavePlannerDialog extends JFileChooser {
             goAheadAndSave = false;
          }
       }
-      
+
       if (goAheadAndSave) {
          log.debug("saving!");
          if (file == null) {
             AlertDialog.alertMessage(parent, "Can't save file choose another one!");
          }
-         
+
          internalFrame.setSaveFile(file);
          dao.setXlsFile(file);
          internalFrame.saveModels(dao);
       }
    }
-   
-   public SavePlannerDialog(PlannerDAO dao, JFrame parent) {
-      super(new File("."));
-      this.dao = dao;
-      this.parent = parent;
+
+   private final class XLSFileFilter extends FileFilter {
+      public boolean accept(File f) {
+         if (getTypeDescription(f).equalsIgnoreCase("Microsoft Excel Worksheet") || f.isDirectory())
+            return true;
+         return false;
+      }
+
+      public String getDescription() {
+         return "XLS files";
+      }
    }
+
 }
