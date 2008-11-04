@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 
@@ -20,5 +21,13 @@ public class BoardStatusToColumnMap {
 
    public static BoardStatusValue getBoardStatus(Column column) {
       return map.get(column);
+   }
+   public static Column getColumn(BoardStatusValue value) {
+      Set<Column> columns = map.keySet();
+      for (Column column : columns) {
+         if (map.get(column).equals(value))
+            return column;
+      }
+      return null;
    }
 }

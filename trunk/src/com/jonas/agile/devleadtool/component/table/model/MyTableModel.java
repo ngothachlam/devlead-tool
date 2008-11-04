@@ -93,6 +93,10 @@ public abstract class MyTableModel extends DefaultTableModel {
       case J_Dev_Spent:
          value = jiraIssue.getSpent();
          break;
+      case Release:
+         log.debug("Found Release!" +  jiraIssue.getRelease());
+         value = jiraIssue.getRelease();
+         break;
       default:
          value = column.getDefaultValue();
          break;
