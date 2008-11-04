@@ -76,8 +76,8 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
          JiraSaxHandler saxHandler = new JiraSaxHandler();
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree));
 
-          XmlParser parser = new XmlParserImpl(saxHandler);
-//         XmlParser parser = new XmlParserLargeMock(saxHandler);
+         XmlParser parser = new XmlParserImpl(saxHandler);
+         // XmlParser parser = new XmlParserLargeMock(saxHandler);
 
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
 
@@ -230,6 +230,7 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
             for (int i = lsm.getMinSelectionIndex(); i <= lsm.getMaxSelectionIndex(); i++) {
                if (lsm.isSelectedIndex(i)) {
                   String jira = (String) boardTable.getValueAt(Column.Jira, i);
+                  log.debug("Jira: " + jira);
                   jiraTable.addSelection(jira);
                   sprintTree.addSelection(jira);
                }
@@ -255,6 +256,8 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
                   jiraSb.append(jiraNode.getKey()).append(", ");
             }
          }
+         if (jiraTreePaths.length == 1)
+            sprintTree.setLeadSelectionPath(jiraTreePaths[0]);
          boardTable.scrollToSelection();
          sprintTree.scrollToSelection();
          boardSb.append(" not found on 'Board' and ").append(jiraSb).append(" not found on 'Jira'");

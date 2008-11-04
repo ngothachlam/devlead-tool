@@ -206,10 +206,13 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, String cellContents) {
       Column column = columns.get(colCount);
-      log.debug("\tColumn " + column + " (from col " + colCount + ") should " + (!column.isToLoad() ? " not " : "") + " be loaded!");
+//      log.debug("\tColumn " + column + " (from col " + colCount + ") should " + (!column.isToLoad() ? " not " : "") + " be loaded with " + cellContents + "!");
+      Object parsed = null;
       if (column.isToLoad()) {
-         rowData.add(column.parse(cellContents));
+         parsed = column.parse(cellContents);
+         rowData.add(parsed);
       }
+      log.debug("\tColumn " + column + " (from col " + colCount + ") should " + (!column.isToLoad() ? " not " : "") + " be loaded with " + cellContents + " (parsed: "+parsed+")!");
    }
 
    public void notifyListeners(DaoListenerEvent event, String message) {
@@ -238,7 +241,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    private void notifyLoadingStarted() {
-      if (loadingNow ++ == 0) {
+      if (loadingNow++ == 0) {
          log.debug("notifyLoadingStarted");
          notifyListeners(DaoListenerEvent.LoadingStarted, "Loading Started!");
       }
