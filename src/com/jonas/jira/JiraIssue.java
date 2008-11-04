@@ -22,7 +22,7 @@ public class JiraIssue {
    private String release = "";
 
    public JiraIssue(String key, String summary, String status, String resolution, String type) {
-      this.key = key;
+      this.key = key.toUpperCase();
       this.summary = summary;
       this.status = status;
       this.resolution = resolution;
@@ -38,7 +38,7 @@ public class JiraIssue {
    }
 
    public JiraIssue(String key, String release) {
-      this(key, "", "", "", "");
+      this(key.toUpperCase(), "", "", "", "");
       this.release = release;
       log.debug("Setting release to " + this.release + " = " + release);
    }

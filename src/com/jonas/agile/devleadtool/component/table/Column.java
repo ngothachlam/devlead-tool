@@ -3,14 +3,22 @@
  */
 package com.jonas.agile.devleadtool.component.table;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public enum Column {
    // String Defaults
-   Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Description(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes,
-         ToLoadColumn.Yes), Planned_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Resolved_Sprint(String.class, "",
-         IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Closed_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
+   Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes){
+         public Object parse(String cellContents) {
+            if (cellContents == null )
+               return null;
+            String upperCase = cellContents.toUpperCase();
+            System.out.println("parsing Column Jira: " + cellContents + " to become " + upperCase);
+            return upperCase;
+         }
+   },
+   Description(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   Planned_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   Resolved_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   Closed_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
 
    Dev_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), QA_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No,
          ToLoadColumn.Yes), Dev_Actual(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Note(String.class, "", IsEditableColumn.Yes,
