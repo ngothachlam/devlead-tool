@@ -12,7 +12,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.tree.model.DnDTree;
+import com.jonas.agile.devleadtool.component.tree.DnDTree;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.nodes.FixVersionNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;

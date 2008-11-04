@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.tree.model;
+package com.jonas.agile.devleadtool.component.tree;
 
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -11,8 +11,10 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.panel.SelectionModifier;
 import com.jonas.agile.devleadtool.component.table.renderer.DnDTreeCellRenderer;
 import com.jonas.agile.devleadtool.component.tree.dnd.DnDTreeTransferHandler;
+import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.nodes.FixVersionNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
@@ -98,11 +100,13 @@ public class DnDTree extends JTree {
 
    public void scrollToSelection() {
       // USABILITY - add an inidcator that there is a selected row (both in tree and table) outside of the scrollpane
-      TreePath[] paths = getSelectionPaths();
-      if (paths != null && paths.length > -1)
-         scrollPathToVisible(paths[0]);
-      if (paths != null && paths.length > 0)
-         scrollPathToVisible(paths[paths.length - 1]);
+      TreeSelectionModel tsm = getSelectionModel();
+      TreePath minPath = getPathForRow(tsm.getMinSelectionRow());
+      TreePath maxPath = getPathForRow(tsm.getMaxSelectionRow());
+      if (minPath != null)
+         scrollPathToVisible(minPath);
+      if (maxPath != null)
+         scrollPathToVisible(maxPath);
    }
 
    public void addSelection(String jira) {
