@@ -7,21 +7,30 @@ import java.io.IOException;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 
-final class DnDTransferable implements Transferable {
+final class JiraNodeTransferable implements Transferable {
    private final JTree tree;
    private DataFlavor[] flavors;
+   private TreePath[] selectionPaths;
 
-   DnDTransferable(JTree tree, DataFlavor... dataFlavor) {
+   JiraNodeTransferable(JTree tree, DataFlavor... dataFlavor) {
       this.flavors = dataFlavor;
       this.tree = tree;
+      selectionPaths = tree.getSelectionPaths();
    }
 
    @Override
    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-      TreePath selectionPath = tree.getSelectionPath();
-      DefaultMutableTreeNode lastPathComponent = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
-      return new TransferableDTO(lastPathComponent);
+      if (!isDataFlavorSupported(flavor))
+         throw new UnsupportedFlavorException(flavor);
+      JiraNodesTransferableDTO dto = new JiraNodesTransferableDTO();
+      for (TreePath treePath : selectionPaths) {
+         DefaultMutableTreeNode lastPathComponent = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+         if (lastPathComponent instanceof JiraNode)
+            dto.addNode((JiraNode) lastPathComponent);
+      }
+      return dto;
    }
 
    @Override
