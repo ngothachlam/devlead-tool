@@ -24,5 +24,39 @@ public class MyStringParserTest extends JonasTestCase {
       assertEquals("llu-4", separatedStrings.get(3));
       assertEquals("llu-5", separatedStrings.get(4));
    }
+   
+   public void testShouldGetGroupOk() {
+      MyStringParser parser = new MyStringParser();
+      
+      assertEquals("llu-1", parser.getRegexGroup("llu-1", 0));
+      assertEquals("llu-1", parser.getRegexGroup("llu-1'2", 0));
+      assertEquals("llu-1", parser.getRegexGroup("llu-1'2'3", 0));
+      
+      assertEquals("", parser.getRegexGroup("llu-1", 1));
+      assertEquals("2", parser.getRegexGroup("llu-1'2", 1));
+      assertEquals("2", parser.getRegexGroup("llu-1'2'3", 1));
+      
+      assertEquals("", parser.getRegexGroup("llu-1", 2));
+      assertEquals("", parser.getRegexGroup("llu-1'2", 2));
+      assertEquals("3", parser.getRegexGroup("llu-1'2'3", 2));
+      
+      assertEquals("", parser.getRegexGroup("'", 0));
+      assertEquals("", parser.getRegexGroup("'", 1));
+      assertEquals("", parser.getRegexGroup("'", 2));
+      
+      assertEquals("", parser.getRegexGroup("''", 0));
+      assertEquals("", parser.getRegexGroup("''", 1));
+      assertEquals("", parser.getRegexGroup("''", 2));
+      
+      assertEquals("1", parser.getRegexGroup("1'", 0));
+      assertEquals("", parser.getRegexGroup("1'", 1));
+      assertEquals("", parser.getRegexGroup("'1", 0));
+      assertEquals("1", parser.getRegexGroup("'1", 1));
+      assertEquals("1", parser.getRegexGroup("''1", 2));
+
+      assertEquals("1", parser.getRegexGroup("1''", 0));
+      assertEquals("1", parser.getRegexGroup("'1'", 1));
+      assertEquals("1", parser.getRegexGroup("''1", 2));
+   }
 
 }

@@ -28,10 +28,10 @@ public class PlannerHelper {
    private MyInternalFrame internalFrame;
 
    Pattern jiraPattern = Pattern.compile("^[A-Z]+\\-\\d+$", Pattern.CASE_INSENSITIVE);
+   Matcher match = jiraPattern.matcher("");
 
    private Logger log = MyLogger.getLogger(PlannerHelper.class);
 
-   Matcher match = jiraPattern.matcher("");
 
    private PlannerCommunicator plannerCommunicator = new PlannerCommunicator(this);
 
