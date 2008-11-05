@@ -166,8 +166,11 @@ public class DnDTreePanel extends JPanel {
                try {
                   if (jiraNode.isToSync() && !jiras.contains(jiraNode.getKey())) {
                      MyStatusBar.getInstance().setMessage("Updating " + jiraNode.getKey() + "'s Sprint Details in Jira", false);
-                     jiraSprintUpdater.updateSprint(jiraNode.getKey(), jiraNode.getId(), jiraNode.getSprint());
-                     sb.append("\n").append(jiraNode.getKey()).append(" was moved to sprint ").append(jiraNode.getSprint());
+                     String sprint = jiraNode.getSprint();
+                     if (DnDTreeModel.UNKNOWN_SPRINT.equals(sprint))
+                        sprint = "";
+                     jiraSprintUpdater.updateSprint(jiraNode.getKey(), jiraNode.getId(), sprint);
+                     sb.append("\n").append(jiraNode.getKey()).append(" was moved to sprint ").append(sprint);
                      jiras.add(jiraNode.getKey());
                   }
                   jiraNode.setToSynced();
@@ -223,4 +226,3 @@ public class DnDTreePanel extends JPanel {
       return tree;
    }
 }
-
