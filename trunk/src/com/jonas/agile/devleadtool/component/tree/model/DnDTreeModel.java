@@ -21,7 +21,7 @@ public class DnDTreeModel extends DefaultTreeModel {
 
    private static final String SEPARATOR = "@#@";
    private static final String UNKNOWN_FIXVERSION = "<UnKnown FixVersion>";
-   private static final String UNKNOWN_SPRINT = "<UnKnown Sprint>";
+   public static final String UNKNOWN_SPRINT = "<UnKnown Sprint>";
 
    private Logger log = MyLogger.getLogger(DnDTreeModel.class);
 
