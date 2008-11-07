@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -21,15 +19,14 @@ import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
-public class MyTablePopupMenu extends JPopupMenu {
+public class MyTablePopupMenu extends MyPopupMenu {
 
    private final MyTable sourceTable;
 
    public MyTablePopupMenu(MyTable source, PlannerHelper helper, MyTable... tables) {
-      super();
+      super(source);
       this.sourceTable = source;
       JFrame parentFrame = helper.getParentFrame();
 
@@ -47,39 +44,6 @@ public class MyTablePopupMenu extends JPopupMenu {
 
       addSeparator();
       add(new MenuItem_Remove("Remove from Table", sourceTable));
-
-      sourceTable.addMouseListener(new PopupListener(this));
-   }
-
-   @Override
-   public void show(Component invoker, int x, int y) {
-      // if (sourceTable.getSelectedRowCount() > 0)
-      super.show(invoker, x, y);
-   }
-}
-
-
-class PopupListener extends MouseAdapter {
-   private final MyTablePopupMenu popup;
-   private Logger log = MyLogger.getLogger(PopupListener.class);
-
-   public PopupListener(MyTablePopupMenu popup) {
-      this.popup = popup;
-   }
-
-   private void maybeShowPopup(MouseEvent e) {
-      if (e.isPopupTrigger()) {
-         popup.show(e.getComponent(), e.getX(), e.getY());
-      }
-   }
-
-   public void mousePressed(MouseEvent e) {
-      log.debug("Mouse Pressed!" + e);
-      maybeShowPopup(e);
-   }
-
-   public void mouseReleased(MouseEvent e) {
-      maybeShowPopup(e);
    }
 }
 
