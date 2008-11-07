@@ -5,33 +5,33 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
+import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.SaveKeyListener;
-import com.jonas.agile.devleadtool.component.listener.DaoListener;
 import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerComponent;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
+import com.jonas.common.logging.MyLogger;
 
 public class LoadPlannerDialog extends JFileChooser {
 
    private final PlannerDAO dao;
    private final JFrame frame;
-   private final DaoListener daoListener;
    private final PlannerHelper helper;
    private final MyDesktopPane desktop;
    private SavePlannerDialog savePlannerDialog;
    private SaveKeyListener saveKeyListener;
+   private Logger log = MyLogger.getLogger(LoadPlannerDialog.class);
 
-   public LoadPlannerDialog(MyDesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper helper, DaoListener daoListener, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener) {
+   public LoadPlannerDialog(MyDesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper helper, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener) {
       super(new File("."));
       this.desktop = desktop;
       this.dao = plannerDAO;
       this.frame = frame;
       this.helper = helper;
-      this.daoListener = daoListener;
       this.savePlannerDialog = savePlannerDialog;
       this.saveKeyListener = saveKeyListener;
 
@@ -50,6 +50,7 @@ public class LoadPlannerDialog extends JFileChooser {
    }
 
    public void load() {
+      log.trace("load");
       int result = showOpenDialog(frame);
 
       if (result == JFileChooser.APPROVE_OPTION) {
@@ -60,14 +61,17 @@ public class LoadPlannerDialog extends JFileChooser {
          SwingWorker<ModelDTO, Object> swingWorker = new SwingWorker<ModelDTO, Object>() {
             @Override
             protected ModelDTO doInBackground() throws Exception {
+               log.trace("doInBackground 1");
                BoardTableModel boardModel = dao.loadBoardModel();
                JiraTableModel jiraModel = dao.loadJiraModel();
 
+               log.trace("doInBackground 2");
                return new ModelDTO(boardModel, jiraModel);
             }
 
             @Override
             protected void done() {
+               log.trace("done");
                try {
                   ModelDTO dto = get();
                   if (dto != null) {

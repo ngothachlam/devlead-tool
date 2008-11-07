@@ -70,7 +70,7 @@ public class DevLeadTool {
       NewPlannerDialog newPlannerDialog = new NewPlannerDialog(desktop, helper, plannerDAO, savePlannerDialog, saveKeyListener);
       JMenuItem planner = createMenuItem("New Planner", new NewPlannerActionListener(newPlannerDialog));
       DaoListener daoListener = new DaoListenerImpl(frame);
-      LoadPlannerDialog loadPlannerDialog = new LoadPlannerDialog(desktop, plannerDAO, frame, helper, daoListener, savePlannerDialog, saveKeyListener);
+      LoadPlannerDialog loadPlannerDialog = new LoadPlannerDialog(desktop, plannerDAO, frame, helper, savePlannerDialog, saveKeyListener);
       JMenuItem open = createMenuItem("Open Planner", new LoadPlannerActionListener(loadPlannerDialog));
       JMenuItem save = createMenuItem("Save Planner", new SavePlannerActionListener(false, savePlannerDialog));
       JMenuItem saveAs = createMenuItem("Save Planner As", new SavePlannerActionListener(true, savePlannerDialog));

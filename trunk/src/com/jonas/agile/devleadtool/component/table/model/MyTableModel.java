@@ -26,6 +26,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header) {
+      log.trace("MyTableModel");
       initiateColumns(columns);
       List<Integer> convertInputHeaderToOriginal = getConvertionNumbers(header, getColumnNames());
 

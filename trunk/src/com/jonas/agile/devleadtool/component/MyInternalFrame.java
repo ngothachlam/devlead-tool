@@ -59,12 +59,14 @@ public class MyInternalFrame extends JInternalFrame {
    
    MyInternalFrame(String title, PlannerHelper helper) {
       super("", true, true, true, true);
+      log.trace("MyInternalFrame");
       this.helper = helper;
       internalFrames.add(this);
       this.originalTitle = title;
       originalTitleWithDuplicateNumber = createTitle(title);
       log.debug("created and setting Title: " + originalTitleWithDuplicateNumber);
       this.setTitle(originalTitleWithDuplicateNumber);
+      log.trace("MyInternalFrame");
    }
    
    public static void closeAll() throws PropertyVetoException {
@@ -172,6 +174,7 @@ public class MyInternalFrame extends JInternalFrame {
    }
 
    private void wireListeners(final PlannerHelper client, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener) {
+      log.trace("wireListeners");
       MyInternalFrameListener myInternalFrameListener = new MyInternalFrameListener(this, helper);
       VetoListener vetoListener = new VetoListener(this, client.getParentFrame(), savePlannerDialog);
       
@@ -181,11 +184,13 @@ public class MyInternalFrame extends JInternalFrame {
    }
 
    String createTitle(String title) {
+      log.trace("createTitle");
       int countOfSameTitles = getCountWithSameTitle(title);
       return title + (countOfSameTitles > 1 ? " (" + (countOfSameTitles - 1) + ")" : "");
    }
 
    int getCountWithSameTitle(String title) {
+      log.trace("getCountWithSameTitle");
       int count = 0;
       for (MyInternalFrame internalFrame : internalFrames) {
          String checkedTitle = internalFrame.originalTitle;
