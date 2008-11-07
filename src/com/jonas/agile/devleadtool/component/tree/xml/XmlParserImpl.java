@@ -19,24 +19,40 @@ import com.jonas.jira.access.JiraException;
 
 public class XmlParserImpl extends HttpClient implements XmlParser {
 
+   public int getMaxResults() {
+      return maxResults;
+   }
+
    private Logger log = MyLogger.getLogger(XmlParserImpl.class);
 
    private XMLReader xmlReader;
    private String baseUrl;
 
-   public XmlParserImpl(JiraSaxHandler nodeCounter) throws SAXException {
+   private final int maxResults;
+
+   public XmlParserImpl(JiraSaxHandler nodeCounter, int maxResults) throws SAXException {
       super();
+      this.maxResults = maxResults;
       xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(nodeCounter);
       baseUrl = "http://10.155.38.105/jira";
    }
 
-   public void parse() throws IOException, SAXException, JiraException {
+   public void parse(String sprint) throws IOException, SAXException, JiraException {
       GetMethod method = null;
       try {
-         String url = baseUrl + "/secure/IssueNavigator.jspa?view=rss&&fixfor=-2&pid=10070&reset=true&decorator=none&tempMax=2000";
+         String url = baseUrl + "/secure/IssueNavigator.jspa?view=rss&fixfor=-2&pid=10070&reset=true&decorator=none&tempMax=" + maxResults;
+         if(sprint != null)
+            url = url +"&" + "customfield_10282=" + sprint;
          log.debug("calling " + url);
          login();
+
+         // fixfor=-2 @ Fix For: all unreleased versions
+         // pid=10070 @ Project: LLU Systems Provisioning
+
+         // fixfor=-2
+         // customfield_10282=12.1 @ Sprint: 12.1
+         // pid=10070
 
          MyStatusBar.getInstance().setMessage("Accessing Jiras...", false);
          method = new GetMethod(url);

@@ -10,6 +10,11 @@ public class SprintNode extends DefaultMutableTreeNode {
       super(sprintName);
       this.sprintName = sprintName;
    }
+   
+   public SprintNode(String sprintName, String realSprintName) {
+      super(sprintName);
+      this.sprintName = realSprintName;
+   }
 
    public String getSprintName() {
       return sprintName;

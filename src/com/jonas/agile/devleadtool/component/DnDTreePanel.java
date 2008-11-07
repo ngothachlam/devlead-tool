@@ -52,11 +52,10 @@ public class DnDTreePanel extends JPanel {
          DnDTreeModel model = new DnDTreeModel("LLU");
          DnDTree tree = new DnDTree(model);
          JiraSaxHandler saxHandler = new JiraSaxHandler();
-         saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree));
+         saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, 100, frame));
 
-         XmlParser parser = new XmlParserImpl(saxHandler);
+         XmlParser parser = new XmlParserImpl(saxHandler, 100);
          // XmlParser parser = new XmlParserLargeMock(saxHandler);
-         // XmlParser parser = new XmlParserAtlassain(saxHandler);
 
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
 
@@ -214,7 +213,7 @@ public class DnDTreePanel extends JPanel {
       public void actionPerformed(ActionEvent e) {
          log.debug("Refresh Button Pressed!");
          MyStatusBar.getInstance().setMessage("Refreshing...", false);
-         dndTreeBuilder.buildTree(tree);
+         dndTreeBuilder.buildTree(tree, null);
       }
    }
 

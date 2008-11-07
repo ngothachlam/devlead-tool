@@ -60,26 +60,26 @@ public class DnDTreeModel extends DefaultTreeModel {
    }
 
    void createJira(String sprintName, String fixVersionName, JiraDTO jira) {
-      FixVersionNode parent = getParent(sprintName, fixVersionName);
+      FixVersionNode fixVersionNode = getParent(sprintName, fixVersionName);
       String jiraListName = getSeparatedName(jira.getKey(), fixVersionName);
       JiraNode jiraNode = jiras.get(jiraListName);
       if (jiraNode == null) {
-         jiraNode = new JiraNode(jira.getKey(), jira.getId(), jira.getSummary(), parent, jira.getResolution(), jira.getStatus(), jira.getSprint(),
-               jira.getFixVersions(), jira.getSyncable());
-         insertNodeInto(jiraNode, parent, parent.getChildCount());
+         jiraNode = new JiraNode(jira.getKey(), jira.getId(), jira.getSummary(), fixVersionNode, jira.getResolution(), jira.getStatus(), jira
+               .getSprint(), jira.getFixVersions(), jira.getSyncable());
+         insertNodeInto(jiraNode, fixVersionNode, fixVersionNode.getChildCount());
          jiras.put(jiraListName, jiraNode);
       } else {
          TreeNode oldParent = jiraNode.getParent();
          System.out.println("blah!!");
          // FIXME not working when moving one jira to anoother fixversion and then refreshing.
-         if (oldParent != parent || oldParent.getParent() != parent.getParent()) {
+         if (oldParent != fixVersionNode || oldParent.getParent() != fixVersionNode.getParent()) {
             removeNodeFromParent(jiraNode);
             jiras.remove(jiraListName);
 
             jiraListName = getSeparatedName(jira.getKey(), fixVersionName);
-            jiraNode = new JiraNode(jira.getKey(), jira.getId(), jira.getSummary(), parent, jira.getResolution(), jira.getStatus(), jira.getSprint(),
-                  jira.getFixVersions(), jira.getSyncable());
-            insertNodeInto(jiraNode, parent, parent.getChildCount());
+            jiraNode = new JiraNode(jira.getKey(), jira.getId(), jira.getSummary(), fixVersionNode, jira.getResolution(), jira.getStatus(), jira
+                  .getSprint(), jira.getFixVersions(), jira.getSyncable());
+            insertNodeInto(jiraNode, fixVersionNode, fixVersionNode.getChildCount());
             jiras.put(jiraListName, jiraNode);
          }
       }
@@ -96,7 +96,11 @@ public class DnDTreeModel extends DefaultTreeModel {
 
    public SprintNode createSprint(String sprintName) {
       ProjectNode root = (ProjectNode) getRoot();
-      SprintNode sprintNode = new SprintNode(sprintName);
+      SprintNode sprintNode = null;
+      if (UNKNOWN_SPRINT.equals(sprintName))
+         sprintNode = new SprintNode(sprintName, "");
+      else
+         sprintNode = new SprintNode(sprintName);
       insertNodeInto(sprintNode, root, root.getChildCount());
       if (!sprints.containsKey(sprintName)) {
          sprints.put(sprintName, sprintNode);

@@ -45,6 +45,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
          }
       }
    }
+   
 
    private class MenuItem_Add extends JMenuItem {
 
