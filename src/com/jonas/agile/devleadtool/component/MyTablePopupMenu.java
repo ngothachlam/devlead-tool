@@ -33,9 +33,7 @@ public class MyTablePopupMenu extends JPopupMenu {
       this.sourceTable = source;
       JFrame parentFrame = helper.getParentFrame();
 
-      sourceTable.addMouseListener(new PopupListener(sourceTable, this));
-
-      add(new MenuItem_Add("Add Jiras to Table", parentFrame, tables));
+      add(new MenuItem_Add("Add Jiras to Table", source, parentFrame, tables));
       add(new MenuItem_Open("Open in Browser", sourceTable, helper));
       add(new MenuItem_Sync("Sync with Jira", sourceTable, helper));
       addSeparator();
@@ -49,33 +47,29 @@ public class MyTablePopupMenu extends JPopupMenu {
 
       addSeparator();
       add(new MenuItem_Remove("Remove from Table", sourceTable));
+
+      sourceTable.addMouseListener(new PopupListener(this));
    }
 
    @Override
    public void show(Component invoker, int x, int y) {
-      if (sourceTable.getSelectedRowCount() > 0)
-         super.show(invoker, x, y);
+      // if (sourceTable.getSelectedRowCount() > 0)
+      super.show(invoker, x, y);
    }
 }
 
 
 class PopupListener extends MouseAdapter {
    private final MyTablePopupMenu popup;
-   private final MyTable sourceTable;
    private Logger log = MyLogger.getLogger(PopupListener.class);
 
-   public PopupListener(MyTable sourceTable, MyTablePopupMenu popup) {
-      this.sourceTable = sourceTable;
+   public PopupListener(MyTablePopupMenu popup) {
       this.popup = popup;
    }
 
    private void maybeShowPopup(MouseEvent e) {
-      if (log.isDebugEnabled()) {
-         //FIXME right click on empty table doesn't work
-         boolean b = e.getButton() == MouseEvent.BUTTON3 && e.getComponent() instanceof MyTable;
-      }
       if (e.isPopupTrigger()) {
-         popup.show(sourceTable, e.getX(), e.getY());
+         popup.show(e.getComponent(), e.getX(), e.getY());
       }
    }
 
@@ -145,12 +139,13 @@ class MenuItem_Open extends JMenuItem {
 
 class MenuItem_Add extends JMenuItem {
 
-   public MenuItem_Add(String string, final JFrame frame, final MyTable... dtos) {
+   public MenuItem_Add(String string, final MyTable source, final JFrame frame, final MyTable... dtos) {
       super(string);
       addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            new AddManualDialog(frame, dtos);
+            AddManualDialog addManualDialog = new AddManualDialog(frame, dtos);
+            addManualDialog.setSourceTable(source);
          }
       });
 

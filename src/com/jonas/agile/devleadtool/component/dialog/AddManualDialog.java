@@ -29,14 +29,21 @@ import com.jonas.jira.JiraIssue;
 
 public class AddManualDialog extends JFrame {
 
+   private AddManualPanel addManualPanel;
+
    public AddManualDialog(Window frame, MyTable... tables) {
       super();
-      this.setContentPane(new AddManualPanel(this, tables));
+      addManualPanel = new AddManualPanel(this, tables);
+      this.setContentPane(addManualPanel);
       this.pack();
       this.setSize(220, 450);
 
       SwingUtil.centreWindowWithinWindow(this, frame);
       setVisible(true);
+   }
+
+   public void setSourceTable(MyTable target) {
+      addManualPanel.setTarget(target);
    }
 }
 
@@ -99,6 +106,17 @@ class AddManualPanel extends MyPanel {
 
       this.add(panel, BorderLayout.CENTER);
       this.add(buttonPanel, BorderLayout.PAGE_END);
+   }
+
+   public void setTarget(MyTable target) {
+      Enumeration<?> elements = group.getElements();
+      while (elements.hasMoreElements()) {
+         TableRadioButton button = (TableRadioButton) elements.nextElement();
+         if (button.getTable().equals(target)) {
+            button.setSelected(true);
+            return;
+         }
+      }
    }
 
    private void set2ndCol(GridBagConstraints c) {
