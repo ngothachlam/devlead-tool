@@ -15,7 +15,7 @@ public class XmlParserSmallMock implements XmlParser {
       reader.setContentHandler(saxHandler);
    }
 
-   public void parse() throws IOException, SAXException {
+   public void parse(String sprint) throws IOException, SAXException {
       System.out.println("parsing!");
       reader.parse("test-data/ListOfSprintJiras.xml");
    }

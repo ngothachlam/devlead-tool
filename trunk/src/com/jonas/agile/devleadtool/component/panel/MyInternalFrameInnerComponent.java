@@ -24,6 +24,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.DnDTreePanel;
 import com.jonas.agile.devleadtool.component.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
+import com.jonas.agile.devleadtool.component.MyTreePopupMenu;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
@@ -49,12 +50,13 @@ import com.jonas.common.logging.MyLogger;
 
 public class MyInternalFrameInnerComponent extends MyComponentPanel {
 
+   private static final int MAX_RESULT = 1000;
+
    private Logger log = MyLogger.getLogger(MyInternalFrameInnerComponent.class);
 
    private BoardPanel boardPanel;
    private JiraPanel jiraPanel;
    private JCheckBox editableCheckBox;
-   private List<MyTablePopupMenu> popups = new ArrayList<MyTablePopupMenu>(3);
    private DnDTreePanel sprintPanel;
 
    public MyInternalFrameInnerComponent(PlannerHelper client) {
@@ -63,20 +65,18 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
 
    public MyInternalFrameInnerComponent(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel) {
       super(new BorderLayout());
-      log.trace("MyInternalFrameInnerComponent 1");
       try {
          boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
          jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
-         log.trace("MyInternalFrameInnerComponent 1.1");
+
          DnDTreeModel model = new DnDTreeModel("LLU");
-         log.trace("MyInternalFrameInnerComponent 1.2");
          DnDTree tree = new DnDTree(model);
          JiraSaxHandler saxHandler = new JiraSaxHandler();
-         saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree));
-         log.trace("MyInternalFrameInnerComponent 1.3");
-         XmlParser parser = new XmlParserImpl(saxHandler);
+         saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, MAX_RESULT, helper.getParentFrame()));
+
+         XmlParser parser = new XmlParserImpl(saxHandler, MAX_RESULT);
          // XmlParser parser = new XmlParserLargeMock(saxHandler);
-         log.trace("MyInternalFrameInnerComponent 1.4");
+
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
          log.trace("MyInternalFrameInnerComponent 1.5");
          makeContent(boardModel, tree, dndTreeBuilder, helper, jiraModel);
@@ -87,7 +87,6 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
       } catch (SAXException e) {
          e.printStackTrace();
       }
-      log.trace("MyInternalFrameInnerComponent 2");
    }
 
    private Component combineIntoSplitPane(JPanel panel1, JPanel panel2, JPanel panel3) {
@@ -146,11 +145,12 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
       sprintPanel = new DnDTreePanel(tree, dndTreeBuilder, helper.getParentFrame());
       jiraPanel = new JiraPanel(helper, jiraModel);
 
-      // FIXME I want to put this into the MyTable instead!! - need to register the other tables with each other!
       MyTable boardTable = boardPanel.getTable();
       MyTable jiraTable = jiraPanel.getTable();
-      popups.add(new MyTablePopupMenu(boardTable, helper, boardTable, jiraTable));
-      popups.add(new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable));
+      
+      new MyTablePopupMenu(boardTable, helper, boardTable, jiraTable);
+      new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable);
+      new MyTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder);
 
       JPanel panel = new JPanel();
       editableCheckBox = new JCheckBox("Editable?", true);

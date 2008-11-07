@@ -19,12 +19,12 @@ public class DnDTreeBuilder {
       this.parser = parser;
    }
 
-   public void buildTree(DnDTree tree) {
+   public void buildTree(DnDTree tree, final String sprint) {
       SwingWorker worker = new SwingWorker() {
          @Override
          protected Object doInBackground() {
             try {
-               parser.parse();
+               parser.parse(sprint);
             } catch (IOException e) {
                e.printStackTrace();
             } catch (SAXException e) {

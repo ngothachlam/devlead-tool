@@ -21,7 +21,7 @@ public class XmlParserAtlassain extends HttpClient implements XmlParser {
       reader.setContentHandler(nodeCounter);
    }
 
-   public void parse() throws IOException, SAXException {
+   public void parse(String sprint) throws IOException, SAXException {
       reader.parse("test-data/ListOfAtlassinJira.xml");
    }
 

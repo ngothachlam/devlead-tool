@@ -6,6 +6,6 @@ import com.jonas.jira.access.JiraException;
 
 public interface XmlParser {
 
-   public void parse() throws IOException, SAXException, JiraException;
+   public void parse(String sprint) throws IOException, SAXException, JiraException;
 
 }
