@@ -29,19 +29,21 @@ public class MyTablePopupMenu extends MyPopupMenu {
       JFrame parentFrame = helper.getParentFrame();
 
       add(new MenuItem_Add("Add Jiras", source, parentFrame, tables));
-      add(new MenuItem_Open("Open in Browser", sourceTable, helper));
+      add(new MenuItem_Default("Open in Browser", new OpenJirasListener(sourceTable, helper)));
       add(new MenuItem_Sync("Dowload Jira Info", sourceTable, helper));
       addSeparator();
+      addMenuItem_Copys(source, parentFrame, tables);
+      addSeparator();
+      add(new MenuItem_Remove("Remove Jiras", sourceTable, helper.getParentFrame()));
+   }
 
+   private void addMenuItem_Copys(MyTable source, JFrame parentFrame, MyTable... tables) {
       for (MyTable tableDTO : tables) {
          if (!tableDTO.equals(source)) {
             String title = "Copy to other Table: " + tableDTO.getTitle();
             add(new MenuItem_Copy(parentFrame, title, sourceTable, tableDTO));
          }
       }
-
-      addSeparator();
-      add(new MenuItem_Remove("Remove Jiras", sourceTable, helper.getParentFrame()));
    }
 
    private class MenuItem_Add extends JMenuItem {
@@ -104,11 +106,11 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
    }
 
-   private class MenuItem_Open extends JMenuItem {
+   private class MenuItem_Default extends JMenuItem {
 
-      public MenuItem_Open(String string, MyTable sourceTable, PlannerHelper helper) {
+      public MenuItem_Default(String string, ActionListener actionListener) {
          super(string);
-         addActionListener(new OpenJirasListener(sourceTable, helper));
+         addActionListener(actionListener);
       }
    }
 
@@ -135,9 +137,13 @@ public class MyTablePopupMenu extends MyPopupMenu {
    }
 
    private class MenuItem_Sync extends JMenuItem {
-
       public MenuItem_Sync(String string, final MyTable sourceTable, PlannerHelper helper) {
          super(string);
+         addActionListener(getActionListener(sourceTable, helper));
+      }
+
+      private SyncWithJiraListener getActionListener(final MyTable sourceTable, PlannerHelper helper) {
+         SyncWithJiraListener actionListener = new SyncWithJiraListener(sourceTable, helper);
          SyncWithJiraActionListenerListener syncWithJiraActionListenerListener = new SyncWithJiraActionListenerListener() {
             public void jiraAdded(JiraIssue jiraIssue) {
                sourceTable.addJira(jiraIssue);
@@ -147,9 +153,8 @@ public class MyTablePopupMenu extends MyPopupMenu {
                sourceTable.syncJira(jiraIssue, tableRowSynced);
             }
          };
-         SyncWithJiraListener syncWithJiraListener = new SyncWithJiraListener(sourceTable, helper);
-         syncWithJiraListener.addListener(syncWithJiraActionListenerListener);
-         addActionListener(syncWithJiraListener);
+         actionListener.addListener(syncWithJiraActionListenerListener);
+         return actionListener;
       }
    }
 }
