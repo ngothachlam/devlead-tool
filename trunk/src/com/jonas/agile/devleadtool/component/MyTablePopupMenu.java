@@ -1,10 +1,8 @@
 package com.jonas.agile.devleadtool.component;
 
-import java.awt.Component;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFrame;
@@ -30,125 +28,128 @@ public class MyTablePopupMenu extends MyPopupMenu {
       this.sourceTable = source;
       JFrame parentFrame = helper.getParentFrame();
 
-      add(new MenuItem_Add("Add Jiras to Table", source, parentFrame, tables));
+      add(new MenuItem_Add("Add Jiras", source, parentFrame, tables));
       add(new MenuItem_Open("Open in Browser", sourceTable, helper));
-      add(new MenuItem_Sync("Sync with Jira", sourceTable, helper));
+      add(new MenuItem_Sync("Dowload Jira Info", sourceTable, helper));
       addSeparator();
 
       for (MyTable tableDTO : tables) {
          if (!tableDTO.equals(source)) {
-            String title = "Copy to Table " + tableDTO.getTitle();
+            String title = "Copy to other Table: " + tableDTO.getTitle();
             add(new MenuItem_Copy(parentFrame, title, sourceTable, tableDTO));
          }
       }
 
       addSeparator();
-      add(new MenuItem_Remove("Remove from Table", sourceTable));
-   }
-}
-
-
-class MenuItem_Copy extends JMenuItem implements ActionListener {
-
-   private final MyTable destinationTable;
-   private MyTable sourceTable;
-   private JFrame frame;
-
-   public MenuItem_Copy(JFrame frame, String string, MyTable source, MyTable table) {
-      super(string);
-      this.frame = frame;
-      this.sourceTable = source;
-      this.destinationTable = table;
-      addActionListener(this);
+      add(new MenuItem_Remove("Remove Jiras", sourceTable, helper.getParentFrame()));
    }
 
-   public void actionPerformed(ActionEvent e) {
-      final int[] selectedRows = sourceTable.getSelectedRows();
-      final ProgressDialog dialog = new ProgressDialog(frame, "Copying...", "Copying selected messages from Board to Plan...",
-            selectedRows.length);
-      try {
-         for (int i = 0; i < selectedRows.length; i++) {
-            String jiraString = (String) sourceTable.getValueAt(Column.Jira, selectedRows[i]);
-            addJira(jiraString, destinationTable);
-            dialog.increseProgress();
-         }
-      } catch (Exception ex) {
-         AlertDialog.alertException(null, ex);
-         ex.printStackTrace();
+   private class MenuItem_Add extends JMenuItem {
+
+      public MenuItem_Add(String string, final MyTable source, final JFrame frame, final MyTable... dtos) {
+         super(string);
+         addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               AddManualDialog addManualDialog = new AddManualDialog(frame, dtos);
+               addManualDialog.setSourceTable(source);
+            }
+         });
       }
-      dialog.setCompleteWithDelay(300);
    }
 
-   void addJira(String jiraString, MyTable table) {
-      Map<Column, Object> map = new HashMap<Column, Object>();
-      Column[] columns = sourceTable.getColumns();
-      for (Column column : columns) {
-         MyTableModel model = (MyTableModel) sourceTable.getModel();
-         int row = model.getRowWithJira(jiraString);
-         map.put(column, model.getValueAt(column, row));
+   private class MenuItem_Copy extends JMenuItem implements ActionListener {
+
+      private final MyTable destinationTable;
+      private JFrame frame;
+      private MyTable sourceTable;
+
+      public MenuItem_Copy(JFrame frame, String string, MyTable source, MyTable table) {
+         super(string);
+         this.frame = frame;
+         this.sourceTable = source;
+         this.destinationTable = table;
+         addActionListener(this);
       }
-      table.addJira(jiraString, map);
-   }
-}
 
-
-class MenuItem_Open extends JMenuItem {
-
-   public MenuItem_Open(String string, MyTable sourceTable, PlannerHelper helper) {
-      super(string);
-      addActionListener(new OpenJirasListener(sourceTable, helper));
-   }
-}
-
-
-class MenuItem_Add extends JMenuItem {
-
-   public MenuItem_Add(String string, final MyTable source, final JFrame frame, final MyTable... dtos) {
-      super(string);
-      addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            AddManualDialog addManualDialog = new AddManualDialog(frame, dtos);
-            addManualDialog.setSourceTable(source);
+      public void actionPerformed(ActionEvent e) {
+         final int[] selectedRows = sourceTable.getSelectedRows();
+         if (selectedRows.length == 0 ){
+            AlertDialog.alertMessage(frame, "No rows selected!");
          }
-      });
-
-   }
-}
-
-
-class MenuItem_Remove extends JMenuItem implements ActionListener {
-   private MyTable sourceTable;
-
-   public MenuItem_Remove(String string, MyTable sourceTable) {
-      super(string);
-      this.sourceTable = sourceTable;
-      addActionListener(this);
-   }
-
-   @Override
-   public void actionPerformed(ActionEvent e) {
-      sourceTable.removeSelectedRows();
-   }
-}
-
-
-class MenuItem_Sync extends JMenuItem {
-
-   public MenuItem_Sync(String string, final MyTable sourceTable, PlannerHelper helper) {
-      super(string);
-      SyncWithJiraActionListenerListener syncWithJiraActionListenerListener = new SyncWithJiraActionListenerListener() {
-         public void jiraAdded(JiraIssue jiraIssue) {
-            sourceTable.addJira(jiraIssue);
+         final ProgressDialog dialog = new ProgressDialog(frame, "Copying...", "Copying selected messages from Board to Plan...",
+               selectedRows.length);
+         try {
+            for (int i = 0; i < selectedRows.length; i++) {
+               String jiraString = (String) sourceTable.getValueAt(Column.Jira, selectedRows[i]);
+               addJira(jiraString, destinationTable);
+               dialog.increseProgress();
+            }
+            dialog.setCompleteWithDelay(300);
+         } catch (Exception ex) {
+            AlertDialog.alertException(null, ex);
+            ex.printStackTrace();
          }
+      }
 
-         public void jiraSynced(JiraIssue jiraIssue, int tableRowSynced) {
-            sourceTable.syncJira(jiraIssue, tableRowSynced);
+      void addJira(String jiraString, MyTable table) {
+         Map<Column, Object> map = new HashMap<Column, Object>();
+         Column[] columns = sourceTable.getColumns();
+         for (Column column : columns) {
+            MyTableModel model = (MyTableModel) sourceTable.getModel();
+            int row = model.getRowWithJira(jiraString);
+            map.put(column, model.getValueAt(column, row));
          }
-      };
+         table.addJira(jiraString, map);
+      }
+   }
 
-      SyncWithJiraListener syncWithJiraListener = new SyncWithJiraListener(sourceTable, helper);
-      syncWithJiraListener.addListener(syncWithJiraActionListenerListener);
-      addActionListener(syncWithJiraListener);
+   private class MenuItem_Open extends JMenuItem {
+
+      public MenuItem_Open(String string, MyTable sourceTable, PlannerHelper helper) {
+         super(string);
+         addActionListener(new OpenJirasListener(sourceTable, helper));
+      }
+   }
+
+   private class MenuItem_Remove extends JMenuItem implements ActionListener {
+      private MyTable sourceTable;
+      private final Frame parent;
+
+      public MenuItem_Remove(String string, MyTable sourceTable, Frame parent) {
+         super(string);
+         this.sourceTable = sourceTable;
+         this.parent = parent;
+         addActionListener(this);
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         final ProgressDialog dialog = new ProgressDialog(parent, "Removing...", "Removing selected Jiras...",0);
+         if (sourceTable.getSelectedRowCount() <= 0){
+            dialog.setNote("Nothing selected!!");
+            dialog.setCompleteWithDelay(300);
+         }
+         sourceTable.removeSelectedRows();
+      }
+   }
+
+   private class MenuItem_Sync extends JMenuItem {
+
+      public MenuItem_Sync(String string, final MyTable sourceTable, PlannerHelper helper) {
+         super(string);
+         SyncWithJiraActionListenerListener syncWithJiraActionListenerListener = new SyncWithJiraActionListenerListener() {
+            public void jiraAdded(JiraIssue jiraIssue) {
+               sourceTable.addJira(jiraIssue);
+            }
+
+            public void jiraSynced(JiraIssue jiraIssue, int tableRowSynced) {
+               sourceTable.syncJira(jiraIssue, tableRowSynced);
+            }
+         };
+         SyncWithJiraListener syncWithJiraListener = new SyncWithJiraListener(sourceTable, helper);
+         syncWithJiraListener.addListener(syncWithJiraActionListenerListener);
+         addActionListener(syncWithJiraListener);
+      }
    }
 }

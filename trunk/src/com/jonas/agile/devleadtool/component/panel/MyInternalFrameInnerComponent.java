@@ -52,13 +52,9 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
    private Logger log = MyLogger.getLogger(MyInternalFrameInnerComponent.class);
 
    private BoardPanel boardPanel;
-
    private JiraPanel jiraPanel;
-
    private JCheckBox editableCheckBox;
-
    private List<MyTablePopupMenu> popups = new ArrayList<MyTablePopupMenu>(3);
-
    private DnDTreePanel sprintPanel;
 
    public MyInternalFrameInnerComponent(PlannerHelper client) {
@@ -67,27 +63,31 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
 
    public MyInternalFrameInnerComponent(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel) {
       super(new BorderLayout());
+      log.trace("MyInternalFrameInnerComponent 1");
       try {
          boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
          jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
-
+         log.trace("MyInternalFrameInnerComponent 1.1");
          DnDTreeModel model = new DnDTreeModel("LLU");
+         log.trace("MyInternalFrameInnerComponent 1.2");
          DnDTree tree = new DnDTree(model);
          JiraSaxHandler saxHandler = new JiraSaxHandler();
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree));
-
+         log.trace("MyInternalFrameInnerComponent 1.3");
          XmlParser parser = new XmlParserImpl(saxHandler);
          // XmlParser parser = new XmlParserLargeMock(saxHandler);
-
+         log.trace("MyInternalFrameInnerComponent 1.4");
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
-
+         log.trace("MyInternalFrameInnerComponent 1.5");
          makeContent(boardModel, tree, dndTreeBuilder, helper, jiraModel);
+         log.trace("MyInternalFrameInnerComponent 1.6");
          this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
 
          wireUpListeners(boardModel, jiraModel);
       } catch (SAXException e) {
          e.printStackTrace();
       }
+      log.trace("MyInternalFrameInnerComponent 2");
    }
 
    private Component combineIntoSplitPane(JPanel panel1, JPanel panel2, JPanel panel3) {

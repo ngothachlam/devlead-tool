@@ -13,53 +13,57 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import org.apache.log4j.Logger;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
+import com.jonas.common.logging.MyLogger;
 
 public class AlertDialog extends JDialog {
-	private JTextArea textArea;
+   private static Logger log = MyLogger.getLogger(AlertDialog.class);
+   private JTextArea textArea;
 
-	private AlertDialog(Frame parent, String alertMessage) {
-		super(parent, "Alert...", true);
-		
-		MyPanel panel = new MyPanel(new BorderLayout()).bordered(15, 15, 15, 15);
-		textArea = new JTextArea(alertMessage);
-		textArea.setEditable(false);
-		JButton button = new JButton("Close");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-			}
-		});
+   private AlertDialog(Frame parent, String alertMessage) {
+      super(parent, "Alert...", true);
 
-		panel.addNorth(new JLabel("Message:"));
-		panel.addCenter(new JScrollPane(textArea));
-		panel.addSouth(button);
+      MyPanel panel = new MyPanel(new BorderLayout()).bordered(15, 15, 15, 15);
+      textArea = new JTextArea(alertMessage);
+      textArea.setEditable(false);
+      JButton button = new JButton("Close");
+      button.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            dispose();
+         }
+      });
 
-		setContentPane(panel);
+      panel.addNorth(new JLabel("Message:"));
+      panel.addCenter(new JScrollPane(textArea));
+      panel.addSouth(button);
 
-		pack();
-		setSize(new Dimension(700, 350));
-		if (parent != null)
-			SwingUtil.centreWindowWithinWindow(this, parent);
-		else
-			setLocationRelativeTo(null);
+      setContentPane(panel);
 
-		setVisible(true);
-	}
+      pack();
+      setSize(new Dimension(700, 350));
+      if (parent != null)
+         SwingUtil.centreWindowWithinWindow(this, parent);
+      else
+         setLocationRelativeTo(null);
 
-	public static void alertException(Frame parentFrame, Throwable e) {
-		StringWriter sw = new StringWriter();
-		e.printStackTrace(new PrintWriter(sw));
-		String stacktrace = sw.toString();
-		alertMessage(parentFrame, stacktrace);
-	}
+      setVisible(true);
+   }
 
-	public static void alertMessage(Frame parentFrame, String e) {
-		new AlertDialog(parentFrame, e);
-	}
+   public static void alertException(Frame parentFrame, Throwable e) {
+      StringWriter sw = new StringWriter();
+      e.printStackTrace(new PrintWriter(sw));
+      String stacktrace = sw.toString();
+      alertMessage(parentFrame, stacktrace);
+   }
 
-	public void addText(String string) {
-		textArea.setText(textArea.getText() + string);
-	}
+   public static void alertMessage(Frame parentFrame, String e) {
+      log.debug("alert message");
+      new AlertDialog(parentFrame, e);
+   }
+
+   public void addText(String string) {
+      textArea.setText(textArea.getText() + string);
+   }
 }

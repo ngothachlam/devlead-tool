@@ -28,6 +28,8 @@ public class OpenJirasListener implements ActionListener {
 
    public void actionPerformed(ActionEvent e) {
       int[] rows = table.getSelectedRows();
+      if (rows.length == 0)
+         AlertDialog.alertMessage(helper.getParentFrame(), "No rows selected!");
       StringBuffer sb = new StringBuffer();
       for (int j = 0; j < rows.length; j++) {
          String jira = (String) table.getValueAt(Column.Jira, rows[j]);
