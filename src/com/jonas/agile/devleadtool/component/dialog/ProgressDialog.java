@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Frame;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -15,9 +16,9 @@ public class ProgressDialog extends JDialog {
 
    private JLabel label;
    private JProgressBar progressBar;
-   private final JFrame owner;
+   private final Frame owner;
 
-   public ProgressDialog(JFrame owner, String title, String note, int max) {
+   public ProgressDialog(Frame owner, String title, String note, int max) {
       super(owner, title);
       this.owner = owner;
       progressBar = new JProgressBar(0, max);

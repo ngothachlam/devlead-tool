@@ -1,6 +1,7 @@
 package com.jonas.agile.devleadtool.component.dialog;
 
 import javax.swing.SwingWorker;
+import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
@@ -9,6 +10,7 @@ import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerComponent
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
+import com.jonas.common.logging.MyLogger;
 
 public class NewPlannerDialog {
    private final MyDesktopPane desktopPane;
@@ -16,6 +18,7 @@ public class NewPlannerDialog {
    private final PlannerDAOExcelImpl dao;
    private final SavePlannerDialog savePlannerDialog;
    private final SaveKeyListener saveKeyListener;
+   private final static Logger log = MyLogger.getLogger(NewPlannerDialog.class);
 
    public NewPlannerDialog(final MyDesktopPane desktopPane, final PlannerHelper helper, final PlannerDAOExcelImpl dao, final SavePlannerDialog savePlannerDialog, final SaveKeyListener saveKeyListener) {
       this.desktopPane = desktopPane;
@@ -27,7 +30,9 @@ public class NewPlannerDialog {
    }
    
    public void openNew(){
+      log .trace("openNew");
       SwingWorker<ModelDTO, Object> worker = new SwingWorker<ModelDTO, Object>() {
+
          protected ModelDTO doInBackground() throws Exception {
             return new ModelDTO(new BoardTableModel(), new JiraTableModel());
          }
@@ -35,10 +40,13 @@ public class NewPlannerDialog {
          @Override
          protected void done() {
             try {
+               log .trace("done 1");
                ModelDTO dto = get();
                MyInternalFrameInnerComponent internalFrameTabPanel = new MyInternalFrameInnerComponent(helper, dto.getBoardModel(), dto.getJiraModel());
+               log .trace("done 1.1");
                MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog, saveKeyListener, desktopPane);
                internalFrame.setVisible(true);
+               log.trace("done 2");
             } catch (Throwable e) {
                AlertDialog.alertException(helper.getParentFrame(), e);
                e.printStackTrace();

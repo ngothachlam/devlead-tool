@@ -44,6 +44,7 @@ public class MyInternalFrame extends JInternalFrame {
    private String originalTitleWithDuplicateNumber;
    public MyInternalFrame(final PlannerHelper client, String title, MyInternalFrameInnerComponent internalFrameTabPanel, PlannerDAO dao, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener, MyDesktopPane desktop) {
       this(title, client);
+      log.trace("MyInternalFrame");
       this.dao = dao;
       this.internalFrameTabPanel = internalFrameTabPanel;
       desktop.addInternalFrame(this);
@@ -55,6 +56,7 @@ public class MyInternalFrame extends JInternalFrame {
       wireListeners(client, savePlannerDialog, saveKeyListener);
       
       PlannerListeners.notifyListenersThatFrameWasCreated(this);
+      log.trace("MyInternalFrame");
    }
    
    MyInternalFrame(String title, PlannerHelper helper) {
