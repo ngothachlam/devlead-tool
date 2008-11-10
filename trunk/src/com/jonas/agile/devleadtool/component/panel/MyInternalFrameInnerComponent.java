@@ -150,7 +150,7 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
       
       new MyTablePopupMenu(boardTable, helper, boardTable, jiraTable);
       new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable);
-      new MyTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder);
+      new MyTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder, helper);
 
       JPanel panel = new JPanel();
       editableCheckBox = new JCheckBox("Editable?", true);
