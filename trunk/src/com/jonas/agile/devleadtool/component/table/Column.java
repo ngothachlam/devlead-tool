@@ -41,7 +41,16 @@ public enum Column {
    J_FixVersion(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes) {
       @Override
       public Object parse(String cellContents) {
-         return new ArrayList();
+         ArrayList<String> arrayList = new ArrayList<String>();
+         if (cellContents == null ){
+            return arrayList;
+         }
+         cellContents = cellContents.substring(1, cellContents.length()-1);
+         String[] split = cellContents.split("(, )");
+         for (String string : split) {
+            arrayList.add(string);
+         }
+         return arrayList;
       }
    },
    J_Type(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
