@@ -94,12 +94,14 @@ public class JiraBuilder {
    public JiraIssue buildJira(Element e, List<JiraVersion> fixVersions) {
       JiraIssue jira = buildJira(e);
       log.debug("building jira " + jira.getKey());
-      if (fixVersions.size() == 1) {
-         jira.addFixVersions(fixVersions.get(0));
-      } else if (fixVersions.size() > 1) {
-         jira.addFixVersions(fixVersions.get(0));
-         log.warn("Cannot handle more than one fix version at the moment for " + jira.getKey());
+      // if (fixVersions.size() == 1) {
+      for (JiraVersion jiraVersion : fixVersions) {
+         jira.addFixVersions(jiraVersion);
       }
+      // } else if (fixVersions.size() > 1) {
+      // jira.addFixVersions(fixVersions.get(0));
+      // log.warn("Cannot handle more than one fix version at the moment for " + jira.getKey());
+      // }
       return jira;
    }
 
