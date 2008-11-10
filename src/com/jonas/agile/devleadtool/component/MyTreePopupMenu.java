@@ -17,6 +17,7 @@ import com.jonas.agile.devleadtool.component.listener.OpenJirasListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.tree.DnDTree;
+import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.common.HyperLinker;
@@ -34,7 +35,7 @@ public class MyTreePopupMenu extends MyPopupMenu {
       this.source = source;
       this.dndTreeBuilder = dndTreeBuilder;
       add(new JMenuItem_Sync());
-      add(new JMenuItem_Browse(source));
+      add(new JMenuItem_Browse(source, parentFrame, helper));
    }
 
    private abstract class JMenuItemAbstr extends JMenuItem implements ActionListener {
@@ -44,42 +45,51 @@ public class MyTreePopupMenu extends MyPopupMenu {
       }
    }
 
+   //FIXME merge with other browse action from Table!
    private class JMenuItem_Browse extends JMenuItemAbstr {
       private final DnDTree tree;
+      private Frame frame;
+      private PlannerHelper helper;
 
-      public JMenuItem_Browse(DnDTree tree) {
+      public JMenuItem_Browse(DnDTree tree, Frame frame, PlannerHelper helper) {
          super("Browse Selected");
          this.tree = tree;
+         this.frame = frame;
+         this.helper = helper;
       }
 
       @Override
       public void actionPerformed(ActionEvent e) {
-         int[] rows = table.getSelectedRows();
+         int[] rows = tree.getSelectionRows();
          if (rows.length == 0)
-            AlertDialog.alertMessage(helper.getParentFrame(), "No rows selected!");
+            AlertDialog.alertMessage(frame, "No rows selected!");
          StringBuffer sb = new StringBuffer();
          for (int j = 0; j < rows.length; j++) {
-            String jira = (String) table.getValueAt(Column.Jira, rows[j]);
-            String jira_url = null;
-            boolean error = false;
-            try {
-               jira_url = helper.getJiraUrl(jira);
-            } catch (NotJiraException e1) {
-               if (sb.length() > 0) {
-                  sb.append(", ");
-               }
-               sb.append(jira);
-               error = true;
-            }
-            if (!error) {
+            TreePath jiraPath = tree.getPathForRow(rows[j]);
+            if (jiraPath.getLastPathComponent() instanceof JiraNode) {
+               JiraNode jiraNode = (JiraNode) jiraPath.getLastPathComponent();
+               String jira = jiraNode.getKey();
+               String jira_url = null;
+               boolean error = false;
                try {
-                  HyperLinker.displayURL(jira_url + "/browse/" + jira);
-               } catch (URISyntaxException e1) {
-                  // TODO Auto-generated catch block
-                  e1.printStackTrace();
-               } catch (IOException e1) {
-                  // TODO Auto-generated catch block
-                  e1.printStackTrace();
+                  jira_url = helper.getJiraUrl(jira);
+               } catch (NotJiraException e1) {
+                  if (sb.length() > 0) {
+                     sb.append(", ");
+                  }
+                  sb.append(jira);
+                  error = true;
+               }
+               if (!error) {
+                  try {
+                     HyperLinker.displayURL(jira_url + "/browse/" + jira);
+                  } catch (URISyntaxException e1) {
+                     // TODO Auto-generated catch block
+                     e1.printStackTrace();
+                  } catch (IOException e1) {
+                     // TODO Auto-generated catch block
+                     e1.printStackTrace();
+                  }
                }
             }
          }
@@ -87,10 +97,10 @@ public class MyTreePopupMenu extends MyPopupMenu {
             sb.append(" are incorrect!");
             AlertDialog.alertMessage(helper.getParentFrame(), sb.toString());
          }
-         
+
       }
    }
-   
+
    private class JMenuItem_Sync extends JMenuItemAbstr {
 
       public JMenuItem_Sync() {
