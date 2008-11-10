@@ -15,10 +15,33 @@ public class ColumnTest extends TestCase {
    }
 
    public void testJFixVersionShouldParseOk() {
-      Object parse = Column.J_FixVersion.parse("[LLU 11.2, LLU 12 - Sprint 5 (current)]");
-      assertTrue(parse instanceof List<?>);
-      List list = (List) parse;
+      List<String> list = getJFixVersionParse("[LLU 11.2]");
+      assertEquals(1, list.size());
+      assertEquals("LLU 11.2", list.get(0));
+      
+      list = getJFixVersionParse("[LLU 11.2, LLU 12 - Sprint 5 (current)]");
       assertEquals(2, list.size());
+      assertEquals("LLU 11.2", list.get(0));
+      assertEquals("LLU 12 - Sprint 5 (current)", list.get(1));
+      
+      list = getJFixVersionParse("[ LLU 11.2 ,  LLU 12 - Sprint 5 (current) ]");
+      assertEquals(2, list.size());
+      assertEquals(" LLU 11.2 ", list.get(0));
+      assertEquals(" LLU 12 - Sprint 5 (current) ", list.get(1));
+      
+      list = getJFixVersionParse("[ LLU 11,2 ,  LLU 12 - Sprint 5 (current) ]");
+      assertEquals(2, list.size());
+      assertEquals(" LLU 11,2 ", list.get(0));
+      assertEquals(" LLU 12 - Sprint 5 (current) ", list.get(1));
+      
+      list = getJFixVersionParse(null);
+      assertEquals(0, list.size());
+   }
+
+   private List<String> getJFixVersionParse(String string) {
+      Object parse = Column.J_FixVersion.parse(string);
+      assertTrue(parse instanceof List<?>);
+      return (List<String>) parse;
    }
 
 }
