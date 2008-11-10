@@ -3,6 +3,8 @@
  */
 package com.jonas.agile.devleadtool.component.table;
 
+import java.util.ArrayList;
+
 
 public enum Column {
    // String Defaults
@@ -33,11 +35,19 @@ public enum Column {
    B_Release(String.class, "", IsEditableColumn.No, IsJiraColumn.No, ToLoadColumn.Yes),
 
    // Jira Sync columns:
-   J_Status(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), J_Resolution(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes,
-         ToLoadColumn.Yes), J_BuildNo(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), J_FixVersion(String.class, "",
-         IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), J_Type(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), J_Dev_Estimate(
-         String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), J_Dev_Spent(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes,
-         ToLoadColumn.Yes), J_Sprint(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
+   J_Status(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   J_Resolution(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes,ToLoadColumn.Yes), 
+   J_BuildNo(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   J_FixVersion(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes) {
+      @Override
+      public Object parse(String cellContents) {
+         return new ArrayList();
+      }
+   },
+   J_Type(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   J_Dev_Estimate( String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   J_Dev_Spent(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
+   J_Sprint(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
 
    // Integer
    prio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes) {
