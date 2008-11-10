@@ -131,9 +131,10 @@ public class MyTablePopupMenu extends MyPopupMenu {
          final ProgressDialog dialog = new ProgressDialog(parent, "Removing...", "Removing selected Jiras...",0);
          if (sourceTable.getSelectedRowCount() <= 0){
             dialog.setNote("Nothing selected!!");
-            dialog.setCompleteWithDelay(300);
+            dialog.setCompleteWithDelay(2000);
          }
          sourceTable.removeSelectedRows();
+         dialog.setCompleteWithDelay(300);
       }
    }
 

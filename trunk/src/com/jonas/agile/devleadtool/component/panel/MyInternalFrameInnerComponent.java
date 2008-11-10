@@ -173,9 +173,10 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
       sprintTree.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
    }
 
-   private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel) {
+   private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel, DnDTree sprintTree, MyTable boardTable) {
       jiraModel.addTableModelListener(new BoardAndJiraSyncListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
       jiraPanel.getTable().addJiraEditorListener(new MyJiraCellEditorListenerForPanel(boardModel));
+      jiraPanel.getTable().addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, jiraPanel.getTable(), boardTable));
    }
 
    public void wireUpListeners(BoardTableModel boardModel, JiraTableModel jiraModel) {
@@ -184,7 +185,7 @@ public class MyInternalFrameInnerComponent extends MyComponentPanel {
       DnDTree sprintTree = sprintPanel.getTree();
 
       setBoardDataListeners(boardModel, boardTable, jiraTable, sprintTree);
-      setJiraDataListener(jiraModel, boardModel);
+      setJiraDataListener(jiraModel, boardModel, sprintTree, boardTable);
       setSprintDataListener(sprintTree, boardTable, jiraTable);
 
       editableCheckBox.addActionListener(new EditableListener());

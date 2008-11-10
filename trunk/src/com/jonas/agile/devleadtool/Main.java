@@ -17,6 +17,7 @@ public class Main {
       }
    }
 
+   //FIXME removing selected jiras popup menu doesn't close the progress dialogue!
    // USABILITY add color coding to the JiraPanel 1) Where Dev/Actuals are incorrect, 2) Where sprint is incorrect 3) Where fix Version is incorrect
    // FIXME checking the setEditable checkbox resets the table column widths - it shouldn't!
    // TODO add a checkbox at the top for finding jiras! When ticked - all selects in tables are propagated to other tables and highlighted
