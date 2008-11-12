@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component;
+package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.tree.DnDTree;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;

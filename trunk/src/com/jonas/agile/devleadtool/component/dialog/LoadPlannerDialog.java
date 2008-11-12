@@ -10,7 +10,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.SaveKeyListener;
-import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerComponent;
+import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerPanel;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
@@ -58,24 +58,24 @@ public class LoadPlannerDialog extends JFileChooser {
 
          dao.setXlsFile(xlsFile);
 
-         SwingWorker<ModelDTO, Object> swingWorker = new SwingWorker<ModelDTO, Object>() {
+         SwingWorker<CombinedModelDTO, Object> swingWorker = new SwingWorker<CombinedModelDTO, Object>() {
             @Override
-            protected ModelDTO doInBackground() throws Exception {
+            protected CombinedModelDTO doInBackground() throws Exception {
                log.trace("doInBackground 1");
                BoardTableModel boardModel = dao.loadBoardModel();
                JiraTableModel jiraModel = dao.loadJiraModel();
 
                log.trace("doInBackground 2");
-               return new ModelDTO(boardModel, jiraModel);
+               return new CombinedModelDTO(boardModel, jiraModel);
             }
 
             @Override
             protected void done() {
                log.trace("done");
                try {
-                  ModelDTO dto = get();
+                  CombinedModelDTO dto = get();
                   if (dto != null) {
-                     MyInternalFrameInnerComponent internalFrameTabPanel = new MyInternalFrameInnerComponent(helper, dto.getBoardModel(), dto.getJiraModel());
+                     MyInternalFrameInnerPanel internalFrameTabPanel = new MyInternalFrameInnerPanel(helper, dto.getBoardModel(), dto.getJiraModel());
                      MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog, saveKeyListener, desktop);
                      internalFrame.setSaveFile(xlsFile);
                   }

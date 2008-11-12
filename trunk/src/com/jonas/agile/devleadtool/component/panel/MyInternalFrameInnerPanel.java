@@ -21,14 +21,13 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.DnDTreePanel;
-import com.jonas.agile.devleadtool.component.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.MyTreePopupMenu;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
 import com.jonas.agile.devleadtool.component.listener.BoardAndJiraSyncListener;
+import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -48,22 +47,22 @@ import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
 
-public class MyInternalFrameInnerComponent extends MyComponentPanel {
+public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private static final int MAX_RESULT = 1000;
 
-   private Logger log = MyLogger.getLogger(MyInternalFrameInnerComponent.class);
+   private Logger log = MyLogger.getLogger(MyInternalFrameInnerPanel.class);
 
    private BoardPanel boardPanel;
    private JiraPanel jiraPanel;
    private JCheckBox editableCheckBox;
    private DnDTreePanel sprintPanel;
 
-   public MyInternalFrameInnerComponent(PlannerHelper client) {
+   public MyInternalFrameInnerPanel(PlannerHelper client) {
       this(client, null, null);
    }
 
-   public MyInternalFrameInnerComponent(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel) {
+   public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel) {
       super(new BorderLayout());
       try {
          boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;

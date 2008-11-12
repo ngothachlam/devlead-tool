@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component;
+package com.jonas.agile.devleadtool.constants;
 
 public enum CutoverLength {
    DEFAULT, TEST_5{

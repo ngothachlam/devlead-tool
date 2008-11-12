@@ -6,10 +6,10 @@ package com.jonas.agile.devleadtool.component.dialog;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 
-class ModelDTO{
+public class CombinedModelDTO{
    private final BoardTableModel boardModel;
    private final JiraTableModel jiraModel;
-   public ModelDTO(BoardTableModel boardModel, JiraTableModel jiraModel) {
+   public CombinedModelDTO(BoardTableModel boardModel, JiraTableModel jiraModel) {
       this.boardModel = boardModel;
       this.jiraModel = jiraModel;
    }
