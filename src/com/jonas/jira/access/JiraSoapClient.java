@@ -1,10 +1,14 @@
 package com.jonas.jira.access;
 
+import java.awt.SystemColor;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.rpc.ServiceException;
 import org.apache.log4j.Logger;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
+import com.atlassian.jira.rpc.soap.beans.RemoteComment;
 import com.atlassian.jira.rpc.soap.beans.RemoteField;
 import com.atlassian.jira.rpc.soap.beans.RemoteFieldValue;
 import com.atlassian.jira.rpc.soap.beans.RemoteFilter;
@@ -15,6 +19,7 @@ import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
 import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceService;
 import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
+import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
 
@@ -45,6 +50,44 @@ public class JiraSoapClient {
       JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
       log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
       return jiraSoapServiceServiceLocator;
+   }
+
+   @SuppressWarnings("finally")
+   public RemoteIssue createMergeJira(final String jira, final String mergeFixVersionName) throws RemotePermissionException, RemoteAuthenticationException,
+         com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+      RemoteIssue originalJiraIssue = jiraSoapService.getIssue(getToken(), jira);
+
+      RemoteIssue cloneIssue = new RemoteIssue();
+      cloneIssue.setProject(originalJiraIssue.getProject());
+      cloneIssue.setType("1");
+      cloneIssue.setComponents(originalJiraIssue.getComponents());
+      cloneIssue.setSummary("[Merge for " + originalJiraIssue.getKey() + "] " + originalJiraIssue.getSummary());
+
+      cloneIssue.setAffectsVersions(originalJiraIssue.getAffectsVersions());
+
+      RemoteVersion[] versions = jiraSoapService.getVersions(getToken(), PlannerHelper.getProjectKey(jira));
+      List<RemoteVersion> cloneFixVersions = new ArrayList<RemoteVersion>();
+      for (RemoteVersion remoteVersion : versions) {
+         System.out.println("RemoteVersion: " + remoteVersion.getName());
+         if (remoteVersion.getName().trim().equalsIgnoreCase(mergeFixVersionName.trim())) {
+            System.out.println("match: " + mergeFixVersionName);
+            cloneFixVersions.add(remoteVersion);
+         }
+      }
+      cloneIssue.setFixVersions(cloneFixVersions.toArray(new RemoteVersion[cloneFixVersions.size()]));
+
+      RemoteIssue createIssue = null;
+      try {
+         createIssue = jiraSoapService.createIssue(token, cloneIssue);
+         RemoteComment comment = new RemoteComment();
+         comment.setBody("Created Merge Jira: " + createIssue.getKey());
+         comment.setLevel(level);
+         jiraSoapService.addComment(getToken(), jira, comment);
+      } catch (Throwable e) {
+         e.printStackTrace();
+      } finally {
+         return createIssue;
+      }
    }
 
    public RemoteVersion getFixVersion(final String fixName, JiraProject jiraProject) throws RemotePermissionException, RemoteAuthenticationException,
@@ -251,8 +294,7 @@ public class JiraSoapClient {
          this.action = action;
       }
 
-      public Object execute() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
-            RemoteException {
+      public Object execute() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
          // RemoteException - If there was some problem preventing the operation from working.
          // RemotePermissionException - If the user is not permitted to perform this operation in this context.
          // RemoteAuthenticationException - If the token is invalid or the SOAP session has timed out
