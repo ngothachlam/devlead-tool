@@ -11,7 +11,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.panel.SelectionModifier;
 import com.jonas.agile.devleadtool.component.table.renderer.DnDTreeCellRenderer;
 import com.jonas.agile.devleadtool.component.tree.dnd.DnDTreeTransferHandler;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;

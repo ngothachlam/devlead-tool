@@ -21,7 +21,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
-import com.jonas.agile.devleadtool.component.panel.SelectionModifier;
 import com.jonas.agile.devleadtool.component.table.editor.BoardStatusCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;

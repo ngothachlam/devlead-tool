@@ -23,9 +23,10 @@ import com.jonas.agile.devleadtool.component.dialog.PlannerListeners;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
 import com.jonas.agile.devleadtool.component.panel.BoardPanel;
 import com.jonas.agile.devleadtool.component.panel.JiraPanel;
-import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerComponent;
+import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerPanel;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.constants.CutoverLength;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.common.logging.MyLogger;
 
@@ -39,10 +40,10 @@ public class MyInternalFrame extends JInternalFrame {
 
    private File excelFile;
    private PlannerHelper helper;
-   private MyInternalFrameInnerComponent internalFrameTabPanel;
+   private MyInternalFrameInnerPanel internalFrameTabPanel;
    private String originalTitle;
    private String originalTitleWithDuplicateNumber;
-   public MyInternalFrame(final PlannerHelper client, String title, MyInternalFrameInnerComponent internalFrameTabPanel, PlannerDAO dao, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener, MyDesktopPane desktop) {
+   public MyInternalFrame(final PlannerHelper client, String title, MyInternalFrameInnerPanel internalFrameTabPanel, PlannerDAO dao, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener, MyDesktopPane desktop) {
       this(title, client);
       log.trace("MyInternalFrame");
       this.dao = dao;

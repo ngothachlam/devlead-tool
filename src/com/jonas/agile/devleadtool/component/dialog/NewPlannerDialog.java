@@ -6,7 +6,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.SaveKeyListener;
-import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerComponent;
+import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerPanel;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
@@ -31,18 +31,18 @@ public class NewPlannerDialog {
    
    public void openNew(){
       log .trace("openNew");
-      SwingWorker<ModelDTO, Object> worker = new SwingWorker<ModelDTO, Object>() {
+      SwingWorker<CombinedModelDTO, Object> worker = new SwingWorker<CombinedModelDTO, Object>() {
 
-         protected ModelDTO doInBackground() throws Exception {
-            return new ModelDTO(new BoardTableModel(), new JiraTableModel());
+         protected CombinedModelDTO doInBackground() throws Exception {
+            return new CombinedModelDTO(new BoardTableModel(), new JiraTableModel());
          }
          
          @Override
          protected void done() {
             try {
                log .trace("done 1");
-               ModelDTO dto = get();
-               MyInternalFrameInnerComponent internalFrameTabPanel = new MyInternalFrameInnerComponent(helper, dto.getBoardModel(), dto.getJiraModel());
+               CombinedModelDTO dto = get();
+               MyInternalFrameInnerPanel internalFrameTabPanel = new MyInternalFrameInnerPanel(helper, dto.getBoardModel(), dto.getJiraModel());
                log .trace("done 1.1");
                MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog, saveKeyListener, desktopPane);
                internalFrame.setVisible(true);

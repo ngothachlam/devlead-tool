@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component;
+package com.jonas.agile.devleadtool.component.listener;
 
 import java.awt.Frame;
 import java.lang.reflect.InvocationTargetException;
