@@ -76,7 +76,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          XmlParser parser = new XmlParserImpl(saxHandler, MAX_RESULT);
          // XmlParser parser = new XmlParserLargeMock(saxHandler);
 
-         DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
+         DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser, tree, helper.getParentFrame());
          log.trace("MyInternalFrameInnerComponent 1.5");
          makeContent(boardModel, tree, dndTreeBuilder, helper, jiraModel);
          log.trace("MyInternalFrameInnerComponent 1.6");
@@ -149,7 +149,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       
       new MyTablePopupMenu(boardTable, helper, boardTable, jiraTable);
       new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable);
-      new MyTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder, helper);
 
       JPanel panel = new JPanel();
       editableCheckBox = new JCheckBox("Editable?", true);

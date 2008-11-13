@@ -37,7 +37,7 @@ public class DnDTree extends JTree {
       tooltipFacade = new DnDTreeJiraToolTipFacade(this);
    }
 
-   public void createJira(JiraDTO jira) {
+   public void addJira(JiraDTO jira) {
       model.addJira(jira);
    }
 
@@ -55,7 +55,7 @@ public class DnDTree extends JTree {
    }
 
    public void removeAllChildren() {
-      model.removeAllChildren();
+      model.removeAllChildrenOfRoot();
    }
 
    public void removeJira(String jira) {
@@ -113,6 +113,10 @@ public class DnDTree extends JTree {
       List<TreePath> jiraPathList = getJiraPaths(jira);
       TreePath[] jiraTreePath = jiraPathList.toArray(new TreePath[jiraPathList.size()]);
       addSelectionPaths(jiraTreePath);
+   }
+
+   public void removeAll(SprintNode sprintNode) {
+      model.removeAllChildrenOf(sprintNode);
    }
 }
 

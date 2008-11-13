@@ -101,7 +101,6 @@ public class DnDTreeModel extends DefaultTreeModel {
 
       for (Enumeration<?> e = root.preorderEnumeration(); e.hasMoreElements();) {
          DefaultMutableTreeNode current = (DefaultMutableTreeNode) e.nextElement();
-         System.out.println("current: " + current.getUserObject());
          if (current instanceof JiraNode) {
             jiraNodes.add((JiraNode) current);
          }
@@ -115,7 +114,6 @@ public class DnDTreeModel extends DefaultTreeModel {
 
       for (Enumeration<?> e = root.preorderEnumeration(); e.hasMoreElements();) {
          DefaultMutableTreeNode current = (DefaultMutableTreeNode) e.nextElement();
-         System.out.println("current: " + current.getUserObject());
          if (current instanceof JiraNode && jira.equals(current.getUserObject())) {
             jiraNodes.add((JiraNode) current);
          }
@@ -134,7 +132,16 @@ public class DnDTreeModel extends DefaultTreeModel {
       return createSprint(sprintName);
    }
 
-   public void removeAllChildren() {
+   public void removeAllChildrenOf(SprintNode sprintNode) {
+      int noOfRootChildren = getChildCount(sprintNode);
+      for (int child = noOfRootChildren - 1; child >= 0; child--) {
+         MutableTreeNode tempChild = (MutableTreeNode) getChild(sprintNode, child);
+         log.debug("Removing " + tempChild);
+         removeNodeFromParent(tempChild);
+      }
+   }
+
+   public void removeAllChildrenOfRoot() {
       int noOfRootChildren = getChildCount(getRoot());
       for (int child = noOfRootChildren - 1; child >= 0; child--) {
          MutableTreeNode tempChild = (MutableTreeNode) getChild(getRoot(), child);

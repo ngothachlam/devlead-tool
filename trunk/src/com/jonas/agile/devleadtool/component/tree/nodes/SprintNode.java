@@ -46,5 +46,4 @@ public class SprintNode extends DefaultMutableTreeNode {
       }
       return null;
    }
-
 }

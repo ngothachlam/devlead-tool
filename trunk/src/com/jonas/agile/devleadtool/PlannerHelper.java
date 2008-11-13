@@ -17,22 +17,13 @@ import com.jonas.jira.access.listener.JiraListener;
 
 public class PlannerHelper {
 
-   public static String getProjectKey(String jira) {
-      if (jira.contains("-")) {
-         return jira.substring(0, jira.indexOf("-"));
-      }
-      return jira;
-   }
+   private static Pattern jiraPattern = Pattern.compile("^[A-Z]+\\-\\d+$", Pattern.CASE_INSENSITIVE);
+
+   private final static Logger log = MyLogger.getLogger(PlannerHelper.class);
+   private static Matcher match = jiraPattern.matcher("");
 
    private JFrame frame;
    private MyInternalFrame internalFrame;
-
-   Pattern jiraPattern = Pattern.compile("^[A-Z]+\\-\\d+$", Pattern.CASE_INSENSITIVE);
-   Matcher match = jiraPattern.matcher("");
-
-   private Logger log = MyLogger.getLogger(PlannerHelper.class);
-
-
    private PlannerCommunicator plannerCommunicator = new PlannerCommunicator(this);
 
    private String title;
@@ -41,6 +32,32 @@ public class PlannerHelper {
       this.frame = frame;
       this.title = title;
    }
+
+   public static String getJiraUrl(String jira) throws NotJiraException {
+      log.debug("getting Jira URL for " + jira);
+      String projectKey = getProjectKey(jira);
+      JiraProject project = JiraProject.getProjectByKey(projectKey);
+      if (project == null || !isJiraString(jira)) {
+         throw new NotJiraException("\"" + jira + "\" is not a jira string!");
+      }
+      return project.getJiraClient().getJiraUrl();
+   }
+
+   public static String getProjectKey(String jira) {
+      if (jira.contains("-")) {
+         return jira.substring(0, jira.indexOf("-"));
+      }
+      return jira;
+   }
+
+   protected static boolean isJiraString(String jiraNo) {
+      match.reset(jiraNo);
+      if (match.matches()) {
+         return true;
+      }
+      return false;
+   }
+
 
    public MyInternalFrame getActiveInternalFrame() {
       return internalFrame;
@@ -65,17 +82,6 @@ public class PlannerHelper {
       }
    }
 
-
-   public String getJiraUrl(String jira) throws NotJiraException {
-      log.debug("getting Jira URL for " + jira);
-      String projectKey = getProjectKey(jira);
-      JiraProject project = JiraProject.getProjectByKey(projectKey);
-      if (project == null || !isJiraString(jira)) {
-         throw new NotJiraException("\"" + jira + "\" is not a jira string!");
-      }
-      return project.getJiraClient().getJiraUrl();
-   }
-
    public JFrame getParentFrame() {
       return frame;
    }
@@ -86,14 +92,6 @@ public class PlannerHelper {
 
    public String getTitle() {
       return title;
-   }
-
-   protected boolean isJiraString(String jiraNo) {
-      match.reset(jiraNo);
-      if (match.matches()) {
-         return true;
-      }
-      return false;
    }
 
    public void setActiveInternalFrame(MyInternalFrame internalFrame) {

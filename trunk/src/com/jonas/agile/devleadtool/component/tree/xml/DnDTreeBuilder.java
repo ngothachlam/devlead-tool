@@ -1,9 +1,11 @@
 package com.jonas.agile.devleadtool.component.tree.xml;
 
 import java.io.IOException;
+import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
+import com.jonas.agile.devleadtool.component.MyTreePopupMenu;
 import com.jonas.agile.devleadtool.component.tree.DnDTree;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.JiraException;
@@ -14,9 +16,10 @@ public class DnDTreeBuilder {
 
    private final XmlParser parser;
 
-   public DnDTreeBuilder(XmlParser parser) {
+   public DnDTreeBuilder(XmlParser parser, DnDTree tree, JFrame parentFrame) {
       super();
       this.parser = parser;
+      new MyTreePopupMenu(parentFrame, tree, this);
    }
 
    public void buildTree(DnDTree tree, final String sprint) {

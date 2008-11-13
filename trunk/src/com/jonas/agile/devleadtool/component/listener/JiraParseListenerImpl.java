@@ -37,7 +37,7 @@ public class JiraParseListenerImpl implements JiraParseListener {
             sb.append(++count);
             sb.append(")");
             MyStatusBar.getInstance().setMessage(sb.toString(), false);
-            tree.createJira(jira);
+            tree.addJira(jira);
          }
       });
    }

@@ -7,15 +7,13 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.component.listener.OpenJirasListener;
-import com.jonas.agile.devleadtool.component.table.Column;
-import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.tree.DnDTree;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
@@ -29,13 +27,13 @@ public class MyTreePopupMenu extends MyPopupMenu {
    private final DnDTree source;
    private DnDTreeBuilder dndTreeBuilder;
 
-   public MyTreePopupMenu(Frame parentFrame, DnDTree source, DnDTreeBuilder dndTreeBuilder, PlannerHelper helper) {
-      super(source);
+   public MyTreePopupMenu(JFrame parentFrame, DnDTree tree, DnDTreeBuilder dndTreeBuilder) {
+      super(tree);
       this.parentFrame = parentFrame;
-      this.source = source;
+      this.source = tree;
       this.dndTreeBuilder = dndTreeBuilder;
-      add(new JMenuItem_Sync());
-      add(new JMenuItem_Browse(source, parentFrame, helper));
+      add(new JMenuItem_Sync(tree));
+      add(new JMenuItem_Browse(tree, parentFrame));
    }
 
    private abstract class JMenuItemAbstr extends JMenuItem implements ActionListener {
@@ -49,13 +47,11 @@ public class MyTreePopupMenu extends MyPopupMenu {
    private class JMenuItem_Browse extends JMenuItemAbstr {
       private final DnDTree tree;
       private Frame frame;
-      private PlannerHelper helper;
 
-      public JMenuItem_Browse(DnDTree tree, Frame frame, PlannerHelper helper) {
+      public JMenuItem_Browse(DnDTree tree, Frame frame) {
          super("Browse Selected");
          this.tree = tree;
          this.frame = frame;
-         this.helper = helper;
       }
 
       @Override
@@ -72,7 +68,7 @@ public class MyTreePopupMenu extends MyPopupMenu {
                String jira_url = null;
                boolean error = false;
                try {
-                  jira_url = helper.getJiraUrl(jira);
+                  jira_url = PlannerHelper.getJiraUrl(jira);
                } catch (NotJiraException e1) {
                   if (sb.length() > 0) {
                      sb.append(", ");
@@ -95,7 +91,7 @@ public class MyTreePopupMenu extends MyPopupMenu {
          }
          if (sb.length() > 0) {
             sb.append(" are incorrect!");
-            AlertDialog.alertMessage(helper.getParentFrame(), sb.toString());
+            AlertDialog.alertMessage(frame, sb.toString());
          }
 
       }
@@ -103,8 +99,11 @@ public class MyTreePopupMenu extends MyPopupMenu {
 
    private class JMenuItem_Sync extends JMenuItemAbstr {
 
-      public JMenuItem_Sync() {
+      private final DnDTree tree;
+
+      public JMenuItem_Sync(DnDTree tree) {
          super("Sync Selected");
+         this.tree = tree;
       }
 
       @Override
@@ -114,24 +113,25 @@ public class MyTreePopupMenu extends MyPopupMenu {
          List<String> failedSprints = new ArrayList<String>();
          for (int i = 0; i < paths.length; i++) {
             Object selectedElement = paths[i].getLastPathComponent();
-            log.debug("Path[" + i + "]: " + paths[i]);
+            log.debug("Path[" + i + "]: " + paths[i] + " selectedElement: " + selectedElement);
             if (selectedElement instanceof SprintNode) {
                SprintNode sprintNode = (SprintNode) selectedElement;
                syncedSprints.add(sprintNode.getSprintName());
                log.debug("SprintNode: " + sprintNode);
-               sprintNode.removeAllChildren();
+               tree.removeAll(sprintNode);
                dndTreeBuilder.buildTree(source, sprintNode.getSprintName());
             } else {
                failedSprints.add(selectedElement.toString());
             }
          }
-         StringBuffer sb = trawlAndDisplayMessage(syncedSprints, "The following sprints were synced: ");
-         sb = appendToSprint(failedSprints, sb, "\nThe following were seleced but are NOT sprints: ");
-         if (sb != null)
+         StringBuffer sb = trawlAndDisplayMessage(syncedSprints, "The following sprints were synced:\n");
+         sb = appendToSprint(sb, failedSprints, "\nThe following were seleced but are NOT sprints:\n");
+         if (sb != null){
             AlertDialog.alertMessage(parentFrame, sb.toString());
+         }
       }
 
-      private StringBuffer appendToSprint(List<String> failedSprints, StringBuffer sb, String string) {
+      private StringBuffer appendToSprint(StringBuffer sb, List<String> failedSprints, String string) {
          if (sb == null)
             sb = trawlAndDisplayMessage(failedSprints, string);
          else
