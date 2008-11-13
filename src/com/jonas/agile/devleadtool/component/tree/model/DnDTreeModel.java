@@ -25,9 +25,9 @@ public class DnDTreeModel extends DefaultTreeModel {
 
    private Logger log = MyLogger.getLogger(DnDTreeModel.class);
 
-   private Map<String, JiraNode> jiras = new HashMap<String, JiraNode>();
-   private Map<String, FixVersionNode> fixVersions = new HashMap<String, FixVersionNode>();
-   private Map<String, SprintNode> sprints = new HashMap<String, SprintNode>();
+//   private Map<String, JiraNode> jiras = new HashMap<String, JiraNode>();
+//   private Map<String, FixVersionNode> fixVersions = new HashMap<String, FixVersionNode>();
+//   private Map<String, SprintNode> sprints = new HashMap<String, SprintNode>();
 
    public DnDTreeModel(String rootName) {
       super(new ProjectNode(rootName));
@@ -41,10 +41,9 @@ public class DnDTreeModel extends DefaultTreeModel {
          log.debug("Removing " + tempChild);
          removeNodeFromParent(tempChild);
       }
-
-      jiras.clear();
-      fixVersions.clear();
-      sprints.clear();
+//      jiras.clear();
+//      fixVersions.clear();
+//      sprints.clear();
    }
 
    FixVersionNode createFixVersion(String sprintName, String fixVersionName) {
