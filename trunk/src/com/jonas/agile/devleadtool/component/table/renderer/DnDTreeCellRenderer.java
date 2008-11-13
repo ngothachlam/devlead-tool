@@ -8,6 +8,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.tree.nodes.FixVersionNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
+import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
 import com.jonas.common.logging.MyLogger;
 
 public class DnDTreeCellRenderer extends DefaultTreeCellRenderer {
@@ -33,22 +34,27 @@ public class DnDTreeCellRenderer extends DefaultTreeCellRenderer {
          setLFforJira(value);
       } else if (value instanceof FixVersionNode) {
          setLFforFixVersion(value);
+      } else if (value instanceof SprintNode) {
+         setLFforSprint(value);
       } else {
-         Font oldFont = getFont();
-         setFont(getPlainFont(oldFont));
+         setFont(getPlainFont());
       }
       return this;
    }
 
+   private void setLFforSprint(Object value) {
+//      SprintNode sprintNode = (SprintNode) value;
+      setFont(getPlainFont());
+   }
+
    private void setLFforFixVersion(Object value) {
-      Font oldFont = getFont();
       FixVersionNode fixversion = (FixVersionNode) value;
       if (fixversion.isReleased()) {
          setIcon(IMAGE_ICON_VERSION_RELEASED);
       } else {
          setIcon(IMAGE_ICON_VERSION_OPEN);
       }
-      setFont(getPlainFont(oldFont));
+      setFont(getPlainFont());
    }
 
    private void setLFforJira(Object value) {
@@ -67,22 +73,22 @@ public class DnDTreeCellRenderer extends DefaultTreeCellRenderer {
       log.debug("jira rendering: " + jira.isToSync());
 
       if (jira.isToSync()) {
-         Font oldFont = getFont();
-         setFont(getItalicFont(oldFont));
+         setFont(getItalicFont());
       } else {
-         Font oldFont = getFont();
-         setFont(getPlainFont(oldFont));
+         setFont(getPlainFont());
       }
    }
 
-   private Font getItalicFont(Font oldFont) {
+   private Font getItalicFont() {
+      Font oldFont = getFont();
       if (font_italic == null) {
          font_italic = new Font(oldFont.getName(), Font.ITALIC, oldFont.getSize());
       }
       return font_italic;
    }
 
-   private Font getPlainFont(Font oldFont) {
+   private Font getPlainFont() {
+      Font oldFont = getFont();
       if (font_plain == null) {
          font_plain = new Font(oldFont.getName(), Font.PLAIN, oldFont.getSize());
       }

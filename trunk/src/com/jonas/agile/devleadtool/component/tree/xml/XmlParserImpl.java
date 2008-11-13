@@ -17,7 +17,7 @@ import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.JiraException;
 
-public class XmlParserImpl extends HttpClient implements XmlParser {
+public class XmlParserImpl implements XmlParser {
 
    public int getMaxResults() {
       return maxResults;
@@ -41,11 +41,12 @@ public class XmlParserImpl extends HttpClient implements XmlParser {
    public void parse(String sprint) throws IOException, SAXException, JiraException {
       GetMethod method = null;
       try {
+         HttpClient httpClient = new HttpClient();
          String url = baseUrl + "/secure/IssueNavigator.jspa?view=rss&fixfor=-2&pid=10070&reset=true&decorator=none&tempMax=" + maxResults;
          if(sprint != null)
             url = url +"&" + "customfield_10282=" + sprint;
          log.debug("calling " + url);
-         login();
+         login(httpClient);
 
          // fixfor=-2 @ Fix For: all unreleased versions
          // pid=10070 @ Project: LLU Systems Provisioning
@@ -56,7 +57,7 @@ public class XmlParserImpl extends HttpClient implements XmlParser {
 
          MyStatusBar.getInstance().setMessage("Accessing Jiras...", false);
          method = new GetMethod(url);
-         executeMethod(method);
+         int result = httpClient.executeMethod(method);
 
          Reader reader2 = new InputStreamReader(method.getResponseBodyAsStream(), method.getResponseCharSet());
 
@@ -67,12 +68,12 @@ public class XmlParserImpl extends HttpClient implements XmlParser {
       }
    }
 
-   public void login() throws IOException, HttpException, JiraException {
+   private void login(HttpClient httpClient) throws IOException, HttpException, JiraException {
       MyStatusBar.getInstance().setMessage("Logging in to Jira...", false);
       PostMethod loginMethod = new PostMethod(baseUrl + "/login.jsp");
       loginMethod.addParameter("os_username", "soaptester");
       loginMethod.addParameter("os_password", "soaptester");
-      executeMethod(loginMethod);
+      httpClient.executeMethod(loginMethod);
       throwJiraExceptionIfRequired(loginMethod);
       log.debug("Logging onto Jira Done!");
    }

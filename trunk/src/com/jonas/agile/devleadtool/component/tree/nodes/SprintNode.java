@@ -25,4 +25,16 @@ public class SprintNode extends DefaultMutableTreeNode {
       return true;
    }
 
+   public Status getLowestStatus() {
+      Status result = Status.UnKnown;
+      for (int i = 0; i < getChildCount(); i++) {
+         FixVersionNode fixVersionNode = (FixVersionNode) getChildAt(i);
+         Status status = fixVersionNode.getLowestStatus();
+         if (status.isLowerThan(result)){
+            result = status;
+         }
+      }
+      return result;
+   }
+
 }
