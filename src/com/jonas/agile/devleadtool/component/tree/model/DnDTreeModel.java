@@ -70,7 +70,6 @@ public class DnDTreeModel extends DefaultTreeModel {
          jiras.put(jiraListName, jiraNode);
       } else {
          TreeNode oldParent = jiraNode.getParent();
-         System.out.println("blah!!");
          // FIXME not working when moving one jira to anoother fixversion and then refreshing.
          if (oldParent != fixVersionNode || oldParent.getParent() != fixVersionNode.getParent()) {
             removeNodeFromParent(jiraNode);
@@ -83,6 +82,11 @@ public class DnDTreeModel extends DefaultTreeModel {
             jiras.put(jiraListName, jiraNode);
          }
       }
+   }
+
+   public void insertNodeInto(MutableTreeNode newChild, MutableTreeNode parent, int index) {
+      log.debug("insertNodeInto!");
+      super.insertNodeInto(newChild, parent, index);
    }
 
    private FixVersionNode getParent(String sprintName, String fixVersionName) {

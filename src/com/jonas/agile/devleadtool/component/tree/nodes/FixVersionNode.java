@@ -25,4 +25,16 @@ public class FixVersionNode extends DefaultMutableTreeNode {
       //FIXME this should be set to be released. 
       return false;
    }
+
+   public Status getLowestStatus() {
+      Status result = Status.UnKnown;
+      for (int i = 0; i < getChildCount(); i++) {
+         JiraNode jiraNode = (JiraNode) getChildAt(i);
+         Status status = Status.get(jiraNode.getStatus());
+         if (status.isLowerThan(result)){
+            result = status;
+         }
+      }
+      return result;
+   }
 }

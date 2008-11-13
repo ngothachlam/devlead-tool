@@ -16,6 +16,7 @@ import com.jonas.agile.devleadtool.component.tree.dnd.DnDTreeTransferHandler;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.nodes.FixVersionNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
+import com.jonas.agile.devleadtool.component.tree.nodes.Status;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
 import com.jonas.common.logging.MyLogger;
@@ -140,12 +141,14 @@ class DnDTreeJiraToolTipFacade {
          DefaultMutableTreeNode nodeTemp = (DefaultMutableTreeNode) (path.getLastPathComponent());
          String str = null;
          if (nodeTemp instanceof JiraNode) {
-            JiraNode node = (JiraNode) nodeTemp;
-            str = appendStrings(node.getUserObject().toString(), " ", node.getDescription(), " (Status: ", node.getStatus(), ", Resolution: ",
-                  node.getResolution(), ")");
+            JiraNode jiraNode = (JiraNode) nodeTemp;
+            str = appendStrings(jiraNode.getUserObject().toString(), " ", jiraNode.getDescription(), " (Status: ", jiraNode.getStatus(), ", Resolution: ",
+                  jiraNode.getResolution(), ")");
          } else if (nodeTemp instanceof SprintNode) {
             SprintNode node = (SprintNode) nodeTemp;
-            str = appendStrings(node.getUserObject().toString(), " (Children: ", node.getChildCount(), ")");
+            Status lowestResolution = node.getLowestStatus();
+            str = appendStrings(node.getUserObject().toString(), " (Status: ", lowestResolution, ", Children: ", node.getChildCount(), ")");
+            
          } else if (nodeTemp instanceof FixVersionNode) {
             FixVersionNode node = (FixVersionNode) nodeTemp;
             str = appendStrings(node.getUserObject().toString(), " (Children: ", node.getChildCount(), ")");

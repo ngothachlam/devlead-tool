@@ -32,6 +32,7 @@ public class JiraParseListenerImpl implements JiraParseListener {
       runInEventDispatchThread(new Runnable() {
          @Override
          public void run() {
+            log.debug("notifyParsed " + jira.getKey());
             StringBuffer sb = new StringBuffer("Building Table... (");
             sb.append(++count);
             sb.append(")");
