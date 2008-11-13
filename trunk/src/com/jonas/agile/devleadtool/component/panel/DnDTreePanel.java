@@ -25,6 +25,7 @@ import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
+import com.jonas.agile.devleadtool.component.tree.xml.XmlParserLargeMock;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.ClientConstants;
 import com.jonas.jira.access.JiraSprintUpdater;
@@ -55,8 +56,8 @@ public class DnDTreePanel extends JPanel {
          JiraSaxHandler saxHandler = new JiraSaxHandler();
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, 100, frame));
 
-         XmlParser parser = new XmlParserImpl(saxHandler, 100);
-         // XmlParser parser = new XmlParserLargeMock(saxHandler);
+//         XmlParser parser = new XmlParserImpl(saxHandler, 100);
+          XmlParser parser = new XmlParserLargeMock(saxHandler);
 
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
 
