@@ -37,4 +37,14 @@ public class SprintNode extends DefaultMutableTreeNode {
       return result;
    }
 
+   public FixVersionNode getFixVersionNode(String fixVersionName) {
+      for (int i = 0; i < getChildCount(); i++) {
+         FixVersionNode fixVersionNode = (FixVersionNode) getChildAt(i);
+         if (fixVersionNode.getFixVersionName().equals(fixVersionName)) {
+            return fixVersionNode;
+         }
+      }
+      return null;
+   }
+
 }

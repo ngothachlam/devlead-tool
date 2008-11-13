@@ -24,11 +24,12 @@ public class DnDTreeModelTest extends TestCase {
 
    public void testShouldAddAndRemoveJiraOk() {
       DnDTreeModel model = new DnDTreeModel("LLU");
-      JiraDTO jiraDto = getTestJiraDto("Sprint 1", "FixVersion 1", "Jira 1");
+      JiraDTO jiraDto1 = getTestJiraDto("Sprint 1", "FixVersion 1", "Jira 1");
+      JiraDTO jiraDto2 = getTestJiraDto("Sprint 1", "FixVersion 2", "Jira 1");
 
       assertEquals(0, model.getChildCount(model.getRoot()));
       // add Jira
-      model.addJira(jiraDto);
+      model.addJira(jiraDto1);
 
       assertEquals(1, model.getChildCount(model.getRoot()));
       DefaultMutableTreeNode spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 1);
@@ -36,14 +37,14 @@ public class DnDTreeModelTest extends TestCase {
       DefaultMutableTreeNode jiraOne = assertChild(model, fixVOne, 0, "Jira 1", 0);
 
       // remove Jira
-      model.removeJira("Jira 1", "FixVersion 1");
+      model.removeJira("Jira 1");
 
       assertEquals(1, model.getChildCount(model.getRoot()));
       spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 1);
       fixVOne = assertChild(model, spriOne, 0, "FixVersion 1", 0);
 
       // add Jira again
-      model.addJira(jiraDto);
+      model.addJira(jiraDto1);
 
       assertEquals(1, model.getChildCount(model.getRoot()));
       spriOne = assertChild(model, model.getRoot(), 0, "Sprint 1", 1);

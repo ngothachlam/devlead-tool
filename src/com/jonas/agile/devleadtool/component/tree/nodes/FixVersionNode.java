@@ -4,11 +4,15 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class FixVersionNode extends DefaultMutableTreeNode {
 
-   private final SprintNode parent;
+   private final String fixVersionName;
 
-   public FixVersionNode(String fixVersionName, SprintNode parent) {
+   public FixVersionNode(String fixVersionName) {
       super(fixVersionName);
-      this.parent = parent;
+      this.fixVersionName = fixVersionName;
+   }
+
+   public String getFixVersionName() {
+      return fixVersionName;
    }
 
    @Override
@@ -22,7 +26,7 @@ public class FixVersionNode extends DefaultMutableTreeNode {
    }
 
    public boolean isReleased() {
-      //FIXME this should be set to be released. 
+      // FIXME this should be set to be released.
       return false;
    }
 
@@ -31,10 +35,20 @@ public class FixVersionNode extends DefaultMutableTreeNode {
       for (int i = 0; i < getChildCount(); i++) {
          JiraNode jiraNode = (JiraNode) getChildAt(i);
          Status status = Status.get(jiraNode.getStatus());
-         if (status.isLowerThan(result)){
+         if (status.isLowerThan(result)) {
             result = status;
          }
       }
       return result;
+   }
+
+   public JiraNode getJiraNode(String key) {
+      for (int i = 0; i < getChildCount(); i++) {
+         JiraNode jiraNode = (JiraNode) getChildAt(i);
+         if (jiraNode.getKey().equals(key)) {
+            return jiraNode;
+         }
+      }
+      return null;
    }
 }

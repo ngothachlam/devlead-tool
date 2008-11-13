@@ -2,9 +2,7 @@ package com.jonas.agile.devleadtool.component.tree.model;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -25,76 +23,48 @@ public class DnDTreeModel extends DefaultTreeModel {
 
    private Logger log = MyLogger.getLogger(DnDTreeModel.class);
 
-//   private Map<String, JiraNode> jiras = new HashMap<String, JiraNode>();
-//   private Map<String, FixVersionNode> fixVersions = new HashMap<String, FixVersionNode>();
-//   private Map<String, SprintNode> sprints = new HashMap<String, SprintNode>();
+   // private Map<String, JiraNode> jiras = new HashMap<String, JiraNode>();
+   // private Map<String, FixVersionNode> fixVersions = new HashMap<String, FixVersionNode>();
+   // private Map<String, SprintNode> sprints = new HashMap<String, SprintNode>();
 
    public DnDTreeModel(String rootName) {
       super(new ProjectNode(rootName));
       setAsksAllowsChildren(true);
    }
 
-   public void removeAllChildren() {
-      int noOfRootChildren = getChildCount(getRoot());
-      for (int child = noOfRootChildren - 1; child >= 0; child--) {
-         MutableTreeNode tempChild = (MutableTreeNode) getChild(getRoot(), child);
-         log.debug("Removing " + tempChild);
-         removeNodeFromParent(tempChild);
+   public void addJira(JiraDTO jira) {
+      log.debug(jira);
+      String sprint = setSprintToUnkownIfDoesntExist(jira);
+      List<String> tempFixVersions = jira.getFixVersions();
+      removeJira(jira.getKey());
+      for (String string : tempFixVersions) {
+         String fixVersion = setFixVersionToUnKnownIfDoesntExist(jira, string);
+         createJira(sprint, fixVersion, jira);
       }
-//      jiras.clear();
-//      fixVersions.clear();
-//      sprints.clear();
    }
 
-   FixVersionNode createFixVersion(String sprintName, String fixVersionName) {
-      SprintNode parent = sprints.get(sprintName);
-      if (parent == null) {
-         parent = createSprint(sprintName);
-      }
-      FixVersionNode fixVersionNode = new FixVersionNode(fixVersionName, parent);
+   FixVersionNode createFixVersion(String fixVersionName, SprintNode parent) {
+      log.debug("creating fixVersion " + fixVersionName + " with parent " + parent.getSprintName());
+      FixVersionNode fixVersionNode = new FixVersionNode(fixVersionName);
       insertNodeInto(fixVersionNode, parent, parent.getChildCount());
-      String fixVersionListName = getSeparatedName(sprintName, fixVersionName);
-      fixVersions.put(fixVersionListName, fixVersionNode);
       return fixVersionNode;
    }
 
    void createJira(String sprintName, String fixVersionName, JiraDTO jira) {
-      FixVersionNode fixVersionNode = getParent(sprintName, fixVersionName);
-      String jiraListName = getSeparatedName(jira.getKey(), fixVersionName);
-      JiraNode jiraNode = jiras.get(jiraListName);
+      FixVersionNode fixVersionNode = getFixVersionNode(sprintName, fixVersionName);
+      JiraNode jiraNode = fixVersionNode.getJiraNode(jira.getKey());
       if (jiraNode == null) {
-         jiraNode = new JiraNode(jira.getKey(), jira.getId(), jira.getSummary(), fixVersionNode, jira.getResolution(), jira.getStatus(), jira
-               .getSprint(), jira.getFixVersions(), jira.getSyncable());
+         jiraNode = getJiraNode(jira, fixVersionNode);
          insertNodeInto(jiraNode, fixVersionNode, fixVersionNode.getChildCount());
-         jiras.put(jiraListName, jiraNode);
       } else {
          TreeNode oldParent = jiraNode.getParent();
          // FIXME not working when moving one jira to anoother fixversion and then refreshing.
          if (oldParent != fixVersionNode || oldParent.getParent() != fixVersionNode.getParent()) {
             removeNodeFromParent(jiraNode);
-            jiras.remove(jiraListName);
-
-            jiraListName = getSeparatedName(jira.getKey(), fixVersionName);
-            jiraNode = new JiraNode(jira.getKey(), jira.getId(), jira.getSummary(), fixVersionNode, jira.getResolution(), jira.getStatus(), jira
-                  .getSprint(), jira.getFixVersions(), jira.getSyncable());
+            jiraNode = getJiraNode(jira, fixVersionNode);
             insertNodeInto(jiraNode, fixVersionNode, fixVersionNode.getChildCount());
-            jiras.put(jiraListName, jiraNode);
          }
       }
-   }
-
-   public void insertNodeInto(MutableTreeNode newChild, MutableTreeNode parent, int index) {
-      log.debug("insertNodeInto!");
-      super.insertNodeInto(newChild, parent, index);
-   }
-
-   private FixVersionNode getParent(String sprintName, String fixVersionName) {
-      String fixVersionListName = getSeparatedName(sprintName, fixVersionName);
-      FixVersionNode parent = fixVersions.get(fixVersionListName);
-      if (parent == null) {
-         parent = createFixVersion(sprintName, fixVersionName);
-      }
-      return parent;
    }
 
    public SprintNode createSprint(String sprintName) {
@@ -105,57 +75,24 @@ public class DnDTreeModel extends DefaultTreeModel {
       else
          sprintNode = new SprintNode(sprintName);
       insertNodeInto(sprintNode, root, root.getChildCount());
-      if (!sprints.containsKey(sprintName)) {
-         sprints.put(sprintName, sprintNode);
-      }
       return sprintNode;
    }
 
-   public void addJira(JiraDTO jira) {
-      log.debug(jira);
-      String sprint = setSprintToUnkownIfDoesntExist(jira);
-      List<String> tempFixVersions = jira.getFixVersions();
-      for (String string : tempFixVersions) {
-         String fixVersion = setFixVersionToUnKnownIfDoesntExist(jira, string);
-         createJira(sprint, fixVersion, jira);
-      }
-   }
+   FixVersionNode getFixVersionNode(String sprintName, String fixVersionName) {
+      SprintNode parent = getSprintNode(sprintName);
 
-   private String setFixVersionToUnKnownIfDoesntExist(JiraDTO jira, String fixVersion) {
-      if (fixVersion == null) {
-         fixVersion = UNKNOWN_FIXVERSION;
-      }
-      return fixVersion;
-   }
-
-   private String setSprintToUnkownIfDoesntExist(JiraDTO jira) {
-      String sprint = jira.getSprint();
-      if (sprint == null) {
-         sprint = UNKNOWN_SPRINT;
-      }
-      return sprint;
-   }
-
-   public void removeJira(String jira, String fixVersion) {
-      String jiraListName = getSeparatedName(jira, fixVersion);
-      DefaultMutableTreeNode node = jiras.get(jiraListName);
-      log.debug(node);
-      removeNodeFromParent(node);
-      jiras.remove(jiraListName);
-   }
-
-   public List<JiraNode> getJiraNodes(String jira) {
-      DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
-      List<JiraNode> jiraNodes = new ArrayList<JiraNode>();
-
-      for (Enumeration<?> e = root.preorderEnumeration(); e.hasMoreElements();) {
-         DefaultMutableTreeNode current = (DefaultMutableTreeNode) e.nextElement();
-         System.out.println("current: " + current.getUserObject());
-         if (current instanceof JiraNode && jira.equals(current.getUserObject())) {
-            jiraNodes.add((JiraNode) current);
+      Enumeration<FixVersionNode> enu = parent.children();
+      while (enu.hasMoreElements()) {
+         FixVersionNode fixVersionNode = enu.nextElement();
+         if (fixVersionNode.getFixVersionName().equals(fixVersionName)) {
+            return fixVersionNode;
          }
       }
-      return jiraNodes;
+      return createFixVersion(fixVersionName, parent);
+   }
+
+   private JiraNode getJiraNode(JiraDTO j, FixVersionNode f) {
+      return new JiraNode(j.getKey(), j.getId(), j.getSummary(), f, j.getResolution(), j.getStatus(), j.getSprint(), j.getFixVersions(), j.getSyncable());
    }
 
    public List<JiraNode> getJiraNodes() {
@@ -172,9 +109,60 @@ public class DnDTreeModel extends DefaultTreeModel {
       return jiraNodes;
    }
 
-   protected String getSeparatedName(String stringOne, String stringTwo) {
-      StringBuffer sb = new StringBuffer(stringOne);
-      sb.append(SEPARATOR).append(stringTwo);
-      return sb.toString();
+   public List<JiraNode> getJiraNodes(String jira) {
+      DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
+      List<JiraNode> jiraNodes = new ArrayList<JiraNode>();
+
+      for (Enumeration<?> e = root.preorderEnumeration(); e.hasMoreElements();) {
+         DefaultMutableTreeNode current = (DefaultMutableTreeNode) e.nextElement();
+         System.out.println("current: " + current.getUserObject());
+         if (current instanceof JiraNode && jira.equals(current.getUserObject())) {
+            jiraNodes.add((JiraNode) current);
+         }
+      }
+      return jiraNodes;
+   }
+
+   private SprintNode getSprintNode(String sprintName) {
+      Enumeration<SprintNode> enu = root.children();
+      while (enu.hasMoreElements()) {
+         SprintNode sprintNode = enu.nextElement();
+         if (sprintNode.getSprintName().equals(sprintName)) {
+            return sprintNode;
+         }
+      }
+      return createSprint(sprintName);
+   }
+
+   public void removeAllChildren() {
+      int noOfRootChildren = getChildCount(getRoot());
+      for (int child = noOfRootChildren - 1; child >= 0; child--) {
+         MutableTreeNode tempChild = (MutableTreeNode) getChild(getRoot(), child);
+         log.debug("Removing " + tempChild);
+         removeNodeFromParent(tempChild);
+      }
+   }
+
+   public void removeJira(String jira) {
+      List<JiraNode> jiraNodes = getJiraNodes();
+      for (JiraNode jiraNode : jiraNodes) {
+         if (jiraNode.getKey().equals(jira))
+            removeNodeFromParent(jiraNode);
+      }
+   }
+
+   private String setFixVersionToUnKnownIfDoesntExist(JiraDTO jira, String fixVersion) {
+      if (fixVersion == null) {
+         fixVersion = UNKNOWN_FIXVERSION;
+      }
+      return fixVersion;
+   }
+
+   private String setSprintToUnkownIfDoesntExist(JiraDTO jira) {
+      String sprint = jira.getSprint();
+      if (sprint == null) {
+         sprint = UNKNOWN_SPRINT;
+      }
+      return sprint;
    }
 }
