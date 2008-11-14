@@ -5,6 +5,7 @@ import com.jonas.common.logging.MyLogger;
 
 public class Main {
 
+   
    public static void main(String[] args) {
       if(args.length > 0){
          MyLogger.setup(args[0]);
