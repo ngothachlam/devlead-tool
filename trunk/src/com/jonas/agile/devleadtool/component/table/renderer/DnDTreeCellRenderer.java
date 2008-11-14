@@ -13,14 +13,11 @@ import com.jonas.common.logging.MyLogger;
 
 public class DnDTreeCellRenderer extends DefaultTreeCellRenderer {
 
-   private static final ImageIcon IMAGE_ICON_DEFAULT = new ImageIcon("icons/jira_status_open.gif");
-   private static final ImageIcon IMAGE_ICON_CLOSED = new ImageIcon("icons/jira_status_closed.gif");
-   private static final ImageIcon IMAGE_ICON_RESOLVED = new ImageIcon("icons/jira_status_resolved.gif");
-   private static final ImageIcon IMAGE_ICON_REOPENED = new ImageIcon("icons/jira_status_reopened.gif");
-   private static final ImageIcon IMAGE_ICON_INPROGRESS = new ImageIcon("icons/jira_status_inprogress.gif");
-
-   private static final ImageIcon IMAGE_ICON_VERSION_OPEN = new ImageIcon("icons/jira_fixVersion_open.gif");
-   private static final ImageIcon IMAGE_ICON_VERSION_RELEASED = new ImageIcon("icons/jira_fixVersion_released.gif");
+   private static final ImageIcon IMAGE_ICON_JIRA_DEFAULT = new ImageIcon("icons/jira_status_open.gif");
+   private static final ImageIcon IMAGE_ICON_JIRA_INPROGRESS = new ImageIcon("icons/jira_status_inprogress.gif");
+   private static final ImageIcon IMAGE_ICON_JIRA_RESOLVED = new ImageIcon("icons/jira_status_resolved.gif");
+   private static final ImageIcon IMAGE_ICON_JIRA_CLOSED = new ImageIcon("icons/jira_status_closed.gif");
+   private static final ImageIcon IMAGE_ICON_JIRA_REOPENED = new ImageIcon("icons/jira_status_reopened.gif");
 
    private final static Logger log = MyLogger.getLogger(DnDTreeCellRenderer.class);
    private Font font_plain;
@@ -43,32 +40,28 @@ public class DnDTreeCellRenderer extends DefaultTreeCellRenderer {
    }
 
    private void setLFforSprint(Object value) {
-//      SprintNode sprintNode = (SprintNode) value;
+      // SprintNode sprintNode = (SprintNode) value;
       setFont(getPlainFont());
    }
 
    private void setLFforFixVersion(Object value) {
       FixVersionNode fixversion = (FixVersionNode) value;
-      if (fixversion.isReleased()) {
-         setIcon(IMAGE_ICON_VERSION_RELEASED);
-      } else {
-         setIcon(IMAGE_ICON_VERSION_OPEN);
-      }
+      setIcon(fixversion.getLowestStatus().getIcon());
       setFont(getPlainFont());
    }
 
    private void setLFforJira(Object value) {
       JiraNode jira = (JiraNode) value;
       if ("Closed".equalsIgnoreCase(jira.getStatus())) {
-         setIcon(IMAGE_ICON_CLOSED);
+         setIcon(IMAGE_ICON_JIRA_CLOSED);
       } else if ("Resolved".equalsIgnoreCase(jira.getStatus())) {
-         setIcon(IMAGE_ICON_RESOLVED);
+         setIcon(IMAGE_ICON_JIRA_RESOLVED);
       } else if ("Reopened".equalsIgnoreCase(jira.getStatus())) {
-         setIcon(IMAGE_ICON_REOPENED);
+         setIcon(IMAGE_ICON_JIRA_REOPENED);
       } else if ("In Progress".equalsIgnoreCase(jira.getStatus())) {
-         setIcon(IMAGE_ICON_INPROGRESS);
+         setIcon(IMAGE_ICON_JIRA_INPROGRESS);
       } else {
-         setIcon(IMAGE_ICON_DEFAULT);
+         setIcon(IMAGE_ICON_JIRA_DEFAULT);
       }
       log.debug("jira rendering: " + jira.isToSync());
 
