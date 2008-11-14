@@ -5,12 +5,11 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import com.jonas.jira.JiraFilter;
 import com.jonas.jira.access.JiraException;
 
 public class JiraXMLHelper extends HttpClient {
-//   private String baseUrl = "http://10.155.38.105/jira";
-   private String baseUrl = "http://jira.atlassian.com";
+   private String baseUrl = "http://10.155.38.105/jira";
+//   private String baseUrl = "http://jira.atlassian.com";
 
    public String getXML(String url) throws IOException {
       GetMethod method = new GetMethod(baseUrl + "/" + url);
@@ -34,7 +33,7 @@ public class JiraXMLHelper extends HttpClient {
       try {
          helper.loginToJira();
 //         System.out.println(helper.getXML(JiraFilter.Sprint_Specific.getUrl() +  "12.4"));
-         System.out.println(helper.getXML("si/jira.issueviews:issue-xml/TRANS-45/TRANS-45.xml"));
+         System.out.println(helper.getXML("secure/IssueNavigator.jspa?view=rss&fixfor=-2&pid=10070&reset=true&decorator=none&tempMax=20&customfield_10282=12-6"));
 //       System.out.println(helper.getXML("secure/IssueNavigator.jspa?view=rss&&customfield_10241%3AlessThan=00001000000000.000&customfield_10241%3AgreaterThan=00000000000000.000&pid=10192&status=1&status=3&status=4&status=5&sorter/field=created&sorter/order=ASC&sorter/field=customfield_10188&sorter/order=ASC&sorter/field=customfield_10241&sorter/order=DESC&tempMax=25&reset=true&decorator=none"));
 //         System.out.println(helper.getXML("secure/IssueNavigator.jspa?view=rss&&customfield_10241%3AlessThan=00001000000000.000&customfield_10241%3AgreaterThan=00000000000000.000&pid=10192&status=1&status=3&status=4&status=5&sorter/field=created&sorter/order=ASC&sorter/field=customfield_10188&sorter/order=ASC&sorter/field=customfield_10241&sorter/order=DESC&tempMax=25&reset=true&decorator=none"));
       } catch (IOException e) {

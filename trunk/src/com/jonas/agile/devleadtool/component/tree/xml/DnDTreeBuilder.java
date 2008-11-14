@@ -1,7 +1,6 @@
 package com.jonas.agile.devleadtool.component.tree.xml;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
@@ -40,13 +39,13 @@ public class DnDTreeBuilder {
          }
       };
       worker.execute();
-      try {
-         worker.get();
-      } catch (InterruptedException e) {
-         e.printStackTrace();
-      } catch (ExecutionException e) {
-         e.printStackTrace();
-      }
+//      try {
+//         worker.get();
+//      } catch (InterruptedException e) {
+//         e.printStackTrace();
+//      } catch (ExecutionException e) {
+//         e.printStackTrace();
+//      }
    }
 
 }
