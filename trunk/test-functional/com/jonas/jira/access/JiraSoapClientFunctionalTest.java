@@ -37,21 +37,14 @@ public class JiraSoapClientFunctionalTest extends TestCase {
       RemoteFilter filter = clientAolBB.getFilter("LLU Dev Support - Priority List (unresolved)");
       System.out.println(filter.getId());
       System.out.println(filter.getXml());
-
-      // http://10.155.38.105/jira/secure/IssueNavigator.jspa?
-      // view=rss&
-      // &customfield_10241%3AlessThan=00001000000000.000
-      // &customfield_10241%3AgreaterThan=00000000000000.000
-      // &pid=10192&status=1&status=3&status=4&status=5&sorter/field=created&sorter/order=ASC&sorter
-      // /field=customfield_10188
-      // &sorter/order=ASC&sorter/
-      // field=customfield_10241
-      // &sorter/order=DESC&tempMax=25&reset=true&decorator=none
-
    }
    
    public void testShouldCreateMergeOk() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException{
-      RemoteIssue newJira = clientAtlassain.createMergeJira("TST-16639", "Test Version 1");
+      RemoteIssue newJira = clientAolBB.createMergeJira("LLU-4232", "LLU 12");
       System.out.println("Created merge jira " + newJira.getKey());
+      
+      // set to resolved!
+      // update link!
+      // update original jiras fix version to exclude the one for the merge
    }
 }
