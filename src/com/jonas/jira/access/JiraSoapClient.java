@@ -59,7 +59,7 @@ public class JiraSoapClient {
 
       RemoteIssue cloneIssue = new RemoteIssue();
       cloneIssue.setProject(originalJiraIssue.getProject());
-      cloneIssue.setType("1");
+      cloneIssue.setType("13");
       cloneIssue.setComponents(originalJiraIssue.getComponents());
       cloneIssue.setSummary("[Merge for " + originalJiraIssue.getKey() + "] " + originalJiraIssue.getSummary());
 
@@ -79,10 +79,10 @@ public class JiraSoapClient {
       RemoteIssue createIssue = null;
       try {
          createIssue = jiraSoapService.createIssue(token, cloneIssue);
-         RemoteComment comment = new RemoteComment();
-         comment.setBody("Created Merge Jira: " + createIssue.getKey());
-         comment.setLevel(level);
-         jiraSoapService.addComment(getToken(), jira, comment);
+//         RemoteComment comment = new RemoteComment();
+//         comment.setBody("Created Merge Jira: " + createIssue.getKey());
+//         comment.setLevel(level);
+         // jiraSoapService.addComment(getToken(), jira, comment);
       } catch (Throwable e) {
          e.printStackTrace();
       } finally {

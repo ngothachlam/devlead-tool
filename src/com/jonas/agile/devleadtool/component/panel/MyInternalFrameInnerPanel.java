@@ -22,7 +22,6 @@ import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyTablePopupMenu;
-import com.jonas.agile.devleadtool.component.MyTreePopupMenu;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
@@ -49,7 +48,7 @@ import com.jonas.common.logging.MyLogger;
 
 public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
-   private static final int MAX_RESULT = 1000;
+   private static final int MAX_RESULT = 200;
 
    private Logger log = MyLogger.getLogger(MyInternalFrameInnerPanel.class);
 

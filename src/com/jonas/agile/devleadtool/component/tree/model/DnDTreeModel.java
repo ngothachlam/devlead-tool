@@ -37,9 +37,14 @@ public class DnDTreeModel extends DefaultTreeModel {
       String sprint = setSprintToUnkownIfDoesntExist(jira);
       List<String> tempFixVersions = jira.getFixVersions();
       removeJira(jira.getKey());
-      for (String string : tempFixVersions) {
-         String fixVersion = setFixVersionToUnKnownIfDoesntExist(jira, string);
-         createJira(sprint, fixVersion, jira);
+      if (tempFixVersions.size() > 0) {
+         for (String fixVersion : tempFixVersions) {
+            String newFixVersion = setFixVersionToUnKnownIfDoesntExist(jira, fixVersion);
+            createJira(sprint, newFixVersion, jira);
+         }
+      } else {
+         String newFixVersion = setFixVersionToUnKnownIfDoesntExist(jira, null);
+         createJira(sprint, newFixVersion, jira);
       }
    }
 
@@ -68,6 +73,7 @@ public class DnDTreeModel extends DefaultTreeModel {
    }
 
    public SprintNode createSprint(String sprintName) {
+      log.debug("create Sprint " + sprintName);
       ProjectNode root = (ProjectNode) getRoot();
       SprintNode sprintNode = null;
       if (UNKNOWN_SPRINT.equals(sprintName))
@@ -92,7 +98,8 @@ public class DnDTreeModel extends DefaultTreeModel {
    }
 
    private JiraNode getJiraNode(JiraDTO j, FixVersionNode f) {
-      return new JiraNode(j.getKey(), j.getId(), j.getSummary(), f, j.getResolution(), j.getStatus(), j.getSprint(), j.getFixVersions(), j.getSyncable());
+      return new JiraNode(j.getKey(), j.getId(), j.getSummary(), f, j.getResolution(), j.getStatus(), j.getSprint(), j.getFixVersions(), j
+            .getSyncable());
    }
 
    public List<JiraNode> getJiraNodes() {
@@ -125,7 +132,9 @@ public class DnDTreeModel extends DefaultTreeModel {
       Enumeration<SprintNode> enu = root.children();
       while (enu.hasMoreElements()) {
          SprintNode sprintNode = enu.nextElement();
-         if (sprintNode.getSprintName().equals(sprintName)) {
+         log.debug("Existing Sprint: \"" + sprintNode.getSprintName() + "\" - new SprintName: \"" + sprintName + "\"");
+         if (sprintNode.getUserObject().equals(sprintName)) {
+            log.debug("Match!");
             return sprintNode;
          }
       }
@@ -167,8 +176,10 @@ public class DnDTreeModel extends DefaultTreeModel {
 
    private String setSprintToUnkownIfDoesntExist(JiraDTO jira) {
       String sprint = jira.getSprint();
-      if (sprint == null) {
-         sprint = UNKNOWN_SPRINT;
+      log.debug("Sprint: " + sprint);
+      if (sprint == null || sprint.equals("")) {
+         log.debug("Sprint set to <UnKnown>!");
+         return UNKNOWN_SPRINT;
       }
       return sprint;
    }
