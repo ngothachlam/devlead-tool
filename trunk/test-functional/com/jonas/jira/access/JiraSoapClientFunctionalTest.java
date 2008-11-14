@@ -40,7 +40,7 @@ public class JiraSoapClientFunctionalTest extends TestCase {
    }
    
    public void testShouldCreateMergeOk() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException{
-      RemoteIssue newJira = clientAolBB.createMergeJira("LLU-4232", "LLU 12");
+      RemoteIssue newJira = clientAolBB.createMergeJira("LLU-4274", "LLU 11.2");
       System.out.println("Created merge jira " + newJira.getKey());
       
       // set to resolved!
