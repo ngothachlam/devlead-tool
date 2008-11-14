@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
@@ -40,7 +41,20 @@ public class MyStatusBar extends JPanel {
       return instance;
    }
 
-   public void setMessage(final String message, boolean isToBeClosedSoon) {
+   public void setMessage(final String message, final boolean isToBeClosedSoon) {
+      if (SwingUtilities.isEventDispatchThread()) {
+         setMessageThreadSafe(message, isToBeClosedSoon);
+      } else {
+         SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+               setMessageThreadSafe(message, isToBeClosedSoon);
+            }
+         });
+      }
+   }
+
+   private void setMessageThreadSafe(final String message, boolean isToBeClosedSoon) {
       statusMessage.setText(message);
       if (isToBeClosedSoon) {
          messageClearer.clearMessageAfterDelay();
