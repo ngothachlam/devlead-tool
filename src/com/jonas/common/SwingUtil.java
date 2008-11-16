@@ -13,9 +13,6 @@ import com.jonas.common.logging.MyLogger;
 
 public class SwingUtil {
 
-   public static final Color COLOR_RED_1 = new Color(200, 0, 0);
-   public static final Color COLOR_RED_2 = new Color(225, 0, 0);
-   public static final Color COLOR_RED_3 = new Color(250, 0, 0);
    private static Object lock = new Object();
 
    private static final Logger log = MyLogger.getLogger(SwingUtil.class);
@@ -26,10 +23,6 @@ public class SwingUtil {
       return no < 0 ? 0 : no;
    }
    
-   private static int noMoreThan(int no, int max) {
-      return no > max ? max : no;
-   }
-
    public static void centreWindow(Window window) {
       Toolkit toolkit = window.getToolkit();
       Dimension screenSize = toolkit.getScreenSize();
