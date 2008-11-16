@@ -34,6 +34,7 @@ public class JiraSoapClient {
    private JiraSoapService jiraSoapService = null;
    private String token;
    private static JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
+   private String type = "13";
 
    public JiraSoapClient(String address) {
       jiraSoapServiceServiceLocator = getLocator();
@@ -58,10 +59,11 @@ public class JiraSoapClient {
 
       RemoteIssue cloneIssue = new RemoteIssue();
       cloneIssue.setProject(originalJiraIssue.getProject());
-      cloneIssue.setType("13");
+      cloneIssue.setType(type);
       cloneIssue.setComponents(originalJiraIssue.getComponents());
       cloneIssue.setSummary("[Merge for " + originalJiraIssue.getKey() + "] " + originalJiraIssue.getSummary());
       cloneIssue.setAffectsVersions(originalJiraIssue.getAffectsVersions());
+      cloneIssue.setPriority("1");
 
       RemoteVersion[] clonedFixVersions = setFixVersionOnClone(jira, mergeFixVersionName, cloneIssue);
       copyCustomFieldValuesFromOriginalToClone(originalJiraIssue, cloneIssue);
@@ -70,7 +72,7 @@ public class JiraSoapClient {
       try {
          createIssue = jiraSoapService.createIssue(token, cloneIssue);
          // update original jira to now exclude the merge jiras fixversion
-          removeClonedFixVersionFromOriginalIssue(originalJiraIssue, clonedFixVersions);
+         removeClonedFixVersionFromOriginalIssue(originalJiraIssue, clonedFixVersions);
 
          // add comment to original
          // RemoteComment comment = new RemoteComment();
@@ -88,8 +90,23 @@ public class JiraSoapClient {
 
    private void removeClonedFixVersionFromOriginalIssue(RemoteIssue originalJiraIssue, RemoteVersion[] clonesFixVersions) throws RemoteException,
          com.atlassian.jira.rpc.exception.RemoteException {
-      originalJiraIssue.setFixVersions(getFixVersionsExcluding(originalJiraIssue, cloneFixVersions));
-       jiraSoapService.updateIssue(token, clonesFixVersions);
+      RemoteFieldValue[] remoteFieldValues = new RemoteFieldValue[1];
+      RemoteVersion[] originalFixVersions = originalJiraIssue.getFixVersions();
+      List<String> values = new ArrayList<String>();
+      for (RemoteVersion originalFixTemp : originalFixVersions) {
+         boolean fixVersionHasBeenCloned = false;
+         for (RemoteVersion clonesFixTemp : clonesFixVersions) {
+            if (originalFixTemp.equals(clonesFixTemp)) {
+               fixVersionHasBeenCloned = true;
+               break;
+            }
+         }
+         if (!fixVersionHasBeenCloned) {
+            values.add(originalFixTemp.getId());
+         }
+      }
+      remoteFieldValues[0] = new RemoteFieldValue("fixVersions", values.toArray(new String[values.size()]));
+      jiraSoapService.updateIssue(token, originalJiraIssue.getKey(), remoteFieldValues);
    }
 
    private RemoteVersion[] setFixVersionOnClone(final String jira, final String mergeFixVersionName, RemoteIssue cloneIssue) throws RemoteException,
@@ -111,14 +128,14 @@ public class JiraSoapClient {
    private void copyCustomFieldValuesFromOriginalToClone(RemoteIssue originalJiraIssue, RemoteIssue cloneIssue) {
       RemoteCustomFieldValue[] originalCustomFieldValues = originalJiraIssue.getCustomFieldValues();
       List<RemoteCustomFieldValue> cloneCustom = new ArrayList<RemoteCustomFieldValue>();
-      
+
       for (RemoteCustomFieldValue field : originalCustomFieldValues) {
          log.debug("CustomField Value Key: " + field.getKey() + " getCustomfieldId: " + field.getCustomfieldId());
          String[] values = field.getValues();
          for (String string : values) {
             log.debug("\tValue: " + string);
          }
-         if(field.getCustomfieldId().equals("customfield_10282")){
+         if (field.getCustomfieldId().equals("customfield_10282")) {
             cloneCustom.add(field);
          }
       }
@@ -352,8 +369,7 @@ public class JiraSoapClient {
          this.action = action;
       }
 
-      public Object execute() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
-            RemoteException {
+      public Object execute() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
          // RemoteException - If there was some problem preventing the operation from working.
          // RemotePermissionException - If the user is not permitted to perform this operation in this context.
          // RemoteAuthenticationException - If the token is invalid or the SOAP session has timed out
@@ -397,6 +413,12 @@ public class JiraSoapClient {
       for (RemoteField remoteField : execute) {
          log.debug("Getting RemoteField: " + remoteField.getId() + " - " + remoteField.getName());
       }
+   }
+
+   public RemoteIssue createMergeJira(String jira, String mergeFixVersionName, String type) throws RemotePermissionException, RemoteAuthenticationException,
+         com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+      this.type = type;
+      return createMergeJira(jira, mergeFixVersionName);
    }
 
 }
