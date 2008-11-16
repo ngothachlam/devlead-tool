@@ -127,24 +127,23 @@ public class JiraSoapClient {
 
    private void copyCustomFieldValuesFromOriginalToClone(RemoteIssue originalJiraIssue, RemoteIssue cloneIssue) {
       RemoteCustomFieldValue[] originalCustomFieldValues = originalJiraIssue.getCustomFieldValues();
-      List<RemoteCustomFieldValue> cloneCustom = new ArrayList<RemoteCustomFieldValue>();
+      List<RemoteCustomFieldValue> fieldsToBeCloned = new ArrayList<RemoteCustomFieldValue>();
+      List<String> customFieldsForCloning = new ArrayList<String>();
+      customFieldsForCloning.add("customfield_10282");
 
+      int matches = 0;
       for (RemoteCustomFieldValue field : originalCustomFieldValues) {
-         log.debug("CustomField Value Key: " + field.getKey() + " getCustomfieldId: " + field.getCustomfieldId());
-         String[] values = field.getValues();
-         for (String string : values) {
-            log.debug("\tValue: " + string);
-         }
-         if (field.getCustomfieldId().equals("customfield_10282")) {
-            cloneCustom.add(field);
-         }
+         // log.debug("CustomField Value Key: " + field.getKey() + " getCustomfieldId: " + field.getCustomfieldId());
+         // String[] values = field.getValues();
+         // for (String string : values) {
+         // log.debug("\tValue: " + string);
+         // }
+         if (customFieldsForCloning.contains(field.getCustomfieldId())) {
+            fieldsToBeCloned.add(field);
+            matches++;
+         } 
       }
-      cloneIssue.setCustomFieldValues(cloneCustom.toArray(new RemoteCustomFieldValue[cloneCustom.size()]));
-
-      // String[] strings = new String[]{""};
-      // blah[0] = new RemoteCustomFieldValue("customfield_10282", null, strings);
-      // cloneIssue.setCustomFieldValues(blah);
-      //
+      cloneIssue.setCustomFieldValues(fieldsToBeCloned.toArray(new RemoteCustomFieldValue[fieldsToBeCloned.size()]));
    }
 
    private RemoteVersion[] getFixVersionsExcluding(RemoteIssue originalJiraIssue, List<RemoteVersion> cloneFixVersions) {
