@@ -14,6 +14,7 @@ import com.jonas.common.SwingUtil;
 
 public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
 
+   private static final Color RED = new Color(210, 0, 0);
    public static final Border focusBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.yellow);
    // public static Border focusBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
    private static final Border defaultBorder = UIManager.getBorder("Table.focusSelectedCellHighlightBorder");
@@ -43,13 +44,9 @@ public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
       if (model != null) {
          if (model.isRed(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column))) {
             if (isSelected) {
-               if (hasFocus) {
-                  cell.setBackground(ColorUtil.darkenColor(new Color(200, 0, 0), +55));
-               } else {
-                  cell.setBackground(ColorUtil.darkenColor(new Color(200, 0, 0), -55));
-               }
+               cell.setBackground(ColorUtil.darkenColor(RED, -55));
             } else {
-               cell.setBackground(new Color(200, 0, 0));
+               cell.setBackground(RED);
             }
          }
       }
