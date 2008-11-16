@@ -58,6 +58,8 @@ public class MyTable extends JTable {
       CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
       checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
 
+      setDefaultRenderer(Object.class, new MyDefaultCellRenderer());
+      setDefaultRenderer(Integer.class, new MyDefaultCellRenderer());
       setDefaultRenderer(String.class, new StringTableCellRenderer(defaultTableModel));
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
       setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(new JComboBox(BoardStatusValue.values())));
