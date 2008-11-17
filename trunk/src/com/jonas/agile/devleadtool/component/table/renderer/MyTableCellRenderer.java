@@ -1,12 +1,8 @@
 package com.jonas.agile.devleadtool.component.table.renderer;
 
-import java.awt.Color;
 import java.awt.Component;
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.ColorUtil;
@@ -14,39 +10,34 @@ import com.jonas.common.SwingUtil;
 
 public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
 
-   private static final Color RED = new Color(210, 0, 0);
-   public static final Border focusBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.yellow);
-   // public static Border focusBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
-   private static final Border defaultBorder = UIManager.getBorder("Table.focusSelectedCellHighlightBorder");
-
    public static void setBackground(JTable table, boolean isSelected, boolean hasFocus, int row, int column, Component cell, MyTableModel model, Object value,
          JComponent borderComponent) {
       if (hasFocus) {
          cell.setBackground(SwingUtil.getTableCellFocusBackground());
          if (borderComponent != null) {
-            borderComponent.setBorder(focusBorder);
+            borderComponent.setBorder(SwingUtil.focusCellBorder);
          }
       } else if (isSelected) {
          cell.setBackground(table.getSelectionBackground());
          if (borderComponent != null) {
-            borderComponent.setBorder(defaultBorder);
+            borderComponent.setBorder(SwingUtil.defaultCellBorder);
          }
       } else {
          cell.setBackground(table.getBackground());
          if (borderComponent != null) {
-            borderComponent.setBorder(defaultBorder);
+            borderComponent.setBorder(SwingUtil.defaultCellBorder);
          }
       }
       if (!table.isCellEditable(row, column) && !hasFocus) {
-         cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -55));
+         cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -75));
       }
 
       if (model != null) {
          if (model.isRed(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column))) {
             if (isSelected) {
-               cell.setBackground(ColorUtil.darkenColor(RED, -55));
+               cell.setBackground(SwingUtil.cellRedDarkened);
             } else {
-               cell.setBackground(RED);
+               cell.setBackground(SwingUtil.cellRED);
             }
          }
       }
