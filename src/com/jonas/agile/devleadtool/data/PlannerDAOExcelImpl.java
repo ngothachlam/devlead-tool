@@ -18,6 +18,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import com.jonas.agile.devleadtool.component.dialog.CombinedModelDTO;
 import com.jonas.agile.devleadtool.component.listener.DaoListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
@@ -44,32 +45,22 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    @Override
-   public BoardTableModel loadBoardModel() throws IOException {
+   public CombinedModelDTO loadModels() throws IOException{
       notifyLoadingStarted();
       TableModelDTO dto = loadModel(xlsFile, "board");
+      BoardTableModel boardModel = new BoardTableModel(dto.getContents(), dto.getHeader());
+      dto = loadModel(xlsFile, "jira");
+      JiraTableModel jiraModel = new JiraTableModel(dto.getContents(), dto.getHeader());
       notifyLoadingFinished();
-      return new BoardTableModel(dto.getContents(), dto.getHeader());
+      return new CombinedModelDTO(boardModel, jiraModel);
    }
+   
 
    @Override
-   public JiraTableModel loadJiraModel() throws IOException {
-      notifyLoadingStarted();
-      TableModelDTO dto = loadModel(xlsFile, "jira");
-      notifyLoadingFinished();
-      return new JiraTableModel(dto.getContents(), dto.getHeader());
-   }
-
-   @Override
-   public void saveBoardModel(MyTableModel model) throws IOException {
+   public void saveModels(MyTableModel boardModel, MyTableModel jiraModel) throws IOException {
       notifySavingStarted();
-      saveModel(xlsFile, model, "board");
-      notifySavingFinished();
-   }
-
-   @Override
-   public void saveJiraModel(MyTableModel model) throws IOException {
-      notifySavingStarted();
-      saveModel(xlsFile, model, "jira");
+      saveModel(xlsFile, boardModel, "board");
+      saveModel(xlsFile, jiraModel, "jira");
       notifySavingFinished();
    }
 
@@ -234,7 +225,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    private void notifyLoadingFinished() {
-      if (loadingNow-- == 1) {
+      if (--loadingNow == 00) {
          log.debug("notifyLoadingFinished");
          notifyListeners(DaoListenerEvent.LoadingFinished, "Loading Finished!");
       }
@@ -248,7 +239,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    private void notifySavingFinished() {
-      if (savesNow-- == 1) {
+      if (--savesNow == 0) {
          log.debug("notifySavingFinished");
          notifyListeners(DaoListenerEvent.SavingFinished, "Saving Finished!");
       }

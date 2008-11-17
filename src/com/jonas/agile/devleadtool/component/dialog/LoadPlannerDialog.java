@@ -11,8 +11,6 @@ import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.SaveKeyListener;
 import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerPanel;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.common.logging.MyLogger;
 
@@ -61,12 +59,7 @@ public class LoadPlannerDialog extends JFileChooser {
          SwingWorker<CombinedModelDTO, Object> swingWorker = new SwingWorker<CombinedModelDTO, Object>() {
             @Override
             protected CombinedModelDTO doInBackground() throws Exception {
-               log.trace("doInBackground 1");
-               BoardTableModel boardModel = dao.loadBoardModel();
-               JiraTableModel jiraModel = dao.loadJiraModel();
-
-               log.trace("doInBackground 2");
-               return new CombinedModelDTO(boardModel, jiraModel);
+               return dao.loadModels();
             }
 
             @Override

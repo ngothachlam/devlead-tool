@@ -1,12 +1,18 @@
 package com.jonas.agile.devleadtool.component;
 
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
@@ -18,8 +24,12 @@ import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.common.HyperLinker;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
+import com.jonas.jira.JiraProject;
+import com.jonas.jira.JiraVersion;
+import com.jonas.jira.access.JiraClient;
 
 public class MyTablePopupMenu extends MyPopupMenu {
 
@@ -31,15 +41,14 @@ public class MyTablePopupMenu extends MyPopupMenu {
       this.sourceTable = source;
       JFrame parentFrame = helper.getParentFrame();
 
-      add(new MenuItem_UnMark("unMark", source));
-      addSeparator();
       add(new MenuItem_Add("Add Jiras", source, parentFrame, tables));
+      add(new MenuItem_UnMark("unMark", source));
       add(new MenuItem_Default("Open in Browser", new OpenJirasListener(sourceTable, helper)));
       add(new MenuItem_Sync("Dowload Jira Info", sourceTable, helper));
-      addSeparator();
+      add(new MenuItem_Remove("Remove Jiras", sourceTable, helper.getParentFrame()));
       addMenuItem_Copys(source, parentFrame, tables);
       addSeparator();
-      add(new MenuItem_Remove("Remove Jiras", sourceTable, helper.getParentFrame()));
+      add(new MenuItem_CreateMerge("Create Merge", source, helper.getParentFrame()));
    }
 
    private void addMenuItem_Copys(MyTable source, JFrame parentFrame, MyTable... tables) {
@@ -48,6 +57,83 @@ public class MyTablePopupMenu extends MyPopupMenu {
             String title = "Copy to other Table: " + tableDTO.getTitle();
             add(new MenuItem_Copy(parentFrame, title, sourceTable, tableDTO));
          }
+      }
+   }
+
+   private class MenuItem_CreateMerge extends JMenuItem {
+
+      public MenuItem_CreateMerge(String string, final MyTable source, JFrame parent) {
+         super(string);
+         addActionListener(new ActionListener() {
+            private Component parent;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+               int[] selectedRows = source.getSelectedRows();
+               returnIfNoneSelected(selectedRows);
+
+               List<String> jirasToGetMergeJiras = new ArrayList<String>();
+               StringBuffer sb = new StringBuffer("Do you want to create merge Jiras for the following?\n");
+               for (int aSelectedRow : selectedRows) {
+                  String aJiraToBeMerged = (String) source.getValueAt(Column.Jira, aSelectedRow);
+                  sb.append(aJiraToBeMerged).append(" ");
+                  jirasToGetMergeJiras.add(aJiraToBeMerged);
+               }
+
+               JiraProject project = JiraProject.getProjectByJira(jirasToGetMergeJiras.get(0));
+               JiraClient client = project.getJiraClient();
+
+               try {
+                  JiraVersion[] fixVersions = client.getFixVersionsFromProject(project, false);
+                  JiraVersion fixVersionToCreateMergesAgainst = (JiraVersion) JOptionPane.showInputDialog(parent, sb.toString(),
+                        "What Fix Version for the merges?", JOptionPane.QUESTION_MESSAGE, null, fixVersions, null);
+                  log.debug("result " + fixVersionToCreateMergesAgainst);
+                  if (fixVersionToCreateMergesAgainst != null) {
+                     sb = new StringBuffer("Created Merge Jiras:\n");
+                     List<String> jirasMerged = new ArrayList<String>();
+                     for (String aJiraToGetMerge : jirasToGetMergeJiras) {
+                        project = JiraProject.getProjectByJira(aJiraToGetMerge);
+                        try {
+                           JiraClient jiraClient = project.getJiraClient();
+                           String fixVersionName = fixVersionToCreateMergesAgainst.getName();
+                           String mergeJiraCreated = jiraClient.createMergeJira(aJiraToGetMerge, fixVersionName);
+                           sb.append(mergeJiraCreated).append(" ");
+                           jirasMerged.add(mergeJiraCreated);
+                           source.setValueAt(mergeJiraCreated, aJiraToGetMerge, Column.Merge);
+                           source.addJira(new JiraIssue(mergeJiraCreated, fixVersionName));
+                        } catch (Throwable e1) {
+                           AlertDialog.alertException((Frame) parent, e1);
+                        }
+                     }
+                     sb.append("\nOpen them in browser?");
+                     int shallOpenInBrowser = JOptionPane.showConfirmDialog(parent, sb.toString());
+                     if (shallOpenInBrowser == JOptionPane.YES_OPTION) {
+                        try {
+                           for (String aJiraMerged : jirasMerged) {
+                              String jira_url = PlannerHelper.getJiraUrl(aJiraMerged);
+                              HyperLinker.displayURL(jira_url + "/browse/" + aJiraMerged);
+
+                           }
+                        } catch (URISyntaxException e1) {
+                           e1.printStackTrace();
+                        } catch (IOException e1) {
+                           e1.printStackTrace();
+                        }
+                     }
+                  }
+               } catch (Throwable e1) {
+                  AlertDialog.alertException((Frame) parent, e1);
+               }
+            }
+
+            private void returnIfNoneSelected(int[] rows) {
+               if (rows.length == 0) {
+                  JOptionPane.showMessageDialog(parent, "No Jiras Selected!");
+                  return;
+               }
+            }
+         });
       }
    }
 

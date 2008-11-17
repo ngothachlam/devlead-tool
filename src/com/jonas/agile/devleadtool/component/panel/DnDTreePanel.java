@@ -25,10 +25,8 @@ import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
-import com.jonas.agile.devleadtool.component.tree.xml.XmlParserLargeMock;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.jira.access.ClientConstants;
-import com.jonas.jira.access.JiraSprintUpdater;
+import com.jonas.jira.JiraProject;
 
 public class DnDTreePanel extends JPanel {
 
@@ -56,8 +54,8 @@ public class DnDTreePanel extends JPanel {
          JiraSaxHandler saxHandler = new JiraSaxHandler();
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, 100, frame));
 
-//         XmlParser parser = new XmlParserImpl(saxHandler, 100);
-          XmlParser parser = new XmlParserLargeMock(saxHandler);
+         XmlParser parser = new XmlParserImpl(saxHandler, 100);
+         // XmlParser parser = new XmlParserLargeMock(saxHandler);
 
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser, tree, frame);
 
@@ -141,7 +139,7 @@ public class DnDTreePanel extends JPanel {
    private final class UploadToJiraButton extends JButton implements ActionListener {
       private final Frame parent;
       private final DnDTree tree;
-      private JiraSprintUpdater jiraSprintUpdater = new JiraSprintUpdater(ClientConstants.JIRA_URL_AOLBB);
+      // private JiraSprintUpdater jiraSprintUpdater = new JiraSprintUpdater(ClientConstants.JIRA_URL_AOLBB);
 
       private UploadToJiraButton(String text, Frame parent, DnDTree tree) {
          super(text);
@@ -162,25 +160,26 @@ public class DnDTreePanel extends JPanel {
          try {
             List<String> jiras = new ArrayList<String>();
             MyStatusBar.getInstance().setMessage("Logging in to Jira...", false);
-            jiraSprintUpdater.loginToJira();
             for (JiraNode jiraNode : jiraNodes) {
+               JiraProject project = JiraProject.getProjectByJira(jiraNode.getKey());
                try {
                   if (jiraNode.isToSync() && !jiras.contains(jiraNode.getKey())) {
                      MyStatusBar.getInstance().setMessage("Updating " + jiraNode.getKey() + "'s Sprint Details in Jira", false);
                      String sprint = jiraNode.getSprint();
                      if (DnDTreeModel.UNKNOWN_SPRINT.equals(sprint))
                         sprint = "";
-                     jiraSprintUpdater.updateSprint(jiraNode.getKey(), jiraNode.getId(), sprint);
+                     project.getJiraClient().updateSprint(jiraNode.getKey(), sprint);
                      sb.append("\n").append(jiraNode.getKey()).append(" was moved to sprint ").append(sprint);
                      jiras.add(jiraNode.getKey());
                   }
                   jiraNode.setToSynced();
+                  noOfErrors = 0;
                } catch (Throwable ex) {
                   noOfErrors++;
                   MyStatusBar.getInstance().setMessage("Failed to Upload Sprint for Jira " + jiraNode.getKey(), true);
                   AlertDialog.alertException(parent, ex);
                }
-               if (noOfErrors >= 3) {
+               if (noOfErrors >= 2) {
                   MyStatusBar.getInstance().setMessage("Failed to Upload more than 3 Jiras. Uploading was interrupted!", true);
                   JOptionPane.showMessageDialog(parent, "Error Happened susequent times - abandoned!", "Exception!", JOptionPane.ERROR_MESSAGE);
                   break;

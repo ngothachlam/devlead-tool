@@ -1,5 +1,6 @@
 package com.jonas.jira.access;
 
+import javax.xml.rpc.ServiceException;
 import junit.framework.TestCase;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
@@ -38,14 +39,17 @@ public class JiraSoapClientFunctionalTest extends TestCase {
       System.out.println(filter.getId());
       System.out.println(filter.getXml());
    }
-   
-   public void testShouldCreateMergeOk() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException{
-      RemoteIssue newJira = clientAtlassain.createMergeJira("TST-11368", "Dev Version", "1");
-//      RemoteIssue newJira = clientAolBB.createMergeJira("LLU-4274", "LLU 11.2");
+
+   public void trestShouldCreateMergeOk() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException,
+         ServiceException {
+//      RemoteIssue newJira = clientAtlassain.createMergeJira("TST-11368", "Dev Version", "1");
+       RemoteIssue newJira = clientAolBB.createMergeJira("LLU-4275", "LLU 12");
       System.out.println("Created merge jira " + newJira.getKey());
-      
-      // set to resolved!
-      // update link!
-      // update original jiras fix version to exclude the one for the merge
+
+   }
+
+   public void tsestShsdouldCreateSprintOk() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException,
+         ServiceException {
+      clientAolBB.updateSprint("LLU-3809", "test");
    }
 }

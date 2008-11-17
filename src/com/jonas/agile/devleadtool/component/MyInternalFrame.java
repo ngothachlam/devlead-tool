@@ -140,8 +140,7 @@ public class MyInternalFrame extends JInternalFrame {
          @Override
          protected Object doInBackground() throws Exception {
             try {
-               dao.saveBoardModel(getBoardModel());
-               dao.saveJiraModel(getJiraModel());
+               dao.saveModels(getBoardModel(), getJiraModel());
             } catch (IOException e) {
                AlertDialog.alertException(helper.getParentFrame(), e);
             } 

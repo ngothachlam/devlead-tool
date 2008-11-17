@@ -2,7 +2,6 @@ package com.jonas.agile.devleadtool.component.table;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +56,8 @@ public class MyTable extends JTable {
       this.title = title;
       this.allowMarking = allowMarking;
       getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-      setColumnSelectionAllowed(true);
+      setColumnSelectionAllowed(false);
       setRowSelectionAllowed(true);
-      setCellSelectionEnabled(true);
 
       CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
       checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());

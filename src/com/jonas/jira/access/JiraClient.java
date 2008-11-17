@@ -2,6 +2,7 @@ package com.jonas.jira.access;
 
 import java.io.IOException;
 import java.util.List;
+import javax.xml.rpc.ServiceException;
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
@@ -45,12 +46,12 @@ public class JiraClient {
       }
    }
 
-   public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean isArchived) throws RemotePermissionException, RemoteAuthenticationException,
+   public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean includeArchived) throws RemotePermissionException, RemoteAuthenticationException,
          RemoteException, java.rmi.RemoteException {
       JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_FIXVERSION);
       RemoteVersion[] fixVersions = jiraSoapClient.getFixVersions(jiraProject);
       buildJiraVersions(fixVersions, jiraProject);
-      return jiraProject.getFixVersions(isArchived);
+      return jiraProject.getFixVersions(includeArchived);
    }
 
    public JiraIssue getJira(String jira) throws HttpException, IOException, JDOMException, JiraException {
@@ -123,5 +124,13 @@ public class JiraClient {
    public void login() throws HttpException, IOException, JiraException {
       JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.LOGGING_IN);
       httpClient.loginToJira();
+   }
+
+   public void updateSprint(String jiraKey, String sprint) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException, ServiceException {
+      jiraSoapClient.updateSprint(jiraKey, sprint);
+   }
+
+   public String createMergeJira(String jira, String fixForMerge) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
+      return jiraSoapClient.createMergeJira(jira, fixForMerge).getKey();
    }
 }
