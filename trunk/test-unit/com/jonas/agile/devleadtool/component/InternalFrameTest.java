@@ -18,9 +18,7 @@ public class InternalFrameTest extends JonasTestCase {
    }
 
    private void clearInternalFrames() throws PropertyVetoException {
-      for (MyInternalFrame internalFrame : internalFrames) {
-         internalFrame.setClosed(true);
-      }
+      internalFrames.get(0).closeAll();
    }
 
    private MyInternalFrame getTestInternalFrame(String title) {
@@ -37,18 +35,7 @@ public class InternalFrameTest extends JonasTestCase {
       assertRightMostFromStringWorks("p.xls", "p.xls", internalFrame, 5, 0);
       assertRightMostFromStringWorks(".xls", ".xls", internalFrame, 5, -1);
    }
-
-   public void testShouldCalculateTitleCorrectly() {
-      MyInternalFrame internalFrame = getTestInternalFrame("title");
-      assertEquals("title", internalFrame.getTitle());
-
-      internalFrame.setTitleFileName("u.xls", CutoverLength.TEST_5);
-      assertEquals("title - u.xls", internalFrame.getTitle());
-      
-      internalFrame.setTitleFileName("C:\\Documents\\lludevsup.xls", CutoverLength.TEST_5);
-      assertEquals("title - ...p.xls", internalFrame.getTitle());
-   }
-
+   
    public void testShouldCalculateSameFramesCorrectly() {
       MyInternalFrame internalFrame = getTestInternalFrame("title");
       assertEquals(1, internalFrame.getCountWithSameTitle("title"));
@@ -60,13 +47,24 @@ public class InternalFrameTest extends JonasTestCase {
       assertEquals(2, internalFrame2.getCountWithSameTitle("title"));
       assertEquals(0, internalFrame2.getCountWithSameTitle("titles"));
    }
-   
+
    public void testShouldCreateTitleCorrectly() {
       MyInternalFrame internalFrame1 = getTestInternalFrame("title");
       assertEquals("title", internalFrame1.createTitle("title"));
       
       MyInternalFrame internalFrame2 = getTestInternalFrame("title");
       assertEquals("title (1)", internalFrame2.createTitle("title"));
+   }
+   
+   public void testShouldCalculateTitleCorrectly() {
+      MyInternalFrame internalFrame = getTestInternalFrame("title");
+      assertEquals("title", internalFrame.getTitle());
+
+      internalFrame.setTitleFileName("u.xls", CutoverLength.TEST_5);
+      assertEquals("u.xls", internalFrame.getTitle());
+      
+      internalFrame.setTitleFileName("C:\\Documents\\lludevsup.xls", CutoverLength.TEST_5);
+      assertEquals("...p.xls", internalFrame.getTitle());
    }
 
    public void testShouldCalculateTitleCorrectlyWithDuplicates() {
@@ -80,13 +78,13 @@ public class InternalFrameTest extends JonasTestCase {
 
       internalFrame.setTitleFileName("C:\\Documents and Settings\\jonasjolofsson\\lludevsup.xls", CutoverLength.TEST_5);
 
-      assertEquals("title - ...p.xls", internalFrame.getTitle());
+      assertEquals("...p.xls", internalFrame.getTitle());
       assertEquals("titles", internalFrame2.getTitle());
       assertEquals("title (1)", internalFrame3.getTitle());
       
       internalFrame.setTitleFileName("C:\\Documents and Settings\\jonasjolofsson\\lludevsup.xls", CutoverLength.TEST_5);
       
-      assertEquals("title - ...p.xls", internalFrame.getTitle());
+      assertEquals("...p.xls", internalFrame.getTitle());
       assertEquals("titles", internalFrame2.getTitle());
       assertEquals("title (1)", internalFrame3.getTitle());
    }

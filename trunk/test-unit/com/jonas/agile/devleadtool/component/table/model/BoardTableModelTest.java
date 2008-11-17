@@ -56,15 +56,16 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(new Integer(1).intValue(), columnNames.get(Column.Description).intValue());
       assertEquals(new Integer(2).intValue(), columnNames.get(Column.J_Resolution).intValue());
       assertEquals(new Integer(3).intValue(), columnNames.get(Column.Release).intValue());
-      assertEquals(new Integer(4).intValue(), columnNames.get(Column.isOpen).intValue());
-      assertEquals(new Integer(5).intValue(), columnNames.get(Column.isBug).intValue());
-      assertEquals(new Integer(6).intValue(), columnNames.get(Column.isInProgress).intValue());
-      assertEquals(new Integer(7).intValue(), columnNames.get(Column.isResolved).intValue());
-      assertEquals(new Integer(8).intValue(), columnNames.get(Column.isComplete).intValue());
-      assertEquals(new Integer(9).intValue(), columnNames.get(Column.Dev_Estimate).intValue());
-      assertEquals(new Integer(10).intValue(), columnNames.get(Column.Dev_Actual).intValue());
-      assertEquals(new Integer(11).intValue(), columnNames.get(Column.prio).intValue());
-      assertEquals(12, columnNames.size());
+      assertEquals(new Integer(4).intValue(), columnNames.get(Column.Merge).intValue());
+      assertEquals(new Integer(5).intValue(), columnNames.get(Column.isOpen).intValue());
+      assertEquals(new Integer(6).intValue(), columnNames.get(Column.isBug).intValue());
+      assertEquals(new Integer(7).intValue(), columnNames.get(Column.isInProgress).intValue());
+      assertEquals(new Integer(8).intValue(), columnNames.get(Column.isResolved).intValue());
+      assertEquals(new Integer(9).intValue(), columnNames.get(Column.isComplete).intValue());
+      assertEquals(new Integer(10).intValue(), columnNames.get(Column.Dev_Estimate).intValue());
+      assertEquals(new Integer(11).intValue(), columnNames.get(Column.Dev_Actual).intValue());
+      assertEquals(new Integer(12).intValue(), columnNames.get(Column.prio).intValue());
+      assertEquals(13, columnNames.size());
    }
 
    public void testShouldSetBoolColumnsMutuallyExlusiveRedOk() {
@@ -253,6 +254,7 @@ public class BoardTableModelTest extends JonasTestCase {
       header.add(Column.Description);
       header.add(Column.J_Resolution);
       header.add(Column.Release);
+      header.add(Column.Merge);
       header.add(Column.isOpen);
       header.add(Column.isBug);
       header.add(Column.isInProgress);
@@ -267,7 +269,7 @@ public class BoardTableModelTest extends JonasTestCase {
       MyTableModel model = new BoardTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(12, model.getColumnCount());
+      assertEquals(13, model.getColumnCount());
       assertEquals("0.0", model.getValueAt(0, 0));
       assertEquals("0.1", model.getValueAt(0, 1));
       assertEquals("0.2", model.getValueAt(0, 2));
@@ -287,19 +289,20 @@ public class BoardTableModelTest extends JonasTestCase {
 
    public void testGetEmptyRowFromBoard() {
       Object[] emptyRow = model.getEmptyRow();
-      assertEquals(12, emptyRow.length);
+      assertEquals(13, emptyRow.length);
       assertEquals("", emptyRow[0]);
       assertEquals("", emptyRow[1]);
       assertEquals("", emptyRow[2]);
       assertEquals("", emptyRow[3]);
-      assertEquals(Boolean.FALSE, emptyRow[4]);
+      assertEquals("", emptyRow[4]);
       assertEquals(Boolean.FALSE, emptyRow[5]);
       assertEquals(Boolean.FALSE, emptyRow[6]);
       assertEquals(Boolean.FALSE, emptyRow[7]);
       assertEquals(Boolean.FALSE, emptyRow[8]);
-      assertEquals("", emptyRow[9]);
+      assertEquals(Boolean.FALSE, emptyRow[9]);
       assertEquals("", emptyRow[10]);
-      assertEquals(null, emptyRow[11]);
+      assertEquals("", emptyRow[11]);
+      assertEquals(null, emptyRow[12]);
    }
 
 }

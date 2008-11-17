@@ -188,7 +188,7 @@ public class MyTableModelTest extends JonasTestCase {
 
       assertEquals("LLU-1", model.getValueAt(0, 0));
       assertEquals("", model.getValueAt(0, 1));
-      assertEquals(BoardStatusValue.UnKnown, model.getValueAt(0, 2));
+      assertEquals(BoardStatusValue.NA, model.getValueAt(0, 2));
       assertEquals(null, model.getValueAt(0, 3));
    }
 
@@ -233,7 +233,7 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals(9, model.getColumnCount());
       assertModelRow("LLU-1", Column.Jira, 0, 0);
       assertModelRow("Summary1", Column.Description, 1, 0);
-      assertModelRow(BoardStatusValue.UnKnown, Column.B_BoardStatus, 2, 0);
+      assertModelRow(BoardStatusValue.NA, Column.B_BoardStatus, 2, 0);
       assertModelRow(5800, Column.prio, 3, 0);
       assertModelRow("", Column.Note, 4, 0);
       assertModelRow("BuildNo1", Column.J_BuildNo, 5, 0);
@@ -252,10 +252,9 @@ public class MyTableModelTest extends JonasTestCase {
       MyTableModel model = new TestTableModelTwo();
 
       JiraIssue jiraIssue = new JiraIssue("key", "summary", "status", "resolution", "type", "buildNo", "estimate", 1, "sprint");
-      assertEquals("key", model.getValueFromIssue(jiraIssue, Column.Jira));
-      assertEquals("key", Column.Jira.parse("key"));
-      assertEquals("summary", model.getValueFromIssue(jiraIssue, Column.Description));
+      assertEquals("KEY", model.getValueFromIssue(jiraIssue, Column.Jira));
       assertEquals("type", model.getValueFromIssue(jiraIssue, Column.J_Type));
+      assertEquals("summary", model.getValueFromIssue(jiraIssue, Column.Description));
       assertTrue(model.getValueFromIssue(jiraIssue, Column.J_FixVersion) instanceof List);
       assertEquals("status", model.getValueFromIssue(jiraIssue, Column.J_Status));
       assertEquals("resolution", model.getValueFromIssue(jiraIssue, Column.J_Resolution));
@@ -264,7 +263,7 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals("estimate", model.getValueFromIssue(jiraIssue, Column.J_Dev_Estimate));
       assertEquals("sprint", model.getValueFromIssue(jiraIssue, Column.J_Sprint));
       assertEquals(null, model.getValueFromIssue(jiraIssue, Column.J_Dev_Spent));
-      assertEquals(BoardStatusValue.UnKnown, model.getValueFromIssue(jiraIssue, Column.B_BoardStatus));
+      assertEquals(BoardStatusValue.NA, model.getValueFromIssue(jiraIssue, Column.B_BoardStatus));
    }
 }
 
