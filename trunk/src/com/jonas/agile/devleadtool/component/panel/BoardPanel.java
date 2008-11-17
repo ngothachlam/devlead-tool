@@ -41,7 +41,7 @@ public class BoardPanel extends MyComponentPanel {
    }
 
    protected void makeContent(MyTableModel boardTableModel) {
-      table = new MyTable("Board", boardTableModel);
+      table = new MyTable("Board", boardTableModel, true);
       JScrollPane scrollPane = new MyScrollPane(table);
       setBorder(BorderFactory.createTitledBorder("Board"));
       addCenter(scrollPane);

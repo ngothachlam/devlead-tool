@@ -124,7 +124,7 @@ public class BasicDnD extends JPanel {
    }
 
    private MyTable getTable(MyTableModel model) {
-      MyTable table = new MyTable("BasicDND", model);
+      MyTable table = new MyTable("BasicDND", model, false);
       table.setFillsViewportHeight(true);
       table.setTransferHandler(new TableTransferHandler(table));
       table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

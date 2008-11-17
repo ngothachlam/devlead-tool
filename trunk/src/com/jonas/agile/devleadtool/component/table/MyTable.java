@@ -1,5 +1,8 @@
 package com.jonas.agile.devleadtool.component.table;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,21 +42,24 @@ public class MyTable extends JTable {
    private List<TableListener> listeners = new ArrayList<TableListener>();
    private JiraCellEditor jiraEditor;
    private CheckBoxTableCellEditor checkBoxEditor;
+   private final boolean allowMarking;
 
-   public MyTable(String title) {
-      this(title, new DefaultTableModel());
+   public MyTable(String title, boolean allowMarking) {
+      this(title, new DefaultTableModel(), allowMarking);
    }
 
-   public MyTable(String title, MyTableModel modelModel) {
-      this(title, (AbstractTableModel) modelModel);
+   public MyTable(String title, MyTableModel modelModel, boolean allowMarking) {
+      this(title, (AbstractTableModel) modelModel, allowMarking);
    }
 
-   MyTable(String title, AbstractTableModel defaultTableModel) {
+   MyTable(String title, AbstractTableModel defaultTableModel, final boolean allowMarking) {
       super(defaultTableModel);
       this.title = title;
+      this.allowMarking = allowMarking;
       getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-      setColumnSelectionAllowed(false);
+      setColumnSelectionAllowed(true);
       setRowSelectionAllowed(true);
+      setCellSelectionEnabled(true);
 
       CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
       checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
@@ -94,10 +100,26 @@ public class MyTable extends JTable {
          @Override
          public String getToolTipText(MouseEvent e) {
             java.awt.Point p = e.getPoint();
-            int rowIndex = rowAtPoint(p);
             int colIndex = columnAtPoint(p);
-            String tip = getColumnName(colIndex);
-            return tip;
+            return getColumnName(colIndex);
+         }
+      });
+
+      this.addKeyListener(new KeyAdapter() {
+         public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
+            // FIXME add this as mnemonic - its the key under 'Esc'.
+            case 192:
+               if (allowMarking && e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
+                  log.debug("backspace and mark");
+                  model.mark(convertRowIndexToModel(getSelectedRow()));
+                  fireTableRowsUpdated(getSelectedRow(), getSelectedRow());
+               }
+               break;
+            case KeyEvent.VK_ESCAPE:
+               clearSelection();
+               break;
+            }
          }
       });
    }
@@ -276,6 +298,20 @@ public class MyTable extends JTable {
          return true;
       }
       return false;
+   }
+
+   public boolean isMarkingAllowed() {
+      return allowMarking;
+   }
+
+   public void unMarkSelection() {
+      int[] selectedRows = getSelectedRows();
+      log.debug("unMarkSelection: " + selectedRows.length);
+      for (int i = 0; i < selectedRows.length; i++) {
+         log.debug("selected rows: " + selectedRows[i]);
+         model.unMark(convertRowIndexToModel(selectedRows[i]));
+      }
+      fireTableRowsUpdated(selectedRows[0], selectedRows[selectedRows.length - 1]);
    }
 
 }

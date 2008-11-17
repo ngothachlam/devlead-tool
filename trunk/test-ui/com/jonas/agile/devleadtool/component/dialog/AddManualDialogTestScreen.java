@@ -12,8 +12,8 @@ public class AddManualDialogTestScreen {
    public static void main(String... args) {
       JFrame frame = TryoutTester.getFrame();
       frame.setVisible(true);
-      MyTable tableA = new MyTable("A", new BoardTableModel());
-      MyTable tableB = new MyTable("B", new JiraTableModel());
+      MyTable tableA = new MyTable("A", new BoardTableModel(), true);
+      MyTable tableB = new MyTable("B", new JiraTableModel(), true);
 
       MyComponentPanel panel = new MyComponentPanel(new GridLayout(2, 1));
       panel.add(tableA);

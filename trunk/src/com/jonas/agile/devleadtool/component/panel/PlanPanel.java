@@ -20,7 +20,7 @@ public class PlanPanel extends MyComponentPanel {
    public PlanPanel(PlannerHelper helper, MyTableModel planModel) {
       super(new BorderLayout());
       this.helper = helper;
-      table = new MyTable("Plan", planModel);
+      table = new MyTable("Plan", planModel, true);
 
       JScrollPane scrollpane = new JScrollPane(table);
 

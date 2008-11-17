@@ -16,6 +16,7 @@ public class BoardTableModel extends MyTableModel {
          Column.isInProgress, Column.isResolved, Column.isComplete, Column.Dev_Estimate, Column.Dev_Actual, Column.prio };
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
+
    static {
       mutuallyExclusive.add(Column.isOpen);
       mutuallyExclusive.add(Column.isBug);
@@ -25,11 +26,11 @@ public class BoardTableModel extends MyTableModel {
    }
 
    public BoardTableModel() {
-      super(columns);
+      super(columns, true);
    }
 
    public BoardTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
-      super(columns, contents, header);
+      super(columns, contents, header, true);
    }
 
    public BoardStatusValue getStatus(String jira) {

@@ -19,13 +19,17 @@ public abstract class MyTableModel extends DefaultTableModel {
    protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
    protected Counter counter = new Counter();
    protected boolean editable = true;
+   private List<Integer> edited = new ArrayList<Integer>();
+   private final boolean allowMarking;
 
-   MyTableModel(Column[] columns) {
+   MyTableModel(Column[] columns, boolean allowMarking) {
       super(columns, 0);
+      this.allowMarking = allowMarking;
       initiateColumns(columns);
    }
 
-   MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header) {
+   MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header, boolean allowMarking) {
+      this.allowMarking = allowMarking;
       log.trace("MyTableModel");
       initiateColumns(columns);
       List<Integer> convertInputHeaderToOriginal = getConvertionNumbers(header, getColumnNames());
@@ -95,7 +99,7 @@ public abstract class MyTableModel extends DefaultTableModel {
          value = jiraIssue.getSpent();
          break;
       case Release:
-         log.debug("Found Release!" +  jiraIssue.getRelease());
+         log.debug("Found Release!" + jiraIssue.getRelease());
          value = jiraIssue.getRelease();
          break;
       default:
@@ -374,9 +378,54 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    public void fireTableCellUpdatedExceptThisOne(int row, int col) {
       for (int i = 0; i < getColumnCount(); i++) {
-         if (i != col )
+         if (i != col)
             fireTableCellUpdated(row, i);
       }
+   }
+
+   @Override
+   public void fireTableRowsDeleted(int firstRow, int lastRow) {
+      if (allowMarking)
+         for (int i = firstRow; i < lastRow; i++) {
+            unMark(i);
+         }
+      super.fireTableRowsDeleted(firstRow, lastRow);
+   }
+
+   @Override
+   public void fireTableRowsInserted(int firstRow, int lastRow) {
+      if (allowMarking)
+         mark(firstRow, lastRow);
+      super.fireTableRowsInserted(firstRow, lastRow);
+   }
+
+   @Override
+   public void fireTableRowsUpdated(int firstRow, int lastRow) {
+      if (allowMarking)
+         mark(firstRow, lastRow);
+      super.fireTableRowsUpdated(firstRow, lastRow);
+   }
+
+   public boolean isMarked(int row) {
+      return edited.contains(new Integer(row));
+   }
+
+   public void unMark(int row) {
+      edited.remove(new Integer(row));
+   }
+
+   private void mark(int firstRow, int lastRow) {
+      for (int i = firstRow; i <= lastRow; i++) {
+         mark(i);
+      }
+   }
+
+   public void mark(int row) {
+      edited.add(new Integer(row));
+   }
+
+   public void clearMarked() {
+      edited.clear();
    }
 }
 

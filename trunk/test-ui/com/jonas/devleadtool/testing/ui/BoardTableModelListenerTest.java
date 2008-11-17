@@ -26,8 +26,8 @@ public class BoardTableModelListenerTest extends JonasTestCase {
       BoardTableModel boardModel = new BoardTableModel();
       JiraTableModel jiraModel = new JiraTableModel();
 
-      boardTable = new MyTable("board", boardModel);
-      jiraTable = new MyTable("jira", jiraModel);
+      boardTable = new MyTable("board", boardModel, true);
+      jiraTable = new MyTable("jira", jiraModel, false);
       boardTable.addListener(new TableListener() {
          @Override
          public void jiraRemoved(String jira) {
