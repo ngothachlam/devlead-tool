@@ -44,4 +44,11 @@ public class ColumnTest extends TestCase {
       return (List<String>) parse;
    }
 
+   
+   public void testShouldParseOk(){
+      assertEquals( false, Column.Jira.isJiraColumn());
+      assertEquals( true, Column.Jira.isEditable());
+      assertEquals( true, Column.Jira.isToLoad());
+      assertEquals("KEY", Column.Jira.parse("key"));
+   }
 }

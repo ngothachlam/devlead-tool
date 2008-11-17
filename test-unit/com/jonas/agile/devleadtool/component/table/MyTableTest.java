@@ -59,7 +59,7 @@ public class MyTableTest extends JonasTestCase {
       assertEquals(9, table.getColumnCount());
       assertEquals("", table.getValueAt(0, 0));
       assertEquals("", table.getValueAt(0, 1));
-      assertEquals(BoardStatusValue.UnKnown, table.getValueAt(0, 2));
+      assertEquals(BoardStatusValue.NA, table.getValueAt(0, 2));
       assertEquals(null, table.getValueAt(0, 3));
       assertEquals("", table.getValueAt(0, 4));
       assertEquals("", table.getValueAt(0, 5));
@@ -74,7 +74,7 @@ public class MyTableTest extends JonasTestCase {
       assertEquals(9, table.getColumnCount());
       assertEquals("", table.getValueAt(0, 0));
       assertEquals("newValue", table.getValueAt(0, 1));
-      assertEquals(BoardStatusValue.UnKnown, table.getValueAt(0, 2));
+      assertEquals(BoardStatusValue.NA, table.getValueAt(0, 2));
       assertEquals(null, table.getValueAt(0, 3));
       assertEquals("", table.getValueAt(0, 4));
       assertEquals("", table.getValueAt(0, 5));
