@@ -39,6 +39,8 @@ public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
             } else {
                cell.setBackground(SwingUtil.cellRED);
             }
+         } else if (model.isMarked(table.convertRowIndexToModel(row)) && !isSelected && !hasFocus) {
+            cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -25));
          }
       }
    }

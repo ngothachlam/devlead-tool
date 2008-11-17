@@ -11,11 +11,11 @@ public class TestTableModel extends MyTableModel {
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
 
    public TestTableModel() {
-      super(columns);
+      super(columns, false);
    }
 
    public TestTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
-      super(columns, contents, header);
+      super(columns, contents, header, false);
    }
 
    @Override

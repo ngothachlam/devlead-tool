@@ -11,7 +11,7 @@ public class MyTableTest extends JonasTestCase {
 
    protected void setUp() throws Exception {
       super.setUp();
-      table = new MyTable("");
+      table = new MyTable("", false);
    }
 
    protected void tearDown() throws Exception {

@@ -25,7 +25,7 @@ public class CheckBoxTableCellEditor extends DefaultCellEditor implements MyEdit
    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
       rowEdited = row;
       colEdited = col;
-
+      
       return super.getTableCellEditorComponent(table, value, isSelected, row, col);
    }
 

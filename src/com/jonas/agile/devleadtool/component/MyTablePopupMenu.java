@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -17,17 +18,21 @@ import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
 public class MyTablePopupMenu extends MyPopupMenu {
 
+   private final static Logger log = MyLogger.getLogger(MyTablePopupMenu.class);
    private final MyTable sourceTable;
 
-   public MyTablePopupMenu(MyTable source, PlannerHelper helper, MyTable... tables) {
+   public MyTablePopupMenu(final MyTable source, PlannerHelper helper, MyTable... tables) {
       super(source);
       this.sourceTable = source;
       JFrame parentFrame = helper.getParentFrame();
 
+      add(new MenuItem_UnMark("unMark", source));
+      addSeparator();
       add(new MenuItem_Add("Add Jiras", source, parentFrame, tables));
       add(new MenuItem_Default("Open in Browser", new OpenJirasListener(sourceTable, helper)));
       add(new MenuItem_Sync("Dowload Jira Info", sourceTable, helper));
@@ -45,7 +50,25 @@ public class MyTablePopupMenu extends MyPopupMenu {
          }
       }
    }
-   
+
+   private class MenuItem_UnMark extends JMenuItem {
+
+      public MenuItem_UnMark(String string, final MyTable source) {
+         super(string);
+         if (source.isMarkingAllowed()) {
+            setEnabled(true);
+         } else {
+            setEnabled(false);
+         }
+         addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               log.debug("Mark!");
+               source.unMarkSelection();
+            }
+         });
+      }
+   }
 
    private class MenuItem_Add extends JMenuItem {
 
@@ -77,11 +100,10 @@ public class MyTablePopupMenu extends MyPopupMenu {
 
       public void actionPerformed(ActionEvent e) {
          final int[] selectedRows = sourceTable.getSelectedRows();
-         if (selectedRows.length == 0 ){
+         if (selectedRows.length == 0) {
             AlertDialog.alertMessage(frame, "No rows selected!");
          }
-         final ProgressDialog dialog = new ProgressDialog(frame, "Copying...", "Copying selected messages from Board to Plan...",
-               selectedRows.length);
+         final ProgressDialog dialog = new ProgressDialog(frame, "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length);
          try {
             for (int i = 0; i < selectedRows.length; i++) {
                String jiraString = (String) sourceTable.getValueAt(Column.Jira, selectedRows[i]);
@@ -128,8 +150,8 @@ public class MyTablePopupMenu extends MyPopupMenu {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-         final ProgressDialog dialog = new ProgressDialog(parent, "Removing...", "Removing selected Jiras...",0);
-         if (sourceTable.getSelectedRowCount() <= 0){
+         final ProgressDialog dialog = new ProgressDialog(parent, "Removing...", "Removing selected Jiras...", 0);
+         if (sourceTable.getSelectedRowCount() <= 0) {
             dialog.setNote("Nothing selected!!");
             dialog.setCompleteWithDelay(2000);
          }

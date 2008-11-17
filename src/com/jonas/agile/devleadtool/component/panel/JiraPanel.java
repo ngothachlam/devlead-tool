@@ -26,7 +26,7 @@ public class JiraPanel extends MyComponentPanel {
       super(new BorderLayout());
       this.helper = helper;
 
-      table = new MyTable("Jira", jiraModel);
+      table = new MyTable("Jira", jiraModel, false);
 
       JScrollPane scrollpane = new MyScrollPane(table);
 
