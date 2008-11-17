@@ -19,7 +19,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
    protected Counter counter = new Counter();
    protected boolean editable = true;
-   private List<Integer> edited = new ArrayList<Integer>();
+   private List<Integer> marked = new ArrayList<Integer>();
    private final boolean allowMarking;
 
    MyTableModel(Column[] columns, boolean allowMarking) {
@@ -385,6 +385,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    @Override
    public void fireTableRowsDeleted(int firstRow, int lastRow) {
+      log.debug("fireTableRowsDeleted");
       if (allowMarking)
          for (int i = firstRow; i < lastRow; i++) {
             unMark(i);
@@ -394,24 +395,28 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    @Override
    public void fireTableRowsInserted(int firstRow, int lastRow) {
+      log.debug("fireTableRowsInserted");
       if (allowMarking)
          mark(firstRow, lastRow);
       super.fireTableRowsInserted(firstRow, lastRow);
    }
 
-   @Override
-   public void fireTableRowsUpdated(int firstRow, int lastRow) {
-      if (allowMarking)
-         mark(firstRow, lastRow);
-      super.fireTableRowsUpdated(firstRow, lastRow);
-   }
+   // @Override
+   // public void fireTableRowsUpdated(int firstRow, int lastRow) {
+   // log.debug("fireTableRowsUpdated");
+   // if (allowMarking)
+   // mark(firstRow, lastRow);
+   // super.fireTableRowsUpdated(firstRow, lastRow);
+   // }
 
    public boolean isMarked(int row) {
-      return edited.contains(new Integer(row));
+      return marked.contains(new Integer(row));
    }
 
    public void unMark(int row) {
-      edited.remove(new Integer(row));
+      log.debug("unmarking " + row + " with original size; " + marked.size());
+      marked.remove(new Integer(row));
+      log.debug("unmarking " + row + " with postact size; " + marked.size());
    }
 
    private void mark(int firstRow, int lastRow) {
@@ -421,11 +426,11 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    public void mark(int row) {
-      edited.add(new Integer(row));
+      marked.add(new Integer(row));
    }
 
    public void clearMarked() {
-      edited.clear();
+      marked.clear();
    }
 }
 

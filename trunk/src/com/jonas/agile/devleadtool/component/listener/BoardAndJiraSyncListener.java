@@ -78,12 +78,4 @@ public class BoardAndJiraSyncListener implements TableModelListener {
       };
       worker.execute();
    }
-
-   private boolean isEitherInsertOrUpdate(TableModelEvent e) {
-      return (e.getType() == TableModelEvent.INSERT || e.getType() == TableModelEvent.UPDATE);
-   }
-
-   private boolean isJiraColumnOrAllColumnsBeingEdited(TableModelEvent e, MyTableModel source) {
-      return e.getColumn() == e.ALL_COLUMNS || source.getColumnIndex(Column.Jira) == e.getColumn();
-   }
 }

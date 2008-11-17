@@ -112,8 +112,11 @@ public class MyTable extends JTable {
             case 192:
                if (allowMarking && e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
                   log.debug("backspace and mark");
-                  model.mark(convertRowIndexToModel(getSelectedRow()));
-                  fireTableRowsUpdated(getSelectedRow(), getSelectedRow());
+                  int[] rows = getSelectedRows();
+                  for (int row : rows) {
+                     model.mark(convertRowIndexToModel(row));
+                     fireTableRowsUpdated(row, row);
+                  }
                }
                break;
             case KeyEvent.VK_ESCAPE:
@@ -307,11 +310,10 @@ public class MyTable extends JTable {
    public void unMarkSelection() {
       int[] selectedRows = getSelectedRows();
       log.debug("unMarkSelection: " + selectedRows.length);
-      for (int i = 0; i < selectedRows.length; i++) {
-         log.debug("selected rows: " + selectedRows[i]);
-         model.unMark(convertRowIndexToModel(selectedRows[i]));
+      for (int row : selectedRows) {
+         model.unMark(convertRowIndexToModel(row));
+         fireTableRowsUpdated(row, row);
       }
-      fireTableRowsUpdated(selectedRows[0], selectedRows[selectedRows.length - 1]);
    }
 
 }
