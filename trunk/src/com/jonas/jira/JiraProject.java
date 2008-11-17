@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.access.JiraClient;
 
@@ -141,4 +142,9 @@ public class JiraProject {
    public String toString() {
       return jiraKey;
    }
+
+   public static JiraProject getProjectByJira(String string) {
+      return getProjectByKey(PlannerHelper.getProjectKey(string));
+   }
+
 }

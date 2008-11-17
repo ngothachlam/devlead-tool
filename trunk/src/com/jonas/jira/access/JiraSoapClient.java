@@ -16,7 +16,6 @@ import com.atlassian.jira.rpc.soap.beans.RemoteIssueType;
 import com.atlassian.jira.rpc.soap.beans.RemoteResolution;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
-import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceService;
 import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.logging.MyLogger;
@@ -39,6 +38,7 @@ public class JiraSoapClient {
    public JiraSoapClient(String address) {
       jiraSoapServiceServiceLocator = getLocator();
       jiraSoapServiceServiceLocator.setJirasoapserviceV2EndpointAddress(address);
+      log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
       try {
          jiraSoapService = jiraSoapServiceServiceLocator.getJirasoapserviceV2();
       } catch (ServiceException e) {
@@ -48,7 +48,7 @@ public class JiraSoapClient {
 
    private static JiraSoapServiceServiceLocator getLocator() {
       JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
-      log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
+//      log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
       return jiraSoapServiceServiceLocator;
    }
 
@@ -234,15 +234,13 @@ public class JiraSoapClient {
 
    public void updateSprint(final String jiraKey, final String sprint) throws RemotePermissionException, RemoteAuthenticationException,
          com.atlassian.jira.rpc.exception.RemoteException, RemoteException, ServiceException {
-      JiraSoapServiceService jiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
-      JiraSoapService jiraSoapService = jiraSoapServiceGetter.getJirasoapserviceV2();
+//      JiraSoapServiceService jiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
+//      JiraSoapService jiraSoapService = jiraSoapServiceGetter.getJirasoapserviceV2();
 
-      String token = jiraSoapService.login("soaptester", "soaptester");
-
-      RemoteIssue issue = updateCustomField(jiraSoapService, jiraKey, sprint, "customfield_10282");
+      updateCustomField(jiraKey, sprint, "customfield_10282");
    }
 
-   private RemoteIssue updateCustomField(final JiraSoapService jiraSoapService2, final String jiraKey, final String sprint, final String customField)
+   private RemoteIssue updateCustomField(final String jiraKey, final String sprint, final String customField)
          throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
       // JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
       // public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
@@ -250,7 +248,7 @@ public class JiraSoapClient {
       String[] values = new String[] { sprint };
       RemoteFieldValue remoteFieldValue = new RemoteFieldValue(customField, values);
       RemoteFieldValue[] remoteFieldValues = new RemoteFieldValue[] { remoteFieldValue };
-      return jiraSoapService2.updateIssue(getToken(), jiraKey, remoteFieldValues);
+      return jiraSoapService.updateIssue(getToken(), jiraKey, remoteFieldValues);
       // }
       //
       // });
@@ -418,6 +416,10 @@ public class JiraSoapClient {
          com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
       this.type = type;
       return createMergeJira(jira, mergeFixVersionName);
+   }
+
+   public void login() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+      renewToken();
    }
 
 }

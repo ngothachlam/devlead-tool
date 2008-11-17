@@ -34,17 +34,8 @@ public class OpenJirasListener implements ActionListener {
       for (int j = 0; j < rows.length; j++) {
          String jira = (String) table.getValueAt(Column.Jira, rows[j]);
          String jira_url = null;
-         boolean error = false;
          try {
             jira_url = helper.getJiraUrl(jira);
-         } catch (NotJiraException e1) {
-            if (sb.length() > 0) {
-               sb.append(", ");
-            }
-            sb.append(jira);
-            error = true;
-         }
-         if (!error) {
             try {
                HyperLinker.displayURL(jira_url + "/browse/" + jira);
             } catch (URISyntaxException e1) {
@@ -54,6 +45,11 @@ public class OpenJirasListener implements ActionListener {
                // TODO Auto-generated catch block
                e1.printStackTrace();
             }
+         } catch (NotJiraException e1) {
+            if (sb.length() > 0) {
+               sb.append(", ");
+            }
+            sb.append(jira);
          }
       }
       if (sb.length() > 0) {

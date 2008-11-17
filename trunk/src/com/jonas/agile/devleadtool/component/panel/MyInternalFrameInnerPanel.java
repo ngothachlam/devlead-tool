@@ -48,7 +48,7 @@ import com.jonas.common.logging.MyLogger;
 
 public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
-   private static final int MAX_RESULT = 200;
+   private static final int MAX_RESULT = 400;
 
    private Logger log = MyLogger.getLogger(MyInternalFrameInnerPanel.class);
 

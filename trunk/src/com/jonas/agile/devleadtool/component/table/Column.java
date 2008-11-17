@@ -19,6 +19,7 @@ public enum Column {
    },
    Description(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
    Planned_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
+   Merge(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
    Resolved_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
    Closed_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
 
@@ -97,7 +98,8 @@ public enum Column {
       public Object parse(String cellContents) {
          return Boolean.parseBoolean(cellContents);
       }
-   };
+   }
+   ;
 
    private final Class defaultClass;
    private final Object defaultValue;
