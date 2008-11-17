@@ -6,7 +6,7 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.table.renderer.MyTableCellRenderer;
+import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
 
 public class JiraCellEditor extends DefaultCellEditor implements MyEditor {
@@ -19,7 +19,7 @@ public class JiraCellEditor extends DefaultCellEditor implements MyEditor {
    public JiraCellEditor(JTextField textField) {
       super(textField);
       if(getComponent() instanceof JComponent){
-         ((JComponent)getComponent()).setBorder(MyTableCellRenderer.focusBorder);
+         ((JComponent)getComponent()).setBorder(SwingUtil.focusCellBorder);
       }
    }
 

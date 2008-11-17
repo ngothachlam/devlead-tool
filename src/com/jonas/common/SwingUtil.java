@@ -7,11 +7,19 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
+import javax.swing.BorderFactory;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
 
 public class SwingUtil {
+
+   public static final Color cellRED = new Color(210, 0, 0);
+   public static final Color cellRedDarkened = ColorUtil.darkenColor(cellRED, -75);
+
+   public static final Border focusCellBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.yellow);
+   public static final Border defaultCellBorder = UIManager.getBorder("Table.focusSelectedCellHighlightBorder");
 
    private static Object lock = new Object();
 
