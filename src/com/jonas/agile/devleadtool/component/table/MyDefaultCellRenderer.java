@@ -15,7 +15,7 @@ public class MyDefaultCellRenderer extends DefaultTableCellRenderer implements T
    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
       super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       
-      MyTableCellRenderer.setBackground(table, isSelected, hasFocus, row, column, this, null, value, this);
+      MyTableCellRenderer.setBackground(table, isSelected, hasFocus, row, column, this, null, value, this, (MyTable) table);
       
       return this;
    }

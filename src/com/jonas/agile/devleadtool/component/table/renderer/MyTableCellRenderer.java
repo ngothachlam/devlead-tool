@@ -4,14 +4,15 @@ import java.awt.Component;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.ColorUtil;
 import com.jonas.common.SwingUtil;
 
 public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
-
+   
    public static void setBackground(JTable table, boolean isSelected, boolean hasFocus, int row, int column, Component cell, MyTableModel model, Object value,
-         JComponent borderComponent) {
+         JComponent borderComponent, MyTable myTable) {
       if (hasFocus) {
          cell.setBackground(SwingUtil.getTableCellFocusBackground());
          if (borderComponent != null) {
@@ -39,7 +40,7 @@ public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
             } else {
                cell.setBackground(SwingUtil.cellRED);
             }
-         } else if (model.isMarked(table.convertRowIndexToModel(row)) && !isSelected && !hasFocus) {
+         } else if (myTable != null && myTable.isMarked(row) && !isSelected && !hasFocus) {
             cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -25));
          }
       }

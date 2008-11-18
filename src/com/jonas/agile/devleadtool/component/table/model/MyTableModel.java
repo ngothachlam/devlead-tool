@@ -19,17 +19,13 @@ public abstract class MyTableModel extends DefaultTableModel {
    protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
    protected Counter counter = new Counter();
    protected boolean editable = true;
-   private List<Integer> marked = new ArrayList<Integer>();
-   private final boolean allowMarking;
 
    MyTableModel(Column[] columns, boolean allowMarking) {
       super(columns, 0);
-      this.allowMarking = allowMarking;
       initiateColumns(columns);
    }
 
    MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header, boolean allowMarking) {
-      this.allowMarking = allowMarking;
       log.trace("MyTableModel");
       initiateColumns(columns);
       List<Integer> convertInputHeaderToOriginal = getConvertionNumbers(header, getColumnNames());
@@ -381,56 +377,6 @@ public abstract class MyTableModel extends DefaultTableModel {
          if (i != col)
             fireTableCellUpdated(row, i);
       }
-   }
-
-   @Override
-   public void fireTableRowsDeleted(int firstRow, int lastRow) {
-      log.debug("fireTableRowsDeleted");
-      if (allowMarking)
-         for (int i = firstRow; i < lastRow; i++) {
-            unMark(i);
-         }
-      super.fireTableRowsDeleted(firstRow, lastRow);
-   }
-
-   @Override
-   public void fireTableRowsInserted(int firstRow, int lastRow) {
-      log.debug("fireTableRowsInserted");
-      if (allowMarking)
-         mark(firstRow, lastRow);
-      super.fireTableRowsInserted(firstRow, lastRow);
-   }
-
-   // @Override
-   // public void fireTableRowsUpdated(int firstRow, int lastRow) {
-   // log.debug("fireTableRowsUpdated");
-   // if (allowMarking)
-   // mark(firstRow, lastRow);
-   // super.fireTableRowsUpdated(firstRow, lastRow);
-   // }
-
-   public boolean isMarked(int row) {
-      return marked.contains(new Integer(row));
-   }
-
-   public void unMark(int row) {
-      log.debug("unmarking " + row + " with original size; " + marked.size());
-      marked.remove(new Integer(row));
-      log.debug("unmarking " + row + " with postact size; " + marked.size());
-   }
-
-   private void mark(int firstRow, int lastRow) {
-      for (int i = firstRow; i <= lastRow; i++) {
-         mark(i);
-      }
-   }
-
-   public void mark(int row) {
-      marked.add(new Integer(row));
-   }
-
-   public void clearMarked() {
-      marked.clear();
    }
 }
 
