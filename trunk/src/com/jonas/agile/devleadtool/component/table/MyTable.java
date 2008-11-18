@@ -4,7 +4,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -88,6 +87,7 @@ public class MyTable extends JTable {
             TableColumn tc = getTableColumn(colIndex);
             tc.setCellEditor(jiraEditor);
          }
+         
       }
 
       // TODO add tooltip for the contents of the table as well by owerriding the getToolTipText method in MyTable (or create JiraTable...)
@@ -100,6 +100,7 @@ public class MyTable extends JTable {
          }
       });
 
+      model.addTableModelListener(marker);
       this.addKeyListener(new KeyAdapter() {
          public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
@@ -237,6 +238,10 @@ public class MyTable extends JTable {
       return column.equals(getColumnEnum(colNoToCompare));
    }
 
+   public boolean isMarked(int row) {
+      return marker.isMarked(row);
+   }
+
    public boolean isMarkingAllowed() {
       return marker.isAllowMarking();
    }
@@ -301,33 +306,25 @@ public class MyTable extends JTable {
       model.syncJira(jiraIssue, convertRowIndexToModel(tableRowSynced));
    }
 
+   public void unMarkSelection() {
+      marker.unMarkSelected();
+   }
+
    public void unSort() {
       setAutoCreateRowSorter(true);
       // sorter.setSortKeys(null);
    }
 
    private class MarkDelegator implements TableModelListener {
-      private Set<Integer> marked = new TreeSet<Integer>();
       private boolean allowMarking;
+      private Set<Integer> marked = new TreeSet<Integer>();
 
       public void clearMarked() {
          marked.clear();
       }
 
-      public void setAllowMarking(boolean allowMarking) {
-         this.allowMarking = allowMarking;
-      }
-
       public boolean isAllowMarking() {
          return allowMarking;
-      }
-
-      public void markSelected() {
-         int[] rows = getSelectedRows();
-         for (int row : rows) {
-            mark(row);
-            fireTableRowsUpdated(row, row);
-         }
       }
 
       private boolean isMarked(int row) {
@@ -338,8 +335,38 @@ public class MyTable extends JTable {
          marked.add(new Integer(row));
       }
 
+      public void markSelected() {
+         int[] rows = getSelectedRows();
+         for (int row : rows) {
+            mark(row);
+            fireTableRowsUpdated(row, row);
+         }
+      }
+
+      public void setAllowMarking(boolean allowMarking) {
+         this.allowMarking = allowMarking;
+      }
+
+      @Override
+      public void tableChanged(TableModelEvent e) {
+         if (e.getType() == TableModelEvent.DELETE) {
+            int firstRow = e.getFirstRow();
+            int lastRow = getRowCount();
+            for (int i = firstRow; i < lastRow; i++) {
+               marked.remove(i);
+               if (marked.contains(i + 1)) {
+                  log.debug("moved " + (i+1) + " to " + i);
+                  marked.remove(i + 1);
+                  marked.add(i);
+               }else{
+                  log.debug("removed " + i );
+               }
+               model.fireTableRowsUpdated(i, i);
+            }
+         }
+      }
+
       private void unMark(int row) {
-         log.debug("unmarking " + row + " with original size; " + marked.size() + " Jira: " + getValueAt(Column.Jira, row));
          marked.remove(new Integer(row));
       }
 
@@ -349,35 +376,7 @@ public class MyTable extends JTable {
             unMark(row);
             fireTableRowsUpdated(row, row);
          }
-         Arrays.sort(selectedRows);
-         log.debug("unMarked and updated between " + selectedRows[0] + "" + selectedRows[selectedRows.length - 1]);
       }
-
-      @Override
-      public void tableChanged(TableModelEvent e) {
-         if (e.getType() == TableModelEvent.DELETE) {
-            int firstRow = e.getFirstRow();
-            int lastRow = e.getLastRow();
-            marked.remove(firstRow);
-            for (int i = firstRow; i <= lastRow; i++) {
-               marked.remove(i);
-               if (marked.contains(i + 1)) {
-                  marked.remove(i + 1);
-                  marked.add(i-1);
-                  //FIXME bug!!
-               }
-            }
-            model.fireTableRowsUpdated(firstRow, lastRow);
-         }
-      }
-   }
-
-   public boolean isMarked(int row) {
-      return marker.isMarked(row);
-   }
-
-   public void unMarkSelection() {
-      marker.unMarkSelected();
    }
 
 }

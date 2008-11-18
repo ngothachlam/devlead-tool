@@ -21,5 +21,8 @@ public class MyDesktopPane extends JDesktopPane {
 		internalFrame.setLocation(xLocation, yLocation);
 		internalFrame.moveToFront();
 		internalFrame.setVisible(true);
+		
+		scrollpane.setViewportView(this);
+
 	}
 }
