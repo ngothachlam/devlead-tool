@@ -361,9 +361,13 @@ public class MyTable extends JTable {
             marked.remove(firstRow);
             for (int i = firstRow; i <= lastRow; i++) {
                marked.remove(i);
-               if(marked.contains(i));
-               blah
+               if (marked.contains(i + 1)) {
+                  marked.remove(i + 1);
+                  marked.add(i-1);
+                  //FIXME bug!!
+               }
             }
+            model.fireTableRowsUpdated(firstRow, lastRow);
          }
       }
    }
