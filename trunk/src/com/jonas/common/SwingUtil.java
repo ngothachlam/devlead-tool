@@ -7,7 +7,9 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.BorderFactory;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.apache.log4j.Logger;
@@ -31,7 +33,7 @@ public class SwingUtil {
    private static int atLeastZero(int no) {
       return no < 0 ? 0 : no;
    }
-   
+
    public static void centreWindow(Window window) {
       Toolkit toolkit = window.getToolkit();
       Dimension screenSize = toolkit.getScreenSize();
@@ -99,6 +101,20 @@ public class SwingUtil {
       Toolkit toolkit = window.getToolkit();
       Dimension screenSize = toolkit.getScreenSize();
       window.setSize(screenSize.width - offset * 2, screenSize.height - offset * 2 - startMenuHeight);
+   }
+
+   public static void executeInSwingEventThread(Runnable swingRunnable) {
+      if (SwingUtilities.isEventDispatchThread()) {
+         swingRunnable.run();
+      } else {
+         try {
+            SwingUtilities.invokeAndWait(swingRunnable);
+         } catch (InterruptedException e) {
+            e.printStackTrace();
+         } catch (InvocationTargetException e) {
+            e.printStackTrace();
+         }
+      }
    }
 
 }

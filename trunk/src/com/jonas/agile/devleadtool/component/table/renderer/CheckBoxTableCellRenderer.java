@@ -9,6 +9,7 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
+import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 
 public class CheckBoxTableCellRenderer extends JPanel implements TableCellRenderer {
@@ -26,7 +27,7 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 
    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
-      MyTableCellRenderer.setBackground(table, isSelected, hasFocus, row, column, checkbox, model, value, this);
+      MyTableCellRenderer.setBackground(table, isSelected, hasFocus, row, column, checkbox, model, value, this, (MyTable) table);
       
       if (!table.isCellEditable(row, column)) {
          checkbox.setEnabled(false);

@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -151,6 +152,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
             public void actionPerformed(ActionEvent e) {
                log.debug("Mark!");
                source.unMarkSelection();
+               MyStatusBar.getInstance().setMessage("Rows in " + source.getTitle() + " where marked!", true);
             }
          });
       }
@@ -236,13 +238,27 @@ public class MyTablePopupMenu extends MyPopupMenu {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-         final ProgressDialog dialog = new ProgressDialog(parent, "Removing...", "Removing selected Jiras...", 0);
-         if (sourceTable.getSelectedRowCount() <= 0) {
-            dialog.setNote("Nothing selected!!");
-            dialog.setCompleteWithDelay(2000);
+         int[] selectedRows = sourceTable.getSelectedRows();
+
+         StringBuffer sb = new StringBuffer("Do you want to remove the following jiras from ");
+         sb.append(sourceTable.getTitle()).append("?");
+
+         for (int aSelectedRow : selectedRows) {
+            sb.append("\n").append(sourceTable.getValueAt(Column.Jira, aSelectedRow));
          }
-         sourceTable.removeSelectedRows();
-         dialog.setCompleteWithDelay(300);
+         int result = JOptionPane.showConfirmDialog(parent, sb.toString(), "Remove jiras?", JOptionPane.YES_NO_OPTION);
+         log.debug(result);
+         if (result == JOptionPane.YES_OPTION) {
+
+            final ProgressDialog dialog = new ProgressDialog(parent, "Removing...", "Removing selected Jiras...", 0);
+            if (sourceTable.getSelectedRowCount() <= 0) {
+               dialog.setNote("Nothing selected!!");
+               dialog.setCompleteWithDelay(2000);
+            }
+
+            sourceTable.removeSelectedRows();
+            dialog.setCompleteWithDelay(300);
+         }
       }
    }
 

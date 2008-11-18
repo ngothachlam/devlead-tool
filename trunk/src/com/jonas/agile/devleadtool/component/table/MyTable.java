@@ -4,8 +4,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 import javax.swing.DropMode;
 import javax.swing.JCheckBox;
@@ -14,6 +17,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.CellEditorListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -35,26 +40,18 @@ import com.jonas.jira.JiraIssue;
 
 public class MyTable extends JTable {
 
+   private CheckBoxTableCellEditor checkBoxEditor;
+   private JiraCellEditor jiraEditor;
+   private List<TableListener> listeners = new ArrayList<TableListener>();
+   private Logger log = MyLogger.getLogger(MyTable.class);
+   private MarkDelegator marker = new MarkDelegator();
    private MyTableModel model;
    private String title;
-   private Logger log = MyLogger.getLogger(MyTable.class);
-   private List<TableListener> listeners = new ArrayList<TableListener>();
-   private JiraCellEditor jiraEditor;
-   private CheckBoxTableCellEditor checkBoxEditor;
-   private final boolean allowMarking;
-
-   public MyTable(String title, boolean allowMarking) {
-      this(title, new DefaultTableModel(), allowMarking);
-   }
-
-   public MyTable(String title, MyTableModel modelModel, boolean allowMarking) {
-      this(title, (AbstractTableModel) modelModel, allowMarking);
-   }
 
    MyTable(String title, AbstractTableModel defaultTableModel, final boolean allowMarking) {
       super(defaultTableModel);
       this.title = title;
-      this.allowMarking = allowMarking;
+      marker.setAllowMarking(allowMarking);
       getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
       setColumnSelectionAllowed(false);
       setRowSelectionAllowed(true);
@@ -110,11 +107,7 @@ public class MyTable extends JTable {
             case 192:
                if (allowMarking && e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
                   log.debug("backspace and mark");
-                  int[] rows = getSelectedRows();
-                  for (int row : rows) {
-                     model.mark(convertRowIndexToModel(row));
-                     fireTableRowsUpdated(row, row);
-                  }
+                  marker.markSelected();
                }
                break;
             case KeyEvent.VK_ESCAPE:
@@ -125,21 +118,82 @@ public class MyTable extends JTable {
       });
    }
 
-   public void addJiraEditorListener(CellEditorListener cellEditorListener) {
-      jiraEditor.addCellEditorListener(cellEditorListener);
+   public MyTable(String title, boolean allowMarking) {
+      this(title, new DefaultTableModel(), allowMarking);
+   }
+
+   public MyTable(String title, MyTableModel modelModel, boolean allowMarking) {
+      this(title, (AbstractTableModel) modelModel, allowMarking);
    }
 
    public void addCheckBoxEditorListener(CellEditorListener cellEditorListener) {
       checkBoxEditor.addCellEditorListener(cellEditorListener);
    }
 
+   public void addEmptyRow() {
+      model.addEmptyRow();
+   }
+
+   public void addJira(JiraIssue jiraIssue) {
+      model.addJira(jiraIssue);
+   }
+
+   public void addJira(String jira) {
+      model.addJira(jira);
+   }
+
+   public void addJira(String jira, Map<Column, Object> map) {
+      model.addJira(jira, map);
+   }
+
+   public void addJiraEditorListener(CellEditorListener cellEditorListener) {
+      jiraEditor.addCellEditorListener(cellEditorListener);
+   }
+
+   public void addListener(TableListener myTableListener) {
+      listeners.add(myTableListener);
+   }
+
+   public void addRow(Vector<Object> rowData) {
+      model.addRow(rowData);
+   }
+
+   public boolean addSelection(String jira) {
+      int jiraRow = getRowWithJira(jira);
+      if (jiraRow != -1) {
+         addRowSelectionInterval(jiraRow, jiraRow);
+         return true;
+      }
+      return false;
+   }
+
+   public boolean doesJiraExist(String jira) {
+      return model.doesJiraExist(jira);
+   }
+
    protected void fireTableRowsUpdated(int rowEdited, int rowEdited2) {
       model.fireTableRowsUpdated(convertRowIndexToModel(rowEdited), convertRowIndexToModel(rowEdited2));
    }
 
-   public void unSort() {
-      setAutoCreateRowSorter(true);
-      // sorter.setSortKeys(null);
+   public Column getColumnEnum(int itsColumn) {
+      return model.getColumn(convertColumnIndexToModel(itsColumn));
+   }
+
+   public int getColumnIndex(Column column) {
+      return convertColumnIndexToView(model.getColumnIndex(column));
+   }
+
+   public Column[] getColumns() {
+      Map<Column, Integer> columnNames = model.getColumnNames();
+      return columnNames.keySet().toArray(new Column[columnNames.size()]);
+   }
+
+   public int getRowWithJira(String jira) {
+      int modelRow = model.getRowWithJira(jira);
+      if (modelRow < 0) {
+         return -1;
+      }
+      return convertRowIndexToView(modelRow);
    }
 
    private TableColumn getTableColumn(int colIndex) {
@@ -156,24 +210,8 @@ public class MyTable extends JTable {
       return tcm.getColumn(boardStatus);
    }
 
-   public void addEmptyRow() {
-      model.addEmptyRow();
-   }
-
-   public void addJira(JiraIssue jiraIssue) {
-      model.addJira(jiraIssue);
-   }
-
-   public void addJira(String jira) {
-      model.addJira(jira);
-   }
-
-   public Column getColumnEnum(int itsColumn) {
-      return model.getColumn(convertColumnIndexToModel(itsColumn));
-   }
-
-   public int getColumnIndex(Column column) {
-      return convertColumnIndexToView(model.getColumnIndex(column));
+   public String getTitle() {
+      return title;
    }
 
    public Object getValueAt(Column column, int rowInView) {
@@ -181,8 +219,32 @@ public class MyTable extends JTable {
       return model.getValueAt(convertRowIndexToModel(rowInView), convertColumnIndexToModel(colInView));
    }
 
+   public Object getValueAt(Column release, String jira) {
+      return model.getValueAt(release, jira);
+   }
+
+   // public TableRowSorter<TableModel> getSorter() {
+   // return sorter;
+   // }
+
+   public void insertRow(int index, Vector<Object> rowData) {
+      int convertRowIndexToModel = convertRowIndexToModel(index);
+      System.out.println("insertRow for model row: " + convertRowIndexToModel);
+      model.insertRow(convertRowIndexToModel, rowData);
+   }
+
    public boolean isColumn(Column column, int colNoToCompare) {
       return column.equals(getColumnEnum(colNoToCompare));
+   }
+
+   public boolean isMarkingAllowed() {
+      return marker.isAllowMarking();
+   }
+
+   private void notifyAllListenersThatJiraWasRemoved(String jira) {
+      for (TableListener listener : listeners) {
+         listener.jiraRemoved(jira);
+      }
    }
 
    public void removeSelectedRows() {
@@ -196,10 +258,15 @@ public class MyTable extends JTable {
       }
    }
 
-   private void notifyAllListenersThatJiraWasRemoved(String jira) {
-      for (TableListener listener : listeners) {
-         listener.jiraRemoved(jira);
+   public void scrollToSelection() {
+      int[] selectedRows = getSelectedRows();
+      if (selectedRows.length > 0) {
+         scrollRectToVisible(getCellRect(selectedRows[0], 0, true));
       }
+      if (selectedRows.length > 1) {
+         scrollRectToVisible(getCellRect(selectedRows[selectedRows.length - 1], 0, true));
+      }
+
    }
 
    public void setColumnRenderer(int i, TableCellRenderer renderer) {
@@ -207,8 +274,17 @@ public class MyTable extends JTable {
       tc.setCellRenderer(renderer);
    }
 
+   public void setModel(MyTableModel model) {
+      this.model = model;
+      super.setModel(model);
+   }
+
    public void setValueAt(Object value, int row, Column column) {
       setValueAt(value, row, getColumnIndex(column));
+   }
+
+   public void setValueAt(Object value, int row, int column) {
+      super.setValueAt(value, row, column);
    }
 
    public void setValueAt(Object value, String jira, Column column) {
@@ -221,97 +297,83 @@ public class MyTable extends JTable {
       setValueAt(value, row, column);
    }
 
-   public int getRowWithJira(String jira) {
-      int modelRow = model.getRowWithJira(jira);
-      if (modelRow < 0) {
-         return -1;
-      }
-      return convertRowIndexToView(modelRow);
-   }
-
-   public void setValueAt(Object value, int row, int column) {
-      super.setValueAt(value, row, column);
-   }
-
-   // public TableRowSorter<TableModel> getSorter() {
-   // return sorter;
-   // }
-
-   public void addJira(String jira, Map<Column, Object> map) {
-      model.addJira(jira, map);
-   }
-
-   public void insertRow(int index, Vector<Object> rowData) {
-      int convertRowIndexToModel = convertRowIndexToModel(index);
-      System.out.println("insertRow for model row: " + convertRowIndexToModel);
-      model.insertRow(convertRowIndexToModel, rowData);
-   }
-
-   public void addRow(Vector<Object> rowData) {
-      model.addRow(rowData);
-   }
-
-   public Column[] getColumns() {
-      Map<Column, Integer> columnNames = model.getColumnNames();
-      return columnNames.keySet().toArray(new Column[columnNames.size()]);
-   }
-
    public void syncJira(JiraIssue jiraIssue, int tableRowSynced) {
       model.syncJira(jiraIssue, convertRowIndexToModel(tableRowSynced));
    }
 
-   public String getTitle() {
-      return title;
+   public void unSort() {
+      setAutoCreateRowSorter(true);
+      // sorter.setSortKeys(null);
    }
 
-   public void setModel(MyTableModel model) {
-      this.model = model;
-      super.setModel(model);
-   }
+   private class MarkDelegator implements TableModelListener {
+      private Set<Integer> marked = new TreeSet<Integer>();
+      private boolean allowMarking;
 
-   public Object getValueAt(Column release, String jira) {
-      return model.getValueAt(release, jira);
-   }
-
-   public void addListener(TableListener myTableListener) {
-      listeners.add(myTableListener);
-   }
-
-   public boolean doesJiraExist(String jira) {
-      return model.doesJiraExist(jira);
-   }
-
-   public void scrollToSelection() {
-      int[] selectedRows = getSelectedRows();
-      if (selectedRows.length > 0) {
-         scrollRectToVisible(getCellRect(selectedRows[0], 0, true));
-      }
-      if (selectedRows.length > 1) {
-         scrollRectToVisible(getCellRect(selectedRows[selectedRows.length - 1], 0, true));
+      public void clearMarked() {
+         marked.clear();
       }
 
-   }
-
-   public boolean addSelection(String jira) {
-      int jiraRow = getRowWithJira(jira);
-      if (jiraRow != -1) {
-         addRowSelectionInterval(jiraRow, jiraRow);
-         return true;
+      public void setAllowMarking(boolean allowMarking) {
+         this.allowMarking = allowMarking;
       }
-      return false;
+
+      public boolean isAllowMarking() {
+         return allowMarking;
+      }
+
+      public void markSelected() {
+         int[] rows = getSelectedRows();
+         for (int row : rows) {
+            mark(row);
+            fireTableRowsUpdated(row, row);
+         }
+      }
+
+      private boolean isMarked(int row) {
+         return marked.contains(new Integer(row));
+      }
+
+      private void mark(int row) {
+         marked.add(new Integer(row));
+      }
+
+      private void unMark(int row) {
+         log.debug("unmarking " + row + " with original size; " + marked.size() + " Jira: " + getValueAt(Column.Jira, row));
+         marked.remove(new Integer(row));
+      }
+
+      private void unMarkSelected() {
+         int[] selectedRows = getSelectedRows();
+         for (int row : selectedRows) {
+            unMark(row);
+            fireTableRowsUpdated(row, row);
+         }
+         Arrays.sort(selectedRows);
+         log.debug("unMarked and updated between " + selectedRows[0] + "" + selectedRows[selectedRows.length - 1]);
+      }
+
+      @Override
+      public void tableChanged(TableModelEvent e) {
+         if (e.getType() == TableModelEvent.DELETE) {
+            int firstRow = e.getFirstRow();
+            int lastRow = e.getLastRow();
+            marked.remove(firstRow);
+            for (int i = firstRow; i <= lastRow; i++) {
+               marked.remove(i);
+               if(marked.contains(i));
+               blah
+            }
+         }
+      }
    }
 
-   public boolean isMarkingAllowed() {
-      return allowMarking;
+   public boolean isMarked(int row) {
+      return marker.isMarked(row);
    }
 
    public void unMarkSelection() {
-      int[] selectedRows = getSelectedRows();
-      log.debug("unMarkSelection: " + selectedRows.length);
-      for (int row : selectedRows) {
-         model.unMark(convertRowIndexToModel(row));
-         fireTableRowsUpdated(row, row);
-      }
+      marker.unMarkSelected();
    }
 
 }
