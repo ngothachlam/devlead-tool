@@ -30,7 +30,6 @@ public class NewPlannerDialog {
    }
    
    public void openNew(){
-      log .trace("openNew");
       SwingWorker<CombinedModelDTO, Object> worker = new SwingWorker<CombinedModelDTO, Object>() {
 
          protected CombinedModelDTO doInBackground() throws Exception {
@@ -40,20 +39,15 @@ public class NewPlannerDialog {
          @Override
          protected void done() {
             try {
-               log .trace("done 1");
                CombinedModelDTO dto = get();
                MyInternalFrameInnerPanel internalFrameTabPanel = new MyInternalFrameInnerPanel(helper, dto.getBoardModel(), dto.getJiraModel());
-               log .trace("done 1.1");
                MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog, saveKeyListener, desktopPane);
                internalFrame.setVisible(true);
-               log.trace("done 2");
             } catch (Throwable e) {
                AlertDialog.alertException(helper.getParentFrame(), e);
                e.printStackTrace();
             }
          }
-         
-         
          
       };
       worker.execute();
