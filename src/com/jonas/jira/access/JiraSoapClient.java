@@ -64,6 +64,7 @@ public class JiraSoapClient {
       cloneIssue.setSummary("[Merge for " + originalJiraIssue.getKey() + "] " + originalJiraIssue.getSummary());
       cloneIssue.setAffectsVersions(originalJiraIssue.getAffectsVersions());
       cloneIssue.setPriority("1");
+      setOriginalEstimateToZero(cloneIssue);
 
       RemoteVersion[] clonedFixVersions = setFixVersionOnClone(jira, mergeFixVersionName, cloneIssue);
       copyCustomFieldValuesFromOriginalToClone(originalJiraIssue, cloneIssue);
@@ -86,6 +87,12 @@ public class JiraSoapClient {
       } finally {
          return createIssue;
       }
+   }
+
+   private void setOriginalEstimateToZero(RemoteIssue cloneIssue) {
+      String[] originalEstimates = {"0d"};
+      RemoteCustomFieldValue[] customFieldValues = {new RemoteCustomFieldValue("timetracking", "timetracking", originalEstimates )};
+      cloneIssue.setCustomFieldValues(customFieldValues);
    }
 
    private void removeClonedFixVersionFromOriginalIssue(RemoteIssue originalJiraIssue, RemoteVersion[] clonesFixVersions) throws RemoteException,
