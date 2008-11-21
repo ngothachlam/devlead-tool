@@ -4,10 +4,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.Vector;
 import javax.swing.DropMode;
 import javax.swing.JCheckBox;
@@ -15,7 +14,10 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter;
 import javax.swing.event.CellEditorListener;
+import javax.swing.event.RowSorterEvent;
+import javax.swing.event.RowSorterListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
@@ -47,7 +49,7 @@ public class MyTable extends JTable {
    private MyTableModel model;
    private String title;
 
-   MyTable(String title, AbstractTableModel defaultTableModel, final boolean allowMarking) {
+   private MyTable(String title, AbstractTableModel defaultTableModel, final boolean allowMarking) {
       super(defaultTableModel);
       this.title = title;
       marker.setAllowMarking(allowMarking);
@@ -87,7 +89,7 @@ public class MyTable extends JTable {
             TableColumn tc = getTableColumn(colIndex);
             tc.setCellEditor(jiraEditor);
          }
-         
+
       }
 
       // TODO add tooltip for the contents of the table as well by owerriding the getToolTipText method in MyTable (or create JiraTable...)
@@ -100,7 +102,7 @@ public class MyTable extends JTable {
          }
       });
 
-      model.addTableModelListener(marker);
+      getModel().addTableModelListener(marker);
       this.addKeyListener(new KeyAdapter() {
          public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
@@ -108,7 +110,7 @@ public class MyTable extends JTable {
             case 192:
                if (allowMarking && e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
                   log.debug("backspace and mark");
-                  marker.markSelected();
+                  markSelected();
                }
                break;
             case KeyEvent.VK_ESCAPE:
@@ -116,11 +118,16 @@ public class MyTable extends JTable {
                break;
             }
          }
+
       });
    }
 
-   public MyTable(String title, boolean allowMarking) {
+   MyTable(String title, boolean allowMarking) {
       this(title, new DefaultTableModel(), allowMarking);
+   }
+
+   protected void markSelected() {
+      marker.markSelected();
    }
 
    public MyTable(String title, MyTableModel modelModel, boolean allowMarking) {
@@ -312,15 +319,23 @@ public class MyTable extends JTable {
 
    public void unSort() {
       setAutoCreateRowSorter(true);
-      // sorter.setSortKeys(null);
    }
 
    private class MarkDelegator implements TableModelListener {
       private boolean allowMarking;
-      private Set<Integer> marked = new TreeSet<Integer>();
+      private Map<Integer, Boolean> marked = new HashMap<Integer, Boolean>();
+
+      private MarkDelegator() {
+         int rowCount = getRowCount();
+         for (int i = 0; i < rowCount; i++) {
+            marked.put(convertRowIndexToModel(i), Boolean.FALSE);
+         }
+      }
 
       public void clearMarked() {
-         marked.clear();
+         for (int i = 0; i < getRowCount(); i++) {
+            marked.put(convertRowIndexToModel(i), Boolean.FALSE);
+         }
       }
 
       public boolean isAllowMarking() {
@@ -328,18 +343,23 @@ public class MyTable extends JTable {
       }
 
       private boolean isMarked(int row) {
-         return marked.contains(new Integer(row));
+         log.debug("isMarked for row " + row + " whilst rowCount is " + getRowCount() + " and marked list is " + marked.size());
+         if (row >= getRowCount())
+            return false;
+         Integer convertRowIndexToModel = convertRowIndexToModel(row);
+         if (marked.containsKey(convertRowIndexToModel))
+            return marked.get(convertRowIndexToModel);
+         return false;
       }
 
       private void mark(int row) {
-         marked.add(new Integer(row));
+         marked.put(convertRowIndexToModel(row), Boolean.TRUE);
       }
 
       public void markSelected() {
          int[] rows = getSelectedRows();
          for (int row : rows) {
             mark(row);
-            fireTableRowsUpdated(row, row);
          }
       }
 
@@ -349,25 +369,37 @@ public class MyTable extends JTable {
 
       @Override
       public void tableChanged(TableModelEvent e) {
-         if (e.getType() == TableModelEvent.DELETE) {
-            int firstRow = e.getFirstRow();
-            int lastRow = getRowCount();
-            for (int i = firstRow; i < lastRow; i++) {
-               marked.remove(i);
-               if (marked.contains(i + 1)) {
-                  log.debug("moved " + (i+1) + " to " + i);
-                  marked.remove(i + 1);
-                  marked.add(i);
-               }else{
-                  log.debug("removed " + i );
+         int firstRow = e.getFirstRow();
+         int lastRow = e.getLastRow();
+         switch (e.getType()) {
+         case TableModelEvent.DELETE:
+            log.debug("table changed by deleting " + firstRow + " to " + lastRow);
+            for (int i = firstRow; i <= lastRow; i++) {
+               log.debug("\ti = " + i);
+               for (int j = i; j < getRowCount(); j++) {
+                  log.debug("\t\tj = " + j);
+                  int newKey = j;
+                  int oldKey = newKey + 1;
+                  Boolean valueToMoveUp = marked.get(oldKey);
+                  log.debug("\t\tnewKey = " + newKey + " oldKey = " + oldKey + " valueToMoveUp = " + valueToMoveUp);
+                  marked.put(newKey, valueToMoveUp);
                }
-               model.fireTableRowsUpdated(i, i);
+               marked.remove(convertRowIndexToModel(getRowCount() - 1) + 1);
             }
+            break;
+         case TableModelEvent.INSERT:
+            log.debug("table changed by inserting " + firstRow + " to " + lastRow);
+            for (int i = firstRow; i <= lastRow; i++) {
+                  marked.put(i, Boolean.FALSE);
+            }
+            break;
+         default:
+            break;
          }
       }
 
       private void unMark(int row) {
-         marked.remove(new Integer(row));
+         marked.put(convertRowIndexToModel(row), Boolean.FALSE);
       }
 
       private void unMarkSelected() {
@@ -377,6 +409,7 @@ public class MyTable extends JTable {
             fireTableRowsUpdated(row, row);
          }
       }
+
    }
 
 }
