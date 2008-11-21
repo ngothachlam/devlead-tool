@@ -4,6 +4,8 @@ import java.io.IOException;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+import com.jonas.agile.devleadtool.component.listener.SprintParseListener;
+import com.jonas.jira.JiraProject;
 
 public class XmlParserLargeMock implements XmlParser {
 
@@ -15,7 +17,11 @@ public class XmlParserLargeMock implements XmlParser {
       reader.setContentHandler(nodeCounter);
    }
 
-   public void parse(String sprint) throws IOException, SAXException {
+   public void parse(String sprint, JiraProject project) throws IOException, SAXException {
       reader.parse("test-data/ListOfSprintJirasMany.xml");
+   }
+
+   @Override
+   public void addParseListener(SprintParseListener jiraParseListener) {
    }
 }

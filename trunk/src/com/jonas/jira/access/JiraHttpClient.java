@@ -169,4 +169,8 @@ public class JiraHttpClient extends HttpClient {
       
    }
 
+   public String getBaseUrl() {
+      return baseUrl;
+   }
+
 }

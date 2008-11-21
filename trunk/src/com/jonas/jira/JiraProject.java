@@ -43,15 +43,6 @@ public class JiraProject {
       return null;
    }
 
-   public static JiraProject getProjectByName(String name) {
-      for (Iterator<JiraProject> iterator = projects.iterator(); iterator.hasNext();) {
-         JiraProject jiraProject = iterator.next();
-         if (jiraProject.getName().equals(name))
-            return jiraProject;
-      }
-      return null;
-   }
-
    public static Vector<JiraProject> getProjects() {
       return projects;
    }

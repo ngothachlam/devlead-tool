@@ -5,9 +5,11 @@ import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
-import com.jonas.agile.devleadtool.component.MyTreePopupMenu;
+import com.jonas.agile.devleadtool.component.listener.SprintParseListener;
+import com.jonas.agile.devleadtool.component.menu.MyTreePopupMenu;
 import com.jonas.agile.devleadtool.component.tree.DnDTree;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraException;
 
 public class DnDTreeBuilder {
@@ -22,12 +24,12 @@ public class DnDTreeBuilder {
       new MyTreePopupMenu(parentFrame, tree, this);
    }
 
-   public void buildTree(DnDTree tree, final String sprint) {
+   public void buildTree(DnDTree tree, final String sprint, final JiraProject project) {
       SwingWorker worker = new SwingWorker() {
          @Override
          protected Object doInBackground() {
             try {
-               parser.parse(sprint);
+               parser.parse(sprint, project);
             } catch (IOException e) {
                e.printStackTrace();
             } catch (SAXException e) {
@@ -46,6 +48,10 @@ public class DnDTreeBuilder {
 //      } catch (ExecutionException e) {
 //         e.printStackTrace();
 //      }
+   }
+
+   public void addParseListener(SprintParseListener jiraParseListener) {
+      parser.addParseListener(jiraParseListener);
    }
 
 }

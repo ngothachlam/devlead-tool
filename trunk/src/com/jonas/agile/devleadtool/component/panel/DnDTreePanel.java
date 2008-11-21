@@ -82,12 +82,10 @@ public class DnDTreePanel extends JPanel {
    private Component getButtonPanel() {
       JPanel panel = new JPanel(new GridLayout(2, 2, 5, 5));
 
-      JButton refreshButton = new RefreshButton("Download from Jira", this, dndTreeBuilder, tree);
       JButton uploadToJiraButton = new UploadToJiraButton("Upload to Jira", parentFrame, tree);
       JButton clearTreeButton = new ClearTreeButton("Clear Tree", this, tree);
       JButton addSprintButton = new AddSprintButton("Add Sprint", this, tree);
 
-      panel.add(refreshButton);
       panel.add(uploadToJiraButton);
       panel.add(clearTreeButton);
       panel.add(addSprintButton);
@@ -192,29 +190,6 @@ public class DnDTreePanel extends JPanel {
             e1.printStackTrace();
             AlertDialog.alertException(parent, e1);
          }
-      }
-   }
-
-   private final class RefreshButton extends JButton implements ActionListener {
-      private final DnDTreeBuilder dndTreeBuilder;
-      private final Component parent;
-      private final DnDTree tree;
-
-      private RefreshButton(String text, Component parent, DnDTreeBuilder dnDTreeBuilder, DnDTree tree) {
-         super(text);
-
-         this.parent = parent;
-         this.dndTreeBuilder = dnDTreeBuilder;
-         this.tree = tree;
-
-         this.addActionListener(this);
-      }
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         log.debug("Refresh Button Pressed!");
-         MyStatusBar.getInstance().setMessage("Refreshing...", false);
-         dndTreeBuilder.buildTree(tree, null);
       }
    }
 

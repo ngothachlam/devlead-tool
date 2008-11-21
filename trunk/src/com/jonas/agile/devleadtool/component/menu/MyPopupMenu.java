@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component;
+package com.jonas.agile.devleadtool.component.menu;
 
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
