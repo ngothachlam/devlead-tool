@@ -1,7 +1,8 @@
 <project name="MyProject" default="default" basedir=".">
 	<description> simple example build file</description>
 	<property name="src" location="src" />
-	<property name="src.tests.unit" location="test-unit" />
+	<property name="src.tests.unit.specific" location="test-unit-specific" />
+	<property name="src.tests.unit.functional" location="test-unit-functional" />
 	<property name="src.tests.functional" location="test-functional" />
 	<property name="build" location="build" />
 	<property name="build.classes" location="${build}/classes" />
@@ -69,7 +70,7 @@
 
 	<target name="compile.tests" depends="dist" description="compile the source ">
 		<mkdir dir="${build.tests}/dist" />
-		<javac srcdir="${src.tests.unit}" destdir="${build.tests}">
+		<javac srcdir="${src.tests.unit.specific}" destdir="${build.tests}">
 			<classpath refid="project.class.path" />
 			<classpath location="${dist}/devlead-tool-${DSTAMP}.jar" />
 		</javac>
@@ -80,7 +81,9 @@
 		<jar jarfile="${build.tests}/dist/tests.jar" basedir="${build.tests}" />
 	</target>
 
-	<target name="run.tests.unit" description="Run unit tests">
+	<target name="run.tests.unit" depends="run.tests.unit.specific, run.tests.unit.functional" description="Run unit tests" />
+	
+	<target name="run.tests.unit.specific" description="Run unit tests">
 		<delete includeEmptyDirs="true" quiet="true">
 			<fileset dir="${build.tests.results}" includes="**/*" />
 		</delete>
@@ -88,10 +91,6 @@
 		<mkdir dir="bin/junitTemp" />
 		<junit printsummary="yes" haltonfailure="no" tempdir="bin/junitTemp">
 			<classpath refid="project.class.path" />
-			<!--
-			<classpath location="${dist}/devlead-tool-${DSTAMP}.jar" />
-			<classpath location="${build.tests}/dist/tests.jar" />
-			-->
 			<classpath>
 				<pathelement path="bin" />
 			</classpath>
@@ -99,7 +98,30 @@
 			<formatter type="plain" />
 
 			<batchtest fork="yes" todir="${build.tests.results}">
-				<fileset dir="${src.tests.unit}">
+				<fileset dir="${src.tests.unit.specific}">
+					<include name="**/*Test.java" />
+					<exclude name="**/*TestScreen.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<target name="run.tests.unit.functional" description="Run unit tests">
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="${build.tests.results}" includes="**/*" />
+		</delete>
+		<mkdir dir="${build.tests.results}" />
+		<mkdir dir="bin/junitTemp" />
+		<junit printsummary="yes" haltonfailure="no" tempdir="bin/junitTemp">
+			<classpath refid="project.class.path" />
+			<classpath>
+				<pathelement path="bin" />
+			</classpath>
+
+			<formatter type="plain" />
+
+			<batchtest fork="yes" todir="${build.tests.results}">
+				<fileset dir="${src.tests.unit.functional}">
 					<include name="**/*Test.java" />
 					<exclude name="**/*TestScreen.java" />
 				</fileset>
@@ -115,10 +137,6 @@
 		<mkdir dir="bin/junitTemp" />
 		<junit printsummary="yes" haltonfailure="no" tempdir="bin/junitTemp">
 			<classpath refid="project.class.path" />
-			<!--
-			<classpath location="${dist}/devlead-tool-${DSTAMP}.jar" />
-			<classpath location="${build.tests}/dist/tests.jar" />
-			-->
 			<classpath>
 				<pathelement path="bin" />
 			</classpath>
