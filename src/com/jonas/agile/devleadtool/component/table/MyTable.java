@@ -103,30 +103,14 @@ public class MyTable extends JTable {
       });
 
       getModel().addTableModelListener(marker);
-      this.addKeyListener(new KeyAdapter() {
-         public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
-            // FIXME add this as mnemonic - its the key under 'Esc'.
-            case 192:
-               if (allowMarking && e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
-                  log.debug("backspace and mark");
-                  markSelected();
-               }
-               break;
-            case KeyEvent.VK_ESCAPE:
-               clearSelection();
-               break;
-            }
-         }
-
-      });
+      this.addKeyListener(new MarkKeyListener(allowMarking));
    }
 
    MyTable(String title, boolean allowMarking) {
       this(title, new DefaultTableModel(), allowMarking);
    }
 
-   protected void markSelected() {
+   public void markSelected() {
       marker.markSelected();
    }
 
@@ -319,6 +303,28 @@ public class MyTable extends JTable {
 
    public void unSort() {
       setAutoCreateRowSorter(true);
+   }
+
+   private final class MarkKeyListener extends KeyAdapter {
+      private final boolean allowMarking;
+
+      private MarkKeyListener(boolean allowMarking) {
+         this.allowMarking = allowMarking;
+      }
+
+      public void keyPressed(KeyEvent e) {
+         switch (e.getKeyCode()) {
+         case KeyEvent.VK_M:
+            if (allowMarking && e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
+               log.debug("backspace and mark");
+               markSelected();
+            }
+            break;
+         case KeyEvent.VK_ESCAPE:
+            clearSelection();
+            break;
+         }
+      }
    }
 
    private class MarkDelegator implements TableModelListener {

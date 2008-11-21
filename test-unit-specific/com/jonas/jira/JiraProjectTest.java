@@ -14,7 +14,6 @@ public class JiraProjectTest extends JonasTestCase{
 
 	private void assertJiraProject(String name, String key, String id) {
 		assertJiraProject(name, key, id, JiraProject.getProjectByKey(key));
-		assertJiraProject(name, key, id, JiraProject.getProjectByName(name));
 	}
 
 	private void assertJiraProject(String name, String key, String id, JiraProject project) {

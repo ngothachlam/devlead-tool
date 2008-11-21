@@ -1,9 +1,10 @@
-package com.jonas.agile.devleadtool.component;
+package com.jonas.agile.devleadtool.component.menu;
 
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
@@ -42,12 +44,15 @@ public class MyTablePopupMenu extends MyPopupMenu {
       this.sourceTable = source;
       JFrame parentFrame = helper.getParentFrame();
 
+      add(new MenuItem_Mark("Mark Selected Rows", source));
+      add(new MenuItem_UnMark("unMark Selected Rows", source));
+      addSeparator();
       add(new MenuItem_Add("Add Jiras", source, parentFrame, tables));
-      add(new MenuItem_UnMark("unMark", source));
-      add(new MenuItem_Default("Open in Browser", new OpenJirasListener(sourceTable, helper)));
-      add(new MenuItem_Sync("Dowload Jira Info", sourceTable, helper));
       add(new MenuItem_Remove("Remove Jiras", sourceTable, helper.getParentFrame()));
       addMenuItem_Copys(source, parentFrame, tables);
+      addSeparator();
+      add(new MenuItem_Default("Open in Browser", new OpenJirasListener(sourceTable, helper)));
+      add(new MenuItem_Sync(sourceTable, helper));
       addSeparator();
       add(new MenuItem_CreateMerge("Create Merge", source, helper.getParentFrame()));
    }
@@ -138,10 +143,21 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
    }
 
-   private class MenuItem_UnMark extends JMenuItem {
+   private abstract class MenuItem_Marking_Abstract extends JMenuItem {
+      protected MyTable source;
 
-      public MenuItem_UnMark(String string, final MyTable source) {
+      public MenuItem_Marking_Abstract(String string, final MyTable source) {
          super(string);
+         init(source);
+      }
+
+      public MenuItem_Marking_Abstract(String string, final MyTable source, int mnemonic) {
+         super(string, mnemonic);
+         init(source);
+      }
+
+      private void init(final MyTable source) {
+         this.source = source;
          if (source.isMarkingAllowed()) {
             setEnabled(true);
          } else {
@@ -150,11 +166,37 @@ public class MyTablePopupMenu extends MyPopupMenu {
          addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               log.debug("Mark!");
-               source.unMarkSelection();
-               MyStatusBar.getInstance().setMessage("Rows in " + source.getTitle() + " where marked!", true);
+               doAction();
+               MyStatusBar.getInstance().setMessage("Rows in " + source.getTitle() + " where marked/unmarked!", true);
             }
+
          });
+      }
+
+      protected abstract void doAction();
+   }
+
+   private class MenuItem_Mark extends MenuItem_Marking_Abstract {
+      public MenuItem_Mark(String string, final MyTable source) {
+         super(string, source);
+         setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
+
+      }
+
+      @Override
+      protected void doAction() {
+         source.markSelected();
+      }
+   }
+
+   private class MenuItem_UnMark extends MenuItem_Marking_Abstract {
+      public MenuItem_UnMark(String string, final MyTable source) {
+         super(string, source);
+      }
+
+      @Override
+      protected void doAction() {
+         source.unMarkSelection();
       }
    }
 
@@ -263,8 +305,8 @@ public class MyTablePopupMenu extends MyPopupMenu {
    }
 
    private class MenuItem_Sync extends JMenuItem {
-      public MenuItem_Sync(String string, final MyTable sourceTable, PlannerHelper helper) {
-         super(string);
+      public MenuItem_Sync(final MyTable sourceTable, PlannerHelper helper) {
+         super("Dowload Jira Info");
          addActionListener(getActionListener(sourceTable, helper));
       }
 

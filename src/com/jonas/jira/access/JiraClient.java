@@ -133,4 +133,8 @@ public class JiraClient {
    public String createMergeJira(String jira, String fixForMerge) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
       return jiraSoapClient.createMergeJira(jira, fixForMerge).getKey();
    }
+
+   public String getBaseUrl() {
+      return httpClient.getBaseUrl();
+   }
 }
