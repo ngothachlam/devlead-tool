@@ -671,7 +671,7 @@
 
          <version>LLU 11</version>
 
-         <fixVersion>LLU 12</fixVersion>
+         <fixVersion>LLU 13</fixVersion>
 
          <component>Northbound Interface</component>
 
@@ -687,7 +687,7 @@
                <customfieldname>Sprint</customfieldname>
 
                <customfieldvalues>
-                  <customfieldvalue>12.4</customfieldvalue>
+                  <customfieldvalue>12-4</customfieldvalue>
                </customfieldvalues>
             </customfield>
          </customfields>
@@ -886,7 +886,7 @@
                <customfieldname>Sprint</customfieldname>
 
                <customfieldvalues>
-                  <customfieldvalue>12.4</customfieldvalue>
+                  <customfieldvalue>12-4</customfieldvalue>
                </customfieldvalues>
             </customfield>
 

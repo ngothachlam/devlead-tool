@@ -77,8 +77,8 @@ public class DnDTreeTransferHandler extends TransferHandler {
          for (JiraNode jiraNode : newNodes) {
             if (dropPath.getLastPathComponent() instanceof SprintNode) {
                SprintNode sprintNode = (SprintNode) dropPath.getLastPathComponent();
-               JiraDTO jiraDTO = new JiraDTO(jiraNode.getKey(), jiraNode.getId(), jiraNode.getDescription(), jiraNode.getFixVersions(), sprintNode.getSprintName(),
-                     jiraNode.getStatus(), jiraNode.getResolution(), true);
+               JiraDTO jiraDTO = new JiraDTO(jiraNode.getKey(), jiraNode.getId(), jiraNode.getSummary(), jiraNode.getFixVersions(), sprintNode.getSprintName(),
+                     jiraNode.getStatus(), jiraNode.getResolution(), true, jiraNode.getOriginalEstimate());
                tree.getModel().addJira(jiraDTO);
             } else {
                return false;

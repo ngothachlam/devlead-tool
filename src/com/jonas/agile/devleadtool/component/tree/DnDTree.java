@@ -19,6 +19,7 @@ import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.Status;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
+import com.jonas.common.CalculatorHelper;
 import com.jonas.common.logging.MyLogger;
 
 public class DnDTree extends JTree {
@@ -146,7 +147,9 @@ class DnDTreeJiraToolTipFacade {
          String str = null;
          if (nodeTemp instanceof JiraNode) {
             JiraNode jiraNode = (JiraNode) nodeTemp;
-            str = appendStrings(jiraNode.getUserObject().toString(), " ", jiraNode.getDescription(), " (Status: ", jiraNode.getStatus(), ", Resolution: ",
+            String summary = jiraNode.getSummary();
+            summary = CalculatorHelper.cutString(summary, 70, "...");
+            str = appendStrings(jiraNode.getUserObject().toString(), " ", summary, " (Status: ", jiraNode.getStatus(), ", Resolution: ",
                   jiraNode.getResolution(), ")");
          } else if (nodeTemp instanceof SprintNode) {
             SprintNode node = (SprintNode) nodeTemp;

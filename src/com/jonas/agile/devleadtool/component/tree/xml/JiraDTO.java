@@ -13,11 +13,12 @@ public class JiraDTO {
    private String status;
    private boolean isToSync = false;
    private String id;
+   private int originalEstimate;
 
    public JiraDTO() {
    }
 
-   public JiraDTO(String key, String id, String summary, List<String> list, String sprint, String status, String resolution, boolean isToSync) {
+   public JiraDTO(String key, String id, String summary, List<String> list, String sprint, String status, String resolution, boolean isToSync, int originalEstimate) {
       setKey(key);
       setId(id);
       setSummary(summary);
@@ -26,6 +27,7 @@ public class JiraDTO {
       setStatus(status);
       setResolution(resolution);
       setToSync(isToSync);
+      setOriginalEstimate(originalEstimate);
 
       // this.resolution = resolution;
       // this.sprint = sprint;
@@ -36,6 +38,10 @@ public class JiraDTO {
       // for (String fixVersion : fixVersions) {
       // addFixVersion(fixVersion);
       // }
+   }
+
+   public void setOriginalEstimate(int originalEstimate) {
+      this.originalEstimate = originalEstimate;
    }
 
    public String getSummary() {
@@ -63,11 +69,7 @@ public class JiraDTO {
    }
 
    public void setSummary(String summary) {
-      this.summary = cutString(summary, 70);
-   }
-
-   String cutString(String string, int i) {
-      return string.length() > i ? string.substring(0, i) + "..." : string;
+      this.summary = summary;
    }
 
    public void addFixVersion(String fixVersion) {
@@ -127,6 +129,10 @@ public class JiraDTO {
       for (String fixVersion : fixVersions) {
          addFixVersion(fixVersion);
       }
+   }
+
+   public int getOriginalEstimate() {
+      return originalEstimate;
    }
 
 }
