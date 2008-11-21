@@ -43,6 +43,7 @@ public class AddNewRowActionListener implements ActionListener {
             log.debug("jiraIssue is NOT null!");
             table.addJira(jiraIssue);
          }
+         log.debug("added jira " + jiraString);
          jiraAdded(jiraString, table, estimate, actual);
       }
    }

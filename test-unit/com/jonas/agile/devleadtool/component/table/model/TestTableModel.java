@@ -8,7 +8,6 @@ import com.jonas.common.logging.MyLogger;
 public class TestTableModel extends MyTableModel {
 
    private static final Column[] columns = { Column.Jira, Column.Description, Column.B_BoardStatus, Column.prio, Column.Note, Column.J_BuildNo, Column.J_Dev_Estimate, Column.isOpen, Column.Dev_Estimate};
-   private Logger log = MyLogger.getLogger(JiraTableModel.class);
 
    public TestTableModel() {
       super(columns, false);

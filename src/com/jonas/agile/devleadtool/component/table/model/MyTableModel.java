@@ -20,7 +20,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    protected Counter counter = new Counter();
    protected boolean editable = true;
 
-   MyTableModel(Column[] columns, boolean allowMarking) {
+   protected MyTableModel(Column[] columns, boolean allowMarking) {
       super(columns, 0);
       initiateColumns(columns);
    }
