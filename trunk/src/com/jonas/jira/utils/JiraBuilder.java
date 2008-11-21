@@ -9,6 +9,7 @@ import com.atlassian.jira.rpc.soap.beans.RemoteCustomFieldValue;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.common.CalculatorHelper;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
@@ -42,14 +43,14 @@ public class JiraBuilder {
       addXpathAction("/item/timeoriginalestimate/@seconds", new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             if (xpathValue != null && xpathValue.trim().length() > 0) {
-               jira.setEstimate(JiraBuilder.getSecondsAsDays(xpathValue));
+               jira.setEstimate(CalculatorHelper.getSecondsAsDays(xpathValue));
             }
          }
       });
       addXpathAction("/item/timespent/@seconds", new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             if (xpathValue != null && xpathValue.trim().length() > 0) {
-               jira.setSpent(JiraBuilder.getSecondsAsDays(xpathValue));
+               jira.setSpent(CalculatorHelper.getSecondsAsDays(xpathValue));
             }
          }
       });
@@ -62,17 +63,6 @@ public class JiraBuilder {
 
    private static void addXpathAction(String xPath, XpathAction action) {
       jiraXpathActions.add(new XPathImplementor(xPath, action));
-   }
-
-   public static String getSecondsAsDays(String seconds) {
-      int intSeconds = new Float(seconds).intValue();
-      float floatDays = getSecondsAsDays(intSeconds);
-      return String.valueOf(floatDays);
-   }
-
-   public static float getSecondsAsDays(int seconds) {
-      float secondsConverter = 60 * 60 * 8;
-      return seconds / secondsConverter;
    }
 
    JiraBuilder() {

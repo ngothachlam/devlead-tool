@@ -99,7 +99,7 @@ public class DnDTreeModel extends DefaultTreeModel {
 
    private JiraNode getJiraNode(JiraDTO j, FixVersionNode f) {
       return new JiraNode(j.getKey(), j.getId(), j.getSummary(), f, j.getResolution(), j.getStatus(), j.getSprint(), j.getFixVersions(), j
-            .getSyncable());
+            .getSyncable(), j.getOriginalEstimate());
    }
 
    public List<JiraNode> getJiraNodes() {

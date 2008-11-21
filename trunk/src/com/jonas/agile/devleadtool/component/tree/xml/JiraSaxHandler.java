@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
+import com.jonas.common.CalculatorHelper;
 import com.jonas.common.logging.MyLogger;
 
 public class JiraSaxHandler extends DefaultHandler {
@@ -103,9 +104,16 @@ public class JiraSaxHandler extends DefaultHandler {
          jira = new JiraDTO();
       } else if (KEY.equals(qName)) {
          jira.setId(atts.getValue("id"));
+      } else if ("timeoriginalestimate".equals(qName)){
+         String seconds = atts.getValue("seconds");
+         jira.setOriginalEstimate(Integer.parseInt(seconds));
       }
       element = qName;
       nodeCount++;
+   }
+
+   public void clearAllListeners() {
+      jiraParseListeners.clear();
    }
 
 }

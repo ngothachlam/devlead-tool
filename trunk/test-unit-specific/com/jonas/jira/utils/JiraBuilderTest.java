@@ -139,15 +139,6 @@ public class JiraBuilderTest extends JonasTestCase {
    // "/item/customfields/customfield[@id='customfield_10160']/customfieldvalues/customfieldvalue"));
    // }
 
-   public void testGetSecondsAsDays() {
-      assertEquals(1f, JiraBuilder.getSecondsAsDays(60 * 60 * 8));
-      assertEquals(0.5f, JiraBuilder.getSecondsAsDays(60 * 60 * 4));
-      assertEquals(0.25f, JiraBuilder.getSecondsAsDays(60 * 60 * 2));
-      assertEquals(0.125f, JiraBuilder.getSecondsAsDays(60 * 60 * 1));
-      
-      assertEquals("0.125", JiraBuilder.getSecondsAsDays("3600"));
-   }
-   
    public void testGetStringAsInt() {
       assertEquals(50, JiraBuilder.getStringAsIntIfNumeric("50"));
       assertEquals(50, JiraBuilder.getStringAsIntIfNumeric("50.0"));

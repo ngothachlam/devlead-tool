@@ -6,26 +6,27 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class JiraNode extends DefaultMutableTreeNode {
 
-   private final String description;
+   private final String summary;
    private final List<String> fixVersions = new ArrayList<String>();
    private boolean isToSync;
    private final String key;
-   private final FixVersionNode parent;
    private final String resolution;
    private final String sprint;
    private final String status;
    private final String id;
+   private final int originalEstimate;
 
-   public JiraNode(String jira, String id, String description, FixVersionNode parent, String resolution, String status, String sprint, List<String> fixVersions, boolean isToSync) {
+   public JiraNode(String jira, String id, String summary, FixVersionNode parent, String resolution, String status, String sprint, List<String> fixVersions, boolean isToSync, int originalEstimate) {
       super(jira);
       this.key = jira;
       this.parent = parent;
       this.resolution = resolution;
       this.status = status;
-      this.description = description;
+      this.summary = summary;
       this.sprint = sprint;
       this.isToSync = isToSync;
       this.id = id;
+      this.originalEstimate = originalEstimate;
       for (String string : fixVersions) {
          this.fixVersions.add(string);
       }
@@ -40,8 +41,8 @@ public class JiraNode extends DefaultMutableTreeNode {
       return false;
    }
 
-   public String getDescription() {
-      return description;
+   public String getSummary() {
+      return summary;
    }
 
    public List<String> getFixVersions() {
@@ -70,5 +71,9 @@ public class JiraNode extends DefaultMutableTreeNode {
 
    public void setToSynced() {
       isToSync = false;
+   }
+
+   public int getOriginalEstimate() {
+      return originalEstimate;
    }
 }
