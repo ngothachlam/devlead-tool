@@ -130,37 +130,16 @@ class DnDTreeJiraToolTipFacade {
       this.dnDTree = dnDTree;
    }
 
-   private String appendStrings(Object... strings) {
-      StringBuffer sb = new StringBuffer();
-      for (int i = 0; i < strings.length; i++) {
-         sb.append(strings[i].toString());
-      }
-      return sb.toString();
-   }
-
    public String getToolTipText(MouseEvent event) {
       if (event == null)
          return null;
       TreePath path = dnDTree.getPathForLocation(event.getX(), event.getY());
       if (path != null) {
-         DefaultMutableTreeNode nodeTemp = (DefaultMutableTreeNode) (path.getLastPathComponent());
-         String str = null;
-         if (nodeTemp instanceof JiraNode) {
-            JiraNode jiraNode = (JiraNode) nodeTemp;
-            String summary = jiraNode.getSummary();
-            summary = CalculatorHelper.cutString(summary, 70, "...");
-            str = appendStrings(jiraNode.getUserObject().toString(), " ", summary, " (Status: ", jiraNode.getStatus(), ", Resolution: ",
-                  jiraNode.getResolution(), ")");
-         } else if (nodeTemp instanceof SprintNode) {
-            SprintNode node = (SprintNode) nodeTemp;
-            Status lowestResolution = node.getLowestStatus();
-            str = appendStrings(node.getUserObject().toString(), " (Status: ", lowestResolution, ", Children: ", node.getChildCount(), ")");
-            
-         } else if (nodeTemp instanceof FixVersionNode) {
-            FixVersionNode node = (FixVersionNode) nodeTemp;
-            str = appendStrings(node.getUserObject().toString(), " (Children: ", node.getChildCount(), ")");
+         Object nodeTemp = path.getLastPathComponent();
+         if (nodeTemp instanceof ToolTipper) {
+            ToolTipper node = (ToolTipper) nodeTemp;
+            return node.getToolTipText();
          }
-         return str;
       }
       return null;
 

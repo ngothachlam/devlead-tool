@@ -18,6 +18,7 @@ import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
+import com.jonas.agile.devleadtool.component.menu.MyTreePopupMenu;
 import com.jonas.agile.devleadtool.component.tree.DnDTree;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
@@ -25,6 +26,7 @@ import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
+import com.jonas.agile.devleadtool.component.tree.xml.XmlParserLargeMock;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
 
@@ -33,17 +35,15 @@ public class DnDTreePanel extends JPanel {
    private Logger log = MyLogger.getLogger(DnDTreePanel.class);
 
    private DnDTree tree;
-   private DnDTreeBuilder dndTreeBuilder;
-
    private final JFrame parentFrame;
 
    public DnDTreePanel(DnDTree tree, DnDTreeBuilder dndTreeBuilder, JFrame parent) {
       super(new BorderLayout());
       this.tree = tree;
-      this.dndTreeBuilder = dndTreeBuilder;
       this.parentFrame = parent;
       add(new JScrollPane(tree), BorderLayout.CENTER);
       add(getButtonPanel(), BorderLayout.SOUTH);
+      new MyTreePopupMenu(parent, tree, dndTreeBuilder);
    }
 
    public static void main(String... args) {
@@ -54,8 +54,8 @@ public class DnDTreePanel extends JPanel {
          JiraSaxHandler saxHandler = new JiraSaxHandler();
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, 100, frame));
 
-         XmlParser parser = new XmlParserImpl(saxHandler, 100);
-         // XmlParser parser = new XmlParserLargeMock(saxHandler);
+//         XmlParser parser = new XmlParserImpl(saxHandler, 100);
+          XmlParser parser = new XmlParserLargeMock(saxHandler);
 
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser, tree, frame);
 

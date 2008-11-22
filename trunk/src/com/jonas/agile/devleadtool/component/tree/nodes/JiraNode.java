@@ -3,8 +3,10 @@ package com.jonas.agile.devleadtool.component.tree.nodes;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
+import com.jonas.agile.devleadtool.component.tree.ToolTipper;
+import com.jonas.common.CalculatorHelper;
 
-public class JiraNode extends DefaultMutableTreeNode {
+public class JiraNode extends DefaultMutableTreeNode implements ToolTipper{
 
    private final String summary;
    private final List<String> fixVersions = new ArrayList<String>();
@@ -16,10 +18,9 @@ public class JiraNode extends DefaultMutableTreeNode {
    private final String id;
    private final int originalEstimate;
 
-   public JiraNode(String jira, String id, String summary, FixVersionNode parent, String resolution, String status, String sprint, List<String> fixVersions, boolean isToSync, int originalEstimate) {
+   public JiraNode(String jira, String id, String summary, String resolution, String status, String sprint, List<String> fixVersions, boolean isToSync, int originalEstimate) {
       super(jira);
       this.key = jira;
-      this.parent = parent;
       this.resolution = resolution;
       this.status = status;
       this.summary = summary;
@@ -75,5 +76,18 @@ public class JiraNode extends DefaultMutableTreeNode {
 
    public int getOriginalEstimate() {
       return originalEstimate;
+   }
+
+   public String getToolTipText() {
+      StringBuffer sb = new StringBuffer(getUserObject().toString());
+      String tempSummary = CalculatorHelper.cutString(getSummary(), 70, "...");
+      sb.append(" ")
+      .append(tempSummary)
+      .append(" (Status: ")
+      .append(getStatus())
+      .append(", Resolution: ")
+      .append(getResolution())
+      .append(")");
+      return sb.toString();
    }
 }

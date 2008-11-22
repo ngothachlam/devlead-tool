@@ -1,8 +1,11 @@
 package com.jonas.agile.devleadtool.component.tree.nodes;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
+import com.jonas.agile.devleadtool.component.tree.ToolTipper;
 
-public class FixVersionNode extends DefaultMutableTreeNode {
+public class FixVersionNode extends DefaultMutableTreeNode implements ToolTipper {
 
    private final String fixVersionName;
 
@@ -30,16 +33,10 @@ public class FixVersionNode extends DefaultMutableTreeNode {
       return false;
    }
 
-   public Status getLowestStatus() {
-      Status result = Status.UnKnown;
-      for (int i = 0; i < getChildCount(); i++) {
-         JiraNode jiraNode = (JiraNode) getChildAt(i);
-         Status status = Status.get(jiraNode.getStatus());
-         if (status.isLowerThan(result)) {
-            result = status;
-         }
-      }
-      return result;
+   public FixVersionChildAnalyser getAnalysis() {
+      FixVersionChildAnalyser analyser = new FixVersionChildAnalyser();
+      analyser.analyse();
+      return analyser;
    }
 
    public JiraNode getJiraNode(String key) {
@@ -50,5 +47,63 @@ public class FixVersionNode extends DefaultMutableTreeNode {
          }
       }
       return null;
+   }
+
+   public String getToolTipText() {
+      StringBuffer sb = new StringBuffer(getUserObject().toString());
+      sb.append(" (Children: ").append(getChildCount()).append(")");
+      return sb.toString();
+   }
+
+   public class FixVersionChildAnalyser {
+
+      private Status lowestStatus;
+      private int childCount;
+      private Map<Status, Integer> countMap = new HashMap<Status, Integer>(5);
+
+      public Status getLowestStatus() {
+         return lowestStatus;
+      }
+
+      public int getJiraCount() {
+         return childCount;
+      }
+
+      public int getCount(Status status) {
+         Integer value = countMap.get(status);
+         return value == null ? 0 : value;
+      }
+
+      public float getPercentage(Status status) {
+         Integer count = countMap.get(status);
+         int value = count == null ? 0 : count;
+         return (value / childCount) * 100;
+      }
+
+      private void analyse() {
+         resetCounts();
+         childCount = getChildCount();
+
+         Status result = Status.UnKnown;
+         for (int i = 0; i < getChildCount(); i++) {
+            JiraNode jiraNode = (JiraNode) getChildAt(i);
+            Status status = Status.get(jiraNode.getStatus());
+            if (status.isLowerThan(result)) {
+               result = status;
+            }
+            Integer integer = countMap.get(status);
+            int value = (integer != null ? integer : 0) + 1;
+            countMap.put(status, value);
+         }
+         lowestStatus = result;
+      }
+
+      private void resetCounts() {
+         countMap.clear();
+      }
+
+      public Map<Status, Integer> getStatusCounter() {
+         return countMap;
+      }
    }
 }
