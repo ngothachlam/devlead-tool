@@ -60,6 +60,7 @@ public class DnDTreeModel extends DefaultTreeModel {
       JiraNode jiraNode = fixVersionNode.getJiraNode(jira.getKey());
       if (jiraNode == null) {
          jiraNode = getJiraNode(jira, fixVersionNode);
+         log.debug(jiraNode.getUserObject() + " is child? ");
          insertNodeInto(jiraNode, fixVersionNode, fixVersionNode.getChildCount());
       } else {
          TreeNode oldParent = jiraNode.getParent();
@@ -98,7 +99,7 @@ public class DnDTreeModel extends DefaultTreeModel {
    }
 
    private JiraNode getJiraNode(JiraDTO j, FixVersionNode f) {
-      return new JiraNode(j.getKey(), j.getId(), j.getSummary(), f, j.getResolution(), j.getStatus(), j.getSprint(), j.getFixVersions(), j
+      return new JiraNode(j.getKey(), j.getId(), j.getSummary(), j.getResolution(), j.getStatus(), j.getSprint(), j.getFixVersions(), j
             .getSyncable(), j.getOriginalEstimate());
    }
 

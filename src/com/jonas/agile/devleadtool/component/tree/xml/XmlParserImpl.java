@@ -70,7 +70,8 @@ public class XmlParserImpl implements XmlParser {
          method = new GetMethod(url);
          int result = httpClient.executeMethod(method);
 
-         Reader reader2 = new InputStreamReader(method.getResponseBodyAsStream(), method.getResponseCharSet());
+//         Reader reader2 = new InputStreamReader(method.getResponseBodyAsStream(), method.getResponseCharSet());
+         Reader reader2 = new InputStreamReader(method.getResponseBodyAsStream(), "iso-8859-1");
 
          xmlReader.parse(new InputSource(reader2));
       } finally {

@@ -21,7 +21,6 @@ public class DnDTreeBuilder {
    public DnDTreeBuilder(XmlParser parser, DnDTree tree, JFrame parentFrame) {
       super();
       this.parser = parser;
-      new MyTreePopupMenu(parentFrame, tree, this);
    }
 
    public void buildTree(DnDTree tree, final String sprint, final JiraProject project) {

@@ -46,7 +46,7 @@ public class DnDTreeCellRenderer extends DefaultTreeCellRenderer {
 
    private void setLFforFixVersion(Object value) {
       FixVersionNode fixversion = (FixVersionNode) value;
-      setIcon(fixversion.getLowestStatus().getIcon());
+      setIcon(fixversion.getAnalysis().getLowestStatus().getIcon());
       setFont(getPlainFont());
    }
 
