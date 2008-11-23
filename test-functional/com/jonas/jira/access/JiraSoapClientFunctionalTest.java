@@ -19,37 +19,24 @@ public class JiraSoapClientFunctionalTest extends TestCase {
       super.setUp();
    }
 
-   public void atestShouldGetFixVersionsOk() throws Exception {
+   public void testShouldGetFixVersionsOk() throws Exception {
       RemoteVersion[] fixVersions = clientAtlassain.getFixVersions(JiraProject.ATLASSIN_TST);
       assertTrue(fixVersions.length > 0);
    }
 
-   public void atestShouldGetSingleFixVersionOk() throws Exception {
+   public void testShouldGetSingleFixVersionOk() throws Exception {
       // TODO optimise this call = re-do in httpClient if XML can be found?
       RemoteVersion fixVersion = clientAtlassain.getFixVersion("Dev Version", JiraProject.ATLASSIN_TST);
       assertTrue(fixVersion != null);
    }
 
-   public void atestAllCustomFields() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
+   public void testAllCustomFields() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
       clientAolBB.printAllCustomFieldInfo();
    }
 
-   public void atestGettingFilters() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
+   public void testGettingFilters() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
       RemoteFilter filter = clientAolBB.getFilter("LLU Dev Support - Priority List (unresolved)");
       System.out.println(filter.getId());
       System.out.println(filter.getXml());
-   }
-
-   public void trestShouldCreateMergeOk() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException,
-         ServiceException {
-//      RemoteIssue newJira = clientAtlassain.createMergeJira("TST-11368", "Dev Version", "1");
-       RemoteIssue newJira = clientAolBB.createMergeJira("LLU-4275", "LLU 12");
-      System.out.println("Created merge jira " + newJira.getKey());
-
-   }
-
-   public void tsestShsdouldCreateSprintOk() throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException,
-         ServiceException {
-      clientAolBB.updateSprint("LLU-3809", "test");
    }
 }

@@ -45,32 +45,6 @@ public class DnDTreePanel extends JPanel {
       new MyTreePopupMenu(parent, tree, dndTreeBuilder);
    }
 
-   public static void main(String... args) {
-      try {
-         JFrame frame = new JFrame();
-         DnDTreeModel model = new DnDTreeModel("LLU");
-         DnDTree tree = new DnDTree(model);
-         JiraSaxHandler saxHandler = new JiraSaxHandler();
-         saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, 100, frame));
-
-//         XmlParser parser = new XmlParserImpl(saxHandler, 100);
-          XmlParser parser = new XmlParserLargeMock(saxHandler);
-
-         DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser, tree, frame);
-
-         DnDTreePanel main = new DnDTreePanel(tree, dndTreeBuilder, frame);
-
-         frame.setSize(400, 700);
-         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-         frame.getContentPane().add(main, BorderLayout.CENTER);
-         frame.getContentPane().add(MyStatusBar.getInstance(), BorderLayout.SOUTH);
-         frame.setVisible(true);
-      } catch (SAXException e) {
-         e.printStackTrace();
-      }
-   }
-
    private Component getSouthPanel() {
       JPanel panel = new JPanel(new BorderLayout());
       panel.add(getButtonPanel(), BorderLayout.CENTER);

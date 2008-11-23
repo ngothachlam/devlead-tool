@@ -163,7 +163,7 @@ public class MyTreePopupMenu extends MyPopupMenu {
                   SprintNode sprintNode = (SprintNode) selectedElement;
                   syncedSprints.add(sprintNode.getSprintName());
                   log.debug("SprintNode: " + sprintNode);
-                  tree.removeAll(sprintNode);
+                  tree.removeAllChildren(sprintNode);
                   JiraProject project = JiraProject.getProjectByKey(sprintNode.getParent().toString());
                   dndTreeBuilder.buildTree(tree, sprintNode.getSprintName(), project);
                } else {

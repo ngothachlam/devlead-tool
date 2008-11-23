@@ -142,10 +142,10 @@ public class DnDTreeModel extends DefaultTreeModel {
       return createSprint(sprintName);
    }
 
-   public void removeAllChildrenOf(SprintNode sprintNode) {
-      int noOfRootChildren = getChildCount(sprintNode);
+   public void removeAllChildrenOf(SprintNode node) {
+      int noOfRootChildren = getChildCount(node);
       for (int child = noOfRootChildren - 1; child >= 0; child--) {
-         MutableTreeNode tempChild = (MutableTreeNode) getChild(sprintNode, child);
+         DefaultMutableTreeNode tempChild = (DefaultMutableTreeNode) getChild(node, child);
          log.debug("Removing " + tempChild);
          removeNodeFromParent(tempChild);
       }
