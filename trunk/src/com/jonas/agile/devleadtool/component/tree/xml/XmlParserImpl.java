@@ -48,13 +48,20 @@ public class XmlParserImpl implements XmlParser {
       baseUrl = "http://10.155.38.105/jira";
    }
 
-   public void parse(String sprint, JiraProject project) throws IOException, SAXException, JiraException {
+   public void parse(JiraProject project, String sprint) throws IOException, SAXException, JiraException {
       GetMethod method = null;
       try {
          HttpClient httpClient = new HttpClient();
-         String url = project.getJiraClient().getBaseUrl() + "/secure/IssueNavigator.jspa?view=rss&fixfor=-2&pid="+project.getId()+"&reset=true&decorator=none&tempMax=" + maxResults;
+         String url = project.getJiraClient().getBaseUrl() + "/secure/IssueNavigator.jspa?view=rss&pid="+project.getId()+"&reset=true&decorator=none&tempMax=" + maxResults;
          if(sprint != null)
-            url = url +"&" + "customfield_10282=" + sprint;
+            url = url +"&customfield_10282=" + sprint;
+         //FIXME passin the fixVersion!
+         Object fixVersion = null;
+         if(fixVersion  != null){
+            url = url +"&fixfor" + fixVersion;
+         } else{
+            url = url +"&fixfor=-2";
+         }
          log.debug("calling " + url);
          notifyStartingToLogin();
          login(httpClient);

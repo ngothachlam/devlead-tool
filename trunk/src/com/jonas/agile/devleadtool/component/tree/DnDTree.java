@@ -116,7 +116,7 @@ public class DnDTree extends JTree {
       addSelectionPaths(jiraTreePath);
    }
 
-   public void removeAll(SprintNode sprintNode) {
+   public void removeAllChildren(SprintNode sprintNode) {
       model.removeAllChildrenOf(sprintNode);
    }
 }

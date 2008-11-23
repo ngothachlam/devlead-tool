@@ -95,34 +95,6 @@ public class JiraBuilder {
       return jira;
    }
 
-   public JiraIssue buildJira(RemoteIssue remoteJira, JiraProject project) {
-      JiraResolution resolution = JiraResolution.getResolution(remoteJira.getResolution());
-      JiraType type = JiraType.getResolution(remoteJira.getType());
-      JiraStatus status = JiraStatus.getJiraStatusById(remoteJira.getStatus());
-      String statusName = status != null ? status.getName() : null;
-      String resolutionName = resolution != null ? resolution.getName() : null;
-      String typeName = type != null ? type.getName() : null;
-      RemoteCustomFieldValue[] customFieldValues = remoteJira.getCustomFieldValues();
-      String buildNo = getCustomFieldValue(customFieldValues, CUSTOMFIELD_BUILDNO);
-      String sprint = getCustomFieldValue(customFieldValues, CUSTOMFIELD_LLUSPRINT);
-      int listPrio = getStringAsIntIfNumeric(getCustomFieldValue(customFieldValues, CUSTOMFIELD_LLULISTPRIO));
-      // fixme - doesn't work with estimate at the moment.
-      JiraIssue jira = new JiraIssue(remoteJira.getKey(), remoteJira.getSummary(), statusName, resolutionName, typeName, buildNo, "", listPrio, sprint);
-      RemoteVersion[] tempFixVersions = remoteJira.getFixVersions();
-      for (int i = 0; i < tempFixVersions.length; i++) {
-         RemoteVersion remoteVersion = tempFixVersions[i];
-         JiraVersion fixVers = JiraVersion.getVersionById(remoteVersion.getId());
-         if (fixVers == null) {
-            fixVers = buildJiraVersion(remoteVersion, project);
-         }
-         jira.addFixVersions(fixVers);
-         if (i > 1) {
-            log.error("Cannot handle more than one fix version at the moment for " + jira.getKey());
-         }
-      }
-      return jira;
-   }
-
    static int getStringAsIntIfNumeric(String string) {
       int intValue = -1;
       if (string != null && !string.isEmpty())

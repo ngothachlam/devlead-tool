@@ -28,7 +28,7 @@ public class DnDTreeBuilder {
          @Override
          protected Object doInBackground() {
             try {
-               parser.parse(sprint, project);
+               parser.parse(project, sprint);
             } catch (IOException e) {
                e.printStackTrace();
             } catch (SAXException e) {

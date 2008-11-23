@@ -8,7 +8,7 @@ import com.jonas.jira.access.JiraException;
 
 public interface XmlParser {
 
-   public void parse(String sprint, JiraProject project) throws IOException, SAXException, JiraException;
+   public void parse(JiraProject project, String sprint) throws IOException, SAXException, JiraException;
 
    public void addParseListener(SprintParseListener jiraParseListener);
 

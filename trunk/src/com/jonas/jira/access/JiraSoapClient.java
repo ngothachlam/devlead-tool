@@ -29,10 +29,15 @@ public class JiraSoapClient {
    private static final Logger log = MyLogger.getLogger(JiraSoapClient.class);
    private static final String LOGIN_NAME = "soaptester";
    private static final String LOGIN_PASSWORD = "soaptester";
+   private static JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
+   private static List<String> customFieldsForCloning = new ArrayList<String>(1);
+
+   static {
+      customFieldsForCloning.add("customfield_10282");
+   }
 
    private JiraSoapService jiraSoapService = null;
    private String token;
-   private static JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
    private String type = "13";
 
    public JiraSoapClient(String address) {
@@ -48,7 +53,7 @@ public class JiraSoapClient {
 
    private static JiraSoapServiceServiceLocator getLocator() {
       JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
-//      log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
+      // log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
       return jiraSoapServiceServiceLocator;
    }
 
@@ -90,8 +95,8 @@ public class JiraSoapClient {
    }
 
    private void setOriginalEstimateToZero(RemoteIssue cloneIssue) {
-      String[] originalEstimates = {"0d"};
-      RemoteCustomFieldValue[] customFieldValues = {new RemoteCustomFieldValue("timetracking", "timetracking", originalEstimates )};
+      String[] originalEstimates = { "0d" };
+      RemoteCustomFieldValue[] customFieldValues = { new RemoteCustomFieldValue("timetracking", "timetracking", originalEstimates) };
       cloneIssue.setCustomFieldValues(customFieldValues);
    }
 
@@ -135,8 +140,6 @@ public class JiraSoapClient {
    private void copyCustomFieldValuesFromOriginalToClone(RemoteIssue originalJiraIssue, RemoteIssue cloneIssue) {
       RemoteCustomFieldValue[] originalCustomFieldValues = originalJiraIssue.getCustomFieldValues();
       List<RemoteCustomFieldValue> fieldsToBeCloned = new ArrayList<RemoteCustomFieldValue>();
-      List<String> customFieldsForCloning = new ArrayList<String>();
-      customFieldsForCloning.add("customfield_10282");
 
       int matches = 0;
       for (RemoteCustomFieldValue field : originalCustomFieldValues) {
@@ -148,27 +151,9 @@ public class JiraSoapClient {
          if (customFieldsForCloning.contains(field.getCustomfieldId())) {
             fieldsToBeCloned.add(field);
             matches++;
-         } 
+         }
       }
       cloneIssue.setCustomFieldValues(fieldsToBeCloned.toArray(new RemoteCustomFieldValue[fieldsToBeCloned.size()]));
-   }
-
-   private RemoteVersion[] getFixVersionsExcluding(RemoteIssue originalJiraIssue, List<RemoteVersion> cloneFixVersions) {
-      RemoteVersion[] originalFixVersions = originalJiraIssue.getFixVersions();
-      List<RemoteVersion> newFixVersions = new ArrayList<RemoteVersion>();
-      for (RemoteVersion originalRemoteVersion : originalFixVersions) {
-         boolean isOrgVersionInClone = false;
-         for (RemoteVersion cloneRemoteVersion : cloneFixVersions) {
-            if (cloneRemoteVersion.getName().equals(originalRemoteVersion.getName())) {
-               isOrgVersionInClone = true;
-               break;
-            }
-         }
-         if (!isOrgVersionInClone) {
-            newFixVersions.add(originalRemoteVersion);
-         }
-      }
-      return newFixVersions.toArray(new RemoteVersion[newFixVersions.size()]);
    }
 
    public RemoteVersion getFixVersion(final String fixName, JiraProject jiraProject) throws RemotePermissionException, RemoteAuthenticationException,
@@ -241,14 +226,14 @@ public class JiraSoapClient {
 
    public void updateSprint(final String jiraKey, final String sprint) throws RemotePermissionException, RemoteAuthenticationException,
          com.atlassian.jira.rpc.exception.RemoteException, RemoteException, ServiceException {
-//      JiraSoapServiceService jiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
-//      JiraSoapService jiraSoapService = jiraSoapServiceGetter.getJirasoapserviceV2();
+      // JiraSoapServiceService jiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
+      // JiraSoapService jiraSoapService = jiraSoapServiceGetter.getJirasoapserviceV2();
 
       updateCustomField(jiraKey, sprint, "customfield_10282");
    }
 
-   private RemoteIssue updateCustomField(final String jiraKey, final String sprint, final String customField)
-         throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+   private RemoteIssue updateCustomField(final String jiraKey, final String sprint, final String customField) throws RemotePermissionException,
+         RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
       // JiraTokenCommand command = new JiraTokenCommand(new JiraAccessAction() {
       // public Object accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
       // RemoteException {
@@ -429,4 +414,21 @@ public class JiraSoapClient {
       renewToken();
    }
 
+}
+
+class CustomField {
+   public CustomField sprint = new CustomField("customfield_10282", "Sprint");
+   private String id;
+   private String name;
+   private CustomField(String id, String name) {
+      super();
+      this.id = id;
+      this.name = name;
+   }
+   public String getId() {
+      return id;
+   }
+   public String getName() {
+      return name;
+   }
 }

@@ -145,14 +145,4 @@ public class JiraBuilderTest extends JonasTestCase {
       assertEquals(50, JiraBuilder.getStringAsIntIfNumeric("50.1"));
       assertEquals(50, JiraBuilder.getStringAsIntIfNumeric("50.99"));
    }
-   
-   public void testShouldBUildJiraOkUsingSoapCall(){
-      RemoteIssue mock_remoteIssue = createClassMock(RemoteIssue.class);
-      
-      replay();
-      
-      jiraBuilder.buildJira(mock_remoteIssue, TestObjects.Project_TST1);
-      
-      verify();
-   }
 }
