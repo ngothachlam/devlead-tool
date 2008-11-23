@@ -7,15 +7,16 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.tree.ToolTipper;
 import com.jonas.agile.devleadtool.component.tree.nodes.FixVersionNode.FixVersionChildAnalyser;
+import com.jonas.common.CalculatorHelper;
 import com.jonas.common.logging.MyLogger;
 
 public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
 
-   private static final Logger log = MyLogger.getLogger(SprintNode.class); 
+   private static final Logger log = MyLogger.getLogger(SprintNode.class);
    private final String sprintName;
    private SprintChildAnalyser toolTipAnalyser = new SprintChildAnalyser();
    private DecimalFormat decimalFormat = new DecimalFormat("#");
-   
+
    public SprintNode(String sprintName) {
       super(sprintName);
       this.sprintName = sprintName;
@@ -51,26 +52,25 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
 
    public String getToolTipText() {
       SprintChildAnalyser anlysis = analyseChildrenForToolTip();
+      int estimateTotalSeconds = anlysis.getEstimateTotal();
+      String estimateTotalDaysAsString = CalculatorHelper.getSecondsAsDaysAndString(estimateTotalSeconds);
+
       StringBuffer sb = new StringBuffer(getUserObject().toString());
-      sb.append(" (Lowest Resolution: ").append(anlysis.getLowestStatus()).append(", Jiras: ").append(anlysis.getJiraCount()).append(")\n");
-      
-      Status open = Status.Open;
-      Status reopened = Status.Reopened;
-      Status inProgress = Status.InProgress;
-      Status resolved = Status.Resolved;
-      Status closed = Status.Closed;
-      
-      sb.append(" Open: ").append(anlysis.getCount(open));
-      sb.append(" ReOpened: ").append(anlysis.getCount(reopened));
-      sb.append(" InProgress: ").append(anlysis.getCount(inProgress));
-      sb.append(" Resolved: ").append(anlysis.getCount(resolved));
-      sb.append(" Closed: ").append(anlysis.getCount(closed));
-      
-      sb.append(" Open (%): ").append(getPercentage(anlysis, open));
-      sb.append(" ReOpened (%): ").append(getPercentage(anlysis, reopened));
-      sb.append(" InProgress (%): ").append(getPercentage(anlysis, inProgress));
-      sb.append(" Resolved (%): ").append(getPercentage(anlysis, resolved));
-      sb.append(" Closed (%): ").append(getPercentage(anlysis, closed));
+      sb.append(" (Lowest Resolution: ").append(anlysis.getLowestStatus());
+      sb.append(" Jiras: ").append(anlysis.getJiraCount());
+      sb.append(" Total Estimate: ").append(estimateTotalDaysAsString).append(" days)");
+
+      sb.append(" - Open: ").append(anlysis.getCount(Status.Open));
+      sb.append("(").append(getPercentage(anlysis, Status.Open)).append(")");
+      sb.append(" ReOpened: ").append(anlysis.getCount(Status.Reopened));
+      sb.append("(").append(getPercentage(anlysis, Status.Reopened)).append(")");
+      sb.append(" InProgress: ").append(anlysis.getCount(Status.InProgress));
+      sb.append("(").append(getPercentage(anlysis, Status.InProgress)).append(")");
+      sb.append(" Resolved: ").append(anlysis.getCount(Status.Resolved));
+      sb.append("(").append(getPercentage(anlysis, Status.Resolved)).append(")");
+      sb.append(" Closed: ").append(anlysis.getCount(Status.Closed));
+      sb.append("(").append(getPercentage(anlysis, Status.Closed)).append(")");
+
       return sb.toString();
    }
 
@@ -88,6 +88,7 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
       private Status lowestStatus;
       private int jiraCount;
       private Map<Status, Integer> countMap = new HashMap<Status, Integer>(5);
+      private int estimateTotal;
 
       private Status getLowestStatus() {
          return lowestStatus;
@@ -102,15 +103,17 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
          Integer value = countMap.get(status);
          return value == null ? 0 : value;
       }
+
       public float getPercentage(Status status) {
          Integer count = countMap.get(status);
          Float value = count == null ? 0f : count;
-         float percentage = (value / jiraCount) *100;
+         float percentage = (value / jiraCount) * 100;
          log.debug("jiras: " + jiraCount + " and count: " + count + " for status " + status + " gives " + percentage);
          return percentage;
       }
 
       public void analyse() {
+         log.debug("analysing");
          resetCounts();
          Status result = Status.UnKnown;
          for (int i = 0; i < getChildCount(); i++) {
@@ -133,26 +136,37 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
             countMap.put(status, value);
             log.debug("Status " + status + " now has " + value);
          }
+         estimateTotal += fixVersionAnalyser.getEstimateTotal();
          jiraCount += fixVersionAnalyser.getJiraCount();
       }
 
       private void resetCounts() {
          jiraCount = 0;
+         estimateTotal = 0;
          countMap.clear();
+      }
+
+      public int getEstimateTotal() {
+         return estimateTotal;
       }
 
    }
 
    public String getPercentage(Status status) {
       float percentage = toolTipAnalyser.getPercentage(status);
-      return decimalFormat.format(percentage)+"%";
+      return decimalFormat.format(percentage) + "%";
    }
+
    public int getCount(Status status) {
       return toolTipAnalyser.getCount(status);
    }
-   
+
    public void analyseToolTip() {
       toolTipAnalyser.analyse();
+   }
+
+   public int getEstimateTotal() {
+      return toolTipAnalyser.getEstimateTotal();
    }
 
 }
