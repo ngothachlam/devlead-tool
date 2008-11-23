@@ -25,7 +25,6 @@ import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
-import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParserLargeMock;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;

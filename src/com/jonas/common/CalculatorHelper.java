@@ -17,4 +17,9 @@ public class CalculatorHelper {
    public static String cutString(String string, int cutAfter, String replacementString) {
       return string.length() > cutAfter ? string.substring(0, cutAfter) + replacementString : string;
    }
+
+   public static String getSecondsAsDaysAndString(int seconds) {
+      float days = getSecondsAsDays(seconds);
+      return Float.toString(days);
+   }
 }

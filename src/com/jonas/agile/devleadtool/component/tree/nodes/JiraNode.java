@@ -79,15 +79,15 @@ public class JiraNode extends DefaultMutableTreeNode implements ToolTipper{
    }
 
    public String getToolTipText() {
+      String secondsAsDaysAndString = CalculatorHelper.getSecondsAsDaysAndString(getOriginalEstimate());
+      
       StringBuffer sb = new StringBuffer(getUserObject().toString());
       String tempSummary = CalculatorHelper.cutString(getSummary(), 70, "...");
-      sb.append(" ")
-      .append(tempSummary)
-      .append(" (Status: ")
-      .append(getStatus())
-      .append(", Resolution: ")
-      .append(getResolution())
-      .append(")");
+      sb.append(" ").append(tempSummary);
+      sb.append(" - ");
+      sb.append(getStatus());
+      sb.append(" (").append(getResolution()).append(")");
+      sb.append(", Estimate: ").append(secondsAsDaysAndString).append(" days");
       return sb.toString();
    }
 }

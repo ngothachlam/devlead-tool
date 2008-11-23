@@ -3,10 +3,13 @@ package com.jonas.agile.devleadtool.component.tree.nodes;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
+import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.tree.ToolTipper;
+import com.jonas.common.logging.MyLogger;
 
 public class FixVersionNode extends DefaultMutableTreeNode implements ToolTipper {
 
+   private static final Logger log = MyLogger.getLogger(FixVersionNode.class); 
    private final String fixVersionName;
 
    public FixVersionNode(String fixVersionName) {
@@ -60,6 +63,7 @@ public class FixVersionNode extends DefaultMutableTreeNode implements ToolTipper
       private Status lowestStatus;
       private int childCount;
       private Map<Status, Integer> countMap = new HashMap<Status, Integer>(5);
+      private int estimateTotal;
 
       public Status getLowestStatus() {
          return lowestStatus;
@@ -94,16 +98,23 @@ public class FixVersionNode extends DefaultMutableTreeNode implements ToolTipper
             Integer integer = countMap.get(status);
             int value = (integer != null ? integer : 0) + 1;
             countMap.put(status, value);
+            log.debug("jiraNode: " + jiraNode.getKey() +" has original Estimate: " + jiraNode.getOriginalEstimate());
+            estimateTotal += jiraNode.getOriginalEstimate();
          }
          lowestStatus = result;
       }
 
       private void resetCounts() {
+         estimateTotal = 0;
          countMap.clear();
       }
 
       public Map<Status, Integer> getStatusCounter() {
          return countMap;
+      }
+
+      public int getEstimateTotal() {
+         return estimateTotal;
       }
    }
 }
