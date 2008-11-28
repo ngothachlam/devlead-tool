@@ -16,7 +16,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import org.apache.log4j.Logger;
+import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
+import com.atlassian.jira.rpc.exception.RemoteException;
+import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.jonas.agile.devleadtool.MyStatusBar;
+import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -44,8 +48,8 @@ public class MyTablePopupMenu extends MyPopupMenu {
       this.sourceTable = source;
       JFrame parentFrame = helper.getParentFrame();
 
-      add(new MenuItem_Mark("Mark Selected Rows", source));
-      add(new MenuItem_UnMark("unMark Selected Rows", source));
+      add(new MenuItem_Mark(parentFrame, "Mark Selected Rows", source));
+      add(new MenuItem_UnMark(parentFrame, "unMark Selected Rows", source));
       addSeparator();
       add(new MenuItem_Add("Add Jiras", source, parentFrame, tables));
       add(new MenuItem_Remove("Remove Jiras", sourceTable, helper.getParentFrame()));
@@ -66,93 +70,92 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
    }
 
-   private class MenuItem_CreateMerge extends JMenuItem {
+   private class MenuItem_CreateMerge extends MyMenuItem {
+
+      private Frame parent;
+      private final MyTable source;
 
       public MenuItem_CreateMerge(String string, final MyTable source, JFrame parent) {
          super(string);
-         addActionListener(new ActionListener() {
-            private Component parent;
+         this.source = source;
+         this.parent = parent;
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
+      }
 
-               int[] selectedRows = source.getSelectedRows();
-               returnIfNoneSelected(selectedRows);
+      @Override
+      public void executeOnFinal() {
+      }
 
-               List<String> jirasToGetMergeJiras = new ArrayList<String>();
-               StringBuffer sb = new StringBuffer("Do you want to create merge Jiras for the following?\n");
-               for (int aSelectedRow : selectedRows) {
-                  String aJiraToBeMerged = (String) source.getValueAt(Column.Jira, aSelectedRow);
-                  sb.append(aJiraToBeMerged).append(" ");
-                  jirasToGetMergeJiras.add(aJiraToBeMerged);
-               }
+      @Override
+      public Frame getParent() {
+         return parent;
+      }
 
-               JiraProject project = JiraProject.getProjectByJira(jirasToGetMergeJiras.get(0));
-               JiraClient client = project.getJiraClient();
+      @Override
+      public void myActionPerformed(ActionEvent e) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException, NotJiraException {
+         int[] selectedRows = source.getSelectedRows();
+         if (selectedRows.length == 0) {
+            JOptionPane.showMessageDialog(parent, "No Jiras Selected!");
+            return;
+         }
 
+         List<String> jirasToGetMergeJiras = new ArrayList<String>();
+         StringBuffer sb = new StringBuffer("Do you want to create merge Jiras for the following?\n");
+         for (int aSelectedRow : selectedRows) {
+            String aJiraToBeMerged = (String) source.getValueAt(Column.Jira, aSelectedRow);
+            sb.append(aJiraToBeMerged).append(" ");
+            jirasToGetMergeJiras.add(aJiraToBeMerged);
+         }
+
+         JiraProject project = JiraProject.getProjectByJira(jirasToGetMergeJiras.get(0));
+         JiraClient client = project.getJiraClient();
+
+         JiraVersion[] fixVersions = client.getFixVersionsFromProject(project, false);
+         JiraVersion fixVersionToCreateMergesAgainst = (JiraVersion) JOptionPane.showInputDialog(parent, sb.toString(), "What Fix Version for the merges?",
+               JOptionPane.QUESTION_MESSAGE, null, fixVersions, null);
+         log.debug("result " + fixVersionToCreateMergesAgainst);
+         if (fixVersionToCreateMergesAgainst != null) {
+            sb = new StringBuffer("Created Merge Jiras:\n");
+            List<String> jirasMerged = new ArrayList<String>();
+            for (String aJiraToGetMerge : jirasToGetMergeJiras) {
+               project = JiraProject.getProjectByJira(aJiraToGetMerge);
                try {
-                  JiraVersion[] fixVersions = client.getFixVersionsFromProject(project, false);
-                  JiraVersion fixVersionToCreateMergesAgainst = (JiraVersion) JOptionPane.showInputDialog(parent, sb.toString(),
-                        "What Fix Version for the merges?", JOptionPane.QUESTION_MESSAGE, null, fixVersions, null);
-                  log.debug("result " + fixVersionToCreateMergesAgainst);
-                  if (fixVersionToCreateMergesAgainst != null) {
-                     sb = new StringBuffer("Created Merge Jiras:\n");
-                     List<String> jirasMerged = new ArrayList<String>();
-                     for (String aJiraToGetMerge : jirasToGetMergeJiras) {
-                        project = JiraProject.getProjectByJira(aJiraToGetMerge);
-                        try {
-                           JiraClient jiraClient = project.getJiraClient();
-                           String fixVersionName = fixVersionToCreateMergesAgainst.getName();
-                           String mergeJiraCreated = jiraClient.createMergeJira(aJiraToGetMerge, fixVersionName);
-                           sb.append(mergeJiraCreated).append(" ");
-                           jirasMerged.add(mergeJiraCreated);
-                           source.setValueAt(mergeJiraCreated, aJiraToGetMerge, Column.Merge);
-                           source.addJira(new JiraIssue(mergeJiraCreated, fixVersionName));
-                        } catch (Throwable e1) {
-                           AlertDialog.alertException((Frame) parent, e1);
-                        }
-                     }
-                     sb.append("\nOpen them in browser?");
-                     int shallOpenInBrowser = JOptionPane.showConfirmDialog(parent, sb.toString());
-                     if (shallOpenInBrowser == JOptionPane.YES_OPTION) {
-                        try {
-                           for (String aJiraMerged : jirasMerged) {
-                              String jira_url = PlannerHelper.getJiraUrl(aJiraMerged);
-                              HyperLinker.displayURL(jira_url + "/browse/" + aJiraMerged);
-
-                           }
-                        } catch (URISyntaxException e1) {
-                           e1.printStackTrace();
-                        } catch (IOException e1) {
-                           e1.printStackTrace();
-                        }
-                     }
-                  }
+                  JiraClient jiraClient = project.getJiraClient();
+                  String fixVersionName = fixVersionToCreateMergesAgainst.getName();
+                  String mergeJiraCreated = jiraClient.createMergeJira(aJiraToGetMerge, fixVersionName);
+                  sb.append(mergeJiraCreated).append(" ");
+                  jirasMerged.add(mergeJiraCreated);
+                  source.setValueAt(mergeJiraCreated, aJiraToGetMerge, Column.Merge);
+                  source.addJira(new JiraIssue(mergeJiraCreated, fixVersionName));
                } catch (Throwable e1) {
-                  AlertDialog.alertException((Frame) parent, e1);
+                  AlertDialog.alertException(parent, e1);
                }
             }
-
-            private void returnIfNoneSelected(int[] rows) {
-               if (rows.length == 0) {
-                  JOptionPane.showMessageDialog(parent, "No Jiras Selected!");
-                  return;
+            sb.append("\nOpen them in browser?");
+            int shallOpenInBrowser = JOptionPane.showConfirmDialog(parent, sb.toString());
+            if (shallOpenInBrowser == JOptionPane.YES_OPTION) {
+               try {
+                  for (String aJiraMerged : jirasMerged) {
+                     String jira_url = PlannerHelper.getJiraUrl(aJiraMerged);
+                     HyperLinker.displayURL(jira_url + "/browse/" + aJiraMerged);
+                  }
+               } catch (URISyntaxException e1) {
+                  e1.printStackTrace();
+               } catch (IOException e1) {
+                  e1.printStackTrace();
                }
             }
-         });
+         }
       }
    }
 
-   private abstract class MenuItem_Marking_Abstract extends JMenuItem {
+   private abstract class MenuItem_Marking_Abstract extends MyMenuItem {
       protected MyTable source;
+      private Frame parent;
 
-      public MenuItem_Marking_Abstract(String string, final MyTable source) {
+      public MenuItem_Marking_Abstract(Frame parent, String string, final MyTable source) {
          super(string);
-         init(source);
-      }
-
-      public MenuItem_Marking_Abstract(String string, final MyTable source, int mnemonic) {
-         super(string, mnemonic);
+         this.parent = parent;
          init(source);
       }
 
@@ -163,22 +166,29 @@ public class MyTablePopupMenu extends MyPopupMenu {
          } else {
             setEnabled(false);
          }
-         addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-               doAction();
-               MyStatusBar.getInstance().setMessage("Rows in " + source.getTitle() + " where marked/unmarked!", true);
-            }
+      }
 
-         });
+      public void myActionPerformed(ActionEvent e) {
+         doAction();
+         MyStatusBar.getInstance().setMessage("Rows in " + source.getTitle() + " where marked/unmarked!", true);
       }
 
       protected abstract void doAction();
+
+      @Override
+      public void executeOnFinal() {
+      }
+
+      @Override
+      public Frame getParent() {
+         return parent;
+      }
    }
 
    private class MenuItem_Mark extends MenuItem_Marking_Abstract {
-      public MenuItem_Mark(String string, final MyTable source) {
-         super(string, source);
+
+      public MenuItem_Mark(Frame parent, String string, final MyTable source) {
+         super(parent, string, source);
          setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
 
       }
@@ -187,11 +197,12 @@ public class MyTablePopupMenu extends MyPopupMenu {
       protected void doAction() {
          source.markSelected();
       }
+
    }
 
    private class MenuItem_UnMark extends MenuItem_Marking_Abstract {
-      public MenuItem_UnMark(String string, final MyTable source) {
-         super(string, source);
+      public MenuItem_UnMark(Frame parent, String string, final MyTable source) {
+         super(parent, string, source);
       }
 
       @Override
@@ -200,50 +211,59 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
    }
 
-   private class MenuItem_Add extends JMenuItem {
+   private class MenuItem_Add extends MyMenuItem {
+
+      private final MyTable source;
+      private final JFrame frame;
+      private final MyTable[] dtos;
 
       public MenuItem_Add(String string, final MyTable source, final JFrame frame, final MyTable... dtos) {
          super(string);
-         addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-               AddManualDialog addManualDialog = new AddManualDialog(frame, dtos);
-               addManualDialog.setSourceTable(source);
-            }
-         });
+         this.source = source;
+         this.frame = frame;
+         this.dtos = dtos;
+      }
+
+      @Override
+      public void myActionPerformed(ActionEvent e) {
+         AddManualDialog addManualDialog = new AddManualDialog(frame, dtos);
+         addManualDialog.setSourceTable(source);
+      }
+
+      @Override
+      public void executeOnFinal() {
+      }
+
+      @Override
+      public Frame getParent() {
+         return frame;
       }
    }
 
-   private class MenuItem_Copy extends JMenuItem implements ActionListener {
+   private class MenuItem_Copy extends MyMenuItem {
 
       private final MyTable destinationTable;
-      private JFrame frame;
+      private JFrame parent;
       private MyTable sourceTable;
+      private ProgressDialog dialog;
 
       public MenuItem_Copy(JFrame frame, String string, MyTable source, MyTable table) {
          super(string);
-         this.frame = frame;
+         this.parent = frame;
          this.sourceTable = source;
          this.destinationTable = table;
-         addActionListener(this);
       }
 
-      public void actionPerformed(ActionEvent e) {
+      public void myActionPerformed(ActionEvent e) {
          final int[] selectedRows = sourceTable.getSelectedRows();
          if (selectedRows.length == 0) {
-            AlertDialog.alertMessage(frame, "No rows selected!");
+            AlertDialog.alertMessage(parent, "No rows selected!");
          }
-         final ProgressDialog dialog = new ProgressDialog(frame, "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length);
-         try {
-            for (int i = 0; i < selectedRows.length; i++) {
-               String jiraString = (String) sourceTable.getValueAt(Column.Jira, selectedRows[i]);
-               addJira(jiraString, destinationTable);
-               dialog.increseProgress();
-            }
-            dialog.setCompleteWithDelay(300);
-         } catch (Exception ex) {
-            AlertDialog.alertException(null, ex);
-            ex.printStackTrace();
+         dialog = new ProgressDialog(parent, "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length);
+         for (int i = 0; i < selectedRows.length; i++) {
+            String jiraString = (String) sourceTable.getValueAt(Column.Jira, selectedRows[i]);
+            addJira(jiraString, destinationTable);
+            dialog.increseProgress();
          }
       }
 
@@ -257,6 +277,17 @@ public class MyTablePopupMenu extends MyPopupMenu {
          }
          table.addJira(jiraString, map);
       }
+
+      @Override
+      public void executeOnFinal() {
+         if (dialog != null)
+            dialog.setCompleteWithDelay(300);
+      }
+
+      @Override
+      public Frame getParent() {
+         return parent;
+      }
    }
 
    private class MenuItem_Default extends JMenuItem {
@@ -267,19 +298,19 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
    }
 
-   private class MenuItem_Remove extends JMenuItem implements ActionListener {
+   private class MenuItem_Remove extends MyMenuItem {
       private MyTable sourceTable;
       private final Frame parent;
+      private ProgressDialog dialog;
 
       public MenuItem_Remove(String string, MyTable sourceTable, Frame parent) {
          super(string);
          this.sourceTable = sourceTable;
          this.parent = parent;
-         addActionListener(this);
       }
 
       @Override
-      public void actionPerformed(ActionEvent e) {
+      public void myActionPerformed(ActionEvent e) {
          int[] selectedRows = sourceTable.getSelectedRows();
 
          StringBuffer sb = new StringBuffer("Do you want to remove the following jiras from ");
@@ -291,20 +322,25 @@ public class MyTablePopupMenu extends MyPopupMenu {
          int result = JOptionPane.showConfirmDialog(parent, sb.toString(), "Remove jiras?", JOptionPane.YES_NO_OPTION);
          log.debug(result);
          if (result == JOptionPane.YES_OPTION) {
-            final ProgressDialog dialog = new ProgressDialog(parent, "Removing...", "Removing selected Jiras...", 0);
-            try {
-               if (sourceTable.getSelectedRowCount() <= 0) {
-                  dialog.setNote("Nothing selected!!");
-                  dialog.setCompleteWithDelay(2000);
-               }
-
-               sourceTable.removeSelectedRows();
-            } catch (Throwable ex) {
-               AlertDialog.alertException(parent, ex);
-            } finally {
-               dialog.setCompleteWithDelay(300);
+            dialog = new ProgressDialog(parent, "Removing...", "Removing selected Jiras...", 0);
+            if (sourceTable.getSelectedRowCount() <= 0) {
+               dialog.setNote("Nothing selected!!");
+               dialog.setCompleteWithDelay(2000);
             }
+
+            sourceTable.removeSelectedRows();
          }
+      }
+
+      @Override
+      public Frame getParent() {
+         return parent;
+      }
+
+      @Override
+      public void executeOnFinal() {
+         if (dialog != null)
+            dialog.setCompleteWithDelay(300);
       }
    }
 
