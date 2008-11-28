@@ -17,7 +17,6 @@ import com.jonas.common.logging.MyLogger;
 
 public class DnDTreeModel extends DefaultTreeModel {
 
-   private static final String SEPARATOR = "@#@";
    private static final String UNKNOWN_FIXVERSION = "<UnKnown FixVersion>";
    public static final String UNKNOWN_SPRINT = "<UnKnown Sprint>";
 

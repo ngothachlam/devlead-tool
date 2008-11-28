@@ -291,15 +291,19 @@ public class MyTablePopupMenu extends MyPopupMenu {
          int result = JOptionPane.showConfirmDialog(parent, sb.toString(), "Remove jiras?", JOptionPane.YES_NO_OPTION);
          log.debug(result);
          if (result == JOptionPane.YES_OPTION) {
-
             final ProgressDialog dialog = new ProgressDialog(parent, "Removing...", "Removing selected Jiras...", 0);
-            if (sourceTable.getSelectedRowCount() <= 0) {
-               dialog.setNote("Nothing selected!!");
-               dialog.setCompleteWithDelay(2000);
-            }
+            try {
+               if (sourceTable.getSelectedRowCount() <= 0) {
+                  dialog.setNote("Nothing selected!!");
+                  dialog.setCompleteWithDelay(2000);
+               }
 
-            sourceTable.removeSelectedRows();
-            dialog.setCompleteWithDelay(300);
+               sourceTable.removeSelectedRows();
+            } catch (Throwable ex) {
+               AlertDialog.alertException(parent, ex);
+            } finally {
+               dialog.setCompleteWithDelay(300);
+            }
          }
       }
    }
