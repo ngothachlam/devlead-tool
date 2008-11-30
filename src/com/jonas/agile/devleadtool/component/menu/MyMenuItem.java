@@ -45,7 +45,7 @@ public abstract class MyMenuItem extends JMenuItem implements ActionListener {
       try {
          myActionPerformed(e);
       } catch (Throwable throwable) {
-         AlertDialog.alertException(getParent(), throwable);
+         AlertDialog.alertException(getParentFrame(), throwable);
          throwable.printStackTrace();
       } finally{
          executeOnFinal();
@@ -54,7 +54,7 @@ public abstract class MyMenuItem extends JMenuItem implements ActionListener {
 
    public abstract void myActionPerformed(ActionEvent e) throws Throwable;
 
-   public abstract Frame getParent();
+   public abstract Frame getParentFrame();
 
    public abstract void executeOnFinal();
 

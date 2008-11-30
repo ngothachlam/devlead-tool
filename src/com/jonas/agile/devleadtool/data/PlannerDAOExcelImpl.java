@@ -177,7 +177,9 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                   if (column == null) {
                      throw new NullPointerException("Failed to add column (" + cellContents + ") to " + colCount + " of type " + column + " (size is "
                            + columns.size() + ")");
+                  } else {
                   }
+                  
                   columns.put(colCount, column);
                   if (column.isToLoad())
                      dataModelDTO.getHeader().add(getHeaderMappingToColumn(cellContents));
