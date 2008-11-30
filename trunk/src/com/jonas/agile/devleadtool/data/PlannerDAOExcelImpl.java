@@ -45,7 +45,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    @Override
-   public CombinedModelDTO loadModels() throws IOException{
+   public CombinedModelDTO loadModels() throws IOException {
       notifyLoadingStarted();
       TableModelDTO dto = loadModel(xlsFile, "board");
       BoardTableModel boardModel = new BoardTableModel(dto.getContents(), dto.getHeader());
@@ -54,7 +54,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       notifyLoadingFinished();
       return new CombinedModelDTO(boardModel, jiraModel);
    }
-   
 
    @Override
    public void saveModels(MyTableModel boardModel, MyTableModel jiraModel) throws IOException {
@@ -67,10 +66,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    @Override
    public void setXlsFile(File xlsFile) {
       this.xlsFile = xlsFile;
-   }
-
-   private Column getHeaderMappingToColumn(String tempString) {
-      return Column.getEnum(tempString);
    }
 
    private void saveModel(File xlsFile, MyTableModel model, String sheetName) throws IOException {
@@ -147,6 +142,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
       HSSFSheet sheet = wb.getSheet(sheetName);
       Map<Integer, Column> columns = new HashMap<Integer, Column>();
+      Map<Integer, Column> oldColumns = new HashMap<Integer, Column>();
       // for each row in the sheet...
       for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {
          Vector<Object> rowData = new Vector<Object>();
@@ -177,14 +173,17 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                   if (column == null) {
                      throw new NullPointerException("Failed to add column (" + cellContents + ") to " + colCount + " of type " + column + " (size is "
                            + columns.size() + ")");
+                  } else if (isOldColumn(column)) {
+                     log.debug("isOld Column!" + column);
+                     oldColumns.put(colCount, column);
+                     columns.put(colCount, column);
                   } else {
+                     columns.put(colCount, column);
                   }
-                  
-                  columns.put(colCount, column);
                   if (column.isToLoad())
-                     dataModelDTO.getHeader().add(getHeaderMappingToColumn(cellContents));
+                     dataModelDTO.getHeader().add(column);
                } else {
-                  addCellValue(columns, rowData, colCount, cellContents);
+                  addCellValue(columns, rowData, colCount, cellContents, oldColumns);
                }
                break;
             default:
@@ -197,15 +196,29 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       return dataModelDTO;
    }
 
-   private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, String cellContents) {
+   private boolean isOldColumn(Column column) {
+      switch (column) {
+      case isOpen:
+      case isBug:
+      case isInProgress:
+      case isResolved:
+      case isComplete:
+         return true;
+      default:
+         return false;
+      }
+   }
+
+   private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, String cellContents, Map<Integer, Column> oldColumns) {
       Column column = columns.get(colCount);
-//      log.debug("\tColumn " + column + " (from col " + colCount + ") should " + (!column.isToLoad() ? " not " : "") + " be loaded with " + cellContents + "!");
+      // log.debug("\tColumn " + column + " (from col " + colCount + ") should " + (!column.isToLoad() ? " not " : "") + " be loaded with " + cellContents + "!");
       Object parsed = null;
       if (column.isToLoad()) {
          parsed = column.parse(cellContents);
          rowData.add(parsed);
       }
-      log.debug("\tColumn " + column + " (from col " + colCount + ") should " + (!column.isToLoad() ? " not " : "") + " be loaded with " + cellContents + " (parsed: "+parsed+")!");
+      log.debug("\tColumn " + column + " (from col " + colCount + ") should " + (!column.isToLoad() ? " not " : "") + " be loaded with " + cellContents
+            + " (parsed: " + parsed + ")!");
    }
 
    public void notifyListeners(DaoListenerEvent event, String message) {
