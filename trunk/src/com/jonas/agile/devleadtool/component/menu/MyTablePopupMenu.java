@@ -48,7 +48,9 @@ public class MyTablePopupMenu extends MyPopupMenu {
       this.sourceTable = source;
       JFrame parentFrame = helper.getParentFrame();
 
-      add(new MenuItem_Mark(parentFrame, "Mark Selected Rows", source));
+      MenuItem_Mark menuItem = new MenuItem_Mark(parentFrame, "Mark Selected Rows", source);
+      log.debug("menuItem Parent: " + menuItem.getParent());
+      add(menuItem);
       add(new MenuItem_UnMark(parentFrame, "unMark Selected Rows", source));
       addSeparator();
       add(new MenuItem_Add("Add Jiras", source, parentFrame, tables));
@@ -87,7 +89,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
 
       @Override
-      public Frame getParent() {
+      public Frame getParentFrame() {
          return parent;
       }
 
@@ -151,11 +153,11 @@ public class MyTablePopupMenu extends MyPopupMenu {
 
    private abstract class MenuItem_Marking_Abstract extends MyMenuItem {
       protected MyTable source;
-      private Frame parent;
+      private Frame parentFrame;
 
-      public MenuItem_Marking_Abstract(Frame parent, String string, final MyTable source) {
+      public MenuItem_Marking_Abstract(Frame parentFrame, String string, final MyTable source) {
          super(string);
-         this.parent = parent;
+         this.parentFrame = parentFrame;
          init(source);
       }
 
@@ -180,15 +182,15 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
 
       @Override
-      public Frame getParent() {
-         return parent;
+      public Frame getParentFrame() {
+         return parentFrame;
       }
    }
 
    private class MenuItem_Mark extends MenuItem_Marking_Abstract {
 
-      public MenuItem_Mark(Frame parent, String string, final MyTable source) {
-         super(parent, string, source);
+      public MenuItem_Mark(Frame parentFrame, String string, final MyTable source) {
+         super(parentFrame, string, source);
          setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
 
       }
@@ -235,7 +237,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
 
       @Override
-      public Frame getParent() {
+      public Frame getParentFrame() {
          return frame;
       }
    }
@@ -285,7 +287,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
 
       @Override
-      public Frame getParent() {
+      public Frame getParentFrame() {
          return parent;
       }
    }
@@ -333,7 +335,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
 
       @Override
-      public Frame getParent() {
+      public Frame getParentFrame() {
          return parent;
       }
 
