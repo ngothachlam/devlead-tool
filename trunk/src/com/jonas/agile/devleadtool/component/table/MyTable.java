@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import javax.swing.DropMode;
+import javax.swing.InputMap;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.event.CellEditorListener;
@@ -64,7 +66,9 @@ public class MyTable extends JTable {
       setDefaultRenderer(Integer.class, new MyDefaultCellRenderer());
       setDefaultRenderer(String.class, new StringTableCellRenderer(defaultTableModel));
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
-      setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(new JComboBox(BoardStatusValue.values())));
+      JComboBox combo = new JComboBox(BoardStatusValue.values());
+      setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo));
+      
       setDefaultEditor(Boolean.class, checkBoxEditor);
 
       setDragEnabled(true);

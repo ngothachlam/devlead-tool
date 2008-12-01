@@ -26,7 +26,12 @@ public enum Column {
    Dev_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), QA_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No,
          ToLoadColumn.Yes), Dev_Actual(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Note(String.class, "", IsEditableColumn.Yes,
          IsJiraColumn.No, ToLoadColumn.Yes), Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
-
+   BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
+      public Object parse(String cellContents) {
+         return BoardStatusValue.get(cellContents);
+      }
+   },
+   
    // Board Sync columns:
    B_BoardStatus(BoardStatusValue.class, BoardStatusValue.NA, IsEditableColumn.No, IsJiraColumn.No, ToLoadColumn.Yes) {
       public Object parse(String cellContents) {
