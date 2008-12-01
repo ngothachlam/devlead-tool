@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
+import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.MyPanel;
@@ -82,7 +83,7 @@ class AddManualPanel extends MyPanel {
       setNewRow(c);
       panel.add(new JLabel("Default Status:"), c);
       set2ndCol(c);
-      Column[] values = new Column[] { Column.isOpen, Column.isBug, Column.isInProgress, Column.isResolved, Column.isComplete };
+      BoardStatusValue[] values = new BoardStatusValue[] { BoardStatusValue.Open, BoardStatusValue.Bug, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Complete };
       statusCombo = panel.addComboBox(panel, values, c);
       
       setNewRow(c);
@@ -178,7 +179,7 @@ class AddFromRadioButtons extends AddNewRowActionListener {
 
    @Override
    public void jiraAdded(String jiraString, MyTable table, String estimate, String actual) {
-      setValue(jiraString, table, (Column) status.getSelectedItem(), Boolean.TRUE);
+      setValue(jiraString, table, Column.BoardStatus, status.getSelectedItem());
       if (estimate.length() > 0)
          setValue(jiraString, table, Column.Dev_Estimate, estimate);
       if (actual.length() > 0)

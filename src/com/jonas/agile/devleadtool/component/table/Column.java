@@ -78,32 +78,33 @@ public enum Column {
       public Object parse(String cellContents) {
          return Boolean.parseBoolean(cellContents);
       }
-   },
-   isInProgress(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-      public Object parse(String cellContents) {
-         return Boolean.parseBoolean(cellContents);
-      }
-   },
-   isOpen(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-      public Object parse(String cellContents) {
-         return Boolean.parseBoolean(cellContents);
-      }
-   },
-   isBug(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-      public Object parse(String cellContents) {
-         return Boolean.parseBoolean(cellContents);
-      }
-   },
-   isResolved(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-      public Object parse(String cellContents) {
-         return Boolean.parseBoolean(cellContents);
-      }
-   },
-   isComplete(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-      public Object parse(String cellContents) {
-         return Boolean.parseBoolean(cellContents);
-      }
    }
+//   ,
+//   isInProgress(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
+//      public Object parse(String cellContents) {
+//         return Boolean.parseBoolean(cellContents);
+//      }
+//   },
+//   isOpen(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
+//      public Object parse(String cellContents) {
+//         return Boolean.parseBoolean(cellContents);
+//      }
+//   },
+//   isBug(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
+//      public Object parse(String cellContents) {
+//         return Boolean.parseBoolean(cellContents);
+//      }
+//   },
+//   isResolved(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
+//      public Object parse(String cellContents) {
+//         return Boolean.parseBoolean(cellContents);
+//      }
+//   },
+//   isComplete(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
+//      public Object parse(String cellContents) {
+//         return Boolean.parseBoolean(cellContents);
+//      }
+//   }
    ;
 
    private final Class defaultClass;

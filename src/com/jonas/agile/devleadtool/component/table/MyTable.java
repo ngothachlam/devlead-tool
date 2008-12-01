@@ -253,6 +253,7 @@ public class MyTable extends JTable {
          int tableSelectedRow = selectedRows[count];
          String jira = (String) getValueAt(Column.Jira, tableSelectedRow);
          int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
+         log.debug("Removing selected row: " + convertRowIndexToModel);
          model.removeRow(convertRowIndexToModel);
          notifyAllListenersThatJiraWasRemoved(jira);
       }
@@ -293,7 +294,7 @@ public class MyTable extends JTable {
          log.warn("Jira " + jira + " doesn't exist in table " + title + " so I cannot setValue(" + value + "," + jira + "," + column + ")");
          return;
       }
-      log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\"");
+      log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\" in table " + getTitle());
       setValueAt(value, row, column);
    }
 

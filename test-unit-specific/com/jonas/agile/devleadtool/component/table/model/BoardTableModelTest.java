@@ -39,11 +39,11 @@ public class BoardTableModelTest extends JonasTestCase {
       model.addJira("llu-1");
       assertEquals(BoardStatusValue.UnKnown, model.getStatus("llu-1"));
 
-      model.setValueAt(Boolean.TRUE, 0, Column.isOpen);
+      model.setValueAt(BoardStatusValue.Open, 0, Column.BoardStatus);
       assertEquals(BoardStatusValue.Open, model.getStatus("llu-1"));
 
-      model.setValueAt(Boolean.TRUE, 0, Column.isBug);
-      assertEquals(BoardStatusValue.UnKnown, model.getStatus("llu-1"));
+      model.setValueAt(BoardStatusValue.Bug, 0, Column.BoardStatus);
+      assertEquals(BoardStatusValue.Bug, model.getStatus("llu-1"));
    }
 
    public void testShouldHaveEmptyRowAndColumnNamesOfSameSize() {
@@ -116,17 +116,19 @@ public class BoardTableModelTest extends JonasTestCase {
 
       assertEquals(1, model.getRowCount());
 
-      assertEquals(0, model.howManyTrue(0, Column.isBug, Column.isComplete, Column.isInProgress, Column.isParked));
+      assertEquals(BoardStatusValue.UnKnown, model.getValueAt(Column.BoardStatus, "LLU-1"));
+      assertEquals(false, model.isBoardValueEither(0, BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress));
 
-      // setToOpen
-      model.setValueAt(Boolean.TRUE, 0, Column.isOpen);
-      assertEquals(1, model.howManyTrue(0, Column.isOpen));
-      assertEquals(0, model.howManyTrue(0, Column.isBug, Column.isComplete, Column.isInProgress, Column.isParked, Column.isResolved));
-      assertEquals(1, model.howManyTrue(0, Column.isBug, Column.isComplete, Column.isInProgress, Column.isParked, Column.isResolved, Column.isOpen));
-      assertEquals(1, model.howManyTrue(0, Column.isOpen, Column.isBug, Column.isComplete, Column.isInProgress, Column.isParked, Column.isResolved));
-      assertEquals(1, model.howManyTrue(0, Column.isBug, Column.isComplete, Column.isOpen, Column.isInProgress, Column.isParked, Column.isResolved));
-      model.setValueAt(Boolean.TRUE, 0, Column.isComplete);
-      assertEquals(2, model.howManyTrue(0, Column.isBug, Column.isComplete, Column.isOpen, Column.isInProgress, Column.isParked, Column.isResolved));
+      // set To Open
+      model.setValueAt(BoardStatusValue.Open, 0, Column.BoardStatus);
+      assertEquals(BoardStatusValue.Open, model.getValueAt(Column.BoardStatus, "LLU-1"));
+      assertEquals(true, model.isBoardValueEither(0, BoardStatusValue.Open));
+      assertEquals(false, model.isBoardValueEither(0, BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved));
+      assertEquals(true, model.isBoardValueEither(0, BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Open));
+      // set To Complete
+      model.setValueAt(BoardStatusValue.Complete, 0, Column.BoardStatus);
+      assertEquals(BoardStatusValue.Complete, model.getValueAt(Column.BoardStatus, "LLU-1"));
+      assertEquals(true, model.isBoardValueEither(0, BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Open));
    }
 
    public void testShouldCreateFromConstructorOk() {
