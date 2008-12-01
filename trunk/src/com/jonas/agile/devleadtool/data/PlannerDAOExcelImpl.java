@@ -173,13 +173,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                   if (column == null) {
                      throw new NullPointerException("Failed to add column (" + cellContents + ") to " + colCount + " of type " + column + " (size is "
                            + columns.size() + ")");
-                  } else if (isOldColumn(column)) {
-                     log.debug("isOld Column!" + column);
-                     oldColumns.put(colCount, column);
-                     columns.put(colCount, column);
-                  } else {
-                     columns.put(colCount, column);
                   }
+                  columns.put(colCount, column);
                   if (column.isToLoad())
                      dataModelDTO.getHeader().add(column);
                } else {
@@ -194,19 +189,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             dataModelDTO.getContents().add(rowData);
       }
       return dataModelDTO;
-   }
-
-   private boolean isOldColumn(Column column) {
-      switch (column) {
-      case isOpen:
-      case isBug:
-      case isInProgress:
-      case isResolved:
-      case isComplete:
-         return true;
-      default:
-         return false;
-      }
    }
 
    private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, String cellContents, Map<Integer, Column> oldColumns) {

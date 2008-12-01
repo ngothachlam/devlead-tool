@@ -77,7 +77,7 @@ public class MyTableModelTest extends JonasTestCase {
       Vector<Column> header = new Vector<Column>();
       header.add(Column.Description);
       header.add(Column.Jira);
-      header.add(Column.isBug);
+      header.add(Column.BoardStatus);
 
       Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
       columnNames.put(Column.Jira, 0);
@@ -207,7 +207,7 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals(4, model.getColumnIndex(Column.Note));
       assertEquals(5, model.getColumnIndex(Column.J_BuildNo));
       assertEquals(6, model.getColumnIndex(Column.J_Dev_Estimate));
-      assertEquals(-1, model.getColumnIndex(Column.isBug));
+      assertEquals(-1, model.getColumnIndex(Column.BoardStatus));
    }
 
    public void testShouldAddJiraComplexObjectOk() {
@@ -230,7 +230,7 @@ public class MyTableModelTest extends JonasTestCase {
 
       verify();
       assertEquals(1, model.getRowCount());
-      assertEquals(9, model.getColumnCount());
+      assertEquals(8, model.getColumnCount());
       assertModelRow("LLU-1", Column.Jira, 0, 0);
       assertModelRow("Summary1", Column.Description, 1, 0);
       assertModelRow(BoardStatusValue.NA, Column.B_BoardStatus, 2, 0);
@@ -238,8 +238,7 @@ public class MyTableModelTest extends JonasTestCase {
       assertModelRow("", Column.Note, 4, 0);
       assertModelRow("BuildNo1", Column.J_BuildNo, 5, 0);
       assertModelRow("1.4", Column.J_Dev_Estimate, 6, 0);
-      assertModelRow(false, Column.isOpen, 7, 0);
-      assertModelRow("", Column.Dev_Estimate, 8, 0);
+      assertModelRow("", Column.Dev_Estimate, 7, 0);
    }
 
    private void assertModelRow(Object string, Column column, int col, int row) {
@@ -271,7 +270,7 @@ public class MyTableModelTest extends JonasTestCase {
 class TestTableModelTwo extends MyTableModel {
 
    private static final Column[] columns = { Column.Jira, Column.Description, Column.B_BoardStatus, Column.prio, Column.Note, Column.J_BuildNo,
-         Column.J_Dev_Estimate, Column.isOpen, Column.Dev_Estimate };
+         Column.J_Dev_Estimate, Column.Dev_Estimate };
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
 
    public TestTableModelTwo() {
