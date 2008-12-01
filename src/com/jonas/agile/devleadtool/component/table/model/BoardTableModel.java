@@ -1,7 +1,5 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
@@ -10,19 +8,10 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
 
-   private static final List<Column> mutuallyExclusive = new ArrayList<Column>(5);
 
    private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge, Column.BoardStatus, Column.Dev_Estimate, Column.Dev_Actual, Column.prio };
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
-
-   static {
-      mutuallyExclusive.add(Column.isOpen);
-      mutuallyExclusive.add(Column.isBug);
-      mutuallyExclusive.add(Column.isInProgress);
-      mutuallyExclusive.add(Column.isResolved);
-      mutuallyExclusive.add(Column.isComplete);
-   }
 
    public BoardTableModel() {
       super(columns, true);
@@ -74,44 +63,29 @@ public class BoardTableModel extends MyTableModel {
       if (columnEnum == null) {
          return false;
       }
-      if (mutuallyExclusive != null) {
-         if (mutuallyExclusive.contains(columnEnum)) {
-            if (value != null && value instanceof Boolean) {
-               boolean isThisSet = ((Boolean) value).booleanValue();
-               int countOfMutuallyExclusiveSet = isThisSet ? 1 : 0;
-               for (Column col : mutuallyExclusive) {
-                  Object valueAt = getValueAt(col, row);
-                  if (valueAt != null && valueAt instanceof Boolean && col != columnEnum && ((Boolean) valueAt).booleanValue()) {
-                     countOfMutuallyExclusiveSet++;
-                  }
-                  if (countOfMutuallyExclusiveSet >= 2)
-                     break;
-               }
-
-               if (isThisSet && countOfMutuallyExclusiveSet > 1) {
-                  result = true;
-               } else if (!isThisSet && countOfMutuallyExclusiveSet == 0)
-                  result = true;
-            }
-         } else {
+      if (getColumnIndex(Column.BoardStatus) >= 0 ) {
             String stringValue = "";
             switch (columnEnum) {
             case Dev_Estimate:
+               log.debug("value: " + value);
                stringValue = (String) value;
                if (stringValue == null || stringValue.trim().length() <= 0) {
-                  if (howManyTrue(row, Column.isOpen, Column.isInProgress, Column.isResolved, Column.isParked, Column.isComplete) == 1) {
+                  if (isBoardValueEither(row, BoardStatusValue.Open, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
                      return true;
                   }
+//                  if (howManyTrue(row, Column.isOpen, Column.isInProgress, Column.isResolved, Column.isParked, Column.isComplete) == 1) {
+//                     return true;
+//                  }
                }
                break;
             case Dev_Actual:
                stringValue = (String) value;
                if (stringValue == null || stringValue.trim().length() <= 0) {
-                  if (howManyTrue(row, Column.isResolved, Column.isComplete) == 1) {
+                  if (isBoardValueEither(row, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
                      return true;
                   }
                } else {
-                  if (howManyTrue(row, Column.isBug, Column.isOpen, Column.isParked, Column.isInProgress) == 1) {
+                  if (isBoardValueEither(row, BoardStatusValue.Bug, BoardStatusValue.Open, BoardStatusValue.InProgress)) {
                      return true;
                   }
                }
@@ -119,9 +93,22 @@ public class BoardTableModel extends MyTableModel {
             default:
                break;
             }
-         }
       }
       return result;
+   }
+
+   private boolean isBoardValueEither(int row, BoardStatusValue... values) {
+      Object value = getValueAt(Column.BoardStatus, row);
+      log.debug("board status: " + value);
+      for (int i = 0; i < values.length; i++) {
+         BoardStatusValue boardStatusValue = values[i];
+         log.debug("checking against : " + boardStatusValue);
+         if(boardStatusValue.equals(value)){
+            log.debug("match!");
+            return true;
+         }
+      }
+      return false;
    }
 
    int howManyTrue(int row, Column... boolColumns) {
