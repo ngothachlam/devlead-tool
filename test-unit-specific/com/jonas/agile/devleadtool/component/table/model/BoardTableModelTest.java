@@ -61,7 +61,8 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(new Integer(6).intValue(), columnNames.get(Column.Dev_Estimate).intValue());
       assertEquals(new Integer(7).intValue(), columnNames.get(Column.Dev_Actual).intValue());
       assertEquals(new Integer(8).intValue(), columnNames.get(Column.prio).intValue());
-      assertEquals(9, columnNames.size());
+      assertEquals(new Integer(9).intValue(), columnNames.get(Column.Note).intValue());
+      assertEquals(10, columnNames.size());
    }
 
    public void testShouldSetRedEstimatesAndActualsOk() {
@@ -144,13 +145,14 @@ public class BoardTableModelTest extends JonasTestCase {
       header.add(Column.Dev_Estimate);
       header.add(Column.Dev_Actual);
       header.add(Column.prio);
+      header.add(Column.Note);
       contents.add(getTestContentRow(header.size(), "0."));
       contents.add(getTestContentRow(header.size(), "1."));
 
       MyTableModel model = new BoardTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(9, model.getColumnCount());
+      assertEquals(10, model.getColumnCount());
       assertEquals("0.0", model.getValueAt(0, 0));
       assertEquals("0.1", model.getValueAt(0, 1));
       assertEquals("0.2", model.getValueAt(0, 2));
@@ -158,6 +160,7 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals("0.4", model.getValueAt(0, 4));
       assertEquals("0.5", model.getValueAt(0, 5));
       assertEquals("0.6", model.getValueAt(0, 6));
+      assertEquals("0.7", model.getValueAt(0, 7));
       assertEquals("1.0", model.getValueAt(1, 0));
       assertEquals("1.1", model.getValueAt(1, 1));
       assertEquals("1.2", model.getValueAt(1, 2));
@@ -170,7 +173,7 @@ public class BoardTableModelTest extends JonasTestCase {
 
    public void testGetEmptyRowFromBoard() {
       Object[] emptyRow = model.getEmptyRow();
-      assertEquals(9, emptyRow.length);
+      assertEquals(10, emptyRow.length);
       assertEquals("", emptyRow[0]);
       assertEquals("", emptyRow[1]);
       assertEquals("", emptyRow[2]);
@@ -180,6 +183,7 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals("", emptyRow[6]);
       assertEquals("", emptyRow[7]);
       assertEquals(null, emptyRow[8]);
+      assertEquals("", emptyRow[9]);
    }
 
 }

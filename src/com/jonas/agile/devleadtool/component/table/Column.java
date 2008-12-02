@@ -5,33 +5,30 @@ package com.jonas.agile.devleadtool.component.table;
 
 import java.util.ArrayList;
 
-
 public enum Column {
    // String Defaults
-   Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes){
-         public Object parse(String cellContents) {
-            if (cellContents == null )
-               return null;
-            String upperCase = cellContents.toUpperCase();
-            System.out.println("parsing Column Jira: " + cellContents + " to become " + upperCase);
-            return upperCase;
-         }
+   Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
+      public Object parse(String cellContents) {
+         if (cellContents == null)
+            return null;
+         String upperCase = cellContents.toUpperCase();
+         System.out.println("parsing Column Jira: " + cellContents + " to become " + upperCase);
+         return upperCase;
+      }
    },
-   Description(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
-   Planned_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
-   Merge(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
-   Resolved_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), 
-   Closed_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
+   Description(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), Planned_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No,
+         ToLoadColumn.Yes), Merge(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Resolved_Sprint(String.class, "",
+         IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Closed_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
 
    Dev_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), QA_Estimate(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No,
          ToLoadColumn.Yes), Dev_Actual(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), Note(String.class, "", IsEditableColumn.Yes,
-         IsJiraColumn.No, ToLoadColumn.Yes), Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
-   BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
+         IsJiraColumn.No, ToLoadColumn.Yes), Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes), BoardStatus(
+         BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
       public Object parse(String cellContents) {
          return BoardStatusValue.get(cellContents);
       }
    },
-   
+
    // Board Sync columns:
    B_BoardStatus(BoardStatusValue.class, BoardStatusValue.NA, IsEditableColumn.No, IsJiraColumn.No, ToLoadColumn.Yes) {
       public Object parse(String cellContents) {
@@ -41,17 +38,16 @@ public enum Column {
    B_Release(String.class, "", IsEditableColumn.No, IsJiraColumn.No, ToLoadColumn.Yes),
 
    // Jira Sync columns:
-   J_Status(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
-   J_Resolution(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes,ToLoadColumn.Yes), 
-   J_BuildNo(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
-   J_FixVersion(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes) {
+   J_Status(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), J_Resolution(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes,
+         ToLoadColumn.Yes), J_BuildNo(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), J_FixVersion(String.class, "",
+         IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes) {
       @Override
       public Object parse(String cellContents) {
          ArrayList<String> arrayList = new ArrayList<String>();
-         if (cellContents == null ){
+         if (cellContents == null) {
             return arrayList;
          }
-         cellContents = cellContents.substring(1, cellContents.length()-1);
+         cellContents = cellContents.substring(1, cellContents.length() - 1);
          String[] split = cellContents.split("(, )");
          for (String string : split) {
             arrayList.add(string);
@@ -59,17 +55,17 @@ public enum Column {
          return arrayList;
       }
    },
-   J_Type(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
-   J_Dev_Estimate( String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
-   J_Dev_Spent(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), 
-   J_Sprint(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
+   J_Type(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), J_Dev_Estimate(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes,
+         ToLoadColumn.Yes), J_Dev_Spent(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes), J_Sprint(String.class, "", IsEditableColumn.No,
+         IsJiraColumn.Yes, ToLoadColumn.Yes),
 
    // Integer
    prio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes) {
       public Object parse(String cellContents) {
          if (cellContents == null || cellContents.trim().length() == 0)
             return -1;
-         return Integer.parseInt(cellContents);
+         // we do parse a double initially as Cell's in spreadsheet (xls) will become 10.0 - not 10, which will otherwise result in numberformat exception.
+         return (int) Double.parseDouble(cellContents);
       }
    },
 
@@ -78,34 +74,7 @@ public enum Column {
       public Object parse(String cellContents) {
          return Boolean.parseBoolean(cellContents);
       }
-   }
-//   ,
-//   isInProgress(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-//      public Object parse(String cellContents) {
-//         return Boolean.parseBoolean(cellContents);
-//      }
-//   },
-//   isOpen(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-//      public Object parse(String cellContents) {
-//         return Boolean.parseBoolean(cellContents);
-//      }
-//   },
-//   isBug(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-//      public Object parse(String cellContents) {
-//         return Boolean.parseBoolean(cellContents);
-//      }
-//   },
-//   isResolved(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-//      public Object parse(String cellContents) {
-//         return Boolean.parseBoolean(cellContents);
-//      }
-//   },
-//   isComplete(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-//      public Object parse(String cellContents) {
-//         return Boolean.parseBoolean(cellContents);
-//      }
-//   }
-   ;
+   };
 
    private final Class defaultClass;
    private final Object defaultValue;

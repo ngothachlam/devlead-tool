@@ -18,14 +18,14 @@ public class CheckBoxTableCellEditor extends DefaultCellEditor implements MyEdit
    public CheckBoxTableCellEditor(JCheckBox box) {
       super(box);
       this.box = box;
-      ((JCheckBox) getComponent()).setHorizontalAlignment(JLabel.CENTER);
+      this.box.setHorizontalAlignment(JLabel.CENTER);
    }
 
    @Override
    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
       rowEdited = row;
       colEdited = col;
-      
+
       return super.getTableCellEditorComponent(table, value, isSelected, row, col);
    }
 

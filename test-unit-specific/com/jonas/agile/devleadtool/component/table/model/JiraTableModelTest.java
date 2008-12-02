@@ -41,17 +41,16 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.J_BuildNo);
       header.add(Column.J_Dev_Estimate);
       header.add(Column.J_Dev_Spent);
-      header.add(Column.Note);
       
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      String[] content = new String[] { "Jira", "Description", "B_BoardStatus", "J_Type", "B_Release", "J_Sprint", "J_FixVersion", "J_Status", "J_Resolution", "J_BuildNo", "J_Dev_Estimate", "J_Dev_Spent", "Note" };
+      String[] content = new String[] { "Jira", "Description", "B_BoardStatus", "J_Type", "B_Release", "J_Sprint", "J_FixVersion", "J_Status", "J_Resolution", "J_BuildNo", "J_Dev_Estimate", "J_Dev_Spent" };
       contents.add(getTestRowVector(content, 0));
       contents.add(getTestRowVector(content, 1));
 
       model = new JiraTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(13, model.getColumnCount());
+      assertEquals(12, model.getColumnCount());
       assertRow(getTestRowArray(content, 0), model, 0);
       assertRow(getTestRowArray(content, 1), model, 1);
    }

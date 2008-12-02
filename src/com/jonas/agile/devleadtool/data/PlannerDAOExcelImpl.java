@@ -142,7 +142,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
       HSSFSheet sheet = wb.getSheet(sheetName);
       Map<Integer, Column> columns = new HashMap<Integer, Column>();
-      Map<Integer, Column> oldColumns = new HashMap<Integer, Column>();
       // for each row in the sheet...
       for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {
          Vector<Object> rowData = new Vector<Object>();
@@ -156,34 +155,24 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             HSSFCell cell = cit.next();
             int cellType = cell.getCellType();
             log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + colCount);
+            String cellContents = null;
             switch (cellType) {
             case HSSFCell.CELL_TYPE_BLANK:
+               cellContents = "";
             case HSSFCell.CELL_TYPE_BOOLEAN:
-               rowData.add(Boolean.valueOf(cell.getBooleanCellValue()));
+               // rowData.add(Boolean.valueOf(cell.getBooleanCellValue()));
                break;
             case HSSFCell.CELL_TYPE_NUMERIC:
-               rowData.add(Double.valueOf(cell.getNumericCellValue()));
+//               // rowData.add(Double.valueOf(cell.getNumericCellValue()));
+               String valueOf = String.valueOf(cell.getNumericCellValue());
+               cellContents = (valueOf == null ? "" : valueOf);
                break;
             case HSSFCell.CELL_TYPE_STRING:
                HSSFRichTextString cellHeader = cell.getRichStringCellValue();
-               String cellContents = (cellHeader == null ? "" : cellHeader.getString());
-               if (rowCount == 0) {
-                  log.debug("\tHeader!");
-                  Column column = Column.getEnum(cellContents);
-                  if (column == null) {
-                     throw new NullPointerException("Failed to add column (" + cellContents + ") to " + colCount + " of type " + column + " (size is "
-                           + columns.size() + ")");
-                  }
-                  columns.put(colCount, column);
-                  if (column.isToLoad())
-                     dataModelDTO.getHeader().add(column);
-               } else {
-                  addCellValue(columns, rowData, colCount, cellContents, oldColumns);
-               }
-               break;
-            default:
+               cellContents = (cellHeader == null ? "" : cellHeader.getString());
                break;
             }
+            setValue(dataModelDTO, rowCount, columns, rowData, colCount, cellContents);
          }
          if (rowCount != 0)
             dataModelDTO.getContents().add(rowData);
@@ -191,7 +180,24 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       return dataModelDTO;
    }
 
-   private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, String cellContents, Map<Integer, Column> oldColumns) {
+   private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, Column> columns, Vector<Object> rowData,
+         int colCount, String cellContents) {
+      if (rowCount == 0) {
+         log.debug("\tHeader!");
+         Column column = Column.getEnum(cellContents);
+         if (column == null) {
+            throw new NullPointerException("Failed to add column (" + cellContents + ") to " + colCount + " of type " + column + " (size is " + columns.size()
+                  + ")");
+         }
+         columns.put(colCount, column);
+         if (column.isToLoad())
+            dataModelDTO.getHeader().add(column);
+      } else {
+         addCellValue(columns, rowData, colCount, cellContents);
+      }
+   }
+
+   private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, String cellContents) {
       Column column = columns.get(colCount);
       // log.debug("\tColumn " + column + " (from col " + colCount + ") should " + (!column.isToLoad() ? " not " : "") + " be loaded with " + cellContents + "!");
       Object parsed = null;
