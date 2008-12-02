@@ -394,9 +394,11 @@ public class MyTable extends JTable {
       }
 
       private boolean isMarked(int row) {
-         log.debug("isMarked for row " + row + " whilst rowCount is " + getRowCount() + " and marked list is " + marked.size());
+         if(allowMarking == false)
+            return false;
          if (row >= getRowCount())
             return false;
+         log.debug("isMarked for row " + row + " whilst rowCount is " + getRowCount() + " and marked list is " + marked.size());
          Integer convertRowIndexToModel = convertRowIndexToModel(row);
          if (marked.containsKey(convertRowIndexToModel))
             return marked.get(convertRowIndexToModel);
