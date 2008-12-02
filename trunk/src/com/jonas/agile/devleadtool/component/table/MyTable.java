@@ -1,6 +1,7 @@
 package com.jonas.agile.devleadtool.component.table;
 
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -100,7 +101,7 @@ public class MyTable extends JTable {
       setTableHeader(new JTableHeader(columnModel) {
          @Override
          public String getToolTipText(MouseEvent e) {
-            java.awt.Point p = e.getPoint();
+            Point p = e.getPoint();
             int colIndex = columnAtPoint(p);
             return getColumnName(colIndex);
          }
@@ -111,11 +112,26 @@ public class MyTable extends JTable {
    }
 
 //   List<Class> comboClasses = new ArrayList<Class>();
+   
+   
 
    private void setComboEditors() {
       JComboBox combo = new JComboBox(BoardStatusValue.values());
 //      comboClasses.add(BoardStatusValue.class);
       setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
+   }
+
+   @Override
+   public String getToolTipText(MouseEvent event) {
+         Point p = event.getPoint();
+         int colIndex = columnAtPoint(p);
+         int rowIndex = rowAtPoint(p);
+         if(rowIndex ==-1 || colIndex == -1){
+            return super.getToolTipText(event);
+         }
+         Object valueAt = getValueAt(rowIndex, colIndex);
+         String string = valueAt.toString();
+         return string.length() == 0 ? " ": string;
    }
 
    MyTable(String title, boolean allowMarking) {

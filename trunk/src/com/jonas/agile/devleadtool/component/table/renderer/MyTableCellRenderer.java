@@ -40,7 +40,7 @@ public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
             } else {
                cell.setBackground(SwingUtil.cellRED);
             }
-         } else if (myTable != null && myTable.isMarked(row) && !isSelected && !hasFocus) {
+         } else if (myTable != null && !isSelected && !hasFocus && myTable.isMarked(row)) {
             cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -25));
          }
       }
