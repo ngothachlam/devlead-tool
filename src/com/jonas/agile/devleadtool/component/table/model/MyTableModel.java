@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -19,10 +21,13 @@ public abstract class MyTableModel extends DefaultTableModel {
    protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
    protected Counter counter = new Counter();
    protected boolean editable = true;
+   private ModelMarker modelMarkerDelegator;
 
    protected MyTableModel(Column[] columns, boolean allowMarking) {
       super(columns, 0);
       initiateColumns(columns);
+      modelMarkerDelegator = new ModelMarker();
+      addTableModelListener(modelMarkerDelegator);
    }
 
    MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header, boolean allowMarking) {
@@ -37,6 +42,9 @@ public abstract class MyTableModel extends DefaultTableModel {
       Vector<Column> newHeaderVector = sortHeaderBasedOnList(convertInputHeaderToOriginal, header, getColumnNames());
       this.setDataVector(newDataVector, newHeaderVector);
       log.debug("Initiated from existing contents and header!");
+
+      modelMarkerDelegator = new ModelMarker();
+      addTableModelListener(modelMarkerDelegator);
    }
 
    final public void addEmptyRow() {
@@ -377,6 +385,88 @@ public abstract class MyTableModel extends DefaultTableModel {
          if (i != col)
             fireTableCellUpdated(row, i);
       }
+   }
+
+   private ModelMarker getMarker() {
+      return modelMarkerDelegator;
+   }
+
+   private class ModelMarker implements TableModelListener {
+
+      private Map<Integer, Boolean> marked = new HashMap<Integer, Boolean>();
+
+      private ModelMarker(){
+         for (int row = 0; row < getRowCount(); row++) {
+            marked.put(row, Boolean.FALSE);
+         }
+      }
+      
+      @Override
+      public void tableChanged(TableModelEvent e) {
+         int firstRow = e.getFirstRow();
+         int lastRow = e.getLastRow();
+         switch (e.getType()) {
+         case TableModelEvent.DELETE:
+            log.debug("table changed by deleting " + firstRow + " to " + lastRow);
+            for (int i = firstRow; i <= lastRow; i++) {
+               log.debug("\ti = " + i);
+               for (int j = i; j < getRowCount(); j++) {
+                  log.debug("\t\tj = " + j);
+                  int newKey = j;
+                  int oldKey = newKey + 1;
+                  Boolean valueToMoveUp = marked.get(oldKey);
+                  log.debug("\t\tnewKey = " + newKey + " oldKey = " + oldKey + " valueToMoveUp = " + valueToMoveUp);
+                  marked.put(newKey, valueToMoveUp);
+               }
+               marked.remove((getRowCount() - 1) + 1);
+            }
+            break;
+         case TableModelEvent.INSERT:
+            log.debug("table changed by inserting " + firstRow + " to " + lastRow);
+            for (int i = firstRow; i <= lastRow; i++) {
+               marked.put(i, Boolean.FALSE);
+            }
+            break;
+         default:
+            break;
+         }
+      }
+
+      public boolean isMarked(int row) {
+         if(marked == null || marked.size() == 0)
+            return false;
+         return marked.containsKey(row) ? marked.get(row) : false;
+      }
+
+      public void mark(int row) {
+         marked.put(row, Boolean.TRUE);
+      }
+
+      public void unMark(int row) {
+         marked.put(row, Boolean.FALSE);
+      }
+
+      public void clearMarked() {
+         for (int row = 0; row < getRowCount(); row++) {
+            unMark(row);
+         }
+      }
+   }
+
+   public boolean isMarked(int row) {
+      return getMarker().isMarked(row);
+   }
+
+   public void mark(int row) {
+      getMarker().mark(row);
+   }
+
+   public void unMark(int row) {
+      getMarker().unMark(row);
+   }
+
+   public void clearMarked() {
+      getMarker().clearMarked();
    }
 }
 
