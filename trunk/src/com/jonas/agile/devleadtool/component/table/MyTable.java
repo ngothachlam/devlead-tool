@@ -1,33 +1,23 @@
 package com.jonas.agile.devleadtool.component.table;
 
-import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import javax.swing.DropMode;
-import javax.swing.InputMap;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.RowSorter;
 import javax.swing.event.CellEditorListener;
-import javax.swing.event.RowSorterEvent;
-import javax.swing.event.RowSorterListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -75,14 +65,10 @@ public class MyTable extends JTable {
       setDragEnabled(true);
       setDropMode(DropMode.INSERT);
       setFillsViewportHeight(true);
-
       setAutoCreateRowSorter(true);
-      // sorter = new TableRowSorter<TableModel>(defaultTableModel);
-      // setRowSorter(sorter);
 
       if (getModel() instanceof MyTableModel) {
          model = (MyTableModel) getModel();
-         // FIXME make this dynamic
          int colIndex = getColumnIndex(Column.Release);
          if (colIndex > -1) {
             TableColumn tc = getTableColumn(colIndex);
@@ -107,17 +93,11 @@ public class MyTable extends JTable {
          }
       });
 
-      getModel().addTableModelListener(marker);
       this.addKeyListener(new MarkKeyListener(allowMarking));
    }
 
-//   List<Class> comboClasses = new ArrayList<Class>();
-   
-   
-
    private void setComboEditors() {
       JComboBox combo = new JComboBox(BoardStatusValue.values());
-//      comboClasses.add(BoardStatusValue.class);
       setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
    }
 
@@ -130,8 +110,7 @@ public class MyTable extends JTable {
             return super.getToolTipText(event);
          }
          Object valueAt = getValueAt(rowIndex, colIndex);
-         String string = valueAt.toString();
-         return string.length() == 0 ? " ": string;
+         return valueAt == null || valueAt.toString().length() == 0 ? " ": valueAt.toString();
    }
 
    MyTable(String title, boolean allowMarking) {
@@ -221,15 +200,6 @@ public class MyTable extends JTable {
       return tcm.getColumn(colIndex);
    }
 
-   // public TableCellEditor getTableColumnEditor(int colIndex) {
-   // return getTableColumn(colIndex).getCellEditor();
-   // }
-
-   // public TableColumn getTableEditor(int boardStatus) {
-   // TableColumnModel tcm = getColumnModel();
-   // return tcm.getColumn(boardStatus);
-   // }
-
    public String getTitle() {
       return title;
    }
@@ -242,10 +212,6 @@ public class MyTable extends JTable {
    public Object getValueAt(Column release, String jira) {
       return model.getValueAt(release, jira);
    }
-
-   // public TableRowSorter<TableModel> getSorter() {
-   // return sorter;
-   // }
 
    public void insertRow(int index, Vector<Object> rowData) {
       int convertRowIndexToModel = convertRowIndexToModel(index);
@@ -352,40 +318,19 @@ public class MyTable extends JTable {
          case KeyEvent.VK_ESCAPE:
             clearSelection();
             break;
-//         case KeyEvent.VK_SPACE:
-//            int selectedRow = getSelectedRow();
-//            int selectedColumn = getSelectedColumn();
-//            if (getSelectedColumnCount() != 1 && getSelectedRowCount() != 1)
-//               return;
-//            if (comboClasses.contains(getValueAt(selectedRow, selectedColumn).getClass())) {
-//               boolean ok = editCellAt(selectedRow, selectedColumn);
-//               Component comp = getEditorComponent();
-//               log.debug("editing? " + ok + " - " + comp.getClass());
-//               if (ok && comp instanceof JComboBox){
-//                  ((JComboBox) comp).setVisible(true);
-//                  log.debug("Should set visible!");
-//               }
-//
-//            }
-//            break;
          }
       }
    }
 
-   private class MarkDelegator implements TableModelListener {
+   private class MarkDelegator {
       private boolean allowMarking;
-      private Map<Integer, Boolean> marked = new HashMap<Integer, Boolean>();
 
       private MarkDelegator() {
-         int rowCount = getRowCount();
-         for (int i = 0; i < rowCount; i++) {
-            marked.put(convertRowIndexToModel(i), Boolean.FALSE);
-         }
       }
 
       public void clearMarked() {
          for (int i = 0; i < getRowCount(); i++) {
-            marked.put(convertRowIndexToModel(i), Boolean.FALSE);
+            model.clearMarked();
          }
       }
 
@@ -396,17 +341,13 @@ public class MyTable extends JTable {
       private boolean isMarked(int row) {
          if(allowMarking == false)
             return false;
-         if (row >= getRowCount())
+         if (row >= getRowCount() || row == -1)
             return false;
-         log.debug("isMarked for row " + row + " whilst rowCount is " + getRowCount() + " and marked list is " + marked.size());
-         Integer convertRowIndexToModel = convertRowIndexToModel(row);
-         if (marked.containsKey(convertRowIndexToModel))
-            return marked.get(convertRowIndexToModel);
-         return false;
+         return model.isMarked( convertRowIndexToModel(row) );
       }
 
       private void mark(int row) {
-         marked.put(convertRowIndexToModel(row), Boolean.TRUE);
+         model.mark(convertRowIndexToModel(row));
       }
 
       public void markSelected() {
@@ -420,39 +361,8 @@ public class MyTable extends JTable {
          this.allowMarking = allowMarking;
       }
 
-      @Override
-      public void tableChanged(TableModelEvent e) {
-         int firstRow = e.getFirstRow();
-         int lastRow = e.getLastRow();
-         switch (e.getType()) {
-         case TableModelEvent.DELETE:
-            log.debug("table changed by deleting " + firstRow + " to " + lastRow);
-            for (int i = firstRow; i <= lastRow; i++) {
-               log.debug("\ti = " + i);
-               for (int j = i; j < getRowCount(); j++) {
-                  log.debug("\t\tj = " + j);
-                  int newKey = j;
-                  int oldKey = newKey + 1;
-                  Boolean valueToMoveUp = marked.get(oldKey);
-                  log.debug("\t\tnewKey = " + newKey + " oldKey = " + oldKey + " valueToMoveUp = " + valueToMoveUp);
-                  marked.put(newKey, valueToMoveUp);
-               }
-               marked.remove(convertRowIndexToModel(getRowCount() - 1) + 1);
-            }
-            break;
-         case TableModelEvent.INSERT:
-            log.debug("table changed by inserting " + firstRow + " to " + lastRow);
-            for (int i = firstRow; i <= lastRow; i++) {
-               marked.put(i, Boolean.FALSE);
-            }
-            break;
-         default:
-            break;
-         }
-      }
-
       private void unMark(int row) {
-         marked.put(convertRowIndexToModel(row), Boolean.FALSE);
+         model.unMark(convertRowIndexToModel(row));
       }
 
       private void unMarkSelected() {
