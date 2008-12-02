@@ -9,7 +9,7 @@ import com.jonas.common.logging.MyLogger;
 public class BoardTableModel extends MyTableModel {
 
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge, Column.BoardStatus, Column.Dev_Estimate, Column.Dev_Actual, Column.prio };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge, Column.BoardStatus, Column.Dev_Estimate, Column.Dev_Actual, Column.prio, Column.Note };
    static Logger log = MyLogger.getLogger(BoardTableModel.class);
 
 

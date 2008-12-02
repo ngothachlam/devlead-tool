@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.component.table;
 
+import java.awt.Component;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -66,9 +67,8 @@ public class MyTable extends JTable {
       setDefaultRenderer(Integer.class, new MyDefaultCellRenderer());
       setDefaultRenderer(String.class, new StringTableCellRenderer(defaultTableModel));
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
-      JComboBox combo = new JComboBox(BoardStatusValue.values());
-      setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo));
-      
+      setComboEditors();
+
       setDefaultEditor(Boolean.class, checkBoxEditor);
 
       setDragEnabled(true);
@@ -108,6 +108,14 @@ public class MyTable extends JTable {
 
       getModel().addTableModelListener(marker);
       this.addKeyListener(new MarkKeyListener(allowMarking));
+   }
+
+//   List<Class> comboClasses = new ArrayList<Class>();
+
+   private void setComboEditors() {
+      JComboBox combo = new JComboBox(BoardStatusValue.values());
+//      comboClasses.add(BoardStatusValue.class);
+      setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
    }
 
    MyTable(String title, boolean allowMarking) {
@@ -197,14 +205,14 @@ public class MyTable extends JTable {
       return tcm.getColumn(colIndex);
    }
 
-   public TableCellEditor getTableColumnEditor(int colIndex) {
-      return getTableColumn(colIndex).getCellEditor();
-   }
+   // public TableCellEditor getTableColumnEditor(int colIndex) {
+   // return getTableColumn(colIndex).getCellEditor();
+   // }
 
-   public TableColumn getTableEditor(int boardStatus) {
-      TableColumnModel tcm = getColumnModel();
-      return tcm.getColumn(boardStatus);
-   }
+   // public TableColumn getTableEditor(int boardStatus) {
+   // TableColumnModel tcm = getColumnModel();
+   // return tcm.getColumn(boardStatus);
+   // }
 
    public String getTitle() {
       return title;
@@ -328,6 +336,22 @@ public class MyTable extends JTable {
          case KeyEvent.VK_ESCAPE:
             clearSelection();
             break;
+//         case KeyEvent.VK_SPACE:
+//            int selectedRow = getSelectedRow();
+//            int selectedColumn = getSelectedColumn();
+//            if (getSelectedColumnCount() != 1 && getSelectedRowCount() != 1)
+//               return;
+//            if (comboClasses.contains(getValueAt(selectedRow, selectedColumn).getClass())) {
+//               boolean ok = editCellAt(selectedRow, selectedColumn);
+//               Component comp = getEditorComponent();
+//               log.debug("editing? " + ok + " - " + comp.getClass());
+//               if (ok && comp instanceof JComboBox){
+//                  ((JComboBox) comp).setVisible(true);
+//                  log.debug("Should set visible!");
+//               }
+//
+//            }
+//            break;
          }
       }
    }
@@ -401,7 +425,7 @@ public class MyTable extends JTable {
          case TableModelEvent.INSERT:
             log.debug("table changed by inserting " + firstRow + " to " + lastRow);
             for (int i = firstRow; i <= lastRow; i++) {
-                  marked.put(i, Boolean.FALSE);
+               marked.put(i, Boolean.FALSE);
             }
             break;
          default:
