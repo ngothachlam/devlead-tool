@@ -109,6 +109,18 @@ public class DnDTreeModelFunctionalUnitTest extends TestCase {
       fixVersionNode = assertChild(model, sprintNode, 0, "<UnKnown FixVersion>", 2);
       assertChild(model, fixVersionNode, 0, "Jira 1", 0);
       assertChild(model, fixVersionNode, 1, "Jira 2", 0);
+      
+      //Move jira 2 from unknown fix version in sprint 1 to the same fix in sprint 2
+      jiraDto2.setSprint("Sprint 2");
+      model.addJira(jiraDto2);
+      
+      assertEquals(2, model.getChildCount(JonasUnitTestHelper.getRoot(model)));
+      sprintNode = assertChild(model, JonasUnitTestHelper.getRoot(model), 0, "Sprint 1", 1);
+      fixVersionNode = assertChild(model, sprintNode, 0, "<UnKnown FixVersion>", 1);
+      assertChild(model, fixVersionNode, 0, "Jira 1", 0);
+      sprintNode = assertChild(model, JonasUnitTestHelper.getRoot(model), 1, "Sprint 2", 1);
+      fixVersionNode = assertChild(model, sprintNode, 0, "<UnKnown FixVersion>", 1);
+      assertChild(model, fixVersionNode, 0, "Jira 2", 0);
    }
    
    public void testShouldAddJirasOkWithNullSprint() {

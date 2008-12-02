@@ -92,8 +92,6 @@
 
          <version>LLU 12</version>
 
-         <fixVersion>LLU 12</fixVersion>
-
          <component>Conan</component>
 
          <due>
@@ -104,7 +102,7 @@
                <customfieldname>Sprint</customfieldname>
 
                <customfieldvalues>
-                  <customfieldvalue>12.4</customfieldvalue>
+                  <customfieldvalue>12-4</customfieldvalue>
                </customfieldvalues>
             </customfield>
          </customfields>
@@ -600,7 +598,7 @@
 
          <version>LLU 11</version>
 
-         <fixVersion>LLU 11.2</fixVersion>
+         <fixVersion></fixVersion>
 
          <component>Service Management</component>
 
@@ -670,8 +668,6 @@
          <updated>Thu, 23 Oct 2008 14:02:43 +0100 (BST)</updated>
 
          <version>LLU 11</version>
-
-         <fixVersion>LLU 13</fixVersion>
 
          <component>Northbound Interface</component>
 
