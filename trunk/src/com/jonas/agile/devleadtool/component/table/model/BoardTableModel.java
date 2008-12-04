@@ -8,17 +8,54 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
 
-
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge, Column.BoardStatus, Column.Dev_Estimate, Column.Dev_Actual, Column.prio, Column.Note };
-   static Logger log = MyLogger.getLogger(BoardTableModel.class);
-
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge, Column.BoardStatus,
+         Column.Dev_Estimate, Column.Dev_Actual, Column.prio, Column.Note };
+   private Logger log = MyLogger.getLogger(BoardTableModel.class);
 
    public BoardTableModel() {
       super(columns, true);
+      addRules();
    }
 
    public BoardTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
       super(columns, contents, header, true);
+      addRules();
+   }
+
+   private void addRules() {
+      addColorRule(new AbstractRedColorRule(Column.Dev_Estimate, null) {
+         @Override
+         public boolean isTrue(Object value, int row) {
+               log.debug("value: " + value + " for column ");
+               String stringValue = (String) value;
+               if (stringValue == null || stringValue.trim().length() <= 0) {
+                  if (isBoardValueEither(row, BoardStatusValue.Open, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.QA_Progress, BoardStatusValue.Complete)) {
+                     log.debug("true!");
+                     return true;
+                  }
+               }
+               log.debug("false!");
+               return false;
+            
+         }
+      });
+      addColorRule(new AbstractRedColorRule(Column.Dev_Actual, null) {
+         @Override
+         public boolean isTrue(Object value, int row) {
+               String stringValue = (String) value;
+               if (stringValue == null || stringValue.trim().length() <= 0) {
+                  if (isBoardValueEither(row, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
+                     return true;
+                  }
+               } else {
+                  if (isBoardValueEither(row, BoardStatusValue.Bug, BoardStatusValue.Open, BoardStatusValue.InProgress)) {
+                     return true;
+                  }
+               }
+               return false;
+         }
+         
+      });
    }
 
    public BoardStatusValue getStatus(String jira) {
@@ -32,57 +69,13 @@ public class BoardTableModel extends MyTableModel {
       return BoardStatusValue.NA;
    }
 
-   private boolean isColumnSet(int row, Column column) {
-      int colIndex = getColumnIndex(column);
-      Boolean valueAt = (Boolean) getValueAt(row, colIndex);
-      return valueAt == null ? false : valueAt.booleanValue();
-   }
-
-   @Override
-   public boolean isRed(Object value, int row, int column) {
-      boolean result = false;
-      Column columnEnum = getColumn(column);
-      if (columnEnum == null) {
-         return false;
-      }
-      if (getColumnIndex(Column.BoardStatus) >= 0 ) {
-            String stringValue = "";
-            switch (columnEnum) {
-            case Dev_Estimate:
-               log.debug("value: " + value);
-               stringValue = (String) value;
-               if (stringValue == null || stringValue.trim().length() <= 0) {
-                  if (isBoardValueEither(row, BoardStatusValue.Open, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
-                     return true;
-                  }
-               }
-               break;
-            case Dev_Actual:
-               stringValue = (String) value;
-               if (stringValue == null || stringValue.trim().length() <= 0) {
-                  if (isBoardValueEither(row, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
-                     return true;
-                  }
-               } else {
-                  if (isBoardValueEither(row, BoardStatusValue.Bug, BoardStatusValue.Open, BoardStatusValue.InProgress)) {
-                     return true;
-                  }
-               }
-               break;
-            default:
-               break;
-            }
-      }
-      return result;
-   }
-
    boolean isBoardValueEither(int row, BoardStatusValue... values) {
       Object value = getValueAt(Column.BoardStatus, row);
       log.debug("board status: " + value);
       for (int i = 0; i < values.length; i++) {
          BoardStatusValue boardStatusValue = values[i];
          log.debug("checking against : " + boardStatusValue);
-         if(boardStatusValue.equals(value)){
+         if (boardStatusValue.equals(value)) {
             log.debug("match!");
             return true;
          }

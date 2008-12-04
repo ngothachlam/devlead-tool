@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -17,6 +18,7 @@ import com.jonas.jira.JiraIssue;
 
 public abstract class MyTableModel extends DefaultTableModel {
 
+   private List<ColorRule> rules = new ArrayList<ColorRule>();
    private Logger log = MyLogger.getLogger(MyTableModel.class);
    protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
    protected Counter counter = new Counter();
@@ -374,13 +376,11 @@ public abstract class MyTableModel extends DefaultTableModel {
       addJira(jiraIssue.getKey(), map, row);
    }
 
-   public abstract boolean isRed(Object value, int row, int column);
-
-   public boolean isRed(Object value, int row, Column column) {
-      return isRed(value, row, getColumnIndex(column));
+   final public Color getColor(Object value, int row, Column column) {
+      return getColor(value, row, getColumnIndex(column));
    }
 
-   public void fireTableCellUpdatedExceptThisOne(int row, int col) {
+   final public void fireTableCellUpdatedExceptThisOne(int row, int col) {
       for (int i = 0; i < getColumnCount(); i++) {
          if (i != col)
             fireTableCellUpdated(row, i);
@@ -467,6 +467,53 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    public void clearMarked() {
       getMarker().clearMarked();
+   }
+
+   public void addColorRule(ColorRule rule) {
+      rules.add(rule);
+   }
+
+   public Color getColor(Object value, int row, int column) {
+      Column columnEnum = getColumn(column);
+      if (columnEnum == null) {
+         return null;
+      }
+      for (int i = 0; i < rules.size(); i++) {
+         ColorRule rule = rules.get(i);
+         if (rule.isTrue(columnEnum, value, row)) {
+            return rule.getColor();
+         }
+      }
+      return null;
+      // if (getColumnIndex(Column.BoardStatus) >= 0 ) {
+      // String stringValue = "";
+      // switch (columnEnum) {
+      // case Dev_Estimate:
+      // log.debug("value: " + value);
+      // stringValue = (String) value;
+      // if (stringValue == null || stringValue.trim().length() <= 0) {
+      // if (isBoardValueEither(row, BoardStatusValue.Open, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
+      // return SwingUtil.cellRED;
+      // }
+      // }
+      // break;
+      // case Dev_Actual:
+      // stringValue = (String) value;
+      // if (stringValue == null || stringValue.trim().length() <= 0) {
+      // if (isBoardValueEither(row, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
+      // return SwingUtil.cellRED;
+      // }
+      // } else {
+      // if (isBoardValueEither(row, BoardStatusValue.Bug, BoardStatusValue.Open, BoardStatusValue.InProgress)) {
+      // return SwingUtil.cellRED;
+      // }
+      // }
+      // break;
+      // default:
+      // break;
+      // }
+      // }
+      // return result;
    }
 }
 
