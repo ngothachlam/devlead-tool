@@ -11,12 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
@@ -92,8 +94,11 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private void addModelColorRules() {
       MyTableModel jiraTableModel = (MyTableModel) jiraPanel.getTable().getModel();
-      jiraTableModel.addColorRule(new AbstractRedJiraTableColorRule(jiraPanel.getTable(), Column.J_Dev_Estimate, boardPanel.getTable(), Column.Dev_Estimate));
-      jiraTableModel.addColorRule(new AbstractRedJiraTableColorRule(jiraPanel.getTable(), Column.J_Dev_Spent, boardPanel.getTable(), Column.Dev_Actual));
+      // FIXME!!
+//      jiraTableModel.addColorRule(new AbstractRedJiraTableColorRule(jiraPanel.getTable(), Column.J_Dev_Estimate, boardPanel.getTable(),
+//            Column.Dev_Estimate, false));
+//      jiraTableModel.addColorRule(new AbstractRedJiraTableColorRule(jiraPanel.getTable(), Column.J_Dev_Spent, boardPanel.getTable(),
+//            Column.Dev_Actual, false));
    }
 
    private Component combineIntoSplitPane(JPanel panel1, JPanel panel2, JPanel panel3) {
@@ -152,11 +157,11 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       sprintPanel = new DnDTreePanel(tree, dndTreeBuilder, helper.getParentFrame());
       jiraPanel = new JiraPanel(helper, jiraModel);
 
-      // JPanel jiraMainPanel = new JPanel(new BorderLayout());
-      // jiraMainPanel.add(jiraPanel, BorderLayout.CENTER);
-      // JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
-      // jiraButtonPanel.add(new JButton(new HighlightIssuesAction("Higlight Issues", jiraPanel.getTable(), boardPanel.getTable())));
-      // jiraMainPanel.add(jiraButtonPanel, BorderLayout.SOUTH);
+      JPanel jiraMainPanel = new JPanel(new BorderLayout());
+      jiraMainPanel.add(jiraPanel, BorderLayout.CENTER);
+      JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
+      jiraButtonPanel.add(new JButton(new HighlightIssuesAction("Higlight Issues", (MyTableModel) jiraPanel.getTable().getModel())));
+      jiraMainPanel.add(jiraButtonPanel, BorderLayout.SOUTH);
 
       MyTable boardTable = boardPanel.getTable();
       MyTable jiraTable = jiraPanel.getTable();
@@ -170,7 +175,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       panel.add(getAddPanel(helper, boardTable, jiraTable));
       addNorth(panel);
 
-      addCenter(combineIntoSplitPane(boardPanel, jiraPanel, sprintPanel));
+      addCenter(combineIntoSplitPane(boardPanel, jiraMainPanel, sprintPanel));
    }
 
    private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, MyTable jiraTable, DnDTree sprintTree) {
@@ -204,22 +209,18 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    }
 
    private final class HighlightIssuesAction extends AbstractAction {
-      private final MyTable jiraTable;
-      private final MyTable boardTable;
+      private final MyTableModel jiramodel;
 
-      private HighlightIssuesAction(String name, MyTable jiraTable, MyTable boardTable) {
+      private HighlightIssuesAction(String name, MyTableModel jiramodel) {
          super(name);
-         this.jiraTable = jiraTable;
-         this.boardTable = boardTable;
+         this.jiramodel = jiramodel;
       }
 
       @Override
       public void actionPerformed(ActionEvent e) {
-         for (int row = 0; row < jiraTable.getRowCount(); row++) {
-            String jira = (String) jiraTable.getValueAt(Column.Jira, row);
-            Object dev_estimate = boardTable.getValueAt(Column.J_Dev_Estimate, jira);
-            if (dev_estimate.equals(jiraTable.getValueAt(Column.Dev_Estimate, jira))) {
-            }
+         if (jiramodel.getRowCount() > 0) {
+            jiramodel.fireUpdateNonRealTimeColors();
+            log.debug("firing table data change");
          }
       }
    }

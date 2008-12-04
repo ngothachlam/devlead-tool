@@ -12,8 +12,8 @@ public class AbstractRedJiraTableColorRule extends AbstractColorRule {
    private final Column otherColumn;
    private final MyTable otherTable;
 
-   public AbstractRedJiraTableColorRule(MyTable thisTable, Column thisColumn, MyTable otherTable, Column otherColumn) {
-      super(thisColumn, thisTable, SwingUtil.cellRED);
+   public AbstractRedJiraTableColorRule(MyTable thisTable, Column thisColumn, MyTable otherTable, Column otherColumn, boolean isRealTime) {
+      super(thisColumn, thisTable, SwingUtil.cellRED, isRealTime);
       this.otherTable = otherTable;
       this.otherColumn = otherColumn;
    }

@@ -11,4 +11,6 @@ public interface ColorRule {
    
    public String getJira();
 
+   public boolean shouldPerformRealTime();
+
 }

@@ -24,6 +24,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    protected Counter counter = new Counter();
    protected boolean editable = true;
    private ModelMarker modelMarkerDelegator;
+   private Boolean doNonRealTimeColors = Boolean.FALSE;
 
    protected MyTableModel(Column[] columns, boolean allowMarking) {
       super(columns, 0);
@@ -237,7 +238,8 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public Object getValueAt(Column column, int row) {
       int columnIndex = getColumnIndex(column);
-      return row > -1 ? getValueAt(row, columnIndex) : null;
+      log.debug("column " + columnIndex + ", row: " + row);
+      return row > -1 && row < getRowCount() ? getValueAt(row, columnIndex) : null;
    }
 
    final public Object getValueAt(Column column, String jira) {
@@ -377,10 +379,6 @@ public abstract class MyTableModel extends DefaultTableModel {
       addJira(jiraIssue.getKey(), map, row);
    }
 
-   final public Color getColor(Object value, int row, Column column) {
-      return getColor(value, row, getColumnIndex(column));
-   }
-
    final public void fireTableCellUpdatedExceptThisOne(int row, int col) {
       for (int i = 0; i < getColumnCount(); i++) {
          if (i != col)
@@ -396,12 +394,12 @@ public abstract class MyTableModel extends DefaultTableModel {
 
       private Map<Integer, Boolean> marked = new HashMap<Integer, Boolean>();
 
-      private ModelMarker(){
+      private ModelMarker() {
          for (int row = 0; row < getRowCount(); row++) {
             marked.put(row, Boolean.FALSE);
          }
       }
-      
+
       @Override
       public void tableChanged(TableModelEvent e) {
          int firstRow = e.getFirstRow();
@@ -434,7 +432,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
 
       public boolean isMarked(int row) {
-         if(marked == null || marked.size() == 0)
+         if (marked == null || marked.size() == 0)
             return false;
          return marked.containsKey(row) ? marked.get(row) : false;
       }
@@ -473,15 +471,24 @@ public abstract class MyTableModel extends DefaultTableModel {
    public void addColorRule(ColorRule rule) {
       rules.add(rule);
    }
+   
+   public void fireUpdateNonRealTimeColors(){
+      synchronized (doNonRealTimeColors) {
+         doNonRealTimeColors  = true;
+         fireTableDataChanged();
+         doNonRealTimeColors = false;
+      }
+   }
 
    public Color getColor(Object value, int row, int column) {
+      log.debug("value: " + value + " row: " + row + " column: " + column + " model: " + this.getClass());
       Column columnEnum = getColumn(column);
       if (columnEnum == null) {
          return null;
       }
       for (int i = 0; i < rules.size(); i++) {
          ColorRule rule = rules.get(i);
-         if (rule.isTrue(columnEnum, value, row)) {
+         if (rule.shouldPerformRealTime() && rule.isTrue(columnEnum, value, row)) {
             return rule.getColor();
          }
       }
