@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -33,10 +32,9 @@ import com.jonas.agile.devleadtool.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.MyEditor;
-import com.jonas.agile.devleadtool.component.table.model.AbstractRedColorRule;
+import com.jonas.agile.devleadtool.component.table.model.AbstractRedJiraTableColorRule;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -93,19 +91,9 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    }
 
    private void addModelColorRules() {
-      MyTableModel jiraTableModel = (MyTableModel)jiraPanel.getTable().getModel();
-      jiraTableModel.addColorRule(new AbstractRedColorRule(Column.J_Dev_Estimate, jiraPanel.getTable()) {
-         @Override
-         public boolean isTrue(Object value, int row) {
-            log.debug("value: " + value + " for column ");
-            if (value != null ) {
-               //FIXME!!!
-               if(!value.equals(boardPanel.getTable().getValueAt(Column.Dev_Estimate, getJira())))
-                  return true;
-            }
-            return false;
-         }
-      });
+      MyTableModel jiraTableModel = (MyTableModel) jiraPanel.getTable().getModel();
+      jiraTableModel.addColorRule(new AbstractRedJiraTableColorRule(jiraPanel.getTable(), Column.J_Dev_Estimate, boardPanel.getTable(), Column.Dev_Estimate));
+      jiraTableModel.addColorRule(new AbstractRedJiraTableColorRule(jiraPanel.getTable(), Column.J_Dev_Spent, boardPanel.getTable(), Column.Dev_Actual));
    }
 
    private Component combineIntoSplitPane(JPanel panel1, JPanel panel2, JPanel panel3) {
@@ -338,7 +326,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          MyEditor editor = (MyEditor) e.getSource();
          MyTable table = boardPanel.getTable();
          MyTableModel model = (MyTableModel) table.getModel();
-         model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor.getColEdited()));
+         model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor
+               .getColEdited()));
       }
    }
 
@@ -348,8 +337,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
       public void editingStopped(ChangeEvent e) {
          JiraCellEditor editor = (JiraCellEditor) e.getSource();
-         log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \"" + editor.getValue()
-               + "\" and old value: \"" + editor.getOldValue() + "\"");
+         log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \""
+               + editor.getValue() + "\" and old value: \"" + editor.getOldValue() + "\"");
          MyTable jiraTable = jiraPanel.getTable();
          jiraTable.setValueAt(BoardStatusValue.NA, (String) editor.getOldValue(), Column.B_BoardStatus);
          jiraTable.setValueAt("", (String) editor.getOldValue(), Column.B_Release);
@@ -368,8 +357,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
       public void editingStopped(ChangeEvent e) {
          JiraCellEditor editor = (JiraCellEditor) e.getSource();
-         log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \"" + editor.getValue()
-               + "\" and old value: \"" + editor.getOldValue() + "\"");
+         log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \""
+               + editor.getValue() + "\" and old value: \"" + editor.getOldValue() + "\"");
          MyTable jiraTable = jiraPanel.getTable();
 
          String jira = (String) editor.getValue();

@@ -236,7 +236,8 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    final public Object getValueAt(Column column, int row) {
-      return getValueAt(row, getColumnIndex(column));
+      int columnIndex = getColumnIndex(column);
+      return row > -1 ? getValueAt(row, columnIndex) : null;
    }
 
    final public Object getValueAt(Column column, String jira) {
