@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.component.table;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.RowSorter;
@@ -209,8 +210,8 @@ public class MyTableFunctionalUnitTest extends TestCase {
       }
 
       @Override
-      public boolean isRed(Object value, int row, int column) {
-         return false;
+      public Color getColor(Object value, int row, int column) {
+         return null;
       }
    }
 

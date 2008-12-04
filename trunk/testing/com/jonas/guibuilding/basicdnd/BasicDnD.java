@@ -80,7 +80,7 @@ public class BasicDnD extends JPanel {
       setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
    }
 
-   private Component addPanel(BoardTableModel testModelBoard) {
+   private Component addPanel(MyTableModel testModelBoard) {
       JPanel panel = new JPanel(new FlowLayout());
       JButton button = new JButton("Add");
       panel.add(button);
@@ -137,7 +137,7 @@ public class BasicDnD extends JPanel {
       return columns;
    }
 
-   private BoardTableModel getTestModelBoard() {
+   private MyTableModel getTestModelBoard() {
       Vector<Vector<Object>> data = new Vector<Vector<Object>>();
       data.add(getTestRow("Board-1"));
       data.add(getTestRow("Board-2"));
