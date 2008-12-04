@@ -7,11 +7,15 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.SwingUtil;
 
-public class BoardStatusCellEditor extends DefaultCellEditor {
+public class BoardStatusCellEditor extends DefaultCellEditor implements MyEditor{
+
+   private int colEdited;
+   private int rowEdited;
 
    public BoardStatusCellEditor(final JComboBox combo, final JTable table) {
       super(combo);
@@ -37,5 +41,27 @@ public class BoardStatusCellEditor extends DefaultCellEditor {
          });
 
       }
+   }
+
+   @Override
+   public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
+      rowEdited = row;
+      colEdited = col;
+      return super.getTableCellEditorComponent(table, value, isSelected, row, col);
+   }
+
+   @Override
+   public int getColEdited() {
+      return colEdited;
+   }
+
+   @Override
+   public int getRowEdited() {
+      return rowEdited;
+   }
+
+   @Override
+   public Object getValue() {
+      return ((JComboBox)getComponent()).getSelectedItem();
    }
 }

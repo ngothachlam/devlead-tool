@@ -9,7 +9,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -33,6 +35,8 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
+import com.jonas.agile.devleadtool.component.table.editor.MyEditor;
+import com.jonas.agile.devleadtool.component.table.model.AbstractRedColorRule;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -82,9 +86,26 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
 
          wireUpListeners(boardModel, jiraModel);
+         addModelColorRules();
       } catch (SAXException e) {
          e.printStackTrace();
       }
+   }
+
+   private void addModelColorRules() {
+      MyTableModel jiraTableModel = (MyTableModel)jiraPanel.getTable().getModel();
+      jiraTableModel.addColorRule(new AbstractRedColorRule(Column.J_Dev_Estimate, jiraPanel.getTable()) {
+         @Override
+         public boolean isTrue(Object value, int row) {
+            log.debug("value: " + value + " for column ");
+            if (value != null ) {
+               //FIXME!!!
+               if(!value.equals(boardPanel.getTable().getValueAt(Column.Dev_Estimate, getJira())))
+                  return true;
+            }
+            return false;
+         }
+      });
    }
 
    private Component combineIntoSplitPane(JPanel panel1, JPanel panel2, JPanel panel3) {
@@ -143,9 +164,15 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       sprintPanel = new DnDTreePanel(tree, dndTreeBuilder, helper.getParentFrame());
       jiraPanel = new JiraPanel(helper, jiraModel);
 
+      // JPanel jiraMainPanel = new JPanel(new BorderLayout());
+      // jiraMainPanel.add(jiraPanel, BorderLayout.CENTER);
+      // JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
+      // jiraButtonPanel.add(new JButton(new HighlightIssuesAction("Higlight Issues", jiraPanel.getTable(), boardPanel.getTable())));
+      // jiraMainPanel.add(jiraButtonPanel, BorderLayout.SOUTH);
+
       MyTable boardTable = boardPanel.getTable();
       MyTable jiraTable = jiraPanel.getTable();
-      
+
       new MyTablePopupMenu(boardTable, helper, boardTable, jiraTable);
       new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable);
 
@@ -186,6 +213,27 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       setSprintDataListener(sprintTree, boardTable, jiraTable);
 
       editableCheckBox.addActionListener(new EditableListener());
+   }
+
+   private final class HighlightIssuesAction extends AbstractAction {
+      private final MyTable jiraTable;
+      private final MyTable boardTable;
+
+      private HighlightIssuesAction(String name, MyTable jiraTable, MyTable boardTable) {
+         super(name);
+         this.jiraTable = jiraTable;
+         this.boardTable = boardTable;
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         for (int row = 0; row < jiraTable.getRowCount(); row++) {
+            String jira = (String) jiraTable.getValueAt(Column.Jira, row);
+            Object dev_estimate = boardTable.getValueAt(Column.J_Dev_Estimate, jira);
+            if (dev_estimate.equals(jiraTable.getValueAt(Column.Dev_Estimate, jira))) {
+            }
+         }
+      }
    }
 
    private final class KeyListenerToHighlightSprintSelectionElsewhere extends KeyAdapter {
@@ -287,7 +335,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       }
 
       public void editingStopped(ChangeEvent e) {
-         CheckBoxTableCellEditor editor = (CheckBoxTableCellEditor) e.getSource();
+         MyEditor editor = (MyEditor) e.getSource();
          MyTable table = boardPanel.getTable();
          MyTableModel model = (MyTableModel) table.getModel();
          model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor.getColEdited()));
