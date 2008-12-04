@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
+import java.awt.Color;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
@@ -9,55 +10,16 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge,
-         Column.BoardStatus, Column.Dev_Estimate, Column.Dev_Actual, Column.prio, Column.Note };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge, Column.BoardStatus,
+         Column.Dev_Estimate, Column.Dev_Actual, Column.prio, Column.Note };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
 
    public BoardTableModel() {
       super(columns, true);
-      addRules();
    }
 
    public BoardTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
       super(columns, contents, header, true);
-      addRules();
-   }
-
-   private void addRules() {
-      addColorRule(new AbstractColorRule(Column.Dev_Estimate, null, SwingUtil.cellRED, true) {
-         @Override
-         public boolean isTrue(Object value, int row) {
-            // log.debug("value: " + value + " for column ");
-            String stringValue = (String) value;
-            if (stringValue == null || stringValue.trim().length() <= 0) {
-               if (isBoardValueEither(row, BoardStatusValue.Open, BoardStatusValue.InProgress, BoardStatusValue.Resolved,
-                     BoardStatusValue.QA_Progress, BoardStatusValue.Complete)) {
-                  log.debug("true!");
-                  return true;
-               }
-            }
-            log.debug("false!");
-            return false;
-
-         }
-      });
-      addColorRule(new AbstractColorRule(Column.Dev_Actual, null, SwingUtil.cellRED, true) {
-         @Override
-         public boolean isTrue(Object value, int row) {
-            String stringValue = (String) value;
-            if (stringValue == null || stringValue.trim().length() <= 0) {
-               if (isBoardValueEither(row, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
-                  return true;
-               }
-            } else {
-               if (isBoardValueEither(row, BoardStatusValue.Bug, BoardStatusValue.Open, BoardStatusValue.InProgress)) {
-                  return true;
-               }
-            }
-            return false;
-         }
-
-      });
    }
 
    public BoardStatusValue getStatus(String jira) {
@@ -89,5 +51,34 @@ public class BoardTableModel extends MyTableModel {
       if (doesJiraExist(jira))
          return (String) getValueAt(Column.Release, jira);
       return "";
+   }
+
+   @Override
+   public Color getColor(Object value, int row, int column) {
+      Column col = getColumn(column);
+      String stringValue = (String) value;
+      switch (col) {
+      case Dev_Actual:
+         if (stringValue == null || stringValue.trim().length() <= 0) {
+            if (isBoardValueEither(row, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
+               return SwingUtil.cellRED;
+            }
+         } else {
+            if (isBoardValueEither(row, BoardStatusValue.Bug, BoardStatusValue.Open, BoardStatusValue.InProgress)) {
+               return SwingUtil.cellRED;
+            }
+         }
+         break;
+      case Dev_Estimate:
+         if (stringValue == null || stringValue.trim().length() <= 0) {
+            if (isBoardValueEither(row, BoardStatusValue.Open, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.QA_Progress,
+                  BoardStatusValue.Complete)) {
+               log.debug("true!");
+               return SwingUtil.cellRED;
+            }
+         }
+         break;
+      }
+      return null;
    }
 }

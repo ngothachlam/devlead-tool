@@ -18,7 +18,6 @@ import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
@@ -36,7 +35,6 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.MyEditor;
-import com.jonas.agile.devleadtool.component.table.model.AbstractRedJiraTableColorRule;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -86,19 +84,9 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
 
          wireUpListeners(boardModel, jiraModel);
-         addModelColorRules();
       } catch (SAXException e) {
          e.printStackTrace();
       }
-   }
-
-   private void addModelColorRules() {
-      MyTableModel jiraTableModel = (MyTableModel) jiraPanel.getTable().getModel();
-      // FIXME!!
-//      jiraTableModel.addColorRule(new AbstractRedJiraTableColorRule(jiraPanel.getTable(), Column.J_Dev_Estimate, boardPanel.getTable(),
-//            Column.Dev_Estimate, false));
-//      jiraTableModel.addColorRule(new AbstractRedJiraTableColorRule(jiraPanel.getTable(), Column.J_Dev_Spent, boardPanel.getTable(),
-//            Column.Dev_Actual, false));
    }
 
    private Component combineIntoSplitPane(JPanel panel1, JPanel panel2, JPanel panel3) {

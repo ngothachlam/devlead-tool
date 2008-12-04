@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
+import java.awt.Color;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -17,5 +18,10 @@ public class JiraTableModel extends MyTableModel {
 
    public JiraTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
       super(columns, contents, header, false);
+   }
+
+   @Override
+   public Color getColor(Object value, int row, int column) {
+      return null;
    }
 }

@@ -18,7 +18,6 @@ import com.jonas.jira.JiraIssue;
 
 public abstract class MyTableModel extends DefaultTableModel {
 
-   private List<ColorRule> rules = new ArrayList<ColorRule>();
    private Logger log = MyLogger.getLogger(MyTableModel.class);
    protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
    protected Counter counter = new Counter();
@@ -468,61 +467,60 @@ public abstract class MyTableModel extends DefaultTableModel {
       getMarker().clearMarked();
    }
 
-   public void addColorRule(ColorRule rule) {
-      rules.add(rule);
-   }
-   
-   public void fireUpdateNonRealTimeColors(){
+   public void fireUpdateNonRealTimeColors() {
       synchronized (doNonRealTimeColors) {
-         doNonRealTimeColors  = true;
+         doNonRealTimeColors = true;
          fireTableDataChanged();
          doNonRealTimeColors = false;
       }
    }
 
-   public Color getColor(Object value, int row, int column) {
-      log.debug("value: " + value + " row: " + row + " column: " + column + " model: " + this.getClass());
-      Column columnEnum = getColumn(column);
-      if (columnEnum == null) {
-         return null;
-      }
-      for (int i = 0; i < rules.size(); i++) {
-         ColorRule rule = rules.get(i);
-         if (rule.shouldPerformRealTime() && rule.isTrue(columnEnum, value, row)) {
-            return rule.getColor();
-         }
-      }
-      return null;
-      // if (getColumnIndex(Column.BoardStatus) >= 0 ) {
-      // String stringValue = "";
-      // switch (columnEnum) {
-      // case Dev_Estimate:
-      // log.debug("value: " + value);
-      // stringValue = (String) value;
-      // if (stringValue == null || stringValue.trim().length() <= 0) {
-      // if (isBoardValueEither(row, BoardStatusValue.Open, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
-      // return SwingUtil.cellRED;
-      // }
-      // }
-      // break;
-      // case Dev_Actual:
-      // stringValue = (String) value;
-      // if (stringValue == null || stringValue.trim().length() <= 0) {
-      // if (isBoardValueEither(row, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
-      // return SwingUtil.cellRED;
-      // }
-      // } else {
-      // if (isBoardValueEither(row, BoardStatusValue.Bug, BoardStatusValue.Open, BoardStatusValue.InProgress)) {
-      // return SwingUtil.cellRED;
-      // }
-      // }
-      // break;
-      // default:
-      // break;
-      // }
-      // }
-      // return result;
-   }
+   public abstract Color getColor(Object value, int row, int column);
+
+   // {
+   // log.debug("value: " + value + " row: " + row + " column: " + column + " model: " + this.getClass());
+   // if (column < 0 || column >= getColumnCount()) {
+   // return null;
+   // }
+   // for (int i = 0; i < rules.size(); i++) {
+   // log.debug("checking rule " + i);
+   // ColorRule rule = rules.get(i);
+   // if (rule.shouldPerformRealTime() && rule.isTrue(column, value, row)) {
+   // return rule.getColor();
+   // }
+   // }
+   // return null;
+
+   // if (getColumnIndex(Column.BoardStatus) >= 0 ) {
+   // String stringValue = "";
+   // switch (columnEnum) {
+   // case Dev_Estimate:
+   // log.debug("value: " + value);
+   // stringValue = (String) value;
+   // if (stringValue == null || stringValue.trim().length() <= 0) {
+   // if (isBoardValueEither(row, BoardStatusValue.Open, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
+   // return SwingUtil.cellRED;
+   // }
+   // }
+   // break;
+   // case Dev_Actual:
+   // stringValue = (String) value;
+   // if (stringValue == null || stringValue.trim().length() <= 0) {
+   // if (isBoardValueEither(row, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
+   // return SwingUtil.cellRED;
+   // }
+   // } else {
+   // if (isBoardValueEither(row, BoardStatusValue.Bug, BoardStatusValue.Open, BoardStatusValue.InProgress)) {
+   // return SwingUtil.cellRED;
+   // }
+   // }
+   // break;
+   // default:
+   // break;
+   // }
+   // }
+   // return result;
+   // }
 }
 
 
