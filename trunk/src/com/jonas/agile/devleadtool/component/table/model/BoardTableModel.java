@@ -24,7 +24,7 @@ public class BoardTableModel extends MyTableModel {
    }
 
    private void addRules() {
-      addColorRule(new AbstractColorRule(Column.Dev_Estimate, null, SwingUtil.cellRED) {
+      addColorRule(new AbstractColorRule(Column.Dev_Estimate, null, SwingUtil.cellRED, true) {
          @Override
          public boolean isTrue(Object value, int row) {
             // log.debug("value: " + value + " for column ");
@@ -41,7 +41,7 @@ public class BoardTableModel extends MyTableModel {
 
          }
       });
-      addColorRule(new AbstractColorRule(Column.Dev_Actual, null, SwingUtil.cellRED) {
+      addColorRule(new AbstractColorRule(Column.Dev_Actual, null, SwingUtil.cellRED, true) {
          @Override
          public boolean isTrue(Object value, int row) {
             String stringValue = (String) value;
