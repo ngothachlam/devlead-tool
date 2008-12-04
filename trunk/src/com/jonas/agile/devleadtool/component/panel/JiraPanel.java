@@ -1,7 +1,11 @@
 package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.GridLayout;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
@@ -18,10 +22,6 @@ public class JiraPanel extends MyComponentPanel {
    private Logger log = MyLogger.getLogger(JiraPanel.class);
    private MyTable table;
 
-   public JiraPanel(PlannerHelper helper) {
-      this(helper, new JiraTableModel());
-   }
-
    public JiraPanel(PlannerHelper helper, MyTableModel jiraModel) {
       super(new BorderLayout());
       this.helper = helper;
@@ -31,7 +31,14 @@ public class JiraPanel extends MyComponentPanel {
       JScrollPane scrollpane = new MyScrollPane(table);
 
       addCenter(scrollpane);
+//      addSouth(getButtonPanel());
       setBorder(BorderFactory.createTitledBorder("Jira"));
+   }
+
+   private Component getButtonPanel() {
+      JPanel panel = new JPanel(new GridLayout(1,1,5,5));
+      panel.add(new JButton("Higlight Issues"));
+      return panel;
    }
 
    public MyTableModel getJiraModel() {
