@@ -18,8 +18,6 @@ import com.jonas.common.logging.MyLogger;
 public class SwingUtil {
 
    public static final Color cellRED = new Color(210, 0, 0);
-   public static final Color cellRedDarkened = ColorUtil.darkenColor(cellRED, -75);
-   public static final Color cellEdited = new Color(210, 210, 210);
 
    public static final Border focusCellBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.yellow);
    public static final Border defaultCellBorder = UIManager.getBorder("Table.focusSelectedCellHighlightBorder");
