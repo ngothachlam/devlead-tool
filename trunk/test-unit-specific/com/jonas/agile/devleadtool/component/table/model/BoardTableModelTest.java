@@ -1,6 +1,10 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -118,18 +122,31 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(1, model.getRowCount());
 
       assertEquals(BoardStatusValue.UnKnown, model.getValueAt(Column.BoardStatus, "LLU-1"));
-      assertEquals(false, model.isBoardValueEither(0, BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress));
+      Set<BoardStatusValue> list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress);
+      assertEquals(false, model.isBoardValueEither(0, list));
 
       // set To Open
       model.setValueAt(BoardStatusValue.Open, 0, Column.BoardStatus);
       assertEquals(BoardStatusValue.Open, model.getValueAt(Column.BoardStatus, "LLU-1"));
-      assertEquals(true, model.isBoardValueEither(0, BoardStatusValue.Open));
-      assertEquals(false, model.isBoardValueEither(0, BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved));
-      assertEquals(true, model.isBoardValueEither(0, BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Open));
+      list = getSet(BoardStatusValue.Open);
+      assertEquals(true, model.isBoardValueEither(0, list));
+      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved);
+      assertEquals(false, model.isBoardValueEither(0, list));
+      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Open);
+      assertEquals(true, model.isBoardValueEither(0, list));
       // set To Complete
       model.setValueAt(BoardStatusValue.Complete, 0, Column.BoardStatus);
       assertEquals(BoardStatusValue.Complete, model.getValueAt(Column.BoardStatus, "LLU-1"));
-      assertEquals(true, model.isBoardValueEither(0, BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Open));
+      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Open);
+      assertEquals(true, model.isBoardValueEither(0, list));
+   }
+
+   private Set<BoardStatusValue> getSet(BoardStatusValue... values) {
+      Set<BoardStatusValue> list = new HashSet<BoardStatusValue>();
+      for (BoardStatusValue boardStatusValue : values) {
+         list.add(boardStatusValue);
+      }
+      return list;
    }
 
    public void testShouldCreateFromConstructorOk() {
