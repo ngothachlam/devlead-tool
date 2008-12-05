@@ -75,7 +75,7 @@ public class JiraSaxHandlerTest extends TestCase {
       
       assertJiraDTO("LLU-4211", "41698", "Unresolved", "12.4", "Open", "Fens \"Unhandled Exception Occurred\" failure", false, 0, "LLU 12");
       assertJiraDTO("LLU-4104", "40487", "Unresolved", "12.4", "Open", "Merge -Deadlock Servlet processes records which are in an end state", false, 0, "Pam&apos;s Backlog");
-      assertJiraDTO("LLU-4190", "41524", "Fixed", "12-4", "Closed", "Provide E2E fitnesse test for BBMS Northbound Status updates", false, 0, "LLU 13");
+      assertJiraDTO("LLU-4190", "41524", "Fixed", "12-4", "Closed", "Provide E2E fitnesse test for BBMS Northbound Status updates", false, 0);
       assertJiraDTO("LLU-4148", "40895", "DEV Complete", "12-4", "Resolved", "[FC-ReserveLogic] Process MLC state is jumpered to a line that is not available - SM", false, 28800, "LLU 12");
    }
 

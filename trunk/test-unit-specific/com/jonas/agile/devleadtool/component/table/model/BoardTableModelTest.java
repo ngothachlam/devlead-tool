@@ -69,53 +69,6 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(10, columnNames.size());
    }
 
-   public void testShouldSetRedEstimatesAndActualsOk() {
-      model.addJira(new JiraIssue("LLU-1", "llu-1 summary", "llu-1 status", "llu-1 resolution", "llu-1 type"));
-
-      assertEquals(1, model.getRowCount());
-      // none set
-
-      // set to isOpen
-      model.setValueAt(BoardStatusValue.Open, 0, Column.BoardStatus);
-
-      assertEquals(true, model.isRed("", 0, Column.Dev_Estimate));
-      assertEquals(false, model.isRed("", 0, Column.Dev_Actual));
-      assertEquals(false, model.isRed("1", 0, Column.Dev_Estimate));
-      assertEquals(true, model.isRed("1", 0, Column.Dev_Actual));
-
-      // set to isBug
-      model.setValueAt(BoardStatusValue.Bug, 0, Column.BoardStatus);
-
-      assertEquals(false, model.isRed("", 0, Column.Dev_Estimate));
-      assertEquals(false, model.isRed("", 0, Column.Dev_Actual));
-      assertEquals(false, model.isRed("1", 0, Column.Dev_Estimate));
-      assertEquals(true, model.isRed("1", 0, Column.Dev_Actual));
-
-      // set to isInProgress
-      model.setValueAt(BoardStatusValue.InProgress, 0, Column.BoardStatus);
-
-      assertEquals(true, model.isRed("", 0, Column.Dev_Estimate));
-      assertEquals(false, model.isRed("", 0, Column.Dev_Actual));
-      assertEquals(false, model.isRed("1", 0, Column.Dev_Estimate));
-      assertEquals(true, model.isRed("1", 0, Column.Dev_Actual));
-
-      // set to isResolved
-      model.setValueAt(BoardStatusValue.Resolved, 0, Column.BoardStatus);
-
-      assertEquals(true, model.isRed("", 0, Column.Dev_Estimate));
-      assertEquals(true, model.isRed("", 0, Column.Dev_Actual));
-      assertEquals(false, model.isRed("1", 0, Column.Dev_Estimate));
-      assertEquals(false, model.isRed("1", 0, Column.Dev_Actual));
-
-      // set to isComplete
-      model.setValueAt(BoardStatusValue.Complete, 0, Column.BoardStatus);
-
-      assertEquals(true, model.isRed("", 0, Column.Dev_Estimate));
-      assertEquals(true, model.isRed("", 0, Column.Dev_Actual));
-      assertEquals(false, model.isRed("1", 0, Column.Dev_Estimate));
-      assertEquals(false, model.isRed("1", 0, Column.Dev_Actual));
-   }
-
    public void testShouldGetAnyBoolColumnBackOk() {
       model.addJira(new JiraIssue("LLU-1", "llu-1 summary", "llu-1 status", "llu-1 resolution", "llu-1 type"));
 

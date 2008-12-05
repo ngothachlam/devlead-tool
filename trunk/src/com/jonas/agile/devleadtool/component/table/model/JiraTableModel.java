@@ -36,13 +36,16 @@ public class JiraTableModel extends MyTableModel {
 
       switch (column) {
       case J_Dev_Estimate:
-         if (!isJiraEstimatesOk(boardModel.getValueAt(Column.Dev_Estimate, jira), value))
+         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, jira), value))
+            return SwingUtil.cellRED;
+      case J_Dev_Spent:
+         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Actual, jira), value))
             return SwingUtil.cellRED;
       }
       return null;
    }
 
-   boolean isJiraEstimatesOk(Object boardValue, Object jiraValue) {
+   boolean isJiraNumberOk(Object boardValue, Object jiraValue) {
       String boardString = boardValue == null ? null : boardValue.toString().trim();
       String jiraString = jiraValue == null ? null : jiraValue.toString().trim();
 
