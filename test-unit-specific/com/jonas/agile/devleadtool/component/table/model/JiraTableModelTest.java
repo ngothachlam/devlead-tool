@@ -72,32 +72,32 @@ public class JiraTableModelTest extends JonasTestCase {
 
    public void testShouldCompareEstimatesOk(){
       model = new JiraTableModel();
-      assertEquals(true, model.isJiraEstimatesOk("", null));
-      assertEquals(true, model.isJiraEstimatesOk("", ""));
-      assertEquals(true, model.isJiraEstimatesOk("", "0"));
-      assertEquals(true, model.isJiraEstimatesOk("", "0.0"));
-      assertEquals(false, model.isJiraEstimatesOk("", "0.1"));
+      assertEquals(true, model.isJiraNumberOk("", null));
+      assertEquals(true, model.isJiraNumberOk("", ""));
+      assertEquals(true, model.isJiraNumberOk("", "0"));
+      assertEquals(true, model.isJiraNumberOk("", "0.0"));
+      assertEquals(false, model.isJiraNumberOk("", "0.1"));
       
-      assertEquals(true, model.isJiraEstimatesOk(null, ""));
-      assertEquals(true, model.isJiraEstimatesOk(null, "0"));
-      assertEquals(true, model.isJiraEstimatesOk(null, "0.0"));
-      assertEquals(false, model.isJiraEstimatesOk(null, "0.1"));
+      assertEquals(true, model.isJiraNumberOk(null, ""));
+      assertEquals(true, model.isJiraNumberOk(null, "0"));
+      assertEquals(true, model.isJiraNumberOk(null, "0.0"));
+      assertEquals(false, model.isJiraNumberOk(null, "0.1"));
       
-      assertEquals(false, model.isJiraEstimatesOk("1.0", null));
-      assertEquals(false, model.isJiraEstimatesOk("1.0", ""));
-      assertEquals(false, model.isJiraEstimatesOk("1.0", "0"));
-      assertEquals(false, model.isJiraEstimatesOk("1.0", "0.0"));
+      assertEquals(false, model.isJiraNumberOk("1.0", null));
+      assertEquals(false, model.isJiraNumberOk("1.0", ""));
+      assertEquals(false, model.isJiraNumberOk("1.0", "0"));
+      assertEquals(false, model.isJiraNumberOk("1.0", "0.0"));
       
-      assertEquals(false, model.isJiraEstimatesOk("0.9", "1.0"));
-      assertEquals(false, model.isJiraEstimatesOk("1.0", "0.9"));
-      assertEquals(true, model.isJiraEstimatesOk("1.0", "1.0"));
-      assertEquals(false, model.isJiraEstimatesOk("1.1", "1.0"));
-      assertEquals(false, model.isJiraEstimatesOk("1.0", "1.1"));
+      assertEquals(false, model.isJiraNumberOk("0.9", "1.0"));
+      assertEquals(false, model.isJiraNumberOk("1.0", "0.9"));
+      assertEquals(true, model.isJiraNumberOk("1.0", "1.0"));
+      assertEquals(false, model.isJiraNumberOk("1.1", "1.0"));
+      assertEquals(false, model.isJiraNumberOk("1.0", "1.1"));
       
-      assertEquals(true, model.isJiraEstimatesOk("merge", null));
-      assertEquals(true, model.isJiraEstimatesOk("merge", ""));
-      assertEquals(true, model.isJiraEstimatesOk("merge", "0"));
-      assertEquals(false, model.isJiraEstimatesOk("merge", "0.1"));
-      assertEquals(false, model.isJiraEstimatesOk("merge", "1.1"));
+      assertEquals(true, model.isJiraNumberOk("merge", null));
+      assertEquals(true, model.isJiraNumberOk("merge", ""));
+      assertEquals(true, model.isJiraNumberOk("merge", "0"));
+      assertEquals(false, model.isJiraNumberOk("merge", "0.1"));
+      assertEquals(false, model.isJiraNumberOk("merge", "1.1"));
    }
 }
