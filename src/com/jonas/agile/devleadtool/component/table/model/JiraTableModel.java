@@ -11,8 +11,8 @@ import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
 
 public class JiraTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.B_BoardStatus, Column.J_Type, Column.B_Release,
-         Column.J_Sprint, Column.J_FixVersion, Column.J_Status, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.B_BoardStatus, Column.J_Type, Column.B_Release, Column.J_Sprint,
+         Column.J_FixVersion, Column.J_Status, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent };
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
 
@@ -36,28 +36,48 @@ public class JiraTableModel extends MyTableModel {
 
       switch (column) {
       case J_Dev_Estimate:
-         if (!isEstimatesBetweenTablesOk(boardModel.getValueAt(Column.Dev_Estimate, jira), value))
+         if (!isJiraEstimatesOk(boardModel.getValueAt(Column.Dev_Estimate, jira), value))
             return SwingUtil.cellRED;
       }
       return null;
    }
 
-   boolean isEstimatesBetweenTablesOk(Object boardValue, Object jiraValue) {
-      return true;
+   boolean isJiraEstimatesOk(Object boardValue, Object jiraValue) {
+      String boardString = boardValue == null ? null : boardValue.toString().trim();
+      String jiraString = jiraValue == null ? null : jiraValue.toString().trim();
 
-      // String stringValue = (String) value;
-      // log.debug("Jira " + jira + " boardEstimate: " + boardEstimate + " jiraEstimate: " + value);
-      // if (boardEstimate == null && value != null && stringValue.trim().length() > 0)
-      // return SwingUtil.cellRED;
-      // if (!boardEstimate.equals(value)) {
-      // Double boardEstimateD = CalculatorHelper.getDouble(boardEstimate);
-      // if (boardEstimateD != null && boardEstimateD.equals(CalculatorHelper.getDouble(stringValue)))
-      // return null;
-      // else if (boardEstimateD == null && CalculatorHelper.getDouble(stringValue) == null)
-      // return null;
-      // return SwingUtil.cellRED;
-      // }
+      Double boardDouble = null;
+      Double jiraDouble = null;
 
+      if (boardString == null && jiraString == null) {
+         return true;
+      } else if (boardString == null) {
+         jiraDouble = CalculatorHelper.getDouble(jiraString);
+         if (jiraDouble == null || jiraDouble == 0d) {
+            return true;
+         }
+         return false;
+      } else if (jiraString == null) {
+         boardDouble = CalculatorHelper.getDouble(boardString);
+         if (boardDouble == null || boardDouble == 0d) {
+            return true;
+         }
+         return false;
+      }
+
+      boardDouble = CalculatorHelper.getDouble(boardString);
+      jiraDouble = CalculatorHelper.getDouble(jiraString);
+
+      if (boardValue.equals(jiraValue))
+         return true;
+      if (boardDouble == null) {
+         if ((jiraDouble == null || jiraDouble == 0d))
+            return true;
+         return false;
+      }
+      if (boardDouble.equals(jiraDouble))
+         return true;
+      return false;
    }
 
 }
