@@ -1,6 +1,9 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.awt.Color;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
@@ -23,6 +26,39 @@ public class BoardTableModel extends MyTableModel {
       super(columns, contents, header, true);
    }
 
+   @Override
+   public Color getColor(Object value, int row, Column column) {
+      String stringValue = (String) value;
+      switch (column) {
+      case Dev_Actual:
+         if (stringValue == null || stringValue.trim().length() <= 0) {
+            if (isBoardValueEither(row, Helper.getRequiredActuals())) {
+               return SwingUtil.cellRED;
+            }
+         } else {
+            if (isBoardValueEither(row, Helper.getNonRequiredActuals())) {
+               return SwingUtil.cellRED;
+            }
+         }
+         break;
+      case Dev_Estimate:
+         if (stringValue == null || stringValue.trim().length() <= 0) {
+            if (isBoardValueEither(row, Helper.getRequiredEstimates())) {
+               log.debug("true!");
+               return SwingUtil.cellRED;
+            }
+         }
+         break;
+      }
+      return null;
+   }
+
+   public String getRelease(String jira) {
+      if (doesJiraExist(jira))
+         return (String) getValueAt(Column.Release, jira);
+      return "";
+   }
+
    public BoardStatusValue getStatus(String jira) {
       int row = getRowWithJira(jira);
       log.debug("row: " + row + " for jira: " + jira);
@@ -34,52 +70,47 @@ public class BoardTableModel extends MyTableModel {
       return BoardStatusValue.NA;
    }
 
-   boolean isBoardValueEither(int row, BoardStatusValue... values) {
+   public boolean isBoardValueEither(int row, Set<BoardStatusValue> set) {
       Object value = getValueAt(Column.BoardStatus, row);
-      log.debug("board status: " + value);
-      for (int i = 0; i < values.length; i++) {
-         BoardStatusValue boardStatusValue = values[i];
-         log.debug("checking against : " + boardStatusValue);
-         if (boardStatusValue.equals(value)) {
-            log.debug("match!");
-            return true;
-         }
-      }
-      return false;
+      return set.contains(value);
    }
 
-   public String getRelease(String jira) {
-      if (doesJiraExist(jira))
-         return (String) getValueAt(Column.Release, jira);
-      return "";
-   }
+   private static class Helper {
 
-   @Override
-   public Color getColor(Object value, int row, int column) {
-      Column col = getColumn(column);
-      String stringValue = (String) value;
-      switch (col) {
-      case Dev_Actual:
-         if (stringValue == null || stringValue.trim().length() <= 0) {
-            if (isBoardValueEither(row, BoardStatusValue.Resolved, BoardStatusValue.Complete)) {
-               return SwingUtil.cellRED;
-            }
-         } else {
-            if (isBoardValueEither(row, BoardStatusValue.Bug, BoardStatusValue.Open, BoardStatusValue.InProgress)) {
-               return SwingUtil.cellRED;
-            }
-         }
-         break;
-      case Dev_Estimate:
-         if (stringValue == null || stringValue.trim().length() <= 0) {
-            if (isBoardValueEither(row, BoardStatusValue.Open, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.QA_Progress,
-                  BoardStatusValue.Complete)) {
-               log.debug("true!");
-               return SwingUtil.cellRED;
-            }
-         }
-         break;
+      private static Set<BoardStatusValue> requiredEstimates = new HashSet<BoardStatusValue>();
+      private static Set<BoardStatusValue> nonRequiredActuals = new HashSet<BoardStatusValue>();
+      private static Set<BoardStatusValue> requiredActuals = new HashSet<BoardStatusValue>();
+
+      private Helper() {
+         requiredEstimates.add(BoardStatusValue.Open);
+         requiredEstimates.add(BoardStatusValue.Bug);
+         requiredEstimates.add(BoardStatusValue.InProgress);
+         requiredEstimates.add(BoardStatusValue.Resolved);
+         requiredEstimates.add(BoardStatusValue.QA_Progress);
+         requiredEstimates.add(BoardStatusValue.Complete);
+         requiredEstimates.add(BoardStatusValue.ForShowCase);
+
+         nonRequiredActuals.add(BoardStatusValue.Open);
+         nonRequiredActuals.add(BoardStatusValue.Bug);
+         nonRequiredActuals.add(BoardStatusValue.InProgress);
+
+         requiredActuals.add(BoardStatusValue.Resolved);
+         requiredActuals.add(BoardStatusValue.QA_Progress);
+         requiredActuals.add(BoardStatusValue.Complete);
+         requiredActuals.add(BoardStatusValue.ForShowCase);
+
       }
-      return null;
+
+      public static Set<BoardStatusValue> getRequiredActuals() {
+         return requiredActuals;
+      }
+
+      public static Set<BoardStatusValue> getNonRequiredActuals() {
+         return nonRequiredActuals;
+      }
+
+      private static Set<BoardStatusValue> getRequiredEstimates() {
+         return requiredEstimates;
+      }
    }
 }

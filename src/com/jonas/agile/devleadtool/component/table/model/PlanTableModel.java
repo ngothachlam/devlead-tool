@@ -37,7 +37,7 @@ public class PlanTableModel extends MyTableModel {
    }
 
    @Override
-   public Color getColor(Object value, int row, int column) {
+   public Color getColor(Object value, int row, Column column) {
       return null;
    }
 

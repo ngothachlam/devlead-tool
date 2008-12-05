@@ -29,10 +29,9 @@ public class JiraTableModel extends MyTableModel {
    }
 
    @Override
-   public Color getColor(Object value, int row, int columnNo) {
+   public Color getColor(Object value, int row, Column column) {
       if (boardModel == null)
          return null;
-      Column column = getColumn(columnNo);
       String jira = (String) getValueAt(Column.Jira, row);
 
       switch (column) {

@@ -475,7 +475,11 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
    }
 
-   public abstract Color getColor(Object value, int row, int column);
+   public abstract Color getColor(Object value, int row, Column column);
+   
+   public Color getColor(Object value, int row, int column){
+      return getColor(value, row, getColumn(column));
+   }
 
    // {
    // log.debug("value: " + value + " row: " + row + " column: " + column + " model: " + this.getClass());
