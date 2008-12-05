@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.awt.Color;
 import java.util.Vector;
+import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;

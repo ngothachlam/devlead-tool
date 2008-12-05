@@ -1,6 +1,5 @@
 package com.jonas.common;
 
-
 public class CalculatorHelper {
 
    public static String getSecondsAsDays(String seconds) {
@@ -13,7 +12,7 @@ public class CalculatorHelper {
       float secondsConverter = 60 * 60 * 8;
       return seconds / secondsConverter;
    }
-   
+
    public static String cutString(String string, int cutAfter, String replacementString) {
       return string.length() > cutAfter ? string.substring(0, cutAfter) + replacementString : string;
    }
@@ -21,5 +20,13 @@ public class CalculatorHelper {
    public static String getSecondsAsDaysAndString(int seconds) {
       float days = getSecondsAsDays(seconds);
       return Float.toString(days);
+   }
+
+   public static Double getDouble(String boardEstimate) {
+      try {
+         return Double.parseDouble(boardEstimate);
+      } catch (NumberFormatException ex) {
+         return null;
+      }
    }
 }

@@ -12,6 +12,14 @@ public class CalculatorHelperTest extends TestCase {
       super.tearDown();
    }
 
+   public void testGetDouble() {
+      assertEquals(2d, CalculatorHelper.getDouble("2.0"));
+      assertEquals(3.1d, CalculatorHelper.getDouble("3.1"));
+      assertEquals(null, CalculatorHelper.getDouble("bla"));
+      assertEquals(null, CalculatorHelper.getDouble(""));
+      assertEquals(1.5d, CalculatorHelper.getDouble(" 1.5 "));
+      
+   }
    public void testGetSecondsAsDays() {
       assertEquals(1f, CalculatorHelper.getSecondsAsDays(60 * 60 * 8));
       assertEquals(0.5f, CalculatorHelper.getSecondsAsDays(60 * 60 * 4));

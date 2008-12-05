@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.common.CalculatorHelper;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
+import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
 
 public class JiraTableModel extends MyTableModel {
 
@@ -35,14 +37,28 @@ public class JiraTableModel extends MyTableModel {
 
       switch (column) {
       case J_Dev_Estimate:
-         String boardEstimate = (String) boardModel.getValueAt(Column.Dev_Estimate, jira);
-         String stringValue = (String) value;
-         log.debug("Jira " + jira + " boardEstimate: " + boardEstimate + " jiraEstimate: " + value);
-         if (boardEstimate == null && stringValue.trim().length() > 0)
-            return SwingUtil.cellRED;
-         if (!boardEstimate.equals(value))
+         if (!isEstimatesBetweenTablesOk(boardModel.getValueAt(Column.Dev_Estimate, jira), value))
             return SwingUtil.cellRED;
       }
       return null;
    }
+
+   boolean isEstimatesBetweenTablesOk(Object boardValue, Object jiraValue) {
+      return true;
+
+      // String stringValue = (String) value;
+      // log.debug("Jira " + jira + " boardEstimate: " + boardEstimate + " jiraEstimate: " + value);
+      // if (boardEstimate == null && value != null && stringValue.trim().length() > 0)
+      // return SwingUtil.cellRED;
+      // if (!boardEstimate.equals(value)) {
+      // Double boardEstimateD = CalculatorHelper.getDouble(boardEstimate);
+      // if (boardEstimateD != null && boardEstimateD.equals(CalculatorHelper.getDouble(stringValue)))
+      // return null;
+      // else if (boardEstimateD == null && CalculatorHelper.getDouble(stringValue) == null)
+      // return null;
+      // return SwingUtil.cellRED;
+      // }
+
+   }
+
 }

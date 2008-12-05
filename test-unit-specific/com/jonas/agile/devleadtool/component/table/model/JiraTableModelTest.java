@@ -7,7 +7,7 @@ import com.jonas.jira.JiraIssue;
 
 public class JiraTableModelTest extends JonasTestCase {
 
-   private MyTableModel model;
+   private JiraTableModel model;
 
    private void assertRow(String[] strings, MyTableModel model, int row) {
       int cols = 0;
@@ -70,4 +70,10 @@ public class JiraTableModelTest extends JonasTestCase {
       model.addJira("Jira-1");
    }
 
+   
+   public void testShouldCompareEstimatesOk(){
+      model = new JiraTableModel();
+      assertEquals(true, model.isEstimatesBetweenTablesOk("", ""));
+      assertEquals(false, model.isEstimatesBetweenTablesOk("1.0", ""));
+   }
 }
