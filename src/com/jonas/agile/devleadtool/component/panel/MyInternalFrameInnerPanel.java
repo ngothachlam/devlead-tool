@@ -69,6 +69,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
          jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 
+         jiraModel.setBoardModel(boardModel);
+         
          DnDTreeModel model = new DnDTreeModel("LLU");
          DnDTree tree = new DnDTree(model);
          JiraSaxHandler saxHandler = new JiraSaxHandler();
