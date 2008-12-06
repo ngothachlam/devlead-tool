@@ -35,18 +35,18 @@ public class JiraTableModel extends MyTableModel {
       if (boardModel == null)
          return null;
 
-      log.debug("this.tempRow: " + this.tempRow + " row: " + row +  " column: " + column);
+      log.debug("The row being edited is " + row + " and we previously edited " + this.tempRow);
       if (this.tempRow != row) {
          String jira = (String) getValueAt(Column.Jira, row);
          rowWithJiraInBoard = boardModel.getRowWithJira(jira);
-         log.debug("jira: " + jira + " rowWithJira: " + rowWithJiraInBoard);
+         log.debug("... so we are editing a new row! Lets get the jira, which is " + jira + " and the board row for this jira: " + rowWithJiraInBoard);
          this.tempRow = row;
       }
 
       if (rowWithJiraInBoard == -1)
          return null;
-         
-      log.debug("column: " + column + " value: " + value);
+
+      log.debug("... The Jira was found in the board. We now want to check the " + column + " as it's value is \"" + value + "\"");
       switch (column) {
       // FIXME when the Jira column is selected - could we cache the jira row data in the board until all cols have been calculated here?
       case Jira:
@@ -64,7 +64,7 @@ public class JiraTableModel extends MyTableModel {
    }
 
    boolean isJiraNumberOk(Object boardValue, Object jiraValue) {
-      log.debug("boardValue: " + boardValue + " jiraValue: " + jiraValue);
+      log.debug("... We are trying to check if either the board or jira has numberical or string values (boardValue: " + boardValue + ", jiraValue: " + jiraValue +")");
       String boardString = boardValue == null ? null : boardValue.toString().trim();
       String jiraString = jiraValue == null ? null : jiraValue.toString().trim();
 
