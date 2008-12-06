@@ -49,7 +49,7 @@ public class BoardAndJiraSyncListener implements TableModelListener {
             }
          }
       } else if (isColumnsUpdatedEither(e, source, Column.Jira, Column.BoardStatus, Column.Release) && e.getType() == TableModelEvent.UPDATE) {
-         log.debug("Jira and update!");
+         log.debug("Jira and update!" +  e.getFirstRow() + " to " + e.getLastRow());
          for (int row = e.getFirstRow(); row <= e.getLastRow(); row++) {
             String jira = (String) source.getValueAt(Column.Jira, row);
             if (boardTable.doesJiraExist(jira)) {

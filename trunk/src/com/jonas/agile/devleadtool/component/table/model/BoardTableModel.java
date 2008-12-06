@@ -33,11 +33,11 @@ public class BoardTableModel extends MyTableModel {
       case Dev_Actual:
          if (stringValue == null || stringValue.trim().length() <= 0) {
             if (isBoardValueEither(row, Helper.getRequiredActuals())) {
-               return SwingUtil.cellRED;
+               return SwingUtil.cellRed;
             }
          } else {
             if (isBoardValueEither(row, Helper.getNonRequiredActuals())) {
-               return SwingUtil.cellRED;
+               return SwingUtil.cellRed;
             }
          }
          break;
@@ -45,7 +45,7 @@ public class BoardTableModel extends MyTableModel {
          if (stringValue == null || stringValue.trim().length() <= 0) {
             if (isBoardValueEither(row, Helper.getRequiredEstimates())) {
                log.debug("true!");
-               return SwingUtil.cellRED;
+               return SwingUtil.cellRed;
             }
          }
          break;

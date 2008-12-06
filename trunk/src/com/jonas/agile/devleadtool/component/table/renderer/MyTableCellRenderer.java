@@ -45,7 +45,7 @@ public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
          // @Override
          // public void run() {
          // TODO Auto-generated method stub
-         log.debug("value: " + value + " row " + row + " column " + column);
+//         log.debug("value: " + value + " row " + row + " column " + column);
          Color color = model.getColor(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column));
          if (color != null) {
             if (isSelected) {
