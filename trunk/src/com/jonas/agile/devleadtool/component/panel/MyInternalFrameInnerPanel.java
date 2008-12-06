@@ -26,9 +26,10 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
-import com.jonas.agile.devleadtool.component.listener.BoardAndJiraSyncListener;
+import com.jonas.agile.devleadtool.component.listener.TableSyncerFromBoardToJiraListener;
 import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
+import com.jonas.agile.devleadtool.component.listener.TableSyncerFromJiraToBoardListener;
 import com.jonas.agile.devleadtool.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -169,7 +170,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    }
 
    private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, MyTable jiraTable, DnDTree sprintTree) {
-      boardModel.addTableModelListener(new BoardAndJiraSyncListener(boardTable, jiraTable, boardModel));
+      boardModel.addTableModelListener(new TableSyncerFromBoardToJiraListener(boardTable, jiraTable, boardModel));
       boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
       boardTable.addListener(new MyTableListener());
       boardTable.addJiraEditorListener(new MyJiraCellEditorListener());
@@ -181,7 +182,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    }
 
    private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel, DnDTree sprintTree, MyTable boardTable) {
-      jiraModel.addTableModelListener(new BoardAndJiraSyncListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
+      jiraModel.addTableModelListener(new TableSyncerFromJiraToBoardListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
       jiraPanel.getTable().addJiraEditorListener(new MyJiraCellEditorListenerForPanel(boardModel));
       jiraPanel.getTable().addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, jiraPanel.getTable(), boardTable));
    }
@@ -368,6 +369,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          MyTable jiraTable = jiraPanel.getTable();
          jiraTable.setValueAt(BoardStatusValue.NA, jira, Column.B_BoardStatus);
          jiraTable.setValueAt("", jira, Column.B_Release);
+         jiraTable.fireTableDataChangedForJira(jira);
       }
    }
 }

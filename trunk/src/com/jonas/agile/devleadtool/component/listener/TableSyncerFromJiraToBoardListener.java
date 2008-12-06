@@ -20,23 +20,26 @@ import com.jonas.common.logging.MyLogger;
 /**
  * When the Board Table values are updated, we need to update the JiraTable's Release and BoardStatus values.
  */
-public class BoardAndJiraSyncListener implements TableModelListener {
+public class TableSyncerFromJiraToBoardListener implements TableModelListener {
 
-   private final Logger log = MyLogger.getLogger(BoardAndJiraSyncListener.class);
+   private final Logger log = MyLogger.getLogger(TableSyncerFromJiraToBoardListener.class);
    private final MyTable boardTable;
    private final MyTable jiraTable;
    private final BoardTableModel boardModel;
 
-   public BoardAndJiraSyncListener(MyTable boardTable, MyTable jiraTable, BoardTableModel boardModel) {
+   public TableSyncerFromJiraToBoardListener(MyTable boardTable, MyTable jiraTable, BoardTableModel boardModel) {
       this.boardTable = boardTable;
       this.jiraTable = jiraTable;
       this.boardModel = boardModel;
    }
 
-   public void tableChanged(TableModelEvent e) {
+   public void tableChanged(final TableModelEvent e) {
+      if(!isRightSource(e)){
+         return;
+      }
       log.debug("First row: " + e.getFirstRow() + " Last row: " + e.getLastRow() + " Column: " + e.getColumn() + "(all Columns:" + e.ALL_COLUMNS + ") EventType: "
             + e.getType() + "(insert: " + TableModelEvent.INSERT + ", update: " + TableModelEvent.UPDATE + ") Source: " + e.getSource());
-      MyTableModel source = (MyTableModel) e.getSource();
+      final MyTableModel source = (MyTableModel) e.getSource();
       if (e.getColumn() == e.ALL_COLUMNS && e.getType() == TableModelEvent.INSERT) {
          log.debug("All columns and insert!");
          for (int row = e.getFirstRow(); row <= e.getLastRow(); row++) {
@@ -48,7 +51,7 @@ public class BoardAndJiraSyncListener implements TableModelListener {
                updateJiraTable(jira, status, release);
             }
          }
-      } else if (notSameSourceAsLast(e) && isColumnsUpdatedEither(e, source, Column.Jira, Column.BoardStatus, Column.Release)
+      } else if (isColumnsUpdatedEither(e, source, Column.Jira, Column.BoardStatus, Column.Release)
             && e.getType() == TableModelEvent.UPDATE) {
          log.debug("Jira and update!" + e.getFirstRow() + " to " + e.getLastRow());
          for (int row = e.getFirstRow(); row <= e.getLastRow(); row++) {
@@ -60,21 +63,22 @@ public class BoardAndJiraSyncListener implements TableModelListener {
                updateJiraTable(jira, status, release);
             }
          }
-      } else if (notSameSourceAsLast(e) && isColumnsUpdatedEither(e, source, Column.Dev_Actual, Column.Dev_Estimate) && e.getType() == TableModelEvent.UPDATE) {
+      } else if (isColumnsUpdatedEither(e, source, Column.Dev_Actual, Column.Dev_Estimate) && e.getType() == TableModelEvent.UPDATE) {
          log.debug("Jira and update!" + e.getFirstRow() + " to " + e.getLastRow());
          SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-               jiraTable.fireTableDataChanged();
+               String jira = (String) source.getValueAt(Column.Jira, e.getFirstRow());
+               jiraTable.fireTableDataChangedForJira(jira);
             }
          });
       }
    }
 
-   private boolean notSameSourceAsLast(TableModelEvent e) {
-      return e.getSource() != jiraTable.getModel();
+   private boolean isRightSource(TableModelEvent e) {
+      return e.getSource() == boardTable.getModel();
    }
-
+   
    private boolean isColumnsUpdatedEither(TableModelEvent e, MyTableModel source, Column... columns) {
       for (int i = 0; i < columns.length; i++) {
          Column column = columns[i];
