@@ -15,6 +15,8 @@ public class JiraTableModel extends MyTableModel {
          Column.J_FixVersion, Column.J_Status, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent };
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
+   private int tempRow = -1;
+   private int rowWithJiraInBoard;
 
    public JiraTableModel() {
       super(columns, false);
@@ -32,20 +34,37 @@ public class JiraTableModel extends MyTableModel {
    public Color getColor(Object value, int row, Column column) {
       if (boardModel == null)
          return null;
-      String jira = (String) getValueAt(Column.Jira, row);
 
+      log.debug("this.tempRow: " + this.tempRow + " row: " + row +  " column: " + column);
+      if (this.tempRow != row) {
+         String jira = (String) getValueAt(Column.Jira, row);
+         rowWithJiraInBoard = boardModel.getRowWithJira(jira);
+         log.debug("jira: " + jira + " rowWithJira: " + rowWithJiraInBoard);
+         this.tempRow = row;
+      }
+
+      if (rowWithJiraInBoard == -1)
+         return null;
+         
+      log.debug("column: " + column + " value: " + value);
       switch (column) {
+      // FIXME when the Jira column is selected - could we cache the jira row data in the board until all cols have been calculated here?
+      case Jira:
+         return SwingUtil.cellGreen;
       case J_Dev_Estimate:
-         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, jira), value))
-            return SwingUtil.cellRED;
+         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, rowWithJiraInBoard), value))
+            return SwingUtil.cellRed;
+         break;
       case J_Dev_Spent:
-         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Actual, jira), value))
-            return SwingUtil.cellRED;
+         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Actual, rowWithJiraInBoard), value))
+            return SwingUtil.cellRed;
+         break;
       }
       return null;
    }
 
    boolean isJiraNumberOk(Object boardValue, Object jiraValue) {
+      log.debug("boardValue: " + boardValue + " jiraValue: " + jiraValue);
       String boardString = boardValue == null ? null : boardValue.toString().trim();
       String jiraString = jiraValue == null ? null : jiraValue.toString().trim();
 

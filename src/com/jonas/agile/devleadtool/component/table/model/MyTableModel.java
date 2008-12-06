@@ -23,7 +23,6 @@ public abstract class MyTableModel extends DefaultTableModel {
    protected Counter counter = new Counter();
    protected boolean editable = true;
    private ModelMarker modelMarkerDelegator;
-   private Boolean doNonRealTimeColors = Boolean.FALSE;
 
    protected MyTableModel(Column[] columns, boolean allowMarking) {
       super(columns, 0);
@@ -465,14 +464,6 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    public void clearMarked() {
       getMarker().clearMarked();
-   }
-
-   public void fireUpdateNonRealTimeColors() {
-      synchronized (doNonRealTimeColors) {
-         doNonRealTimeColors = true;
-         fireTableDataChanged();
-         doNonRealTimeColors = false;
-      }
    }
 
    public abstract Color getColor(Object value, int row, Column column);

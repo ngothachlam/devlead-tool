@@ -209,7 +209,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       @Override
       public void actionPerformed(ActionEvent e) {
          if (jiramodel.getRowCount() > 0) {
-            jiramodel.fireUpdateNonRealTimeColors();
+            jiramodel.fireTableDataChanged();
             log.debug("firing table data change");
          }
       }

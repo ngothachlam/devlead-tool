@@ -1,13 +1,17 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
+import java.awt.Color;
 import java.util.Vector;
+import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
+import com.jonas.common.SwingUtil;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
 public class JiraTableModelTest extends JonasTestCase {
 
-   private JiraTableModel model;
+   private JiraTableModel jiraModel;
 
    private void assertRow(String[] strings, MyTableModel model, int row) {
       int cols = 0;
@@ -41,63 +45,106 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.J_BuildNo);
       header.add(Column.J_Dev_Estimate);
       header.add(Column.J_Dev_Spent);
-      
+
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      String[] content = new String[] { "Jira", "Description", "B_BoardStatus", "J_Type", "B_Release", "J_Sprint", "J_FixVersion", "J_Status", "J_Resolution", "J_BuildNo", "J_Dev_Estimate", "J_Dev_Spent" };
+      String[] content = new String[] { "Jira", "Description", "B_BoardStatus", "J_Type", "B_Release", "J_Sprint", "J_FixVersion", "J_Status", "J_Resolution",
+            "J_BuildNo", "J_Dev_Estimate", "J_Dev_Spent" };
       contents.add(getTestRowVector(content, 0));
       contents.add(getTestRowVector(content, 1));
 
-      model = new JiraTableModel(contents, header);
+      jiraModel = new JiraTableModel(contents, header);
 
-      assertEquals(2, model.getRowCount());
-      assertEquals(12, model.getColumnCount());
-      assertRow(getTestRowArray(content, 0), model, 0);
-      assertRow(getTestRowArray(content, 1), model, 1);
+      assertEquals(2, jiraModel.getRowCount());
+      assertEquals(12, jiraModel.getColumnCount());
+      assertRow(getTestRowArray(content, 0), jiraModel, 0);
+      assertRow(getTestRowArray(content, 1), jiraModel, 1);
    }
 
    private String[] getTestRowArray(String[] content, int i) {
       String[] result = new String[content.length];
       for (int j = 0; j < content.length; j++) {
-         result[j] = content[j] + "-"+i;
+         result[j] = content[j] + "-" + i;
       }
       return result;
    }
 
    public void testShouldAddRowOk() {
-      model = new JiraTableModel();
+      jiraModel = new JiraTableModel();
       JiraIssue jiraIssue = new JiraIssue("Jira-1", "Summary 1", "Open", "Resolved", "Type");
       JiraIssue jiraIssue2 = new JiraIssue("Jira-2", "Summary 2", "Open", "Resolved", "Type");
-      model.addJira("Jira-1");
+      jiraModel.addJira("Jira-1");
    }
 
-   public void testShouldCompareEstimatesOk(){
-      model = new JiraTableModel();
-      assertEquals(true, model.isJiraNumberOk("", null));
-      assertEquals(true, model.isJiraNumberOk("", ""));
-      assertEquals(true, model.isJiraNumberOk("", "0"));
-      assertEquals(true, model.isJiraNumberOk("", "0.0"));
-      assertEquals(false, model.isJiraNumberOk("", "0.1"));
+   public void testShouldGetColorOk() {
+      jiraModel = new JiraTableModel();
+
+      assertEquals(null, jiraModel.getColor("llu-1", 0, Column.Jira));
+
+      // add llu-1 and llu-2 to jiraModel 
+      jiraModel.addJira("llu-1");
+      jiraModel.addJira("llu-2");
       
-      assertEquals(true, model.isJiraNumberOk(null, ""));
-      assertEquals(true, model.isJiraNumberOk(null, "0"));
-      assertEquals(true, model.isJiraNumberOk(null, "0.0"));
-      assertEquals(false, model.isJiraNumberOk(null, "0.1"));
+      assertEquals(null, jiraModel.getColor("llu-1", 0, Column.Jira));
+      assertEquals(null, jiraModel.getColor("llu-2", 0, Column.Jira));
       
-      assertEquals(false, model.isJiraNumberOk("1.0", null));
-      assertEquals(false, model.isJiraNumberOk("1.0", ""));
-      assertEquals(false, model.isJiraNumberOk("1.0", "0"));
-      assertEquals(false, model.isJiraNumberOk("1.0", "0.0"));
+      //add jira llu-2 and llu-3 to boardModel with llu-2 having board's dev_estimate set to '1'
+      testBoardModel.addJira("llu-2");
+      testBoardModel.addJira("llu-3");
+      testBoardModel.setValueAt("1", 0, Column.Dev_Estimate);
+      jiraModel.setBoardModel(testBoardModel);
+
+      assertEquals(null, jiraModel.getColor("llu-1", 0, Column.Jira));
+      assertEquals(null, jiraModel.getColor("est1", 0, Column.J_Dev_Estimate));
+      assertEquals(null, jiraModel.getColor("est1", 0, Column.J_Dev_Spent));
       
-      assertEquals(false, model.isJiraNumberOk("0.9", "1.0"));
-      assertEquals(false, model.isJiraNumberOk("1.0", "0.9"));
-      assertEquals(true, model.isJiraNumberOk("1.0", "1.0"));
-      assertEquals(false, model.isJiraNumberOk("1.1", "1.0"));
-      assertEquals(false, model.isJiraNumberOk("1.0", "1.1"));
+      assertEquals(SwingUtil.cellGreen, jiraModel.getColor("llu-2", 1, Column.Jira));
+      assertEquals(SwingUtil.cellRed, jiraModel.getColor("est2", 1, Column.J_Dev_Estimate));
+      assertEquals(null, jiraModel.getColor("est2", 1, Column.J_Dev_Spent));
+   }
+
+   public void testShouldCompareEstimatesOk() {
+      jiraModel = new JiraTableModel();
+      assertEquals(true, jiraModel.isJiraNumberOk("", null));
+      assertEquals(true, jiraModel.isJiraNumberOk("", ""));
+      assertEquals(true, jiraModel.isJiraNumberOk("", "0"));
+      assertEquals(true, jiraModel.isJiraNumberOk("", "0.0"));
+      assertEquals(false, jiraModel.isJiraNumberOk("", "0.1"));
+
+      assertEquals(true, jiraModel.isJiraNumberOk(null, ""));
+      assertEquals(true, jiraModel.isJiraNumberOk(null, "0"));
+      assertEquals(true, jiraModel.isJiraNumberOk(null, "0.0"));
+      assertEquals(false, jiraModel.isJiraNumberOk(null, "0.1"));
+
+      assertEquals(false, jiraModel.isJiraNumberOk("1.0", null));
+      assertEquals(false, jiraModel.isJiraNumberOk("1.0", ""));
+      assertEquals(false, jiraModel.isJiraNumberOk("1.0", "0"));
+      assertEquals(false, jiraModel.isJiraNumberOk("1.0", "0.0"));
+
+      assertEquals(false, jiraModel.isJiraNumberOk("0.9", "1.0"));
+      assertEquals(false, jiraModel.isJiraNumberOk("1.0", "0.9"));
+      assertEquals(true, jiraModel.isJiraNumberOk("1.0", "1.0"));
+      assertEquals(false, jiraModel.isJiraNumberOk("1.1", "1.0"));
+      assertEquals(false, jiraModel.isJiraNumberOk("1.0", "1.1"));
+
+      assertEquals(true, jiraModel.isJiraNumberOk("merge", null));
+      assertEquals(true, jiraModel.isJiraNumberOk("merge", ""));
+      assertEquals(true, jiraModel.isJiraNumberOk("merge", "0"));
+      assertEquals(false, jiraModel.isJiraNumberOk("merge", "0.1"));
+      assertEquals(false, jiraModel.isJiraNumberOk("merge", "1.1"));
+   }
+
+   private Column[] columns = { Column.Jira, Column.Description, Column.Dev_Actual, Column.Dev_Estimate };
+   public TestTableModelTemp testBoardModel = new TestTableModelTemp(columns);
+   class TestTableModelTemp extends MyTableModel {
       
-      assertEquals(true, model.isJiraNumberOk("merge", null));
-      assertEquals(true, model.isJiraNumberOk("merge", ""));
-      assertEquals(true, model.isJiraNumberOk("merge", "0"));
-      assertEquals(false, model.isJiraNumberOk("merge", "0.1"));
-      assertEquals(false, model.isJiraNumberOk("merge", "1.1"));
+      public TestTableModelTemp(Column[] columns) {
+         super(columns, false);
+      }
+
+      @Override
+      public Color getColor(Object value, int row, Column column) {
+         return null;
+      }
+
    }
 }
