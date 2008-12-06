@@ -375,4 +375,8 @@ public class MyTable extends JTable {
 
    }
 
+   public void fireTableDataChanged() {
+      model.fireTableDataChanged();
+   }
+
 }
