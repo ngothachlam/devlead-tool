@@ -151,6 +151,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    final public boolean doesJiraExist(String name) {
+      log.debug("does " + name + " exist in " + getClass());
       for (int row = 0; row < getRowCount(); row++) {
          if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
             return true;
@@ -467,8 +468,8 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    public abstract Color getColor(Object value, int row, Column column);
-   
-   public Color getColor(Object value, int row, int column){
+
+   public Color getColor(Object value, int row, int column) {
       return getColor(value, row, getColumn(column));
    }
 

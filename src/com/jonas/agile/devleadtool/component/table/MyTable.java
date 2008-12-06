@@ -103,14 +103,14 @@ public class MyTable extends JTable {
 
    @Override
    public String getToolTipText(MouseEvent event) {
-         Point p = event.getPoint();
-         int colIndex = columnAtPoint(p);
-         int rowIndex = rowAtPoint(p);
-         if(rowIndex ==-1 || colIndex == -1){
-            return super.getToolTipText(event);
-         }
-         Object valueAt = getValueAt(rowIndex, colIndex);
-         return valueAt == null || valueAt.toString().length() == 0 ? " ": valueAt.toString();
+      Point p = event.getPoint();
+      int colIndex = columnAtPoint(p);
+      int rowIndex = rowAtPoint(p);
+      if (rowIndex == -1 || colIndex == -1) {
+         return super.getToolTipText(event);
+      }
+      Object valueAt = getValueAt(rowIndex, colIndex);
+      return valueAt == null || valueAt.toString().length() == 0 ? " " : valueAt.toString();
    }
 
    MyTable(String title, boolean allowMarking) {
@@ -339,11 +339,11 @@ public class MyTable extends JTable {
       }
 
       private boolean isMarked(int row) {
-         if(allowMarking == false)
+         if (allowMarking == false)
             return false;
          if (row >= getRowCount() || row == -1)
             return false;
-         return model.isMarked( convertRowIndexToModel(row) );
+         return model.isMarked(convertRowIndexToModel(row));
       }
 
       private void mark(int row) {
@@ -375,8 +375,14 @@ public class MyTable extends JTable {
 
    }
 
-   public void fireTableDataChanged() {
-      model.fireTableDataChanged();
+   // public void fireTableDataChanged() {
+   // model.fireTableDataChanged();
+   // }
+
+   public void fireTableDataChangedForJira(String jira) {
+      int row = getRowWithJira(jira);
+      if (row > -1)
+         model.fireTableRowsUpdated(convertRowIndexToModel(row), convertRowIndexToModel(row));
    }
 
 }
