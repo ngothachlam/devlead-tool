@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,11 +24,15 @@ public abstract class MyTableModel extends DefaultTableModel {
    protected Counter counter = new Counter();
    protected boolean editable = true;
    private ModelMarker modelMarkerDelegator;
+   private JiraRowState jiraRowState;
 
    protected MyTableModel(Column[] columns, boolean allowMarking) {
       super(columns, 0);
       initiateColumns(columns);
+
+      jiraRowState = new JiraRowState();
       modelMarkerDelegator = new ModelMarker();
+      addTableModelListener(jiraRowState);
       addTableModelListener(modelMarkerDelegator);
    }
 
@@ -44,7 +49,9 @@ public abstract class MyTableModel extends DefaultTableModel {
       this.setDataVector(newDataVector, newHeaderVector);
       log.debug("Initiated from existing contents and header!");
 
+      jiraRowState = new JiraRowState();
       modelMarkerDelegator = new ModelMarker();
+      addTableModelListener(jiraRowState);
       addTableModelListener(modelMarkerDelegator);
    }
 
@@ -152,28 +159,17 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public boolean doesJiraExist(String name) {
       log.debug("does " + name + " exist in " + getClass());
-      for (int row = 0; row < getRowCount(); row++) {
-         if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
-            return true;
-         }
-      }
-      return false;
+      return jiraRowState.contains(name);
+      // for (int row = 0; row < getRowCount(); row++) {
+      // if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
+      // return true;
+      // }
+      // }
+      // return false;
    }
 
    final public Column getColumn(int columnNo) {
       return Column.getEnum(getColumnName(columnNo));
-   }
-
-   @Override
-   public void insertRow(int row, Object[] rowData) {
-      if (!doesJiraExist((String) rowData[0]))
-         super.insertRow(row, rowData);
-   }
-
-   @Override
-   public void insertRow(int row, Vector rowData) {
-      // if (!doesJiraExist((String) rowData.get(0)))
-      super.insertRow(row, rowData);
    }
 
    final public Class<?> getColumnClass(int columnIndex) {
@@ -227,12 +223,15 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    final public int getRowWithJira(String name) {
-      for (int row = 0; row < getRowCount(); row++) {
-         if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
-            return row;
-         }
-      }
-      return -1;
+      // for (int row = 0; row < getRowCount(); row++) {
+      // if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
+      // return row;
+      // }
+      // }
+      // return -1;
+      int indexOf = jiraRowState.indexOf(name);
+      log.debug("row for jira " + name + " in " + getClass() + " is " + indexOf);
+      return indexOf;
    }
 
    final public Object getValueAt(Column column, int row) {
@@ -389,6 +388,53 @@ public abstract class MyTableModel extends DefaultTableModel {
       return modelMarkerDelegator;
    }
 
+   private class JiraRowState implements TableModelListener {
+      List<String> jiras = new ArrayList<String>();;
+
+      private JiraRowState() {
+         for (int row = 0; row < getRowCount(); row++) {
+            jiras.add((String) getValueAt(row, 0));
+         }
+      }
+
+      @Override
+      public void tableChanged(TableModelEvent e) {
+         int firstRow = e.getFirstRow();
+         int lastRow = e.getLastRow();
+         switch (e.getType()) {
+         case TableModelEvent.INSERT:
+            log.debug("insert firstRow: " + firstRow + " lastRow: " + lastRow);
+            for (int row = firstRow; row <= lastRow; row++) {
+               jiras.add((String) getValueAt(row, 0));
+            }
+            break;
+         case TableModelEvent.DELETE:
+            log.debug("delete firstRow: " + firstRow + " lastRow: " + lastRow);
+            for (int row = firstRow; row <= lastRow; row++) {
+               jiras.remove(row);
+            }
+            break;
+         case TableModelEvent.UPDATE:
+            log.debug("update firstRow: " + firstRow + " lastRow: " + lastRow);
+            for (int row = firstRow; row <= lastRow; row++) {
+               if (e.getColumn() == TableModelEvent.ALL_COLUMNS || e.getColumn() == 0)
+                  jiras.remove(row);
+               jiras.add(row, (String) getValueAt(row, 0));
+            }
+            break;
+         }
+      }
+
+      public int indexOf(String name) {
+         return jiras.indexOf(name);
+      }
+
+      public boolean contains(String name) {
+         return jiras.contains(name);
+      }
+
+   }
+
    private class ModelMarker implements TableModelListener {
 
       private Map<Integer, Boolean> marked = new HashMap<Integer, Boolean>();
@@ -517,6 +563,18 @@ public abstract class MyTableModel extends DefaultTableModel {
    // }
    // return result;
    // }
+
+   @Override
+   public void removeRow(int row) {
+      super.removeRow(row);
+   }
+
+   @Override
+   public void insertRow(int row, Vector rowData) {
+      if (!doesJiraExist((String) rowData.get(0))) {
+         super.insertRow(row, rowData);
+      }
+   }
 }
 
 
