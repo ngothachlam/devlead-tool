@@ -37,6 +37,7 @@ public class JiraTableModel extends MyTableModel {
 
       log.debug("The row being edited is " + row + " and we previously edited " + this.tempRow);
       if (this.tempRow != row) {
+         log.debug("trace...");
          String jira = (String) getValueAt(Column.Jira, row);
          rowWithJiraInBoard = boardModel.getRowWithJira(jira);
          log.debug("... so we are editing a new row! Lets get the jira, which is " + jira + " and the board row for this jira: " + rowWithJiraInBoard);
@@ -68,37 +69,39 @@ public class JiraTableModel extends MyTableModel {
       String boardString = boardValue == null ? null : boardValue.toString().trim();
       String jiraString = jiraValue == null ? null : jiraValue.toString().trim();
 
-      Double boardDouble = null;
-      Double jiraDouble = null;
-
       if (boardString == null && jiraString == null) {
          return true;
       } else if (boardString == null) {
-         jiraDouble = CalculatorHelper.getDouble(jiraString);
-         if (jiraDouble == null || jiraDouble == 0d) {
-            return true;
-         }
-         return false;
+         return isDoubleValueNullOrZero(jiraString);
       } else if (jiraString == null) {
-         boardDouble = CalculatorHelper.getDouble(boardString);
-         if (boardDouble == null || boardDouble == 0d) {
-            return true;
-         }
-         return false;
+         return isDoubleValueNullOrZero(boardString);
       }
-
-      boardDouble = CalculatorHelper.getDouble(boardString);
-      jiraDouble = CalculatorHelper.getDouble(jiraString);
 
       if (boardValue.equals(jiraValue))
          return true;
-      if (boardDouble == null) {
+      
+      Double boardDouble = null;
+      Double jiraDouble = null;
+      
+      boardDouble = CalculatorHelper.getDouble(boardString);
+      jiraDouble = CalculatorHelper.getDouble(jiraString);
+      
+      if (boardDouble == null || boardDouble == 0d) {
          if ((jiraDouble == null || jiraDouble == 0d))
             return true;
          return false;
       }
       if (boardDouble.equals(jiraDouble))
          return true;
+      return false;
+   }
+
+   private boolean isDoubleValueNullOrZero(String jiraString) {
+      Double jiraDouble;
+      jiraDouble = CalculatorHelper.getDouble(jiraString);
+      if (jiraDouble == null || jiraDouble == 0d) {
+         return true;
+      }
       return false;
    }
 
