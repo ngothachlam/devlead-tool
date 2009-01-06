@@ -16,6 +16,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.Timer;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.tree.TreePath;
@@ -71,7 +72,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 
          jiraModel.setBoardModel(boardModel);
-         
+
          DnDTreeModel model = new DnDTreeModel("LLU");
          DnDTree tree = new DnDTree(model);
          JiraSaxHandler saxHandler = new JiraSaxHandler();
@@ -151,7 +152,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       JPanel jiraMainPanel = new JPanel(new BorderLayout());
       jiraMainPanel.add(jiraPanel, BorderLayout.CENTER);
       JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
-      jiraButtonPanel.add(new JButton(new HighlightIssuesAction("Higlight Issues", (MyTableModel) jiraPanel.getTable().getModel())));
+      jiraButtonPanel.add(new JCheckBox(new HighlightIssuesAction("Higlight Issues", (JiraTableModel) jiraPanel.getTable().getModel())));
       jiraMainPanel.add(jiraButtonPanel, BorderLayout.SOUTH);
 
       MyTable boardTable = boardPanel.getTable();
@@ -200,18 +201,23 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    }
 
    private final class HighlightIssuesAction extends AbstractAction {
-      private final MyTableModel jiramodel;
+      private final JiraTableModel jiramodel;
 
-      private HighlightIssuesAction(String name, MyTableModel jiramodel) {
+      private HighlightIssuesAction(String name, JiraTableModel jiramodel) {
          super(name);
          this.jiramodel = jiramodel;
       }
 
       @Override
       public void actionPerformed(ActionEvent e) {
-         if (jiramodel.getRowCount() > 0) {
+         JCheckBox button = (JCheckBox) e.getSource();
+         if (button.isSelected()) {
+            jiramodel.setRenderColors(true);
             jiramodel.fireTableDataChanged();
-            log.debug("firing table data change");
+            log.debug("Setting rendering colors to TRUE");
+         } else {
+            jiramodel.setRenderColors(false);
+            log.debug("Setting rendering colors to FALSE");
          }
       }
    }
@@ -318,8 +324,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          MyEditor editor = (MyEditor) e.getSource();
          MyTable table = boardPanel.getTable();
          MyTableModel model = (MyTableModel) table.getModel();
-         model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor
-               .getColEdited()));
+         model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor.getColEdited()));
       }
    }
 
@@ -329,8 +334,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
       public void editingStopped(ChangeEvent e) {
          JiraCellEditor editor = (JiraCellEditor) e.getSource();
-         log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \""
-               + editor.getValue() + "\" and old value: \"" + editor.getOldValue() + "\"");
+         log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \"" + editor.getValue()
+               + "\" and old value: \"" + editor.getOldValue() + "\"");
          MyTable jiraTable = jiraPanel.getTable();
          jiraTable.setValueAt(BoardStatusValue.NA, (String) editor.getOldValue(), Column.B_BoardStatus);
          jiraTable.setValueAt("", (String) editor.getOldValue(), Column.B_Release);
@@ -349,8 +354,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
       public void editingStopped(ChangeEvent e) {
          JiraCellEditor editor = (JiraCellEditor) e.getSource();
-         log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \""
-               + editor.getValue() + "\" and old value: \"" + editor.getOldValue() + "\"");
+         log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \"" + editor.getValue()
+               + "\" and old value: \"" + editor.getOldValue() + "\"");
          MyTable jiraTable = jiraPanel.getTable();
 
          String jira = (String) editor.getValue();

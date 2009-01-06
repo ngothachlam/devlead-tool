@@ -17,6 +17,7 @@ public class JiraTableModel extends MyTableModel {
    private MyTableModel boardModel;
    private int tempRow = -1;
    private int rowWithJiraInBoard;
+   private boolean renderColors = false;
 
    public JiraTableModel() {
       super(columns, false);
@@ -30,8 +31,17 @@ public class JiraTableModel extends MyTableModel {
       this.boardModel = boardModel;
    }
 
+   public void setRenderColors(boolean renderColors){
+      this.renderColors = renderColors;
+   }
+   
    @Override
    public Color getColor(Object value, int row, Column column) {
+      
+      if(renderColors != true){
+         return null;
+      }
+      
       if (boardModel == null)
          return null;
 
