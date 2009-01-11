@@ -173,9 +173,9 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, MyTable jiraTable, DnDTree sprintTree) {
       boardModel.addTableModelListener(new TableSyncerFromBoardToJiraListener(boardTable, jiraTable, boardModel));
       boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
-      boardTable.addListener(new MyTableListener());
-      boardTable.addJiraEditorListener(new MyJiraCellEditorListener());
-      boardTable.addCheckBoxEditorListener(new MyCheckboxCellEditorListener());
+      boardTable.addListener(new MyBoardTableListener());
+      boardTable.addJiraEditorListener(new MyBoardTableJiraEditorListener());
+      boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
    }
 
    private void setSprintDataListener(final DnDTree sprintTree, final MyTable boardTable, final MyTable jiraTable) {
@@ -316,7 +316,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       }
    }
 
-   private final class MyCheckboxCellEditorListener implements CellEditorListener {
+   private final class MyBoardTableCheckboxEditorListener implements CellEditorListener {
       public void editingCanceled(ChangeEvent e) {
       }
 
@@ -328,7 +328,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       }
    }
 
-   private final class MyJiraCellEditorListener implements CellEditorListener {
+   private final class MyBoardTableJiraEditorListener implements CellEditorListener {
       public void editingCanceled(ChangeEvent e) {
       }
 
@@ -368,7 +368,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       }
    }
 
-   private final class MyTableListener implements TableListener {
+   private final class MyBoardTableListener implements TableListener {
       @Override
       public void jiraRemoved(String jira) {
          MyTable jiraTable = jiraPanel.getTable();
