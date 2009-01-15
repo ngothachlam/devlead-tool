@@ -174,7 +174,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       boardModel.addTableModelListener(new TableSyncerFromBoardToJiraListener(boardTable, jiraTable, boardModel));
       boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
       boardTable.addListener(new MyBoardTableListener());
-      boardTable.addJiraEditorListener(new MyBoardTableJiraEditorListener());
+      boardTable.addJiraEditorListener(new MyBoardTableListenerForJiraNameEditing());
       boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
    }
 
@@ -184,7 +184,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel, DnDTree sprintTree, MyTable boardTable) {
       jiraModel.addTableModelListener(new TableSyncerFromJiraToBoardListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
-      jiraPanel.getTable().addJiraEditorListener(new MyJiraCellEditorListenerForPanel(boardModel));
+      jiraPanel.getTable().addJiraEditorListener(new MyJiraTableListenerForJiraNameEditing(boardModel));
       jiraPanel.getTable().addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, jiraPanel.getTable(), boardTable));
    }
 
@@ -328,7 +328,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       }
    }
 
-   private final class MyBoardTableJiraEditorListener implements CellEditorListener {
+   private final class MyBoardTableListenerForJiraNameEditing implements CellEditorListener {
       public void editingCanceled(ChangeEvent e) {
       }
 
@@ -342,10 +342,10 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       }
    }
 
-   private final class MyJiraCellEditorListenerForPanel implements CellEditorListener {
+   private final class MyJiraTableListenerForJiraNameEditing implements CellEditorListener {
       private final BoardTableModel boardModel;
 
-      private MyJiraCellEditorListenerForPanel(BoardTableModel boardModel) {
+      private MyJiraTableListenerForJiraNameEditing(BoardTableModel boardModel) {
          this.boardModel = boardModel;
       }
 

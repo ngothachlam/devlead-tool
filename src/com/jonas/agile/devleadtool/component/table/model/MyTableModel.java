@@ -24,15 +24,12 @@ public abstract class MyTableModel extends DefaultTableModel {
    protected Counter counter = new Counter();
    protected boolean editable = true;
    private ModelMarker modelMarkerDelegator;
-   private JiraRowState jiraRowState;
 
    protected MyTableModel(Column[] columns, boolean allowMarking) {
       super(columns, 0);
       initiateColumns(columns);
 
-      jiraRowState = new JiraRowState();
       modelMarkerDelegator = new ModelMarker();
-      addTableModelListener(jiraRowState);
       addTableModelListener(modelMarkerDelegator);
    }
 
@@ -49,9 +46,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       this.setDataVector(newDataVector, newHeaderVector);
       log.debug("Initiated from existing contents and header!");
 
-      jiraRowState = new JiraRowState();
       modelMarkerDelegator = new ModelMarker();
-      addTableModelListener(jiraRowState);
       addTableModelListener(modelMarkerDelegator);
    }
 
@@ -159,13 +154,12 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public boolean doesJiraExist(String name) {
       log.debug("does " + name + " exist in " + getClass());
-      return jiraRowState.contains(name);
-      // for (int row = 0; row < getRowCount(); row++) {
-      // if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
-      // return true;
-      // }
-      // }
-      // return false;
+       for (int row = 0; row < getRowCount(); row++) {
+       if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
+       return true;
+       }
+       }
+       return false;
    }
 
    final public Column getColumn(int columnNo) {
@@ -223,15 +217,15 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    final public int getRowWithJira(String name) {
-      // for (int row = 0; row < getRowCount(); row++) {
-      // if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
-      // return row;
-      // }
-      // }
-      // return -1;
-      int indexOf = jiraRowState.indexOf(name);
-      log.debug("row for jira " + name + " in " + getClass() + " is " + indexOf);
-      return indexOf;
+       for (int row = 0; row < getRowCount(); row++) {
+       if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
+       return row;
+       }
+       }
+       return -1;
+//      int indexOf = jiraRowState.indexOf(name);
+//      log.debug("row for jira " + name + " in " + getClass() + " is " + indexOf);
+//      return indexOf;
    }
 
    final public Object getValueAt(Column column, int row) {
