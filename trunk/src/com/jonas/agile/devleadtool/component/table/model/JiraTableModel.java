@@ -7,7 +7,6 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.CalculatorHelper;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
-import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
 
 public class JiraTableModel extends MyTableModel {
 
