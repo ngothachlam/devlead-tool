@@ -332,6 +332,10 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       public void editingCanceled(ChangeEvent e) {
       }
 
+      /*
+       * If the editing of the jira cell in the board table is being stopped...
+       * @see javax.swing.event.CellEditorListener#editingStopped(javax.swing.event.ChangeEvent)
+       */
       public void editingStopped(ChangeEvent e) {
          JiraCellEditor editor = (JiraCellEditor) e.getSource();
          log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \"" + editor.getValue()
@@ -352,6 +356,10 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       public void editingCanceled(ChangeEvent e) {
       }
 
+      /*
+       * If the editing of the jira cell in the jira table is being stopped...
+       * @see javax.swing.event.CellEditorListener#editingStopped(javax.swing.event.ChangeEvent)
+       */
       public void editingStopped(ChangeEvent e) {
          JiraCellEditor editor = (JiraCellEditor) e.getSource();
          log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \"" + editor.getValue()
