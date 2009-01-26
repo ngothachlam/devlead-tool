@@ -53,13 +53,10 @@ public class XmlParserImpl implements XmlParser {
       try {
          HttpClient httpClient = new HttpClient();
          String url = project.getJiraClient().getBaseUrl() + "/secure/IssueNavigator.jspa?view=rss&pid="+project.getId()+"&reset=true&decorator=none&tempMax=" + maxResults;
-         if(sprint != null)
+         if(sprint != null){
             url = url +"&customfield_10282=" + sprint;
-         //FIXME passin the fixVersion!
-         Object fixVersion = null;
-         if(fixVersion  != null){
-            url = url +"&fixfor" + fixVersion;
-         } else{
+         } else {
+            url = url + "&sorter/field=customfield_10282&sorter/order=ASC";
             url = url +"&fixfor=-2";
          }
          log.debug("calling " + url);

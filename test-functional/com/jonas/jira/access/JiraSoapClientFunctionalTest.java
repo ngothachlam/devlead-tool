@@ -39,4 +39,9 @@ public class JiraSoapClientFunctionalTest extends TestCase {
       System.out.println(filter.getId());
       System.out.println(filter.getXml());
    }
+   
+   public void testProgressWorkflow() throws RemoteAuthenticationException, RemoteException, java.rmi.RemoteException{
+      clientAolBB.login();
+      clientAolBB.testProgressWorkflow("LLU-4365");
+   }
 }

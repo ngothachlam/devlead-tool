@@ -18,7 +18,7 @@ public class DnDTreeBuilder {
 
    private final XmlParser parser;
 
-   public DnDTreeBuilder(XmlParser parser, DnDTree tree, JFrame parentFrame) {
+   public DnDTreeBuilder(XmlParser parser) {
       super();
       this.parser = parser;
    }

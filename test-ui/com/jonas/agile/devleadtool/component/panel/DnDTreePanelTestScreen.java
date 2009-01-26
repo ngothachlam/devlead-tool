@@ -24,7 +24,7 @@ public class DnDTreePanelTestScreen {
          // XmlParser parser = new XmlParserImpl(saxHandler, 100);
          XmlParser parser = new XmlParserLargeMock(saxHandler);
 
-         DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser, tree, frame);
+         DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
 
          DnDTreePanel main = new DnDTreePanel(tree, dndTreeBuilder, frame);
 
