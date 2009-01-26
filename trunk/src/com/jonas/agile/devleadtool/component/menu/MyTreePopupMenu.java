@@ -194,7 +194,7 @@ public class MyTreePopupMenu extends MyPopupMenu {
          if (paths.length == 1 && paths[0].getLastPathComponent().equals(tree.getModel().getRoot())) {
             log.debug("all sprints");
             JiraProject project = JiraProject.getProjectByKey(tree.getModel().getRoot().toString());
-            dndTreeBuilder.buildTree(tree, null, project);
+            dndTreeBuilder.buildTree(null, project);
          } else {
             log.debug("not all sprints");
             for (int i = 0; i < paths.length; i++) {
@@ -206,7 +206,7 @@ public class MyTreePopupMenu extends MyPopupMenu {
                   log.debug("SprintNode: " + sprintNode);
                   tree.removeAllChildren(sprintNode);
                   JiraProject project = JiraProject.getProjectByKey(sprintNode.getParent().toString());
-                  dndTreeBuilder.buildTree(tree, sprintNode.getSprintName(), project);
+                  dndTreeBuilder.buildTree(sprintNode.getSprintName(), project);
                } else {
                   failedSprints.add(selectedElement.toString());
                }
@@ -221,7 +221,7 @@ public class MyTreePopupMenu extends MyPopupMenu {
 
       private void downloadAllSprints() {
          JiraProject project = JiraProject.getProjectByKey(tree.getModel().getRoot().toString());
-         dndTreeBuilder.buildTree(tree, null, project);
+         dndTreeBuilder.buildTree(null, project);
       }
 
       private StringBuffer appendToSprint(StringBuffer sb, List<String> failedSprints, String string) {
