@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.NotJiraException;
@@ -37,32 +38,71 @@ public class MyTreePopupMenu extends MyPopupMenu {
       this.dndTreeBuilder = dndTreeBuilder;
       add(new JMenuItem_Browse(tree, parentFrame));
       add(new JMenuItem_Sync(tree, parentFrame));
-      
-      dndTreeBuilder.addParseListener(new SprintParseListener(){
+      add(new Separator());
+      add(new JMenuItem_Expand("Expand", tree));
+
+      dndTreeBuilder.addParseListener(new SprintParseListener() {
          ProgressDialog progressDialog;
+
          @Override
          public void loggingInToJiraServer() {
-            progressDialog = new ProgressDialog(parentFrame, "Downloading Sprint Information", "Starting to download sprint info from Jira Server!", 0);
+            progressDialog = new ProgressDialog(parentFrame, "Downloading Sprint Information",
+                  "Starting to download sprint info from Jira Server!", 0);
             progressDialog.setIndeterminate(false);
          }
+
          @Override
          public void accessingDataOnJiraServer() {
             progressDialog.setNote("Accessing data on Jira Server!");
          }
+
          @Override
          public void notifyParsingStarted() {
             progressDialog.setNote("Reading data passed from Jira Server!");
          }
+
          @Override
          public void notifyParsed(JiraDTO jira) {
             progressDialog.setNote("Read in data from " + jira.getKey());
          }
+
          @Override
          public void notifyParsingFinished() {
             progressDialog.setNote("Finished accessing the Jira Server!");
-            progressDialog.setCompleteWithDelay(500); 
+            progressDialog.setCompleteWithDelay(500);
          }
       });
+   }
+
+   private class JMenuItem_Expand extends JMenuItem implements ActionListener {
+      private final DnDTree tree;
+
+      private JMenuItem_Expand(String name, DnDTree tree) {
+         super(name);
+         this.tree = tree;
+         addActionListener(this);
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         int[] selectionPaths = tree.getSelectionRows();
+         for (int i = 0; i < selectionPaths.length; i++) {
+            int row = selectionPaths[i];
+            tree.expandRow(row);
+            int depth = tree.getPathForRow(row).getPathCount();
+            log.debug("depth: " + depth + " row: " + row);
+            while (++row < tree.getRowCount() && tree.getPathForRow(row).getPathCount() > depth) {
+               log.debug("* depth: " + tree.getPathForRow(row).getPathCount() + " row: " + row);
+               // if (tree.getPathForRow(row).getPathCount() == depth + 1) {
+               if (tree.getPathForRow(row).getPathCount() == depth + 1) {
+                  log.debug(" * updated");
+                  tree.expandRow(row);
+               }
+            }
+         }
+
+      }
+
    }
 
    private abstract class JMenuItemAbstr extends JMenuItem implements ActionListener {
@@ -86,11 +126,11 @@ public class MyTreePopupMenu extends MyPopupMenu {
       @Override
       public void actionPerformed(ActionEvent e) {
          int[] rows = tree.getSelectionRows();
-         if (rows == null || rows.length == 0){
+         if (rows == null || rows.length == 0) {
             AlertDialog.alertMessage(frame, "No rows selected or table empty!");
             return;
          }
-         
+
          StringBuffer sb = new StringBuffer();
          for (int j = 0; j < rows.length; j++) {
             TreePath jiraPath = tree.getPathForRow(rows[j]);
@@ -144,7 +184,7 @@ public class MyTreePopupMenu extends MyPopupMenu {
       public void actionPerformed(ActionEvent e) {
          StringBuffer sb = null;
          TreePath[] paths = tree.getSelectionPaths();
-         if (paths == null|| paths.length == 0) {
+         if (paths == null || paths.length == 0) {
             AlertDialog.alertMessage(frame, "No rows selected or table empty!");
             return;
          }
@@ -153,7 +193,8 @@ public class MyTreePopupMenu extends MyPopupMenu {
          log.debug(paths);
          if (paths.length == 1 && paths[0].getLastPathComponent().equals(tree.getModel().getRoot())) {
             log.debug("all sprints");
-            downloadAllSprints();
+            JiraProject project = JiraProject.getProjectByKey(tree.getModel().getRoot().toString());
+            dndTreeBuilder.buildTree(tree, null, project);
          } else {
             log.debug("not all sprints");
             for (int i = 0; i < paths.length; i++) {

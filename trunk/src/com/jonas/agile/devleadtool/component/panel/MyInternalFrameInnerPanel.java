@@ -174,7 +174,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       boardModel.addTableModelListener(new TableSyncerFromBoardToJiraListener(boardTable, jiraTable, boardModel));
       boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
       boardTable.addListener(new MyBoardTableListener());
-      boardTable.addJiraEditorListener(new MyBoardTableListenerForJiraNameEditing());
+//      boardTable.addJiraEditorListener(new MyBoardTableListenerForJiraNameEditing());
       boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
    }
 
@@ -327,24 +327,24 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor.getColEdited()));
       }
    }
-
-   private final class MyBoardTableListenerForJiraNameEditing implements CellEditorListener {
-      public void editingCanceled(ChangeEvent e) {
-      }
-
-      /*
-       * If the editing of the jira cell in the board table is being stopped...
-       * @see javax.swing.event.CellEditorListener#editingStopped(javax.swing.event.ChangeEvent)
-       */
-      public void editingStopped(ChangeEvent e) {
-         JiraCellEditor editor = (JiraCellEditor) e.getSource();
-         log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \"" + editor.getValue()
-               + "\" and old value: \"" + editor.getOldValue() + "\"");
-         MyTable jiraTable = jiraPanel.getTable();
-         jiraTable.setValueAt(BoardStatusValue.NA, (String) editor.getOldValue(), Column.B_BoardStatus);
-         jiraTable.setValueAt("", (String) editor.getOldValue(), Column.B_Release);
-      }
-   }
+//
+//   private final class MyBoardTableListenerForJiraNameEditing implements CellEditorListener {
+//      public void editingCanceled(ChangeEvent e) {
+//      }
+//
+//      /*
+//       * If the editing of the jira cell in the board table is being stopped...
+//       * @see javax.swing.event.CellEditorListener#editingStopped(javax.swing.event.ChangeEvent)
+//       */
+//      public void editingStopped(ChangeEvent e) {
+//         JiraCellEditor editor = (JiraCellEditor) e.getSource();
+//         log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \"" + editor.getValue()
+//               + "\" and old value: \"" + editor.getOldValue() + "\"");
+//         MyTable jiraTable = jiraPanel.getTable();
+//         jiraTable.setValueAt(BoardStatusValue.NA, (String) editor.getOldValue(), Column.B_BoardStatus);
+//         jiraTable.setValueAt("", (String) editor.getOldValue(), Column.B_Release);
+//      }
+//   }
 
    private final class MyJiraTableListenerForJiraNameEditing implements CellEditorListener {
       private final BoardTableModel boardModel;

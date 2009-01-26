@@ -102,6 +102,16 @@ public class DnDTreeModel extends DefaultTreeModel {
             .getSyncable(), j.getOriginalEstimate());
    }
 
+   public List<DefaultMutableTreeNode> getChildNodes(DefaultMutableTreeNode root) {
+      List<DefaultMutableTreeNode> jiraNodes = new ArrayList<DefaultMutableTreeNode>();
+      for (Enumeration<?> e = root.preorderEnumeration(); e.hasMoreElements();) {
+         DefaultMutableTreeNode current = (DefaultMutableTreeNode) e.nextElement();
+         jiraNodes.add(current);
+      }
+      return jiraNodes;
+
+   }
+
    public List<JiraNode> getJiraNodes() {
       DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
       List<JiraNode> jiraNodes = new ArrayList<JiraNode>();
