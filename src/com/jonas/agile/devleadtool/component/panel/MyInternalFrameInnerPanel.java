@@ -81,7 +81,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          XmlParser parser = new XmlParserImpl(saxHandler, MAX_RESULT);
          // XmlParser parser = new XmlParserLargeMock(saxHandler);
 
-         DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser, tree, helper.getParentFrame());
+         DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
          log.trace("MyInternalFrameInnerComponent 1.5");
          makeContent(boardModel, tree, dndTreeBuilder, helper, jiraModel);
          log.trace("MyInternalFrameInnerComponent 1.6");

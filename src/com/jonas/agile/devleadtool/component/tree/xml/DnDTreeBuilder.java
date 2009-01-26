@@ -23,7 +23,7 @@ public class DnDTreeBuilder {
       this.parser = parser;
    }
 
-   public void buildTree(DnDTree tree, final String sprint, final JiraProject project) {
+   public void buildTree(final String sprint, final JiraProject project) {
       SwingWorker worker = new SwingWorker() {
          @Override
          protected Object doInBackground() {
