@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.MyTable;
