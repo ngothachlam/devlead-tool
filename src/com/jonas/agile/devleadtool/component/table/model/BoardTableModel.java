@@ -2,10 +2,9 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.awt.Color;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
-import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -14,9 +13,10 @@ import com.jonas.common.logging.MyLogger;
 
 public class BoardTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge, Column.BoardStatus,
-         Column.Dev_Estimate, Column.Dev_Actual, Column.prio, Column.Note };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge,
+         Column.BoardStatus, Column.Dev_Estimate, Column.Dev_Actual, Column.prio, Column.Note };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
+   private CellColorHelper cellColorHelper = CellColorHelper.getInstance();
 
    public BoardTableModel() {
       super(columns, true);
@@ -31,22 +31,26 @@ public class BoardTableModel extends MyTableModel {
       String stringValue = (String) value;
       switch (column) {
       case Dev_Actual:
+         log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
          if (stringValue == null || stringValue.trim().length() <= 0) {
-            if (isBoardValueEither(row, Helper.getRequiredActuals())) {
+            if (isBoardValueEither(row, cellColorHelper.getRequiredActuals())) {
                return SwingUtil.cellRed;
             }
          } else {
-            if (isBoardValueEither(row, Helper.getNonRequiredActuals())) {
+            if (isBoardValueEither(row, cellColorHelper.getNonRequiredActuals())) {
                return SwingUtil.cellRed;
             }
          }
          break;
       case Dev_Estimate:
+         log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
          if (stringValue == null || stringValue.trim().length() <= 0) {
-            if (isBoardValueEither(row, Helper.getRequiredEstimates())) {
+            if (isBoardValueEither(row, cellColorHelper.getRequiredEstimates())) {
                log.debug("true!");
                return SwingUtil.cellRed;
             }
+         } else {
+
          }
          break;
       }
@@ -72,16 +76,24 @@ public class BoardTableModel extends MyTableModel {
 
    public boolean isBoardValueEither(int row, Set<BoardStatusValue> set) {
       Object value = getValueAt(Column.BoardStatus, row);
-      return set.contains(value);
+      boolean contains = set.contains(value);
+      Iterator<BoardStatusValue> iter = set.iterator();
+      while (iter.hasNext()) {
+         BoardStatusValue type = (BoardStatusValue) iter.next();
+         log.debug("\tset contains: " + type);
+      }
+      log.debug("BoardStatus value for row " + row + " is \"" + value + "\"("+value.getClass()+") and is required: " + contains);
+      return contains;
    }
 
-   private static class Helper {
+   private static class CellColorHelper {
 
-      private static Set<BoardStatusValue> requiredEstimates = new HashSet<BoardStatusValue>();
-      private static Set<BoardStatusValue> nonRequiredActuals = new HashSet<BoardStatusValue>();
-      private static Set<BoardStatusValue> requiredActuals = new HashSet<BoardStatusValue>();
+      private static CellColorHelper instance = new CellColorHelper();
+      private Set<BoardStatusValue> requiredEstimates = new HashSet<BoardStatusValue>();
+      private Set<BoardStatusValue> nonRequiredActuals = new HashSet<BoardStatusValue>();
+      private Set<BoardStatusValue> requiredActuals = new HashSet<BoardStatusValue>();
 
-      private Helper() {
+      private CellColorHelper() {
          requiredEstimates.add(BoardStatusValue.Open);
          requiredEstimates.add(BoardStatusValue.Bug);
          requiredEstimates.add(BoardStatusValue.InProgress);
@@ -89,27 +101,30 @@ public class BoardTableModel extends MyTableModel {
          requiredEstimates.add(BoardStatusValue.QA_Progress);
          requiredEstimates.add(BoardStatusValue.Complete);
          requiredEstimates.add(BoardStatusValue.ForShowCase);
-
+         
          nonRequiredActuals.add(BoardStatusValue.Open);
          nonRequiredActuals.add(BoardStatusValue.Bug);
          nonRequiredActuals.add(BoardStatusValue.InProgress);
-
+         
          requiredActuals.add(BoardStatusValue.Resolved);
          requiredActuals.add(BoardStatusValue.QA_Progress);
          requiredActuals.add(BoardStatusValue.Complete);
          requiredActuals.add(BoardStatusValue.ForShowCase);
-
       }
 
-      public static Set<BoardStatusValue> getRequiredActuals() {
+      public static CellColorHelper getInstance() {
+         return instance;
+      }
+
+      public Set<BoardStatusValue> getRequiredActuals() {
          return requiredActuals;
       }
 
-      public static Set<BoardStatusValue> getNonRequiredActuals() {
+      public Set<BoardStatusValue> getNonRequiredActuals() {
          return nonRequiredActuals;
       }
 
-      private static Set<BoardStatusValue> getRequiredEstimates() {
+      private Set<BoardStatusValue> getRequiredEstimates() {
          return requiredEstimates;
       }
    }
