@@ -20,6 +20,7 @@ public class JiraIssue {
    private final String type;
    private String sprint;
    private String release = "";
+   private String deliveryDate;
 
    public JiraIssue(String key, String summary, String status, String resolution, String type) {
       this.key = key.toUpperCase();
@@ -214,5 +215,13 @@ public class JiraIssue {
 
    public String getRelease() {
       return release;
+   }
+
+   public String getDeliveryDate() {
+      return deliveryDate;
+   }
+
+   public void setDeliveryDate(String deliveryDate) {
+      this.deliveryDate = deliveryDate;
    }
 }

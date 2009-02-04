@@ -127,9 +127,7 @@ public class JiraSoapClient {
       RemoteVersion[] versions = jiraSoapService.getVersions(getToken(), PlannerHelper.getProjectKey(jira));
       List<RemoteVersion> cloneFixVersions = new ArrayList<RemoteVersion>();
       for (RemoteVersion remoteVersion : versions) {
-         System.out.println("RemoteVersion: " + remoteVersion.getName());
          if (remoteVersion.getName().trim().equalsIgnoreCase(mergeFixVersionName.trim())) {
-            System.out.println("match: " + mergeFixVersionName);
             cloneFixVersions.add(remoteVersion);
          }
       }
@@ -419,7 +417,6 @@ public class JiraSoapClient {
 
       for (int i = 0; i < actions.length; i++) {
          RemoteNamedObject action = actions[i];
-         System.out.println(action.getId() + " : " + action.getName());
       }
 
    }

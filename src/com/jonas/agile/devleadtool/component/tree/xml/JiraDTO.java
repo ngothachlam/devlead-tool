@@ -5,15 +5,15 @@ import java.util.List;
 
 public class JiraDTO {
 
-   private String summary;
    private List<String> fixVersions = new ArrayList<String>();
+   private String id;
+   private boolean isToSync = false;
    private String key;
+   private int originalEstimate;
    private String resolution;
    private String sprint;
    private String status;
-   private boolean isToSync = false;
-   private String id;
-   private int originalEstimate;
+   private String summary;
 
    public JiraDTO() {
    }
@@ -40,20 +40,24 @@ public class JiraDTO {
       // }
    }
 
-   public void setOriginalEstimate(int originalEstimate) {
-      this.originalEstimate = originalEstimate;
-   }
-
-   public String getSummary() {
-      return summary;
+   public void addFixVersion(String fixVersion) {
+      this.fixVersions.add(fixVersion);
    }
 
    public List<String> getFixVersions() {
       return fixVersions;
    }
 
+   public String getId() {
+      return id;
+   }
+
    public String getKey() {
       return key;
+   }
+
+   public int getOriginalEstimate() {
+      return originalEstimate;
    }
 
    public String getResolution() {
@@ -68,16 +72,30 @@ public class JiraDTO {
       return status;
    }
 
-   public void setSummary(String summary) {
-      this.summary = summary;
+   public String getSummary() {
+      return summary;
    }
 
-   public void addFixVersion(String fixVersion) {
-      this.fixVersions.add(fixVersion);
+   public boolean getSyncable() {
+      return isToSync;
+   }
+
+   public void setFixVersions(List<String> fixVersions) {
+      for (String fixVersion : fixVersions) {
+         addFixVersion(fixVersion);
+      }
+   }
+
+   public void setId(String id) {
+      this.id = id;
    }
 
    public void setKey(String key) {
       this.key = key;
+   }
+
+   public void setOriginalEstimate(int originalEstimate) {
+      this.originalEstimate = originalEstimate;
    }
 
    public void setResolution(String resolution) {
@@ -90,6 +108,14 @@ public class JiraDTO {
 
    public void setStatus(String status) {
       this.status = status;
+   }
+
+   public void setSummary(String summary) {
+      this.summary = summary;
+   }
+
+   public void setToSync(Boolean isToSync) {
+      this.isToSync = isToSync;
    }
 
    public String toString() {
@@ -107,32 +133,6 @@ public class JiraDTO {
       sb.append(sprint);
       sb.append("]");
       return sb.toString();
-   }
-
-   public void setToSync(Boolean isToSync) {
-      this.isToSync = isToSync;
-   }
-
-   public boolean getSyncable() {
-      return isToSync;
-   }
-
-   public String getId() {
-      return id;
-   }
-
-   public void setId(String id) {
-      this.id = id;
-   }
-
-   public void setFixVersions(List<String> fixVersions) {
-      for (String fixVersion : fixVersions) {
-         addFixVersion(fixVersion);
-      }
-   }
-
-   public int getOriginalEstimate() {
-      return originalEstimate;
    }
 
 }

@@ -215,7 +215,6 @@ public class MyTable extends JTable {
 
    public void insertRow(int index, Vector<Object> rowData) {
       int convertRowIndexToModel = convertRowIndexToModel(index);
-      System.out.println("insertRow for model row: " + convertRowIndexToModel);
       model.insertRow(convertRowIndexToModel, rowData);
    }
 
