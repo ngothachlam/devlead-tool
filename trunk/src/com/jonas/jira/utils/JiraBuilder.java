@@ -1,12 +1,14 @@
 package com.jonas.jira.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import com.atlassian.jira.rpc.soap.beans.RemoteCustomFieldValue;
-import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.CalculatorHelper;
@@ -14,17 +16,15 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
-import com.jonas.jira.JiraResolution;
-import com.jonas.jira.JiraStatus;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraClient;
-import com.jonas.jira.access.JiraType;
 
 public class JiraBuilder {
 
    private static final String CUSTOMFIELD_LLULISTPRIO = "customfield_10241";
    private static final String CUSTOMFIELD_BUILDNO = "customfield_10160";
    private static final String CUSTOMFIELD_LLUSPRINT = "customfield_10282";
+   private static final String CUSTOMFIELD_DELIVERYDATE = "customfield_10188";
    private static JiraBuilder instance = new JiraBuilder();
    private static final List<XPathImplementor> jiraXpathActions = new ArrayList<XPathImplementor>();
    private static final Logger log = MyLogger.getLogger(JiraBuilder.class);
@@ -35,11 +35,12 @@ public class JiraBuilder {
             jira.setBuildNo(xpathValue);
          }
       });
-      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_LLULISTPRIO + "']/customfieldvalues/customfieldvalue", new XpathAction() {
-         public void XPathValueFound(String xpathValue, JiraIssue jira) {
-            jira.setLLUListPriority(getStringAsIntIfNumeric(xpathValue));
-         }
-      });
+      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_LLULISTPRIO + "']/customfieldvalues/customfieldvalue",
+            new XpathAction() {
+               public void XPathValueFound(String xpathValue, JiraIssue jira) {
+                  jira.setLLUListPriority(getStringAsIntIfNumeric(xpathValue));
+               }
+            });
       addXpathAction("/item/timeoriginalestimate/@seconds", new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             if (xpathValue != null && xpathValue.trim().length() > 0) {
@@ -54,11 +55,33 @@ public class JiraBuilder {
             }
          }
       });
-      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_LLUSPRINT + "']/customfieldvalues/customfieldvalue", new XpathAction() {
-         public void XPathValueFound(String xpathValue, JiraIssue jira) {
-            jira.setSprint(xpathValue);
-         }
-      });
+      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_LLUSPRINT + "']/customfieldvalues/customfieldvalue",
+            new XpathAction() {
+               public void XPathValueFound(String xpathValue, JiraIssue jira) {
+                  jira.setSprint(xpathValue);
+               }
+            });
+      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_DELIVERYDATE + "']/customfieldvalues/customfieldvalue",
+            new XpathAction() {
+               public void XPathValueFound(String xpathValue, JiraIssue jira) {
+                  try {
+                     jira.setDeliveryDate(formatToDate(xpathValue));
+                  } catch (ParseException e) {
+                     e.printStackTrace();
+                  }
+               }
+
+            });
+   }
+   private static SimpleDateFormat JiraDateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
+   private static SimpleDateFormat OutputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+   protected static String formatToDate(String string) throws ParseException {
+      // Thu, 29 Jan 2009 00:00:00 +0000 (GMT)
+      if(string == null || string.trim().length() == 0)
+         return "";
+      Date date = JiraDateFormat.parse(string);
+      return OutputDateFormat.format(date);
    }
 
    private static void addXpathAction(String xPath, XpathAction action) {

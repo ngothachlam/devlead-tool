@@ -1,5 +1,6 @@
 package com.jonas.jira.utils;
 
+import java.text.ParseException;
 import java.util.List;
 import org.easymock.EasyMock;
 import org.jdom.Element;
@@ -144,5 +145,11 @@ public class JiraBuilderTest extends JonasTestCase {
       assertEquals(50, JiraBuilder.getStringAsIntIfNumeric("50.0"));
       assertEquals(50, JiraBuilder.getStringAsIntIfNumeric("50.1"));
       assertEquals(50, JiraBuilder.getStringAsIntIfNumeric("50.99"));
+   }
+   
+   public void testShouldFormatDateOk() throws ParseException{
+      assertEquals("2009-01-29", JiraBuilder.formatToDate("Thu, 29 Jan 2009 00:00:00 +0000 (GMT)"));
+      assertEquals("", JiraBuilder.formatToDate(null));
+      assertEquals("", JiraBuilder.formatToDate(""));
    }
 }
