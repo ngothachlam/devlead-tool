@@ -1,5 +1,7 @@
 package com.jonas.agile.devleadtool.component.menu;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,9 +10,12 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -36,6 +41,8 @@ public class SprintTreePopupMenu extends MyPopupMenu {
       this.dndTreeBuilder = dndTreeBuilder;
       add(new JMenuItem_Browse(tree, parentFrame));
       add(new JMenuItem_Sync(tree, parentFrame));
+      add(new Separator());
+      add(new JMenuItem_SprintInfo("Sprint Info", tree));
       add(new Separator());
       add(new JMenuItem_Expand("Expand", tree));
 
@@ -101,6 +108,40 @@ public class SprintTreePopupMenu extends MyPopupMenu {
 
       }
 
+   }
+
+   private class JMenuItem_SprintInfo extends JMenuItemAbstr {
+      private final SprintTree tree;
+      private JLabel comp;
+      private JFrame frame;
+
+      private JMenuItem_SprintInfo(String name, SprintTree tree) {
+         super(name);
+         this.tree = tree;
+
+         JPanel panel = new JPanel();
+         comp = new JLabel("");
+         panel.add(comp);
+         frame = new JFrame();
+          frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+         frame.getContentPane().add(panel, BorderLayout.CENTER);
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         TreePath[] paths = tree.getSelectionPaths();
+         for (TreePath treePath : paths) {
+            Object component = treePath.getLastPathComponent();
+            if (component instanceof SprintNode) {
+               SprintNode sprintNode = (SprintNode) component;
+
+               sprintNode.analyseData();
+               comp.setText(sprintNode.getToolTipText());
+               frame.setSize(400, 300);
+               frame.setVisible(true);
+            }
+         }
+      }
    }
 
    private abstract class JMenuItemAbstr extends JMenuItem implements ActionListener {

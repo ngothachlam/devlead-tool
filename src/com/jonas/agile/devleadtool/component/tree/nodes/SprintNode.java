@@ -14,7 +14,7 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
 
    private static final Logger log = MyLogger.getLogger(SprintNode.class);
    private final String sprintName;
-   private SprintChildAnalyser toolTipAnalyser = new SprintChildAnalyser();
+   private SprintAnalyser dataAnalyser = new SprintAnalyser();
    private DecimalFormat decimalFormat = new DecimalFormat("#");
 
    public SprintNode(String sprintName) {
@@ -36,10 +36,6 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
       return true;
    }
 
-   public Status getLowestStatus() {
-      return toolTipAnalyser.getLowestStatus();
-   }
-
    public FixVersionNode getFixVersionNode(String fixVersionName) {
       for (int i = 0; i < getChildCount(); i++) {
          FixVersionNode fixVersionNode = (FixVersionNode) getChildAt(i);
@@ -51,7 +47,7 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
    }
 
    public String getToolTipText() {
-      SprintChildAnalyser anlysis = analyseChildrenForToolTip();
+      SprintAnalyser anlysis = analyseData();
       int estimateTotalSeconds = anlysis.getEstimateTotal();
       String estimateTotalDaysAsString = CalculatorHelper.getSecondsAsDaysAndString(estimateTotalSeconds);
 
@@ -74,23 +70,23 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
       return sb.toString();
    }
 
-   private String getPercentage(SprintChildAnalyser anlysis, Status open) {
+   private String getPercentage(SprintAnalyser anlysis, Status open) {
       return decimalFormat.format(anlysis.getPercentage(open)) + "%";
    }
 
-   private SprintChildAnalyser analyseChildrenForToolTip() {
-      toolTipAnalyser.analyse();
-      return toolTipAnalyser;
+   public SprintAnalyser analyseData() {
+      dataAnalyser.analyse();
+      return dataAnalyser;
    }
 
-   private class SprintChildAnalyser {
+   public class SprintAnalyser {
 
       private Status lowestStatus;
       private int jiraCount;
       private Map<Status, Integer> countMap = new HashMap<Status, Integer>(5);
       private int estimateTotal;
 
-      private Status getLowestStatus() {
+      Status getLowestStatus() {
          return lowestStatus;
       }
 
@@ -104,14 +100,13 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
          return value == null ? 0 : value;
       }
 
-      public float getPercentage(Status status) {
+      public String getPercentage(Status status) {
          Integer count = countMap.get(status);
          Float value = count == null ? 0f : count;
          float percentage = (value / jiraCount) * 100;
          log.debug("jiras: " + jiraCount + " and count: " + count + " for status " + status + " gives " + percentage);
-         return percentage;
+         return getPercentage(percentage);
       }
-
       public void analyse() {
          log.debug("analysing");
          resetCounts();
@@ -149,24 +144,9 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
       public int getEstimateTotal() {
          return estimateTotal;
       }
-
+      
+      public String getPercentage(float percentage) {
+         return decimalFormat.format(percentage) + "%";
+      }
    }
-
-   public String getPercentage(Status status) {
-      float percentage = toolTipAnalyser.getPercentage(status);
-      return decimalFormat.format(percentage) + "%";
-   }
-
-   public int getCount(Status status) {
-      return toolTipAnalyser.getCount(status);
-   }
-
-   public void analyseToolTip() {
-      toolTipAnalyser.analyse();
-   }
-
-   public int getEstimateTotal() {
-      return toolTipAnalyser.getEstimateTotal();
-   }
-
 }
