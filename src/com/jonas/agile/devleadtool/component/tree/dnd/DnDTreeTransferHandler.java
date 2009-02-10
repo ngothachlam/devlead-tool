@@ -13,7 +13,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.tree.DnDTree;
+import com.jonas.agile.devleadtool.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.nodes.FixVersionNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
@@ -26,9 +26,9 @@ public class DnDTreeTransferHandler extends TransferHandler {
    private DataFlavor dataFlavor;
 
    private Logger log = MyLogger.getLogger(DnDTreeTransferHandler.class);
-   private DnDTree tree;
+   private SprintTree tree;
 
-   public DnDTreeTransferHandler(DnDTree tree) {
+   public DnDTreeTransferHandler(SprintTree tree) {
       this.tree = tree;
       try {
          dataFlavor = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=" + JiraNodesTransferableDTO.class.getName());
@@ -127,8 +127,8 @@ public class DnDTreeTransferHandler extends TransferHandler {
 
    @Override
    final protected Transferable createTransferable(JComponent c) {
-      if (c instanceof DnDTree) {
-         final DnDTree tree = (DnDTree) c;
+      if (c instanceof SprintTree) {
+         final SprintTree tree = (SprintTree) c;
          TreePath[] paths = tree.getSelectionPaths();
          for (TreePath treePath : paths) {
             JiraNode jiraNode = (JiraNode) treePath.getLastPathComponent();

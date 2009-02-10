@@ -32,6 +32,7 @@ import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
 import com.jonas.agile.devleadtool.component.listener.TableSyncerFromJiraToBoardListener;
 import com.jonas.agile.devleadtool.component.menu.MyTablePopupMenu;
+import com.jonas.agile.devleadtool.component.menu.SprintTreePopupMenu;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -40,7 +41,7 @@ import com.jonas.agile.devleadtool.component.table.editor.MyEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.component.tree.DnDTree;
+import com.jonas.agile.devleadtool.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
@@ -74,16 +75,19 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          jiraModel.setBoardModel(boardModel);
 
          DnDTreeModel model = new DnDTreeModel("LLU");
-         DnDTree tree = new DnDTree(model);
+         SprintTree tree = new SprintTree(model);
+         
          JiraSaxHandler saxHandler = new JiraSaxHandler();
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, MAX_RESULT, helper.getParentFrame()));
 
          XmlParser parser = new XmlParserImpl(saxHandler, MAX_RESULT);
          // XmlParser parser = new XmlParserLargeMock(saxHandler);
-
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
+
+         new SprintTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder);
          log.trace("MyInternalFrameInnerComponent 1.5");
-         makeContent(boardModel, tree, dndTreeBuilder, helper, jiraModel);
+         
+         makeContent(boardModel, tree, helper, jiraModel);
          log.trace("MyInternalFrameInnerComponent 1.6");
          this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
 
@@ -144,9 +148,9 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       return jiraPanel;
    }
 
-   public void makeContent(MyTableModel boardModel, DnDTree tree, DnDTreeBuilder dndTreeBuilder, PlannerHelper helper, MyTableModel jiraModel) {
+   public void makeContent(MyTableModel boardModel, SprintTree tree, PlannerHelper helper, MyTableModel jiraModel) {
       boardPanel = new BoardPanel(boardModel);
-      sprintPanel = new DnDTreePanel(tree, dndTreeBuilder, helper.getParentFrame());
+      sprintPanel = new DnDTreePanel(tree, helper.getParentFrame());
       jiraPanel = new JiraPanel(helper, jiraModel);
 
       JPanel jiraMainPanel = new JPanel(new BorderLayout());
@@ -170,7 +174,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       addCenter(combineIntoSplitPane(boardPanel, jiraMainPanel, sprintPanel));
    }
 
-   private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, MyTable jiraTable, DnDTree sprintTree) {
+   private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, MyTable jiraTable, SprintTree sprintTree) {
       boardModel.addTableModelListener(new TableSyncerFromBoardToJiraListener(boardTable, jiraTable, boardModel));
       boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
       boardTable.addListener(new MyBoardTableListener());
@@ -178,11 +182,11 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
    }
 
-   private void setSprintDataListener(final DnDTree sprintTree, final MyTable boardTable, final MyTable jiraTable) {
+   private void setSprintDataListener(final SprintTree sprintTree, final MyTable boardTable, final MyTable jiraTable) {
       sprintTree.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
    }
 
-   private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel, DnDTree sprintTree, MyTable boardTable) {
+   private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel, SprintTree sprintTree, MyTable boardTable) {
       jiraModel.addTableModelListener(new TableSyncerFromJiraToBoardListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
       jiraPanel.getTable().addJiraEditorListener(new MyJiraTableListenerForJiraNameEditing(boardModel));
       jiraPanel.getTable().addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, jiraPanel.getTable(), boardTable));
@@ -191,7 +195,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    public void wireUpListeners(BoardTableModel boardModel, JiraTableModel jiraModel) {
       MyTable boardTable = boardPanel.getTable();
       MyTable jiraTable = jiraPanel.getTable();
-      DnDTree sprintTree = sprintPanel.getTree();
+      SprintTree sprintTree = sprintPanel.getTree();
 
       setBoardDataListeners(boardModel, boardTable, jiraTable, sprintTree);
       setJiraDataListener(jiraModel, boardModel, sprintTree, boardTable);
@@ -223,13 +227,13 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    }
 
    private final class KeyListenerToHighlightSprintSelectionElsewhere extends KeyAdapter {
-      private final DnDTree sprintTree;
+      private final SprintTree sprintTree;
       private final MyTable boardTable;
       private final MyTable jiraTable;
       private boolean pressed = false;
       private ListSelectionModel lsm;
 
-      private KeyListenerToHighlightSprintSelectionElsewhere(DnDTree sprintTree, MyTable boardTable, MyTable jiraTable) {
+      private KeyListenerToHighlightSprintSelectionElsewhere(SprintTree sprintTree, MyTable boardTable, MyTable jiraTable) {
          this.sprintTree = sprintTree;
          this.boardTable = boardTable;
          this.jiraTable = jiraTable;
@@ -246,7 +250,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
             jiraSelectionModel.setValueIsAdjusting(true);
             log.debug("KeyPressed Source: " + e.getSource());
             jiraTable.clearSelection();
-            if (e.getSource() instanceof DnDTree)
+            if (e.getSource() instanceof SprintTree)
                setSelectionToOthersIfSourceisTree();
             else if (e.getSource() instanceof MyTable)
                setSelectionToOthersIfSourceisTable();

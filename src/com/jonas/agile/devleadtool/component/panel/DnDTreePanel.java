@@ -18,8 +18,8 @@ import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
-import com.jonas.agile.devleadtool.component.menu.MyTreePopupMenu;
-import com.jonas.agile.devleadtool.component.tree.DnDTree;
+import com.jonas.agile.devleadtool.component.menu.SprintTreePopupMenu;
+import com.jonas.agile.devleadtool.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
@@ -33,16 +33,15 @@ public class DnDTreePanel extends JPanel {
 
    private Logger log = MyLogger.getLogger(DnDTreePanel.class);
 
-   private DnDTree tree;
+   private SprintTree tree;
    private final JFrame parentFrame;
 
-   public DnDTreePanel(DnDTree tree, DnDTreeBuilder dndTreeBuilder, JFrame parent) {
+   public DnDTreePanel(SprintTree tree, JFrame parent) {
       super(new BorderLayout());
       this.tree = tree;
       this.parentFrame = parent;
       add(new JScrollPane(tree), BorderLayout.CENTER);
       add(getButtonPanel(), BorderLayout.SOUTH);
-      new MyTreePopupMenu(parent, tree, dndTreeBuilder);
    }
 
    private Component getSouthPanel() {
@@ -67,9 +66,9 @@ public class DnDTreePanel extends JPanel {
 
    private final class ClearTreeButton extends JButton implements ActionListener {
       private final Component parent;
-      private final DnDTree tree;
+      private final SprintTree tree;
 
-      private ClearTreeButton(String text, Component parent, DnDTree tree) {
+      private ClearTreeButton(String text, Component parent, SprintTree tree) {
          super(text);
 
          this.parent = parent;
@@ -87,9 +86,9 @@ public class DnDTreePanel extends JPanel {
 
    private final class AddSprintButton extends JButton implements ActionListener {
       private final Component parent;
-      private final DnDTree tree;
+      private final SprintTree tree;
 
-      private AddSprintButton(String text, Component parent, DnDTree tree) {
+      private AddSprintButton(String text, Component parent, SprintTree tree) {
          super(text);
 
          this.parent = parent;
@@ -109,10 +108,10 @@ public class DnDTreePanel extends JPanel {
 
    private final class UploadToJiraButton extends JButton implements ActionListener {
       private final Frame parent;
-      private final DnDTree tree;
+      private final SprintTree tree;
       // private JiraSprintUpdater jiraSprintUpdater = new JiraSprintUpdater(ClientConstants.JIRA_URL_AOLBB);
 
-      private UploadToJiraButton(String text, Frame parent, DnDTree tree) {
+      private UploadToJiraButton(String text, Frame parent, SprintTree tree) {
          super(text);
 
          this.parent = parent;
@@ -170,7 +169,7 @@ public class DnDTreePanel extends JPanel {
       tree.setDnDEnabled(selected);
    }
 
-   public DnDTree getTree() {
+   public SprintTree getTree() {
       return tree;
    }
 }

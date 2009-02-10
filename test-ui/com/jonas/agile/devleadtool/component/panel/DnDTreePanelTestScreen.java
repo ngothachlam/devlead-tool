@@ -5,7 +5,8 @@ import javax.swing.JFrame;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
-import com.jonas.agile.devleadtool.component.tree.DnDTree;
+import com.jonas.agile.devleadtool.component.menu.SprintTreePopupMenu;
+import com.jonas.agile.devleadtool.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
@@ -17,7 +18,7 @@ public class DnDTreePanelTestScreen {
       try {
          JFrame frame = new JFrame();
          DnDTreeModel model = new DnDTreeModel("LLU");
-         DnDTree tree = new DnDTree(model);
+         SprintTree tree = new SprintTree(model);
          JiraSaxHandler saxHandler = new JiraSaxHandler();
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, 100, frame));
 
@@ -25,8 +26,9 @@ public class DnDTreePanelTestScreen {
          XmlParser parser = new XmlParserLargeMock(saxHandler);
 
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
+         new SprintTreePopupMenu(frame, tree, dndTreeBuilder);
 
-         DnDTreePanel main = new DnDTreePanel(tree, dndTreeBuilder, frame);
+         DnDTreePanel main = new DnDTreePanel(tree, frame);
 
          frame.setSize(400, 700);
          frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
