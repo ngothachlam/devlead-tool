@@ -22,15 +22,15 @@ import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
 import com.jonas.common.CalculatorHelper;
 import com.jonas.common.logging.MyLogger;
 
-public class DnDTree extends JTree {
+public class SprintTree extends JTree {
 
-   private Logger log = MyLogger.getLogger(DnDTree.class);
+   private Logger log = MyLogger.getLogger(SprintTree.class);
 
    private DnDTreeModel model;
 
    private DnDTreeJiraToolTipFacade tooltipFacade;
 
-   public DnDTree(DnDTreeModel model) {
+   public SprintTree(DnDTreeModel model) {
       super(model);
       setDnD();
       ToolTipManager.sharedInstance().registerComponent(this);
@@ -124,9 +124,9 @@ public class DnDTree extends JTree {
 
 class DnDTreeJiraToolTipFacade {
 
-   private final DnDTree dnDTree;
+   private final SprintTree dnDTree;
 
-   public DnDTreeJiraToolTipFacade(DnDTree dnDTree) {
+   public DnDTreeJiraToolTipFacade(SprintTree dnDTree) {
       this.dnDTree = dnDTree;
    }
 

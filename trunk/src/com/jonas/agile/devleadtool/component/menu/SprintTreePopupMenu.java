@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.NotJiraException;
@@ -17,22 +16,21 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.listener.SprintParseListener;
-import com.jonas.agile.devleadtool.component.tree.DnDTree;
+import com.jonas.agile.devleadtool.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
-import com.jonas.agile.devleadtool.component.tree.xml.JiraParseListener;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
 
-public class MyTreePopupMenu extends MyPopupMenu {
+public class SprintTreePopupMenu extends MyPopupMenu {
    private Frame parentFrame;
-   private Logger log = MyLogger.getLogger(MyTreePopupMenu.class);
+   private Logger log = MyLogger.getLogger(SprintTreePopupMenu.class);
    private DnDTreeBuilder dndTreeBuilder;
 
-   public MyTreePopupMenu(final JFrame parentFrame, DnDTree tree, DnDTreeBuilder dndTreeBuilder) {
+   public SprintTreePopupMenu(final JFrame parentFrame, SprintTree tree, DnDTreeBuilder dndTreeBuilder) {
       super(tree);
       this.parentFrame = parentFrame;
       this.dndTreeBuilder = dndTreeBuilder;
@@ -75,9 +73,9 @@ public class MyTreePopupMenu extends MyPopupMenu {
    }
 
    private class JMenuItem_Expand extends JMenuItem implements ActionListener {
-      private final DnDTree tree;
+      private final SprintTree tree;
 
-      private JMenuItem_Expand(String name, DnDTree tree) {
+      private JMenuItem_Expand(String name, SprintTree tree) {
          super(name);
          this.tree = tree;
          addActionListener(this);
@@ -114,10 +112,10 @@ public class MyTreePopupMenu extends MyPopupMenu {
 
    // FIXME merge with other browse action from Table!
    private class JMenuItem_Browse extends JMenuItemAbstr {
-      private final DnDTree tree;
+      private final SprintTree tree;
       private Frame frame;
 
-      public JMenuItem_Browse(DnDTree tree, Frame frame) {
+      public JMenuItem_Browse(SprintTree tree, Frame frame) {
          super("Open in Browser");
          this.tree = tree;
          this.frame = frame;
@@ -171,10 +169,10 @@ public class MyTreePopupMenu extends MyPopupMenu {
 
    private class JMenuItem_Sync extends JMenuItemAbstr {
 
-      private final DnDTree tree;
+      private final SprintTree tree;
       private Frame frame;
 
-      public JMenuItem_Sync(DnDTree tree, Frame frame) {
+      public JMenuItem_Sync(SprintTree tree, Frame frame) {
          super("Dowload Jira Info");
          this.tree = tree;
          this.frame = frame;
