@@ -3,16 +3,20 @@ package com.jonas.agile.devleadtool.component.menu;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.MyStatusBar;
@@ -24,9 +28,12 @@ import com.jonas.agile.devleadtool.component.listener.SprintParseListener;
 import com.jonas.agile.devleadtool.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
+import com.jonas.agile.devleadtool.component.tree.nodes.Status;
+import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode.SprintAnalyser;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
 import com.jonas.common.HyperLinker;
+import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
 
@@ -111,33 +118,96 @@ public class SprintTreePopupMenu extends MyPopupMenu {
    }
 
    private class JMenuItem_SprintInfo extends JMenuItemAbstr {
+      private static final int JIRACOUNTTEXTFIELD_COLUMNCOUNT = 2;
+      private static final int JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT = 2;
       private final SprintTree tree;
-      private JLabel comp;
-      private JFrame frame;
+      private JTextField JiraCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
+      private JTextField EstimateCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
+      private JTextField ActualCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
+      private JTextField OpenCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
+      private JTextField OpenPercentage= new JTextField(JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT);
+      private JTextField ReOpenedCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
+      private JTextField ReOpenedPercentage= new JTextField(JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT);
+      private JTextField InProgressCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
+      private JTextField InProgressPercentage= new JTextField(JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT);
+      private JTextField ResolvedCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
+      private JTextField ResolvedPercentage= new JTextField(JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT);
+      private JTextField ClosedCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
+      private JTextField ClosedPercentage= new JTextField(JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT);
+      private JFrame frame = new JFrame();
 
       private JMenuItem_SprintInfo(String name, SprintTree tree) {
          super(name);
          this.tree = tree;
 
          JPanel panel = new JPanel();
-         comp = new JLabel("");
-         panel.add(comp);
-         frame = new JFrame();
-          frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+         panel.add(getJiraCountPanel());
+         panel.add(getSprintInfoPanel());
+         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+         frame.setResizable(false);
          frame.getContentPane().add(panel, BorderLayout.CENTER);
+         
+      }
+
+      private Component getSprintInfoPanel() {
+         JPanel panel = new JPanel(new GridLayout(5, 3, 2, 2));
+         addJiraInfoLine(panel, "Total Jiras:", JiraCount);
+         addJiraInfoLine(panel, "Total Estimate:", EstimateCount);
+         addJiraInfoLine(panel, "Total Actuals", ActualCount);
+         panel.setBorder(BorderFactory.createTitledBorder("Sprint info"));
+         return panel;
+      }
+
+      public JPanel getJiraCountPanel() {
+         JPanel panel = new JPanel(new GridLayout(5, 3, 2, 2));
+         addJiraInfoLine(panel, "Open:", OpenCount, OpenPercentage);
+         addJiraInfoLine(panel, "InProgress:", InProgressCount, InProgressPercentage);
+         addJiraInfoLine(panel, "Re-Opened:", ReOpenedCount, ReOpenedPercentage);
+         addJiraInfoLine(panel, "Resolved:", ResolvedCount, ResolvedPercentage);
+         addJiraInfoLine(panel, "Closed:", ClosedCount, ClosedPercentage);
+         panel.setBorder(BorderFactory.createTitledBorder("Jira Counts"));
+         return panel;
+      }
+
+      private void addJiraInfoLine(JPanel panel, String text, JTextField countField) {
+         panel.add(new JLabel(text));
+         panel.add(countField);
+      }
+      
+      private void addJiraInfoLine(JPanel panel, String text, JTextField countField, JTextField percentageField) {
+         addJiraInfoLine(panel, text, countField);
+         panel.add(percentageField);
       }
 
       @Override
       public void actionPerformed(ActionEvent e) {
          TreePath[] paths = tree.getSelectionPaths();
+         if (paths == null || paths.length == 0)
+            return;
+
          for (TreePath treePath : paths) {
             Object component = treePath.getLastPathComponent();
             if (component instanceof SprintNode) {
                SprintNode sprintNode = (SprintNode) component;
 
-               sprintNode.analyseData();
-               comp.setText(sprintNode.getToolTipText());
-               frame.setSize(400, 300);
+               SprintAnalyser analysis = sprintNode.analyseData();
+               
+               
+
+               OpenCount.setText("" + analysis.getCount(Status.Open));
+               ReOpenedCount.setText("" + analysis.getCount(Status.Reopened));
+               InProgressCount.setText("" + analysis.getCount(Status.InProgress));
+               ResolvedCount.setText("" + analysis.getCount(Status.Resolved));
+               ClosedCount.setText("" + analysis.getCount(Status.Closed));
+               
+               OpenPercentage.setText("" + analysis.getPercentage(Status.Open));
+               ReOpenedPercentage.setText("" + analysis.getPercentage(Status.Reopened));
+               InProgressPercentage.setText("" + analysis.getPercentage(Status.InProgress));
+               ResolvedPercentage.setText("" + analysis.getPercentage(Status.Resolved));
+               ClosedPercentage.setText("" + analysis.getPercentage(Status.Closed));
+
+               frame.pack();
+               SwingUtil.centreWindow(frame);
                frame.setVisible(true);
             }
          }

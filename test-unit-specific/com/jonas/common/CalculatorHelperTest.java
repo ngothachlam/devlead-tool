@@ -12,13 +12,23 @@ public class CalculatorHelperTest extends TestCase {
       super.tearDown();
    }
 
+   public void testShouldGetPercentage(){
+      float percentage = (0f / 0) * 100;
+      assertEquals(Float.NaN, percentage);
+      assertEquals("0%", CalculatorHelper.getPercentage(Float.NaN));
+      assertEquals("0%", CalculatorHelper.getPercentage(Float.MIN_VALUE));
+      assertEquals("0%", CalculatorHelper.getPercentage(0));
+      assertEquals("1%", CalculatorHelper.getPercentage(1));
+      assertEquals("1000%", CalculatorHelper.getPercentage(1000));
+      assertEquals("340282346638528860000000000000000000000%", CalculatorHelper.getPercentage(Float.MAX_VALUE));
+   }
+   
    public void testGetDouble() {
       assertEquals(2d, CalculatorHelper.getDouble("2.0"));
       assertEquals(3.1d, CalculatorHelper.getDouble("3.1"));
       assertEquals(null, CalculatorHelper.getDouble("bla"));
       assertEquals(null, CalculatorHelper.getDouble(""));
       assertEquals(1.5d, CalculatorHelper.getDouble(" 1.5 "));
-      
    }
    public void testGetSecondsAsDays() {
       assertEquals(1f, CalculatorHelper.getSecondsAsDays(60 * 60 * 8));

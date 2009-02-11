@@ -15,7 +15,6 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
    private static final Logger log = MyLogger.getLogger(SprintNode.class);
    private final String sprintName;
    private SprintAnalyser dataAnalyser = new SprintAnalyser();
-   private DecimalFormat decimalFormat = new DecimalFormat("#");
 
    public SprintNode(String sprintName) {
       super(sprintName);
@@ -52,26 +51,24 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
       String estimateTotalDaysAsString = CalculatorHelper.getSecondsAsDaysAndString(estimateTotalSeconds);
 
       StringBuffer sb = new StringBuffer(getUserObject().toString());
-      sb.append(" (Lowest Resolution: ").append(anlysis.getLowestStatus());
-      sb.append(" Jiras: ").append(anlysis.getJiraCount());
-      sb.append(" Total Estimate: ").append(estimateTotalDaysAsString).append(" days)");
+      sb.append(" (Jiras: ").append(anlysis.getJiraCount());
 
-      sb.append(" - Open: ").append(anlysis.getCount(Status.Open));
-      sb.append("(").append(getPercentage(anlysis, Status.Open)).append(")");
-      sb.append(" ReOpened: ").append(anlysis.getCount(Status.Reopened));
-      sb.append("(").append(getPercentage(anlysis, Status.Reopened)).append(")");
-      sb.append(" InProgress: ").append(anlysis.getCount(Status.InProgress));
-      sb.append("(").append(getPercentage(anlysis, Status.InProgress)).append(")");
-      sb.append(" Resolved: ").append(anlysis.getCount(Status.Resolved));
-      sb.append("(").append(getPercentage(anlysis, Status.Resolved)).append(")");
-      sb.append(" Closed: ").append(anlysis.getCount(Status.Closed));
-      sb.append("(").append(getPercentage(anlysis, Status.Closed)).append(")");
+      sb.append(" where Open: ").append(anlysis.getCount(Status.Open));
+      sb.append(" (").append(getPercentage(anlysis, Status.Open)).append(")");
+      sb.append(", ReOpened: ").append(anlysis.getCount(Status.Reopened));
+      sb.append(" (").append(getPercentage(anlysis, Status.Reopened)).append(")");
+      sb.append(", InProgress: ").append(anlysis.getCount(Status.InProgress));
+      sb.append(" (").append(getPercentage(anlysis, Status.InProgress)).append(")");
+      sb.append(", Resolved: ").append(anlysis.getCount(Status.Resolved));
+      sb.append(" (").append(getPercentage(anlysis, Status.Resolved)).append(")");
+      sb.append(", Closed: ").append(anlysis.getCount(Status.Closed));
+      sb.append(" (").append(getPercentage(anlysis, Status.Closed)).append(")");
 
       return sb.toString();
    }
 
    private String getPercentage(SprintAnalyser anlysis, Status open) {
-      return decimalFormat.format(anlysis.getPercentage(open)) + "%";
+      return CalculatorHelper.getPercentage(anlysis.getPercentage(open)) + "%";
    }
 
    public SprintAnalyser analyseData() {
@@ -102,11 +99,12 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
 
       public String getPercentage(Status status) {
          Integer count = countMap.get(status);
-         Float value = count == null ? 0f : count;
-         float percentage = (value / jiraCount) * 100;
-         log.debug("jiras: " + jiraCount + " and count: " + count + " for status " + status + " gives " + percentage);
-         return getPercentage(percentage);
+         Float countAsFloat = count == null ? 0f : count;
+         float percentage = (countAsFloat / jiraCount) * 100;
+         log.debug("jiraCount: " + jiraCount + " and countAsFloat: " + countAsFloat + " for status " + status + " gives " + percentage);
+         return CalculatorHelper.getPercentage(percentage);
       }
+      
       public void analyse() {
          log.debug("analysing");
          resetCounts();
@@ -145,8 +143,6 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
          return estimateTotal;
       }
       
-      public String getPercentage(float percentage) {
-         return decimalFormat.format(percentage) + "%";
-      }
    }
+   
 }
