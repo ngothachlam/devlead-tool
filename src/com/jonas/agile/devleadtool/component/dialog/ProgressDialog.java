@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Frame;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -18,13 +19,15 @@ public class ProgressDialog extends JDialog {
    private JProgressBar progressBar;
    private final Frame owner;
 
-   public ProgressDialog(Frame owner, String title, String note, int max) {
+   public ProgressDialog(Frame owner, String title, String note, int maxProgress) {
       super(owner, title);
       this.owner = owner;
-      progressBar = new JProgressBar(0, max);
+      progressBar = new JProgressBar(0, maxProgress);
       JPanel panel = new JPanel(new BorderLayout());
       JPanel innerPanel = new JPanel(new BorderLayout());
       label = new JLabel(note);
+      Dimension preferredSize = new Dimension(200, 20);
+      label.setPreferredSize(preferredSize);
       progressBar.setStringPainted(false);
       progressBar.setValue(0);
 
@@ -63,7 +66,7 @@ public class ProgressDialog extends JDialog {
             progressBar.setIndeterminate(false);
             progressBar.setValue(progressBar.getValue() + 1);
             label.setText(string);
-            pack();
+//            pack();
          }
       });
    }
@@ -100,7 +103,7 @@ public class ProgressDialog extends JDialog {
       SwingUtilities.invokeLater(new Runnable() {
          public void run() {
             label.setText(string);
-            pack();
+//            pack();
          }
       });
    }
@@ -138,7 +141,7 @@ public class ProgressDialog extends JDialog {
          public void run() {
             progressBar.setMaximum(progressBar.getMaximum() + length);
             label.setText(string);
-            pack();
+//            pack();
          }
       });
 
