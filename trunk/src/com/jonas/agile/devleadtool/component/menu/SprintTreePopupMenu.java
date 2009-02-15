@@ -25,6 +25,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.listener.SprintParseListener;
+import com.jonas.agile.devleadtool.component.panel.SprintInfoPanel;
 import com.jonas.agile.devleadtool.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
@@ -118,66 +119,21 @@ public class SprintTreePopupMenu extends MyPopupMenu {
    }
 
    private class JMenuItem_SprintInfo extends JMenuItemAbstr {
-      private static final int JIRACOUNTTEXTFIELD_COLUMNCOUNT = 2;
-      private static final int JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT = 2;
       private final SprintTree tree;
-      private JTextField JiraCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
-      private JTextField EstimateCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
-      private JTextField ActualCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
-      private JTextField OpenCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
-      private JTextField OpenPercentage= new JTextField(JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT);
-      private JTextField ReOpenedCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
-      private JTextField ReOpenedPercentage= new JTextField(JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT);
-      private JTextField InProgressCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
-      private JTextField InProgressPercentage= new JTextField(JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT);
-      private JTextField ResolvedCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
-      private JTextField ResolvedPercentage= new JTextField(JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT);
-      private JTextField ClosedCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
-      private JTextField ClosedPercentage= new JTextField(JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT);
       private JFrame frame = new JFrame();
+      private SprintInfoPanel panel;
 
       private JMenuItem_SprintInfo(String name, SprintTree tree) {
          super(name);
          this.tree = tree;
 
-         JPanel panel = new JPanel();
-         panel.add(getJiraCountPanel());
-         panel.add(getSprintInfoPanel());
          frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
          frame.setResizable(false);
+         panel = new SprintInfoPanel(tree);
          frame.getContentPane().add(panel, BorderLayout.CENTER);
          
       }
 
-      private Component getSprintInfoPanel() {
-         JPanel panel = new JPanel(new GridLayout(5, 3, 2, 2));
-         addJiraInfoLine(panel, "Total Jiras:", JiraCount);
-         addJiraInfoLine(panel, "Total Estimate:", EstimateCount);
-         addJiraInfoLine(panel, "Total Actuals", ActualCount);
-         panel.setBorder(BorderFactory.createTitledBorder("Sprint info"));
-         return panel;
-      }
-
-      public JPanel getJiraCountPanel() {
-         JPanel panel = new JPanel(new GridLayout(5, 3, 2, 2));
-         addJiraInfoLine(panel, "Open:", OpenCount, OpenPercentage);
-         addJiraInfoLine(panel, "InProgress:", InProgressCount, InProgressPercentage);
-         addJiraInfoLine(panel, "Re-Opened:", ReOpenedCount, ReOpenedPercentage);
-         addJiraInfoLine(panel, "Resolved:", ResolvedCount, ResolvedPercentage);
-         addJiraInfoLine(panel, "Closed:", ClosedCount, ClosedPercentage);
-         panel.setBorder(BorderFactory.createTitledBorder("Jira Counts"));
-         return panel;
-      }
-
-      private void addJiraInfoLine(JPanel panel, String text, JTextField countField) {
-         panel.add(new JLabel(text));
-         panel.add(countField);
-      }
-      
-      private void addJiraInfoLine(JPanel panel, String text, JTextField countField, JTextField percentageField) {
-         addJiraInfoLine(panel, text, countField);
-         panel.add(percentageField);
-      }
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -185,32 +141,11 @@ public class SprintTreePopupMenu extends MyPopupMenu {
          if (paths == null || paths.length == 0)
             return;
 
-         for (TreePath treePath : paths) {
-            Object component = treePath.getLastPathComponent();
-            if (component instanceof SprintNode) {
-               SprintNode sprintNode = (SprintNode) component;
-
-               SprintAnalyser analysis = sprintNode.analyseData();
-               
-               
-
-               OpenCount.setText("" + analysis.getCount(Status.Open));
-               ReOpenedCount.setText("" + analysis.getCount(Status.Reopened));
-               InProgressCount.setText("" + analysis.getCount(Status.InProgress));
-               ResolvedCount.setText("" + analysis.getCount(Status.Resolved));
-               ClosedCount.setText("" + analysis.getCount(Status.Closed));
-               
-               OpenPercentage.setText("" + analysis.getPercentage(Status.Open));
-               ReOpenedPercentage.setText("" + analysis.getPercentage(Status.Reopened));
-               InProgressPercentage.setText("" + analysis.getPercentage(Status.InProgress));
-               ResolvedPercentage.setText("" + analysis.getPercentage(Status.Resolved));
-               ClosedPercentage.setText("" + analysis.getPercentage(Status.Closed));
-
-               frame.pack();
-               SwingUtil.centreWindow(frame);
-               frame.setVisible(true);
-            }
-         }
+         panel.calculateInfo();
+         
+         frame.pack();
+         SwingUtil.centreWindow(frame);
+         frame.setVisible(true);
       }
    }
 
