@@ -66,7 +66,6 @@ public class ProgressDialog extends JDialog {
             progressBar.setIndeterminate(false);
             progressBar.setValue(progressBar.getValue() + 1);
             label.setText(string);
-//            pack();
          }
       });
    }
@@ -103,7 +102,6 @@ public class ProgressDialog extends JDialog {
       SwingUtilities.invokeLater(new Runnable() {
          public void run() {
             label.setText(string);
-//            pack();
          }
       });
    }
@@ -141,7 +139,6 @@ public class ProgressDialog extends JDialog {
          public void run() {
             progressBar.setMaximum(progressBar.getMaximum() + length);
             label.setText(string);
-//            pack();
          }
       });
 
