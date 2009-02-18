@@ -30,12 +30,12 @@ public class ParserTest extends TestCase {
                   + "view=markup\">/llu-service-management/trunk/conf/db/rollforwards/91200000010_index_on_productorder_downstream_status_code.sql</a>\n"
                   + "\n" + "\n" + "                <br>\n" + "                </td>\n");
 
-      "    <td bgcolor=\"#ffffff\">"
-      "                                                <font color=\"#009900\" size=\"-2\"><b title=\"Add\">ADD</b></font>"
-      ""
-      "                                <a href=\"http://your.host.address/viewcvs.cgi//llu-service-management/trunk/conf/db/rollforwards/91200000010_index_on_productorder_downstream_status_code.sql/?rev=131918&amp;view=markup\">/llu-service-management/trunk/conf/db/rollforwards/91200000010_index_on_productorder_downstream_status_code.sql</a>"
-      ""
-      ""
+      String toBeParsed = "    <td bgcolor=\"#ffffff\">"+
+      "                                                <font color=\"#009900\" size=\"-2\"><b title=\"Add\">ADD</b></font>"+
+      ""+
+      "                                <a href=\"http://your.host.address/viewcvs.cgi//llu-service-management/trunk/conf/db/rollforwards/91200000010_index_on_productorder_downstream_status_code.sql/?rev=131918&amp;view=markup\">/llu-service-management/trunk/conf/db/rollforwards/91200000010_index_on_productorder_downstream_status_code.sql</a>"+
+      ""+
+      "";
       
       assertEquals(expectedRollforward, actualRollforward);
    }

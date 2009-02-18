@@ -53,16 +53,16 @@ public class BoardTableModelListenerTest extends JonasTestCase {
       assertEquals(BoardStatusValue.NA, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
       assertEquals("", jiraTable.getValueAt(Column.B_Release, "llu-1"));
 
-      boardTable.setValueAt(BoardStatusValue.InProgress, "llu-1", Column.BoardStatus);
+      boardTable.setValueAt(BoardStatusValue.InDevProgress, "llu-1", Column.BoardStatus);
       System.out.println("1");
       
-      assertEquals(BoardStatusValue.InProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
+      assertEquals(BoardStatusValue.InDevProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
       assertEquals("", jiraTable.getValueAt(Column.B_Release, "llu-1"));
 
       boardTable.setValueAt("R1", "llu-1", Column.Release);
       System.out.println("2");
 
-      assertEquals(BoardStatusValue.InProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
+      assertEquals(BoardStatusValue.InDevProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
       assertEquals("R1", jiraTable.getValueAt(Column.B_Release, "llu-1"));
    }
 
@@ -70,10 +70,10 @@ public class BoardTableModelListenerTest extends JonasTestCase {
       boardTable.addJira("llu-1");
       jiraTable.addJira("llu-1");
 
-      boardTable.setValueAt(BoardStatusValue.InProgress, "llu-1", Column.BoardStatus);
+      boardTable.setValueAt(BoardStatusValue.InDevProgress, "llu-1", Column.BoardStatus);
       boardTable.setValueAt("R1", "llu-1", Column.Release);
 
-      assertEquals(BoardStatusValue.InProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
+      assertEquals(BoardStatusValue.InDevProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
       assertEquals("R1", jiraTable.getValueAt(Column.B_Release, "llu-1"));
 
       boardTable.selectAll();
@@ -90,11 +90,11 @@ public class BoardTableModelListenerTest extends JonasTestCase {
       jiraTable.addJira("llu-1");
       jiraTable.addJira("llu-2");
 
-      boardTable.setValueAt(BoardStatusValue.InProgress, "llu-1", Column.BoardStatus);
+      boardTable.setValueAt(BoardStatusValue.InDevProgress, "llu-1", Column.BoardStatus);
       boardTable.setValueAt("R1", "llu-1", Column.Release);
 
       assertEquals(1, boardTable.getRowCount());
-      assertEquals(BoardStatusValue.InProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
+      assertEquals(BoardStatusValue.InDevProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
       assertEquals("R1", jiraTable.getValueAt(Column.B_Release, "llu-1"));
       assertEquals(BoardStatusValue.NA, jiraTable.getValueAt(Column.B_BoardStatus, "llu-2"));
       assertEquals("", jiraTable.getValueAt(Column.B_Release, "llu-2"));
@@ -103,7 +103,7 @@ public class BoardTableModelListenerTest extends JonasTestCase {
 
       assertEquals(1, boardTable.getRowCount());
       assertEquals("LLU-2", boardTable.getValueAt(Column.Jira, "llu-2"));
-      assertEquals(BoardStatusValue.InProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-2"));
+      assertEquals(BoardStatusValue.InDevProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-2"));
       assertEquals("R1", jiraTable.getValueAt(Column.B_Release, "llu-2"));
       assertEquals(BoardStatusValue.NA, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
       assertEquals("", jiraTable.getValueAt(Column.B_Release, "llu-1"));

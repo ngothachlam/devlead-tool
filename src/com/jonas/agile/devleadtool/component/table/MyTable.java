@@ -56,6 +56,7 @@ public class MyTable extends JTable {
 
       setDefaultRenderer(Object.class, new MyDefaultCellRenderer());
       setDefaultRenderer(Integer.class, new MyDefaultCellRenderer());
+//      setDefaultRenderer(BoardStatusValue.class, new MyDefaultCellRenderer());
       setDefaultRenderer(String.class, new StringTableCellRenderer(defaultTableModel));
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
       setComboEditors();

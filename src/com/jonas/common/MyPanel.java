@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.LayoutManager;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -15,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
+import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 
 public class MyPanel extends JPanel {
 
@@ -117,9 +119,9 @@ public class MyPanel extends JPanel {
       buttons.add(component);
       return component;
    }
-
-   public JComboBox addComboBox(JPanel buttons, Object[] array, Object constraint) {
-      JComboBox component = new JComboBox(array);
+   
+   public JComboBox addComboBox(JPanel buttons, Object[] boardStatusValues, Object constraint) {
+      JComboBox component = new JComboBox(boardStatusValues);
       buttons.add(component, constraint);
       return component;
    }
