@@ -75,7 +75,7 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(1, model.getRowCount());
 
       assertEquals(BoardStatusValue.UnKnown, model.getValueAt(Column.BoardStatus, "LLU-1"));
-      Set<BoardStatusValue> list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress);
+      Set<BoardStatusValue> list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress);
       assertEquals(false, model.isBoardValueEither(0, list));
 
       // set To Open
@@ -83,14 +83,14 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(BoardStatusValue.Open, model.getValueAt(Column.BoardStatus, "LLU-1"));
       list = getSet(BoardStatusValue.Open);
       assertEquals(true, model.isBoardValueEither(0, list));
-      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved);
+      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress, BoardStatusValue.Resolved);
       assertEquals(false, model.isBoardValueEither(0, list));
-      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Open);
+      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress, BoardStatusValue.Resolved, BoardStatusValue.Open);
       assertEquals(true, model.isBoardValueEither(0, list));
       // set To Complete
       model.setValueAt(BoardStatusValue.Complete, 0, Column.BoardStatus);
       assertEquals(BoardStatusValue.Complete, model.getValueAt(Column.BoardStatus, "LLU-1"));
-      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Open);
+      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress, BoardStatusValue.Resolved, BoardStatusValue.Open);
       assertEquals(true, model.isBoardValueEither(0, list));
    }
 

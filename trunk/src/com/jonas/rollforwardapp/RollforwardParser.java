@@ -7,7 +7,7 @@ public class RollforwardParser {
    }
 
    public String parseLineOfHTML(String string) {
-      ;
+      throw new RuntimeException("Method not implemented yet!");
    }
 
 }

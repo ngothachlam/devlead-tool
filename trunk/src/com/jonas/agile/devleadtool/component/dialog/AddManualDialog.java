@@ -83,8 +83,7 @@ class AddManualPanel extends MyPanel {
       setNewRow(c);
       panel.add(new JLabel("Default Status:"), c);
       set2ndCol(c);
-      BoardStatusValue[] values = new BoardStatusValue[] { BoardStatusValue.Open, BoardStatusValue.Bug, BoardStatusValue.InProgress, BoardStatusValue.Resolved, BoardStatusValue.Complete };
-      statusCombo = panel.addComboBox(panel, values, c);
+      statusCombo = panel.addComboBox(panel, BoardStatusValue.values(), c);
       
       setNewRow(c);
       panel.add(new JLabel("Numbers:"), c);

@@ -28,10 +28,10 @@ public class BoardTableModel extends MyTableModel {
 
    @Override
    public Color getColor(Object value, int row, Column column) {
+      log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
       String stringValue = (String) value;
       switch (column) {
       case Dev_Actual:
-         log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
          if (stringValue == null || stringValue.trim().length() <= 0) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredActuals())) {
                return SwingUtil.cellRed;
@@ -43,7 +43,6 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case Dev_Estimate:
-         log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
          if (stringValue == null || stringValue.trim().length() <= 0) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredEstimates())) {
                log.debug("true!");
@@ -51,6 +50,23 @@ public class BoardTableModel extends MyTableModel {
             }
          } else {
 
+         }
+         break;
+      case BoardStatus:
+         //TODO this is not working! the renderer for BoardStatusValue must not get in here for some reason!
+         BoardStatusValue newValue = BoardStatusValue.get(stringValue);
+         switch (newValue) {
+         case Resolved:
+         case InQAProgress:
+            return SwingUtil.cellBlue;
+         case Approved:
+         case Complete:
+         case ForShowCase:
+            return SwingUtil.cellGreen;
+         case Bug:
+            return SwingUtil.cellRed;
+         default:
+            break;
          }
          break;
       }
@@ -82,7 +98,7 @@ public class BoardTableModel extends MyTableModel {
          BoardStatusValue type = (BoardStatusValue) iter.next();
          log.debug("\tset contains: " + type);
       }
-      log.debug("BoardStatus value for row " + row + " is \"" + value + "\"("+value.getClass()+") and is required: " + contains);
+      log.debug("BoardStatus value for row " + row + " is \"" + value + "\"(" + value.getClass() + ") and is required: " + contains);
       return contains;
    }
 
@@ -96,20 +112,22 @@ public class BoardTableModel extends MyTableModel {
       private CellColorHelper() {
          requiredEstimates.add(BoardStatusValue.Open);
          requiredEstimates.add(BoardStatusValue.Bug);
-         requiredEstimates.add(BoardStatusValue.InProgress);
+         requiredEstimates.add(BoardStatusValue.InDevProgress);
          requiredEstimates.add(BoardStatusValue.Resolved);
-         requiredEstimates.add(BoardStatusValue.QA_Progress);
+         requiredEstimates.add(BoardStatusValue.InQAProgress);
          requiredEstimates.add(BoardStatusValue.Complete);
          requiredEstimates.add(BoardStatusValue.ForShowCase);
-         
+         requiredEstimates.add(BoardStatusValue.Approved);
+
          nonRequiredActuals.add(BoardStatusValue.Open);
          nonRequiredActuals.add(BoardStatusValue.Bug);
-         nonRequiredActuals.add(BoardStatusValue.InProgress);
-         
+         nonRequiredActuals.add(BoardStatusValue.InDevProgress);
+
          requiredActuals.add(BoardStatusValue.Resolved);
-         requiredActuals.add(BoardStatusValue.QA_Progress);
+         requiredActuals.add(BoardStatusValue.InQAProgress);
          requiredActuals.add(BoardStatusValue.Complete);
          requiredActuals.add(BoardStatusValue.ForShowCase);
+         requiredActuals.add(BoardStatusValue.Approved);
       }
 
       public static CellColorHelper getInstance() {
