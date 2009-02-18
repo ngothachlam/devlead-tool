@@ -22,25 +22,27 @@ public class ParserTest extends TestCase {
 
    public void testShouldParseLineOfSimpleHTMLWithoutSVNCommentCorrectly() {
       String expectedRollforward = "/llu-service/trunk/91200_index_o.s";
-      
+
       String toBeParsed = "<a href=\"http://you.host.address/viewcvs.cgi//llu-service/trunk/91200_index_o.s/?rev=131918&amp;view=markup\">";
-      
+
       String[] actualRollforwards = parser.parseJiraHTMLAndGetSqlRollForwards(toBeParsed);
-      
+
       assertEquals(null, actualRollforwards);
    }
+
    public void testShouldParseLineOfSimpleHTMLCorrectly() {
-      String[] result = parser.parseJiraHTMLAndGetSqlRollForwards("<a href=\"http://your.host.address/viewcvs.cgi//llu-service/trunk/91200_index_o.s/?rev=131918&amp;view=markup\">");      
+      String[] result = parser
+            .parseJiraHTMLAndGetSqlRollForwards("<a href=\"http://your.host.address/viewcvs.cgi//llu-service/trunk/91200_index_o.s/?rev=131918&amp;view=markup\">");
       assertEquals("/llu-service/trunk/91200_index_o.s", result[0]);
       assertEquals(1, result.length);
    }
-   
+
    public void testShouldParseLineOfSimpleHTMLCorrectly2() {
 
       String expectedRollforward = "/llu-service/trunk/91200_index_o.s";
 
       String toBeParsed = "<a href=\"http://your.host.address/viewcvs.cgi//llu-service/trunk/91200_index_o.s/?rev=131918&amp;view=markup\">";
-      
+
       String[] actualRollforwards = parser.parseJiraHTMLAndGetSqlRollForwards(toBeParsed);
 
       assertEquals(expectedRollforward, actualRollforwards[0]);
@@ -55,11 +57,14 @@ public class ParserTest extends TestCase {
             + "                                                <font color=\"#009900\" size=\"-2\"><b title=\"Add\">ADD</b></font>"
             + ""
             + "                                <a href=\"http://your.host.address/viewcvs.cgi//llu-service/trunk/91200_index_o.s/?rev=131918&amp;view=markup\">/llu-service/trunk/91200_index_o.s</a>"
-            + "" + "";
+            + ""
+            + "\n"
+            + "                                <a href=\"http://your.host.address/viewcvs.cgi//llu-service/trunk/91201_index_o.s/?rev=131918&amp;view=markup\">/llu-service/trunk/91202_index_o.s</a>"
+            + "" + "\n";
       String[] actualRollforwards = parser.parseJiraHTMLAndGetSqlRollForwards(toBeParsed);
 
       assertEquals(expectedRollforward, actualRollforwards[0]);
-      assertEquals(1, actualRollforwards.length);
+      assertEquals(2, actualRollforwards.length);
    }
 
 }

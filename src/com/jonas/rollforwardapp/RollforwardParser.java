@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class RollforwardParser {
 
-   private Pattern pattern = Pattern.compile("http://your.host.address/viewcvs.cgi/(.*)/\\?");
+   private Pattern pattern = Pattern.compile("http://your.host.address/viewcvs.cgi/(.*)/\\?)");
 
    public String[] parseJiraHTMLAndGetSqlRollForwards(String inputStr) {
       Matcher matcher = pattern.matcher(inputStr);
