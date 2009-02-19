@@ -418,7 +418,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
                   List<String> rollforwardFilenames = parser.parseJiraHTMLAndGetSqlRollForwards(html);
                   
                   for (String string : rollforwardFilenames) {
-                     output.append("rollforward: " + string).append("\n");
+                     output.append(" * rollforward: " + string).append("\n");
                   }
                } catch (IOException e2) {
                   e2.printStackTrace();
