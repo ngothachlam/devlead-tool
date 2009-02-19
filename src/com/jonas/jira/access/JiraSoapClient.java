@@ -27,6 +27,8 @@ import com.jonas.jira.JiraProject;
  */
 public class JiraSoapClient {
 
+   private static final String CUSTOM_FIELD_SPRINT = "customfield_10282";
+   private static final String CUSTOM_FIELD_LLU_PROJECT = "customfield_10290";
    private static List<String> customFieldsForCloning = new ArrayList<String>(1);
    private static JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
    private static final Logger log = MyLogger.getLogger(JiraSoapClient.class);
@@ -38,8 +40,8 @@ public class JiraSoapClient {
    private String token;
    private String type = "13";
    static {
-      customFieldsForCloning.add("customfield_10282");
-      customFieldsForCloning.add("customfield_10290");
+      customFieldsForCloning.add(CUSTOM_FIELD_SPRINT);
+      customFieldsForCloning.add(CUSTOM_FIELD_LLU_PROJECT);
    }
 
    public JiraSoapClient(String address) {
@@ -294,7 +296,7 @@ public class JiraSoapClient {
       // JiraSoapServiceService jiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
       // JiraSoapService jiraSoapService = jiraSoapServiceGetter.getJirasoapserviceV2();
 
-      updateCustomField(jiraKey, sprint, "customfield_10282");
+      updateCustomField(jiraKey, sprint, CUSTOM_FIELD_SPRINT);
    }
 
    private void copyCustomFieldValuesFromOriginalToClone(RemoteIssue originalJiraIssue, RemoteIssue cloneIssue) {
@@ -375,7 +377,7 @@ public class JiraSoapClient {
 
    private void setProjectToMerge(RemoteIssue cloneIssue) {
       String[] merge = { "Merge" };
-      RemoteCustomFieldValue[] customFieldValues = { new RemoteCustomFieldValue("customfield_10290", null, merge) };
+      RemoteCustomFieldValue[] customFieldValues = { new RemoteCustomFieldValue(CUSTOM_FIELD_LLU_PROJECT, null, merge) };
       cloneIssue.setCustomFieldValues(customFieldValues);
    }
 
