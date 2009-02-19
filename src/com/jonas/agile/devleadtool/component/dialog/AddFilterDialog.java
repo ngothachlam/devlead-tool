@@ -127,7 +127,7 @@ public class AddFilterDialog extends JFrame {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-         progressDialog = new ProgressDialog(this.parentFrame, "Getting Jiras from Filter!", "Getting Jiras!", 7);
+         progressDialog = new ProgressDialog(this.parentFrame, "Getting Jiras from Filter!", "Getting Jiras!", 7, true);
          table = getTableToAddJirasTo();
          if (table == null) {
             progressDialog.setCompleteWithDelay(300);

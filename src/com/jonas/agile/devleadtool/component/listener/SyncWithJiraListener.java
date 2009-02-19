@@ -39,7 +39,7 @@ public class SyncWithJiraListener implements ActionListener {
 
    public void actionPerformed(ActionEvent e) {
       log.debug(e);
-      final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Syncing with Jira...", "Starting...", 0);
+      final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Syncing with Jira...", "Starting...", 0, true);
       dialog.setIndeterminate(false);
       new SwingWorkerImpl(dialog).execute();
    }

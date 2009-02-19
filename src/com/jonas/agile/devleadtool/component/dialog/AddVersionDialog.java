@@ -140,7 +140,7 @@ class AddVersionPanel extends MyPanel {
 
          fixVersionCombo.removeAllItems();
          final Object[] selectedObjects = projectCombo.getSelectedObjects();
-         final ProgressDialog dialog = new ProgressDialog(parentFrame, "Refreshing Fix Versions...", "Refreshing Fix Versions...", selectedObjects.length);
+         final ProgressDialog dialog = new ProgressDialog(parentFrame, "Refreshing Fix Versions...", "Refreshing Fix Versions...", selectedObjects.length, true);
          SwingWorker worker = new SwingWorker() {
             public Object doInBackground() {
                dialog.setIndeterminate(false);

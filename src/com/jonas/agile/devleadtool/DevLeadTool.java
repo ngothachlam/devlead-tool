@@ -153,7 +153,7 @@ public class DevLeadTool {
          public void notify(DaoListenerEvent event, String message) {
             switch (event) {
             case SavingStarted:
-               dialog = new ProgressDialog(frame, "Saving Planner", "Saving Planner", 0);
+               dialog = new ProgressDialog(frame, "Saving Planner", "Saving Planner", 0, true);
                dialog.setIndeterminate(false);
                break;
             case SavingModelStarted:
@@ -164,7 +164,7 @@ public class DevLeadTool {
                dialog.setCompleteWithDelay(300);
                break;
             case LoadingStarted:
-               dialog = new ProgressDialog(frame, "Loading Planner", "Loading Planner", 0);
+               dialog = new ProgressDialog(frame, "Loading Planner", "Loading Planner", 0, true);
                dialog.setIndeterminate(false);
                break;
             case LoadingModelStarted:
@@ -193,7 +193,7 @@ public class DevLeadTool {
       public void notify(DaoListenerEvent event, String message) {
          switch (event) {
          case LoadingStarted:
-            dialog = new ProgressDialog(frame, "Loading Planner", "Loading Planner", 0);
+            dialog = new ProgressDialog(frame, "Loading Planner", "Loading Planner", 0, true);
             dialog.setIndeterminate(false);
             break;
          case LoadingModelStarted:

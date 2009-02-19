@@ -15,11 +15,26 @@ import com.jonas.common.SwingUtil;
 
 public class ProgressDialog extends JDialog {
 
+   @Override
+   public void setVisible(boolean b) {
+      if (b) {
+         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+         if (owner != null) {
+            owner.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+         }
+         pack();
+         if (owner != null) {
+            SwingUtil.centreWindowWithinWindow(this, owner);
+         }
+         super.setVisible(b);
+      }
+   }
+
    private JLabel label;
    private JProgressBar progressBar;
    private final Frame owner;
 
-   public ProgressDialog(Frame owner, String title, String note, int maxProgress) {
+   public ProgressDialog(Frame owner, String title, String note, int maxProgress, boolean isVisibleNow) {
       super(owner, title);
       this.owner = owner;
       progressBar = new JProgressBar(0, maxProgress);
@@ -40,15 +55,7 @@ public class ProgressDialog extends JDialog {
 
       getContentPane().add(panel);
       setResizable(false);
-      this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-      if (owner != null) {
-         owner.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-      }
-      pack();
-      if (owner != null) {
-         SwingUtil.centreWindowWithinWindow(this, owner);
-      }
-      setVisible(true);
+      setVisible(isVisibleNow);
    }
 
    public void increseProgress() {
@@ -116,8 +123,8 @@ public class ProgressDialog extends JDialog {
       f.setVisible(true);
 
       int count = 5;
-      ProgressDialog progress2 = new ProgressDialog(f, "Working...", "Copying Messages to Panel...", 0);
-      ProgressDialog progress = new ProgressDialog(f, "Working...", "Copying Messages to Panel...", count);
+      ProgressDialog progress2 = new ProgressDialog(f, "Working...", "Copying Messages to Panel...", 0, true);
+      ProgressDialog progress = new ProgressDialog(f, "Working...", "Copying Messages to Panel...", count, true);
       for (int i = 1; i <= count; i++) {
          try {
             Thread.sleep(1000);
