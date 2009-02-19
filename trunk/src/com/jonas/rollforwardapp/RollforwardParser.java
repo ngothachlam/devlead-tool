@@ -1,26 +1,27 @@
 package com.jonas.rollforwardapp;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RollforwardParser {
 
-   private Pattern pattern = Pattern.compile("http://your.host.address/viewcvs.cgi/(.*)/\\?");
+   private Pattern pattern = Pattern.compile("http://your.host.address/viewcvs.cgi/(.*\\.sql)/\\?", Pattern.MULTILINE);
 
-   public String[] parseJiraHTMLAndGetSqlRollForwards(String inputStr) {
-      Matcher matcher = pattern.matcher(inputStr);
+   public List<String> parseJiraHTMLAndGetSqlRollForwards(String html) {
+      return matchAndReturnFirstGroup(html, pattern);
+   }
 
-      boolean matchFound = matcher.find();
-      if (matchFound) {
-         int groupCount = matcher.groupCount();
-         String[] result = new String[groupCount];
-         for (int i = 0; i <= groupCount-1; i++) {
-            result[i] = matcher.group(i+1);
-         }
-         return result;
+   public List<String> matchAndReturnFirstGroup(String string, Pattern pattern) {
+      List<String> results = new ArrayList<String>();
+
+      Matcher m = pattern.matcher(string);
+      while (m.find()) {
+         //group 0 is the overall match. group 1 is the first instance using parenthesis.
+         results.add(m.group(1));
       }
-      return null;
-
+      return results;
    }
 
 }
