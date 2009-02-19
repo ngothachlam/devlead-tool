@@ -13,7 +13,7 @@ public class RollforwardParser {
       return matchAndReturnFirstGroup(html, pattern);
    }
 
-   public List<String> matchAndReturnFirstGroup(String string, Pattern pattern) {
+   protected List<String> matchAndReturnFirstGroup(String string, Pattern pattern) {
       List<String> results = new ArrayList<String>();
 
       Matcher m = pattern.matcher(string);
