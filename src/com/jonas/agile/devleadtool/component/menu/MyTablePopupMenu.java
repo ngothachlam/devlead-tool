@@ -403,7 +403,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
          swingWorkerImpl.execute();
 
       }
-      
+
       private final class SwingWorkerImpl extends SwingWorker<Object, Object> {
          private final ProgressDialog dialog;
 
@@ -423,17 +423,18 @@ public class MyTablePopupMenu extends MyPopupMenu {
                for (int i : selectedRows) {
                   String jira = (String) sourceTable.getValueAt(Column.Jira, i);
                   try {
-                     
+
                      StringBuffer url = new StringBuffer();
                      url.append("browse/").append(jira).append("?page=com.atlassian.jira.plugin.ext.subversion:subversion-commits-tabpanel");
-                     
+
                      String html = xmlHelper.getXML(url.toString());
-                     dialog.increseProgress("Getting Info from " + jira );
-                     
+                     dialog.increseProgress("Getting Info from " + jira);
+
                      List<String> rollforwardFilenames = parser.parseJiraHTMLAndGetSqlRollForwards(html);
-                     
-                     for (String string : rollforwardFilenames) {
+
+                     if (rollforwardFilenames.size() > 0)
                         output.append("  ").append(jira).append(":\n");
+                     for (String string : rollforwardFilenames) {
                         output.append("   * " + string).append("\n");
                      }
                   } catch (IOException e2) {
@@ -458,7 +459,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
             dialog.setCompleteWithDelay(300);
          }
       }
-      
+
    }
 
    private class MenuItem_Sync extends JMenuItem {
