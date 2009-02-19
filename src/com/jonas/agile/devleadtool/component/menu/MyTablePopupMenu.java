@@ -1,6 +1,9 @@
 package com.jonas.agile.devleadtool.component.menu;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,7 +17,11 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
@@ -28,15 +35,21 @@ import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.listener.OpenJirasListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
+import com.jonas.agile.devleadtool.component.panel.SprintInfoPanel;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.HyperLinker;
+import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
+import com.jonas.jira.access.ClientConstants;
 import com.jonas.jira.access.JiraClient;
+import com.jonas.jira.access.JiraException;
+import com.jonas.rollforwardapp.RollforwardParser;
+import com.jonas.testHelpers.JiraXMLHelper;
 
 public class MyTablePopupMenu extends MyPopupMenu {
 
@@ -59,6 +72,8 @@ public class MyTablePopupMenu extends MyPopupMenu {
       addSeparator();
       add(new MenuItem_Default("Open in Browser", new OpenJirasListener(sourceTable, helper)));
       add(new MenuItem_Sync(sourceTable, helper));
+      addSeparator();
+      add(new MenuItem_Rollforwards(sourceTable, helper));
       addSeparator();
       add(new MenuItem_CreateMerge("Create Merge", source, helper.getParentFrame()));
    }
@@ -94,7 +109,8 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
 
       @Override
-      public void myActionPerformed(ActionEvent e) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException, NotJiraException {
+      public void myActionPerformed(ActionEvent e) throws RemotePermissionException, RemoteAuthenticationException, RemoteException,
+            java.rmi.RemoteException, NotJiraException {
          int[] selectedRows = source.getSelectedRows();
          if (selectedRows.length == 0) {
             JOptionPane.showMessageDialog(parent, "No Jiras Selected!");
@@ -113,8 +129,8 @@ public class MyTablePopupMenu extends MyPopupMenu {
          JiraClient client = project.getJiraClient();
 
          JiraVersion[] fixVersions = client.getFixVersionsFromProject(project, false);
-         JiraVersion fixVersionToCreateMergesAgainst = (JiraVersion) JOptionPane.showInputDialog(parent, sb.toString(), "What Fix Version for the merges?",
-               JOptionPane.QUESTION_MESSAGE, null, fixVersions, null);
+         JiraVersion fixVersionToCreateMergesAgainst = (JiraVersion) JOptionPane.showInputDialog(parent, sb.toString(),
+               "What Fix Version for the merges?", JOptionPane.QUESTION_MESSAGE, null, fixVersions, null);
          log.debug("result " + fixVersionToCreateMergesAgainst);
          if (fixVersionToCreateMergesAgainst != null) {
             sb = new StringBuffer("Created Merge Jiras:\n");
@@ -346,6 +362,82 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
    }
 
+   private abstract class MenuItem_Abstract extends JMenuItem implements ActionListener {
+      @Override
+      public abstract void actionPerformed(ActionEvent e);
+
+      public MenuItem_Abstract(String title) {
+         super(title);
+         addActionListener(this);
+      }
+   }
+
+   private class MenuItem_Rollforwards extends MenuItem_Abstract {
+      private final MyTable sourceTable;
+      private final PlannerHelper helper;
+      private JiraXMLHelper xmlHelper;
+      private RollforwardParser parser;
+      private JTextArea textArea;
+      private JFrame newFrame;
+
+      public MenuItem_Rollforwards(MyTable sourceTable, PlannerHelper helper) {
+         super("Show Rollforwards");
+         this.sourceTable = sourceTable;
+         this.helper = helper;
+         xmlHelper = new JiraXMLHelper(ClientConstants.JIRA_URL_AOLBB);
+         parser = new RollforwardParser();
+
+         newFrame = new JFrame();
+         textArea = new JTextArea();
+         newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+         newFrame.setResizable(true);
+         JPanel panel = new JPanel(new BorderLayout());
+         JScrollPane scroll = new JScrollPane(textArea);
+         scroll.setPreferredSize(new Dimension(300, 200));
+         panel.add(scroll, BorderLayout.CENTER);
+         newFrame.getContentPane().add(panel, BorderLayout.CENTER);
+
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         int[] selectedRows = sourceTable.getSelectedRows();
+         StringBuffer output = new StringBuffer();
+         try {
+            xmlHelper.loginToJira();
+            for (int i : selectedRows) {
+               String jira = (String) sourceTable.getValueAt(Column.Jira, i);
+               try {
+                  output.append(jira).append(":\n");
+                  
+                  StringBuffer url = new StringBuffer();
+                  url.append("browse/").append(jira).append("?page=com.atlassian.jira.plugin.ext.subversion:subversion-commits-tabpanel");
+                  
+                  String html = xmlHelper.getXML(url.toString());
+                  
+                  List<String> rollforwardFilenames = parser.parseJiraHTMLAndGetSqlRollForwards(html);
+                  
+                  for (String string : rollforwardFilenames) {
+                     output.append("rollforward: " + string).append("\n");
+                  }
+               } catch (IOException e2) {
+                  e2.printStackTrace();
+               }
+            }
+            textArea.setText(output.toString());
+            newFrame.pack();
+            newFrame.setVisible(true);
+         } catch (HttpException e1) {
+            e1.printStackTrace();
+         } catch (IOException e1) {
+            e1.printStackTrace();
+         } catch (JiraException e1) {
+            e1.printStackTrace();
+         }
+
+      }
+   }
+
    private class MenuItem_Sync extends JMenuItem {
       public MenuItem_Sync(final MyTable sourceTable, PlannerHelper helper) {
          super("Dowload Jira Info");
@@ -367,4 +459,4 @@ public class MyTablePopupMenu extends MyPopupMenu {
          return actionListener;
       }
    }
-}
+};

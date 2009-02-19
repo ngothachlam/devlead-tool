@@ -5,12 +5,20 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import com.jonas.agile.devleadtool.component.panel.JiraPanel;
+import com.jonas.jira.JiraProject;
+import com.jonas.jira.access.ClientConstants;
 import com.jonas.jira.access.JiraException;
 
 public class JiraXMLHelper extends HttpClient {
-   private String baseUrl = "http://10.155.38.105/jira";
+   private final static String BASEURL = "http://10.155.38.105/jira";
 //   private String baseUrl = "http://jira.atlassian.com";
+   private String baseUrl;
 
+   public JiraXMLHelper(String baseUrl){
+      this.baseUrl = baseUrl;
+   }
+   
    public String getXML(String url) throws IOException {
       GetMethod method = new GetMethod(baseUrl + "/" + url);
       executeMethod(method);
@@ -29,7 +37,7 @@ public class JiraXMLHelper extends HttpClient {
    }
 
    public static void main(String[] args) {
-      JiraXMLHelper helper = new JiraXMLHelper();
+      JiraXMLHelper helper = new JiraXMLHelper(ClientConstants.JIRA_URL_AOLBB);
       try {
          helper.loginToJira();
 //         System.out.println(helper.getXML(JiraFilter.Sprint_Specific.getUrl() +  "12.4"));
