@@ -34,7 +34,7 @@ public class DownloadJiraListener implements ActionListener {
 
    public void actionPerformed(ActionEvent e) {
       final Object[] selects = jiraProjectFixVersionCombo.getSelectedObjects();
-      final ProgressDialog dialog = new ProgressDialog(parentFrame, "Copying Jiras to Tab...", "Logging in...", 0);
+      final ProgressDialog dialog = new ProgressDialog(parentFrame, "Copying Jiras to Tab...", "Logging in...", 0, true);
       SwingWorker worker = new SwingWorker() {
          private String error = null;
 

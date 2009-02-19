@@ -38,7 +38,7 @@ public class CopyToTableListener implements ActionListener {
 
       final int[] selectedRows = sourceTable.getSelectedRows();
       final ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Copying...", "Copying selected messages from Board to Plan...",
-            selectedRows.length);
+            selectedRows.length, true);
       try {
          for (int i = 0; i < selectedRows.length; i++) {
             String jiraString = (String) sourceTable.getValueAt(Column.Jira, selectedRows[i]);

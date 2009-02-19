@@ -60,7 +60,7 @@ public class SprintTreePopupMenu extends MyPopupMenu {
          @Override
          public void loggingInToJiraServer() {
             progressDialog = new ProgressDialog(parentFrame, "Downloading Sprint Information",
-                  "Starting to download sprint info from Jira Server!", 0);
+                  "Starting to download sprint info from Jira Server!", 0, true);
             progressDialog.setIndeterminate(false);
          }
 

@@ -1,9 +1,7 @@
 package com.jonas.agile.devleadtool.component.menu;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.SwingWorker;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
@@ -35,12 +34,10 @@ import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.listener.OpenJirasListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
-import com.jonas.agile.devleadtool.component.panel.SprintInfoPanel;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.HyperLinker;
-import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
@@ -277,7 +274,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
          if (selectedRows.length == 0) {
             AlertDialog.alertMessage(parent, "No rows selected!");
          }
-         dialog = new ProgressDialog(parent, "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length);
+         dialog = new ProgressDialog(parent, "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length, true);
          for (int i = 0; i < selectedRows.length; i++) {
             String jiraString = (String) sourceTable.getValueAt(Column.Jira, selectedRows[i]);
             addJira(jiraString, destinationTable);
@@ -340,7 +337,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
          int result = JOptionPane.showConfirmDialog(parent, sb.toString(), "Remove jiras?", JOptionPane.YES_NO_OPTION);
          log.debug(result);
          if (result == JOptionPane.YES_OPTION) {
-            dialog = new ProgressDialog(parent, "Removing...", "Removing selected Jiras...", 0);
+            dialog = new ProgressDialog(parent, "Removing...", "Removing selected Jiras...", 0, true);
             if (sourceTable.getSelectedRowCount() <= 0) {
                dialog.setNote("Nothing selected!!");
                dialog.setCompleteWithDelay(2000);
@@ -396,46 +393,72 @@ public class MyTablePopupMenu extends MyPopupMenu {
          scroll.setPreferredSize(new Dimension(300, 200));
          panel.add(scroll, BorderLayout.CENTER);
          newFrame.getContentPane().add(panel, BorderLayout.CENTER);
-
       }
 
       @Override
       public void actionPerformed(ActionEvent e) {
-         int[] selectedRows = sourceTable.getSelectedRows();
-         StringBuffer output = new StringBuffer();
-         try {
-            xmlHelper.loginToJira();
-            for (int i : selectedRows) {
-               String jira = (String) sourceTable.getValueAt(Column.Jira, i);
-               try {
-                  output.append(jira).append(":\n");
-                  
-                  StringBuffer url = new StringBuffer();
-                  url.append("browse/").append(jira).append("?page=com.atlassian.jira.plugin.ext.subversion:subversion-commits-tabpanel");
-                  
-                  String html = xmlHelper.getXML(url.toString());
-                  
-                  List<String> rollforwardFilenames = parser.parseJiraHTMLAndGetSqlRollForwards(html);
-                  
-                  for (String string : rollforwardFilenames) {
-                     output.append(" * rollforward: " + string).append("\n");
-                  }
-               } catch (IOException e2) {
-                  e2.printStackTrace();
-               }
-            }
-            textArea.setText(output.toString());
-            newFrame.pack();
-            newFrame.setVisible(true);
-         } catch (HttpException e1) {
-            e1.printStackTrace();
-         } catch (IOException e1) {
-            e1.printStackTrace();
-         } catch (JiraException e1) {
-            e1.printStackTrace();
-         }
+         ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Getting information from Jira....", "Starting...", 0, false);
+         dialog.setIndeterminate(true);
+         SwingWorkerImpl swingWorkerImpl = new SwingWorkerImpl(dialog);
+         swingWorkerImpl.execute();
 
       }
+      
+      private final class SwingWorkerImpl extends SwingWorker<Object, Object> {
+         private final ProgressDialog dialog;
+
+         private SwingWorkerImpl(ProgressDialog dialog) {
+            this.dialog = dialog;
+         }
+
+         public Object doInBackground() {
+            dialog.setVisible(true);
+            int[] selectedRows = sourceTable.getSelectedRows();
+            dialog.increaseMax("Syncing...", selectedRows.length);
+            StringBuffer output = new StringBuffer();
+            try {
+               xmlHelper.loginToJira();
+               dialog.setNote("Logging in to Jira...");
+               output.append("Rollforwards\n----------------------\n");
+               for (int i : selectedRows) {
+                  String jira = (String) sourceTable.getValueAt(Column.Jira, i);
+                  try {
+                     
+                     StringBuffer url = new StringBuffer();
+                     url.append("browse/").append(jira).append("?page=com.atlassian.jira.plugin.ext.subversion:subversion-commits-tabpanel");
+                     
+                     String html = xmlHelper.getXML(url.toString());
+                     dialog.increseProgress("Getting Info from " + jira );
+                     
+                     List<String> rollforwardFilenames = parser.parseJiraHTMLAndGetSqlRollForwards(html);
+                     
+                     for (String string : rollforwardFilenames) {
+                        output.append("  ").append(jira).append(":\n");
+                        output.append("   * " + string).append("\n");
+                     }
+                  } catch (IOException e2) {
+                     e2.printStackTrace();
+                  }
+               }
+               textArea.setText(output.toString());
+               newFrame.pack();
+               newFrame.setVisible(true);
+            } catch (HttpException e1) {
+               e1.printStackTrace();
+            } catch (IOException e1) {
+               e1.printStackTrace();
+            } catch (JiraException e1) {
+               e1.printStackTrace();
+            }
+            return null;
+         }
+
+         public void done() {
+            log.debug("Syncing Finished!");
+            dialog.setCompleteWithDelay(300);
+         }
+      }
+      
    }
 
    private class MenuItem_Sync extends JMenuItem {
