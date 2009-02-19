@@ -21,8 +21,6 @@ public class ParserTest extends TestCase {
    }
 
    public void testShouldParseLineOfSimpleHTMLWithoutSVNCommentCorrectly() {
-      String expectedRollforward = "/llu-service/trunk/91200_index_o.s";
-
       String toBeParsed = "<a href=\"http://you.host.address/viewcvs.cgi//llu-service/trunk/91200_index_o.s/?rev=131918&amp;view=markup\">";
 
       String[] actualRollforwards = parser.parseJiraHTMLAndGetSqlRollForwards(toBeParsed);
@@ -39,19 +37,15 @@ public class ParserTest extends TestCase {
 
    public void testShouldParseLineOfSimpleHTMLCorrectly2() {
 
-      String expectedRollforward = "/llu-service/trunk/91200_index_o.s";
-
       String toBeParsed = "<a href=\"http://your.host.address/viewcvs.cgi//llu-service/trunk/91200_index_o.s/?rev=131918&amp;view=markup\">";
 
       String[] actualRollforwards = parser.parseJiraHTMLAndGetSqlRollForwards(toBeParsed);
 
-      assertEquals(expectedRollforward, actualRollforwards[0]);
+      assertEquals("/llu-service/trunk/91200_index_o.s", actualRollforwards[0]);
       assertEquals(1, actualRollforwards.length);
    }
 
    public void testShouldParseLineOfHTMLCorrectly() {
-
-      String expectedRollforward = "/llu-service/trunk/91200_index_o.s";
 
       String toBeParsed = "    <td bgcolor=\"#ffffff\">"
             + "                                                <font color=\"#009900\" size=\"-2\"><b title=\"Add\">ADD</b></font>"
@@ -63,8 +57,8 @@ public class ParserTest extends TestCase {
             + "" + "\n";
       String[] actualRollforwards = parser.parseJiraHTMLAndGetSqlRollForwards(toBeParsed);
 
-      assertEquals(expectedRollforward, actualRollforwards[0]);
-      assertEquals(2, actualRollforwards.length);
+      assertEquals("/llu-service/trunk/91200_index_o.s", actualRollforwards[0]);
+      assertEquals("/llu-service/trunk/91201_index_o.s", actualRollforwards.length);
    }
 
 }
