@@ -39,6 +39,7 @@ public class JiraSoapClient {
    private String type = "13";
    static {
       customFieldsForCloning.add("customfield_10282");
+      customFieldsForCloning.add("customfield_10290");
    }
 
    public JiraSoapClient(String address) {
@@ -71,20 +72,20 @@ public class JiraSoapClient {
       RemoteIssue originalJiraIssue = jiraSoapService.getIssue(getToken(), jira);
 
       RemoteIssue cloneIssue = new RemoteIssue();
-      
+
       copyCustomFieldValuesFromOriginalToClone(originalJiraIssue, cloneIssue);
-      
+
       cloneIssue.setProject(originalJiraIssue.getProject());
       cloneIssue.setType(type);
       cloneIssue.setComponents(originalJiraIssue.getComponents());
       cloneIssue.setSummary("[Merge for " + originalJiraIssue.getKey() + "] " + originalJiraIssue.getSummary());
       cloneIssue.setAffectsVersions(originalJiraIssue.getAffectsVersions());
       cloneIssue.setPriority("1");
-      setOriginalEstimateToZero(cloneIssue);
-      setProjectToMerge(cloneIssue);
-      
+//      setOriginalEstimateToZero(cloneIssue);
+      // setProjectToMerge(cloneIssue);
+
       RemoteVersion[] clonedFixVersions = setFixVersionOnClone(jira, mergeFixVersionName, cloneIssue);
-      
+
       RemoteIssue createIssue = null;
       try {
          createIssue = jiraSoapService.createIssue(token, cloneIssue);
@@ -300,11 +301,9 @@ public class JiraSoapClient {
       RemoteCustomFieldValue[] originalCustomFieldValues = originalJiraIssue.getCustomFieldValues();
       List<RemoteCustomFieldValue> fieldsToBeCloned = new ArrayList<RemoteCustomFieldValue>();
 
-      int matches = 0;
       for (RemoteCustomFieldValue field : originalCustomFieldValues) {
          if (customFieldsForCloning.contains(field.getCustomfieldId())) {
             fieldsToBeCloned.add(field);
-            matches++;
          }
       }
       cloneIssue.setCustomFieldValues(fieldsToBeCloned.toArray(new RemoteCustomFieldValue[fieldsToBeCloned.size()]));
@@ -373,6 +372,7 @@ public class JiraSoapClient {
       RemoteCustomFieldValue[] customFieldValues = { new RemoteCustomFieldValue("timetracking", "timetracking", originalEstimates) };
       cloneIssue.setCustomFieldValues(customFieldValues);
    }
+
    private void setProjectToMerge(RemoteIssue cloneIssue) {
       String[] merge = { "Merge" };
       RemoteCustomFieldValue[] customFieldValues = { new RemoteCustomFieldValue("customfield_10290", null, merge) };
