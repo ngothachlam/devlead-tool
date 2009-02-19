@@ -108,6 +108,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
       tabPane.setDividerLocation(550);
       tabPane2.setDividerLocation(350);
+      tabPane.setResizeWeight(0.5f);
+      tabPane2.setResizeWeight(0.5f);
       return tabPane;
    }
 
