@@ -1,6 +1,7 @@
 package com.jonas.agile.devleadtool.component.menu;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -421,22 +422,17 @@ public class MyTablePopupMenu extends MyPopupMenu {
                dialog.setNote("Logging in to Jira...");
                output.append("Rollforwards\n----------------------\n");
                for (int i : selectedRows) {
-                  String jira = (String) sourceTable.getValueAt(Column.Jira, i);
+                  Jira jira = new Jira(((String) sourceTable.getValueAt(Column.Jira, i)));
                   try {
 
-                     StringBuffer url = new StringBuffer();
-                     url.append("browse/").append(jira).append("?page=com.atlassian.jira.plugin.ext.subversion:subversion-commits-tabpanel");
-
-                     String html = xmlHelper.getXML(url.toString());
+                     String html = xmlHelper.getXML(jira.getUrl());
                      dialog.increseProgress("Getting Info from " + jira);
 
-                     List<String> rollforwardFilenames = parser.parseJiraHTMLAndGetSqlRollForwards(html);
-
-                     if (rollforwardFilenames.size() > 0)
-                        output.append("  ").append(jira).append(":\n");
-                     for (String string : rollforwardFilenames) {
-                        output.append("   * " + string).append("\n");
+                     List<String> rollforwards = parser.parseJiraHTMLAndGetSqlRollForwards(html);
+                     for (String rollforward : rollforwards) {
+                        jira.addRollforward(rollforward);
                      }
+                     output.append(jira.getOutput());
                   } catch (IOException e2) {
                      e2.printStackTrace();
                   }
@@ -460,6 +456,29 @@ public class MyTablePopupMenu extends MyPopupMenu {
          }
       }
 
+      private final class Jira {
+         private final String jiraStr;
+         private List<String> rollforwards = new ArrayList<String>();
+         public Jira(String jiraStr) {
+            this.jiraStr = jiraStr;
+         }
+         public Object getOutput() {
+            StringBuffer sb = new StringBuffer();
+            sb.append("  ").append(jiraStr).append("\n");
+            for (String rollforward : rollforwards) {
+               sb.append("     ").append(rollforward).append("\n");
+            }
+            return sb.toString();
+         }
+         public void addRollforward(String string) {
+            rollforwards.add(string);
+         }
+         protected String getUrl() {
+            StringBuffer url = new StringBuffer();
+            url.append("browse/").append(jiraStr).append("?page=com.atlassian.jira.plugin.ext.subversion:subversion-commits-tabpanel");
+            return url.toString();
+         }
+      }
    }
 
    private class MenuItem_Sync extends JMenuItem {
