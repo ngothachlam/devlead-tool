@@ -41,7 +41,7 @@ public abstract class MyMenuItem extends JMenuItem implements ActionListener {
    }
 
    @Override
-   public void actionPerformed(ActionEvent e) {
+   public final void actionPerformed(ActionEvent e) {
       try {
          myActionPerformed(e);
       } catch (Throwable throwable) {

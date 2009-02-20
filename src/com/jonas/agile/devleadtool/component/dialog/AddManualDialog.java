@@ -46,6 +46,10 @@ public class AddManualDialog extends JFrame {
    public void setSourceTable(MyTable target) {
       addManualPanel.setTarget(target);
    }
+
+   public void focusPrefix() {
+      addManualPanel.focusPrefix();
+   }
 }
 
 
@@ -106,6 +110,10 @@ class AddManualPanel extends MyPanel {
 
       this.add(panel, BorderLayout.CENTER);
       this.add(buttonPanel, BorderLayout.PAGE_END);
+   }
+
+   public void focusPrefix() {
+      jiraPrefix.requestFocus();
    }
 
    public void setTarget(MyTable target) {

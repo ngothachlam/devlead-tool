@@ -1,7 +1,6 @@
 package com.jonas.agile.devleadtool.component.menu;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -68,7 +67,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
       add(new MenuItem_Remove("Remove Jiras", sourceTable, helper.getParentFrame()));
       addMenuItem_Copys(source, parentFrame, tables);
       addSeparator();
-      add(new MenuItem_Default("Open in Browser", new OpenJirasListener(sourceTable, helper)));
+      add(new MenuItem_Default("Open in Browser", new OpenJirasListener(sourceTable, helper), helper.getParentFrame()));
       add(new MenuItem_Sync(sourceTable, helper));
       addSeparator();
       add(new MenuItem_Rollforwards(sourceTable, helper));
@@ -244,6 +243,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
       public void myActionPerformed(ActionEvent e) {
          AddManualDialog addManualDialog = new AddManualDialog(frame, dtos);
          addManualDialog.setSourceTable(source);
+         addManualDialog.focusPrefix();
       }
 
       @Override
@@ -306,11 +306,29 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
    }
 
-   private class MenuItem_Default extends JMenuItem {
+   private class MenuItem_Default extends MyMenuItem {
 
-      public MenuItem_Default(String string, ActionListener actionListener) {
+      private final Frame parent;
+      private final ActionListener actionListener;
+
+      public MenuItem_Default(String string, ActionListener actionListener, Frame parent) {
          super(string);
-         addActionListener(actionListener);
+         this.actionListener = actionListener;
+         this.parent = parent;
+      }
+
+      @Override
+      public void executeOnFinal() {
+      }
+
+      @Override
+      public Frame getParentFrame() {
+         return parent;
+      }
+
+      @Override
+      public void myActionPerformed(ActionEvent e) throws Throwable {
+         actionListener.actionPerformed(e);
       }
    }
 
@@ -360,23 +378,11 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
    }
 
-   private abstract class MenuItem_Abstract extends JMenuItem implements ActionListener {
-      @Override
-      public abstract void actionPerformed(ActionEvent e);
-
-      public MenuItem_Abstract(String title) {
-         super(title);
-         addActionListener(this);
-      }
-   }
-
-   private class MenuItem_Rollforwards extends MenuItem_Abstract {
+   private class MenuItem_Rollforwards extends MyMenuItem {
       private final MyTable sourceTable;
       private final PlannerHelper helper;
       private JiraXMLHelper xmlHelper;
       private RollforwardParser parser;
-      private JTextArea textArea;
-      private JFrame newFrame;
 
       public MenuItem_Rollforwards(MyTable sourceTable, PlannerHelper helper) {
          super("Show Rollforwards");
@@ -384,20 +390,10 @@ public class MyTablePopupMenu extends MyPopupMenu {
          this.helper = helper;
          xmlHelper = new JiraXMLHelper(ClientConstants.JIRA_URL_AOLBB);
          parser = new RollforwardParser();
-
-         newFrame = new JFrame();
-         textArea = new JTextArea();
-         newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-         newFrame.setResizable(true);
-         JPanel panel = new JPanel(new BorderLayout());
-         JScrollPane scroll = new JScrollPane(textArea);
-         scroll.setPreferredSize(new Dimension(300, 200));
-         panel.add(scroll, BorderLayout.CENTER);
-         newFrame.getContentPane().add(panel, BorderLayout.CENTER);
       }
 
       @Override
-      public void actionPerformed(ActionEvent e) {
+      public void myActionPerformed(ActionEvent e) {
          ProgressDialog dialog = new ProgressDialog(helper.getParentFrame(), "Getting information from Jira....", "Starting...", 0, false);
          dialog.setIndeterminate(true);
          SwingWorkerImpl swingWorkerImpl = new SwingWorkerImpl(dialog);
@@ -420,13 +416,13 @@ public class MyTablePopupMenu extends MyPopupMenu {
             try {
                xmlHelper.loginToJira();
                dialog.setNote("Logging in to Jira...");
-               output.append("Rollforwards\n----------------------\n");
                for (int i : selectedRows) {
                   Jira jira = new Jira(((String) sourceTable.getValueAt(Column.Jira, i)));
                   try {
 
+                     dialog.increseProgress(jira + " - getting info from server...");
                      String html = xmlHelper.getXML(jira.getUrl());
-                     dialog.increseProgress("Getting Info from " + jira);
+                     dialog.setNote(jira + " - parsing info from server...");
 
                      List<String> rollforwards = parser.parseJiraHTMLAndGetSqlRollForwards(html);
                      for (String rollforward : rollforwards) {
@@ -437,9 +433,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
                      e2.printStackTrace();
                   }
                }
-               textArea.setText(output.toString());
-               newFrame.pack();
-               newFrame.setVisible(true);
+               AlertDialog.alertMessage(helper.getParentFrame(), output.toString(), "Rollforwards", "The following Rollforwards have been identified");
             } catch (HttpException e1) {
                e1.printStackTrace();
             } catch (IOException e1) {
@@ -459,9 +453,11 @@ public class MyTablePopupMenu extends MyPopupMenu {
       private final class Jira {
          private final String jiraStr;
          private List<String> rollforwards = new ArrayList<String>();
+
          public Jira(String jiraStr) {
             this.jiraStr = jiraStr;
          }
+
          public Object getOutput() {
             StringBuffer sb = new StringBuffer();
             sb.append("  ").append(jiraStr).append("\n");
@@ -470,14 +466,25 @@ public class MyTablePopupMenu extends MyPopupMenu {
             }
             return sb.toString();
          }
+
          public void addRollforward(String string) {
             rollforwards.add(string);
          }
+
          protected String getUrl() {
             StringBuffer url = new StringBuffer();
             url.append("browse/").append(jiraStr).append("?page=com.atlassian.jira.plugin.ext.subversion:subversion-commits-tabpanel");
             return url.toString();
          }
+      }
+
+      @Override
+      public void executeOnFinal() {
+      }
+
+      @Override
+      public Frame getParentFrame() {
+         return helper.getParentFrame();
       }
    }
 

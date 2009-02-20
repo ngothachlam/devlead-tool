@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -22,11 +21,11 @@ public class AlertDialog extends JDialog {
    private static Logger log = MyLogger.getLogger(AlertDialog.class);
    private JTextArea textArea;
 
-   private AlertDialog(Frame parent, String alertMessage) {
-      super(parent, "Alert...", true);
+   private AlertDialog(Frame parent, String title, String preTextboxText, String alertTextboxText) {
+      super(parent, title, true);
 
       MyPanel panel = new MyPanel(new BorderLayout()).bordered(15, 15, 15, 15);
-      textArea = new JTextArea(alertMessage);
+      textArea = new JTextArea(alertTextboxText);
       textArea.setEditable(false);
       JButton button = new JButton("Close");
       button.addActionListener(new ActionListener() {
@@ -35,7 +34,7 @@ public class AlertDialog extends JDialog {
          }
       });
 
-      panel.addNorth(new JLabel("Message:"));
+      panel.addNorth(new JLabel(preTextboxText));
       panel.addCenter(new JScrollPane(textArea));
       panel.addSouth(button);
 
@@ -58,9 +57,13 @@ public class AlertDialog extends JDialog {
       alertMessage(parentFrame, stacktrace);
    }
 
-   public static void alertMessage(Frame parentFrame, String e) {
+   public static void alertMessage(Frame parentFrame, String e, String title, String preTextBoxText) {
       log.debug("alert message");
-      new AlertDialog(parentFrame, e);
+      new AlertDialog(parentFrame, title, preTextBoxText, e);
+   }
+
+   public static void alertMessage(Frame parentFrame, String e) {
+      new AlertDialog(parentFrame, "Alert...", "Message:", e);
    }
 
    public void addText(String string) {
