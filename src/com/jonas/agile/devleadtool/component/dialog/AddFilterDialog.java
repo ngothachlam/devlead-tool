@@ -51,7 +51,7 @@ public class AddFilterDialog extends JFrame {
          GridBagConstraints c = new GridBagConstraints();
 
          c.insets = new Insets(5, 5, 5, 5);
-         c.fill = c.BOTH;
+         c.fill = GridBagConstraints.BOTH;
          c.gridy = -1;
          setNewRow(c);
          panel.add(new JLabel("Table:"), c);
@@ -67,7 +67,7 @@ public class AddFilterDialog extends JFrame {
             filters[i] = JiraFilter.getFilters().get(i);
          }
          JComboBox jiraCommas = panel.addComboBox(panel, filters, c);
-         jiraCommas.setSelectedItem(JiraFilter.DevsupportPrioFilter_UnResolved);
+         jiraCommas.setSelectedItem(JiraFilter.DevsupportPrioFilter_UnClosed);
 
          MyPanel buttonPanel = new MyPanel(new GridLayout(1, 2, 5, 5));
          buttonPanel.bordered();
@@ -152,9 +152,8 @@ public class AddFilterDialog extends JFrame {
             if (!isCancelled()) {
                AlertDialog.alertException(parentFrame, e);
                return;
-            } else {
-               return;
             }
+            return;
          }
          int i = 0;
          publish("Adding Jiras to table!");
@@ -185,7 +184,7 @@ public class AddFilterDialog extends JFrame {
 
       @Override
       protected void process(List<String> chunks) {
-         progressDialog.setNote(chunks.get(chunks.size()-1));
+         progressDialog.setNote(chunks.get(chunks.size() - 1));
       }
 
       private MyTable getTableToAddJirasTo() {

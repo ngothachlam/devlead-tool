@@ -81,7 +81,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, MAX_RESULT, helper.getParentFrame()));
 
          XmlParser parser = new XmlParserImpl(saxHandler, MAX_RESULT);
-         // XmlParser parser = new XmlParserLargeMock(saxHandler);
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
 
          new SprintTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder);
