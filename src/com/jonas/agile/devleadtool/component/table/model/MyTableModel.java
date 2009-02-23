@@ -88,7 +88,7 @@ public abstract class MyTableModel extends DefaultTableModel {
          value = jiraIssue.getStatus();
          break;
       case J_Resolution:
-         value = jiraIssue.getStatus() + " : " + jiraIssue.getResolution();
+         value = jiraIssue.getStatus() + " (" + jiraIssue.getResolution() + ")";
          break;
       case J_BuildNo:
          value = jiraIssue.getBuildNo();

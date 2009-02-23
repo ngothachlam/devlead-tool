@@ -1,7 +1,7 @@
 package com.jonas.agile.devleadtool.component.table;
 
 public enum BoardStatusValue {
-   UnKnown(0), NA(0), Parked(0), Open(1), Bug(1), InDevProgress(2), Resolved(3), InQAProgress(4), Complete(5), ForShowCase(6), Approved(7);
+   UnKnown(0), NA(0), Open(1), Bug(1), Parked(1), InDevProgress(2), Resolved(3), InQAProgress(4), Complete(5), ForShowCase(6), Approved(7);
 
    private String toString;
    private String name;
