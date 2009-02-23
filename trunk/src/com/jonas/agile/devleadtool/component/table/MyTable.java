@@ -112,7 +112,7 @@ public class MyTable extends JTable {
       }
       Object valueAt = getValueAt(rowIndex, colIndex);
       String header = getModel().getColumnName(colIndex).trim();
-      return header + " (" + (valueAt == null || valueAt.toString().length() == 0 ? " " : valueAt.toString().trim() + ")");
+      return header + ": " + (valueAt == null || valueAt.toString().length() == 0 ? " " : valueAt.toString().trim());
    }
 
    MyTable(String title, boolean allowMarking) {
