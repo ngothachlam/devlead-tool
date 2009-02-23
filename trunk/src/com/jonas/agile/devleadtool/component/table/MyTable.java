@@ -56,7 +56,7 @@ public class MyTable extends JTable {
 
       setDefaultRenderer(Object.class, new MyDefaultCellRenderer());
       setDefaultRenderer(Integer.class, new MyDefaultCellRenderer());
-//      setDefaultRenderer(BoardStatusValue.class, new MyDefaultCellRenderer());
+      // setDefaultRenderer(BoardStatusValue.class, new MyDefaultCellRenderer());
       setDefaultRenderer(String.class, new StringTableCellRenderer(defaultTableModel));
       setDefaultRenderer(Boolean.class, checkBoxRenderer);
       setComboEditors();
@@ -111,7 +111,8 @@ public class MyTable extends JTable {
          return super.getToolTipText(event);
       }
       Object valueAt = getValueAt(rowIndex, colIndex);
-      return valueAt == null || valueAt.toString().length() == 0 ? " " : valueAt.toString();
+      String header = getModel().getColumnName(colIndex).trim();
+      return header + ": " + (valueAt == null || valueAt.toString().length() == 0 ? " " : valueAt.toString().trim());
    }
 
    MyTable(String title, boolean allowMarking) {
