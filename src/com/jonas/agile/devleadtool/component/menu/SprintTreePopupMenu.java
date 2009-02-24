@@ -226,14 +226,12 @@ public class SprintTreePopupMenu extends MyPopupMenu {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-         StringBuffer sb = null;
+         SprintLogger sprintLogger = new SprintLogger();
          TreePath[] paths = tree.getSelectionPaths();
          if (paths == null || paths.length == 0) {
             AlertDialog.alertMessage(frame, "No rows selected or table empty!");
             return;
          }
-         List<String> syncedSprints = new ArrayList<String>();
-         List<String> failedSprints = new ArrayList<String>();
          log.debug(paths);
          if (paths.length == 1 && paths[0].getLastPathComponent().equals(tree.getModel().getRoot())) {
             log.debug("all sprints");
@@ -246,45 +244,37 @@ public class SprintTreePopupMenu extends MyPopupMenu {
                log.debug("Path[" + i + "]: " + paths[i] + " selectedElement: " + selectedElement);
                if (selectedElement instanceof SprintNode) {
                   SprintNode sprintNode = (SprintNode) selectedElement;
-                  syncedSprints.add(sprintNode.getSprintName());
                   log.debug("SprintNode: " + sprintNode);
                   tree.removeAllChildren(sprintNode);
                   JiraProject project = JiraProject.getProjectByKey(sprintNode.getParent().toString());
                   dndTreeBuilder.buildTree(sprintNode.getSprintName(), project);
+                  
+                  sprintLogger.addSyncedSprint(sprintNode.getSprintName());
                } else {
-                  failedSprints.add(selectedElement.toString());
+                  sprintLogger.addFailedSprint(selectedElement.toString());
                }
             }
-            sb = trawlAndDisplayMessage(syncedSprints, "The following sprints were synced:\n");
-            sb = appendToSprint(sb, failedSprints, "\nThe following were seleced but are NOT sprints:\n");
          }
-         if (sb != null) {
-            AlertDialog.alertMessage(parentFrame, sb.toString());
-         }
+            sprintLogger.displayAlert();
       }
 
+      private class SprintLogger{
+
+         public void addSyncedSprint(String sprintName) {
+         }
+
+         public void displayAlert() {
+            AlertDialog.alertMessage(parentFrame, "");
+         }
+
+         public void addFailedSprint(String string) {
+         }
+         
+      }
+      
       private void downloadAllSprints() {
          JiraProject project = JiraProject.getProjectByKey(tree.getModel().getRoot().toString());
          dndTreeBuilder.buildTree(null, project);
-      }
-
-      private StringBuffer appendToSprint(StringBuffer sb, List<String> failedSprints, String string) {
-         if (sb == null)
-            sb = trawlAndDisplayMessage(failedSprints, string);
-         else
-            sb.append(trawlAndDisplayMessage(failedSprints, string));
-         return sb;
-      }
-
-      private StringBuffer trawlAndDisplayMessage(List<String> syncedSprints, String str) {
-         if (syncedSprints.size() > 0) {
-            StringBuffer sb = new StringBuffer(str);
-            for (String string : syncedSprints) {
-               sb.append(string).append("\n");
-            }
-            return sb;
-         }
-         return null;
       }
    }
 }

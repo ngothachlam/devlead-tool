@@ -27,11 +27,11 @@ BoardTable:
 		* (Maybe by having "add outstanding jiras to sprintboard" by selecting sprints in the tree?)
 	
 Tree: 
-* Adding sprints by comma separation
+
 * Add ordering
 * Move buttons from below tree to become right click!
 * Add sprint management to the database or save the tree! 
-* Add a highlight on rigth click: "higlight parents that have "Resolved", "Closed", etc jiras
+* Add a highlight on right click: "higlight parents that have "Resolved", "Closed", etc jiras
 * Add better and more dynamic DnD tree support
 	* Add some different views: (existing is: LLU\Sprint\FixVersion\Jira
 		* LLU\FixVersion\Sprint\jira
@@ -43,4 +43,4 @@ Tree:
 		* when doing this on a Jira - display the JiraInfo,
 		* ... project
 		* ... fix version
-	* 
+* DONE: Adding sprints by comma separation
