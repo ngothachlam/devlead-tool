@@ -27,6 +27,7 @@ import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParserLargeMock;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.string.StringHelper;
 import com.jonas.jira.JiraProject;
 
 public class DnDTreePanel extends JPanel {
@@ -87,6 +88,7 @@ public class DnDTreePanel extends JPanel {
    private final class AddSprintButton extends JButton implements ActionListener {
       private final Component parent;
       private final SprintTree tree;
+      private StringHelper helper = new StringHelper();
 
       private AddSprintButton(String text, Component parent, SprintTree tree) {
          super(text);
@@ -99,9 +101,12 @@ public class DnDTreePanel extends JPanel {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-         Object result = JOptionPane.showInputDialog(parent, "Name the Sprint you want to add", "Adding a Sprint", JOptionPane.PLAIN_MESSAGE, null, null, null);
+         Object result = JOptionPane.showInputDialog(parent, "Name the Sprint you want to add\nYou can comma separate this if you want", "Adding a Sprint", JOptionPane.PLAIN_MESSAGE, null, null, null);
          if (result != null) {
-            tree.getModel().createSprint((String) result);
+            List<String> sprints = helper.separate((String) result, " \t,");
+            for (String sprint : sprints) {
+               tree.getModel().createSprint(sprint);
+            }
          }
       }
    }
