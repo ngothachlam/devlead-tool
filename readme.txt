@@ -12,19 +12,22 @@ TODO:
 
 Jira Table: 
 * Red when build number not filled out and resolved=<
-* Add Project to the Board Table
-* Add regex to filter ren when fixversion is not of type: ^jiraproject-[0-9]+%
-
-BoardTable:
-* Add Sprint to the Board Table
-* Add Project to the Board Table
+* Add regex to filter red when fixversion is not of type: ^jiraproject-[0-9]+%
 * Add colour coding between jira board and board regarding 
 	* jirastatus vs boardstatus
 	* sprint
 	* project not filled in
 
+BoardTable:
+* Add Sprint to the Board Table
+* Add Project to the Board Table
+* Add a "download jira's board representation"
+	* Get all issues with the specified sprint
+	* Trawl through all non-closed issues with a sprint filled out
+		* (Maybe by having "add outstanding jiras to sprintboard" by selecting sprints in the tree?)
 	
 Tree: 
+* Adding sprints by comma separation
 * Add ordering
 * Move buttons from below tree to become right click!
 * Add sprint management to the database or save the tree! 
