@@ -10,8 +10,8 @@ import com.jonas.common.logging.MyLogger;
 
 public class JiraTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.B_BoardStatus, Column.J_Type, Column.B_Release, Column.J_Sprint,
-         Column.J_FixVersion, Column.J_Delivery, Column.J_Status, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Type, Column.J_Sprint,
+         Column.J_FixVersion, Column.J_Delivery, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent };
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
    private int tempRow = -1;

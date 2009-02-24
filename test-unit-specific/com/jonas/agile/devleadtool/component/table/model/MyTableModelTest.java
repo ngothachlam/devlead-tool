@@ -203,7 +203,6 @@ public class MyTableModelTest extends JonasTestCase {
    public void testShouldGetColumnInfoOk() {
       assertEquals(0, model.getColumnIndex(Column.Jira));
       assertEquals(1, model.getColumnIndex(Column.Description));
-      assertEquals(2, model.getColumnIndex(Column.B_BoardStatus));
       assertEquals(3, model.getColumnIndex(Column.prio));
       assertEquals(4, model.getColumnIndex(Column.Note));
       assertEquals(5, model.getColumnIndex(Column.J_BuildNo));
@@ -234,7 +233,6 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals(8, model.getColumnCount());
       assertModelRow("LLU-1", Column.Jira, 0, 0);
       assertModelRow("Summary1", Column.Description, 1, 0);
-      assertModelRow(BoardStatusValue.NA, Column.B_BoardStatus, 2, 0);
       assertModelRow(5800, Column.prio, 3, 0);
       assertModelRow("", Column.Note, 4, 0);
       assertModelRow("BuildNo1", Column.J_BuildNo, 5, 0);
@@ -263,14 +261,13 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals("estimate", model.getValueFromIssue(jiraIssue, Column.J_Dev_Estimate));
       assertEquals("sprint", model.getValueFromIssue(jiraIssue, Column.J_Sprint));
       assertEquals(null, model.getValueFromIssue(jiraIssue, Column.J_Dev_Spent));
-      assertEquals(BoardStatusValue.NA, model.getValueFromIssue(jiraIssue, Column.B_BoardStatus));
    }
 }
 
 
 class TestTableModelTwo extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.B_BoardStatus, Column.prio, Column.Note, Column.J_BuildNo,
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.prio, Column.Note, Column.J_BuildNo,
          Column.J_Dev_Estimate, Column.Dev_Estimate };
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
 

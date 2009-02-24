@@ -31,8 +31,6 @@ public class BoardTableModelListenerTest extends JonasTestCase {
       boardTable.addListener(new TableListener() {
          @Override
          public void jiraRemoved(String jira) {
-            jiraTable.setValueAt(BoardStatusValue.NA, jira, Column.B_BoardStatus);
-            jiraTable.setValueAt("", jira, Column.B_Release);
          }
       });
 
@@ -44,70 +42,6 @@ public class BoardTableModelListenerTest extends JonasTestCase {
 
    protected void tearDown() throws Exception {
       super.tearDown();
-   }
-
-   public void testShouldUpdateJiraWhenJiraAddedToBoard() {
-      boardTable.addJira("llu-1");
-      jiraTable.addJira("llu-1");
-
-      assertEquals(BoardStatusValue.NA, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
-      assertEquals("", jiraTable.getValueAt(Column.B_Release, "llu-1"));
-
-      boardTable.setValueAt(BoardStatusValue.InDevProgress, "llu-1", Column.BoardStatus);
-      System.out.println("1");
-      
-      assertEquals(BoardStatusValue.InDevProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
-      assertEquals("", jiraTable.getValueAt(Column.B_Release, "llu-1"));
-
-      boardTable.setValueAt("R1", "llu-1", Column.Release);
-      System.out.println("2");
-
-      assertEquals(BoardStatusValue.InDevProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
-      assertEquals("R1", jiraTable.getValueAt(Column.B_Release, "llu-1"));
-   }
-
-   public void testShouldUpdateJiraWhenJiraRemovedFromBoard() {
-      boardTable.addJira("llu-1");
-      jiraTable.addJira("llu-1");
-
-      boardTable.setValueAt(BoardStatusValue.InDevProgress, "llu-1", Column.BoardStatus);
-      boardTable.setValueAt("R1", "llu-1", Column.Release);
-
-      assertEquals(BoardStatusValue.InDevProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
-      assertEquals("R1", jiraTable.getValueAt(Column.B_Release, "llu-1"));
-
-      boardTable.selectAll();
-      boardTable.removeSelectedRows();
-
-      assertEquals(0, boardTable.getRowCount());
-      assertEquals(BoardStatusValue.NA, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
-      assertEquals("", jiraTable.getValueAt(Column.B_Release, "llu-1"));
-   }
-
-   public void testShouldUpdateJiraWhenJiraUpdatedInBoard() {
-
-      boardTable.addJira("llu-1");
-      jiraTable.addJira("llu-1");
-      jiraTable.addJira("llu-2");
-
-      boardTable.setValueAt(BoardStatusValue.InDevProgress, "llu-1", Column.BoardStatus);
-      boardTable.setValueAt("R1", "llu-1", Column.Release);
-
-      assertEquals(1, boardTable.getRowCount());
-      assertEquals(BoardStatusValue.InDevProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
-      assertEquals("R1", jiraTable.getValueAt(Column.B_Release, "llu-1"));
-      assertEquals(BoardStatusValue.NA, jiraTable.getValueAt(Column.B_BoardStatus, "llu-2"));
-      assertEquals("", jiraTable.getValueAt(Column.B_Release, "llu-2"));
-
-      simulateEditToTable(boardTable, "LLU-2", 0, Column.Jira);
-
-      assertEquals(1, boardTable.getRowCount());
-      assertEquals("LLU-2", boardTable.getValueAt(Column.Jira, "llu-2"));
-      assertEquals(BoardStatusValue.InDevProgress, jiraTable.getValueAt(Column.B_BoardStatus, "llu-2"));
-      assertEquals("R1", jiraTable.getValueAt(Column.B_Release, "llu-2"));
-      assertEquals(BoardStatusValue.NA, jiraTable.getValueAt(Column.B_BoardStatus, "llu-1"));
-      assertEquals("", jiraTable.getValueAt(Column.B_Release, "llu-1"));
-
    }
 
    private void simulateEditToTable(MyTable table, String value, int row, Column column) {
