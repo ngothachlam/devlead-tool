@@ -24,11 +24,9 @@ public class MyTableTest extends JonasTestCase {
 
       assertEquals(Column.Jira, table.getColumnEnum(0));
       assertEquals(Column.Description, table.getColumnEnum(1));
-      assertEquals(Column.B_BoardStatus, table.getColumnEnum(2));
       
       assertEquals(0, table.getColumnIndex(Column.Jira));
       assertEquals(1, table.getColumnIndex(Column.Description));
-      assertEquals(2, table.getColumnIndex(Column.B_BoardStatus));
    }
 
    public void testShouldIdentifyColumnInCorrectly() throws SecurityException, NoSuchMethodException {
@@ -37,7 +35,7 @@ public class MyTableTest extends JonasTestCase {
       
       assertEquals(null, table.getColumnEnum(-1));
       
-      assertEquals(-1, table.getColumnIndex(Column.B_Release));
+      assertEquals(-1, table.getColumnIndex(Column.Merge));
    }
    
    public void testShouldGetCorrectColumnIndex(){

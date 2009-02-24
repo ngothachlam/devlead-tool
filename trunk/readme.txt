@@ -11,7 +11,6 @@ TODO:
 	* let the id be stored in the swing app against a name so that it can be renamed!
 
 Jira Table: 
-* Remove the J_Status, B_...
 * Red when build number not filled out and resolved=<
 * Add Project to the Board Table
 * Add regex to filter ren when fixversion is not of type: ^jiraproject-[0-9]+%

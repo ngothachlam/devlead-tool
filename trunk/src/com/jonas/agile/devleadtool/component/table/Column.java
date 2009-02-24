@@ -31,14 +31,6 @@ public enum Column {
       }
    },
 
-   // Board Sync columns:
-   B_BoardStatus(BoardStatusValue.class, BoardStatusValue.NA, IsEditableColumn.No, IsJiraColumn.No, ToLoadColumn.Yes) {
-      public Object parse(String cellContents) {
-         return BoardStatusValue.get(cellContents);
-      }
-   },
-   B_Release(String.class, "", IsEditableColumn.No, IsJiraColumn.No, ToLoadColumn.Yes),
-
    // Jira Sync columns:
    J_Status(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
    J_Resolution(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),

@@ -35,13 +35,10 @@ public class JiraTableModelTest extends JonasTestCase {
 
       header.add(Column.Jira);
       header.add(Column.Description);
-      header.add(Column.B_BoardStatus);
       header.add(Column.J_Type);
-      header.add(Column.B_Release);
       header.add(Column.J_Sprint);
       header.add(Column.J_FixVersion);
       header.add(Column.J_Delivery);
-      header.add(Column.J_Status);
       header.add(Column.J_Resolution);
       header.add(Column.J_BuildNo);
       header.add(Column.J_Dev_Estimate);

@@ -48,7 +48,6 @@ public class TableSyncerFromJiraToBoardListener implements TableModelListener {
                BoardStatusValue status = boardModel.getStatus(jira);
                String release = boardModel.getRelease(jira);
                log.debug("Trying to update Jira Table with Jira: " + jira + ", Status: " + status + " and Release: " + release);
-               updateJiraTable(jira, status, release);
             }
          }
       } else if (isColumnsUpdatedEither(e, source, Column.Jira, Column.BoardStatus, Column.Release)
@@ -60,7 +59,6 @@ public class TableSyncerFromJiraToBoardListener implements TableModelListener {
                BoardStatusValue status = boardModel.getStatus(jira);
                String release = (String) boardTable.getValueAt(Column.Release, jira);
                log.debug("Trying to update Jira Table with Jira: " + jira + ", Status: " + status + " and Release: " + release);
-               updateJiraTable(jira, status, release);
             }
          }
       } else if (isColumnsUpdatedEither(e, source, Column.Dev_Actual, Column.Dev_Estimate) && e.getType() == TableModelEvent.UPDATE) {
@@ -88,13 +86,4 @@ public class TableSyncerFromJiraToBoardListener implements TableModelListener {
       return false;
    }
 
-   private void updateJiraTable(final String jira, final BoardStatusValue status, final String release) {
-      SwingUtilities.invokeLater(new Runnable() {
-         @Override
-         public void run() {
-            jiraTable.setValueAt(status, jira, Column.B_BoardStatus);
-            jiraTable.setValueAt(release, jira, Column.B_Release);
-         }
-      });
-   }
 }

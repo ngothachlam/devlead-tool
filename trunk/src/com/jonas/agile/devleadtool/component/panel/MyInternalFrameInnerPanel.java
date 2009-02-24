@@ -376,8 +376,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          BoardStatusValue status = boardModel.getStatus(jira);
          String release = boardModel.getRelease(jira);
 
-         jiraTable.setValueAt(status, (String) editor.getOldValue(), Column.B_BoardStatus);
-         jiraTable.setValueAt(release, (String) editor.getOldValue(), Column.B_Release);
       }
    }
 
@@ -385,8 +383,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       @Override
       public void jiraRemoved(String jira) {
          MyTable jiraTable = jiraPanel.getTable();
-         jiraTable.setValueAt(BoardStatusValue.NA, jira, Column.B_BoardStatus);
-         jiraTable.setValueAt("", jira, Column.B_Release);
          jiraTable.fireTableDataChangedForJira(jira);
       }
    }
