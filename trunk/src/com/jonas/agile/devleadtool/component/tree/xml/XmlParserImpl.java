@@ -1,11 +1,8 @@
 package com.jonas.agile.devleadtool.component.tree.xml;
 
-import java.awt.Container;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethodBase;
@@ -16,8 +13,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-import com.jonas.agile.devleadtool.MyStatusBar;
-import com.jonas.agile.devleadtool.component.listener.SprintParseListener;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraException;
@@ -28,16 +23,16 @@ public class XmlParserImpl implements XmlParser {
       return maxResults;
    }
 
-   private Logger log = MyLogger.getLogger(XmlParserImpl.class);
+   Logger log = MyLogger.getLogger(XmlParserImpl.class);
 
    private XMLReader xmlReader;
-   private String baseUrl;
+   String baseUrl;
 
    private final int maxResults;
 
    private final JiraSaxHandler saxHandler;
 
-   private List<SprintParseListener> listeners = new ArrayList<SprintParseListener>();
+   private HttpClient httpClient;
 
    public XmlParserImpl(JiraSaxHandler saxHandler, int maxResults) throws SAXException {
       super();
@@ -51,7 +46,6 @@ public class XmlParserImpl implements XmlParser {
    public void parse(JiraProject project, String sprint) throws IOException, SAXException, JiraException {
       GetMethod method = null;
       try {
-         HttpClient httpClient = new HttpClient();
          String url = project.getJiraClient().getBaseUrl() + "/secure/IssueNavigator.jspa?view=rss&pid="+project.getId()+"&reset=true&decorator=none&tempMax=" + maxResults;
          if(sprint != null){
             url = url +"&customfield_10282=" + sprint;
@@ -60,9 +54,6 @@ public class XmlParserImpl implements XmlParser {
             url = url +"&fixfor=-2";
          }
          log.debug("calling " + url);
-         notifyStartingToLogin();
-         login(httpClient);
-         notifyStartingToAccessJiraServer();
 
          // fixfor=-2 @ Fix For: all unreleased versions
          // pid=10070 @ Project: LLU Systems Provisioning
@@ -84,21 +75,11 @@ public class XmlParserImpl implements XmlParser {
       }
    }
 
-   private void notifyStartingToLogin() {
-      for (SprintParseListener listener : listeners) {
-         listener.loggingInToJiraServer();
-      }
-      MyStatusBar.getInstance().setMessage("Logging in to Jira Server...", false);
+   public void login() throws IOException, HttpException, JiraException {
+      httpClient = new HttpClient();
+      login(httpClient);
    }
-
-   private void notifyStartingToAccessJiraServer() {
-      for (SprintParseListener listener : listeners) {
-         listener.accessingDataOnJiraServer();
-      }
-      MyStatusBar.getInstance().setMessage("Accessing Jira Server...", false);
-   }
-
-   private void login(HttpClient httpClient) throws IOException, HttpException, JiraException {
+   public void login(HttpClient httpClient) throws IOException, HttpException, JiraException {
       PostMethod loginMethod = new PostMethod(baseUrl + "/login.jsp");
       loginMethod.addParameter("os_username", "soaptester");
       loginMethod.addParameter("os_password", "soaptester");
@@ -107,7 +88,7 @@ public class XmlParserImpl implements XmlParser {
       log.debug("Logging onto Jira Done!");
    }
 
-   private void throwJiraExceptionIfRequired(HttpMethodBase method) throws JiraException {
+   void throwJiraExceptionIfRequired(HttpMethodBase method) throws JiraException {
       // FIXME map jira exception to a jira action so that we know in the code what is going on!
       if (method.getStatusCode() != 200) {
          log.debug("Throwing jira exception!");
@@ -125,8 +106,7 @@ public class XmlParserImpl implements XmlParser {
    }
 
    @Override
-   public void addParseListener(SprintParseListener jiraParseListener) {
-      listeners.add(jiraParseListener);
+   public void addParseListener(JiraParseListener jiraParseListener) {
       saxHandler.addJiraParseListener(jiraParseListener);
    }
 }

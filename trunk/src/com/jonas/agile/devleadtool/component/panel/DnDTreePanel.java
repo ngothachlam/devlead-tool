@@ -103,7 +103,7 @@ public class DnDTreePanel extends JPanel {
       public void actionPerformed(ActionEvent e) {
          Object result = JOptionPane.showInputDialog(parent, "Name the Sprint you want to add\nYou can comma separate this if you want", "Adding a Sprint", JOptionPane.PLAIN_MESSAGE, null, null, null);
          if (result != null) {
-            List<String> sprints = helper.separate((String) result, " \t,");
+            List<String> sprints = helper.generateSeparateList((String) result);
             for (String sprint : sprints) {
                tree.getModel().createSprint(sprint);
             }
