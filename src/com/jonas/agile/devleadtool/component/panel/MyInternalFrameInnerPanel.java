@@ -62,6 +62,10 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    private JCheckBox editableCheckBox;
    private DnDTreePanel sprintPanel;
 
+   private MyTable boardTable;
+
+   private MyTable jiraTable;
+
    public MyInternalFrameInnerPanel(PlannerHelper client) {
       this(client, null, null);
    }
@@ -83,10 +87,12 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          XmlParser parser = new XmlParserImpl(saxHandler, MAX_RESULT);
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
 
-         new SprintTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder);
          log.trace("MyInternalFrameInnerComponent 1.5");
          
          makeContent(boardModel, tree, helper, jiraModel);
+         
+         new SprintTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder, jiraTable, boardTable);
+         
          log.trace("MyInternalFrameInnerComponent 1.6");
          this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
 
@@ -160,8 +166,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       jiraButtonPanel.add(new JCheckBox(new HighlightIssuesAction("Higlight Issues", (JiraTableModel) jiraPanel.getTable().getModel())));
       jiraMainPanel.add(jiraButtonPanel, BorderLayout.SOUTH);
 
-      MyTable boardTable = boardPanel.getTable();
-      MyTable jiraTable = jiraPanel.getTable();
+      boardTable = boardPanel.getTable();
+      jiraTable = jiraPanel.getTable();
 
       new MyTablePopupMenu(boardTable, helper, boardTable, jiraTable);
       new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable);
