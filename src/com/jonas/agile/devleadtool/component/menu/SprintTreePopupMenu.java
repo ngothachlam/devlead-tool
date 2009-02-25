@@ -88,7 +88,7 @@ public class SprintTreePopupMenu extends MyPopupMenu {
 
          frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
          frame.setResizable(false);
-         panel = new SprintInfoPanel(tree);
+         panel = new SprintInfoPanel();
          frame.getContentPane().add(panel, BorderLayout.CENTER);
 
       }
@@ -99,6 +99,7 @@ public class SprintTreePopupMenu extends MyPopupMenu {
          if (paths == null || paths.length == 0)
             return;
 
+         panel.setTree(tree);
          panel.calculateInfo();
 
          frame.pack();

@@ -27,11 +27,11 @@ BoardTable:
 		* (Maybe by having "add outstanding jiras to sprintboard" by selecting sprints in the tree?)
 	
 Tree: 
-
+* Sprintstats panel is very likely to have a bug if a jira has several fix versions that it double adds the estimate and actual in the SprintInfo panel?
 * Add ordering
 * Move buttons from below tree to become right click!
 * Add sprint management to the database or save the tree! 
-* Add a highlight on right click: "higlight parents that have "Resolved", "Closed", etc jiras
+* Add a highlight on right click: "highlight parents that have "Resolved", "Closed", etc jiras
 * Add better and more dynamic DnD tree support
 	* Add some different views: (existing is: LLU\Sprint\FixVersion\Jira
 		* LLU\FixVersion\Sprint\jira

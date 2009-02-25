@@ -3,13 +3,15 @@ package com.jonas.agile.devleadtool.component.tree.xml;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.xml.sax.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import com.jonas.common.CalculatorHelper;
 import com.jonas.common.logging.MyLogger;
 
 public class JiraSaxHandler extends DefaultHandler {
 
+   private static final String ACTUALTIMEESTIMATE = "timespent";
+   private static final String ORIGINALTIMEESTIMATE = "timeoriginalestimate";
    private static final String SUMMARY = "summary";
    private static final String RESOLUTION = "resolution";
    private static final String STATUS = "status";
@@ -104,9 +106,12 @@ public class JiraSaxHandler extends DefaultHandler {
          jira = new JiraDTO();
       } else if (KEY.equals(qName)) {
          jira.setId(atts.getValue("id"));
-      } else if ("timeoriginalestimate".equals(qName)){
+      } else if (ORIGINALTIMEESTIMATE.equals(qName)) {
          String seconds = atts.getValue("seconds");
          jira.setOriginalEstimate(Integer.parseInt(seconds));
+      } else if (ACTUALTIMEESTIMATE.equals(qName)) {
+         String seconds = atts.getValue("seconds");
+         jira.setActual(Integer.parseInt(seconds));
       }
       element = qName;
       nodeCount++;

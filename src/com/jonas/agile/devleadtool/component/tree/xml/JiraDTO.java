@@ -14,11 +14,12 @@ public class JiraDTO {
    private String sprint;
    private String status;
    private String summary;
+   private int actual;
 
    public JiraDTO() {
    }
 
-   public JiraDTO(String key, String id, String summary, List<String> list, String sprint, String status, String resolution, boolean isToSync, int originalEstimate) {
+   public JiraDTO(String key, String id, String summary, List<String> list, String sprint, String status, String resolution, boolean isToSync, int originalEstimate, int actual) {
       setKey(key);
       setId(id);
       setSummary(summary);
@@ -28,16 +29,11 @@ public class JiraDTO {
       setResolution(resolution);
       setToSync(isToSync);
       setOriginalEstimate(originalEstimate);
+      setActual(actual);
+   }
 
-      // this.resolution = resolution;
-      // this.sprint = sprint;
-      // this.status = status;
-      // this.summary = summary;
-      // this.id = id;
-      // this.isToSync = isToSync;
-      // for (String fixVersion : fixVersions) {
-      // addFixVersion(fixVersion);
-      // }
+   public void setActual(int actual) {
+      this.actual = actual;
    }
 
    public void addFixVersion(String fixVersion) {
@@ -133,6 +129,10 @@ public class JiraDTO {
       sb.append(sprint);
       sb.append("]");
       return sb.toString();
+   }
+
+   public int getActual() {
+      return actual;
    }
 
 }
