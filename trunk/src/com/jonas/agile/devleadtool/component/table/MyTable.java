@@ -48,6 +48,7 @@ public class MyTable extends JTable {
       this.title = title;
       marker.setAllowMarking(allowMarking);
       getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+      setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
       setColumnSelectionAllowed(false);
       setRowSelectionAllowed(true);
 
