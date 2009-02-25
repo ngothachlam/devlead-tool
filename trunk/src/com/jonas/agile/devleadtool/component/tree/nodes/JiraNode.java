@@ -17,8 +17,9 @@ public class JiraNode extends DefaultMutableTreeNode implements ToolTipper{
    private final String status;
    private final String id;
    private final int originalEstimate;
+   private int actual;
 
-   public JiraNode(String jira, String id, String summary, String resolution, String status, String sprint, List<String> fixVersions, boolean isToSync, int originalEstimate) {
+   public JiraNode(String jira, String id, String summary, String resolution, String status, String sprint, List<String> fixVersions, boolean isToSync, int originalEstimate, int actual) {
       super(jira);
       this.key = jira;
       this.resolution = resolution;
@@ -28,6 +29,7 @@ public class JiraNode extends DefaultMutableTreeNode implements ToolTipper{
       this.isToSync = isToSync;
       this.id = id;
       this.originalEstimate = originalEstimate;
+      this.actual = actual;
       for (String string : fixVersions) {
          this.fixVersions.add(string);
       }
@@ -89,5 +91,9 @@ public class JiraNode extends DefaultMutableTreeNode implements ToolTipper{
       sb.append(" (").append(getResolution()).append(")");
       sb.append(", Estimate: ").append(secondsAsDaysAndString).append(" days");
       return sb.toString();
+   }
+
+   public int getActual() {
+      return actual;
    }
 }

@@ -64,6 +64,7 @@ public class FixVersionNode extends DefaultMutableTreeNode implements ToolTipper
       private int childCount;
       private Map<Status, Integer> countMap = new HashMap<Status, Integer>(5);
       private int estimateTotal;
+      private int actualTotal;
 
       public Status getLowestStatus() {
          return lowestStatus;
@@ -100,12 +101,14 @@ public class FixVersionNode extends DefaultMutableTreeNode implements ToolTipper
             countMap.put(status, value);
             log.debug("jiraNode: " + jiraNode.getKey() +" has original Estimate: " + jiraNode.getOriginalEstimate());
             estimateTotal += jiraNode.getOriginalEstimate();
+            actualTotal += jiraNode.getActual();
          }
          lowestStatus = result;
       }
 
       private void resetCounts() {
          estimateTotal = 0;
+         actualTotal = 0;
          countMap.clear();
       }
 
@@ -115,6 +118,10 @@ public class FixVersionNode extends DefaultMutableTreeNode implements ToolTipper
 
       public int getEstimateTotal() {
          return estimateTotal;
+      }
+
+      public int getActualTotal() {
+         return actualTotal;
       }
    }
 }

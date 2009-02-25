@@ -82,6 +82,7 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
       private int jiraCount;
       private Map<Status, Integer> countMap = new HashMap<Status, Integer>(5);
       private int estimateTotal;
+      private int actualTotal;
 
       Status getLowestStatus() {
          return lowestStatus;
@@ -130,6 +131,7 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
             log.debug("Status " + status + " now has " + value);
          }
          estimateTotal += fixVersionAnalyser.getEstimateTotal();
+         actualTotal += fixVersionAnalyser.getActualTotal();
          jiraCount += fixVersionAnalyser.getJiraCount();
       }
 
@@ -141,6 +143,10 @@ public class SprintNode extends DefaultMutableTreeNode implements ToolTipper {
 
       public int getEstimateTotal() {
          return estimateTotal;
+      }
+
+      public int getActualTotal() {
+         return actualTotal;
       }
       
    }
