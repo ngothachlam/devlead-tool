@@ -20,7 +20,9 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.panel.SprintInfoPanel;
+import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.tree.SprintTree;
+import com.jonas.agile.devleadtool.component.tree.nodes.FixVersionNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
@@ -44,6 +46,13 @@ public class SprintTreePopupMenu extends MyPopupMenu {
       add(new JMenuItem_SprintInfo("Sprint Info", tree));
       add(new Separator());
       add(new JMenuItem_Expand("Expand", tree));
+   }
+
+   public SprintTreePopupMenu(final JFrame parentFrame, SprintTree tree, DnDTreeBuilder dndTreeBuilder, MyTable jiraTable, MyTable boardTable) {
+      this(parentFrame, tree, dndTreeBuilder);
+      add(new Separator());
+      add(new JMenuItem_Copy("Copy to Board Table", tree, boardTable));
+      add(new JMenuItem_Copy("Copy to Jira Table", tree, jiraTable));
    }
 
    private class JMenuItem_Expand extends JMenuItem implements ActionListener {
@@ -79,18 +88,10 @@ public class SprintTreePopupMenu extends MyPopupMenu {
 
    private class JMenuItem_SprintInfo extends JMenuItemAbstr {
       private final SprintTree tree;
-      private JFrame frame = new JFrame();
-      private SprintInfoPanel panel;
 
       private JMenuItem_SprintInfo(String name, SprintTree tree) {
          super(name);
          this.tree = tree;
-
-         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-         frame.setResizable(false);
-         panel = new SprintInfoPanel();
-         frame.getContentPane().add(panel, BorderLayout.CENTER);
-
       }
 
       @Override
@@ -98,13 +99,20 @@ public class SprintTreePopupMenu extends MyPopupMenu {
          TreePath[] paths = tree.getSelectionPaths();
          if (paths == null || paths.length == 0)
             return;
+         for (TreePath treePath : paths) {
+            SprintInfoPanel panel = new SprintInfoPanel();
 
-         panel.setTree(tree);
-         panel.calculateInfo();
+            Object component = treePath.getLastPathComponent();
+            panel.calculateInfo(component);
 
-         frame.pack();
-         SwingUtil.centreWindow(frame);
-         frame.setVisible(true);
+            JFrame frame = new JFrame();
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setResizable(false);
+            frame.getContentPane().add(panel, BorderLayout.CENTER);
+            frame.pack();
+            SwingUtil.centreWindow(frame);
+            frame.setVisible(true);
+         }
       }
    }
 
@@ -169,6 +177,55 @@ public class SprintTreePopupMenu extends MyPopupMenu {
             AlertDialog.alertMessage(frame, sb.toString());
          }
 
+      }
+   }
+
+   private class JMenuItem_Copy extends JMenuItemAbstr {
+      private final SprintTree tree;
+      private MyTable table;
+
+      public JMenuItem_Copy(String string, SprintTree tree, MyTable table) {
+         super(string);
+         this.tree = tree;
+         this.table = table;
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         TreePath[] selectedPaths = tree.getSelectionPaths();
+         for (TreePath treePath : selectedPaths) {
+            Object selectedTreeNode = treePath.getLastPathComponent();
+            addNodeToTable(selectedTreeNode);
+         }
+      }
+
+      private void addNodeToTable(Object selectedTreeNode) {
+         if (selectedTreeNode instanceof JiraNode) {
+            addJiraToTable(selectedTreeNode);
+         } else if (selectedTreeNode instanceof SprintNode) {
+            addSprintToTable(selectedTreeNode);
+         } else if (selectedTreeNode instanceof FixVersionNode) {
+            addFixToTable(selectedTreeNode);
+         }
+      }
+
+      private void addSprintToTable(Object selectedTreeNode) {
+         SprintNode sprintNode = (SprintNode) selectedTreeNode;
+         for (int i = 0; i < sprintNode.getChildCount(); i++) {
+            addNodeToTable(sprintNode.getChildAt(i));
+         }
+      }
+
+      private void addFixToTable(Object selectedTreeNode) {
+         FixVersionNode fixNode = (FixVersionNode) selectedTreeNode;
+         for (int i = 0; i < fixNode.getChildCount(); i++) {
+            addNodeToTable(fixNode.getChildAt(i));
+         }
+      }
+
+      private void addJiraToTable(Object selectedTreeNode) {
+         JiraNode jiraNode = (JiraNode) selectedTreeNode;
+         table.addJira(jiraNode.getKey());
       }
    }
 

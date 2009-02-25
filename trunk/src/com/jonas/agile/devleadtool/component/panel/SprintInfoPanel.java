@@ -8,18 +8,12 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.tree.TreePath;
-import com.jonas.agile.devleadtool.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.Status;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode.SprintAnalyser;
 import com.jonas.common.CalculatorHelper;
 
 public class SprintInfoPanel extends JPanel {
-
-   public void setTree(SprintTree tree) {
-      this.tree = tree;
-   }
 
    private static final int JIRACOUNTTEXTFIELD_COLUMNCOUNT = 2;
    private static final int JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT = 2;
@@ -36,17 +30,16 @@ public class SprintInfoPanel extends JPanel {
    private JTextField resolvedPercentage = new JTextField(JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT);
    private JTextField closedCount = new JTextField(JIRACOUNTTEXTFIELD_COLUMNCOUNT);
    private JTextField closedPercentage = new JTextField(JIRAPERCENTAGETEXTFIELD_COLUMNCOUNT);
-   private SprintTree tree;
    private JLabel mainLabel;
 
    public SprintInfoPanel() {
       super(new GridBagLayout());
       GridBagConstraints gbc = new GridBagConstraints();
-      
+
       JPanel comp = new JPanel();
       mainLabel = new JLabel("");
       comp.add(mainLabel);
-      
+
       gbc.gridx = 0;
       gbc.gridy = 0;
       gbc.weightx = 1.0;
@@ -55,7 +48,7 @@ public class SprintInfoPanel extends JPanel {
       gbc.fill = gbc.HORIZONTAL;
       gbc.anchor = gbc.CENTER;
       add(comp, gbc);
-      
+
       gbc.gridx = 0;
       gbc.gridy = 1;
       gbc.weightx = 0.5;
@@ -63,7 +56,7 @@ public class SprintInfoPanel extends JPanel {
       gbc.gridwidth = 1;
       gbc.fill = gbc.BOTH;
       add(getJiraCountPanel(), gbc);
-      
+
       gbc.gridx = 1;
       gbc.gridy = 1;
       add(getSprintSpecificInfoPanel(), gbc);
@@ -99,36 +92,32 @@ public class SprintInfoPanel extends JPanel {
       panel.add(percentageField);
    }
 
-   public void calculateInfo() {
-      TreePath[] paths = tree.getSelectionPaths();
-      for (TreePath treePath : paths) {
-         Object component = treePath.getLastPathComponent();
-         if (component instanceof SprintNode) {
-            SprintNode sprintNode = (SprintNode) component;
-            mainLabel.setText("Statistics for Sprint " + sprintNode.getSprintName());
+   public void calculateInfo(Object component) {
+      if (component instanceof SprintNode) {
+         SprintNode sprintNode = (SprintNode) component;
+         mainLabel.setText("Statistics for Sprint " + sprintNode.getSprintName());
 
-            SprintAnalyser analysis = sprintNode.analyseData();
+         SprintAnalyser analysis = sprintNode.analyseData();
 
-            openCount.setText("" + analysis.getCount(Status.Open));
-            reOpenedCount.setText("" + analysis.getCount(Status.Reopened));
-            inProgressCount.setText("" + analysis.getCount(Status.InProgress));
-            resolvedCount.setText("" + analysis.getCount(Status.Resolved));
-            closedCount.setText("" + analysis.getCount(Status.Closed));
+         openCount.setText("" + analysis.getCount(Status.Open));
+         reOpenedCount.setText("" + analysis.getCount(Status.Reopened));
+         inProgressCount.setText("" + analysis.getCount(Status.InProgress));
+         resolvedCount.setText("" + analysis.getCount(Status.Resolved));
+         closedCount.setText("" + analysis.getCount(Status.Closed));
 
-            openPercentage.setText("" + analysis.getPercentage(Status.Open));
-            reOpenedPercentage.setText("" + analysis.getPercentage(Status.Reopened));
-            inProgressPercentage.setText("" + analysis.getPercentage(Status.InProgress));
-            resolvedPercentage.setText("" + analysis.getPercentage(Status.Resolved));
-            closedPercentage.setText("" + analysis.getPercentage(Status.Closed));
-            
-            jiraCount.setText(""+ analysis.getJiraCount());
-            
-            float estimateInDays = CalculatorHelper.getSecondsAsDays(analysis.getEstimateTotal());
-            float actualInDays = CalculatorHelper.getSecondsAsDays(analysis.getActualTotal());
-            
-            estimateCount.setText(""+ estimateInDays);
-            actualCount.setText(""+ actualInDays);
-         }
+         openPercentage.setText("" + analysis.getPercentage(Status.Open));
+         reOpenedPercentage.setText("" + analysis.getPercentage(Status.Reopened));
+         inProgressPercentage.setText("" + analysis.getPercentage(Status.InProgress));
+         resolvedPercentage.setText("" + analysis.getPercentage(Status.Resolved));
+         closedPercentage.setText("" + analysis.getPercentage(Status.Closed));
+
+         jiraCount.setText("" + analysis.getJiraCount());
+
+         float estimateInDays = CalculatorHelper.getSecondsAsDays(analysis.getEstimateTotal());
+         float actualInDays = CalculatorHelper.getSecondsAsDays(analysis.getActualTotal());
+
+         estimateCount.setText("" + estimateInDays);
+         actualCount.setText("" + actualInDays);
       }
    }
 

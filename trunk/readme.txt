@@ -44,3 +44,4 @@ Tree:
 		* ... project
 		* ... fix version
 * DONE: Adding sprints by comma separation
+* DONE: Copy to table on rightclick functionality implemented
