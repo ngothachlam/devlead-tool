@@ -2,13 +2,14 @@ package com.jonas.agile.devleadtool.component.tree.xml;
 
 import java.io.IOException;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-import com.jonas.agile.devleadtool.component.listener.SprintParseListener;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
+import com.jonas.jira.access.JiraException;
 
 public class XmlParserAtlassain extends HttpClient implements XmlParser {
 
@@ -28,7 +29,12 @@ public class XmlParserAtlassain extends HttpClient implements XmlParser {
    }
 
    @Override
-   public void addParseListener(SprintParseListener jiraParseListener) {
+   public void addParseListener(JiraParseListener jiraParseListener) {
    }
+
+   @Override
+   public void login() throws IOException, HttpException, JiraException {
+   }
+
 
 }

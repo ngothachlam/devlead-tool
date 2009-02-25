@@ -1,38 +1,31 @@
 package com.jonas.agile.devleadtool.component.menu;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Frame;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
-import com.jonas.agile.devleadtool.component.listener.SprintParseListener;
 import com.jonas.agile.devleadtool.component.panel.SprintInfoPanel;
 import com.jonas.agile.devleadtool.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
-import com.jonas.agile.devleadtool.component.tree.nodes.Status;
-import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode.SprintAnalyser;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
+import com.jonas.agile.devleadtool.component.tree.xml.JiraParseListener;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
@@ -41,50 +34,16 @@ import com.jonas.jira.JiraProject;
 public class SprintTreePopupMenu extends MyPopupMenu {
    private Frame parentFrame;
    private Logger log = MyLogger.getLogger(SprintTreePopupMenu.class);
-   private DnDTreeBuilder dndTreeBuilder;
 
    public SprintTreePopupMenu(final JFrame parentFrame, SprintTree tree, DnDTreeBuilder dndTreeBuilder) {
       super(tree);
       this.parentFrame = parentFrame;
-      this.dndTreeBuilder = dndTreeBuilder;
       add(new JMenuItem_Browse(tree, parentFrame));
-      add(new JMenuItem_Sync(tree, parentFrame));
+      add(new JMenuItem_Sync(tree, parentFrame, dndTreeBuilder));
       add(new Separator());
       add(new JMenuItem_SprintInfo("Sprint Info", tree));
       add(new Separator());
       add(new JMenuItem_Expand("Expand", tree));
-
-      dndTreeBuilder.addParseListener(new SprintParseListener() {
-         ProgressDialog progressDialog;
-
-         @Override
-         public void loggingInToJiraServer() {
-            progressDialog = new ProgressDialog(parentFrame, "Downloading Sprint Information",
-                  "Starting to download sprint info from Jira Server!", 0, true);
-            progressDialog.setIndeterminate(false);
-         }
-
-         @Override
-         public void accessingDataOnJiraServer() {
-            progressDialog.setNote("Accessing data on Jira Server!");
-         }
-
-         @Override
-         public void notifyParsingStarted() {
-            progressDialog.setNote("Reading data passed from Jira Server!");
-         }
-
-         @Override
-         public void notifyParsed(JiraDTO jira) {
-            progressDialog.setNote("Read in data from " + jira.getKey());
-         }
-
-         @Override
-         public void notifyParsingFinished() {
-            progressDialog.setNote("Finished accessing the Jira Server!");
-            progressDialog.setCompleteWithDelay(500);
-         }
-      });
    }
 
    private class JMenuItem_Expand extends JMenuItem implements ActionListener {
@@ -131,9 +90,8 @@ public class SprintTreePopupMenu extends MyPopupMenu {
          frame.setResizable(false);
          panel = new SprintInfoPanel(tree);
          frame.getContentPane().add(panel, BorderLayout.CENTER);
-         
-      }
 
+      }
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -142,7 +100,7 @@ public class SprintTreePopupMenu extends MyPopupMenu {
             return;
 
          panel.calculateInfo();
-         
+
          frame.pack();
          SwingUtil.centreWindow(frame);
          frame.setVisible(true);
@@ -217,61 +175,149 @@ public class SprintTreePopupMenu extends MyPopupMenu {
 
       private final SprintTree tree;
       private Frame frame;
+      private final DnDTreeBuilder dndTreeBuilder;
 
-      public JMenuItem_Sync(SprintTree tree, Frame frame) {
+      public JMenuItem_Sync(SprintTree tree, Frame frame, DnDTreeBuilder dndTreeBuilder) {
          super("Dowload Jira Info");
          this.tree = tree;
          this.frame = frame;
+         this.dndTreeBuilder = dndTreeBuilder;
       }
 
       @Override
       public void actionPerformed(ActionEvent e) {
-         SprintLogger sprintLogger = new SprintLogger();
+
+         final SprintLogger sprintLogger = new SprintLogger();
          TreePath[] paths = tree.getSelectionPaths();
          if (paths == null || paths.length == 0) {
             AlertDialog.alertMessage(frame, "No rows selected or table empty!");
             return;
          }
+         final ProgressDialog progressDialog = addDnDTreeParseListener(paths.length);
+
          log.debug(paths);
          if (paths.length == 1 && paths[0].getLastPathComponent().equals(tree.getModel().getRoot())) {
             log.debug("all sprints");
-            JiraProject project = JiraProject.getProjectByKey(tree.getModel().getRoot().toString());
-            dndTreeBuilder.buildTree(null, project);
+            final JiraProject project = JiraProject.getProjectByKey(tree.getModel().getRoot().toString());
+
+            SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+               @Override
+               protected Object doInBackground() throws Exception {
+                  dndTreeBuilder.buildTree(null, project);
+                  return null;
+               }
+            };
+            worker.addPropertyChangeListener(new PropertyChangeListener() {
+               @Override
+               public void propertyChange(PropertyChangeEvent event) {
+                  if ("state".equals(event.getPropertyName()) && SwingWorker.StateValue.DONE == event.getNewValue()) {
+                     progressDialog.setCompleteWithDelay(500);
+                     sprintLogger.displayAlert();
+                  }
+               }
+            });
+            worker.execute();
          } else {
             log.debug("not all sprints");
             for (int i = 0; i < paths.length; i++) {
                Object selectedElement = paths[i].getLastPathComponent();
                log.debug("Path[" + i + "]: " + paths[i] + " selectedElement: " + selectedElement);
                if (selectedElement instanceof SprintNode) {
-                  SprintNode sprintNode = (SprintNode) selectedElement;
+                  final SprintNode sprintNode = (SprintNode) selectedElement;
+                  final JiraProject project = JiraProject.getProjectByKey(sprintNode.getParent().toString());
                   log.debug("SprintNode: " + sprintNode);
                   tree.removeAllChildren(sprintNode);
-                  JiraProject project = JiraProject.getProjectByKey(sprintNode.getParent().toString());
-                  dndTreeBuilder.buildTree(sprintNode.getSprintName(), project);
-                  
-                  sprintLogger.addSyncedSprint(sprintNode.getSprintName());
+                  sprintLogger.addSyncedSprint(sprintNode.getSprintName(), project);
                } else {
                   sprintLogger.addFailedSprint(selectedElement.toString());
                }
             }
+            SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+               @Override
+               protected Object doInBackground() throws Exception {
+                  List<SprintToSyncDTO> sprints = sprintLogger.getSprintsToSync();
+                  dndTreeBuilder.login();
+                  for (SprintToSyncDTO sprint : sprints) {
+                     dndTreeBuilder.buildTree(sprint.getSprint(), sprint.getProject());
+                  }
+                  return null;
+               }
+            };
+            worker.addPropertyChangeListener(new PropertyChangeListener() {
+               @Override
+               public void propertyChange(PropertyChangeEvent event) {
+                  if ("state".equals(event.getPropertyName()) && SwingWorker.StateValue.DONE == event.getNewValue()) {
+                     progressDialog.setCompleteWithDelay(500);
+                     sprintLogger.displayAlert();
+                  }
+               }
+            });
+            worker.execute();
          }
-            sprintLogger.displayAlert();
       }
 
-      private class SprintLogger{
+      private ProgressDialog addDnDTreeParseListener(int progress) {
+         final ProgressDialog progressDialog = new ProgressDialog(parentFrame, "Downloading Sprint Information",
+               "Starting to download sprint info from Jira Server!", progress, true);
+         progressDialog.setIndeterminate(false);
+         this.dndTreeBuilder.addParseListener(new JiraParseListener() {
 
-         public void addSyncedSprint(String sprintName) {
+            @Override
+            public void notifyParsingStarted() {
+               progressDialog.increseProgress("Reading sprint data passed from Jira Server!");
+            }
+
+            @Override
+            public void notifyParsed(JiraDTO jira) {
+            }
+
+            @Override
+            public void notifyParsingFinished() {
+            }
+         });
+
+         return progressDialog;
+      }
+
+      private class SprintLogger {
+         List<SprintToSyncDTO> sprintsToSync = new ArrayList<SprintToSyncDTO>();
+
+         public void addSyncedSprint(String sprintName, JiraProject project) {
+            sprintsToSync.add(new SprintToSyncDTO(sprintName, project));
+         }
+
+         public List<SprintToSyncDTO> getSprintsToSync() {
+            return sprintsToSync;
          }
 
          public void displayAlert() {
-            AlertDialog.alertMessage(parentFrame, "");
          }
 
          public void addFailedSprint(String string) {
          }
-         
+
       }
-      
+
+      private class SprintToSyncDTO {
+
+         private final String sprint;
+         private final JiraProject project;
+
+         public SprintToSyncDTO(String sprint, JiraProject project) {
+            this.sprint = sprint;
+            this.project = project;
+         }
+
+         public JiraProject getProject() {
+            return project;
+         }
+
+         public String getSprint() {
+            return sprint;
+         }
+
+      }
+
       private void downloadAllSprints() {
          JiraProject project = JiraProject.getProjectByKey(tree.getModel().getRoot().toString());
          dndTreeBuilder.buildTree(null, project);
