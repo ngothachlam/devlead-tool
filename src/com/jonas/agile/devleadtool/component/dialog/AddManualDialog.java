@@ -187,12 +187,47 @@ class AddFromRadioButtons extends AddNewRowActionListener {
 
    @Override
    public void jiraAdded(String jiraString, MyTable table, String estimate, String actual) {
+      test this
+      StringBuffer sb = new StringBuffer();
+      int newValues = 0;
+      if (table.doesJiraExist(jiraString)) {
+
+         String previousValue = getValue(jiraString, table, Column.BoardStatus);
+         String newStringValue = status.getSelectedItem().toString();
+         sb.append("(Previous");
+         if (!previousValue.equals(newStringValue)) {
+            newValues++;
+            sb.append(" Status: \"").append(previousValue).append("\"");
+            setValue(jiraString, table, Column.BoardStatus, newStringValue);
+         }
+
+         previousValue = getValue(jiraString, table, Column.Dev_Estimate);
+         if (previousValue == null && (newStringValue == null || newStringValue.trim().length() == 0) || !previousValue.equals(newStringValue)) {
+            newValues++;
+            sb.append(" Est: \"").append(getValue(jiraString, table, Column.Dev_Estimate)).append("\"");
+            setValue(jiraString, table, Column.Dev_Estimate, estimate);
+         }
+
+         previousValue = getValue(jiraString, table, Column.Dev_Actual);
+         newStringValue = actual;
+         if (previousValue == null && (newStringValue == null || newStringValue.trim().length() == 0) || !previousValue.equals(newStringValue)) {
+            newValues++;
+            sb.append(" Act: \"").append(getValue(jiraString, table, Column.Dev_Actual)).append("\"");
+            setValue(jiraString, table, Column.Dev_Actual, actual);
+         }
+         if (newValues > 0) {
+            sb.append(")");
+            String previousNote = getValue(jiraString, table, Column.Note);
+            setValue(jiraString, table, Column.Note, sb.append(previousNote).toString());
+         }
+      }
+
       markJira(table, jiraString);
-      setValue(jiraString, table, Column.BoardStatus, status.getSelectedItem());
-      if (estimate.length() > 0)
-         setValue(jiraString, table, Column.Dev_Estimate, estimate);
-      if (actual.length() > 0)
-         setValue(jiraString, table, Column.Dev_Actual, actual);
+   }
+
+   private String getValue(String jiraString, MyTable table, Column column) {
+      Object valueAt = table.getValueAt(column, jiraString);
+      return valueAt == null ? "" : valueAt.toString();
    }
 
    private void markJira(MyTable table, String jiraString) {
