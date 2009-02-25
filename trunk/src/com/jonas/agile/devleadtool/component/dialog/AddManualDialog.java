@@ -78,17 +78,17 @@ class AddManualPanel extends MyPanel {
       panel.add(new JLabel("Prefix:"), c);
       set2ndCol(c);
       jiraPrefix = panel.addTextField(panel, 10, c);
-      
+
       setNewRow(c);
       panel.add(new JLabel("Default Release:"), c);
       set2ndCol(c);
       defaultRelease = panel.addTextField(panel, 10, c);
-      
+
       setNewRow(c);
       panel.add(new JLabel("Default Status:"), c);
       set2ndCol(c);
       statusCombo = panel.addComboBox(panel, BoardStatusValue.values(), c);
-      
+
       setNewRow(c);
       panel.add(new JLabel("Numbers:"), c);
       set2ndCol(c);
@@ -160,7 +160,8 @@ class AddFromRadioButtons extends AddNewRowActionListener {
    private final JTextComponent release;
    private final JComboBox status;
 
-   public AddFromRadioButtons(ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas, JTextComponent release, JComboBox statusCombo) {
+   public AddFromRadioButtons(ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas, JTextComponent release,
+         JComboBox statusCombo) {
       super(null, jiraPrefix, jiraCommas);
       this.group = group;
       this.release = release;
@@ -186,11 +187,16 @@ class AddFromRadioButtons extends AddNewRowActionListener {
 
    @Override
    public void jiraAdded(String jiraString, MyTable table, String estimate, String actual) {
+      markJira(table, jiraString);
       setValue(jiraString, table, Column.BoardStatus, status.getSelectedItem());
       if (estimate.length() > 0)
          setValue(jiraString, table, Column.Dev_Estimate, estimate);
       if (actual.length() > 0)
          setValue(jiraString, table, Column.Dev_Actual, actual);
+   }
+
+   private void markJira(MyTable table, String jiraString) {
+      table.markJira(jiraString);
    }
 
    private void setValue(String jiraString, MyTable table, Column selectedColumn, Object value) {

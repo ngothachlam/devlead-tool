@@ -19,6 +19,7 @@ Jira Table:
 	* project not filled in
 
 BoardTable:
+* Add a 'mark when adding' to the add panel so that you know who has been added or updated
 * Add Sprint to the Board Table
 * Add Project to the Board Table
 * Add a "download jira's board representation"

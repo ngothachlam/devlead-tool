@@ -122,6 +122,12 @@ public class MyTable extends JTable {
    public void markSelected() {
       marker.markSelected();
    }
+   
+   public void markJira(String jira) {
+      int jiraRow = getRowWithJira(jira);
+      marker.mark(jiraRow);
+      fireTableDataChangedForJira(jira);
+   }
 
    public MyTable(String title, MyTableModel modelModel, boolean allowMarking) {
       this(title, (AbstractTableModel) modelModel, allowMarking);
@@ -347,7 +353,7 @@ public class MyTable extends JTable {
          return model.isMarked(convertRowIndexToModel(row));
       }
 
-      private void mark(int row) {
+      protected void mark(int row) {
          model.mark(convertRowIndexToModel(row));
       }
 
