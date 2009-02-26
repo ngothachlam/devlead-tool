@@ -200,23 +200,16 @@ class AddFromRadioButtons extends AddNewRowActionListener {
          newOldValues.add(new NewOldValues(jira, Column.Dev_Actual, getValue(jira, table, Column.Dev_Actual), actual));
 
          for (NewOldValues newOldValue : newOldValues) {
-            if (newOldValue.isOldAndNewDifferent())
+            if (newOldValue.isValueNew())
                table.setValueAt(newOldValue.getNewValue(), jira, newOldValue.getColumn());
          }
 
       }
-
-      // don't need to mark - this is done in the table now!
-      // markJira(table, jira);
    }
 
    protected static String getValue(String jiraString, MyTable table, Column column) {
       Object valueAt = table.getValueAt(column, jiraString);
       return valueAt == null ? "" : valueAt.toString();
-   }
-
-   private void markJira(MyTable table, String jiraString) {
-      table.markJira(jiraString);
    }
 
    @Override
@@ -250,7 +243,7 @@ class AddFromRadioButtons extends AddNewRowActionListener {
          }
       }
 
-      public boolean isOldAndNewDifferent() {
+      public boolean isValueNew() {
          return isDifferent;
       }
 
