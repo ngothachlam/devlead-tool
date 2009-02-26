@@ -144,14 +144,17 @@ public class MyTable extends JTable {
 
    public void addJira(JiraIssue jiraIssue) {
       model.addJira(jiraIssue);
+      markJira(jiraIssue.getKey());
    }
 
    public void addJira(String jira) {
       model.addJira(jira);
+      markJira(jira);
    }
 
    public void addJira(String jira, Map<Column, Object> map) {
       model.addJira(jira, map);
+      markJira(jira);
    }
 
    public void addJiraEditorListener(CellEditorListener cellEditorListener) {
@@ -294,6 +297,7 @@ public class MyTable extends JTable {
       }
       log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\" in table " + getTitle());
       setValueAt(value, row, column);
+      markJira(jira);
    }
 
    public void syncJira(JiraIssue jiraIssue, int tableRowSynced) {

@@ -61,7 +61,7 @@ public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
          }
          cell.setBackground(color);
       } else if (myTable != null && !isSelected && !hasFocus && myTable.isMarked(row)) {
-         cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -25));
+         cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -35));
       }
    }
 }
