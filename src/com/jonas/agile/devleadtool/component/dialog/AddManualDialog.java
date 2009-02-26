@@ -203,10 +203,11 @@ class AddFromRadioButtons extends AddNewRowActionListener {
             if (newOldValue.isOldAndNewDifferent())
                table.setValueAt(newOldValue.getNewValue(), jira, newOldValue.getColumn());
          }
-         
+
       }
 
-      markJira(table, jira);
+      // don't need to mark - this is done in the table now!
+      // markJira(table, jira);
    }
 
    protected static String getValue(String jiraString, MyTable table, Column column) {
