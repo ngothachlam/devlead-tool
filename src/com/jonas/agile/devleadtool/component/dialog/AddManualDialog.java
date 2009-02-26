@@ -9,8 +9,10 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -190,17 +192,18 @@ class AddFromRadioButtons extends AddNewRowActionListener {
 
    @Override
    public void jiraAdded(String jira, MyTable table, String estimate, String actual) {
-      int newValues = 0;
       if (table.doesJiraExist(jira)) {
+         List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 
-         Reconciler reconciler = new Reconciler(table, jira);
+         newOldValues.add(new NewOldValues(jira, Column.BoardStatus, getValue(jira, table, Column.BoardStatus), status.getSelectedItem()));
+         newOldValues.add(new NewOldValues(jira, Column.Dev_Estimate, getValue(jira, table, Column.Dev_Estimate), estimate));
+         newOldValues.add(new NewOldValues(jira, Column.Dev_Actual, getValue(jira, table, Column.Dev_Actual), actual));
 
-         reconciler.add(Column.BoardStatus, getValue(jira, table, Column.BoardStatus), status.getSelectedItem().toString(), "Status");
-         reconciler.add(Column.Dev_Estimate, getValue(jira, table, Column.Dev_Estimate), estimate, "Est");
-         reconciler.add(Column.Dev_Actual, getValue(jira, table, Column.Dev_Actual), actual, "Act");
-
-         reconciler.setNewValues();
-         reconciler.setNote();
+         for (NewOldValues newOldValue : newOldValues) {
+            if (newOldValue.isOldAndNewDifferent())
+               table.setValueAt(newOldValue.getNewValue(), jira, newOldValue.getColumn());
+         }
+         
       }
 
       markJira(table, jira);
@@ -220,92 +223,38 @@ class AddFromRadioButtons extends AddNewRowActionListener {
       return new JiraIssue(jira, release.getText());
    }
 
-   class Reconciler {
+   private class NewOldValues {
 
-      test this!!! 
-      //TODO add a way to replace with regexp previous!
-      
-      Map<Column, StringDTO> changes = new HashMap<Column, StringDTO>();
-      private final MyTable table;
+      public Object getOldValue() {
+         return oldValue;
+      }
+
+      public Column getColumn() {
+         return column;
+      }
+
       private final String jira;
-      private int changeCount = 0;
+      private final Column column;
+      private final String oldValue;
+      private final Object newValue;
+      private boolean isDifferent;
 
-      public Reconciler(MyTable table, String jira) {
-         this.table = table;
+      public NewOldValues(String jira, Column column, String oldValue, Object newValue) {
          this.jira = jira;
-      }
-
-      public void setNote() {
-         if (changeCount > 0) {
-            String currentNote = AddFromRadioButtons.getValue(jira, table, Column.Note);
-            StringBuffer newNote = new StringBuffer(currentNote);
-            newNote.append(" (Old: [");
-            for (Column column : changes.keySet()) {
-               StringDTO dto = changes.get(column);
-               if (dto.isOldAndNewDifferent()) {
-                  if (changeCount > 1)
-                     newNote.append(", ");
-                  newNote.append(dto.getLabel()).append(dto.getOldValue());
-               }
-            }
-            newNote.append("])");
-            table.setValueAt(newNote.toString(), jira, Column.Note);
-         }
-
-      }
-
-      public void add(Column column, String oldValue, String newValue, String label) {
-         changes.put(column, new StringDTO(oldValue, newValue, label));
-      }
-
-      public void setNewValues() {
-         for (Column column : changes.keySet()) {
-            if (hasChanged(column)) {
-               changeCount++;
-               table.setValueAt(changes.get(column).getNewValue(), jira, column);
-            }
+         this.column = column;
+         this.newValue = newValue;
+         this.oldValue = oldValue;
+         if (oldValue.length() == 0 && (newValue == null || newValue.toString().trim().length() == 0) || !oldValue.equals(newValue)) {
+            isDifferent = true;
          }
       }
 
-      protected boolean hasChanged(Column boardStatus) {
-         if (changes.get(boardStatus).isOldAndNewDifferent()) {
-            return true;
-         }
-         return false;
+      public boolean isOldAndNewDifferent() {
+         return isDifferent;
       }
 
-      private class StringDTO {
-
-         public String getLabel() {
-            return label;
-         }
-
-         public Object getOldValue() {
-            return oldValue;
-         }
-
-         private final String oldValue;
-         private final String newValue;
-         private boolean isDifferent;
-         private final String label;
-
-         public StringDTO(String oldValue, String newValue, String label) {
-            this.newValue = newValue;
-            this.oldValue = oldValue;
-            this.label = label;
-            if (oldValue.length() == 0 && (newValue == null || newValue.trim().length() == 0) || !oldValue.equalsIgnoreCase(newValue)) {
-               isDifferent = true;
-            }
-         }
-
-         public boolean isOldAndNewDifferent() {
-            return isDifferent;
-         }
-
-         public Object getNewValue() {
-            return newValue;
-         }
-
+      public Object getNewValue() {
+         return newValue;
       }
    }
 }
