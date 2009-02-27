@@ -16,6 +16,8 @@ import com.jonas.common.logging.MyLogger;
  */
 public class TableSyncerFromBoardToJiraListener implements TableModelListener {
 
+   //TODO can we not delete this class now!!
+   
    private final Logger log = MyLogger.getLogger(TableSyncerFromBoardToJiraListener.class);
    private final MyTable boardTable;
    private final MyTable jiraTable;
@@ -28,6 +30,8 @@ public class TableSyncerFromBoardToJiraListener implements TableModelListener {
    }
 
    public void tableChanged(final TableModelEvent e) {
+      
+      // TODO this need to only fireupdate on jira table.
       if (!isRightSource(e)) {
          log.error("Should never happen! The source of the event should be the boardTable model! It now is " + e.getSource().getClass());
          return;
