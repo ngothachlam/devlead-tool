@@ -1,20 +1,13 @@
 package com.jonas.devleadtool.testing.ui;
 
-import java.util.EventObject;
-import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
-import javax.swing.table.TableCellEditor;
-import com.jonas.agile.devleadtool.component.listener.TableSyncerFromBoardToJiraListener;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
-import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
+import com.jonas.agile.devleadtool.component.listener.TableSyncerFromBoardToJiraListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
-import com.jonas.agile.devleadtool.component.table.editor.MyDefaultCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
-import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class BoardTableModelListenerTest extends JonasTestCase {

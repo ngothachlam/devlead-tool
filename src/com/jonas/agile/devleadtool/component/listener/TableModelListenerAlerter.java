@@ -33,7 +33,8 @@ public class TableModelListenerAlerter implements TableModelListener {
             sb.append("inserted\n");
             break;
          case TableModelEvent.UPDATE:
-            sb.append("updated. ");
+            sb.append("updated");
+            sb.append("\n");
             break;
          case TableModelEvent.DELETE:
             sb.append("deleted\n");

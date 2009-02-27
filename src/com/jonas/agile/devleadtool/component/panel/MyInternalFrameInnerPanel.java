@@ -11,12 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.Timer;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.tree.TreePath;
@@ -27,17 +25,15 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
-import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
-import com.jonas.agile.devleadtool.component.listener.TableSyncerFromBoardToJiraListener;
 import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
+import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
+import com.jonas.agile.devleadtool.component.listener.TableSyncerFromBoardToJiraListener;
 import com.jonas.agile.devleadtool.component.listener.TableSyncerFromJiraToBoardListener;
 import com.jonas.agile.devleadtool.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.menu.SprintTreePopupMenu;
-import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.MyEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
@@ -200,7 +196,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel, SprintTree sprintTree, MyTable boardTable) {
       jiraModel.addTableModelListener(new TableSyncerFromJiraToBoardListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
-      jiraPanel.getTable().addJiraEditorListener(new MyJiraTableListenerForJiraNameEditing(boardModel));
       jiraPanel.getTable().addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, jiraPanel.getTable(), boardTable));
    }
 
@@ -341,52 +336,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          MyTable table = boardPanel.getTable();
          MyTableModel model = (MyTableModel) table.getModel();
          model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor.getColEdited()));
-      }
-   }
-//
-//   private final class MyBoardTableListenerForJiraNameEditing implements CellEditorListener {
-//      public void editingCanceled(ChangeEvent e) {
-//      }
-//
-//      /*
-//       * If the editing of the jira cell in the board table is being stopped...
-//       * @see javax.swing.event.CellEditorListener#editingStopped(javax.swing.event.ChangeEvent)
-//       */
-//      public void editingStopped(ChangeEvent e) {
-//         JiraCellEditor editor = (JiraCellEditor) e.getSource();
-//         log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \"" + editor.getValue()
-//               + "\" and old value: \"" + editor.getOldValue() + "\"");
-//         MyTable jiraTable = jiraPanel.getTable();
-//         jiraTable.setValueAt(BoardStatusValue.NA, (String) editor.getOldValue(), Column.B_BoardStatus);
-//         jiraTable.setValueAt("", (String) editor.getOldValue(), Column.B_Release);
-//      }
-//   }
-
-   private final class MyJiraTableListenerForJiraNameEditing implements CellEditorListener {
-      private final BoardTableModel boardModel;
-
-      private MyJiraTableListenerForJiraNameEditing(BoardTableModel boardModel) {
-         this.boardModel = boardModel;
-      }
-
-      public void editingCanceled(ChangeEvent e) {
-      }
-
-      /*
-       * If the editing of the jira cell in the jira table is being stopped...
-       * @see javax.swing.event.CellEditorListener#editingStopped(javax.swing.event.ChangeEvent)
-       */
-      public void editingStopped(ChangeEvent e) {
-         JiraCellEditor editor = (JiraCellEditor) e.getSource();
-         log.debug("col edited: " + editor.getColEdited() + " row edited: " + editor.getRowEdited() + " which has new value \"" + editor.getValue()
-               + "\" and old value: \"" + editor.getOldValue() + "\"");
-         MyTable jiraTable = jiraPanel.getTable();
-
-         String jira = (String) editor.getValue();
-
-         BoardStatusValue status = boardModel.getStatus(jira);
-         String release = boardModel.getRelease(jira);
-
       }
    }
 

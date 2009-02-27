@@ -10,12 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.xml.sax.ContentHandler;
+import junit.framework.TestCase;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-import junit.framework.TestCase;
 
 public class JiraSaxHandlerTest extends TestCase {
 

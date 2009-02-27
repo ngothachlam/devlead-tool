@@ -6,7 +6,6 @@ import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 
 public class PlannerCommunicator {
 
-   private static final String N_A = "N/A";
    private final PlannerHelper plannerHelper;
 
    public PlannerCommunicator(PlannerHelper plannerHelper) {

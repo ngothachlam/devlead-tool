@@ -13,15 +13,15 @@ public class PlannerHelperTest extends JonasTestCase {
 	
 	public void testShouldCheckJiraNameOk() {
 		PlannerHelper helper = new PlannerHelper(null, "test");
-		assertEquals(true, helper.isJiraString("A-1"));
-		assertEquals(true, helper.isJiraString("LLU-1234"));
-		assertEquals(false, helper.isJiraString("A1"));
-		assertEquals(false, helper.isJiraString("A"));
-		assertEquals(false, helper.isJiraString("1"));
-		assertEquals(false, helper.isJiraString("LLU-112A"));
-		assertEquals(false, helper.isJiraString("LLU-11A2"));
-		assertEquals(false, helper.isJiraString("L1LU-112"));
-		assertEquals(false, helper.isJiraString("1LLU-112"));
-		assertEquals(true, helper.isJiraString("LLUDEVSUP-497"));
+		assertEquals(true, PlannerHelper.isJiraString("A-1"));
+		assertEquals(true, PlannerHelper.isJiraString("LLU-1234"));
+		assertEquals(false, PlannerHelper.isJiraString("A1"));
+		assertEquals(false, PlannerHelper.isJiraString("A"));
+		assertEquals(false, PlannerHelper.isJiraString("1"));
+		assertEquals(false, PlannerHelper.isJiraString("LLU-112A"));
+		assertEquals(false, PlannerHelper.isJiraString("LLU-11A2"));
+		assertEquals(false, PlannerHelper.isJiraString("L1LU-112"));
+		assertEquals(false, PlannerHelper.isJiraString("1LLU-112"));
+		assertEquals(true, PlannerHelper.isJiraString("LLUDEVSUP-497"));
 	}
 }

@@ -12,14 +12,12 @@ public class NewOldValues {
       return column;
    }
 
-   private final String jira;
    private final Column column;
    private final String oldValue;
    private final Object newValue;
    private boolean isDifferent;
 
-   public NewOldValues(String jira, Column column, String oldValue, Object newValue) {
-      this.jira = jira;
+   public NewOldValues(Column column, String oldValue, Object newValue) {
       this.column = column;
       this.newValue = newValue;
       this.oldValue = oldValue;

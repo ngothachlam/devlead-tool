@@ -7,9 +7,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.JTree;
 import javax.swing.KeyStroke;
-import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.SwingUtil;
 
 public class BoardStatusCellEditor extends DefaultCellEditor implements MyEditor{

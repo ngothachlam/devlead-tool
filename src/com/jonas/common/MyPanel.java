@@ -6,7 +6,6 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.LayoutManager;
 import java.awt.event.ActionListener;
-import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -16,7 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
-import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 
 public class MyPanel extends JPanel {
 

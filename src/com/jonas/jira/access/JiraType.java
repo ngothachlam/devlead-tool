@@ -11,14 +11,10 @@ public class JiraType {
    //Use: http://jira.atlassian.com/secure/IssueNavigator.jspa?reset=true&resolution=-1&tempMax=1 to try!!
    //TODO: Add preset resolutions!!
    
-   private final String id;
    private final String name;
-   private final String description;
 
-   private JiraType(String id, String name, String description) {
-      this.id = id;
+   private JiraType(String name) {
       this.name = name;
-      this.description = description;
    }
 
    public static int getAmount() {
@@ -31,8 +27,7 @@ public class JiraType {
 
    public static void setTypes(RemoteIssueType[] remoteTypes) {
       for (RemoteIssueType remoteResolution : remoteTypes) {
-         map.put(remoteResolution.getId(), new JiraType(remoteResolution.getId(), remoteResolution.getName(),
-               remoteResolution.getDescription()));
+         map.put(remoteResolution.getId(), new JiraType(remoteResolution.getName()));
       }
    }
 

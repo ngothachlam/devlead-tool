@@ -2,7 +2,6 @@ package com.jonas.common.string;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 public class StringHelperTest extends TestCase {

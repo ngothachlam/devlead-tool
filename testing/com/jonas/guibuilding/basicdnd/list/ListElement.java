@@ -7,10 +7,8 @@ import java.io.IOException;
 
 public class ListElement implements Transferable{
 
-   private final String name;
 
-   public ListElement(String name) {
-      this.name = name;
+   public ListElement() {
    }
 
    @Override

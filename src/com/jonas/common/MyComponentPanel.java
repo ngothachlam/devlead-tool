@@ -1,25 +1,10 @@
 package com.jonas.common;
 
-import java.awt.ComponentOrientation;
 import java.awt.LayoutManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.RowFilter;
-import javax.swing.SwingWorker;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.common.logging.MyLogger;
 
 public class MyComponentPanel extends MyPanel {
 
@@ -59,13 +44,4 @@ public class MyComponentPanel extends MyPanel {
       if (columnIndexOne >= 0)
          array.add(columnIndexOne);
    }
-
-   private String getResultText(JTable table) {
-      StringBuffer sb = new StringBuffer();
-      sb.append(table.getRowCount());
-      sb.append("/");
-      sb.append(table.getModel().getRowCount());
-      return sb.toString();
-   }
-
 }
