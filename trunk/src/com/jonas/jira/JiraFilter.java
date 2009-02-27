@@ -8,7 +8,7 @@ public class JiraFilter {
 
    private static List<JiraFilter> list = new ArrayList<JiraFilter>();
 
-   public static final JiraFilter DevsupportPrioFilter_UnClosed = new JiraFilter(JiraProject.LLU_DEV_SUPPORT, "Dev Support (UnClosed)", 
+   public static final JiraFilter DevsupportPrioFilter_UnClosed = new JiraFilter(JiraProject.LLUDEVSUP, "Dev Support (UnClosed)", 
          "/secure/IssueNavigator.jspa?view=rss&" +
          "&customfield_10241%3AlessThan=00001000000000.000" +
          "&customfield_10241%3AgreaterThan=00000000000000.000" +
@@ -27,7 +27,7 @@ public class JiraFilter {
          "&decorator=none");
    
    //FIXME use Dynamic filter to get the sprint start!!
-   public static final JiraFilter Sprint_Specific = new JiraFilter(JiraProject.LLU_SYSTEMS_PROVISIONING, "Sprint Specific", 
+   public static final JiraFilter Sprint_Specific = new JiraFilter(JiraProject.LLU, "Sprint Specific", 
          "/secure/IssueNavigator.jspa?view=rss&" +
          "&pid=10070" +
          "&tempMax=1000" +
@@ -36,7 +36,7 @@ public class JiraFilter {
          "&customfield_10282="      
    );
 
-   public static final JiraFilter DevsupportPrioFilter_UnResolved = new JiraFilter(JiraProject.LLU_DEV_SUPPORT, "Dev Support (UnResolved)", 
+   public static final JiraFilter DevsupportPrioFilter_UnResolved = new JiraFilter(JiraProject.LLUDEVSUP, "Dev Support (UnResolved)", 
          "/secure/IssueNavigator.jspa?view=rss&" +
          "&customfield_10241%3AlessThan=00001000000000.000" +
          "&customfield_10241%3AgreaterThan=00000000000000.000" +

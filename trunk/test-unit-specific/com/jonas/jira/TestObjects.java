@@ -29,14 +29,14 @@ public class TestObjects {
 		Project_TST1 = new JiraProject(null, "tstProject1", "tstKey1", "tstId1");
 		Project_TST2 = new JiraProject(null, "tstProject2", "tstKey2", "tstId2");
 		
-		Version_10 = new JiraVersion("11382", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 10", false);
-		Version_11 = new JiraVersion("11432", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 11", false);
-		Version_11Next = new JiraVersion("11449", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 11 - Next Sprint (3)", false);
+		Version_10 = new JiraVersion("11382", JiraProject.LLU, "Version 10", false);
+		Version_11 = new JiraVersion("11432", JiraProject.LLU, "Version 11", false);
+		Version_11Next = new JiraVersion("11449", JiraProject.LLU, "Version 11 - Next Sprint (3)", false);
 		
-		Version_9 = new JiraVersion("11264", JiraProject.LLU_SYSTEMS_PROVISIONING, "Version 9", false);
+		Version_9 = new JiraVersion("11264", JiraProject.LLU, "Version 9", false);
 		Version_AtlassainTST = new JiraVersion("13187", JiraProject.ATLASSIN_TST, "Dev Version", false);
-		Version_Backlog = new JiraVersion("11388", JiraProject.LLU_SYSTEMS_PROVISIONING, "Backlog", false);
-		Version_PamsBacklog = new JiraVersion("11458", JiraProject.LLU_SYSTEMS_PROVISIONING, "Pam's Backlog", false);
+		Version_Backlog = new JiraVersion("11388", JiraProject.LLU, "Backlog", false);
+		Version_PamsBacklog = new JiraVersion("11458", JiraProject.LLU, "Pam's Backlog", false);
 	}
 	
 }
