@@ -10,7 +10,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.TransferHandler;
-import com.jonas.guibuilding.basicdnd.BasicDnD;
 
 final class ListTransferHandler extends TransferHandler {
 

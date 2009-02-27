@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
@@ -21,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
-import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
 import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
@@ -30,7 +30,6 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
-import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
 public class AddManualDialog extends JFrame {
@@ -72,7 +71,7 @@ class AddManualPanel extends MyPanel {
       GridBagConstraints c = new GridBagConstraints();
 
       c.insets = new Insets(5, 5, 5, 5);
-      c.fill = c.BOTH;
+      c.fill = GridBagConstraints.BOTH;
       c.gridy = -1;
 
       setNewRow(c);
@@ -165,7 +164,6 @@ class AddFromRadioButtons extends AddNewRowActionListener {
    private ButtonGroup group;
    private final JTextComponent release;
    private final JComboBox status;
-   private Logger log = MyLogger.getLogger(AddFromRadioButtons.class);
 
    public AddFromRadioButtons(ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas, JTextComponent release,
          JComboBox statusCombo) {
@@ -178,7 +176,7 @@ class AddFromRadioButtons extends AddNewRowActionListener {
    @Override
    public void actionPerformed(ActionEvent e) {
       MyTable table = null;
-      Enumeration elements = group.getElements();
+      Enumeration<AbstractButton> elements = group.getElements();
       while (elements.hasMoreElements()) {
          TableRadioButton button = (TableRadioButton) elements.nextElement();
          if (button.isSelected()) {
@@ -212,7 +210,7 @@ class AddFromRadioButtons extends AddNewRowActionListener {
       if (table.getColumnIndex(column) < 0)
          return;
 
-      newOldValues.add(new NewOldValues(jira, column, getValue(jira, table, column), newValue));
+      newOldValues.add(new NewOldValues(column, getValue(jira, table, column), newValue));
    }
 
    protected String getValue(String jira, MyTable table, Column column) {

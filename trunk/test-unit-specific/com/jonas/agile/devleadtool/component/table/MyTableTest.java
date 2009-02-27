@@ -1,6 +1,5 @@
 package com.jonas.agile.devleadtool.component.table;
 
-import org.easymock.EasyMock;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.model.TestTableModel;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;

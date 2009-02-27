@@ -1,14 +1,8 @@
 package com.jonas.jira.access;
 
-import javax.xml.rpc.ServiceException;
 import junit.framework.TestCase;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
-import com.atlassian.jira.rpc.exception.RemotePermissionException;
-import com.atlassian.jira.rpc.soap.beans.RemoteFilter;
-import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
-import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
-import com.jonas.jira.JiraProject;
 
 public class JiraSoapClientFunctionalTest extends TestCase {
 

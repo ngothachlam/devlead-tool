@@ -1,6 +1,5 @@
 package com.jonas.agile.devleadtool.component.tree.nodes;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;

@@ -9,10 +9,9 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
@@ -20,8 +19,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
-import org.apache.commons.httpclient.HttpException;
-import org.jdom.JDOMException;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.MyPanel;
@@ -29,7 +26,6 @@ import com.jonas.common.SwingUtil;
 import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.access.JiraClient;
-import com.jonas.jira.access.JiraException;
 
 public class AddFilterDialog extends JFrame {
 
@@ -189,7 +185,7 @@ public class AddFilterDialog extends JFrame {
 
       private MyTable getTableToAddJirasTo() {
          MyTable table = null;
-         Enumeration elements = group.getElements();
+         Enumeration<AbstractButton> elements = group.getElements();
          while (elements.hasMoreElements()) {
             TableRadioButton button = (TableRadioButton) elements.nextElement();
             if (button.isSelected()) {

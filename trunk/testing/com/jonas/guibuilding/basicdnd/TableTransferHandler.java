@@ -10,8 +10,6 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 
@@ -28,13 +26,11 @@ final class TableTransferHandler extends TransferHandler {
       }
    }
 
-   private DefaultTableModel tableModel;
    private MyTable table;
 
    public TableTransferHandler(MyTable table) {
       super();
       this.table = table;
-      tableModel = (DefaultTableModel) table.getModel();
    }
 
    public int getSourceActions(JComponent c) {

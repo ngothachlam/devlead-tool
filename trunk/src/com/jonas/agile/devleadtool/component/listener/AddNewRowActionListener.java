@@ -3,7 +3,6 @@
  */
 package com.jonas.agile.devleadtool.component.listener;
 
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -28,7 +27,7 @@ public abstract class AddNewRowActionListener implements ActionListener {
       parser = new MyStringParser();
    }
 
-   public void actionPerformed(@SuppressWarnings("unused") ActionEvent e) {
+   public void actionPerformed(ActionEvent e) {
       TableModelListenerAlerter tableModelListenerAlerter = table.getTableModelListenerAlerter();
       synchronized (tableModelListenerAlerter) {
          tableModelListenerAlerter.activate();
