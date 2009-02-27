@@ -69,9 +69,6 @@ public abstract class AddNewRowActionListener implements ActionListener {
       return "";
    }
 
-   /**
-    * Overide as required
-    */
    public abstract JiraIssue getJiraIssue(String jira);
 
    private String getJiraSplit(String jiraNumber, int i) {

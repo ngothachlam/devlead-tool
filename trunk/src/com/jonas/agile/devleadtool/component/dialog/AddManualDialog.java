@@ -205,7 +205,6 @@ class AddFromRadioButtons extends AddNewRowActionListener {
             if (newOldValue.isValueNew())
                table.setValueAt(newOldValue.getNewValue(), jira, newOldValue.getColumn());
          }
-         tableModelListenerAlerter.addRowChange(jira, newOldValues);
       }
    }
 

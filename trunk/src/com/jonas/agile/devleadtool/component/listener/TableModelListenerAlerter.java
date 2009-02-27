@@ -2,12 +2,10 @@ package com.jonas.agile.devleadtool.component.listener;
 
 import java.awt.Frame;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.component.dialog.NewOldValues;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 
@@ -16,7 +14,6 @@ public class TableModelListenerAlerter implements TableModelListener {
    private boolean activated;
    private StringBuffer sb = new StringBuffer();
    private Frame parent;
-   private Map<String, List<NewOldValues>> listOfChanges = new HashMap<String, List<NewOldValues>>();
 
    public TableModelListenerAlerter() {
    }
@@ -37,13 +34,6 @@ public class TableModelListenerAlerter implements TableModelListener {
             break;
          case TableModelEvent.UPDATE:
             sb.append("updated. ");
-            List<NewOldValues> changes = listOfChanges.get(jira);
-            for (NewOldValues newOldValue : changes) {
-               sb.append("Column: ").append(newOldValue.getColumn());
-               sb.append(", Old value: ").append(newOldValue.getOldValue());
-               sb.append(", New value: ").append(newOldValue.getNewValue()).append(". ");;
-            }
-
             break;
          case TableModelEvent.DELETE:
             sb.append("deleted\n");
@@ -68,14 +58,10 @@ public class TableModelListenerAlerter implements TableModelListener {
       activated = false;
       sb.delete(0, sb.length());
       rowsModified.clear();
-      listOfChanges.clear();
    }
 
    public void setParent(Frame frame) {
       this.parent = frame;
    }
 
-   public void addRowChange(String jira, List<NewOldValues> newOldValues) {
-      listOfChanges.put(jira, newOldValues);
-   }
 }

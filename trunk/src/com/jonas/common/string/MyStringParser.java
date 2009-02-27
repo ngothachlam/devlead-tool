@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class MyStringParser {
 
-   private Pattern splitPattern = Pattern.compile("'");
+   private Pattern splitPattern = Pattern.compile("['/]");
    
    public List<String> separateString(String string, String delimeters) {
       List<String> separateStrings = new ArrayList<String>();
