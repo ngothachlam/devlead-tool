@@ -81,7 +81,7 @@ public abstract class AddNewRowActionListener implements ActionListener {
    }
 
    protected String getJiraString(String jiraPrefix, String jiraNumber) {
-      List<String> split = parser.separateString(jiraNumber, ".");
+      List<String> split = parser.separateString(jiraNumber, "'/");
       jiraNumber = getIndexInSplit(split, 0);
       jiraPrefix = (jiraPrefix != null && jiraPrefix.trim().length() > 0 ? jiraPrefix : "");
       jiraNumber = (jiraNumber != null ? jiraNumber : "");
