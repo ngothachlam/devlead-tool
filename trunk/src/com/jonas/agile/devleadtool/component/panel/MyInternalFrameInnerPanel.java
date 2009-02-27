@@ -27,6 +27,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
+import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.component.listener.TableSyncerFromBoardToJiraListener;
 import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
@@ -159,7 +160,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       boardPanel = new BoardPanel(boardModel);
       sprintPanel = new DnDTreePanel(tree, helper.getParentFrame());
       jiraPanel = new JiraPanel(helper, jiraModel);
-
+      
       JPanel jiraMainPanel = new JPanel(new BorderLayout());
       jiraMainPanel.add(jiraPanel, BorderLayout.CENTER);
       JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
@@ -169,6 +170,11 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       boardTable = boardPanel.getTable();
       jiraTable = jiraPanel.getTable();
 
+      TableModelListenerAlerter listener = new TableModelListenerAlerter();
+      listener.setParent(helper.getParentFrame());
+      boardTable.setTableModelListenerAlerter(listener);
+      jiraTable.setTableModelListenerAlerter(listener);
+      
       new MyTablePopupMenu(boardTable, helper, boardTable, jiraTable);
       new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable);
 
@@ -185,7 +191,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       boardModel.addTableModelListener(new TableSyncerFromBoardToJiraListener(boardTable, jiraTable, boardModel));
       boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
       boardTable.addListener(new MyBoardTableListener());
-//      boardTable.addJiraEditorListener(new MyBoardTableListenerForJiraNameEditing());
       boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
    }
 

@@ -11,9 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
@@ -23,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
+import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
@@ -30,6 +29,7 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.MyPanel;
 import com.jonas.common.SwingUtil;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
 public class AddManualDialog extends JFrame {
@@ -164,6 +164,7 @@ class AddFromRadioButtons extends AddNewRowActionListener {
    private ButtonGroup group;
    private final JTextComponent release;
    private final JComboBox status;
+   private Logger log = MyLogger.getLogger(AddFromRadioButtons.class);
 
    public AddFromRadioButtons(ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas, JTextComponent release,
          JComboBox statusCombo) {
@@ -195,9 +196,9 @@ class AddFromRadioButtons extends AddNewRowActionListener {
       if (table.doesJiraExist(jira)) {
          List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 
-         newOldValues.add(new NewOldValues(jira, Column.BoardStatus, getValue(jira, table, Column.BoardStatus), status.getSelectedItem()));
-         newOldValues.add(new NewOldValues(jira, Column.Dev_Estimate, getValue(jira, table, Column.Dev_Estimate), estimate));
-         newOldValues.add(new NewOldValues(jira, Column.Dev_Actual, getValue(jira, table, Column.Dev_Actual), actual));
+         addNewOldValueIfColumnIsInTable(table, Column.BoardStatus, jira, status.getSelectedItem(), newOldValues);
+         addNewOldValueIfColumnIsInTable(table, Column.Dev_Estimate, jira, estimate, newOldValues);
+         addNewOldValueIfColumnIsInTable(table, Column.Dev_Actual, jira, actual, newOldValues);
 
          for (NewOldValues newOldValue : newOldValues) {
             if (newOldValue.isValueNew())
@@ -207,8 +208,17 @@ class AddFromRadioButtons extends AddNewRowActionListener {
       }
    }
 
-   protected static String getValue(String jiraString, MyTable table, Column column) {
-      Object valueAt = table.getValueAt(column, jiraString);
+   private void addNewOldValueIfColumnIsInTable(MyTable table, Column column, String jira, Object newValue, List<NewOldValues> newOldValues) {
+      if (table.getColumnIndex(column) < 0)
+         return;
+
+      newOldValues.add(new NewOldValues(jira, column, getValue(jira, table, column), newValue));
+   }
+
+   protected String getValue(String jira, MyTable table, Column column) {
+      if (!table.doesJiraExist(jira))
+         return null;
+      Object valueAt = table.getValueAt(column, jira);
       return valueAt == null ? "" : valueAt.toString();
    }
 
@@ -238,7 +248,11 @@ class AddFromRadioButtons extends AddNewRowActionListener {
          this.column = column;
          this.newValue = newValue;
          this.oldValue = oldValue;
-         if (oldValue.length() == 0 && (newValue == null || newValue.toString().trim().length() == 0) || !oldValue.equals(newValue)) {
+         if (oldValue == null) {
+            isDifferent = newValue == null ? false : true;
+            return;
+         }
+         if (!oldValue.equals(newValue)) {
             isDifferent = true;
          }
       }

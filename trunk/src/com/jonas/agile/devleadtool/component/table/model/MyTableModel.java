@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +12,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -24,16 +24,17 @@ public abstract class MyTableModel extends DefaultTableModel {
    protected Counter counter = new Counter();
    protected boolean editable = true;
    private ModelMarker modelMarkerDelegator;
+   private TableModelListenerAlerter tableModelListenerAlerter;
 
-   protected MyTableModel(Column[] columns, boolean allowMarking) {
+   protected MyTableModel(Column[] columns) {
       super(columns, 0);
       initiateColumns(columns);
 
       modelMarkerDelegator = new ModelMarker();
       addTableModelListener(modelMarkerDelegator);
    }
-
-   MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header, boolean allowMarking) {
+   
+   MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header) {
       log.trace("MyTableModel");
       initiateColumns(columns);
       List<Integer> convertInputHeaderToOriginal = getConvertionNumbers(header, getColumnNames());
@@ -571,6 +572,15 @@ public abstract class MyTableModel extends DefaultTableModel {
       if (!doesJiraExist((String) rowData.get(0))) {
          super.insertRow(row, rowData);
       }
+   }
+
+   public TableModelListenerAlerter getTableModelListenerAlerter() {
+      return tableModelListenerAlerter;
+   }
+
+   public void setTableModelListenerAlerter(TableModelListenerAlerter listener) {
+      this.tableModelListenerAlerter = listener;
+      this.addTableModelListener(listener);
    }
 }
 

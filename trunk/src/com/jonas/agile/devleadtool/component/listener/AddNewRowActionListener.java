@@ -3,6 +3,7 @@
  */
 package com.jonas.agile.devleadtool.component.listener;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -13,7 +14,7 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.common.string.MyStringParser;
 import com.jonas.jira.JiraIssue;
 
-public class AddNewRowActionListener implements ActionListener {
+public abstract class AddNewRowActionListener implements ActionListener {
    private final JTextComponent jiraCommas;
    private final JTextComponent jiraPrefix;
    private Logger log = MyLogger.getLogger(AddNewRowActionListener.class);
@@ -27,17 +28,21 @@ public class AddNewRowActionListener implements ActionListener {
       parser = new MyStringParser();
    }
 
-   public void actionPerformed(@SuppressWarnings("unused")
-   ActionEvent e) {
+   public void actionPerformed(@SuppressWarnings("unused") ActionEvent e) {
+      TableModelListenerAlerter tableModelListenerAlerter = table.getTableModelListenerAlerter();
+      synchronized(tableModelListenerAlerter){
+      tableModelListenerAlerter.activate();
       List<String> jiras = parser.separateString(jiraCommas.getText(), " ;\t\n");
-      for (String jiraNumber : jiras) {
+
+      for (String jira : jiras) {
          String prefix = jiraPrefix.getText();
-         String jiraString = getJiraString(prefix, jiraNumber).trim();
-         String estimate = getEstimateString(jiraNumber).trim();
-         String actual = getActualString(jiraNumber).trim();
+         String jiraString = getJiraString(prefix, jira).trim();
+         String estimate = getEstimateString(jira).trim();
+         String actual = getActualString(jira).trim();
          JiraIssue jiraIssue = getJiraIssue(jiraString);
          if (jiraIssue == null) {
             log.debug("jiraIssue is null!");
+
             table.addJira(jiraString);
          } else {
             log.debug("jiraIssue is NOT null!");
@@ -45,6 +50,8 @@ public class AddNewRowActionListener implements ActionListener {
          }
          log.debug("added jira " + jiraString);
          jiraAdded(jiraString, table, estimate, actual);
+      }
+      tableModelListenerAlerter.deActivateAndAlert();
       }
    }
 
@@ -65,9 +72,7 @@ public class AddNewRowActionListener implements ActionListener {
    /**
     * Overide as required
     */
-   public JiraIssue getJiraIssue(String jira) {
-      return null;
-   }
+   public abstract JiraIssue getJiraIssue(String jira);
 
    private String getJiraSplit(String jiraNumber, int i) {
       if (jiraNumber == null)
@@ -104,3 +109,6 @@ public class AddNewRowActionListener implements ActionListener {
       this.table = table;
    }
 }
+
+
+

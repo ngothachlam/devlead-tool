@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 import java.awt.Color;
 import java.util.Vector;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.CalculatorHelper;
 import com.jonas.common.SwingUtil;
@@ -19,11 +20,11 @@ public class JiraTableModel extends MyTableModel {
    private boolean renderColors = false;
 
    public JiraTableModel() {
-      super(columns, false);
+      super(columns);
    }
 
    public JiraTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
-      super(columns, contents, header, false);
+      super(columns, contents, header);
    }
 
    public void setBoardModel(MyTableModel boardModel) {

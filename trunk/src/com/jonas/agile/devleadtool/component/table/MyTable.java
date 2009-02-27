@@ -23,6 +23,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
+import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.component.table.editor.BoardStatusCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
@@ -42,6 +43,10 @@ public class MyTable extends JTable {
    private MarkDelegator marker = new MarkDelegator();
    private MyTableModel model;
    private String title;
+
+   public MyTable(String title, MyTableModel modelModel, boolean allowMarking) {
+      this(title, (AbstractTableModel) modelModel, allowMarking);
+   }
 
    private MyTable(String title, AbstractTableModel defaultTableModel, final boolean allowMarking) {
       super(defaultTableModel);
@@ -98,40 +103,8 @@ public class MyTable extends JTable {
       this.addKeyListener(new MarkKeyListener(allowMarking));
    }
 
-   private void setComboEditors() {
-      JComboBox combo = new JComboBox(BoardStatusValue.values());
-      setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
-   }
-
-   @Override
-   public String getToolTipText(MouseEvent event) {
-      Point p = event.getPoint();
-      int colIndex = columnAtPoint(p);
-      int rowIndex = rowAtPoint(p);
-      if (rowIndex == -1 || colIndex == -1) {
-         return super.getToolTipText(event);
-      }
-      Object valueAt = getValueAt(rowIndex, colIndex);
-      String header = getModel().getColumnName(colIndex).trim();
-      return header + ": " + (valueAt == null || valueAt.toString().length() == 0 ? " " : valueAt.toString().trim());
-   }
-
    MyTable(String title, boolean allowMarking) {
       this(title, new DefaultTableModel(), allowMarking);
-   }
-
-   public void markSelected() {
-      marker.markSelected();
-   }
-   
-   public void markJira(String jira) {
-      int jiraRow = getRowWithJira(jira);
-      marker.mark(jiraRow);
-      fireTableDataChangedForJira(jira);
-   }
-
-   public MyTable(String title, MyTableModel modelModel, boolean allowMarking) {
-      this(title, (AbstractTableModel) modelModel, allowMarking);
    }
 
    public void addCheckBoxEditorListener(CellEditorListener cellEditorListener) {
@@ -141,7 +114,7 @@ public class MyTable extends JTable {
    public void addEmptyRow() {
       model.addEmptyRow();
    }
-
+   
    public void addJira(JiraIssue jiraIssue) {
       model.addJira(jiraIssue);
       markJira(jiraIssue.getKey());
@@ -182,8 +155,10 @@ public class MyTable extends JTable {
       return model.doesJiraExist(jira);
    }
 
-   protected void fireTableRowsUpdated(int rowEdited, int rowEdited2) {
-      model.fireTableRowsUpdated(convertRowIndexToModel(rowEdited), convertRowIndexToModel(rowEdited2));
+   public void fireTableDataChangedForJira(String jira) {
+      int row = getRowWithJira(jira);
+      if (row > -1)
+         model.fireTableRowsUpdated(convertRowIndexToModel(row), convertRowIndexToModel(row));
    }
 
    public Column getColumnEnum(int itsColumn) {
@@ -207,13 +182,25 @@ public class MyTable extends JTable {
       return convertRowIndexToView(modelRow);
    }
 
-   private TableColumn getTableColumn(int colIndex) {
-      TableColumnModel tcm = getColumnModel();
-      return tcm.getColumn(colIndex);
+   public TableModelListenerAlerter getTableModelListenerAlerter() {
+      return model.getTableModelListenerAlerter();
    }
 
    public String getTitle() {
       return title;
+   }
+
+   @Override
+   public String getToolTipText(MouseEvent event) {
+      Point p = event.getPoint();
+      int colIndex = columnAtPoint(p);
+      int rowIndex = rowAtPoint(p);
+      if (rowIndex == -1 || colIndex == -1) {
+         return super.getToolTipText(event);
+      }
+      Object valueAt = getValueAt(rowIndex, colIndex);
+      String header = getModel().getColumnName(colIndex).trim();
+      return header + ": " + (valueAt == null || valueAt.toString().length() == 0 ? " " : valueAt.toString().trim());
    }
 
    public Object getValueAt(Column column, int rowInView) {
@@ -242,10 +229,14 @@ public class MyTable extends JTable {
       return marker.isAllowMarking();
    }
 
-   private void notifyAllListenersThatJiraWasRemoved(String jira) {
-      for (TableListener listener : listeners) {
-         listener.jiraRemoved(jira);
-      }
+   public void markJira(String jira) {
+      int jiraRow = getRowWithJira(jira);
+      marker.mark(jiraRow);
+      fireTableDataChangedForJira(jira);
+   }
+
+   public void markSelected() {
+      marker.markSelected();
    }
 
    public void removeSelectedRows() {
@@ -281,6 +272,10 @@ public class MyTable extends JTable {
       super.setModel(model);
    }
 
+   public void setTableModelListenerAlerter(TableModelListenerAlerter listener) {
+      model.setTableModelListenerAlerter(listener);
+   }
+
    public void setValueAt(Object value, int row, Column column) {
       setValueAt(value, row, getColumnIndex(column));
    }
@@ -312,6 +307,82 @@ public class MyTable extends JTable {
       setAutoCreateRowSorter(true);
    }
 
+   private TableColumn getTableColumn(int colIndex) {
+      TableColumnModel tcm = getColumnModel();
+      return tcm.getColumn(colIndex);
+   }
+
+   private void notifyAllListenersThatJiraWasRemoved(String jira) {
+      for (TableListener listener : listeners) {
+         listener.jiraRemoved(jira);
+      }
+   }
+
+   private void setComboEditors() {
+      JComboBox combo = new JComboBox(BoardStatusValue.values());
+      setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
+   }
+
+   // public void fireTableDataChanged() {
+   // model.fireTableDataChanged();
+   // }
+
+   protected void fireTableRowsUpdated(int rowEdited, int rowEdited2) {
+      model.fireTableRowsUpdated(convertRowIndexToModel(rowEdited), convertRowIndexToModel(rowEdited2));
+   }
+
+   private class MarkDelegator {
+      private boolean allowMarking;
+
+      private MarkDelegator() {
+      }
+
+      public void clearMarked() {
+         for (int i = 0; i < getRowCount(); i++) {
+            model.clearMarked();
+         }
+      }
+
+      public boolean isAllowMarking() {
+         return allowMarking;
+      }
+
+      public void markSelected() {
+         int[] rows = getSelectedRows();
+         for (int row : rows) {
+            mark(row);
+         }
+      }
+
+      public void setAllowMarking(boolean allowMarking) {
+         this.allowMarking = allowMarking;
+      }
+
+      private boolean isMarked(int row) {
+         if (allowMarking == false)
+            return false;
+         if (row >= getRowCount() || row == -1)
+            return false;
+         return model.isMarked(convertRowIndexToModel(row));
+      }
+
+      private void unMark(int row) {
+         model.unMark(convertRowIndexToModel(row));
+      }
+
+      private void unMarkSelected() {
+         int[] selectedRows = getSelectedRows();
+         for (int row : selectedRows) {
+            unMark(row);
+            fireTableRowsUpdated(row, row);
+         }
+      }
+
+      protected void mark(int row) {
+         model.mark(convertRowIndexToModel(row));
+      }
+
+   }
    private final class MarkKeyListener extends KeyAdapter {
       private final boolean allowMarking;
 
@@ -333,68 +404,4 @@ public class MyTable extends JTable {
          }
       }
    }
-
-   private class MarkDelegator {
-      private boolean allowMarking;
-
-      private MarkDelegator() {
-      }
-
-      public void clearMarked() {
-         for (int i = 0; i < getRowCount(); i++) {
-            model.clearMarked();
-         }
-      }
-
-      public boolean isAllowMarking() {
-         return allowMarking;
-      }
-
-      private boolean isMarked(int row) {
-         if (allowMarking == false)
-            return false;
-         if (row >= getRowCount() || row == -1)
-            return false;
-         return model.isMarked(convertRowIndexToModel(row));
-      }
-
-      protected void mark(int row) {
-         model.mark(convertRowIndexToModel(row));
-      }
-
-      public void markSelected() {
-         int[] rows = getSelectedRows();
-         for (int row : rows) {
-            mark(row);
-         }
-      }
-
-      public void setAllowMarking(boolean allowMarking) {
-         this.allowMarking = allowMarking;
-      }
-
-      private void unMark(int row) {
-         model.unMark(convertRowIndexToModel(row));
-      }
-
-      private void unMarkSelected() {
-         int[] selectedRows = getSelectedRows();
-         for (int row : selectedRows) {
-            unMark(row);
-            fireTableRowsUpdated(row, row);
-         }
-      }
-
-   }
-
-   // public void fireTableDataChanged() {
-   // model.fireTableDataChanged();
-   // }
-
-   public void fireTableDataChangedForJira(String jira) {
-      int row = getRowWithJira(jira);
-      if (row > -1)
-         model.fireTableRowsUpdated(convertRowIndexToModel(row), convertRowIndexToModel(row));
-   }
-
 }

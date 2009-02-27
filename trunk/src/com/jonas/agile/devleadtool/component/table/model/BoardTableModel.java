@@ -19,11 +19,11 @@ public class BoardTableModel extends MyTableModel {
    private CellColorHelper cellColorHelper = CellColorHelper.getInstance();
 
    public BoardTableModel() {
-      super(columns, true);
+      super(columns);
    }
 
    public BoardTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
-      super(columns, contents, header, true);
+      super(columns, contents, header);
    }
 
    @Override

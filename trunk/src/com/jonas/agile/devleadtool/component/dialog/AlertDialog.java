@@ -57,9 +57,9 @@ public class AlertDialog extends JDialog {
       alertMessage(parentFrame, stacktrace);
    }
 
-   public static void alertMessage(Frame parentFrame, String e, String title, String preTextBoxText) {
+   public static void alertMessage(Frame parentFrame, String title, String preTextBoxText, String textBoxText) {
       log.debug("alert message");
-      new AlertDialog(parentFrame, title, preTextBoxText, e);
+      new AlertDialog(parentFrame, title, preTextBoxText, textBoxText);
    }
 
    public static void alertMessage(Frame parentFrame, String e) {

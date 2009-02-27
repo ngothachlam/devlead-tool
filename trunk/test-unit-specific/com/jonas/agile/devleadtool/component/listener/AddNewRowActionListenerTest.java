@@ -1,11 +1,12 @@
 package com.jonas.agile.devleadtool.component.listener;
 
+import com.jonas.jira.JiraIssue;
 import junit.framework.TestCase;
 
 public class AddNewRowActionListenerTest extends TestCase {
 
 	public void testShouldComputeJiraOk() {
-		AddNewRowActionListener listener = new AddNewRowActionListener(null, null, null);
+		AddNewRowActionListener listener = getListener();
 		assertEquals("llu-1", listener.getJiraString("llu", "1"));
 		assertEquals("llu-1", listener.getJiraString("llu", "1'2"));
 		assertEquals("llu-1", listener.getJiraString("llu", "1'2'3"));
@@ -13,9 +14,17 @@ public class AddNewRowActionListenerTest extends TestCase {
 		assertEquals("1", listener.getJiraString(null, "1"));
 		assertEquals("", listener.getJiraString(null, null));
 	}
+
+   private AddNewRowActionListener getListener() {
+      return new AddNewRowActionListener(null, null, null){
+         public JiraIssue getJiraIssue(String jira) {
+            return null;
+         }
+		};
+   }
 	
 	public void testShouldComputeEstimatesOk() {
-	   AddNewRowActionListener listener = new AddNewRowActionListener(null, null, null);
+	   AddNewRowActionListener listener = getListener();
 	   assertEquals("", listener.getEstimateString(null));
 	   assertEquals("", listener.getEstimateString(""));
 	   assertEquals("", listener.getEstimateString("1"));
@@ -25,7 +34,7 @@ public class AddNewRowActionListenerTest extends TestCase {
 	}
 	
 	public void testShouldComputeActualsOk() {
-	   AddNewRowActionListener listener = new AddNewRowActionListener(null, null, null);
+	   AddNewRowActionListener listener = getListener();
 	   assertEquals("", listener.getActualString(null));
 	   assertEquals("", listener.getActualString(""));
 	   assertEquals("", listener.getActualString("1"));
@@ -37,7 +46,7 @@ public class AddNewRowActionListenerTest extends TestCase {
 	}
 	
 	public void testShouldComputeBothEmptyOk() {
-		AddNewRowActionListener listener = new AddNewRowActionListener(null, null, null);
+		AddNewRowActionListener listener = getListener();
 		
 		assertEquals(true, listener.isHyphenRequired("llu", "1"));
 		assertEquals(false, listener.isHyphenRequired("llu", null));
