@@ -4,6 +4,7 @@
 package com.jonas.agile.devleadtool.component.table;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public enum Column {
    // String Defaults
@@ -38,7 +39,7 @@ public enum Column {
    J_FixVersion(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes) {
       @Override
       public Object parse(String cellContents) {
-         ArrayList<String> arrayList = new ArrayList<String>();
+         List<String> arrayList = new ArrayList<String>();
          if (cellContents == null) {
             return arrayList;
          }

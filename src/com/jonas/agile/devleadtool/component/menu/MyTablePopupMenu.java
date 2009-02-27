@@ -29,6 +29,7 @@ import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.listener.OpenJirasListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.component.listener.SyncWithJiraListener;
+import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
@@ -109,15 +110,15 @@ public class MyTablePopupMenu extends MyPopupMenu {
             return;
          }
 
-         List<String> jirasToGetMergeJiras = new ArrayList<String>();
+         List<String> originalJiras = new ArrayList<String>();
          StringBuffer sb = new StringBuffer("Do you want to create merge Jiras for the following?\n");
          for (int aSelectedRow : selectedRows) {
             String aJiraToBeMerged = (String) source.getValueAt(Column.Jira, aSelectedRow);
             sb.append(aJiraToBeMerged).append(" ");
-            jirasToGetMergeJiras.add(aJiraToBeMerged);
+            originalJiras.add(aJiraToBeMerged);
          }
 
-         JiraProject project = JiraProject.getProjectByJira(jirasToGetMergeJiras.get(0));
+         JiraProject project = JiraProject.getProjectByJira(originalJiras.get(0));
          JiraClient client = project.getJiraClient();
 
          JiraVersion[] fixVersions = client.getFixVersionsFromProject(project, false);
@@ -127,21 +128,23 @@ public class MyTablePopupMenu extends MyPopupMenu {
          if (fixVersionToCreateMergesAgainst != null) {
             sb = new StringBuffer("Created Merge Jiras:\n");
             List<String> jirasMerged = new ArrayList<String>();
-            for (String aJiraToGetMerge : jirasToGetMergeJiras) {
-               project = JiraProject.getProjectByJira(aJiraToGetMerge);
+            for (String originalJira : originalJiras) {
+               project = JiraProject.getProjectByJira(originalJira);
                try {
                   JiraClient jiraClient = project.getJiraClient();
                   String fixVersionName = fixVersionToCreateMergesAgainst.getName();
-                  String mergeJiraCreated = jiraClient.createMergeJira(aJiraToGetMerge, fixVersionName);
+                  String mergeJiraCreated = jiraClient.createMergeJira(originalJira, fixVersionName);
                   sb.append(mergeJiraCreated).append(" ");
                   jirasMerged.add(mergeJiraCreated);
-                  source.setValueAt(mergeJiraCreated, aJiraToGetMerge, Column.Merge);
-                  source.addJira(new JiraIssue(mergeJiraCreated, fixVersionName));
+                  
+                  setTableValuesForOriginal(originalJira, mergeJiraCreated);
+                  setTableValuesForMerge(originalJira, fixVersionName, mergeJiraCreated);
+                  
                } catch (Throwable e1) {
                   AlertDialog.alertException(parent, e1);
                }
             }
-            sb.append("\nOpen them in browser?");
+            sb.append("\nOpen them in browser?\n\n(You need to link them to the original Jira!!");
             int shallOpenInBrowser = JOptionPane.showConfirmDialog(parent, sb.toString());
             if (shallOpenInBrowser == JOptionPane.YES_OPTION) {
                try {
@@ -156,6 +159,17 @@ public class MyTablePopupMenu extends MyPopupMenu {
                }
             }
          }
+      }
+
+      private void setTableValuesForOriginal(String originalJira, String mergeJiraCreated) {
+         source.setValueAt("Has: " + mergeJiraCreated, originalJira, Column.Merge);
+      }
+
+      private void setTableValuesForMerge(String originalJira, String fixVersionName, String mergeJiraCreated) {
+         source.addJira(new JiraIssue(mergeJiraCreated, fixVersionName));
+         source.setValueAt("For: " + originalJira, mergeJiraCreated, Column.Merge);
+         source.setValueAt("merge", mergeJiraCreated, Column.Dev_Estimate);
+         source.setValueAt(BoardStatusValue.InDevProgress, mergeJiraCreated, Column.BoardStatus);
       }
    }
 
@@ -428,7 +442,8 @@ public class MyTablePopupMenu extends MyPopupMenu {
                      e2.printStackTrace();
                   }
                }
-               AlertDialog.alertMessage(helper.getParentFrame(), "Rollforwards", "The following Rollforwards have been identified", output.toString());
+               AlertDialog.alertMessage(helper.getParentFrame(), "Rollforwards", "The following Rollforwards have been identified", output
+                     .toString());
             } catch (HttpException e1) {
                e1.printStackTrace();
             } catch (IOException e1) {

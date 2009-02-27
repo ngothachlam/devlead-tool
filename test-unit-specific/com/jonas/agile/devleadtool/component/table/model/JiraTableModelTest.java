@@ -1,6 +1,7 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Vector;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
@@ -43,7 +44,7 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.J_Dev_Spent);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      String[] content = new String[] { "Jira", "Description", "B_BoardStatus", "J_Type", "B_Release", "J_Sprint", "J_FixVersion", "J_Delivery", "J_Status", "J_Resolution",
+      String[] content = new String[] { "Jira", "Description", "J_Type", "J_Sprint", "J_FixVersion", "J_Delivery", "J_Resolution",
             "J_BuildNo", "J_Dev_Estimate", "J_Dev_Spent" };
       contents.add(getTestRowVector(content, 0));
       contents.add(getTestRowVector(content, 1));
@@ -73,7 +74,7 @@ public class JiraTableModelTest extends JonasTestCase {
 
    public void testShouldGetColorOk() {
       jiraModel = new JiraTableModel();
-
+      jiraModel.setRenderColors(true);
       assertEquals(null, jiraModel.getColor("llu-1", 0, Column.Jira));
 
       // add llu-1 and llu-2 to jiraModel 
@@ -96,6 +97,23 @@ public class JiraTableModelTest extends JonasTestCase {
       assertEquals(SwingUtil.cellGreen, jiraModel.getColor("llu-2", 1, Column.Jira));
       assertEquals(SwingUtil.cellRed, jiraModel.getColor("est2", 1, Column.J_Dev_Estimate));
       assertEquals(null, jiraModel.getColor("est2", 1, Column.J_Dev_Spent));
+   }
+   
+   
+   public void testShouldCompareFixversionsOk(){
+      jiraModel = new JiraTableModel();
+      ArrayList<String> jiraFixVersion = new ArrayList<String>();
+      assertFalse(jiraModel.isFixVersionOk("LLU 12", jiraFixVersion));
+      
+      jiraFixVersion.add("LLU 13");
+      assertFalse(jiraModel.isFixVersionOk("LLU 12", jiraFixVersion));
+      assertTrue(jiraModel.isFixVersionOk("LLU 13", jiraFixVersion));
+      
+      jiraFixVersion.add("LLU 12");
+      assertFalse(jiraModel.isFixVersionOk("LLU 12", jiraFixVersion));
+      assertFalse(jiraModel.isFixVersionOk("LLU 13", jiraFixVersion));
+      assertTrue(jiraModel.isFixVersionOk("LLU 12, LLU 13", jiraFixVersion));
+      assertTrue(jiraModel.isFixVersionOk("LLU 13, LLU 12", jiraFixVersion));
    }
 
    public void testShouldCompareEstimatesOk() {

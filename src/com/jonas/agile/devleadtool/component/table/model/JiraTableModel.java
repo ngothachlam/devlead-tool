@@ -1,6 +1,7 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -10,8 +11,8 @@ import com.jonas.common.logging.MyLogger;
 
 public class JiraTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Type, Column.J_Sprint,
-         Column.J_FixVersion, Column.J_Delivery, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Type, Column.J_Sprint, Column.J_FixVersion,
+         Column.J_Delivery, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent };
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
    private int tempRow = -1;
@@ -30,26 +31,31 @@ public class JiraTableModel extends MyTableModel {
       this.boardModel = boardModel;
    }
 
-   public void setRenderColors(boolean renderColors){
+   public void setRenderColors(boolean renderColors) {
       this.renderColors = renderColors;
    }
-   
+
    @Override
    public Color getColor(Object value, int row, Column column) {
-      
-      if(renderColors != true){
+      System.out.println("1");
+      if (renderColors != true) {
+         System.out.println("2");
          return null;
       }
-      
-      if (boardModel == null)
-         return null;
 
+      if (boardModel == null) {
+         System.out.println("3");
+         return null;
+      }
+
+      System.out.println("4");
       log.debug("The row being edited is " + row + " and we previously edited " + this.tempRow);
       if (this.tempRow != row) {
          log.debug("trace...");
          String jira = (String) getValueAt(Column.Jira, row);
          rowWithJiraInBoard = boardModel.getRowWithJira(jira);
-         log.debug("... so we are editing a new row! Lets get the jira, which is " + jira + " and the board row for this jira: " + rowWithJiraInBoard);
+         log.debug("... so we are editing a new row! Lets get the jira, which is " + jira + " and the board row for this jira: "
+               + rowWithJiraInBoard);
          this.tempRow = row;
       }
 
@@ -61,6 +67,10 @@ public class JiraTableModel extends MyTableModel {
       // FIXME when the Jira column is selected - could we cache the jira row data in the board until all cols have been calculated here?
       case Jira:
          return SwingUtil.cellGreen;
+      case J_FixVersion:
+         if (!isFixVersionOk(boardModel.getValueAt(Column.Release, rowWithJiraInBoard), value))
+            return SwingUtil.cellRed;
+         break;
       case J_Dev_Estimate:
          if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, rowWithJiraInBoard), value))
             return SwingUtil.cellRed;
@@ -73,8 +83,24 @@ public class JiraTableModel extends MyTableModel {
       return null;
    }
 
+   boolean isFixVersionOk(Object boardValue, Object jiraValue) {
+      ArrayList<String> jiraFixVersions = (ArrayList<String>) jiraValue;
+      String[] boardFixVersions = ((String) boardValue).split("[ \t]*,[ \t]*");
+
+      if (boardFixVersions.length != jiraFixVersions.size())
+         return false;
+      for (String boardFixVersion : boardFixVersions) {
+         System.out.println("boardFixVersion: " + boardFixVersion);
+         if (!jiraFixVersions.contains(boardFixVersion)) {
+            return false;
+         }
+      }
+      return true;
+   }
+
    boolean isJiraNumberOk(Object boardValue, Object jiraValue) {
-      log.debug("... We are trying to check if either the board or jira has numberical or string values (boardValue: " + boardValue + ", jiraValue: " + jiraValue +")");
+      log.debug("... We are trying to check if either the board or jira has numberical or string values (boardValue: " + boardValue
+            + ", jiraValue: " + jiraValue + ")");
       String boardString = boardValue == null ? null : boardValue.toString().trim();
       String jiraString = jiraValue == null ? null : jiraValue.toString().trim();
 
@@ -88,13 +114,13 @@ public class JiraTableModel extends MyTableModel {
 
       if (boardValue.equals(jiraValue))
          return true;
-      
+
       Double boardDouble = null;
       Double jiraDouble = null;
-      
+
       boardDouble = CalculatorHelper.getDouble(boardString);
       jiraDouble = CalculatorHelper.getDouble(jiraString);
-      
+
       if (boardDouble == null || boardDouble == 0d) {
          if ((jiraDouble == null || jiraDouble == 0d))
             return true;
