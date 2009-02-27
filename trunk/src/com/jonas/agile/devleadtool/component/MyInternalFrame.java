@@ -212,7 +212,6 @@ public class MyInternalFrame extends JInternalFrame {
    void setTitleFileName(String fileName, CutoverLength cutoverLength) {
       String rightMostFromString = getRightMostFromString(fileName, cutoverLength.value());
       StringBuffer sb = new StringBuffer();
-//      sb.append(" - ");
       if (rightMostFromString.length() < fileName.length()) {
          sb.append("...");
       }

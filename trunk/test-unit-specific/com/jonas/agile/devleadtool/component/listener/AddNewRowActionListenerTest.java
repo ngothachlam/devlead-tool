@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.component.listener;
 
+import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.jira.JiraIssue;
 import junit.framework.TestCase;
 
@@ -8,8 +9,9 @@ public class AddNewRowActionListenerTest extends TestCase {
 	public void testShouldComputeJiraOk() {
 		AddNewRowActionListener listener = getListener();
 		assertEquals("llu-1", listener.getJiraString("llu", "1"));
-		assertEquals("llu-1", listener.getJiraString("llu", "1'2"));
-		assertEquals("llu-1", listener.getJiraString("llu", "1'2'3"));
+		assertEquals("llu-1'2", listener.getJiraString("llu", "1'2"));
+		assertEquals("llu-1", listener.getJiraString("llu", "1.2"));
+		assertEquals("llu-1", listener.getJiraString("llu", "1.2.3"));
 		assertEquals("llu", listener.getJiraString("llu", null));
 		assertEquals("1", listener.getJiraString(null, "1"));
 		assertEquals("", listener.getJiraString(null, null));
@@ -19,6 +21,12 @@ public class AddNewRowActionListenerTest extends TestCase {
       return new AddNewRowActionListener(null, null, null){
          public JiraIssue getJiraIssue(String jira) {
             return null;
+         }
+
+         @Override
+         public void jiraAdded(String jiraStringm, MyTable table, String estimate, String actual,
+               TableModelListenerAlerter tableModelListenerAlerter) {
+            return;
          }
 		};
    }

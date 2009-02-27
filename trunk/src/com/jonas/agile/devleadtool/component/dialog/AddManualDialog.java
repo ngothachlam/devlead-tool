@@ -24,6 +24,7 @@ import javax.swing.text.JTextComponent;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
+import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -192,7 +193,7 @@ class AddFromRadioButtons extends AddNewRowActionListener {
    }
 
    @Override
-   public void jiraAdded(String jira, MyTable table, String estimate, String actual) {
+   public void jiraAdded(String jira, MyTable table, String estimate, String actual, TableModelListenerAlerter tableModelListenerAlerter) {
       if (table.doesJiraExist(jira)) {
          List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 
@@ -204,7 +205,7 @@ class AddFromRadioButtons extends AddNewRowActionListener {
             if (newOldValue.isValueNew())
                table.setValueAt(newOldValue.getNewValue(), jira, newOldValue.getColumn());
          }
-
+         tableModelListenerAlerter.addRowChange(jira, newOldValues);
       }
    }
 
@@ -225,44 +226,5 @@ class AddFromRadioButtons extends AddNewRowActionListener {
    @Override
    public JiraIssue getJiraIssue(String jira) {
       return new JiraIssue(jira, release.getText());
-   }
-
-   private class NewOldValues {
-
-      public Object getOldValue() {
-         return oldValue;
-      }
-
-      public Column getColumn() {
-         return column;
-      }
-
-      private final String jira;
-      private final Column column;
-      private final String oldValue;
-      private final Object newValue;
-      private boolean isDifferent;
-
-      public NewOldValues(String jira, Column column, String oldValue, Object newValue) {
-         this.jira = jira;
-         this.column = column;
-         this.newValue = newValue;
-         this.oldValue = oldValue;
-         if (oldValue == null) {
-            isDifferent = newValue == null ? false : true;
-            return;
-         }
-         if (!oldValue.equals(newValue)) {
-            isDifferent = true;
-         }
-      }
-
-      public boolean isValueNew() {
-         return isDifferent;
-      }
-
-      public Object getNewValue() {
-         return newValue;
-      }
    }
 }
