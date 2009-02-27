@@ -9,9 +9,9 @@ public class AddNewRowActionListenerTest extends TestCase {
 	public void testShouldComputeJiraOk() {
 		AddNewRowActionListener listener = getListener();
 		assertEquals("llu-1", listener.getJiraString("llu", "1"));
-		assertEquals("llu-1'2", listener.getJiraString("llu", "1'2"));
-		assertEquals("llu-1", listener.getJiraString("llu", "1.2"));
-		assertEquals("llu-1", listener.getJiraString("llu", "1.2.3"));
+		assertEquals("llu-1", listener.getJiraString("llu", "1'2"));
+		assertEquals("llu-1.2", listener.getJiraString("llu", "1.2"));
+		assertEquals("llu-1", listener.getJiraString("llu", "1/2"));
 		assertEquals("llu", listener.getJiraString("llu", null));
 		assertEquals("1", listener.getJiraString(null, "1"));
 		assertEquals("", listener.getJiraString(null, null));
