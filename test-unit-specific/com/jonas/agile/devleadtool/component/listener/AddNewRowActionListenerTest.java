@@ -39,6 +39,8 @@ public class AddNewRowActionListenerTest extends TestCase {
 	   assertEquals("2", listener.getEstimateString("1'2"));
 	   assertEquals("2", listener.getEstimateString("1'2'3"));
 	   assertEquals("2.3", listener.getEstimateString("1'2.3'3"));
+	   assertEquals("2.3", listener.getEstimateString("1'2.3/3"));
+	   assertEquals("2.3", listener.getEstimateString("1/2.3/3"));
 	}
 	
 	public void testShouldComputeActualsOk() {
@@ -51,6 +53,8 @@ public class AddNewRowActionListenerTest extends TestCase {
 	   assertEquals("3.5", listener.getActualString("1'2'3.5'4"));
 	   assertEquals("3.5", listener.getActualString("1''3.5'4"));
 	   assertEquals("3.5", listener.getActualString("''3.5'4"));
+	   assertEquals("3.5", listener.getActualString("1'/3.5/4"));
+	   assertEquals("3.5", listener.getActualString("//3.5/4"));
 	}
 	
 	public void testShouldComputeBothEmptyOk() {

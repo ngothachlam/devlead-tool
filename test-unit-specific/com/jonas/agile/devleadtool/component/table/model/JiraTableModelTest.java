@@ -51,7 +51,7 @@ public class JiraTableModelTest extends JonasTestCase {
       jiraModel = new JiraTableModel(contents, header);
 
       assertEquals(2, jiraModel.getRowCount());
-      assertEquals(13, jiraModel.getColumnCount());
+      assertEquals(10, jiraModel.getColumnCount());
       assertRow(getTestRowArray(content, 0), jiraModel, 0);
       assertRow(getTestRowArray(content, 1), jiraModel, 1);
    }

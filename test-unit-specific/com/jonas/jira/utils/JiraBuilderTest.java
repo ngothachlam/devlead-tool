@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.util.List;
 import org.easymock.EasyMock;
 import org.jdom.Element;
-import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.agile.devleadtool.junitutils.TestIterator;
 import com.jonas.jira.JiraIssue;
