@@ -15,11 +15,11 @@ public class PlanTableModel extends MyTableModel {
    private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Type, Column.Release, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Dev_Estimate, Column.QA_Estimate, Column.Dev_Actual, Column.Note };
 
    public PlanTableModel() {
-      super(columns, true);
+      super(columns);
    }
 
    public PlanTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
-      super(columns, contents, header, true);
+      super(columns, contents, header);
    }
 
    public boolean setRow(JiraIssue jiraIssue, int row) {

@@ -433,7 +433,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
                      e2.printStackTrace();
                   }
                }
-               AlertDialog.alertMessage(helper.getParentFrame(), output.toString(), "Rollforwards", "The following Rollforwards have been identified");
+               AlertDialog.alertMessage(helper.getParentFrame(), "Rollforwards", "The following Rollforwards have been identified", output.toString());
             } catch (HttpException e1) {
                e1.printStackTrace();
             } catch (IOException e1) {

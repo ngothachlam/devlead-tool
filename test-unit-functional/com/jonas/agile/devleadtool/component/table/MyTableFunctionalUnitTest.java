@@ -206,7 +206,7 @@ public class MyTableFunctionalUnitTest extends TestCase {
 
    private class ATestTableModel extends MyTableModel {
       private ATestTableModel(Column[] columns) {
-         super(columns, true);
+         super(columns);
       }
 
       @Override

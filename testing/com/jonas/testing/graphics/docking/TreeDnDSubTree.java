@@ -1,18 +1,21 @@
 package com.jonas.testing.graphics.docking;
 
+import java.awt.BorderLayout;
+import java.awt.Point;
 import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetContext;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
-import java.awt.*;
-import java.awt.dnd.DropTargetContext;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JSplitPane;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;

@@ -272,11 +272,11 @@ class TestTableModelTwo extends MyTableModel {
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
 
    public TestTableModelTwo() {
-      super(columns, false);
+      super(columns);
    }
 
    public TestTableModelTwo(Vector<Vector<Object>> contents, Vector<Column> header) {
-      super(columns, contents, header, false);
+      super(columns, contents, header);
    }
 
    @Override

@@ -2,11 +2,9 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.awt.Color;
 import java.util.Vector;
-import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.common.SwingUtil;
-import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
 public class JiraTableModelTest extends JonasTestCase {
@@ -136,7 +134,7 @@ public class JiraTableModelTest extends JonasTestCase {
    class TestTableModelTemp extends MyTableModel {
       
       public TestTableModelTemp(Column[] columns) {
-         super(columns, false);
+         super(columns);
       }
 
       @Override
