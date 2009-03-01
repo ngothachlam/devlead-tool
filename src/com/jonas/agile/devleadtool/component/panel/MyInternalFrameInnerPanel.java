@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
@@ -61,7 +62,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    private DnDTreePanel sprintPanel;
 
    private MyTable boardTable;
-
    private MyTable jiraTable;
 
    public MyInternalFrameInnerPanel(PlannerHelper client) {
@@ -79,25 +79,22 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          DnDTreeModel model = new DnDTreeModel("LLU");
          SprintTree tree = new SprintTree(model);
 
-         JiraSaxHandler saxHandler = new JiraSaxHandler();
-         saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, MAX_RESULT, helper.getParentFrame()));
+         DnDTreeBuilder dnDTreeBuilder = createDnDTreeBuilder(helper.getParentFrame(), tree);
+         makeContent(boardModel, tree, helper, jiraModel, dnDTreeBuilder);
 
-         XmlParser parser = new XmlParserImpl(saxHandler, MAX_RESULT);
-         DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
-
-         log.trace("MyInternalFrameInnerComponent 1.5");
-
-         makeContent(boardModel, tree, helper, jiraModel);
-
-         new SprintTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder, jiraTable, boardTable);
-
-         log.trace("MyInternalFrameInnerComponent 1.6");
-         this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
-
+         setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
          wireUpListeners(boardModel, jiraModel);
       } catch (SAXException e) {
          e.printStackTrace();
       }
+   }
+
+   private DnDTreeBuilder createDnDTreeBuilder(JFrame parentFrame, SprintTree tree) throws SAXException {
+      JiraSaxHandler saxHandler = new JiraSaxHandler();
+      saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, MAX_RESULT, parentFrame));
+
+      XmlParser parser = new XmlParserImpl(saxHandler, MAX_RESULT);
+      return new DnDTreeBuilder(parser);
    }
 
    private Component combineIntoSplitPane(JPanel panel1, JPanel panel2, JPanel panel3) {
@@ -153,7 +150,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       return jiraPanel;
    }
 
-   public void makeContent(MyTableModel boardModel, SprintTree tree, PlannerHelper helper, MyTableModel jiraModel) {
+   public void makeContent(MyTableModel boardModel, SprintTree tree, PlannerHelper helper, MyTableModel jiraModel, DnDTreeBuilder dndTreeBuilder) {
       boardPanel = new BoardPanel(boardModel);
       sprintPanel = new DnDTreePanel(tree, helper.getParentFrame());
       jiraPanel = new JiraPanel(helper, jiraModel);
@@ -174,6 +171,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
       new MyTablePopupMenu(boardTable, helper, boardTable, jiraTable);
       new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable);
+      new SprintTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder, jiraTable, boardTable);
 
       JPanel panel = new JPanel();
       editableCheckBox = new JCheckBox("Editable?", true);
@@ -185,7 +183,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    }
 
    private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, final MyTable jiraTable, SprintTree sprintTree) {
-      // boardModel.addTableModelListener(new TableSyncerFromBoardToJiraListener(boardTable, jiraTable, boardModel));
       boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
       boardTable.addListener(new MyBoardTableListener());
       boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
@@ -274,6 +271,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
       @Override
       public void keyPressed(KeyEvent e) {
+         // ctrl-f for finding in the other tables!
          if (e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK && e.getKeyCode() == KeyEvent.VK_F && !pressed) {
             pressed = true;
             ListSelectionModel boardSelectionModel = boardTable.getSelectionModel();
