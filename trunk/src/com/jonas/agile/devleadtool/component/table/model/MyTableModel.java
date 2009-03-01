@@ -234,7 +234,6 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public Object getValueAt(Column column, int row) {
       int columnIndex = getColumnIndex(column);
-      log.debug("column " + columnIndex + ", row: " + row);
       return row > -1 && row < getRowCount() ? getValueAt(row, columnIndex) : null;
    }
 

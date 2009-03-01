@@ -16,7 +16,7 @@ public class JiraTableModel extends MyTableModel {
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
    private int tempRow = -1;
-   private int rowWithJiraInBoard;
+   private int jiraRowInBoardModel;
    private boolean renderColors = false;
 
    public JiraTableModel() {
@@ -49,30 +49,29 @@ public class JiraTableModel extends MyTableModel {
       if (this.tempRow != row) {
          log.debug("trace...");
          String jira = (String) getValueAt(Column.Jira, row);
-         rowWithJiraInBoard = boardModel.getRowWithJira(jira);
+         jiraRowInBoardModel = boardModel.getRowWithJira(jira);
          log.debug("... so we are editing a new row! Lets get the jira, which is " + jira + " and the board row for this jira: "
-               + rowWithJiraInBoard);
+               + jiraRowInBoardModel);
          this.tempRow = row;
       }
 
-      if (rowWithJiraInBoard == -1)
+      if (jiraRowInBoardModel == -1)
          return null;
 
       log.debug("... The Jira was found in the board. We now want to check the " + column + " as it's value is \"" + value + "\"");
       switch (column) {
-      // FIXME when the Jira column is selected - could we cache the jira row data in the board until all cols have been calculated here?
       case Jira:
          return SwingUtil.cellGreen;
       case J_FixVersion:
-         if (!isFixVersionOk(boardModel.getValueAt(Column.Release, rowWithJiraInBoard), value))
+         if (!isFixVersionOk(boardModel.getValueAt(Column.Release, jiraRowInBoardModel), value))
             return SwingUtil.cellRed;
          break;
       case J_Dev_Estimate:
-         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, rowWithJiraInBoard), value))
+         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, jiraRowInBoardModel), value))
             return SwingUtil.cellRed;
          break;
       case J_Dev_Spent:
-         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Actual, rowWithJiraInBoard), value))
+         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Actual, jiraRowInBoardModel), value))
             return SwingUtil.cellRed;
          break;
       }
