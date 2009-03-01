@@ -37,7 +37,7 @@ public class DevLeadTool {
    private PlannerHelper helper;
    private JMenu windowMenu;
 
-   DevLeadTool() {
+   public DevLeadTool() {
    }
 
    private JMenu createFileMenu(String title, JMenuItem[] menuItemList) {
