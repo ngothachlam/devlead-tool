@@ -15,8 +15,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
@@ -28,8 +31,6 @@ import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
 import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
 import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
-import com.jonas.agile.devleadtool.component.listener.TableSyncerFromBoardToJiraListener;
-import com.jonas.agile.devleadtool.component.listener.TableSyncerFromJiraToBoardListener;
 import com.jonas.agile.devleadtool.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.menu.SprintTreePopupMenu;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -77,7 +78,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
          DnDTreeModel model = new DnDTreeModel("LLU");
          SprintTree tree = new SprintTree(model);
-         
+
          JiraSaxHandler saxHandler = new JiraSaxHandler();
          saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, MAX_RESULT, helper.getParentFrame()));
 
@@ -85,11 +86,11 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          DnDTreeBuilder dndTreeBuilder = new DnDTreeBuilder(parser);
 
          log.trace("MyInternalFrameInnerComponent 1.5");
-         
+
          makeContent(boardModel, tree, helper, jiraModel);
-         
+
          new SprintTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder, jiraTable, boardTable);
-         
+
          log.trace("MyInternalFrameInnerComponent 1.6");
          this.setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
 
@@ -156,7 +157,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       boardPanel = new BoardPanel(boardModel);
       sprintPanel = new DnDTreePanel(tree, helper.getParentFrame());
       jiraPanel = new JiraPanel(helper, jiraModel);
-      
+
       JPanel jiraMainPanel = new JPanel(new BorderLayout());
       jiraMainPanel.add(jiraPanel, BorderLayout.CENTER);
       JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
@@ -170,7 +171,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       listener.setParent(helper.getParentFrame());
       boardTable.setTableModelListenerAlerter(listener);
       jiraTable.setTableModelListenerAlerter(listener);
-      
+
       new MyTablePopupMenu(boardTable, helper, boardTable, jiraTable);
       new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable);
 
@@ -183,11 +184,12 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       addCenter(combineIntoSplitPane(boardPanel, jiraMainPanel, sprintPanel));
    }
 
-   private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, MyTable jiraTable, SprintTree sprintTree) {
-//      boardModel.addTableModelListener(new TableSyncerFromBoardToJiraListener(boardTable, jiraTable, boardModel));
+   private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, final MyTable jiraTable, SprintTree sprintTree) {
+      // boardModel.addTableModelListener(new TableSyncerFromBoardToJiraListener(boardTable, jiraTable, boardModel));
       boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
       boardTable.addListener(new MyBoardTableListener());
       boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
+      boardModel.addTableModelListener(new FireUpdateOnOtherTableWhenUpdatedListener(jiraTable));
    }
 
    private void setSprintDataListener(final SprintTree sprintTree, final MyTable boardTable, final MyTable jiraTable) {
@@ -195,8 +197,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    }
 
    private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel, SprintTree sprintTree, MyTable boardTable) {
-      jiraModel.addTableModelListener(new TableSyncerFromJiraToBoardListener(boardPanel.getTable(), jiraPanel.getTable(), boardModel));
       jiraPanel.getTable().addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, jiraPanel.getTable(), boardTable));
+      jiraModel.addTableModelListener(new FireUpdateOnOtherTableWhenUpdatedListener(boardTable));
    }
 
    public void wireUpListeners(BoardTableModel boardModel, JiraTableModel jiraModel) {
@@ -209,6 +211,29 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       setSprintDataListener(sprintTree, boardTable, jiraTable);
 
       editableCheckBox.addActionListener(new EditableListener());
+   }
+
+   private final class FireUpdateOnOtherTableWhenUpdatedListener implements TableModelListener {
+      private final MyTable targetTable;
+
+      private FireUpdateOnOtherTableWhenUpdatedListener(MyTable targetTable) {
+         this.targetTable = targetTable;
+      }
+
+      public void tableChanged(final TableModelEvent e) {
+         if (e.getType() == TableModelEvent.UPDATE) {
+            SwingUtilities.invokeLater(new Runnable() {
+               @Override
+               public void run() {
+                  for (int row = e.getFirstRow(); row <= e.getLastRow(); row++) {
+                     final MyTableModel sourceAsModel = (MyTableModel) e.getSource();
+                     String jira = (String) sourceAsModel.getValueAt(Column.Jira, row);
+                     targetTable.fireTableDataChangedForJira(jira);
+                  }
+               }
+            });
+         }
+      }
    }
 
    private final class HighlightIssuesAction extends AbstractAction {
@@ -335,7 +360,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          MyEditor editor = (MyEditor) e.getSource();
          MyTable table = boardPanel.getTable();
          MyTableModel model = (MyTableModel) table.getModel();
-         model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor.getColEdited()));
+         model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor
+               .getColEdited()));
       }
    }
 

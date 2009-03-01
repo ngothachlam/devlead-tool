@@ -2,7 +2,6 @@ package com.jonas.devleadtool.testing.ui;
 
 import javax.swing.event.ChangeEvent;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
-import com.jonas.agile.devleadtool.component.listener.TableSyncerFromBoardToJiraListener;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
@@ -26,9 +25,6 @@ public class BoardTableModelListenerTest extends JonasTestCase {
          public void jiraRemoved(String jira) {
          }
       });
-
-      TableSyncerFromBoardToJiraListener boardTableModelListener = new TableSyncerFromBoardToJiraListener(boardTable, jiraTable, boardModel);
-      boardModel.addTableModelListener(boardTableModelListener);
 
       super.setUp();
    }

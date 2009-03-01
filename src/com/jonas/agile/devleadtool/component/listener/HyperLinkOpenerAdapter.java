@@ -36,7 +36,7 @@ public class HyperLinkOpenerAdapter extends MouseAdapter {
       if (hyperLinkColumn.equals(table.getColumnEnum(itsColumn))) {
          String jira = (String) table.getValueAt(jiraColumn, itsRow);
          try {
-            HyperLinker.displayURL(helper.getJiraUrl(jira) + "/browse/" + jira);
+            HyperLinker.displayURL(PlannerHelper.getJiraUrl(jira) + "/browse/" + jira);
          } catch (NotJiraException ex) {
             AlertDialog.alertException(helper.getParentFrame(), ex);
          } catch (URISyntaxException ex) {
