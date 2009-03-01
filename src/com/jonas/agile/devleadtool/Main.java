@@ -15,7 +15,7 @@ public class Main {
       
       Injector injector = Guice.createInjector(new DevLeadToolModule());
       DevLeadTool tool = injector.getInstance(DevLeadTool.class);
-
+      
       try {
          tool.start();
       } catch (Throwable e) {

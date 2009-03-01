@@ -7,7 +7,7 @@ import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.MyDesktopPane;
+import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.SaveKeyListener;
 import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerPanel;
@@ -19,12 +19,12 @@ public class LoadPlannerDialog extends JFileChooser {
    private final PlannerDAO dao;
    private final JFrame frame;
    private final PlannerHelper helper;
-   private final MyDesktopPane desktop;
+   private final DesktopPane desktop;
    private SavePlannerDialog savePlannerDialog;
    private SaveKeyListener saveKeyListener;
    private Logger log = MyLogger.getLogger(LoadPlannerDialog.class);
 
-   public LoadPlannerDialog(MyDesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper helper, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener) {
+   public LoadPlannerDialog(DesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper helper, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener) {
       super(new File("."));
       this.desktop = desktop;
       this.dao = plannerDAO;

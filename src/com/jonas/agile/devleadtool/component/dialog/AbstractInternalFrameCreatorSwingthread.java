@@ -2,7 +2,7 @@ package com.jonas.agile.devleadtool.component.dialog;
 
 import javax.swing.SwingWorker;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.MyDesktopPane;
+import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.SaveKeyListener;
 import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerPanel;
@@ -11,7 +11,7 @@ import com.jonas.agile.devleadtool.data.PlannerDAO;
 public abstract class AbstractInternalFrameCreatorSwingthread extends SwingWorker<CombinedModelDTO, Object> {
 
    public AbstractInternalFrameCreatorSwingthread(PlannerHelper helper, PlannerDAO dao, SavePlannerDialog savePlannerDialog,
-         SaveKeyListener saveKeyListener, MyDesktopPane desktopPane) {
+         SaveKeyListener saveKeyListener, DesktopPane desktopPane) {
       super();
       this.helper = helper;
       this.dao = dao;
@@ -24,7 +24,7 @@ public abstract class AbstractInternalFrameCreatorSwingthread extends SwingWorke
    private PlannerDAO dao;
    private SavePlannerDialog savePlannerDialog;
    private SaveKeyListener saveKeyListener;
-   private MyDesktopPane desktopPane;
+   private DesktopPane desktopPane;
 
    @Override
    protected void done() {

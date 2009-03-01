@@ -43,7 +43,7 @@ public class MyInternalFrame extends JInternalFrame {
    private MyInternalFrameInnerPanel internalFrameTabPanel;
    private String originalTitle;
    private String originalTitleWithDuplicateNumber;
-   public MyInternalFrame(final PlannerHelper client, String title, MyInternalFrameInnerPanel internalFrameTabPanel, PlannerDAO dao, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener, MyDesktopPane desktop) {
+   public MyInternalFrame(final PlannerHelper client, String title, MyInternalFrameInnerPanel internalFrameTabPanel, PlannerDAO dao, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener, DesktopPane desktop) {
       this(title, client);
       log.trace("MyInternalFrame");
       this.dao = dao;
