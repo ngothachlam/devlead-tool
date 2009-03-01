@@ -44,5 +44,6 @@
 	<classpathentry kind="lib" path="lib/htmlunit-core-js-2.2.jar"/>
 	<classpathentry kind="lib" path="lib/jwebunit-core-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/jwebunit-htmlunit-plugin-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/guice-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

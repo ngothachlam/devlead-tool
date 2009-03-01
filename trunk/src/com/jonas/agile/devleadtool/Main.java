@@ -1,5 +1,7 @@
 package com.jonas.agile.devleadtool;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.common.logging.MyLogger;
 
@@ -10,7 +12,11 @@ public class Main {
       if(args.length > 0){
          MyLogger.setup(args[0]);
       }
-      DevLeadTool tool = new DevLeadTool();
+      
+      Injector injector = Guice.createInjector(new DevLeadToolModule());
+      DevLeadTool tool = injector.getInstance(DevLeadTool.class);
+      tool.start();
+
       try {
          tool.start();
       } catch (Throwable e) {
