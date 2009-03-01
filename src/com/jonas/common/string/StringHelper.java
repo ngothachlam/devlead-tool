@@ -26,7 +26,6 @@ public class StringHelper {
       List<String> result = new ArrayList<String>();
 
       for (String entry : list) {
-         System.out.println("Entry: " + entry);
          ResultDTO startAndEnd = getPrefixStartAndEndNo(entry, "<");
          if (startAndEnd.getStart() != null) {
             List<String> startAndEndList = getListFromStartAndEnd(startAndEnd);
