@@ -37,18 +37,14 @@ public class JiraTableModel extends MyTableModel {
 
    @Override
    public Color getColor(Object value, int row, Column column) {
-      System.out.println("1");
       if (renderColors != true) {
-         System.out.println("2");
          return null;
       }
 
       if (boardModel == null) {
-         System.out.println("3");
          return null;
       }
 
-      System.out.println("4");
       log.debug("The row being edited is " + row + " and we previously edited " + this.tempRow);
       if (this.tempRow != row) {
          log.debug("trace...");
@@ -90,7 +86,6 @@ public class JiraTableModel extends MyTableModel {
       if (boardFixVersions.length != jiraFixVersions.size())
          return false;
       for (String boardFixVersion : boardFixVersions) {
-         System.out.println("boardFixVersion: " + boardFixVersion);
          if (!jiraFixVersions.contains(boardFixVersion)) {
             return false;
          }
