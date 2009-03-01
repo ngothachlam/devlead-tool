@@ -11,6 +11,10 @@ import com.jonas.common.logging.MyLogger;
 
 public class JiraParseListenerImpl implements JiraParseListener {
 
+   public void setTree(SprintTree tree) {
+      this.tree = tree;
+   }
+
    private Logger log = MyLogger.getLogger(JiraParseListenerImpl.class);
 
    private SprintTree tree;
@@ -18,9 +22,8 @@ public class JiraParseListenerImpl implements JiraParseListener {
    private final int maxResults;
    private Frame frame;
 
-   public JiraParseListenerImpl(SprintTree tree, int maxResults, Frame frame) {
+   public JiraParseListenerImpl(int maxResults, Frame frame) {
       super();
-      this.tree = tree;
       this.maxResults = maxResults;
       this.frame = frame;
    }
@@ -49,4 +52,5 @@ public class JiraParseListenerImpl implements JiraParseListener {
    public void notifyParsingStarted() {
       count = 0;
    }
+
 }
