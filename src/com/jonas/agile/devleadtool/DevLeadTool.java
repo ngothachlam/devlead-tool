@@ -1,18 +1,16 @@
 package com.jonas.agile.devleadtool;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import org.apache.log4j.Logger;
+import com.google.inject.Inject;
 import com.jonas.agile.devleadtool.component.MyDesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.SaveKeyListener;
@@ -22,6 +20,7 @@ import com.jonas.agile.devleadtool.component.dialog.PlannerListener;
 import com.jonas.agile.devleadtool.component.dialog.PlannerListeners;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
+import com.jonas.agile.devleadtool.component.frame.main.MyFrame;
 import com.jonas.agile.devleadtool.component.listener.DaoListener;
 import com.jonas.agile.devleadtool.component.listener.MainFrameListener;
 import com.jonas.agile.devleadtool.data.DaoListenerEvent;
@@ -36,8 +35,11 @@ public class DevLeadTool {
    private PlannerDAOExcelImpl plannerDAO;
    private PlannerHelper helper;
    private JMenu windowMenu;
+   private JFrame frame;
 
-   public DevLeadTool() {
+   @Inject
+   public DevLeadTool(MyFrame frame) {
+      this.frame = frame;
    }
 
    private JMenu createFileMenu(String title, JMenuItem[] menuItemList) {
@@ -82,7 +84,6 @@ public class DevLeadTool {
    }
 
    private void makeUI() {
-      JFrame frame = setLookAndFeel();
       helper = new PlannerHelper(frame, "Planner");
 
       MyDesktopPane desktop = new MyDesktopPane();
@@ -93,27 +94,12 @@ public class DevLeadTool {
       contentPanel.add(MyStatusBar.getInstance(), BorderLayout.SOUTH);
       frame.setContentPane(contentPanel);
 
-      frame.setSize(new Dimension(1200, 900));
-
       SwingUtil.sizeFrameRelativeToScreen(frame, 20, 55);
       SwingUtil.centreWindowWithHeightOffset(frame, 55);
 
       frame.setVisible(true);
 
       wireListeners(frame);
-   }
-
-   private JFrame setLookAndFeel() {
-      JFrame frame = new JFrame("Jonas' Sprint Manager");
-      try {
-         String laf = UIManager.getCrossPlatformLookAndFeelClassName();
-         laf = UIManager.getSystemLookAndFeelClassName();
-         UIManager.setLookAndFeel(laf);
-      } catch (Exception e) {
-      }
-      JFrame.setDefaultLookAndFeelDecorated(true);
-      JDialog.setDefaultLookAndFeelDecorated(true);
-      return frame;
    }
 
    public void start() {
