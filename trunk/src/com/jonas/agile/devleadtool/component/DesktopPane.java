@@ -3,9 +3,9 @@ package com.jonas.agile.devleadtool.component;
 import java.awt.Color;
 import javax.swing.JDesktopPane;
 
-public class MyDesktopPane extends JDesktopPane {
+public class DesktopPane extends JDesktopPane {
 
-	public MyDesktopPane() {
+	public DesktopPane() {
 		super();
 		setBackground(new Color(188, 218, 241));
 	}

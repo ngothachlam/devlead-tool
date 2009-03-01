@@ -12,7 +12,6 @@ import com.jonas.common.logging.MyLogger;
 public class SavePlannerDialog extends JFileChooser {
 
    private final PlannerDAO dao;
-
    private Logger log = MyLogger.getLogger(SavePlannerDialog.class);
    private final JFrame parent;
    public SavePlannerDialog(PlannerDAO dao, JFrame parent) {

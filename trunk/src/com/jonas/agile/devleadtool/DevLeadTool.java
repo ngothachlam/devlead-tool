@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import com.google.inject.Inject;
-import com.jonas.agile.devleadtool.component.MyDesktopPane;
+import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.SaveKeyListener;
 import com.jonas.agile.devleadtool.component.dialog.LoadPlannerDialog;
@@ -20,7 +20,7 @@ import com.jonas.agile.devleadtool.component.dialog.PlannerListener;
 import com.jonas.agile.devleadtool.component.dialog.PlannerListeners;
 import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
-import com.jonas.agile.devleadtool.component.frame.main.MyFrame;
+import com.jonas.agile.devleadtool.component.frame.main.MainFrame;
 import com.jonas.agile.devleadtool.component.listener.DaoListener;
 import com.jonas.agile.devleadtool.component.listener.MainFrameListener;
 import com.jonas.agile.devleadtool.data.DaoListenerEvent;
@@ -32,14 +32,18 @@ import com.jonas.common.logging.MyLogger;
 public class DevLeadTool {
 
    private Logger log = MyLogger.getLogger(DevLeadTool.class);
-   private PlannerDAOExcelImpl plannerDAO;
-   private PlannerHelper helper;
+   private final PlannerDAOExcelImpl plannerDAO;
+   private final PlannerHelper helper;
    private JMenu windowMenu;
-   private JFrame frame;
+   private final JFrame frame;
+   private final DesktopPane desktop;
 
    @Inject
-   public DevLeadTool(MyFrame frame) {
+   public DevLeadTool(MainFrame frame, DesktopPane desktop, PlannerDAOExcelImpl plannerDAO, PlannerHelper helper) {
+      this.helper = helper;
       this.frame = frame;
+      this.desktop = desktop;
+      this.plannerDAO = plannerDAO;
    }
 
    private JMenu createFileMenu(String title, JMenuItem[] menuItemList) {
@@ -50,7 +54,7 @@ public class DevLeadTool {
       return fileMenu;
    }
 
-   private JMenuBar createMenuBar(final JFrame frame, MyDesktopPane desktop) {
+   private JMenuBar createMenuBar() {
       JMenu fileMenuFile = createFileMenu("File", getFileMenuItemArray(frame, desktop));
       windowMenu = new JMenu("Windows");
       JMenuBar menuBar = new JMenuBar();
@@ -65,8 +69,7 @@ public class DevLeadTool {
       return menuItem;
    }
 
-   private JMenuItem[] getFileMenuItemArray(final JFrame frame, final MyDesktopPane desktop) {
-      plannerDAO = new PlannerDAOExcelImpl();
+   private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
       SavePlannerDialog savePlannerDialog = new SavePlannerDialog(plannerDAO, frame);
       SaveKeyListener saveKeyListener = new SaveKeyListener(helper, savePlannerDialog);
       NewPlannerDialog newPlannerDialog = new NewPlannerDialog(desktop, helper, plannerDAO, savePlannerDialog, saveKeyListener);
@@ -84,22 +87,18 @@ public class DevLeadTool {
    }
 
    private void makeUI() {
-      helper = new PlannerHelper(frame, "Planner");
-
-      MyDesktopPane desktop = new MyDesktopPane();
       JPanel contentPanel = new MyPanel(new BorderLayout());
 
-      frame.setJMenuBar(createMenuBar(frame, desktop));
+      frame.setJMenuBar(createMenuBar());
       contentPanel.add(desktop, BorderLayout.CENTER);
       contentPanel.add(MyStatusBar.getInstance(), BorderLayout.SOUTH);
       frame.setContentPane(contentPanel);
 
       SwingUtil.sizeFrameRelativeToScreen(frame, 20, 55);
       SwingUtil.centreWindowWithHeightOffset(frame, 55);
+      wireListeners(frame);
 
       frame.setVisible(true);
-
-      wireListeners(frame);
    }
 
    public void start() {
