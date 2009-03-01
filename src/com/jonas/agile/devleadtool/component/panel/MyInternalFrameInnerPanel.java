@@ -64,13 +64,14 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    private MyTable boardTable;
    private MyTable jiraTable;
 
-   public MyInternalFrameInnerPanel(PlannerHelper client) {
+   private JiraParseListenerImpl jiraParseListener;
+
+   public MyInternalFrameInnerPanel(PlannerHelper client) throws SAXException {
       this(client, null, null);
    }
 
-   public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel) {
+   public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel) throws SAXException {
       super(new BorderLayout());
-      try {
          boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
          jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 
@@ -79,19 +80,17 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          DnDTreeModel model = new DnDTreeModel("LLU");
          SprintTree tree = new SprintTree(model);
 
-         DnDTreeBuilder dnDTreeBuilder = createDnDTreeBuilder(helper.getParentFrame(), tree);
+         DnDTreeBuilder dnDTreeBuilder = createDnDTreeBuilder(helper.getParentFrame());
          makeContent(boardModel, tree, helper, jiraModel, dnDTreeBuilder);
 
          setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
-         wireUpListeners(boardModel, jiraModel);
-      } catch (SAXException e) {
-         e.printStackTrace();
-      }
+         wireUpListeners(boardModel, jiraModel, tree);
    }
 
-   private DnDTreeBuilder createDnDTreeBuilder(JFrame parentFrame, SprintTree tree) throws SAXException {
+   private DnDTreeBuilder createDnDTreeBuilder(JFrame parentFrame) throws SAXException{
       JiraSaxHandler saxHandler = new JiraSaxHandler();
-      saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, MAX_RESULT, parentFrame));
+      jiraParseListener = new JiraParseListenerImpl(MAX_RESULT, parentFrame);
+      saxHandler.addJiraParseListener(jiraParseListener);
 
       XmlParser parser = new XmlParserImpl(saxHandler, MAX_RESULT);
       return new DnDTreeBuilder(parser);
@@ -198,7 +197,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       jiraModel.addTableModelListener(new FireUpdateOnOtherTableWhenUpdatedListener(boardTable));
    }
 
-   public void wireUpListeners(BoardTableModel boardModel, JiraTableModel jiraModel) {
+   public void wireUpListeners(BoardTableModel boardModel, JiraTableModel jiraModel, SprintTree tree) {
       MyTable boardTable = boardPanel.getTable();
       MyTable jiraTable = jiraPanel.getTable();
       SprintTree sprintTree = sprintPanel.getTree();
@@ -208,6 +207,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       setSprintDataListener(sprintTree, boardTable, jiraTable);
 
       editableCheckBox.addActionListener(new EditableListener());
+      
+      jiraParseListener.setTree(tree);
    }
 
    private final class FireUpdateOnOtherTableWhenUpdatedListener implements TableModelListener {

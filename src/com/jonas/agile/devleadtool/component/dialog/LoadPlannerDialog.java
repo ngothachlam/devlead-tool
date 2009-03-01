@@ -55,28 +55,11 @@ public class LoadPlannerDialog extends JFileChooser {
          final File xlsFile = getSelectedFile();
 
          dao.setXlsFile(xlsFile);
-
-         SwingWorker<CombinedModelDTO, Object> swingWorker = new SwingWorker<CombinedModelDTO, Object>() {
+         
+         SwingWorker<CombinedModelDTO, Object> swingWorker = new AbstractInternalFrameCreatorSwingthread(helper, dao, savePlannerDialog, saveKeyListener, desktop) {
             @Override
             protected CombinedModelDTO doInBackground() throws Exception {
                return dao.loadModels();
-            }
-
-            @Override
-            protected void done() {
-               log.trace("done");
-               try {
-                  CombinedModelDTO dto = get();
-                  if (dto != null) {
-                     MyInternalFrameInnerPanel internalFrameTabPanel = new MyInternalFrameInnerPanel(helper, dto.getBoardModel(), dto.getJiraModel());
-                     MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog, saveKeyListener, desktop);
-                     internalFrame.setSaveFile(xlsFile);
-                  }
-                  super.done();
-               } catch (Throwable e) {
-                  AlertDialog.alertException(helper.getParentFrame(), e);
-                  e.printStackTrace();
-               }
             }
          };
 

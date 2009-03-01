@@ -20,7 +20,7 @@ public class DnDTreePanelTestScreen {
          DnDTreeModel model = new DnDTreeModel("LLU");
          SprintTree tree = new SprintTree(model);
          JiraSaxHandler saxHandler = new JiraSaxHandler();
-         saxHandler.addJiraParseListener(new JiraParseListenerImpl(tree, 100, frame));
+         saxHandler.addJiraParseListener(new JiraParseListenerImpl(100, frame));
 
           XmlParser parser = new XmlParserImpl(saxHandler, 100);
 //         XmlParser parser = new XmlParserLargeMock(saxHandler);
