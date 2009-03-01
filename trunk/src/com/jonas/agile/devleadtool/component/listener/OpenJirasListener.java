@@ -35,14 +35,12 @@ public class OpenJirasListener implements ActionListener {
          String jira = (String) table.getValueAt(Column.Jira, rows[j]);
          String jira_url = null;
          try {
-            jira_url = helper.getJiraUrl(jira);
+            jira_url = PlannerHelper.getJiraUrl(jira);
             try {
                HyperLinker.displayURL(jira_url + "/browse/" + jira);
             } catch (URISyntaxException e1) {
-               // TODO Auto-generated catch block
                e1.printStackTrace();
             } catch (IOException e1) {
-               // TODO Auto-generated catch block
                e1.printStackTrace();
             }
          } catch (NotJiraException e1) {
