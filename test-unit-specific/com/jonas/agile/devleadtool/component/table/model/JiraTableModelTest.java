@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Vector;
+import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.common.SwingUtil;
@@ -100,6 +101,21 @@ public class JiraTableModelTest extends JonasTestCase {
    }
    
    
+   public void testShouldHiglightIncorrectSprintOk(){
+      jiraModel = new JiraTableModel();
+      assertTrue(jiraModel.isSprintOk(BoardStatusValue.UnKnown, null));
+      assertTrue(jiraModel.isSprintOk(BoardStatusValue.NA, null));
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Open, null));
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Bug, null));
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Parked, null));
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.InDevProgress, null));
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Resolved, null));
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.InQAProgress, null));
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Complete, null));
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.ForShowCase, null));
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Approved, null));
+   }
+   
    public void testShouldCompareFixversionsOk(){
       jiraModel = new JiraTableModel();
       ArrayList<String> jiraFixVersion = new ArrayList<String>();
@@ -128,6 +144,11 @@ public class JiraTableModelTest extends JonasTestCase {
       assertEquals(true, jiraModel.isJiraNumberOk(null, "0"));
       assertEquals(true, jiraModel.isJiraNumberOk(null, "0.0"));
       assertEquals(false, jiraModel.isJiraNumberOk(null, "0.1"));
+      
+      assertEquals(true, jiraModel.isJiraNumberOk("0", ""));
+      assertEquals(true, jiraModel.isJiraNumberOk("0", "0"));
+      assertEquals(true, jiraModel.isJiraNumberOk("0", "0.0"));
+      assertEquals(false, jiraModel.isJiraNumberOk("0", "0.1"));
 
       assertEquals(false, jiraModel.isJiraNumberOk("1.0", null));
       assertEquals(false, jiraModel.isJiraNumberOk("1.0", ""));
