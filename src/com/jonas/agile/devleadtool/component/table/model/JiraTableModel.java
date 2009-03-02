@@ -12,7 +12,7 @@ import com.jonas.common.logging.MyLogger;
 
 public class JiraTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Type, Column.J_Sprint, Column.J_FixVersion,
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Type, Column.J_Sprint, Column.J_Project, Column.J_FixVersion,
          Column.J_Delivery, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent };
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
@@ -71,6 +71,10 @@ public class JiraTableModel extends MyTableModel {
          if(!isSprintOk(boardModel.getValueAt(Column.BoardStatus, jiraRowInBoardModel), value))
             return SwingUtil.cellRed;
          break;
+      case J_Project:
+         if(!isProjectOk(value))
+            return SwingUtil.cellRed;
+         break;
       case J_Dev_Estimate:
          if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, jiraRowInBoardModel), value))
             return SwingUtil.cellRed;
@@ -83,8 +87,12 @@ public class JiraTableModel extends MyTableModel {
       return null;
    }
 
+   boolean isProjectOk(Object value) {
+      return value != null && value.toString().trim().length() != 0;
+   }
+
    boolean isSprintOk(Object boardStatus, Object value) {
-      return false;
+      return true;
    }
 
    boolean isFixVersionOk(Object boardValue, Object jiraValue) {
