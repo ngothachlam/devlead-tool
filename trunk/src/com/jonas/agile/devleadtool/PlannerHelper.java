@@ -7,7 +7,10 @@ import javax.swing.JFrame;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
+import com.jonas.agile.devleadtool.component.frame.main.MainFrame;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
@@ -28,9 +31,14 @@ public class PlannerHelper {
 
    private String title;
 
-   public PlannerHelper(JFrame frame, String title) {
+   public PlannerHelper(JFrame frame, String string) {
       this.frame = frame;
       this.title = title;
+   }
+   
+   @Inject
+   public PlannerHelper(MainFrame frame, @Named("plannerHelper.title") String title) {
+      this((JFrame)frame, title);
    }
 
    public static String getJiraUrl(String jira) throws NotJiraException {

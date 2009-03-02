@@ -9,6 +9,7 @@ import java.util.Properties;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.name.Names;
+import com.jonas.agile.devleadtool.component.frame.main.MainFrame;
 
 public class DevLeadToolModule extends AbstractModule {
 
@@ -16,6 +17,9 @@ public class DevLeadToolModule extends AbstractModule {
    protected void configure() {
       try {
          loadProperties(super.binder());
+         
+         bind(MainFrame.class).asEagerSingleton();
+         
       } catch (FileNotFoundException e) {
          e.printStackTrace();
       }
