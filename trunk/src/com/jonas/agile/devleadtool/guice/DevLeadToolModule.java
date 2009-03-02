@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool;
+package com.jonas.agile.devleadtool.guice;
 
 import java.io.File;
 import java.io.FileInputStream;
