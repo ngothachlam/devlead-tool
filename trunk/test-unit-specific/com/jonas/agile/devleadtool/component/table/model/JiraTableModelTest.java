@@ -37,6 +37,7 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.Description);
       header.add(Column.J_Type);
       header.add(Column.J_Sprint);
+      header.add(Column.J_Project);
       header.add(Column.J_FixVersion);
       header.add(Column.J_Delivery);
       header.add(Column.J_Resolution);
@@ -45,7 +46,7 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.J_Dev_Spent);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      String[] content = new String[] { "Jira", "Description", "J_Type", "J_Sprint", "J_FixVersion", "J_Delivery", "J_Resolution",
+      String[] content = new String[] { "Jira", "Description", "J_Type", "J_Sprint", "J_Project", "J_FixVersion", "J_Delivery", "J_Resolution",
             "J_BuildNo", "J_Dev_Estimate", "J_Dev_Spent" };
       contents.add(getTestRowVector(content, 0));
       contents.add(getTestRowVector(content, 1));
@@ -53,7 +54,6 @@ public class JiraTableModelTest extends JonasTestCase {
       jiraModel = new JiraTableModel(contents, header);
 
       assertEquals(2, jiraModel.getRowCount());
-      assertEquals(10, jiraModel.getColumnCount());
       assertRow(getTestRowArray(content, 0), jiraModel, 0);
       assertRow(getTestRowArray(content, 1), jiraModel, 1);
    }
@@ -101,7 +101,7 @@ public class JiraTableModelTest extends JonasTestCase {
    }
    
    
-   public void testShouldHiglightIncorrectSprintOk(){
+   public void testShouldHiglightIncorrectSprints(){
       jiraModel = new JiraTableModel();
       assertTrue(jiraModel.isSprintOk(BoardStatusValue.UnKnown, null));
       assertTrue(jiraModel.isSprintOk(BoardStatusValue.NA, null));
@@ -114,6 +114,14 @@ public class JiraTableModelTest extends JonasTestCase {
       assertFalse(jiraModel.isSprintOk(BoardStatusValue.Complete, null));
       assertFalse(jiraModel.isSprintOk(BoardStatusValue.ForShowCase, null));
       assertFalse(jiraModel.isSprintOk(BoardStatusValue.Approved, null));
+   }
+   
+   public void testShouldHiglightIncorrectProjects(){
+      jiraModel = new JiraTableModel();
+      assertFalse(jiraModel.isProjectOk( null));
+      assertFalse(jiraModel.isProjectOk(""));
+      assertFalse(jiraModel.isProjectOk("   "));
+      assertTrue(jiraModel.isProjectOk("project"));
    }
    
    public void testShouldCompareFixversionsOk(){

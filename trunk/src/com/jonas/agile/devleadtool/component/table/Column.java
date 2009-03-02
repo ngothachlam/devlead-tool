@@ -56,6 +56,7 @@ public enum Column {
    J_Dev_Estimate(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
    J_Dev_Spent(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
    J_Sprint(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
+   J_Project(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
    J_Delivery(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.No),
 
    // Integer
