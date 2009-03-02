@@ -2,10 +2,7 @@ package com.jonas.testHelpers;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-
 import com.jonas.agile.devleadtool.component.frame.main.MainFrame;
 import com.jonas.agile.devleadtool.data.SystemProperties;
 
@@ -14,7 +11,7 @@ public class TryoutTester {
 	private static MainFrame frame;
 
 	public static void viewPanel(JPanel panel) {
-		frame = new MainFrame();
+		frame = new MainFrame("Tryout Tester Frame");
 		frame.setContentPane(panel);
 		frame.setSize(800, 400);
 		frame.addWindowListener(new WindowAdapter() {
@@ -28,7 +25,7 @@ public class TryoutTester {
 	}
 
 	public static MainFrame getFrame() {
-		frame = new MainFrame();
+		frame = new MainFrame("Tryout Tester Frame");
 		JPanel contentPanel = new JPanel();
 		frame.setContentPane(contentPanel);
 		frame.setSize(800, 400);

@@ -31,14 +31,13 @@ public class PlannerHelper {
 
    private String title;
 
-   public PlannerHelper(JFrame frame, String string) {
-      this.frame = frame;
-      this.title = title;
+   public PlannerHelper() {
    }
    
    @Inject
    public PlannerHelper(MainFrame frame, @Named("plannerHelper.title") String title) {
-      this((JFrame)frame, title);
+      this.frame = frame;
+      this.title = title;
    }
 
    public static String getJiraUrl(String jira) throws NotJiraException {

@@ -152,7 +152,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    public void makeContent(MyTableModel boardModel, SprintTree tree, PlannerHelper helper, MyTableModel jiraModel, DnDTreeBuilder dndTreeBuilder) {
       boardPanel = new BoardPanel(boardModel);
       sprintPanel = new DnDTreePanel(tree, helper.getParentFrame());
-      jiraPanel = new JiraPanel(helper, jiraModel);
+      jiraPanel = new JiraPanel(jiraModel);
 
       JPanel jiraMainPanel = new JPanel(new BorderLayout());
       jiraMainPanel.add(jiraPanel, BorderLayout.CENTER);

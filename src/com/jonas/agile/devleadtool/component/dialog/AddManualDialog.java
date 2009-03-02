@@ -24,7 +24,6 @@ import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
-import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -187,11 +186,11 @@ class AddFromRadioButtons extends AddNewRowActionListener {
       if (table == null)
          return;
       super.setTable(table);
-      super.actionPerformed(e);
+      addJiraToTable();
    }
 
    @Override
-   public void jiraAdded(String jira, MyTable table, String estimate, String actual, TableModelListenerAlerter tableModelListenerAlerter) {
+   public void jiraAdded(String jira, MyTable table, String estimate, String actual) {
       if (table.doesJiraExist(jira)) {
          List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 
