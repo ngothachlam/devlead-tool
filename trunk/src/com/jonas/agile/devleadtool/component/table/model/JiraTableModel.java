@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Vector;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.CalculatorHelper;
 import com.jonas.common.SwingUtil;
@@ -66,6 +67,10 @@ public class JiraTableModel extends MyTableModel {
          if (!isFixVersionOk(boardModel.getValueAt(Column.Release, jiraRowInBoardModel), value))
             return SwingUtil.cellRed;
          break;
+      case J_Sprint:
+         if(!isSprintOk(boardModel.getValueAt(Column.BoardStatus, jiraRowInBoardModel), value))
+            return SwingUtil.cellRed;
+         break;
       case J_Dev_Estimate:
          if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, jiraRowInBoardModel), value))
             return SwingUtil.cellRed;
@@ -76,6 +81,10 @@ public class JiraTableModel extends MyTableModel {
          break;
       }
       return null;
+   }
+
+   boolean isSprintOk(Object boardStatus, Object value) {
+      return false;
    }
 
    boolean isFixVersionOk(Object boardValue, Object jiraValue) {

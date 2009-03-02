@@ -9,7 +9,8 @@ import java.util.List;
 public enum Column {
    // String Defaults
    Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-      public Object parse(String cellContents) {
+      
+      public String parse(String cellContents) {
          if (cellContents == null)
             return null;
          return cellContents.toUpperCase();
@@ -27,7 +28,7 @@ public enum Column {
    Note(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
    Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
    BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-      public Object parse(String cellContents) {
+      public BoardStatusValue parse(String cellContents) {
          return BoardStatusValue.get(cellContents);
       }
    },
@@ -59,7 +60,7 @@ public enum Column {
 
    // Integer
    prio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes) {
-      public Object parse(String cellContents) {
+      public Integer parse(String cellContents) {
          if (cellContents == null || cellContents.trim().length() == 0)
             return -1;
          // we do parse a double initially as Cell's in spreadsheet (xls) will become 10.0 - not 10, which will otherwise result in numberformat
@@ -70,7 +71,7 @@ public enum Column {
 
    // Boolean Defaults
    isParked(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-      public Object parse(String cellContents) {
+      public Boolean parse(String cellContents) {
          return Boolean.parseBoolean(cellContents);
       }
    };
