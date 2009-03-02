@@ -6,14 +6,15 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import com.jonas.agile.devleadtool.component.frame.main.MainFrame;
 import com.jonas.agile.devleadtool.data.SystemProperties;
 
 public class TryoutTester {
 
-	private static JFrame frame;
+	private static MainFrame frame;
 
 	public static void viewPanel(JPanel panel) {
-		frame = new JFrame();
+		frame = new MainFrame();
 		frame.setContentPane(panel);
 		frame.setSize(800, 400);
 		frame.addWindowListener(new WindowAdapter() {
@@ -26,8 +27,8 @@ public class TryoutTester {
 		frame.setVisible(true);
 	}
 
-	public static JFrame getFrame() {
-		frame = new JFrame();
+	public static MainFrame getFrame() {
+		frame = new MainFrame();
 		JPanel contentPanel = new JPanel();
 		frame.setContentPane(contentPanel);
 		frame.setSize(800, 400);
