@@ -27,7 +27,7 @@ public abstract class AddNewRowActionListener implements ActionListener {
       parser = new MyStringParser();
    }
 
-   public void actionPerformed(ActionEvent e) {
+   public void addJiraToTable() {
       TableModelListenerAlerter tableModelListenerAlerter = table.getTableModelListenerAlerter();
       synchronized (tableModelListenerAlerter) {
          tableModelListenerAlerter.activate();
@@ -48,7 +48,7 @@ public abstract class AddNewRowActionListener implements ActionListener {
                table.addJira(jiraIssue);
             }
             log.debug("added jira " + jiraString);
-            jiraAdded(jiraString, table, estimate, actual, tableModelListenerAlerter);
+            jiraAdded(jiraString, table, estimate, actual);
          }
          tableModelListenerAlerter.deActivateAndAlert();
       }
@@ -93,13 +93,11 @@ public abstract class AddNewRowActionListener implements ActionListener {
    }
 
    /**
-    * Overide as required
-    * 
-    * @param actual
+    * gets called after the jira has been added to the table. 
     * @param estimate
-    * @param tableModelListenerAlerter 
+    * @param actual
     */
-   public abstract void jiraAdded(String jiraStringm, MyTable table, String estimate, String actual, TableModelListenerAlerter tableModelListenerAlerter);
+   public abstract void jiraAdded(String jiraKey, MyTable table, String estimate, String actual);
 
    public void setTable(MyTable table) {
       this.table = table;

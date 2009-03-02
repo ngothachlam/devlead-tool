@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.component.listener;
 
+import java.awt.event.ActionEvent;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.jira.JiraIssue;
 import junit.framework.TestCase;
@@ -24,9 +25,13 @@ public class AddNewRowActionListenerTest extends TestCase {
          }
 
          @Override
-         public void jiraAdded(String jiraStringm, MyTable table, String estimate, String actual,
-               TableModelListenerAlerter tableModelListenerAlerter) {
+         public void jiraAdded(String jiraStringm, MyTable table, String estimate, String actual) {
             return;
+         }
+
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            addJiraToTable();
          }
 		};
    }
