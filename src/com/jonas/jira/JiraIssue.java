@@ -12,6 +12,7 @@ public class JiraIssue {
    private String deliveryDate;
    private String estimate;
    private List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
+   private List<String> fixVersionsAsStrings = new ArrayList<String>();
    private final String key;
    private int lluListPriority;
    private String project;
@@ -23,8 +24,6 @@ public class JiraIssue {
    private final String summary;
    private final String type;
 
-   
-   
    public JiraIssue(String key, String release) {
       this(key.toUpperCase(), "", "", "", "");
       this.release = release;
@@ -39,7 +38,8 @@ public class JiraIssue {
       this.type = type;
    }
 
-   public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate, int listPrio, String sprint, String project) {
+   public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate, int listPrio,
+         String sprint, String project) {
       this(key, summary, status, resolution, type);
       this.buildNo = buildNo;
       this.estimate = estimate;
@@ -49,8 +49,10 @@ public class JiraIssue {
    }
 
    public void addFixVersions(JiraVersion fixVersion) {
-      if (fixVersion != null)
+      if (fixVersion != null) {
          fixVersions.add(fixVersion);
+         fixVersionsAsStrings.add(fixVersion.toString());
+      }
    }
 
    @Override
@@ -128,6 +130,10 @@ public class JiraIssue {
       return fixVersions;
    }
 
+   public List<String> getFixVersionsAsStrings() {
+      return fixVersionsAsStrings;
+   }
+
    public String getKey() {
       return key;
    }
@@ -167,6 +173,7 @@ public class JiraIssue {
    public String getType() {
       return type;
    }
+
    @Override
    public int hashCode() {
       final int prime = 31;

@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.table.model;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
@@ -12,8 +13,8 @@ import com.jonas.common.logging.MyLogger;
 
 public class JiraTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Type, Column.J_Sprint, Column.J_Project, Column.J_FixVersion,
-         Column.J_Delivery, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Type, Column.J_Sprint, Column.J_Project,
+         Column.J_FixVersion, Column.J_Delivery, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent };
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
    private int tempRow = -1;
@@ -68,11 +69,11 @@ public class JiraTableModel extends MyTableModel {
             return SwingUtil.cellRed;
          break;
       case J_Sprint:
-         if(!isSprintOk(boardModel.getValueAt(Column.BoardStatus, jiraRowInBoardModel), value))
+         if (!isSprintOk(boardModel.getValueAt(Column.BoardStatus, jiraRowInBoardModel), value))
             return SwingUtil.cellRed;
          break;
       case J_Project:
-         if(!isProjectOk(value))
+         if (!isProjectOk(value))
             return SwingUtil.cellRed;
          break;
       case J_Dev_Estimate:
@@ -96,17 +97,32 @@ public class JiraTableModel extends MyTableModel {
    }
 
    boolean isFixVersionOk(Object boardValue, Object jiraValue) {
-      ArrayList<String> jiraFixVersions = (ArrayList<String>) jiraValue;
-      String[] boardFixVersions = ((String) boardValue).split("[ \t]*,[ \t]*");
+      log.debug("boardValue: \"" + boardValue + "\" jiraValue: " + jiraValue);
+      if (!(jiraValue instanceof List)) {
+         log.warn("jiraValue: " + jiraValue + " is not of List type!!");
+         return false;
+      }
+      List<Object> jiraFixVersions = (List<Object>) jiraValue;
+      String boardValueAsString = (String) boardValue;
+
+      if (boardValueAsString.trim().length() == 0 && jiraFixVersions.size() == 0)
+         return true;
+
+      String[] boardFixVersions = boardValueAsString.split("[ \t]*,[ \t]*");
 
       if (boardFixVersions.length != jiraFixVersions.size())
          return false;
+      for (Object jiraFixVersion : jiraFixVersions) {
+         log.debug("jiraFixVersion: \"" + jiraFixVersion + "\" (" + jiraFixVersion.getClass() + ")");
+      }
       for (String boardFixVersion : boardFixVersions) {
-         if (!jiraFixVersions.contains(boardFixVersion)) {
-            return false;
+         log.debug("boardFixVersion: \"" + boardFixVersion + "\" (" + boardFixVersion.getClass() + ")");
+         if (jiraFixVersions.contains(boardFixVersion)) {
+            log.debug("jiraFixVersions does not contain the boardFixVersion");
+            return true;
          }
       }
-      return true;
+      return false;
    }
 
    boolean isJiraNumberOk(Object boardValue, Object jiraValue) {

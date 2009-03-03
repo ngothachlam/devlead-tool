@@ -23,6 +23,8 @@ public class JiraSaxHandler extends DefaultHandler {
    private static final String SPRINT = "Sprint";
    private static final String PROJECT = "LLU Projects";
 
+   private ElementDTO elementDTO = new ElementDTO();
+   
    private JiraDTO jira;
    private List<JiraParseListener> jiraParseListeners = new ArrayList<JiraParseListener>();
    private int nodeCount;
@@ -127,6 +129,9 @@ public class JiraSaxHandler extends DefaultHandler {
 
    public void clearAllListeners() {
       jiraParseListeners.clear();
+   }
+   
+   private class ElementDTO{
    }
 
 }
