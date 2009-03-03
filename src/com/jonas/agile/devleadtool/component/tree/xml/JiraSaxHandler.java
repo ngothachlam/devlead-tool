@@ -21,13 +21,14 @@ public class JiraSaxHandler extends DefaultHandler {
    private static final String ITEM = "item";
    private static final String KEY = "key";
    private static final String SPRINT = "Sprint";
-   private static final String PROJECT = "LLU Project";
+   private static final String PROJECT = "LLU Projects";
 
    private JiraDTO jira;
    private List<JiraParseListener> jiraParseListeners = new ArrayList<JiraParseListener>();
    private int nodeCount;
    private StringBuffer sb = new StringBuffer();
    private boolean sprintNextValue = false;
+   private boolean projectNextValue = false;
    private Logger log = MyLogger.getLogger(JiraSaxHandler.class);
    private String element;
 
@@ -56,6 +57,7 @@ public class JiraSaxHandler extends DefaultHandler {
 
    public void endElement(String uri, String name, String qName) {
       String value = sb.toString().trim();
+      log.debug("uri: " + uri + " name: " + name + " qName: " + qName + " value: " + value);
       if (KEY.equals(qName)) {
          log.debug("JiraKey: " + value);
          jira.setKey(value);
@@ -73,11 +75,15 @@ public class JiraSaxHandler extends DefaultHandler {
       } else if (CUSTOMFIELDVALUE.equals(qName) && sprintNextValue) {
          sprintNextValue = false;
          jira.setSprint(value);
+      } else if (PROJECT.equals(value) && CUSTOMFIELDNAME.equals(element)) {
+         projectNextValue = true;
+      } else if (CUSTOMFIELDVALUE.equals(qName) && projectNextValue) {
+         projectNextValue = false;
+         jira.setProject(value);
       } else if (ITEM.equals(qName)) {
          notifyJiraParsed(jira);
       }
       sb.delete(0, sb.length());
-      throw new RuntimeException("need to get the project onto here!");
    }
 
    private void notifyJiraParsed(JiraDTO jira) {
