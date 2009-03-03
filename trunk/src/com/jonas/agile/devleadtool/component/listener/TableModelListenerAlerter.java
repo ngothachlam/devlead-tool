@@ -51,7 +51,13 @@ public class TableModelListenerAlerter implements TableModelListener {
    }
 
    public void deActivateAndAlert() {
-      AlertDialog.alertMessage(parent, "Jiras Added", "The follow jiras were added or amended", sb.toString());
+      System.out.println("adding focusable on close panel! 1");
+      AlertDialog dialog = AlertDialog.alertMessage(parent, "Jiras Added", "The follow jiras were added or amended", sb.toString());
+//      if (focusableOnClosePanel != null) {
+//         System.out.println("adding focusable on close panel! 2");
+//         focusableOnClosePanel.setVisible(false);
+//         focusableOnClosePanel.setVisible(true);
+//      }
       reset();
    }
 
@@ -64,5 +70,6 @@ public class TableModelListenerAlerter implements TableModelListener {
    public void setParent(Frame frame) {
       this.parent = frame;
    }
+
 
 }

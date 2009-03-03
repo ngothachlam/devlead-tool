@@ -19,7 +19,7 @@ public class AddNewRowActionListenerTest extends TestCase {
 	}
 
    private AddNewRowActionListener getListener() {
-      return new AddNewRowActionListener(null, null, null){
+      return new AddNewRowActionListener(null, null, null, null){
          public JiraIssue getJiraIssue(String jira) {
             return null;
          }

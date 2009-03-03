@@ -72,22 +72,22 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel) throws SAXException {
       super(new BorderLayout());
-         boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
-         jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
+      boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
+      jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 
-         jiraModel.setBoardModel(boardModel);
+      jiraModel.setBoardModel(boardModel);
 
-         DnDTreeModel model = new DnDTreeModel("LLU");
-         SprintTree tree = new SprintTree(model);
+      DnDTreeModel model = new DnDTreeModel("LLU");
+      SprintTree tree = new SprintTree(model);
 
-         DnDTreeBuilder dnDTreeBuilder = createDnDTreeBuilder(helper.getParentFrame());
-         makeContent(boardModel, tree, helper, jiraModel, dnDTreeBuilder);
+      DnDTreeBuilder dnDTreeBuilder = createDnDTreeBuilder(helper.getParentFrame());
+      makeContent(boardModel, tree, helper, jiraModel, dnDTreeBuilder);
 
-         setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
-         wireUpListeners(boardModel, jiraModel, tree);
+      setBorder(BorderFactory.createEmptyBorder(0, 2, 1, 0));
+      wireUpListeners(boardModel, jiraModel, tree);
    }
 
-   private DnDTreeBuilder createDnDTreeBuilder(JFrame parentFrame) throws SAXException{
+   private DnDTreeBuilder createDnDTreeBuilder(JFrame parentFrame) throws SAXException {
       JiraSaxHandler saxHandler = new JiraSaxHandler();
       jiraParseListener = new JiraParseListenerImpl(MAX_RESULT, parentFrame);
       saxHandler.addJiraParseListener(jiraParseListener);
@@ -164,7 +164,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       jiraTable = jiraPanel.getTable();
 
       TableModelListenerAlerter listener = new TableModelListenerAlerter();
-      listener.setParent(helper.getParentFrame());
       boardTable.setTableModelListenerAlerter(listener);
       jiraTable.setTableModelListenerAlerter(listener);
 
@@ -207,7 +206,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       setSprintDataListener(sprintTree, boardTable, jiraTable);
 
       editableCheckBox.addActionListener(new EditableListener());
-      
+
       jiraParseListener.setTree(tree);
    }
 
@@ -219,13 +218,15 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       }
 
       public void tableChanged(final TableModelEvent e) {
-         if (e.getType() == TableModelEvent.UPDATE) {
+         log.debug("source: " + e.getSource() + " target: " + targetTable);
+         if (e.getType() == TableModelEvent.UPDATE && e.getColumn() != TableModelEvent.ALL_COLUMNS) {
             SwingUtilities.invokeLater(new Runnable() {
                @Override
                public void run() {
                   for (int row = e.getFirstRow(); row <= e.getLastRow(); row++) {
                      final MyTableModel sourceAsModel = (MyTableModel) e.getSource();
                      String jira = (String) sourceAsModel.getValueAt(Column.Jira, row);
+                     log.debug("updated jira: " + jira);
                      targetTable.fireTableDataChangedForJira(jira);
                   }
                }

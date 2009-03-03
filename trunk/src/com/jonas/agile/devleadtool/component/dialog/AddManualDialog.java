@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -103,7 +104,7 @@ class AddManualPanel extends MyPanel {
 
       MyPanel buttonPanel = new MyPanel(new GridLayout(1, 2, 5, 5));
       buttonPanel.bordered();
-      AddFromRadioButtons addFromRadioButtons = new AddFromRadioButtons(group, jiraPrefix, jiraCommas, defaultRelease, statusCombo);
+      AddFromRadioButtons addFromRadioButtons = new AddFromRadioButtons(group, jiraPrefix, jiraCommas, defaultRelease, statusCombo, frame);
       this.addButton(buttonPanel, "Add", addFromRadioButtons);
       this.addButton(buttonPanel, "Close", new ActionListener() {
          @Override
@@ -114,6 +115,8 @@ class AddManualPanel extends MyPanel {
 
       this.add(panel, BorderLayout.CENTER);
       this.add(buttonPanel, BorderLayout.PAGE_END);
+      
+      setRequestFocusEnabled(true);
    }
 
    public void focusPrefix() {
@@ -165,8 +168,8 @@ class AddFromRadioButtons extends AddNewRowActionListener {
    private final JComboBox status;
 
    public AddFromRadioButtons(ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas, JTextComponent release,
-         JComboBox statusCombo) {
-      super(null, jiraPrefix, jiraCommas);
+         JComboBox statusCombo, Frame parentFrame) {
+      super(null, jiraPrefix, jiraCommas, parentFrame);
       this.group = group;
       this.release = release;
       this.status = statusCombo;

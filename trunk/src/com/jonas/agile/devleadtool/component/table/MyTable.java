@@ -36,17 +36,88 @@ import com.jonas.jira.JiraIssue;
 
 public class MyTable extends JTable {
 
+   private class MarkDelegator {
+      private boolean allowMarking;
+
+      private MarkDelegator() {
+      }
+
+      public void clearMarked() {
+         for (int i = 0; i < getRowCount(); i++) {
+            model.clearMarked();
+         }
+      }
+
+      public boolean isAllowMarking() {
+         return allowMarking;
+      }
+
+      private boolean isMarked(int row) {
+         if (allowMarking == false)
+            return false;
+         if (row >= getRowCount() || row == -1)
+            return false;
+         return model.isMarked(convertRowIndexToModel(row));
+      }
+
+      protected void mark(int row) {
+         model.mark(convertRowIndexToModel(row));
+      }
+
+      public void markSelected() {
+         int[] rows = getSelectedRows();
+         for (int row : rows) {
+            mark(row);
+         }
+      }
+
+      public void setAllowMarking(boolean allowMarking) {
+         this.allowMarking = allowMarking;
+      }
+
+      private void unMark(int row) {
+         model.unMark(convertRowIndexToModel(row));
+      }
+
+      private void unMarkSelected() {
+         int[] selectedRows = getSelectedRows();
+         for (int row : selectedRows) {
+            unMark(row);
+            fireTableRowsUpdated(row, row);
+         }
+      }
+
+   }
+   private final class MarkKeyListener extends KeyAdapter {
+      private final boolean allowMarking;
+
+      private MarkKeyListener(boolean allowMarking) {
+         this.allowMarking = allowMarking;
+      }
+
+      public void keyPressed(KeyEvent e) {
+         switch (e.getKeyCode()) {
+         case KeyEvent.VK_M:
+            if (allowMarking && e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
+               log.debug("backspace and mark");
+               markSelected();
+            }
+            break;
+         case KeyEvent.VK_ESCAPE:
+            clearSelection();
+            break;
+         }
+      }
+   }
    private CheckBoxTableCellEditor checkBoxEditor;
    private JiraCellEditor jiraEditor;
    private List<TableListener> listeners = new ArrayList<TableListener>();
    private Logger log = MyLogger.getLogger(MyTable.class);
    private MarkDelegator marker = new MarkDelegator();
-   private MyTableModel model;
-   private String title;
 
-   public MyTable(String title, MyTableModel modelModel, boolean allowMarking) {
-      this(title, (AbstractTableModel) modelModel, allowMarking);
-   }
+   private MyTableModel model;
+
+   private String title;
 
    private MyTable(String title, AbstractTableModel defaultTableModel, final boolean allowMarking) {
       super(defaultTableModel);
@@ -107,6 +178,10 @@ public class MyTable extends JTable {
       this(title, new DefaultTableModel(), allowMarking);
    }
 
+   public MyTable(String title, MyTableModel modelModel, boolean allowMarking) {
+      this(title, (AbstractTableModel) modelModel, allowMarking);
+   }
+   
    public void addCheckBoxEditorListener(CellEditorListener cellEditorListener) {
       checkBoxEditor.addCellEditorListener(cellEditorListener);
    }
@@ -114,7 +189,7 @@ public class MyTable extends JTable {
    public void addEmptyRow() {
       model.addEmptyRow();
    }
-   
+
    public void addJira(JiraIssue jiraIssue) {
       model.addJira(jiraIssue);
       markJira(jiraIssue.getKey());
@@ -161,6 +236,10 @@ public class MyTable extends JTable {
          model.fireTableRowsUpdated(convertRowIndexToModel(row), convertRowIndexToModel(row));
    }
 
+   protected void fireTableRowsUpdated(int rowEdited, int rowEdited2) {
+      model.fireTableRowsUpdated(convertRowIndexToModel(rowEdited), convertRowIndexToModel(rowEdited2));
+   }
+
    public Column getColumnEnum(int itsColumn) {
       return model.getColumn(convertColumnIndexToModel(itsColumn));
    }
@@ -180,6 +259,11 @@ public class MyTable extends JTable {
          return -1;
       }
       return convertRowIndexToView(modelRow);
+   }
+
+   private TableColumn getTableColumn(int colIndex) {
+      TableColumnModel tcm = getColumnModel();
+      return tcm.getColumn(colIndex);
    }
 
    public TableModelListenerAlerter getTableModelListenerAlerter() {
@@ -239,6 +323,12 @@ public class MyTable extends JTable {
       marker.markSelected();
    }
 
+   private void notifyAllListenersThatJiraWasRemoved(String jira) {
+      for (TableListener listener : listeners) {
+         listener.jiraRemoved(jira);
+      }
+   }
+
    public void removeSelectedRows() {
       int[] selectedRows = getSelectedRows(); // Need to store this before hand or the last selected row seems to disappear!
       for (int count = selectedRows.length - 1; count > -1; count--) {
@@ -267,6 +357,11 @@ public class MyTable extends JTable {
       tc.setCellRenderer(renderer);
    }
 
+   private void setComboEditors() {
+      JComboBox combo = new JComboBox(BoardStatusValue.values());
+      setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
+   }
+
    public void setModel(MyTableModel model) {
       this.model = model;
       super.setModel(model);
@@ -284,6 +379,10 @@ public class MyTable extends JTable {
       super.setValueAt(value, row, column);
    }
 
+   // public void fireTableDataChanged() {
+   // model.fireTableDataChanged();
+   // }
+
    public void setValueAt(Object value, String jira, Column column) {
       int row = getRowWithJira(jira.toUpperCase());
       if (row < 0) {
@@ -298,110 +397,10 @@ public class MyTable extends JTable {
    public void syncJira(JiraIssue jiraIssue, int tableRowSynced) {
       model.syncJira(jiraIssue, convertRowIndexToModel(tableRowSynced));
    }
-
    public void unMarkSelection() {
       marker.unMarkSelected();
    }
-
    public void unSort() {
       setAutoCreateRowSorter(true);
-   }
-
-   private TableColumn getTableColumn(int colIndex) {
-      TableColumnModel tcm = getColumnModel();
-      return tcm.getColumn(colIndex);
-   }
-
-   private void notifyAllListenersThatJiraWasRemoved(String jira) {
-      for (TableListener listener : listeners) {
-         listener.jiraRemoved(jira);
-      }
-   }
-
-   private void setComboEditors() {
-      JComboBox combo = new JComboBox(BoardStatusValue.values());
-      setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
-   }
-
-   // public void fireTableDataChanged() {
-   // model.fireTableDataChanged();
-   // }
-
-   protected void fireTableRowsUpdated(int rowEdited, int rowEdited2) {
-      model.fireTableRowsUpdated(convertRowIndexToModel(rowEdited), convertRowIndexToModel(rowEdited2));
-   }
-
-   private class MarkDelegator {
-      private boolean allowMarking;
-
-      private MarkDelegator() {
-      }
-
-      public void clearMarked() {
-         for (int i = 0; i < getRowCount(); i++) {
-            model.clearMarked();
-         }
-      }
-
-      public boolean isAllowMarking() {
-         return allowMarking;
-      }
-
-      public void markSelected() {
-         int[] rows = getSelectedRows();
-         for (int row : rows) {
-            mark(row);
-         }
-      }
-
-      public void setAllowMarking(boolean allowMarking) {
-         this.allowMarking = allowMarking;
-      }
-
-      private boolean isMarked(int row) {
-         if (allowMarking == false)
-            return false;
-         if (row >= getRowCount() || row == -1)
-            return false;
-         return model.isMarked(convertRowIndexToModel(row));
-      }
-
-      private void unMark(int row) {
-         model.unMark(convertRowIndexToModel(row));
-      }
-
-      private void unMarkSelected() {
-         int[] selectedRows = getSelectedRows();
-         for (int row : selectedRows) {
-            unMark(row);
-            fireTableRowsUpdated(row, row);
-         }
-      }
-
-      protected void mark(int row) {
-         model.mark(convertRowIndexToModel(row));
-      }
-
-   }
-   private final class MarkKeyListener extends KeyAdapter {
-      private final boolean allowMarking;
-
-      private MarkKeyListener(boolean allowMarking) {
-         this.allowMarking = allowMarking;
-      }
-
-      public void keyPressed(KeyEvent e) {
-         switch (e.getKeyCode()) {
-         case KeyEvent.VK_M:
-            if (allowMarking && e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
-               log.debug("backspace and mark");
-               markSelected();
-            }
-            break;
-         case KeyEvent.VK_ESCAPE:
-            clearSelection();
-            break;
-         }
-      }
    }
 }

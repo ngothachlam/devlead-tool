@@ -3,9 +3,10 @@
  */
 package com.jonas.agile.devleadtool.component.listener;
 
-import java.awt.event.ActionEvent;
+import java.awt.Frame;
 import java.awt.event.ActionListener;
 import java.util.List;
+import javax.swing.JPanel;
 import javax.swing.text.JTextComponent;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -19,11 +20,13 @@ public abstract class AddNewRowActionListener implements ActionListener {
    private Logger log = MyLogger.getLogger(AddNewRowActionListener.class);
    private MyStringParser parser;
    private MyTable table;
+   private final Frame parentFrame;
 
-   public AddNewRowActionListener(MyTable table, JTextComponent jiraPrefix, JTextComponent jiraCommas) {
+   public AddNewRowActionListener(MyTable table, JTextComponent jiraPrefix, JTextComponent jiraCommas, Frame parentFrame) {
       this.table = table;
       this.jiraPrefix = jiraPrefix;
       this.jiraCommas = jiraCommas;
+      this.parentFrame = parentFrame;
       parser = new MyStringParser();
    }
 
@@ -50,6 +53,7 @@ public abstract class AddNewRowActionListener implements ActionListener {
             log.debug("added jira " + jiraString);
             jiraAdded(jiraString, table, estimate, actual);
          }
+         tableModelListenerAlerter.setParent(parentFrame);
          tableModelListenerAlerter.deActivateAndAlert();
       }
    }
