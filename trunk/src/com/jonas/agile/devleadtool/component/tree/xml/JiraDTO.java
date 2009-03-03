@@ -5,6 +5,10 @@ import java.util.List;
 
 public class JiraDTO {
 
+   public void setProject(String project) {
+      this.project = project;
+   }
+
    private List<String> fixVersions = new ArrayList<String>();
    private String id;
    private boolean isToSync = false;
@@ -14,12 +18,13 @@ public class JiraDTO {
    private String sprint;
    private String status;
    private String summary;
+   private String project = "";
    private int actual;
 
    public JiraDTO() {
    }
 
-   public JiraDTO(String key, String id, String summary, List<String> list, String sprint, String status, String resolution, boolean isToSync, int originalEstimate, int actual) {
+   public JiraDTO(String key, String id, String summary, List<String> list, String sprint, String status, String resolution, boolean isToSync, int originalEstimate, int actual, String project) {
       setKey(key);
       setId(id);
       setSummary(summary);
@@ -30,6 +35,7 @@ public class JiraDTO {
       setToSync(isToSync);
       setOriginalEstimate(originalEstimate);
       setActual(actual);
+      setProject(project);
    }
 
    public void setActual(int actual) {
@@ -133,6 +139,10 @@ public class JiraDTO {
 
    public int getActual() {
       return actual;
+   }
+
+   public String getProject() {
+     return project;
    }
 
 }

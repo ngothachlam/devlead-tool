@@ -24,7 +24,7 @@ public class JiraBuilder {
    private static final String CUSTOMFIELD_LLULISTPRIO = "customfield_10241";
    private static final String CUSTOMFIELD_BUILDNO = "customfield_10160";
    private static final String CUSTOMFIELD_LLUSPRINT = "customfield_10282";
-   private static final String CUSTOMFIELD_LLUPROJECT = "blah";
+   private static final String CUSTOMFIELD_LLUPROJECT = "customfield_10290";
    private static final String CUSTOMFIELD_DELIVERYDATE = "customfield_10188";
    private static JiraBuilder instance = new JiraBuilder();
    private static final List<XPathImplementor> jiraXpathActions = new ArrayList<XPathImplementor>();
@@ -66,7 +66,6 @@ public class JiraBuilder {
             new XpathAction() {
                public void XPathValueFound(String xpathValue, JiraIssue jira) {
                   jira.setProject(xpathValue);
-                  throw new RuntimeException("Define \"CUSTOMFIELD_LLUPROJECT\"");
                }
             });
       addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_DELIVERYDATE + "']/customfieldvalues/customfieldvalue",

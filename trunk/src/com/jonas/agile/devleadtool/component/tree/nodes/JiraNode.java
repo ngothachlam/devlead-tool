@@ -96,4 +96,8 @@ public class JiraNode extends DefaultMutableTreeNode implements ToolTipper{
    public int getActual() {
       return actual;
    }
+
+   public String getProject() {
+      throw new RuntimeException("Method not implemented yet!");
+   }
 }
