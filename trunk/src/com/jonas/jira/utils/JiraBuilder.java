@@ -24,6 +24,7 @@ public class JiraBuilder {
    private static final String CUSTOMFIELD_LLULISTPRIO = "customfield_10241";
    private static final String CUSTOMFIELD_BUILDNO = "customfield_10160";
    private static final String CUSTOMFIELD_LLUSPRINT = "customfield_10282";
+   private static final String CUSTOMFIELD_LLUPROJECT = "blah";
    private static final String CUSTOMFIELD_DELIVERYDATE = "customfield_10188";
    private static JiraBuilder instance = new JiraBuilder();
    private static final List<XPathImplementor> jiraXpathActions = new ArrayList<XPathImplementor>();
@@ -61,6 +62,13 @@ public class JiraBuilder {
                   jira.setSprint(xpathValue);
                }
             });
+      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_LLUPROJECT + "']/customfieldvalues/customfieldvalue",
+            new XpathAction() {
+               public void XPathValueFound(String xpathValue, JiraIssue jira) {
+                  jira.setProject(xpathValue);
+                  throw new RuntimeException("Define \"CUSTOMFIELD_LLUPROJECT\"");
+               }
+            });
       addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_DELIVERYDATE + "']/customfieldvalues/customfieldvalue",
             new XpathAction() {
                public void XPathValueFound(String xpathValue, JiraIssue jira) {
@@ -78,7 +86,7 @@ public class JiraBuilder {
 
    protected static String formatToDate(String string) throws ParseException {
       // Thu, 29 Jan 2009 00:00:00 +0000 (GMT)
-      if(string == null || string.trim().length() == 0)
+      if (string == null || string.trim().length() == 0)
          return "";
       Date date = JiraDateFormat.parse(string);
       return OutputDateFormat.format(date);

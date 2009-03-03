@@ -9,18 +9,25 @@ public class JiraIssue {
 
    public static Logger log = MyLogger.getLogger(JiraIssue.class);
    private String buildNo;
+   private String deliveryDate;
    private String estimate;
-   private String spent;
    private List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
    private final String key;
    private int lluListPriority;
+   private String project;
+   private String release = "";
    private final String resolution;
+   private String spent;
+   private String sprint;
    private final String status;
    private final String summary;
    private final String type;
-   private String sprint;
-   private String release = "";
-   private String deliveryDate;
+
+   public JiraIssue(String key, String release) {
+      this(key.toUpperCase(), "", "", "", "");
+      this.release = release;
+      log.debug("Setting release to " + this.release + " = " + release);
+   }
 
    public JiraIssue(String key, String summary, String status, String resolution, String type) {
       this.key = key.toUpperCase();
@@ -30,18 +37,13 @@ public class JiraIssue {
       this.type = type;
    }
 
-   public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate, int listPrio, String sprint) {
+   public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate, int listPrio, String sprint, String project) {
       this(key, summary, status, resolution, type);
       this.buildNo = buildNo;
       this.estimate = estimate;
       this.sprint = sprint;
       this.lluListPriority = listPrio;
-   }
-
-   public JiraIssue(String key, String release) {
-      this(key.toUpperCase(), "", "", "", "");
-      this.release = release;
-      log.debug("Setting release to " + this.release + " = " + release);
+      this.project = project;
    }
 
    public void addFixVersions(JiraVersion fixVersion) {
@@ -112,12 +114,12 @@ public class JiraIssue {
       return buildNo;
    }
 
-   public String getEstimate() {
-      return estimate;
+   public String getDeliveryDate() {
+      return deliveryDate;
    }
 
-   public String getSpent() {
-      return spent;
+   public String getEstimate() {
+      return estimate;
    }
 
    public List<JiraVersion> getFixVersions() {
@@ -132,8 +134,24 @@ public class JiraIssue {
       return lluListPriority;
    }
 
+   public String getProject() {
+      return project;
+   }
+
+   public String getRelease() {
+      return release;
+   }
+
    public String getResolution() {
       return resolution;
+   }
+
+   public String getSpent() {
+      return spent;
+   }
+
+   public String getSprint() {
+      return sprint;
    }
 
    public String getStatus() {
@@ -147,7 +165,6 @@ public class JiraIssue {
    public String getType() {
       return type;
    }
-
    @Override
    public int hashCode() {
       final int prime = 31;
@@ -169,19 +186,28 @@ public class JiraIssue {
       this.buildNo = buildNo;
    }
 
+   public void setDeliveryDate(String deliveryDate) {
+      this.deliveryDate = deliveryDate;
+   }
+
    public void setEstimate(String days) {
       this.estimate = days;
-   }
-   public void setSprint(String sprint) {
-      this.sprint = sprint;
    }
 
    public void setLLUListPriority(int lluListPriority) {
       this.lluListPriority = lluListPriority;
    }
 
+   public void setProject(String project) {
+      this.project = project;
+   }
+
    public void setSpent(String days) {
       this.spent = days;
+   }
+
+   public void setSprint(String sprint) {
+      this.sprint = sprint;
    }
 
    /**
@@ -207,21 +233,5 @@ public class JiraIssue {
       buffer.append(summary);
       buffer.append("]");
       return buffer.toString();
-   }
-
-   public String getSprint() {
-      return sprint;
-   }
-
-   public String getRelease() {
-      return release;
-   }
-
-   public String getDeliveryDate() {
-      return deliveryDate;
-   }
-
-   public void setDeliveryDate(String deliveryDate) {
-      this.deliveryDate = deliveryDate;
    }
 }
