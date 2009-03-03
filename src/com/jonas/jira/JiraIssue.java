@@ -23,6 +23,8 @@ public class JiraIssue {
    private final String summary;
    private final String type;
 
+   
+   
    public JiraIssue(String key, String release) {
       this(key.toUpperCase(), "", "", "", "");
       this.release = release;

@@ -21,6 +21,7 @@ public class JiraSaxHandler extends DefaultHandler {
    private static final String ITEM = "item";
    private static final String KEY = "key";
    private static final String SPRINT = "Sprint";
+   private static final String PROJECT = "LLU Project";
 
    private JiraDTO jira;
    private List<JiraParseListener> jiraParseListeners = new ArrayList<JiraParseListener>();
@@ -76,6 +77,7 @@ public class JiraSaxHandler extends DefaultHandler {
          notifyJiraParsed(jira);
       }
       sb.delete(0, sb.length());
+      throw new RuntimeException("need to get the project onto here!");
    }
 
    private void notifyJiraParsed(JiraDTO jira) {
