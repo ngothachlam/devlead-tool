@@ -18,8 +18,9 @@ public class JiraNode extends DefaultMutableTreeNode implements ToolTipper{
    private final String id;
    private final int originalEstimate;
    private int actual;
+   private String project;
 
-   public JiraNode(String jira, String id, String summary, String resolution, String status, String sprint, List<String> fixVersions, boolean isToSync, int originalEstimate, int actual) {
+   public JiraNode(String jira, String id, String summary, String resolution, String status, String sprint, List<String> fixVersions, boolean isToSync, int originalEstimate, int actual, String project) {
       super(jira);
       this.key = jira;
       this.resolution = resolution;
@@ -30,6 +31,7 @@ public class JiraNode extends DefaultMutableTreeNode implements ToolTipper{
       this.id = id;
       this.originalEstimate = originalEstimate;
       this.actual = actual;
+      this.project = project;
       for (String string : fixVersions) {
          this.fixVersions.add(string);
       }
@@ -98,6 +100,6 @@ public class JiraNode extends DefaultMutableTreeNode implements ToolTipper{
    }
 
    public String getProject() {
-      throw new RuntimeException("Method not implemented yet!");
+      return project;
    }
 }

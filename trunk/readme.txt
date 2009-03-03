@@ -4,6 +4,7 @@ For testing soap and httpclient interaction. Try JiraSoapClientFunctionalTest an
 
 
 TODO:
+*BUG: The file name is not loaded onto the planner on the first load. 
 
 *Add a new sprint screen: 
 	* Updates board sprint to new sprint number if in-development or lower

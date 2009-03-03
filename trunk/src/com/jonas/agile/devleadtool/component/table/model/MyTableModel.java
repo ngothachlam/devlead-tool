@@ -83,7 +83,7 @@ public abstract class MyTableModel extends DefaultTableModel {
          value = jiraIssue.getType();
          break;
       case J_FixVersion:
-         value = jiraIssue.getFixVersions();
+         value = jiraIssue.getFixVersionsAsStrings();
          break;
       case J_Status:
          value = jiraIssue.getStatus();
