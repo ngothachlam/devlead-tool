@@ -103,6 +103,9 @@ public abstract class MyTableModel extends DefaultTableModel {
       case J_Sprint:
          value = jiraIssue.getSprint();
          break;
+      case J_Project:
+         value = jiraIssue.getProject();
+         break;
       case J_Delivery:
          value = jiraIssue.getDeliveryDate();
          break;

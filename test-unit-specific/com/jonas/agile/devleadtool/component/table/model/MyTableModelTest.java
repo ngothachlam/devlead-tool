@@ -249,7 +249,7 @@ public class MyTableModelTest extends JonasTestCase {
    public void testShouldGetValueOfSameClassAsColumnType() {
       MyTableModel model = new TestTableModelTwo();
 
-      JiraIssue jiraIssue = new JiraIssue("key", "summary", "status", "resolution", "type", "buildNo", "estimate", 1, "sprint");
+      JiraIssue jiraIssue = new JiraIssue("key", "summary", "status", "resolution", "type", "buildNo", "estimate", 1, "sprint", "project");
       assertEquals("KEY", model.getValueFromIssue(jiraIssue, Column.Jira));
       assertEquals("type", model.getValueFromIssue(jiraIssue, Column.J_Type));
       assertEquals("summary", model.getValueFromIssue(jiraIssue, Column.Description));
