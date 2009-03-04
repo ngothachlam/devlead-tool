@@ -169,7 +169,6 @@ public class MyTablePopupMenu extends MyPopupMenu {
          source.addJira(new JiraIssue(mergeJiraCreated, fixVersionName));
          source.setValueAt("For: " + originalJira, mergeJiraCreated, Column.Merge);
          source.setValueAt("merge", mergeJiraCreated, Column.Dev_Estimate);
-         source.setValueAt(BoardStatusValue.UnKnown, mergeJiraCreated, Column.BoardStatus);
       }
    }
 
