@@ -41,7 +41,7 @@ public enum Column {
       @Override
       public Object parse(String cellContents) {
          List<String> arrayList = new ArrayList<String>();
-         if (cellContents == null) {
+         if (cellContents == null || cellContents.trim().length() == 0) {
             return arrayList;
          }
          cellContents = cellContents.substring(1, cellContents.length() - 1);
