@@ -19,6 +19,8 @@ public class ColumnTest extends TestCase {
       assertEquals(1, list.size());
       assertEquals("LLU 11.2", list.get(0));
       
+      
+      
       list = getJFixVersionParse("[LLU 11.2, LLU 12 - Sprint 5 (current)]");
       assertEquals(2, list.size());
       assertEquals("LLU 11.2", list.get(0));
@@ -35,6 +37,9 @@ public class ColumnTest extends TestCase {
       assertEquals(" LLU 12 - Sprint 5 (current) ", list.get(1));
       
       list = getJFixVersionParse(null);
+      assertEquals(0, list.size());
+      
+      list = getJFixVersionParse("");
       assertEquals(0, list.size());
    }
 

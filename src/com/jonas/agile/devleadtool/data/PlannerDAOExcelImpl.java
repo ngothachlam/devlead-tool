@@ -163,7 +163,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                // rowData.add(Boolean.valueOf(cell.getBooleanCellValue()));
                break;
             case HSSFCell.CELL_TYPE_NUMERIC:
-//               // rowData.add(Double.valueOf(cell.getNumericCellValue()));
+               // // rowData.add(Double.valueOf(cell.getNumericCellValue()));
                String valueOf = String.valueOf(cell.getNumericCellValue());
                cellContents = (valueOf == null ? "" : valueOf);
                break;
@@ -180,14 +180,14 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       return dataModelDTO;
    }
 
-   private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, Column> columns, Vector<Object> rowData,
-         int colCount, String cellContents) {
+   private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, Column> columns, Vector<Object> rowData, int colCount,
+         String cellContents) {
       if (rowCount == 0) {
          log.debug("\tHeader!");
          Column column = Column.getEnum(cellContents);
          if (column == null) {
-            throw new NullPointerException("Failed to add column (" + cellContents + ") to " + colCount + " of type " + column + " (size is " + columns.size()
-                  + ")");
+            throw new NullPointerException("Failed to add column (" + cellContents + ") to " + colCount + " of type " + column + " (size is "
+                  + columns.size() + ")");
          }
          columns.put(colCount, column);
          if (column.isToLoad())
@@ -199,14 +199,13 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, String cellContents) {
       Column column = columns.get(colCount);
-      // log.debug("\tColumn " + column + " (from col " + colCount + ") should " + (!column.isToLoad() ? " not " : "") + " be loaded with " + cellContents + "!");
+      log.debug("\tColumn " + column + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \""
+            + cellContents + "\"!");
       Object parsed = null;
       if (column.isToLoad()) {
          parsed = column.parse(cellContents);
          rowData.add(parsed);
       }
-      log.debug("\tColumn " + column + " (from col " + colCount + ") should " + (!column.isToLoad() ? " not " : "") + " be loaded with " + cellContents
-            + " (parsed: " + parsed + ")!");
    }
 
    public void notifyListeners(DaoListenerEvent event, String message) {
