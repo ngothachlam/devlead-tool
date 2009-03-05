@@ -14,6 +14,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.CalculatorHelper;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
+import com.jonas.jira.JiraCustomFields;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
@@ -21,22 +22,17 @@ import com.jonas.jira.access.JiraClient;
 
 public class JiraBuilder {
 
-   private static final String CUSTOMFIELD_LLULISTPRIO = "customfield_10241";
-   private static final String CUSTOMFIELD_BUILDNO = "customfield_10160";
-   private static final String CUSTOMFIELD_LLUSPRINT = "customfield_10282";
-   private static final String CUSTOMFIELD_LLUPROJECT = "customfield_10290";
-   private static final String CUSTOMFIELD_DELIVERYDATE = "customfield_10188";
    private static JiraBuilder instance = new JiraBuilder();
    private static final List<XPathImplementor> jiraXpathActions = new ArrayList<XPathImplementor>();
    private static final Logger log = MyLogger.getLogger(JiraBuilder.class);
 
    static {
-      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_BUILDNO + "']/customfieldvalues/customfieldvalue", new XpathAction() {
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUBuildNo + "']/customfieldvalues/customfieldvalue", new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             jira.setBuildNo(xpathValue);
          }
       });
-      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_LLULISTPRIO + "']/customfieldvalues/customfieldvalue",
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUListPrio + "']/customfieldvalues/customfieldvalue",
             new XpathAction() {
                public void XPathValueFound(String xpathValue, JiraIssue jira) {
                   jira.setLLUListPriority(getStringAsIntIfNumeric(xpathValue));
@@ -56,19 +52,19 @@ public class JiraBuilder {
             }
          }
       });
-      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_LLUSPRINT + "']/customfieldvalues/customfieldvalue",
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUSprint + "']/customfieldvalues/customfieldvalue",
             new XpathAction() {
                public void XPathValueFound(String xpathValue, JiraIssue jira) {
                   jira.setSprint(xpathValue);
                }
             });
-      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_LLUPROJECT + "']/customfieldvalues/customfieldvalue",
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUProject + "']/customfieldvalues/customfieldvalue",
             new XpathAction() {
                public void XPathValueFound(String xpathValue, JiraIssue jira) {
                   jira.setProject(xpathValue);
                }
             });
-      addXpathAction("/item/customfields/customfield[@id='" + CUSTOMFIELD_DELIVERYDATE + "']/customfieldvalues/customfieldvalue",
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUDeliveryDate + "']/customfieldvalues/customfieldvalue",
             new XpathAction() {
                public void XPathValueFound(String xpathValue, JiraIssue jira) {
                   try {

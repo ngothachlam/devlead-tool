@@ -20,6 +20,7 @@ import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
 import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.JiraCustomFields;
 import com.jonas.jira.JiraProject;
 
 /**
@@ -27,8 +28,6 @@ import com.jonas.jira.JiraProject;
  */
 public class JiraSoapClient {
 
-   private static final String CUSTOM_FIELD_SPRINT = "customfield_10282";
-   private static final String CUSTOM_FIELD_LLU_PROJECT = "customfield_10290";
    private static List<String> customFieldsForCloning = new ArrayList<String>(1);
    private static JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
    private static final Logger log = MyLogger.getLogger(JiraSoapClient.class);
@@ -40,8 +39,8 @@ public class JiraSoapClient {
    private String token;
    private String type = "13";
    static {
-      customFieldsForCloning.add(CUSTOM_FIELD_SPRINT);
-      customFieldsForCloning.add(CUSTOM_FIELD_LLU_PROJECT);
+      customFieldsForCloning.add(JiraCustomFields.LLUSprint.toString());
+      customFieldsForCloning.add(JiraCustomFields.LLUProject.toString());
    }
 
    public JiraSoapClient(String address) {
@@ -296,7 +295,7 @@ public class JiraSoapClient {
       // JiraSoapServiceService jiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
       // JiraSoapService jiraSoapService = jiraSoapServiceGetter.getJirasoapserviceV2();
 
-      updateCustomField(jiraKey, sprint, CUSTOM_FIELD_SPRINT);
+      updateCustomField(jiraKey, sprint, JiraCustomFields.LLUSprint.toString());
    }
 
    private void copyCustomFieldValuesFromOriginalToClone(RemoteIssue originalJiraIssue, RemoteIssue cloneIssue) {
@@ -377,7 +376,7 @@ public class JiraSoapClient {
 
    private void setProjectToMerge(RemoteIssue cloneIssue) {
       String[] merge = { "Merge" };
-      RemoteCustomFieldValue[] customFieldValues = { new RemoteCustomFieldValue(CUSTOM_FIELD_LLU_PROJECT, null, merge) };
+      RemoteCustomFieldValue[] customFieldValues = { new RemoteCustomFieldValue(JiraCustomFields.LLUProject.toString(), null, merge) };
       cloneIssue.setCustomFieldValues(customFieldValues);
    }
 
@@ -457,26 +456,5 @@ public class JiraSoapClient {
          }
          return action.accessJiraAndReturn();
       }
-   }
-}
-
-
-class CustomField {
-   public CustomField sprint = new CustomField("customfield_10282", "Sprint");
-   private String id;
-   private String name;
-
-   private CustomField(String id, String name) {
-      super();
-      this.id = id;
-      this.name = name;
-   }
-
-   public String getId() {
-      return id;
-   }
-
-   public String getName() {
-      return name;
    }
 }
