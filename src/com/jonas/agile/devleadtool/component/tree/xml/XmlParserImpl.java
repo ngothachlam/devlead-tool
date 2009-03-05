@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.JiraCustomFields;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraException;
 
@@ -46,26 +47,13 @@ public class XmlParserImpl implements XmlParser {
    public void parse(JiraProject project, String sprint) throws IOException, SAXException, JiraException {
       GetMethod method = null;
       try {
-         String url = project.getJiraClient().getBaseUrl() + "/secure/IssueNavigator.jspa?view=rss&pid="+project.getId()+"&reset=true&decorator=none&tempMax=" + maxResults;
-         if(sprint != null){
-            url = url +"&customfield_10282=" + sprint;
-         } else {
-            url = url + "&sorter/field=customfield_10282&sorter/order=ASC";
-            url = url +"&fixfor=-2";
-         }
+         String url = getUrl(project, sprint);
          log.debug("calling " + url);
-
-         // fixfor=-2 @ Fix For: all unreleased versions
-         // pid=10070 @ Project: LLU Systems Provisioning
-
-         // fixfor=-2
-         // customfield_10282=12.1 @ Sprint: 12.1
-         // pid=10070
 
          method = new GetMethod(url);
          int result = httpClient.executeMethod(method);
 
-//         Reader reader2 = new InputStreamReader(method.getResponseBodyAsStream(), method.getResponseCharSet());
+         // Reader reader2 = new InputStreamReader(method.getResponseBodyAsStream(), method.getResponseCharSet());
          Reader reader2 = new InputStreamReader(method.getResponseBodyAsStream(), "iso-8859-1");
 
          xmlReader.parse(new InputSource(reader2));
@@ -75,10 +63,23 @@ public class XmlParserImpl implements XmlParser {
       }
    }
 
+   private String getUrl(JiraProject project, String sprint) {
+      StringBuffer sb = new StringBuffer(project.getJiraClient().getBaseUrl());
+      sb.append("/secure/IssueNavigator.jspa?view=rss&pid=").append(project.getId()).append("&reset=true&decorator=none&tempMax=").append(
+            maxResults);
+      if (sprint != null) {
+         sb.append("&").append(JiraCustomFields.LLUSprint).append("=").append(sprint);
+      } else {
+         sb.append("&sorter/field=").append(JiraCustomFields.LLUSprint).append("&sorter/order=ASC").append("&fixfor=-2");
+      }
+      return sb.toString();
+   }
+
    public void login() throws IOException, HttpException, JiraException {
       httpClient = new HttpClient();
       login(httpClient);
    }
+
    public void login(HttpClient httpClient) throws IOException, HttpException, JiraException {
       PostMethod loginMethod = new PostMethod(baseUrl + "/login.jsp");
       loginMethod.addParameter("os_username", "soaptester");
