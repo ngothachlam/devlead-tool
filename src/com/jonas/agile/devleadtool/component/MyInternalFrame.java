@@ -115,10 +115,6 @@ public class MyInternalFrame extends JInternalFrame {
       return excelFile;
    }
 
-   public File getFile() {
-      return excelFile;
-   }
-
    public int getInternalFramesCount() {
       return internalFrames.size();
    }

@@ -8,9 +8,7 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.DesktopPane;
-import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.component.SaveKeyListener;
-import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerPanel;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.common.logging.MyLogger;
 
@@ -56,7 +54,7 @@ public class LoadPlannerDialog extends JFileChooser {
 
          dao.setXlsFile(xlsFile);
          
-         SwingWorker<CombinedModelDTO, Object> swingWorker = new AbstractInternalFrameCreatorSwingthread(helper, dao, savePlannerDialog, saveKeyListener, desktop) {
+         SwingWorker<CombinedModelDTO, Object> swingWorker = new AbstractInternalFrameCreatorSwingthread(helper, dao, savePlannerDialog, saveKeyListener, desktop, xlsFile) {
             @Override
             protected CombinedModelDTO doInBackground() throws Exception {
                return dao.loadModels();
