@@ -40,8 +40,10 @@ public class AddNewRowActionListenerTest extends TestCase {
 	   AddNewRowActionListener listener = getListener();
 	   assertEquals("", listener.getEstimateString(null));
 	   assertEquals("", listener.getEstimateString(""));
+	   assertEquals("", listener.getEstimateString(" "));
 	   assertEquals("", listener.getEstimateString("1"));
 	   assertEquals("2", listener.getEstimateString("1'2"));
+	   assertEquals("", listener.getEstimateString("1''3"));
 	   assertEquals("2", listener.getEstimateString("1'2'3"));
 	   assertEquals("2.3", listener.getEstimateString("1'2.3'3"));
 	   assertEquals("2.3", listener.getEstimateString("1'2.3/3"));
@@ -55,9 +57,11 @@ public class AddNewRowActionListenerTest extends TestCase {
 	   assertEquals("", listener.getActualString("1"));
 	   assertEquals("", listener.getActualString("1'2"));
 	   assertEquals("3", listener.getActualString("1'2'3"));
+	   assertEquals("3", listener.getActualString("1''3"));
 	   assertEquals("3.5", listener.getActualString("1'2'3.5'4"));
 	   assertEquals("3.5", listener.getActualString("1''3.5'4"));
 	   assertEquals("3.5", listener.getActualString("''3.5'4"));
+	   assertEquals("", listener.getActualString("'''4"));
 	   assertEquals("3.5", listener.getActualString("1'/3.5/4"));
 	   assertEquals("3.5", listener.getActualString("//3.5/4"));
 	}

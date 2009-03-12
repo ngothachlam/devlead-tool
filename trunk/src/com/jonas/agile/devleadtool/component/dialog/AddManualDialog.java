@@ -209,7 +209,7 @@ class AddFromRadioButtons extends AddNewRowActionListener {
    }
 
    private void addNewOldValueIfColumnIsInTable(MyTable table, Column column, String jira, Object newValue, List<NewOldValues> newOldValues) {
-      if (table.getColumnIndex(column) < 0)
+      if (table.getColumnIndex(column) < 0 || newValue == null || newValue.toString().trim().length() == 0)
          return;
 
       newOldValues.add(new NewOldValues(column, getValue(jira, table, column), newValue));
