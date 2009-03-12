@@ -22,7 +22,7 @@ public class SavePlannerDialog extends JFileChooser {
    }
 
    public void save(MyInternalFrame internalFrame, boolean isFileChoosable) {
-      File file = internalFrame.getFile();
+      File file = internalFrame.getExcelFile();
       boolean goAheadAndSave = true;
       if (isFileChoosable || file == null) {
          if (file != null) {
