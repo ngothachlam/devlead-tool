@@ -50,8 +50,9 @@ public abstract class AddNewRowActionListener implements ActionListener {
                log.debug("jiraIssue is NOT null!");
                table.addJira(jiraIssue);
             }
+            String release = jiraIssue.getRelease().trim();
             log.debug("added jira " + jiraString);
-            jiraAdded(jiraString, table, estimate, actual);
+            jiraAdded(jiraString, table, estimate, actual, release);
          }
          tableModelListenerAlerter.setParent(parentFrame);
          tableModelListenerAlerter.deActivateAndAlert();
@@ -100,8 +101,9 @@ public abstract class AddNewRowActionListener implements ActionListener {
     * gets called after the jira has been added to the table. 
     * @param estimate
     * @param actual
+    * @param release 
     */
-   public abstract void jiraAdded(String jiraKey, MyTable table, String estimate, String actual);
+   public abstract void jiraAdded(String jiraKey, MyTable table, String estimate, String actual, String release);
 
    public void setTable(MyTable table) {
       this.table = table;

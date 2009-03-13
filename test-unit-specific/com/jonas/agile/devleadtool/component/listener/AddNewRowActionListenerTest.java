@@ -25,13 +25,13 @@ public class AddNewRowActionListenerTest extends TestCase {
          }
 
          @Override
-         public void jiraAdded(String jiraStringm, MyTable table, String estimate, String actual) {
-            return;
+         public void actionPerformed(ActionEvent e) {
+            addJiraToTable();
          }
 
          @Override
-         public void actionPerformed(ActionEvent e) {
-            addJiraToTable();
+         public void jiraAdded(String jiraKey, MyTable table, String estimate, String actual, String release) {
+            return;
          }
 		};
    }
