@@ -115,7 +115,7 @@ class AddManualPanel extends MyPanel {
 
       this.add(panel, BorderLayout.CENTER);
       this.add(buttonPanel, BorderLayout.PAGE_END);
-      
+
       setRequestFocusEnabled(true);
    }
 
@@ -193,13 +193,14 @@ class AddFromRadioButtons extends AddNewRowActionListener {
    }
 
    @Override
-   public void jiraAdded(String jira, MyTable table, String estimate, String actual) {
+   public void jiraAdded(String jira, MyTable table, String estimate, String actual, String release) {
       if (table.doesJiraExist(jira)) {
          List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 
          addNewOldValueIfColumnIsInTable(table, Column.BoardStatus, jira, status.getSelectedItem(), newOldValues);
          addNewOldValueIfColumnIsInTable(table, Column.Dev_Estimate, jira, estimate, newOldValues);
          addNewOldValueIfColumnIsInTable(table, Column.Dev_Actual, jira, actual, newOldValues);
+         addNewOldValueIfColumnIsInTable(table, Column.Release, jira, release, newOldValues);
 
          for (NewOldValues newOldValue : newOldValues) {
             if (newOldValue.isValueNew())
@@ -209,10 +210,17 @@ class AddFromRadioButtons extends AddNewRowActionListener {
    }
 
    private void addNewOldValueIfColumnIsInTable(MyTable table, Column column, String jira, Object newValue, List<NewOldValues> newOldValues) {
-      if (table.getColumnIndex(column) < 0 || newValue == null || newValue.toString().trim().length() == 0)
-         return;
+      NewOldValues value = getNewOldValueIfColumnIsInTable(table, column, jira, newValue);
+      if (value != null) {
+         newOldValues.add(value);
+      }
+   }
 
-      newOldValues.add(new NewOldValues(column, getValue(jira, table, column), newValue));
+   private NewOldValues getNewOldValueIfColumnIsInTable(MyTable table, Column column, String jira, Object newValue) {
+      if (table.getColumnIndex(column) < 0 || newValue == null || newValue.toString().trim().length() == 0)
+         return null;
+
+      return new NewOldValues(column, getValue(jira, table, column), newValue);
    }
 
    protected String getValue(String jira, MyTable table, Column column) {
