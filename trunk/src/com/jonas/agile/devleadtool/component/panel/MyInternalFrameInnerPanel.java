@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.dialog.AddBoardReconcileDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
@@ -119,6 +120,12 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       tables.add(jiraTable);
 
       final MyTable[] array = tables.toArray(new MyTable[tables.size()]);
+      addButton(panel, "Reconcile", new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            new AddBoardReconcileDialog(helper.getParentFrame());
+         }
+      });
       addButton(panel, "Add", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -171,13 +178,16 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable);
       new SprintTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder, jiraTable, boardTable);
 
-      JPanel panel = new JPanel();
-      editableCheckBox = new JCheckBox("Editable?", true);
-      panel.add(editableCheckBox);
-      panel.add(getAddPanel(helper, boardTable, jiraTable));
-      addNorth(panel);
-
+      addNorth(createAndGetTopPanel(helper));
       addCenter(combineIntoSplitPane(boardPanel, jiraMainPanel, sprintPanel));
+   }
+
+   private JPanel createAndGetTopPanel(PlannerHelper helper) {
+      JPanel topPanel = new JPanel();
+      editableCheckBox = new JCheckBox("Editable?", true);
+      topPanel.add(editableCheckBox);
+      topPanel.add(getAddPanel(helper, boardTable, jiraTable));
+      return topPanel;
    }
 
    private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, final MyTable jiraTable, SprintTree sprintTree) {
