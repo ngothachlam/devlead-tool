@@ -18,7 +18,7 @@ public abstract class AbstractInternalFrameCreatorSwingthread extends SwingWorke
       this(helper, dao, savePlannerDialog, saveKeyListener, desktopPane);
       this.xlsFile = xlsFile;
    }
-         
+
    public AbstractInternalFrameCreatorSwingthread(PlannerHelper helper, PlannerDAO dao, SavePlannerDialog savePlannerDialog,
          SaveKeyListener saveKeyListener, DesktopPane desktopPane) {
       super();
@@ -42,7 +42,9 @@ public abstract class AbstractInternalFrameCreatorSwingthread extends SwingWorke
          MyInternalFrameInnerPanel internalFrameTabPanel = new MyInternalFrameInnerPanel(helper, dto.getBoardModel(), dto.getJiraModel());
          MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog,
                saveKeyListener, desktopPane);
-         internalFrame.setSaveFile(xlsFile);
+         if (xlsFile != null) {
+            internalFrame.setSaveFile(xlsFile);
+         }
          internalFrame.setVisible(true);
       } catch (Throwable e) {
          AlertDialog.alertException(helper.getParentFrame(), e);
