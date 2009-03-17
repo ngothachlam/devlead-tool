@@ -52,7 +52,7 @@
 	</target>
 
 	<target name="compile" depends="init" description="compile the source ">
-		<javac srcdir="${src}" destdir="${build.classes}">
+		<javac srcdir="${src}" destdir="${build.classes}" debug="on" debuglevel="lines,vars,source">
 			<classpath refid="project.class.path" />
 		</javac>
 	</target>
@@ -70,11 +70,11 @@
 
 	<target name="compile.tests" depends="dist" description="compile the source ">
 		<mkdir dir="${build.tests}/dist" />
-		<javac srcdir="${src.tests.unit.specific}" destdir="${build.tests}">
+		<javac srcdir="${src.tests.unit.specific}" destdir="${build.tests}" debug="on" debuglevel="lines,vars,source">
 			<classpath refid="project.class.path" />
 			<classpath location="${dist}/devlead-tool-${DSTAMP}.jar" />
 		</javac>
-		<javac srcdir="${src.tests.functional}" destdir="${build.tests}">
+		<javac srcdir="${src.tests.functional}" destdir="${build.tests}" debug="on" debuglevel="lines,vars,source">
 			<classpath refid="project.class.path" />
 			<classpath location="${dist}/devlead-tool-${DSTAMP}.jar" />
 		</javac>
