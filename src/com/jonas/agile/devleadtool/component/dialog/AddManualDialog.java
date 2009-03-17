@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.Window;
 import javax.swing.JFrame;
+import com.jonas.agile.devleadtool.component.panel.AddManualPanel;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.SwingUtil;
 

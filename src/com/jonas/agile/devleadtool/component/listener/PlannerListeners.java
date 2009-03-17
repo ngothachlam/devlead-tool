@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.dialog;
+package com.jonas.agile.devleadtool.component.listener;
 
 import java.util.ArrayList;
 import java.util.List;

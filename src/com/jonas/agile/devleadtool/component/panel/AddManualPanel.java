@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.dialog;
+package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -15,8 +15,8 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.text.JTextComponent;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
+import com.jonas.agile.devleadtool.component.dialog.NewOldValues;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowActionListener;
-import com.jonas.agile.devleadtool.component.panel.AbstractAddPanel;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.MyPanel;

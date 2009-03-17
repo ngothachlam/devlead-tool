@@ -4,6 +4,7 @@ import java.awt.Container;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import com.jonas.agile.devleadtool.component.panel.AddManualPanel;
 import com.jonas.agile.devleadtool.component.panel.ReconciliationTablePanel;
 import com.jonas.common.SwingUtil;
 
