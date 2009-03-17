@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.Enumeration;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
@@ -119,5 +120,20 @@ public abstract class AbstractAddPanel extends MyPanel {
    }
 
    protected abstract Component getButtonPanel();
+
+   public void focusPrefix() {
+      getJiraPrefixTextField().requestFocus();
+   }
+
+   public void setTarget(MyTable target) {
+      Enumeration<?> elements = getTablesButtonGroup().getElements();
+      while (elements.hasMoreElements()) {
+         TableRadioButton button = (TableRadioButton) elements.nextElement();
+         if (button.getTable().equals(target)) {
+            button.setSelected(true);
+            return;
+         }
+      }
+   }
 
 }

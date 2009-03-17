@@ -5,36 +5,20 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Enumeration;
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JFrame;
-import com.jonas.agile.devleadtool.component.TableRadioButton;
-import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.common.MyPanel;
 
 public class AddReconcilePanel extends AbstractAddPanel {
 
    private final JFrame frame;
    private ActionListener addButtonListener;
-   private Object addButton;
+   private JButton addButton;
 
-   public AddReconcilePanel(final JFrame frame, MyTable jiraTable) {
-      super(new BorderLayout(), frame, jiraTable);
+   public AddReconcilePanel(final JFrame frame) {
+      super(new BorderLayout(), frame);
       this.frame = frame;
-   }
-
-   public void focusPrefix() {
-      getJiraPrefixTextField().requestFocus();
-   }
-
-   public void setTarget(MyTable target) {
-      Enumeration<?> elements = getTablesButtonGroup().getElements();
-      while (elements.hasMoreElements()) {
-         TableRadioButton button = (TableRadioButton) elements.nextElement();
-         if (button.getTable().equals(target)) {
-            button.setSelected(true);
-            return;
-         }
-      }
    }
 
    @Override
@@ -49,5 +33,9 @@ public class AddReconcilePanel extends AbstractAddPanel {
          }
       });
       return buttonPanel;
+   }
+   
+   public void setAddButtonAction(Action action){
+      addButton.setAction(action);
    }
 }

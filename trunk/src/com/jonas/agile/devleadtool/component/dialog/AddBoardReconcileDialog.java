@@ -1,6 +1,9 @@
 package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -21,13 +24,20 @@ public class AddBoardReconcileDialog extends JFrame {
    }
 
    private Container getPanel(JFrame parentFrame, MyTable jiraTable) {
-      JPanel mainPanel = new AddReconcilePanel(parentFrame, jiraTable);
-      JPanel reconcilidationTablePanel = new ReconciliationTablePanel();
+      AddReconcilePanel mainPanel = new AddReconcilePanel(parentFrame);
+      JPanel reconcilidationTablePanel = new ReconciliationTablePanel(jiraTable);
 
       JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainPanel, reconcilidationTablePanel);
       splitPane.setDividerLocation(-1);
 
+      
+      mainPanel.setAddButtonAction(new AddButtonAction());
+      
       return splitPane;
    }
+
+}
+
+class AddButtonAction implements Action{
 
 }

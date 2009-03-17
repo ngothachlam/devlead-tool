@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,6 +31,7 @@ import com.jonas.agile.devleadtool.component.dialog.AddBoardReconcileDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
+import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
 import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
@@ -120,27 +122,27 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       tables.add(jiraTable);
 
       final MyTable[] array = tables.toArray(new MyTable[tables.size()]);
-      addButton(panel, "Reconcile", new ActionListener() {
+      addButton(panel, "Reconcile", new BasicActionListener(helper.getParentFrame()) {
          @Override
-         public void actionPerformed(ActionEvent e) {
+         public void doActionPerformed(ActionEvent e) {
             new AddBoardReconcileDialog(helper.getParentFrame(), jiraTable);
          }
       });
-      addButton(panel, "Add", new ActionListener() {
+      addButton(panel, "Add", new BasicActionListener(helper.getParentFrame()) {
          @Override
-         public void actionPerformed(ActionEvent e) {
+         public void doActionPerformed(ActionEvent e) {
             new AddManualDialog(helper.getParentFrame(), array);
          }
       });
-      addButton(panel, "Filters", new ActionListener() {
+      addButton(panel, "Filters", new BasicActionListener(helper.getParentFrame()) {
          @Override
-         public void actionPerformed(ActionEvent e) {
+         public void doActionPerformed(ActionEvent e) {
             new AddFilterDialog(helper.getParentFrame(), array);
          }
       });
-      addButton(panel, "Versions", new ActionListener() {
+      addButton(panel, "Versions", new BasicActionListener(helper.getParentFrame()) {
          @Override
-         public void actionPerformed(ActionEvent e) {
+         public void doActionPerformed(ActionEvent e) {
             new AddVersionDialog(helper.getParentFrame(), array);
          }
       });
@@ -382,4 +384,27 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          jiraTable.fireTableDataChangedForJira(jira);
       }
    }
+}
+
+abstract class BasicActionListener implements ActionListener{
+
+   private Frame parentFrame;
+
+   public BasicActionListener(Frame parentFrame) {
+      super();
+      this.parentFrame = parentFrame;
+   }
+
+   @Override
+   public final void actionPerformed(ActionEvent e) {
+      try{
+         doActionPerformed(e);
+      }
+      catch(Throwable ex){
+         AlertDialog.alertException(parentFrame, ex);
+      }
+   }
+
+   public abstract void doActionPerformed(ActionEvent e);
+   
 }

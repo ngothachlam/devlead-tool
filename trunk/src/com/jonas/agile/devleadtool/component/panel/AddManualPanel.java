@@ -31,21 +31,6 @@ public class AddManualPanel extends AbstractAddPanel {
       this.frame = frame;
    }
 
-   public void focusPrefix() {
-      getJiraPrefixTextField().requestFocus();
-   }
-
-   public void setTarget(MyTable target) {
-      Enumeration<?> elements = getTablesButtonGroup().getElements();
-      while (elements.hasMoreElements()) {
-         TableRadioButton button = (TableRadioButton) elements.nextElement();
-         if (button.getTable().equals(target)) {
-            button.setSelected(true);
-            return;
-         }
-      }
-   }
-
    @Override
    protected Component getButtonPanel() {
       MyPanel buttonPanel = new MyPanel(new GridLayout(1, 2, 5, 5));
