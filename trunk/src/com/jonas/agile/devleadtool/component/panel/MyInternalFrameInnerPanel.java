@@ -113,7 +113,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       return tabPane;
    }
 
-   private Component getAddPanel(final PlannerHelper helper, MyTable boardTable, MyTable jiraTable) {
+   private Component getAddPanel(final PlannerHelper helper, final MyTable boardTable, final MyTable jiraTable) {
       JPanel panel = new JPanel(new GridLayout(1, 2, 5, 5));
       final List<MyTable> tables = new ArrayList<MyTable>();
       tables.add(boardTable);
@@ -123,7 +123,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       addButton(panel, "Reconcile", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            new AddBoardReconcileDialog(helper.getParentFrame());
+            new AddBoardReconcileDialog(helper.getParentFrame(), jiraTable);
          }
       });
       addButton(panel, "Add", new ActionListener() {

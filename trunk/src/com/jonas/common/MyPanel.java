@@ -71,10 +71,15 @@ public class MyPanel extends JPanel {
       return button;
    }
 
-   public JButton addButton(JPanel buttonPanel, String string, ActionListener listener) {
+   public JButton addButton(JPanel buttonPanel, String string) {
       JButton button = new JButton(string);
-      button.addActionListener(listener);
       buttonPanel.add(button);
+      return button;
+   }
+   
+   public JButton addButton(JPanel buttonPanel, String string, ActionListener listener) {
+      JButton button = addButton(buttonPanel, string);
+      button.addActionListener(listener);
       return button;
    }
 
