@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.dialog;
+package com.jonas.agile.devleadtool.component.listener;
 
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 
