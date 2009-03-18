@@ -5,10 +5,10 @@ import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.jira.JiraIssue;
 import junit.framework.TestCase;
 
-public class AddNewRowActionListenerTest extends TestCase {
+public class AddNewRowActionTest extends TestCase {
 
 	public void testShouldComputeJiraOk() {
-		AddNewRowActionListener listener = getListener();
+		AddNewRowAction listener = getListener();
 		assertEquals("llu-1", listener.getJiraString("llu", "1"));
 		assertEquals("llu-1", listener.getJiraString("llu", "1'2"));
 		assertEquals("llu-1.2", listener.getJiraString("llu", "1.2"));
@@ -18,26 +18,28 @@ public class AddNewRowActionListenerTest extends TestCase {
 		assertEquals("", listener.getJiraString(null, null));
 	}
 
-   private AddNewRowActionListener getListener() {
-      return new AddNewRowActionListener(null, null, null, null){
-         public JiraIssue getJiraIssue(String jira) {
-            return null;
-         }
+   private AddNewRowAction getListener() {
+      return new AddNewRowAction(null, null, null, null){
 
          @Override
-         public void actionPerformed(ActionEvent e) {
-            addJiraToTable();
+         public JiraIssue getJiraIssue(String jira) {
+            return null;
          }
 
          @Override
          public void jiraAdded(String jiraKey, MyTable table, String estimate, String actual, String release) {
             return;
          }
+
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            addJiraToTable();
+         }
 		};
    }
 	
 	public void testShouldComputeEstimatesOk() {
-	   AddNewRowActionListener listener = getListener();
+	   AddNewRowAction listener = getListener();
 	   assertEquals("", listener.getEstimateString(null));
 	   assertEquals("", listener.getEstimateString(""));
 	   assertEquals("", listener.getEstimateString(" "));
@@ -51,7 +53,7 @@ public class AddNewRowActionListenerTest extends TestCase {
 	}
 	
 	public void testShouldComputeActualsOk() {
-	   AddNewRowActionListener listener = getListener();
+	   AddNewRowAction listener = getListener();
 	   assertEquals("", listener.getActualString(null));
 	   assertEquals("", listener.getActualString(""));
 	   assertEquals("", listener.getActualString("1"));
@@ -67,7 +69,7 @@ public class AddNewRowActionListenerTest extends TestCase {
 	}
 	
 	public void testShouldComputeBothEmptyOk() {
-		AddNewRowActionListener listener = getListener();
+		AddNewRowAction listener = getListener();
 		
 		assertEquals(true, listener.isHyphenRequired("llu", "1"));
 		assertEquals(false, listener.isHyphenRequired("llu", null));
