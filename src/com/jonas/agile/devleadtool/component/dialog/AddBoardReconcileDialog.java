@@ -1,9 +1,6 @@
 package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
-import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -31,13 +28,11 @@ public class AddBoardReconcileDialog extends JFrame {
       splitPane.setDividerLocation(-1);
 
       
-      mainPanel.setAddButtonAction(new AddButtonAction());
+//      mainPanel.setAddButtonAction(new AddButtonAction());
+      //FIXME!!
       
       return splitPane;
    }
 
 }
 
-class AddButtonAction implements Action{
-
-}

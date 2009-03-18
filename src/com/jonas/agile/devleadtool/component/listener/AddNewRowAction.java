@@ -4,9 +4,8 @@
 package com.jonas.agile.devleadtool.component.listener;
 
 import java.awt.Frame;
-import java.awt.event.ActionListener;
 import java.util.List;
-import javax.swing.JPanel;
+import javax.swing.AbstractAction;
 import javax.swing.text.JTextComponent;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.MyTable;
@@ -14,15 +13,15 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.common.string.MyStringParser;
 import com.jonas.jira.JiraIssue;
 
-public abstract class AddNewRowActionListener implements ActionListener {
+public abstract class AddNewRowAction extends AbstractAction {
    private final JTextComponent jiraCommas;
    private final JTextComponent jiraPrefix;
-   private Logger log = MyLogger.getLogger(AddNewRowActionListener.class);
+   private Logger log = MyLogger.getLogger(AddNewRowAction.class);
    private MyStringParser parser;
    private MyTable table;
    private final Frame parentFrame;
 
-   public AddNewRowActionListener(MyTable table, JTextComponent jiraPrefix, JTextComponent jiraCommas, Frame parentFrame) {
+   public AddNewRowAction(MyTable table, JTextComponent jiraPrefix, JTextComponent jiraCommas, Frame parentFrame) {
       this.table = table;
       this.jiraPrefix = jiraPrefix;
       this.jiraCommas = jiraCommas;
