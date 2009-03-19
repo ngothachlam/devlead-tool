@@ -163,15 +163,14 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             HSSFCell cell = cit.next();
             int cellType = cell.getCellType();
             log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + colCount);
-            String cellContents = null;
+            Object cellContents = null;
             switch (cellType) {
             case HSSFCell.CELL_TYPE_BLANK:
                cellContents = "";
             case HSSFCell.CELL_TYPE_BOOLEAN:
-               // rowData.add(Boolean.valueOf(cell.getBooleanCellValue()));
+               cellContents = cell.getBooleanCellValue();
                break;
             case HSSFCell.CELL_TYPE_NUMERIC:
-               // // rowData.add(Double.valueOf(cell.getNumericCellValue()));
                String valueOf = String.valueOf(cell.getNumericCellValue());
                cellContents = (valueOf == null ? "" : valueOf);
                break;
@@ -189,7 +188,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, Column> columns, Vector<Object> rowData, int colCount,
-         String cellContents) {
+         Object cellContents) {
       if (rowCount == 0) {
          log.debug("\tHeader!");
          Column column = Column.getEnum(cellContents);
@@ -205,7 +204,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       }
    }
 
-   private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, String cellContents) {
+   private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, Object cellContents) {
       Column column = columns.get(colCount);
       log.debug("\tColumn " + column + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \""
             + cellContents + "\"!");

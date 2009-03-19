@@ -14,7 +14,7 @@ import com.jonas.common.logging.MyLogger;
 public class BoardTableModel extends MyTableModel {
 
    private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge,
-         Column.BoardStatus, Column.Dev_Estimate, Column.Dev_Actual, Column.QA_Estimate, Column.prio, Column.Note };
+         Column.BoardStatus, Column.Old, Column.Dev_Estimate, Column.Dev_Actual, Column.QA_Estimate, Column.prio, Column.Note };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
    private CellColorHelper cellColorHelper = CellColorHelper.getInstance();
 
@@ -29,6 +29,9 @@ public class BoardTableModel extends MyTableModel {
    @Override
    public Color getColor(Object value, int row, Column column) {
       log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
+      if (!isString(value)) {
+         return null;
+      }
       String stringValue = (String) value;
       switch (column) {
       case Dev_Actual:
@@ -59,7 +62,7 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case BoardStatus:
-         //TODO this is not working! the renderer for BoardStatusValue must not get in here for some reason!
+         // TODO this is not working! the renderer for BoardStatusValue must not get in here for some reason!
          BoardStatusValue newValue = BoardStatusValue.get(stringValue);
          switch (newValue) {
          case Resolved:
@@ -77,6 +80,10 @@ public class BoardTableModel extends MyTableModel {
          break;
       }
       return null;
+   }
+
+   private boolean isString(Object value) {
+      return value instanceof String;
    }
 
    private boolean isEmptyString(String stringValue) {
@@ -135,7 +142,7 @@ public class BoardTableModel extends MyTableModel {
          requiredDevActuals.add(BoardStatusValue.ForShowCase);
          requiredDevActuals.add(BoardStatusValue.InQAProgress);
          requiredDevActuals.add(BoardStatusValue.Resolved);
-         
+
          requiredBlankDevActuals.add(BoardStatusValue.Bug);
          requiredBlankDevActuals.add(BoardStatusValue.InDevProgress);
          requiredBlankDevActuals.add(BoardStatusValue.Open);
