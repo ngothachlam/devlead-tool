@@ -95,12 +95,18 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                HSSFCell cell = row.createCell((short) colCount);
                Object valueAt = model.getValueAt(rowCount, colCount);
                log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
+               
+               Column column = model.getColumn(colCount);
+               valueAt = column.parseToData(valueAt);
+               
                if (valueAt == null)
                   cell.setCellValue(new HSSFRichTextString(""));
                else if (valueAt instanceof Boolean) {
                   cell.setCellValue(((Boolean) valueAt).booleanValue());
                } else if (valueAt instanceof Double) {
                   cell.setCellValue(((Double) valueAt).doubleValue());
+               } else if (valueAt instanceof Float) {
+                  cell.setCellValue(((Float) valueAt).floatValue());
                } else {
                   cell.setCellValue(new HSSFRichTextString(valueAt.toString()));
                }
@@ -109,6 +115,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
          fileOut = new FileOutputStream(xlsFile);
          wb.write(fileOut);
+      } catch(Throwable t){
+         t.printStackTrace();
       } finally {
          fileOut.close();
       }
@@ -203,7 +211,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             + cellContents + "\"!");
       Object parsed = null;
       if (column.isToLoad()) {
-         parsed = column.parse(cellContents);
+         parsed = column.parseFromData(cellContents);
          rowData.add(parsed);
       }
    }

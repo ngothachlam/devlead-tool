@@ -44,7 +44,7 @@ public class ColumnTest extends TestCase {
    }
 
    private List<String> getJFixVersionParse(String string) {
-      Object parse = Column.J_FixVersion.parse(string);
+      Object parse = Column.J_FixVersion.parseFromData(string);
       assertTrue(parse instanceof List<?>);
       return (List<String>) parse;
    }
@@ -54,6 +54,17 @@ public class ColumnTest extends TestCase {
       assertEquals( false, Column.Jira.isJiraColumn());
       assertEquals( true, Column.Jira.isEditable());
       assertEquals( true, Column.Jira.isToLoad());
-      assertEquals("KEY", Column.Jira.parse("key"));
+      assertEquals("KEY", Column.Jira.parseFromData("key"));
+   }
+   
+   public void testShouldParseEstimateOk(){
+      assertEquals("", Column.Dev_Estimate.parseFromData(null));
+      assertEquals("", Column.Dev_Estimate.parseFromData(""));
+      assertEquals("key", Column.Dev_Estimate.parseFromData("key"));
+      assertEquals("key", Column.Dev_Estimate.parseToData("key"));
+      assertEquals("1.0", Column.Dev_Estimate.parseFromData("1.0"));
+      assertEquals(1.0d, Column.Dev_Estimate.parseToData("1.0"));
+      assertEquals("1", Column.Dev_Estimate.parseFromData("1"));
+      assertEquals(1d, Column.Dev_Estimate.parseToData("1"));
    }
 }

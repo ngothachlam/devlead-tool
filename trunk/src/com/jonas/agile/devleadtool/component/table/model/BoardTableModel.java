@@ -14,7 +14,7 @@ import com.jonas.common.logging.MyLogger;
 public class BoardTableModel extends MyTableModel {
 
    private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge,
-         Column.BoardStatus, Column.Dev_Estimate, Column.Dev_Actual, Column.prio, Column.Note };
+         Column.BoardStatus, Column.Dev_Estimate, Column.Dev_Actual, Column.QA_Estimate, Column.prio, Column.Note };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
    private CellColorHelper cellColorHelper = CellColorHelper.getInstance();
 
@@ -32,20 +32,26 @@ public class BoardTableModel extends MyTableModel {
       String stringValue = (String) value;
       switch (column) {
       case Dev_Actual:
-         if (stringValue == null || stringValue.trim().length() <= 0) {
-            if (isBoardValueEither(row, cellColorHelper.getRequiredActuals())) {
+         if (isEmptyString(stringValue)) {
+            if (isBoardValueEither(row, cellColorHelper.getRequiredDevActuals())) {
                return SwingUtil.cellRed;
             }
          } else {
-            if (isBoardValueEither(row, cellColorHelper.getNonRequiredActuals())) {
+            if (isBoardValueEither(row, cellColorHelper.getRequiredBlankDevActuals())) {
+               return SwingUtil.cellRed;
+            }
+         }
+         break;
+      case QA_Estimate:
+         if (isEmptyString(stringValue)) {
+            if (isBoardValueEither(row, cellColorHelper.getRequiredQAEstimates())) {
                return SwingUtil.cellRed;
             }
          }
          break;
       case Dev_Estimate:
-         if (stringValue == null || stringValue.trim().length() <= 0) {
-            if (isBoardValueEither(row, cellColorHelper.getRequiredEstimates())) {
-               log.debug("true!");
+         if (isEmptyString(stringValue)) {
+            if (isBoardValueEither(row, cellColorHelper.getRequiredDevEstimates())) {
                return SwingUtil.cellRed;
             }
          } else {
@@ -73,6 +79,10 @@ public class BoardTableModel extends MyTableModel {
       return null;
    }
 
+   private boolean isEmptyString(String stringValue) {
+      return stringValue == null || stringValue.trim().length() <= 0;
+   }
+
    public String getRelease(String jira) {
       if (doesJiraExist(jira))
          return (String) getValueAt(Column.Release, jira);
@@ -95,7 +105,7 @@ public class BoardTableModel extends MyTableModel {
       boolean contains = set.contains(value);
       Iterator<BoardStatusValue> iter = set.iterator();
       while (iter.hasNext()) {
-         BoardStatusValue type = (BoardStatusValue) iter.next();
+         BoardStatusValue type = iter.next();
          log.debug("\tset contains: " + type);
       }
       log.debug("BoardStatus value for row " + row + " is \"" + value + "\"(" + value.getClass() + ") and is required: " + contains);
@@ -105,45 +115,50 @@ public class BoardTableModel extends MyTableModel {
    private static class CellColorHelper {
 
       private static CellColorHelper instance = new CellColorHelper();
-      private Set<BoardStatusValue> requiredEstimates = new HashSet<BoardStatusValue>();
-      private Set<BoardStatusValue> nonRequiredActuals = new HashSet<BoardStatusValue>();
-      private Set<BoardStatusValue> requiredActuals = new HashSet<BoardStatusValue>();
+      private Set<BoardStatusValue> requiredDevEstimates = new HashSet<BoardStatusValue>();
+      private Set<BoardStatusValue> requiredDevActuals = new HashSet<BoardStatusValue>();
+      private Set<BoardStatusValue> requiredBlankDevActuals = new HashSet<BoardStatusValue>();
 
       private CellColorHelper() {
-         requiredEstimates.add(BoardStatusValue.Open);
-         requiredEstimates.add(BoardStatusValue.Bug);
-         requiredEstimates.add(BoardStatusValue.InDevProgress);
-         requiredEstimates.add(BoardStatusValue.Resolved);
-         requiredEstimates.add(BoardStatusValue.InQAProgress);
-         requiredEstimates.add(BoardStatusValue.Complete);
-         requiredEstimates.add(BoardStatusValue.ForShowCase);
-         requiredEstimates.add(BoardStatusValue.Approved);
+         requiredDevEstimates.add(BoardStatusValue.Approved);
+         requiredDevEstimates.add(BoardStatusValue.Bug);
+         requiredDevEstimates.add(BoardStatusValue.Complete);
+         requiredDevEstimates.add(BoardStatusValue.ForShowCase);
+         requiredDevEstimates.add(BoardStatusValue.InDevProgress);
+         requiredDevEstimates.add(BoardStatusValue.InQAProgress);
+         requiredDevEstimates.add(BoardStatusValue.Open);
+         requiredDevEstimates.add(BoardStatusValue.Parked);
+         requiredDevEstimates.add(BoardStatusValue.Resolved);
 
-         nonRequiredActuals.add(BoardStatusValue.Open);
-         nonRequiredActuals.add(BoardStatusValue.Bug);
-         nonRequiredActuals.add(BoardStatusValue.InDevProgress);
+         requiredDevActuals.add(BoardStatusValue.Approved);
+         requiredDevActuals.add(BoardStatusValue.Complete);
+         requiredDevActuals.add(BoardStatusValue.ForShowCase);
+         requiredDevActuals.add(BoardStatusValue.InQAProgress);
+         requiredDevActuals.add(BoardStatusValue.Resolved);
+         
+         requiredBlankDevActuals.add(BoardStatusValue.Bug);
+         requiredBlankDevActuals.add(BoardStatusValue.InDevProgress);
+         requiredBlankDevActuals.add(BoardStatusValue.Open);
+      }
 
-         requiredActuals.add(BoardStatusValue.Resolved);
-         requiredActuals.add(BoardStatusValue.InQAProgress);
-         requiredActuals.add(BoardStatusValue.Complete);
-         requiredActuals.add(BoardStatusValue.ForShowCase);
-         requiredActuals.add(BoardStatusValue.Approved);
+      public Set<BoardStatusValue> getRequiredQAEstimates() {
+         return requiredDevEstimates;
       }
 
       public static CellColorHelper getInstance() {
          return instance;
       }
 
-      public Set<BoardStatusValue> getRequiredActuals() {
-         return requiredActuals;
+      public Set<BoardStatusValue> getRequiredDevActuals() {
+         return requiredDevActuals;
       }
 
-      public Set<BoardStatusValue> getNonRequiredActuals() {
-         return nonRequiredActuals;
+      public Set<BoardStatusValue> getRequiredBlankDevActuals() {
+         return requiredBlankDevActuals;
       }
 
-      private Set<BoardStatusValue> getRequiredEstimates() {
-         return requiredEstimates;
+      private Set<BoardStatusValue> getRequiredDevEstimates() {
+         return requiredDevEstimates;
       }
    }
 }
