@@ -9,11 +9,11 @@ import java.util.List;
 public enum Column {
    // String Defaults
    Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-      
-      public String parse(String cellContents) {
+
+      public String parseFromData(Object cellContents) {
          if (cellContents == null)
             return null;
-         return cellContents.toUpperCase();
+         return cellContents.toString().toUpperCase();
       }
    },
    Description(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
@@ -28,7 +28,7 @@ public enum Column {
    Note(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
    Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes),
    BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-      public BoardStatusValue parse(String cellContents) {
+      public BoardStatusValue parseFromData(String cellContents) {
          return BoardStatusValue.get(cellContents);
       }
    },
@@ -39,15 +39,18 @@ public enum Column {
    J_BuildNo(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes),
    J_FixVersion(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes) {
       @Override
-      public Object parse(String cellContents) {
+      public Object parseFromData(Object cellContents) {
          List<String> arrayList = new ArrayList<String>();
-         if (cellContents == null || cellContents.trim().length() == 0) {
-            return arrayList;
-         }
-         cellContents = cellContents.substring(1, cellContents.length() - 1);
-         String[] split = cellContents.split("(, )");
-         for (String string : split) {
-            arrayList.add(string);
+         if (cellContents instanceof String) {
+            String cellContentsAsString = cellContents.toString();
+            if (cellContentsAsString == null || cellContentsAsString.trim().length() == 0) {
+               return arrayList;
+            }
+            cellContentsAsString = cellContentsAsString.substring(1, cellContentsAsString.length() - 1);
+            String[] split = cellContentsAsString.split("(, )");
+            for (String string : split) {
+               arrayList.add(string);
+            }
          }
          return arrayList;
       }
@@ -61,7 +64,7 @@ public enum Column {
 
    // Integer
    prio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes) {
-      public Integer parse(String cellContents) {
+      public Integer parseFromData(String cellContents) {
          if (cellContents == null || cellContents.trim().length() == 0)
             return -1;
          // we do parse a double initially as Cell's in spreadsheet (xls) will become 10.0 - not 10, which will otherwise result in numberformat
@@ -72,7 +75,7 @@ public enum Column {
 
    // Boolean Defaults
    isParked(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes) {
-      public Boolean parse(String cellContents) {
+      public Boolean parseFromData(String cellContents) {
          return Boolean.parseBoolean(cellContents);
       }
    };
@@ -131,8 +134,30 @@ public enum Column {
       return isToLoad.boolValue();
    }
 
-   public Object parse(String cellContents) {
-      return cellContents;
+   public Object parseFromData(Object cellContents) {
+      return cellContents == null ? "" : cellContents.toString();
+   }
+
+   /**
+    * The idea is that anything that can be interpreted to a double should be converted to a double when saving the data
+    * So that SUM(A:A) can be done for instance. Loading it back again needs to display it as a string.
+    * @param value
+    * @return
+    */
+   public Object parseToData(Object value) {
+      if(value != null && value instanceof String ){
+         String string = (String) value;
+         if (string.trim().isEmpty()) {
+            return string;
+         }
+         try {
+            Double doubleV = Double.valueOf(string);
+            return doubleV;
+         } catch (NumberFormatException e) {
+            return string;
+         }
+      }
+      return value;
    }
 
 }
