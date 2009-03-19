@@ -8,6 +8,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
 
@@ -34,6 +35,13 @@ public class BoardTableModel extends MyTableModel {
       }
       String stringValue = (String) value;
       switch (column) {
+      case J_Resolution:
+         if (!isEmptyString(stringValue)) {
+            BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(Column.BoardStatus, row);
+            if (!BoardStatusValueToJiraStatusMap.isMappedOk(boardStatus, stringValue))
+               return SwingUtil.cellRed;
+         }
+         break;
       case Dev_Actual:
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevActuals())) {
