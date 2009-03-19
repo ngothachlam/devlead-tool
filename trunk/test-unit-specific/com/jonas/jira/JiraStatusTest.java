@@ -13,11 +13,11 @@ public class JiraStatusTest extends TestCase {
    }
    
    public void testAllStatusesExist(){
-      assertEquals(JiraStatus.OPEN, JiraStatus.getJiraStatusById("1"));
-      assertEquals(JiraStatus.INPROGRESS, JiraStatus.getJiraStatusById("3"));
-      assertEquals(JiraStatus.REOPENED, JiraStatus.getJiraStatusById("4"));
-      assertEquals(JiraStatus.RESOLVED, JiraStatus.getJiraStatusById("5"));
-      assertEquals(JiraStatus.CLOSED, JiraStatus.getJiraStatusById("6"));
+      assertEquals(JiraStatus.Open, JiraStatus.getJiraStatusById("1"));
+      assertEquals(JiraStatus.InProgress, JiraStatus.getJiraStatusById("3"));
+      assertEquals(JiraStatus.ReOpened, JiraStatus.getJiraStatusById("4"));
+      assertEquals(JiraStatus.Resolved, JiraStatus.getJiraStatusById("5"));
+      assertEquals(JiraStatus.Closed, JiraStatus.getJiraStatusById("6"));
    }
 
 }

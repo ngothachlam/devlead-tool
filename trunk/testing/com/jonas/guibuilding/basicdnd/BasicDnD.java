@@ -145,7 +145,7 @@ public class BasicDnD extends JPanel {
       return new BoardTableModel(data, columns);
    }
 
-   private JiraTableModel getTestModelJira() {
+   private MyTableModel getTestModelJira() {
       Vector<Vector<Object>> data = new Vector<Vector<Object>>();
       data.add(getTestRow("Jira-1"));
       data.add(getTestRow("Jira-2"));
