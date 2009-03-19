@@ -162,11 +162,10 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       boardPanel = new BoardPanel(boardModel);
       sprintPanel = new DnDTreePanel(tree, helper.getParentFrame());
       jiraPanel = new JiraPanel(jiraModel);
+      JPanel jiraButtonPanel = getJiraPanelButtonRow();
 
       JPanel jiraMainPanel = new JPanel(new BorderLayout());
       jiraMainPanel.add(jiraPanel, BorderLayout.CENTER);
-      JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
-      jiraButtonPanel.add(new JCheckBox(new HighlightIssuesAction("Higlight Issues", (JiraTableModel) jiraPanel.getTable().getModel())));
       jiraMainPanel.add(jiraButtonPanel, BorderLayout.SOUTH);
 
       boardTable = boardPanel.getTable();
@@ -182,6 +181,13 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
       addNorth(createAndGetTopPanel(helper));
       addCenter(combineIntoSplitPane(boardPanel, jiraMainPanel, sprintPanel));
+   }
+
+   private JPanel getJiraPanelButtonRow() {
+      JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
+      HighlightIssuesAction highlightAction = new HighlightIssuesAction("Higlight Issues", (MyTableModel) jiraPanel.getTable().getModel(), jiraPanel.getTable());
+      jiraButtonPanel.add(new JCheckBox(highlightAction));
+      return jiraButtonPanel;
    }
 
    private JPanel createAndGetTopPanel(PlannerHelper helper) {
@@ -203,12 +209,12 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       sprintTree.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
    }
 
-   private void setJiraDataListener(JiraTableModel jiraModel, final BoardTableModel boardModel, SprintTree sprintTree, MyTable boardTable) {
+   private void setJiraDataListener(MyTableModel jiraModel, final BoardTableModel boardModel, SprintTree sprintTree, MyTable boardTable) {
       jiraPanel.getTable().addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, jiraPanel.getTable(), boardTable));
       jiraModel.addTableModelListener(new FireUpdateOnOtherTableWhenUpdatedListener(boardTable));
    }
 
-   public void wireUpListeners(BoardTableModel boardModel, JiraTableModel jiraModel, SprintTree tree) {
+   public void wireUpListeners(BoardTableModel boardModel, MyTableModel jiraModel, SprintTree tree) {
       MyTable boardTable = boardPanel.getTable();
       MyTable jiraTable = jiraPanel.getTable();
       SprintTree sprintTree = sprintPanel.getTree();
@@ -248,24 +254,43 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    }
 
    private final class HighlightIssuesAction extends AbstractAction {
-      private final JiraTableModel jiramodel;
+      private final MyTableModel jiraModel;
+      private final MyTable jiraTable;
 
-      private HighlightIssuesAction(String name, JiraTableModel jiramodel) {
+      private HighlightIssuesAction(String name, MyTableModel jiramodel, MyTable jiraTable) {
          super(name);
-         this.jiramodel = jiramodel;
+         this.jiraModel = jiramodel;
+         this.jiraTable = jiraTable;
       }
 
       @Override
       public void actionPerformed(ActionEvent e) {
          JCheckBox button = (JCheckBox) e.getSource();
+
+         int[] selectedRows = saveSelection();
+
          if (button.isSelected()) {
-            jiramodel.setRenderColors(true);
-            jiramodel.fireTableDataChanged();
+            jiraModel.setRenderColors(true);
+            jiraModel.fireTableDataChanged();
             log.debug("Setting rendering colors to TRUE");
          } else {
-            jiramodel.setRenderColors(false);
+            jiraModel.setRenderColors(false);
+            jiraModel.fireTableDataChanged();
             log.debug("Setting rendering colors to FALSE");
          }
+
+         resetSelection(selectedRows);
+      }
+
+      private void resetSelection(int[] selectedRows) {
+         for (int i = 0; i < selectedRows.length; i++) {
+            jiraTable.setRowSelectionInterval(i, i);
+         }
+      }
+
+      private int[] saveSelection() {
+         int[] selectedRows = jiraTable.getSelectedRows();
+         return selectedRows;
       }
    }
 
@@ -386,7 +411,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    }
 }
 
-abstract class BasicActionListener implements ActionListener{
+
+abstract class BasicActionListener implements ActionListener {
 
    private Frame parentFrame;
 
@@ -397,14 +423,13 @@ abstract class BasicActionListener implements ActionListener{
 
    @Override
    public final void actionPerformed(ActionEvent e) {
-      try{
+      try {
          doActionPerformed(e);
-      }
-      catch(Throwable ex){
+      } catch (Throwable ex) {
          AlertDialog.alertException(parentFrame, ex);
       }
    }
 
    public abstract void doActionPerformed(ActionEvent e);
-   
+
 }

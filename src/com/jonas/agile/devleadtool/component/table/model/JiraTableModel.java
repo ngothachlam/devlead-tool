@@ -1,11 +1,9 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.CalculatorHelper;
 import com.jonas.common.SwingUtil;
@@ -19,7 +17,6 @@ public class JiraTableModel extends MyTableModel {
    private MyTableModel boardModel;
    private int tempRow = -1;
    private int jiraRowInBoardModel;
-   private boolean renderColors = false;
 
    public JiraTableModel() {
       super(columns);
@@ -33,13 +30,9 @@ public class JiraTableModel extends MyTableModel {
       this.boardModel = boardModel;
    }
 
-   public void setRenderColors(boolean renderColors) {
-      this.renderColors = renderColors;
-   }
-
    @Override
    public Color getColor(Object value, int row, Column column) {
-      if (renderColors != true) {
+      if (shouldRenderColors()) {
          return null;
       }
 

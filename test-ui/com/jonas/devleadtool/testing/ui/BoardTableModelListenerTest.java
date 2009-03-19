@@ -7,6 +7,7 @@ import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
+import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class BoardTableModelListenerTest extends JonasTestCase {
@@ -16,7 +17,7 @@ public class BoardTableModelListenerTest extends JonasTestCase {
 
    protected void setUp() throws Exception {
       BoardTableModel boardModel = new BoardTableModel();
-      JiraTableModel jiraModel = new JiraTableModel();
+      MyTableModel jiraModel = new JiraTableModel();
 
       boardTable = new MyTable("board", boardModel, true);
       jiraTable = new MyTable("jira", jiraModel, false);

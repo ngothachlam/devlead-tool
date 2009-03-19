@@ -2,20 +2,31 @@ package com.jonas.agile.devleadtool.component.table;
 
 import java.util.HashSet;
 import java.util.Set;
+import com.jonas.jira.JiraStatus;
 
 public enum BoardStatusValue {
-   UnKnown(0, "Open"), NA(0), Open(1, "Open"), Bug(1, "Open", "Reopened"), Parked(1), InDevProgress(2), Resolved(3), InQAProgress(4), Complete(5), ForShowCase(6), Approved(7);
+   UnKnown(0, JiraStatus.Open),
+   NA(0, JiraStatus.Open),
+   Open(1, JiraStatus.Open),
+   Bug(1, JiraStatus.Open, JiraStatus.ReOpened),
+   Parked(1, JiraStatus.Open, JiraStatus.InProgress, JiraStatus.Resolved),
+   InDevProgress(2, JiraStatus.Open, JiraStatus.InProgress),
+   Resolved(3, JiraStatus.Resolved),
+   InQAProgress(4, JiraStatus.Resolved),
+   Complete(5, JiraStatus.Closed),
+   ForShowCase(6, JiraStatus.Closed),
+   Approved(7, JiraStatus.Closed);
 
    private String toString;
    private String name;
-   private Set<String> statuses = new HashSet<String>();
+   private Set<JiraStatus> statuses = new HashSet<JiraStatus>();
 
-   private BoardStatusValue(int number, String... jiraStatuses) {
+   private BoardStatusValue(int number, JiraStatus... jiraStatuses) {
       StringBuffer sb = new StringBuffer();
       sb.append(number).append(". ").append(super.toString());
       toString = sb.toString();
       name = super.toString();
-      for (String jiraStatus : jiraStatuses) {
+      for (JiraStatus jiraStatus : jiraStatuses) {
          statuses.add(jiraStatus);
       }
    }
@@ -23,6 +34,7 @@ public enum BoardStatusValue {
    public String toString() {
       return toString;
    }
+
    public String getName() {
       return name;
    }
@@ -39,7 +51,7 @@ public enum BoardStatusValue {
       return null;
    }
 
-   public Set<String> getJiraStatuses() {
+   public Set<JiraStatus> getJiraStatuses() {
       return statuses;
    }
 

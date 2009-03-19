@@ -27,7 +27,6 @@ public class JiraPanel extends MyComponentPanel {
       JScrollPane scrollpane = new MyScrollPane(table);
 
       addCenter(scrollpane);
-//      addSouth(getButtonPanel());
       setBorder(BorderFactory.createTitledBorder("Jira"));
    }
 

@@ -6,26 +6,28 @@ import junit.framework.TestCase;
 public class BoardStatusValueToJiraStatusMapTest extends TestCase {
 
    public void testShouldMapOk() {
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Approved, "Closed (Fixed)"));
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Bug, "Reopened (Fixed)"));
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Complete, "Closed (Fixed)"));
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.ForShowCase, "Closed (Fixed)"));
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.InDevProgress, "In Progress (Fixed)"));
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.InDevProgress, "Open (Fixed)"));
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.InQAProgress, "Resolved (Fixed)"));
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.NA, "Open (Fixed)"));
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.NA, "Reopened (Fixed)"));
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Open, "Open (Resolved)"));
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Parked, "Open (Resolved)"));
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Resolved, "Open (Resolved)"));
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.UnKnown, "Open (Resolved)"));
-      
-      assertFalse(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Open, "Resolved (Fixed)"));
-      assertFalse(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Open, "Resolved (Fixed)"));
-      
-      fdsf
-      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.UnKnown, "Open (Resolved)"));
-      assertFalse(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.UnKnown, "Resolved (Fixed)"));
+      assertTrue(isMappingOk(BoardStatusValue.Approved, "Closed (Fixed)"));
+      assertTrue(isMappingOk(BoardStatusValue.Bug, "Reopened (Fixed)"));
+      assertTrue(isMappingOk(BoardStatusValue.Complete, "Closed (Fixed)"));
+      assertTrue(isMappingOk(BoardStatusValue.ForShowCase, "Closed (Fixed)"));
+      assertTrue(isMappingOk(BoardStatusValue.InDevProgress, "In Progress (Fixed)"));
+      assertTrue(isMappingOk(BoardStatusValue.InDevProgress, "Open (Fixed)"));
+      assertTrue(isMappingOk(BoardStatusValue.InQAProgress, "Resolved (Fixed)"));
+      assertTrue(isMappingOk(BoardStatusValue.NA, "Open (Fixed)"));
+      assertTrue(isMappingOk(BoardStatusValue.Open, "Open (Resolved)"));
+      assertTrue(isMappingOk(BoardStatusValue.Parked, "Open (Resolved)"));
+      assertTrue(isMappingOk(BoardStatusValue.Resolved, "Resolved (Resolved)"));
+      assertTrue(isMappingOk(BoardStatusValue.UnKnown, "Open (Resolved)"));
+
+      assertFalse(isMappingOk(BoardStatusValue.Open, "Resolved (Open)"));
+      assertFalse(isMappingOk(BoardStatusValue.UnKnown, "Resolved (Fixed)"));
+   }
+
+   private boolean isMappingOk(BoardStatusValue approved, String jiraStatus) {
+      // long currentMillis = System.currentTimeMillis();
+      boolean mappedOk = BoardStatusValueToJiraStatusMap.isMappedOk(approved, jiraStatus);
+      // System.out.println(System.currentTimeMillis() - currentMillis);
+      return mappedOk;
    }
 
 }
