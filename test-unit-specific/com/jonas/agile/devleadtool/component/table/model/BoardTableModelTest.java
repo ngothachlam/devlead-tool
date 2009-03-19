@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.Vector;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.jira.JiraIssue;
 
@@ -60,12 +61,13 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(new Integer(3).intValue(), columnNames.get(Column.Release).intValue());
       assertEquals(new Integer(4).intValue(), columnNames.get(Column.Merge).intValue());
       assertEquals(new Integer(5).intValue(), columnNames.get(Column.BoardStatus).intValue());
-      assertEquals(new Integer(6).intValue(), columnNames.get(Column.Dev_Estimate).intValue());
-      assertEquals(new Integer(7).intValue(), columnNames.get(Column.Dev_Actual).intValue());
-      assertEquals(new Integer(8).intValue(), columnNames.get(Column.QA_Estimate).intValue());
-      assertEquals(new Integer(9).intValue(), columnNames.get(Column.prio).intValue());
-      assertEquals(new Integer(10).intValue(), columnNames.get(Column.Note).intValue());
-      assertEquals(11, columnNames.size());
+      assertEquals(new Integer(6).intValue(), columnNames.get(Column.Old).intValue());
+      assertEquals(new Integer(7).intValue(), columnNames.get(Column.Dev_Estimate).intValue());
+      assertEquals(new Integer(8).intValue(), columnNames.get(Column.Dev_Actual).intValue());
+      assertEquals(new Integer(9).intValue(), columnNames.get(Column.QA_Estimate).intValue());
+      assertEquals(new Integer(10).intValue(), columnNames.get(Column.prio).intValue());
+      assertEquals(new Integer(11).intValue(), columnNames.get(Column.Note).intValue());
+      assertEquals(12, columnNames.size());
    }
 
    public void testShouldGetAnyBoolColumnBackOk() {
@@ -111,6 +113,7 @@ public class BoardTableModelTest extends JonasTestCase {
       header.add(Column.Release);
       header.add(Column.Merge);
       header.add(Column.BoardStatus);
+      header.add(Column.Old);
       header.add(Column.Dev_Estimate);
       header.add(Column.Dev_Actual);
       header.add(Column.QA_Estimate);
@@ -122,7 +125,7 @@ public class BoardTableModelTest extends JonasTestCase {
       MyTableModel model = new BoardTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(11, model.getColumnCount());
+      assertEquals(12, model.getColumnCount());
       assertEquals("0.0", model.getValueAt(0, 0));
       assertEquals("0.1", model.getValueAt(0, 1));
       assertEquals("0.2", model.getValueAt(0, 2));
@@ -143,18 +146,32 @@ public class BoardTableModelTest extends JonasTestCase {
 
    public void testGetEmptyRowFromBoard() {
       Object[] emptyRow = model.getEmptyRow();
-      assertEquals(11, emptyRow.length);
+      assertEquals(12, emptyRow.length);
       assertEquals("", emptyRow[0]);
       assertEquals("", emptyRow[1]);
       assertEquals("", emptyRow[2]);
       assertEquals("", emptyRow[3]);
       assertEquals("", emptyRow[4]);
       assertEquals(BoardStatusValue.UnKnown, emptyRow[5]);
-      assertEquals("", emptyRow[6]);
+      assertEquals(false, emptyRow[6]);
       assertEquals("", emptyRow[7]);
       assertEquals("", emptyRow[8]);
-      assertEquals(null, emptyRow[9]);
-      assertEquals("", emptyRow[10]);
+      assertEquals("", emptyRow[9]);
+      assertEquals(null, emptyRow[10]);
+      assertEquals("", emptyRow[11]);
    }
 
+   public void testGetEmptyRowFromBodard() {
+      assertTrue( BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Approved, "Closed (Fixed)") );
+      assertFalse( BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Bug, "Closed (Fixed)"));
+//      model.isMappedOk(BoardStatusValue.Complete, "Closed (Fixed)");
+//      model.isMappedOk(BoardStatusValue.ForShowCase, "Closed (Fixed)");
+//      model.isMappedOk(BoardStatusValue.InDevProgress, "Closed (Fixed)");
+//      model.isMappedOk(BoardStatusValue.InQAProgress, "Closed (Fixed)");
+//      model.isMappedOk(BoardStatusValue.NA, "Closed (Fixed)");
+//      model.isMappedOk(BoardStatusValue.Open, "Closed (Fixed)");
+//      model.isMappedOk(BoardStatusValue.Parked, "Closed (Fixed)");
+//      model.isMappedOk(BoardStatusValue.Resolved, "Closed (Fixed)");
+//      model.isMappedOk(BoardStatusValue.UnKnown, "Closed (Fixed)");
+   }
 }
