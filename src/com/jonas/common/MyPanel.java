@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.LayoutManager;
 import java.awt.event.ActionListener;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -73,6 +74,12 @@ public class MyPanel extends JPanel {
 
    public JButton addButton(JPanel buttonPanel, String string) {
       JButton button = new JButton(string);
+      buttonPanel.add(button);
+      return button;
+   }
+   
+   public JButton addButton(JPanel buttonPanel, Action action) {
+      JButton button = new JButton(action);
       buttonPanel.add(button);
       return button;
    }

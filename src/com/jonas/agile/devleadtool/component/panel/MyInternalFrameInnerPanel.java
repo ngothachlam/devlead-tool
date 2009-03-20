@@ -9,9 +9,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -144,6 +148,37 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          @Override
          public void doActionPerformed(ActionEvent e) {
             new AddVersionDialog(helper.getParentFrame(), array);
+         }
+      });
+      JButton addButton = addButton(panel, new BasicAbstractAction("Duplicates?", "Higlight Duplicates in the Board Panel", helper.getParentFrame()){
+         @Override
+         public void doActionPerformed(ActionEvent e) {
+            Set<String> duplicateJiras = findAnyDuplicateJiras(boardTable);
+            presentTheDuplicateJiras(helper, duplicateJiras);
+         }
+
+         private Set<String> findAnyDuplicateJiras(final MyTable boardTable) {
+            int rows = boardTable.getRowCount();
+            Set<String> duplicateJiras = new HashSet<String>(); 
+            for (int row = 0; row < rows; row++) {
+               String jira = (String) boardTable.getValueAt(Column.Jira, row);
+               for (int compareRow = row+1; compareRow < rows; compareRow++) {
+                  String compareJira = (String) boardTable.getValueAt(Column.Jira, compareRow);
+                  if(jira.equalsIgnoreCase(compareJira)){
+                     duplicateJiras.add(jira);
+                  }
+               }
+            }
+            return duplicateJiras;
+         }
+
+         private void presentTheDuplicateJiras(final PlannerHelper helper, Set<String> duplicateJiras) {
+            StringBuffer sb = new StringBuffer();
+            for (String string : duplicateJiras) {
+               sb.append(string).append(" ");
+            }
+            
+            AlertDialog.alertMessage(helper.getParentFrame(), sb.toString());
          }
       });
 
@@ -432,4 +467,28 @@ abstract class BasicActionListener implements ActionListener {
 
    public abstract void doActionPerformed(ActionEvent e);
 
+}
+
+abstract class BasicAbstractAction extends AbstractAction{
+   
+   private Frame parentFrame;
+
+   public BasicAbstractAction(String name, String description, Frame parentFrame){
+      super(name);
+      putValue(Action.SHORT_DESCRIPTION, name);
+      this.parentFrame = parentFrame;
+   }
+   
+   @Override 
+   public final void actionPerformed(ActionEvent e) {
+      try {
+         doActionPerformed(e);
+      } catch (Throwable ex) {
+         AlertDialog.alertException(parentFrame, ex);
+      }
+   }
+
+   public abstract void doActionPerformed(ActionEvent e);
+   
+   
 }

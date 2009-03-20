@@ -31,7 +31,7 @@ public class BoardTableModel extends MyTableModel {
    public Color getColor(Object value, int row, Column column) {
       log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
       if (!isString(value)) {
-         return SwingUtil.cellRed;
+         return null;
       }
       String stringValue = (String) value;
       switch (column) {
@@ -43,7 +43,6 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case Dev_Remain:
-         System.out.println("DevRemain: stringValue: \"" + stringValue + "\" row: " + row);
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
                // red if dev remain not filled out and the board status reflect that it should be filled out
