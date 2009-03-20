@@ -150,8 +150,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
             new AddVersionDialog(helper.getParentFrame(), array);
          }
       });
-      addButton(panel,
-            new CheckForDuplicatesAction("Duplicates?", "Higlight Duplicates in the Board Panel", helper.getParentFrame(), boardTable));
+      addButton(panel, new CheckForDuplicatesAction("Duplicates?", "Higlight Duplicates in Board", helper.getParentFrame(), boardTable));
+      addButton(panel, new BoardStatsAction("Board Stats", "Showing Board Statistics", helper.getParentFrame(), boardTable));
 
       return panel;
    }
@@ -233,6 +233,25 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       editableCheckBox.addActionListener(new EditableListener());
 
       jiraParseListener.setTree(tree);
+   }
+
+   private final class BoardStatsAction extends BasicAbstractAction {
+      private final MyTable sourceTable;
+
+      private BoardStatsAction(String name, String description, Frame parentFrame, MyTable sourceTable) {
+         super(name, description, parentFrame);
+         this.sourceTable = sourceTable;
+      }
+
+      @Override
+      public void doActionPerformed(ActionEvent e) {
+         int rows = boardTable.getRowCount();
+         double totalEstimates = 0d;
+         double remainingEstimates = 0d;
+         for (int row = 0; row < rows; row++) {
+            jhgjhg
+         }
+      }
    }
 
    private final class CheckForDuplicatesAction extends BasicAbstractAction {
