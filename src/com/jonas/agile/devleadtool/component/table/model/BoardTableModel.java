@@ -15,9 +15,9 @@ import com.jonas.common.logging.MyLogger;
 public class BoardTableModel extends MyTableModel {
 
    private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge,
-         Column.BoardStatus, Column.Old, Column.Dev_Estimate, Column.Dev_Actual, Column.QA_Estimate, Column.prio, Column.Note };
+         Column.BoardStatus, Column.Old, Column.Dev_Estimate, Column.Dev_Remain, Column.Dev_Actual, Column.QA_Estimate, Column.prio, Column.Note };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
-   private CellColorHelper cellColorHelper = CellColorHelper.getInstance();
+   private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
 
    public BoardTableModel() {
       super(columns);
@@ -31,7 +31,7 @@ public class BoardTableModel extends MyTableModel {
    public Color getColor(Object value, int row, Column column) {
       log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
       if (!isString(value)) {
-         return null;
+         return SwingUtil.cellRed;
       }
       String stringValue = (String) value;
       switch (column) {
@@ -40,6 +40,29 @@ public class BoardTableModel extends MyTableModel {
             BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(Column.BoardStatus, row);
             if (!BoardStatusValueToJiraStatusMap.isMappedOk(boardStatus, stringValue))
                return SwingUtil.cellRed;
+         }
+         break;
+      case Dev_Remain:
+         System.out.println("DevRemain: stringValue: \"" + stringValue + "\" row: " + row);
+         if (isEmptyString(stringValue)) {
+            if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
+               // red if dev remain not filled out and the board status reflect that it should be filled out
+               return SwingUtil.cellRed;
+            }
+         } else {
+            if (!isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
+               // red if dev remain is filled out and the board status reflect that it should not be filled out
+               return SwingUtil.cellRed;
+            }
+         }
+         break;
+      case Dev_Estimate:
+         if (isEmptyString(stringValue)) {
+            if (isBoardValueEither(row, cellColorHelper.getRequiredDevEstimates())) {
+               return SwingUtil.cellRed;
+            }
+         } else {
+
          }
          break;
       case Dev_Actual:
@@ -58,15 +81,6 @@ public class BoardTableModel extends MyTableModel {
             if (isBoardValueEither(row, cellColorHelper.getRequiredQAEstimates())) {
                return SwingUtil.cellRed;
             }
-         }
-         break;
-      case Dev_Estimate:
-         if (isEmptyString(stringValue)) {
-            if (isBoardValueEither(row, cellColorHelper.getRequiredDevEstimates())) {
-               return SwingUtil.cellRed;
-            }
-         } else {
-
          }
          break;
       case BoardStatus:
@@ -125,55 +139,5 @@ public class BoardTableModel extends MyTableModel {
       }
       log.debug("BoardStatus value for row " + row + " is \"" + value + "\"(" + value.getClass() + ") and is required: " + contains);
       return contains;
-   }
-
-   private static class CellColorHelper {
-
-      private static CellColorHelper instance = new CellColorHelper();
-      private Set<BoardStatusValue> requiredDevEstimates = new HashSet<BoardStatusValue>();
-      private Set<BoardStatusValue> requiredDevActuals = new HashSet<BoardStatusValue>();
-      private Set<BoardStatusValue> requiredBlankDevActuals = new HashSet<BoardStatusValue>();
-
-      private CellColorHelper() {
-         requiredDevEstimates.add(BoardStatusValue.Approved);
-         requiredDevEstimates.add(BoardStatusValue.Bug);
-         requiredDevEstimates.add(BoardStatusValue.Complete);
-         requiredDevEstimates.add(BoardStatusValue.ForShowCase);
-         requiredDevEstimates.add(BoardStatusValue.InDevProgress);
-         requiredDevEstimates.add(BoardStatusValue.InQAProgress);
-         requiredDevEstimates.add(BoardStatusValue.Open);
-         requiredDevEstimates.add(BoardStatusValue.Parked);
-         requiredDevEstimates.add(BoardStatusValue.Resolved);
-
-         requiredDevActuals.add(BoardStatusValue.Approved);
-         requiredDevActuals.add(BoardStatusValue.Complete);
-         requiredDevActuals.add(BoardStatusValue.ForShowCase);
-         requiredDevActuals.add(BoardStatusValue.InQAProgress);
-         requiredDevActuals.add(BoardStatusValue.Resolved);
-
-         requiredBlankDevActuals.add(BoardStatusValue.Bug);
-         requiredBlankDevActuals.add(BoardStatusValue.InDevProgress);
-         requiredBlankDevActuals.add(BoardStatusValue.Open);
-      }
-
-      public Set<BoardStatusValue> getRequiredQAEstimates() {
-         return requiredDevEstimates;
-      }
-
-      public static CellColorHelper getInstance() {
-         return instance;
-      }
-
-      public Set<BoardStatusValue> getRequiredDevActuals() {
-         return requiredDevActuals;
-      }
-
-      public Set<BoardStatusValue> getRequiredBlankDevActuals() {
-         return requiredBlankDevActuals;
-      }
-
-      private Set<BoardStatusValue> getRequiredDevEstimates() {
-         return requiredDevEstimates;
-      }
    }
 }
