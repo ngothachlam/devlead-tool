@@ -2,8 +2,15 @@ For getting xml back from Jira to see what it looks like: use the JiraXMLHelper!
 
 For testing soap and httpclient interaction. Try JiraSoapClientFunctionalTest and ... respectively. 
 
-
 TODO:
+* Present Board Panel's board stats
+	User gives: Length of Sprint, Where in current sprint
+	Given from panel: Total Dev Estimates, Total QA Estimates, Remaining Dev Est, Remaining QA Estimates
+	Calculate further: Estimated length of sprint
+	Add further: Show no of bugs, merges in sprint as well. 
+* Add Types: Bug, Merge, Other (to be parsed in board stats)
+
+
 *BUG: The file name is not loaded onto the planner on the first load. 
 
 *Add a new sprint screen: 
