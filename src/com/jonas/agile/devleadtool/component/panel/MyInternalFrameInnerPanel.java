@@ -150,7 +150,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
             new AddVersionDialog(helper.getParentFrame(), array);
          }
       });
-      JButton addButton = addButton(panel, new CheckForDuplicatesAction("Duplicates?", "Higlight Duplicates in the Board Panel", helper.getParentFrame(), boardTable));
+      addButton(panel,
+            new CheckForDuplicatesAction("Duplicates?", "Higlight Duplicates in the Board Panel", helper.getParentFrame(), boardTable));
 
       return panel;
    }
@@ -190,7 +191,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private JPanel getJiraPanelButtonRow() {
       JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
-      HighlightIssuesAction highlightAction = new HighlightIssuesAction("Higlight Issues", (MyTableModel) jiraPanel.getTable().getModel(), jiraPanel.getTable());
+      HighlightIssuesAction highlightAction = new HighlightIssuesAction("Higlight Issues", (MyTableModel) jiraPanel.getTable().getModel(),
+            jiraPanel.getTable());
       jiraButtonPanel.add(new JCheckBox(highlightAction));
       return jiraButtonPanel;
    }
@@ -234,32 +236,34 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    }
 
    private final class CheckForDuplicatesAction extends BasicAbstractAction {
-      private final MyTable boardTable;
+      private final MyTable sourceTable;
 
-      private CheckForDuplicatesAction(String name, String description, Frame parentFrame, MyTable boardTable) {
+      private CheckForDuplicatesAction(String name, String description, Frame parentFrame, MyTable sourceTable) {
          super(name, description, parentFrame);
-         this.boardTable = boardTable;
+         this.sourceTable = sourceTable;
       }
 
       @Override
       public void doActionPerformed(ActionEvent e) {
-         Set<String> duplicateJiras = findAnyDuplicateJiras(boardTable);
+         Set<String> duplicateJiras = findAnyDuplicateJirasInTable(sourceTable);
          presentTheDuplicateJiras(duplicateJiras);
       }
 
-      private Set<String> findAnyDuplicateJiras(final MyTable boardTable) {
+      private Set<String> findAnyDuplicateJirasInTable(final MyTable boardTable) {
          int rows = boardTable.getRowCount();
-         Set<String> duplicateJiras = new HashSet<String>(); 
+         Set<String> duplicateJirasInTable = new HashSet<String>();
          for (int row = 0; row < rows; row++) {
             String jira = (String) boardTable.getValueAt(Column.Jira, row);
-            for (int compareRow = row+1; compareRow < rows; compareRow++) {
-               String compareJira = (String) boardTable.getValueAt(Column.Jira, compareRow);
-               if(jira.equalsIgnoreCase(compareJira)){
-                  duplicateJiras.add(jira);
+            if (!duplicateJirasInTable.contains(jira)) {
+               for (int compareRow = row + 1; compareRow < rows; compareRow++) {
+                  String compareJira = (String) boardTable.getValueAt(Column.Jira, compareRow);
+                  if (jira.equalsIgnoreCase(compareJira)) {
+                     duplicateJirasInTable.add(jira);
+                  }
                }
             }
          }
-         return duplicateJiras;
+         return duplicateJirasInTable;
       }
 
       private void presentTheDuplicateJiras(Set<String> duplicateJiras) {
@@ -267,7 +271,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          for (String string : duplicateJiras) {
             sb.append(string).append(" ");
          }
-         
+
          AlertDialog.alertMessage(getParentFrame(), sb.toString());
       }
    }
@@ -478,21 +482,22 @@ abstract class BasicActionListener implements ActionListener {
 
 }
 
-abstract class BasicAbstractAction extends AbstractAction{
-   
+
+abstract class BasicAbstractAction extends AbstractAction {
+
    public Frame getParentFrame() {
       return parentFrame;
    }
 
    private Frame parentFrame;
 
-   public BasicAbstractAction(String name, String description, Frame parentFrame){
+   public BasicAbstractAction(String name, String description, Frame parentFrame) {
       super(name);
       putValue(Action.SHORT_DESCRIPTION, name);
       this.parentFrame = parentFrame;
    }
-   
-   @Override 
+
+   @Override
    public final void actionPerformed(ActionEvent e) {
       try {
          doActionPerformed(e);
@@ -502,6 +507,5 @@ abstract class BasicAbstractAction extends AbstractAction{
    }
 
    public abstract void doActionPerformed(ActionEvent e);
-   
-   
+
 }
