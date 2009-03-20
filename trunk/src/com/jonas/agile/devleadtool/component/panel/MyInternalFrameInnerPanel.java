@@ -150,37 +150,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
             new AddVersionDialog(helper.getParentFrame(), array);
          }
       });
-      JButton addButton = addButton(panel, new BasicAbstractAction("Duplicates?", "Higlight Duplicates in the Board Panel", helper.getParentFrame()){
-         @Override
-         public void doActionPerformed(ActionEvent e) {
-            Set<String> duplicateJiras = findAnyDuplicateJiras(boardTable);
-            presentTheDuplicateJiras(helper, duplicateJiras);
-         }
-
-         private Set<String> findAnyDuplicateJiras(final MyTable boardTable) {
-            int rows = boardTable.getRowCount();
-            Set<String> duplicateJiras = new HashSet<String>(); 
-            for (int row = 0; row < rows; row++) {
-               String jira = (String) boardTable.getValueAt(Column.Jira, row);
-               for (int compareRow = row+1; compareRow < rows; compareRow++) {
-                  String compareJira = (String) boardTable.getValueAt(Column.Jira, compareRow);
-                  if(jira.equalsIgnoreCase(compareJira)){
-                     duplicateJiras.add(jira);
-                  }
-               }
-            }
-            return duplicateJiras;
-         }
-
-         private void presentTheDuplicateJiras(final PlannerHelper helper, Set<String> duplicateJiras) {
-            StringBuffer sb = new StringBuffer();
-            for (String string : duplicateJiras) {
-               sb.append(string).append(" ");
-            }
-            
-            AlertDialog.alertMessage(helper.getParentFrame(), sb.toString());
-         }
-      });
+      JButton addButton = addButton(panel, new CheckForDuplicatesAction("Duplicates?", "Higlight Duplicates in the Board Panel", helper.getParentFrame(), boardTable));
 
       return panel;
    }
@@ -261,6 +231,45 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       editableCheckBox.addActionListener(new EditableListener());
 
       jiraParseListener.setTree(tree);
+   }
+
+   private final class CheckForDuplicatesAction extends BasicAbstractAction {
+      private final MyTable boardTable;
+
+      private CheckForDuplicatesAction(String name, String description, Frame parentFrame, MyTable boardTable) {
+         super(name, description, parentFrame);
+         this.boardTable = boardTable;
+      }
+
+      @Override
+      public void doActionPerformed(ActionEvent e) {
+         Set<String> duplicateJiras = findAnyDuplicateJiras(boardTable);
+         presentTheDuplicateJiras(duplicateJiras);
+      }
+
+      private Set<String> findAnyDuplicateJiras(final MyTable boardTable) {
+         int rows = boardTable.getRowCount();
+         Set<String> duplicateJiras = new HashSet<String>(); 
+         for (int row = 0; row < rows; row++) {
+            String jira = (String) boardTable.getValueAt(Column.Jira, row);
+            for (int compareRow = row+1; compareRow < rows; compareRow++) {
+               String compareJira = (String) boardTable.getValueAt(Column.Jira, compareRow);
+               if(jira.equalsIgnoreCase(compareJira)){
+                  duplicateJiras.add(jira);
+               }
+            }
+         }
+         return duplicateJiras;
+      }
+
+      private void presentTheDuplicateJiras(Set<String> duplicateJiras) {
+         StringBuffer sb = new StringBuffer();
+         for (String string : duplicateJiras) {
+            sb.append(string).append(" ");
+         }
+         
+         AlertDialog.alertMessage(getParentFrame(), sb.toString());
+      }
    }
 
    private final class FireUpdateOnOtherTableWhenUpdatedListener implements TableModelListener {
@@ -471,6 +480,10 @@ abstract class BasicActionListener implements ActionListener {
 
 abstract class BasicAbstractAction extends AbstractAction{
    
+   public Frame getParentFrame() {
+      return parentFrame;
+   }
+
    private Frame parentFrame;
 
    public BasicAbstractAction(String name, String description, Frame parentFrame){
