@@ -1,8 +1,9 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.awt.Color;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import org.apache.log4j.Logger;
@@ -11,6 +12,7 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.string.StringHelper;
 
 public class BoardTableModel extends MyTableModel {
 
@@ -18,6 +20,7 @@ public class BoardTableModel extends MyTableModel {
          Column.BoardStatus, Column.Old, Column.Dev_Estimate, Column.Dev_Remain, Column.Dev_Actual, Column.QA_Estimate, Column.prio, Column.Note };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
+   private Map<String, String> extraToolTipText = new HashMap<String, String>();
 
    public BoardTableModel() {
       super(columns);
@@ -38,19 +41,24 @@ public class BoardTableModel extends MyTableModel {
       case J_Resolution:
          if (!isEmptyString(stringValue)) {
             BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(Column.BoardStatus, row);
-            if (!BoardStatusValueToJiraStatusMap.isMappedOk(boardStatus, stringValue))
+            if (!BoardStatusValueToJiraStatusMap.isMappedOk(boardStatus, stringValue)) {
+               setToolTipText(row, getColumnIndex(column), "Does not match with the BoardStatus value!");
                return SwingUtil.cellRed;
+            }
          }
          break;
       case Dev_Remain:
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
-               // red if dev remain not filled out and the board status reflect that it should be filled out
+               setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
                return SwingUtil.cellRed;
             }
          } else {
             if (!isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
-               // red if dev remain is filled out and the board status reflect that it should not be filled out
+               setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value!");
+               return SwingUtil.cellRed;
+            } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(Column.Dev_Estimate, row))) {
+               setToolTipText(row, getColumnIndex(column), "Cannot be numeric if Dev Estimate is not!");
                return SwingUtil.cellRed;
             }
          }
@@ -58,6 +66,7 @@ public class BoardTableModel extends MyTableModel {
       case Dev_Estimate:
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevEstimates())) {
+               setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
                return SwingUtil.cellRed;
             }
          } else {
@@ -67,10 +76,12 @@ public class BoardTableModel extends MyTableModel {
       case Dev_Actual:
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevActuals())) {
+               setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
                return SwingUtil.cellRed;
             }
          } else {
             if (isBoardValueEither(row, cellColorHelper.getRequiredBlankDevActuals())) {
+               setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value!");
                return SwingUtil.cellRed;
             }
          }
@@ -78,6 +89,7 @@ public class BoardTableModel extends MyTableModel {
       case QA_Estimate:
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredQAEstimates())) {
+               setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
                return SwingUtil.cellRed;
             }
          }
@@ -101,6 +113,15 @@ public class BoardTableModel extends MyTableModel {
          break;
       }
       return null;
+   }
+
+   @Override
+   public String getExtraToolTipText(int rowIndex, int colIndex) {
+      return extraToolTipText.get(rowIndex + "-" + colIndex);
+   }
+
+   private void setToolTipText(int row, int columnIndex, String string) {
+      extraToolTipText.put(row + "-" + columnIndex, string);
    }
 
    private boolean isString(Object value) {

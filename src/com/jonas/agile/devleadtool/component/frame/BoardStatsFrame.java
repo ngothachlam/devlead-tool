@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.component.frame;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -22,8 +23,11 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.HorizontalAlignment;
+import org.jfree.ui.RectangleEdge;
 import com.jonas.agile.devleadtool.burndown.SprintBurndownGrapher;
 import com.jonas.agile.devleadtool.component.Action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -42,6 +46,7 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
    private ChartPanel panel;
    private final MyTable sourceTable;
    private DateHelper dateHelper;
+   private TextTitle source;
 
    public BoardStatsFrame(Component parent, int width, int height, MyTable sourceTable, DateHelper dateHelper) {
       super(parent, width, height);
@@ -51,6 +56,7 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
    }
 
    public void calculateAndPrintBurndown(double totalDevEstimates, double remainingDevEstimates) {
+      source.setText("LLU");
       domainAxis.setLowerBound(0d);
       dataSeries.clear();
       dataSeries.add(0, totalDevEstimates);
@@ -101,6 +107,9 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       domainAxis.setLowerBound(0);
       domainAxis.setUpperBound(10);
 
+      source = new TextTitle();
+      chart.addSubtitle(source);
+
       // change the auto tick unit selection to integer units only...
       NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
       domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -127,7 +136,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
          for (JiraStat statrow : jiras.values()) {
             totalDevEstimates += statrow.getDevEstimate();
             totalQaEstimates += statrow.getQaEstimate();
-            
+
             if (statrow.isInDevProgress()) {
                remainingDevEstimates += statrow.getRemainingDevEstimate();
             } else if (statrow.hasNotStartedDev()) {
@@ -145,6 +154,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
       }
 
    }
+
    private class JiraStat {
       private double devEstimate = 0d;
       private boolean isInDevProgress;
@@ -157,9 +167,11 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
          this.jira = jira;
          this.devEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Estimate, row));
          this.qaEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.QA_Estimate, row));
-         this.qaEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Remain, row));
          Object valueAt = boardTable.getValueAt(Column.BoardStatus, row);
          this.isInDevProgress = BoardStatusValue.InDevProgress.equals(valueAt);
+         if (isInDevProgress) {
+            this.remainingDevEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Remain, row));
+         }
 
          BoardStatusValue boardStatus = (BoardStatusValue) valueAt;
          switch (boardStatus) {
@@ -171,6 +183,11 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
             this.isPreDevProgress = false;
             break;
          }
+
+         System.out.print(jira);
+         System.out.print(" devEst: " + devEstimate);
+         System.out.print(" remaining devEst: " + remainingDevEstimate);
+         System.out.println(" qaEst: " + qaEstimate);
       }
 
       public double getDevEstimate() {
@@ -259,10 +276,10 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
    public void doActionPerformed(ActionEvent e) {
       JiraStatsDataDTO jiraStatsDataDTO = new JiraStatsDataDTO(sourceTable);
       jiraStatsDataDTO.calculateJiraStats();
-      
+
       BurnDownDataDTO burnDownDataDTO = new BurnDownDataDTO(jiraStatsDataDTO.getJiras());
       burnDownDataDTO.calculateBurndownData();
-      
+
       alertOnDuplicateJirasIfTheraAreAny(jiraStatsDataDTO.getDuplicateJiras());
       grapher.calculateAndPrintBurndown(burnDownDataDTO.getTotalDevEstimates(), burnDownDataDTO.getRemainingDevEstimates());
    }
