@@ -9,13 +9,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -31,16 +31,20 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.component.Action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.component.dialog.AddBoardReconcileDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.component.frame.BasicMessageFrame;
+import com.jonas.agile.devleadtool.component.frame.BoardStatsFrame;
 import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
 import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.menu.SprintTreePopupMenu;
+import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.MyEditor;
@@ -56,6 +60,7 @@ import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.string.StringHelper;
 
 public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
@@ -235,7 +240,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       jiraParseListener.setTree(tree);
    }
 
-   private final class BoardStatsAction extends BasicAbstractAction {
+   private final class BoardStatsAction extends BasicAbstractGUIAction {
       private final MyTable sourceTable;
 
       private BoardStatsAction(String name, String description, Frame parentFrame, MyTable sourceTable) {
@@ -245,16 +250,98 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
       @Override
       public void doActionPerformed(ActionEvent e) {
-         int rows = boardTable.getRowCount();
-         double totalEstimates = 0d;
-         double remainingEstimates = 0d;
+         new BoardStatsFrame(getParentFrame(), 700, 500);
+         
+         int rows = sourceTable.getRowCount();
+         Map<String, StatRow> jiras = new HashMap<String, StatRow>();
          for (int row = 0; row < rows; row++) {
-            jhgjhg
+            String jira = (String) sourceTable.getValueAt(Column.Jira, row);
+            if (!jiras.containsKey(jira)) {
+               StatRow statRow = new StatRow(jira, sourceTable, row);
+               jiras.put(jira, statRow);
+            }
          }
+
+         StringBuffer sb = new StringBuffer();
+         double totalDevEstimates = 0d;
+         double remainingDevEstimates = 0d;
+         double totalQaEstimates = 0d;
+         for (StatRow statrow : jiras.values()) {
+            sb.append(statrow.jira).append(": ");
+            totalDevEstimates += statrow.getDevEstimate();
+            sb.append(" total Dev Est: ").append(statrow.getDevEstimate());
+            totalQaEstimates += statrow.getQaEstimate();
+            sb.append(" total QA Est: ").append(statrow.getQaEstimate());
+
+            if (statrow.isInDevProgress()) {
+               remainingDevEstimates += statrow.getRemainingDevEstimate();
+               sb.append(" remaining Dev Est: ").append(statrow.getRemainingDevEstimate());
+            } else if (statrow.hasNotStartedDev()) {
+               remainingDevEstimates += statrow.getDevEstimate();
+               sb.append(" remaining Dev Est: ").append(statrow.getDevEstimate());
+            } else {
+               sb.append(" remaining Dev Est: ").append(0d);
+            }
+            sb.append("\n");
+         }
+         sb.append("Total ").append("Dev Est: ").append(totalDevEstimates).append(", QA Est: ").append(totalQaEstimates);
+         sb.append("\n").append("Remaining Dev Est: ").append(remainingDevEstimates);
+
+         new BasicMessageFrame(getParentFrame(), sb.toString());
+      }
+
+      private class StatRow {
+         private double devEstimate = 0d;
+         private double remainingDevEstimate = 0d;
+         private double qaEstimate = 0d;
+         private String jira;
+         private boolean isInDevProgress;
+         private boolean isPreDevProgress;
+
+         public StatRow(String jira, MyTable boardTable, int row) {
+            this.jira = jira;
+            this.devEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Estimate, row));
+            this.qaEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.QA_Estimate, row));
+            this.qaEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Remain, row));
+            Object valueAt = boardTable.getValueAt(Column.BoardStatus, row);
+            this.isInDevProgress = BoardStatusValue.InDevProgress.equals(valueAt);
+
+            BoardStatusValue boardStatus = (BoardStatusValue) valueAt;
+            switch (boardStatus) {
+            case Open:
+            case Parked:
+               this.isPreDevProgress = true;
+               break;
+            default:
+               this.isPreDevProgress = false;
+               break;
+            }
+         }
+
+         public double getQaEstimate() {
+            return qaEstimate;
+         }
+
+         public boolean hasNotStartedDev() {
+            return isPreDevProgress;
+         }
+
+         public double getRemainingDevEstimate() {
+            return remainingDevEstimate;
+         }
+
+         public boolean isInDevProgress() {
+            return isInDevProgress;
+         }
+
+         public double getDevEstimate() {
+            return devEstimate;
+         }
+
       }
    }
 
-   private final class CheckForDuplicatesAction extends BasicAbstractAction {
+   private final class CheckForDuplicatesAction extends BasicAbstractGUIAction {
       private final MyTable sourceTable;
 
       private CheckForDuplicatesAction(String name, String description, Frame parentFrame, MyTable sourceTable) {
@@ -485,34 +572,6 @@ abstract class BasicActionListener implements ActionListener {
 
    public BasicActionListener(Frame parentFrame) {
       super();
-      this.parentFrame = parentFrame;
-   }
-
-   @Override
-   public final void actionPerformed(ActionEvent e) {
-      try {
-         doActionPerformed(e);
-      } catch (Throwable ex) {
-         AlertDialog.alertException(parentFrame, ex);
-      }
-   }
-
-   public abstract void doActionPerformed(ActionEvent e);
-
-}
-
-
-abstract class BasicAbstractAction extends AbstractAction {
-
-   public Frame getParentFrame() {
-      return parentFrame;
-   }
-
-   private Frame parentFrame;
-
-   public BasicAbstractAction(String name, String description, Frame parentFrame) {
-      super(name);
-      putValue(Action.SHORT_DESCRIPTION, name);
       this.parentFrame = parentFrame;
    }
 

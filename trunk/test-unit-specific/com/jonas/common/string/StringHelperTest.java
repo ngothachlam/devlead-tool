@@ -79,4 +79,10 @@ public class StringHelperTest extends TestCase {
       return result;
    }
 
+   public void testShouldGetDoubleOk(){
+      assertEquals(0d, helper.getDouble(""));
+      assertEquals(1d, helper.getDouble("1.0"));
+      assertEquals(1d, helper.getDouble("1"));
+   }
+   
 }
