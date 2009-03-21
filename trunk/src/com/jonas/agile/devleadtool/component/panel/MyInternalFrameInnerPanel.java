@@ -250,99 +250,11 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
       @Override
       public void doActionPerformed(ActionEvent e) {
-         new BoardStatsFrame(getParentFrame(), 700, 500);
-         
-         int rows = sourceTable.getRowCount();
-         Map<String, StatRow> jiras = new HashMap<String, StatRow>();
-         for (int row = 0; row < rows; row++) {
-            String jira = (String) sourceTable.getValueAt(Column.Jira, row);
-            if (!jiras.containsKey(jira)) {
-               StatRow statRow = new StatRow(jira, sourceTable, row);
-               jiras.put(jira, statRow);
-            }
-         }
-
-         StringBuffer sb = new StringBuffer();
-         double totalDevEstimates = 0d;
-         double remainingDevEstimates = 0d;
-         double totalQaEstimates = 0d;
-         for (StatRow statrow : jiras.values()) {
-            sb.append(statrow.jira).append(": ");
-            totalDevEstimates += statrow.getDevEstimate();
-            sb.append(" total Dev Est: ").append(statrow.getDevEstimate());
-            totalQaEstimates += statrow.getQaEstimate();
-            sb.append(" total QA Est: ").append(statrow.getQaEstimate());
-
-            if (statrow.isInDevProgress()) {
-               remainingDevEstimates += statrow.getRemainingDevEstimate();
-               sb.append(" remaining Dev Est: ").append(statrow.getRemainingDevEstimate());
-            } else if (statrow.hasNotStartedDev()) {
-               remainingDevEstimates += statrow.getDevEstimate();
-               sb.append(" remaining Dev Est: ").append(statrow.getDevEstimate());
-            } else {
-               sb.append(" remaining Dev Est: ").append(0d);
-            }
-            sb.append("\n");
-         }
-         sb.append("Total ").append("Dev Est: ").append(totalDevEstimates).append(", QA Est: ").append(totalQaEstimates);
-         sb.append("\n").append("Remaining Dev Est: ").append(remainingDevEstimates);
-
-         BasicMessageFrame basicMessageFrame = new BasicMessageFrame(getParentFrame(), sb.toString());
-         basicMessageFrame.setVisible(true);
-         
-         BoardStatsFrame boardStatsFrame = new BoardStatsFrame(getParentFrame(), 600, 500);
+         BoardStatsFrame boardStatsFrame = new BoardStatsFrame(getParentFrame(), 600, 500, sourceTable);
          boardStatsFrame.setVisible(true);
       }
 
-      private class StatRow {
-         private double devEstimate = 0d;
-         private double remainingDevEstimate = 0d;
-         private double qaEstimate = 0d;
-         private String jira;
-         private boolean isInDevProgress;
-         private boolean isPreDevProgress;
-
-         public StatRow(String jira, MyTable boardTable, int row) {
-            this.jira = jira;
-            this.devEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Estimate, row));
-            this.qaEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.QA_Estimate, row));
-            this.qaEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Remain, row));
-            Object valueAt = boardTable.getValueAt(Column.BoardStatus, row);
-            this.isInDevProgress = BoardStatusValue.InDevProgress.equals(valueAt);
-
-            BoardStatusValue boardStatus = (BoardStatusValue) valueAt;
-            switch (boardStatus) {
-            case Open:
-            case Parked:
-               this.isPreDevProgress = true;
-               break;
-            default:
-               this.isPreDevProgress = false;
-               break;
-            }
-         }
-
-         public double getQaEstimate() {
-            return qaEstimate;
-         }
-
-         public boolean hasNotStartedDev() {
-            return isPreDevProgress;
-         }
-
-         public double getRemainingDevEstimate() {
-            return remainingDevEstimate;
-         }
-
-         public boolean isInDevProgress() {
-            return isInDevProgress;
-         }
-
-         public double getDevEstimate() {
-            return devEstimate;
-         }
-
-      }
+     
    }
 
    private final class CheckForDuplicatesAction extends BasicAbstractGUIAction {
