@@ -20,7 +20,7 @@ public class StringHelper {
    public List<String> generateSeparateList(String string) {
       return generateSeparateList(string, " \t,");
    }
-   
+
    protected List<String> generateSeparateList(String string, String delim) {
       List<String> list = separate(string, delim);
       List<String> result = new ArrayList<String>();
@@ -63,6 +63,17 @@ public class StringHelper {
          throw new ParseException("The string " + string + "cannot be parsed!");
       }
       return result;
+   }
+
+   public static double getDouble(Object string) {
+      if (string == null) {
+         return 0d;
+      }
+      try {
+         return Double.valueOf(string.toString());
+      } catch (NumberFormatException e) {
+         return 0d;
+      }
    }
 
 }
