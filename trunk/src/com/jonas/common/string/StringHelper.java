@@ -65,6 +65,17 @@ public class StringHelper {
       return result;
    }
 
+   public static boolean isDouble(Object string) {
+      if (string == null) {
+         return false;
+      }
+      try {
+         Double.valueOf(string.toString());
+         return true;
+      } catch (NumberFormatException e) {
+         return false;
+      }
+   }
    public static double getDouble(Object string) {
       if (string == null) {
          return 0d;

@@ -88,6 +88,7 @@ public class MyTable extends JTable {
       }
 
    }
+
    private final class MarkKeyListener extends KeyAdapter {
       private final boolean allowMarking;
 
@@ -109,6 +110,7 @@ public class MyTable extends JTable {
          }
       }
    }
+
    private CheckBoxTableCellEditor checkBoxEditor;
    private JiraCellEditor jiraEditor;
    private List<TableListener> listeners = new ArrayList<TableListener>();
@@ -181,7 +183,7 @@ public class MyTable extends JTable {
    public MyTable(String title, MyTableModel modelModel, boolean allowMarking) {
       this(title, (AbstractTableModel) modelModel, allowMarking);
    }
-   
+
    public void addCheckBoxEditorListener(CellEditorListener cellEditorListener) {
       checkBoxEditor.addCellEditorListener(cellEditorListener);
    }
@@ -284,7 +286,9 @@ public class MyTable extends JTable {
       }
       Object valueAt = getValueAt(rowIndex, colIndex);
       String header = getModel().getColumnName(colIndex).trim();
-      return header + ": " + (valueAt == null || valueAt.toString().length() == 0 ? " " : valueAt.toString().trim());
+      String string = valueAt == null || valueAt.toString().length() == 0 ? " " : valueAt.toString().trim();
+      String extra = model.getExtraToolTipText(rowIndex, colIndex);
+      return header + ": " + string + (extra != null && extra.trim().length() > 0 ? " - " + extra : "");
    }
 
    public Object getValueAt(Column column, int rowInView) {
@@ -397,9 +401,11 @@ public class MyTable extends JTable {
    public void syncJira(JiraIssue jiraIssue, int tableRowSynced) {
       model.syncJira(jiraIssue, convertRowIndexToModel(tableRowSynced));
    }
+
    public void unMarkSelection() {
       marker.unMarkSelected();
    }
+
    public void unSort() {
       setAutoCreateRowSorter(true);
    }

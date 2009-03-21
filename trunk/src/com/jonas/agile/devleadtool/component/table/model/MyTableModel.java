@@ -555,4 +555,13 @@ public abstract class MyTableModel extends DefaultTableModel {
    public void unMark(int row) {
       getMarker().unMark(row);
    }
+
+   /**
+    * Override as you see fit
+    * @param colIndex 
+    * @param rowIndex 
+    */
+   public String getExtraToolTipText(int rowIndex, int colIndex) {
+      return "";
+   }
 }
