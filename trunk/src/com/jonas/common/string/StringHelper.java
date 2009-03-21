@@ -2,6 +2,7 @@ package com.jonas.common.string;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -76,6 +77,7 @@ public class StringHelper {
          return false;
       }
    }
+
    public static double getDouble(Object string) {
       if (string == null) {
          return 0d;
@@ -85,6 +87,18 @@ public class StringHelper {
       } catch (NumberFormatException e) {
          return 0d;
       }
+   }
+
+   public static String getNiceString(Set<String> strings) {
+      StringBuffer sb = new StringBuffer("");
+      int i = 0;
+      for (String string : strings) {
+         sb.append(string);
+         if (++i < strings.size()) {
+            sb.append(", ");
+         }
+      }
+      return sb.toString();
    }
 
 }

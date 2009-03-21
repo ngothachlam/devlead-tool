@@ -3,12 +3,12 @@ package com.jonas.agile.devleadtool.component.frame;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.BorderFactory;
@@ -23,11 +23,11 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.HorizontalAlignment;
-import org.jfree.ui.RectangleEdge;
+import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.burndown.SprintBurndownGrapher;
 import com.jonas.agile.devleadtool.component.Action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
@@ -47,6 +47,7 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
    private final MyTable sourceTable;
    private DateHelper dateHelper;
    private TextTitle source;
+   private NumberAxis rangeAxis;
 
    public BoardStatsFrame(Component parent, int width, int height, MyTable sourceTable, DateHelper dateHelper) {
       super(parent, width, height);
@@ -55,10 +56,11 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       this.prepareBurndown();
    }
 
-   public void calculateAndPrintBurndown(double totalDevEstimates, double remainingDevEstimates) {
-      source.setText("LLU");
-      domainAxis.setLowerBound(0d);
+   public void calculateAndPrintBurndown(double totalDevEstimates, double remainingDevEstimates, Set<String> projects) {
+      source.setText(StringHelper.getNiceString(projects));
       dataSeries.clear();
+      rangeAxis.setAutoRange(true);
+      domainAxis.setLowerBound(0);
       dataSeries.add(0, totalDevEstimates);
       dataSeries.add(StringHelper.getDouble(dayInSprintTextField.getText()), remainingDevEstimates);
       domainAxis.setUpperBound(StringHelper.getDouble(lengthOfSprintTextField.getText()));
@@ -82,7 +84,7 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       panel.add(lengthOfSprintTextField);
       panel.add(new JLabel(""));
       panel.add(new JButton(new CalculateSprintBurndownAction("Calculate Burndown", "Calculate Burndown", this, sourceTable, this)));
-      panel.setBorder(BorderFactory.createTitledBorder(""));
+      panel.setBorder(BorderFactory.createTitledBorder("Sprint Info"));
       return panel;
    }
 
@@ -107,11 +109,14 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       domainAxis.setLowerBound(0);
       domainAxis.setUpperBound(10);
 
+      XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
+      renderer.setShapesVisible(true);
+      renderer.setShapesFilled(true);
+
       source = new TextTitle();
       chart.addSubtitle(source);
 
-      // change the auto tick unit selection to integer units only...
-      NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+      rangeAxis = (NumberAxis) plot.getRangeAxis();
       domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
       rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
@@ -127,6 +132,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
       double remainingDevEstimates = 0d;
       double totalDevEstimates = 0d;
       double totalQaEstimates = 0d;
+      private Set<String> jiraProjects = new HashSet<String>();
 
       protected BurnDownDataDTO(Map<String, JiraStat> jiras) {
          this.jiras = jiras;
@@ -137,6 +143,11 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
             totalDevEstimates += statrow.getDevEstimate();
             totalQaEstimates += statrow.getQaEstimate();
 
+            String jiraProject = PlannerHelper.getProjectKey(statrow.getJira());
+            if(!jiraProjects.contains(jiraProject)){
+               jiraProjects.add(jiraProject);
+            }
+            
             if (statrow.isInDevProgress()) {
                remainingDevEstimates += statrow.getRemainingDevEstimate();
             } else if (statrow.hasNotStartedDev()) {
@@ -151,6 +162,10 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
 
       public double getTotalDevEstimates() {
          return totalDevEstimates;
+      }
+      
+      public Set<String> getJiraProjects() {
+         return jiraProjects;
       }
 
    }
@@ -188,6 +203,10 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
          System.out.print(" devEst: " + devEstimate);
          System.out.print(" remaining devEst: " + remainingDevEstimate);
          System.out.println(" qaEst: " + qaEstimate);
+      }
+
+      public String getJira() {
+         return jira;
       }
 
       public double getDevEstimate() {
@@ -281,7 +300,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
       burnDownDataDTO.calculateBurndownData();
 
       alertOnDuplicateJirasIfTheraAreAny(jiraStatsDataDTO.getDuplicateJiras());
-      grapher.calculateAndPrintBurndown(burnDownDataDTO.getTotalDevEstimates(), burnDownDataDTO.getRemainingDevEstimates());
+      grapher.calculateAndPrintBurndown(burnDownDataDTO.getTotalDevEstimates(), burnDownDataDTO.getRemainingDevEstimates(), burnDownDataDTO.getJiraProjects());
    }
 
 }
