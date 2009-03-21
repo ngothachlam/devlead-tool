@@ -58,6 +58,7 @@ import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
+import com.jonas.common.DateHelper;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.string.StringHelper;
@@ -250,7 +251,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
       @Override
       public void doActionPerformed(ActionEvent e) {
-         BoardStatsFrame boardStatsFrame = new BoardStatsFrame(getParentFrame(), 600, 500, sourceTable);
+         BoardStatsFrame boardStatsFrame = new BoardStatsFrame(getParentFrame(), 600, 500, sourceTable, new DateHelper());
          boardStatsFrame.setVisible(true);
       }
 

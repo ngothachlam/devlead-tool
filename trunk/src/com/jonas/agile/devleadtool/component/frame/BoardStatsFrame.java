@@ -41,10 +41,12 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
    private JTextField lengthOfSprintTextField;
    private ChartPanel panel;
    private final MyTable sourceTable;
+   private DateHelper dateHelper;
 
-   public BoardStatsFrame(Component parent, int width, int height, MyTable sourceTable) {
+   public BoardStatsFrame(Component parent, int width, int height, MyTable sourceTable, DateHelper dateHelper) {
       super(parent, width, height);
       this.sourceTable = sourceTable;
+      this.dateHelper = dateHelper;
       this.prepareBurndown();
    }
 
@@ -85,7 +87,7 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       dataset.addSeries(dataSeries);
 
       // create the chart...
-      JFreeChart chart = ChartFactory.createXYLineChart("Sprint Burndown - " + DateHelper.getTodaysDateAsString(), // chart title
+      JFreeChart chart = ChartFactory.createXYLineChart("Sprint Burndown on " + dateHelper.getTodaysDateAsString(), // chart title
             "Day in Sprint", // x axis label
             "Points", // y axis label
             dataset, // data
