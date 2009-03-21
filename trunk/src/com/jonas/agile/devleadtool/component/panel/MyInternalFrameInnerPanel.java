@@ -287,7 +287,11 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          sb.append("Total ").append("Dev Est: ").append(totalDevEstimates).append(", QA Est: ").append(totalQaEstimates);
          sb.append("\n").append("Remaining Dev Est: ").append(remainingDevEstimates);
 
-         new BasicMessageFrame(getParentFrame(), sb.toString());
+         BasicMessageFrame basicMessageFrame = new BasicMessageFrame(getParentFrame(), sb.toString());
+         basicMessageFrame.setVisible(true);
+         
+         BoardStatsFrame boardStatsFrame = new BoardStatsFrame(getParentFrame(), 600, 500);
+         boardStatsFrame.setVisible(true);
       }
 
       private class StatRow {

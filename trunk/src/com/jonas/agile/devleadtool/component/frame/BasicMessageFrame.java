@@ -13,17 +13,17 @@ import com.jonas.agile.devleadtool.component.Action.BasicAbstractGUIAction;
 
 public class BasicMessageFrame extends AbstractBasicFrame {
 
-   private JTextArea messageArea;
+   private final String message;
 
    public BasicMessageFrame(Component parent, String message) {
       super(parent, 600, 500);
-      messageArea.setText(message);
+      this.message = message;
    }
 
    @Override
    public Container getMyPanel() {
       JPanel panel = new JPanel(new BorderLayout());
-      messageArea = new JTextArea();
+      JTextArea messageArea = new JTextArea(message);
 
       Container scrollPane = new JScrollPane(messageArea);
       panel.add(scrollPane, BorderLayout.CENTER);

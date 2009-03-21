@@ -1,7 +1,8 @@
 package com.jonas.testing.jfreechart;
 
+import java.awt.Container;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
@@ -9,10 +10,11 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import com.jonas.agile.devleadtool.component.frame.AbstractBasicFrame;
 
-public class TestChart {
+public class TestChartPanel {
 
-   private TestChart() {
+   private TestChartPanel() {
       XYSeries series1 = new XYSeries("Remaining Dev Estimates");
       series1.add(0, 20);
       series1.add(1, 19);
@@ -43,13 +45,29 @@ public class TestChart {
       rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
       // create and display a frame...
-      ChartFrame frame = new ChartFrame("Test", chart);
-      frame.pack();
+      ChartPanel panel = new ChartPanel(chart);
+
+      ChartPanelFrame frame = new ChartPanelFrame(panel, 600, 500);
       frame.setVisible(true);
    }
 
    public static void main(String[] args) {
-      TestChart testChart = new TestChart();
+      TestChartPanel testChart = new TestChartPanel();
+   }
+}
+
+
+class ChartPanelFrame extends AbstractBasicFrame {
+
+   private final ChartPanel panel;
+
+   public ChartPanelFrame(ChartPanel panel, int width, int height) {
+      super(null, width, height);
+      this.panel = panel;
    }
 
+   @Override
+   public Container getMyPanel() {
+      return panel;
+   }
 }
