@@ -40,6 +40,7 @@ import com.jonas.common.string.StringHelper;
 public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndownGrapher {
 
    private XYSeries dataSeries;
+   private XYSeries prognosisSeries;
    private JTextField dayInSprintTextField;
    private ValueAxis domainAxis;
    private JTextField lengthOfSprintTextField;
@@ -59,11 +60,24 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
    public void calculateAndPrintBurndown(double totalDevEstimates, double remainingDevEstimates, Set<String> projects) {
       source.setText(StringHelper.getNiceString(projects));
       dataSeries.clear();
+      prognosisSeries.clear();
+
       rangeAxis.setAutoRange(true);
       domainAxis.setLowerBound(0);
       dataSeries.add(0, totalDevEstimates);
-      dataSeries.add(StringHelper.getDouble(dayInSprintTextField.getText()), remainingDevEstimates);
-      domainAxis.setUpperBound(StringHelper.getDouble(lengthOfSprintTextField.getText()));
+
+      double dayInSprint = StringHelper.getDouble(dayInSprintTextField.getText());
+      double lengthOfSprint = StringHelper.getDouble(lengthOfSprintTextField.getText());
+
+      dataSeries.add(dayInSprint, remainingDevEstimates);
+      domainAxis.setUpperBound(Math.max(lengthOfSprint, dayInSprint) + 0.2d);
+
+      if (dayInSprint < lengthOfSprint) {
+         double prognosisChangePerDay = ((totalDevEstimates - remainingDevEstimates) / dayInSprint);
+         double prognosisDays = lengthOfSprint - dayInSprint;
+         prognosisSeries.add(dayInSprint, remainingDevEstimates);
+         prognosisSeries.add(lengthOfSprint, remainingDevEstimates - (prognosisChangePerDay * prognosisDays));
+      }
    }
 
    @Override
@@ -90,9 +104,11 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
 
    public void prepareBurndown() {
       dataSeries = new XYSeries("Remaining Dev Estimates");
+      prognosisSeries = new XYSeries("Prognosed Dev Estimates");
 
       XYSeriesCollection dataset = new XYSeriesCollection();
       dataset.addSeries(dataSeries);
+      dataset.addSeries(prognosisSeries);
 
       // create the chart...
       JFreeChart chart = ChartFactory.createXYLineChart("Sprint Burndown on " + dateHelper.getTodaysDateAsString(), // chart title
@@ -144,10 +160,10 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
             totalQaEstimates += statrow.getQaEstimate();
 
             String jiraProject = PlannerHelper.getProjectKey(statrow.getJira());
-            if(!jiraProjects.contains(jiraProject)){
+            if (!jiraProjects.contains(jiraProject)) {
                jiraProjects.add(jiraProject);
             }
-            
+
             if (statrow.isInDevProgress()) {
                remainingDevEstimates += statrow.getRemainingDevEstimate();
             } else if (statrow.hasNotStartedDev()) {
@@ -163,7 +179,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
       public double getTotalDevEstimates() {
          return totalDevEstimates;
       }
-      
+
       public Set<String> getJiraProjects() {
          return jiraProjects;
       }
@@ -300,7 +316,8 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
       burnDownDataDTO.calculateBurndownData();
 
       alertOnDuplicateJirasIfTheraAreAny(jiraStatsDataDTO.getDuplicateJiras());
-      grapher.calculateAndPrintBurndown(burnDownDataDTO.getTotalDevEstimates(), burnDownDataDTO.getRemainingDevEstimates(), burnDownDataDTO.getJiraProjects());
+      grapher.calculateAndPrintBurndown(burnDownDataDTO.getTotalDevEstimates(), burnDownDataDTO.getRemainingDevEstimates(), burnDownDataDTO
+            .getJiraProjects());
    }
 
 }
