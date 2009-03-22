@@ -82,7 +82,7 @@ class AddFromRadioButtons extends AddNewRowAction {
    }
 
    @Override
-   public void jiraAdded(String jira, MyTable table, String estimate, String actual, String release) {
+   public void jiraAdded(String jira, MyTable table, String estimate, String actual, String release, String remainder, String qaEst) {
       if (table.doesJiraExist(jira)) {
          List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 
@@ -90,6 +90,8 @@ class AddFromRadioButtons extends AddNewRowAction {
          addNewOldValueIfColumnIsInTable(table, Column.Dev_Estimate, jira, estimate, newOldValues);
          addNewOldValueIfColumnIsInTable(table, Column.Dev_Actual, jira, actual, newOldValues);
          addNewOldValueIfColumnIsInTable(table, Column.Release, jira, release, newOldValues);
+         addNewOldValueIfColumnIsInTable(table, Column.Dev_Remain, jira, remainder, newOldValues);
+         addNewOldValueIfColumnIsInTable(table, Column.QA_Estimate, jira, qaEst, newOldValues);
 
          for (NewOldValues newOldValue : newOldValues) {
             if (newOldValue.isValueNew())
