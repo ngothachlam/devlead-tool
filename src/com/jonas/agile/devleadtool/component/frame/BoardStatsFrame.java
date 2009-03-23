@@ -63,8 +63,8 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       prognosisSeries.clear();
 
       rangeAxis.setAutoRange(true);
-      domainAxis.setLowerBound(0);
-      dataSeries.add(0, totalDevEstimates);
+      domainAxis.setLowerBound(0d);
+      dataSeries.add(0d, totalDevEstimates);
 
       double dayInSprint = StringHelper.getDouble(dayInSprintTextField.getText());
       double lengthOfSprint = StringHelper.getDouble(lengthOfSprintTextField.getText());
@@ -78,6 +78,7 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
          prognosisSeries.add(dayInSprint, remainingDevEstimates);
          prognosisSeries.add(lengthOfSprint, remainingDevEstimates - (prognosisChangePerDay * prognosisDays));
       }
+      rangeAxis.setLowerBound(0d);
    }
 
    @Override
@@ -156,18 +157,21 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
 
       public void calculateBurndownData() {
          for (JiraStat statrow : jiras.values()) {
-            totalDevEstimates += statrow.getDevEstimate();
-            totalQaEstimates += statrow.getQaEstimate();
 
-            String jiraProject = PlannerHelper.getProjectKey(statrow.getJira());
-            if (!jiraProjects.contains(jiraProject)) {
-               jiraProjects.add(jiraProject);
-            }
+            if (statrow.isToIncludeInTotals()) {
+               totalDevEstimates += statrow.getDevEstimate();
+               totalQaEstimates += statrow.getQaEstimate();
 
-            if (statrow.isInDevProgress()) {
-               remainingDevEstimates += statrow.getRemainingDevEstimate();
-            } else if (statrow.hasNotStartedDev()) {
-               remainingDevEstimates += statrow.getDevEstimate();
+               String jiraProject = PlannerHelper.getProjectKey(statrow.getJira());
+               if (!jiraProjects.contains(jiraProject)) {
+                  jiraProjects.add(jiraProject);
+               }
+
+               if (statrow.isPreDevProgress()) {
+                  remainingDevEstimates += statrow.getDevEstimate();
+               } else if (statrow.isInDevProgress()) {
+                  remainingDevEstimates += statrow.getRemainingDevEstimate();
+               }
             }
          }
       }
@@ -187,38 +191,58 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
    }
 
    private class JiraStat {
-      private double devEstimate = 0d;
-      private boolean isInDevProgress;
-      private boolean isPreDevProgress;
       private String jira;
-      private double qaEstimate = 0d;
+      private double devEstimate = 0d;
       private double remainingDevEstimate = 0d;
+      private double qaEstimate = 0d;
+      
+      private boolean isInDevProgress = false;
+      private boolean isPreDevProgress = false;
+      private boolean isToIncludeInTotals = true;
 
       public JiraStat(String jira, MyTable boardTable, int row) {
          this.jira = jira;
          this.devEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Estimate, row));
          this.qaEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.QA_Estimate, row));
-         Object valueAt = boardTable.getValueAt(Column.BoardStatus, row);
-         this.isInDevProgress = BoardStatusValue.InDevProgress.equals(valueAt);
-         if (isInDevProgress) {
-            this.remainingDevEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Remain, row));
-         }
-
-         BoardStatusValue boardStatus = (BoardStatusValue) valueAt;
+         
+         BoardStatusValue boardStatus = (BoardStatusValue) boardTable.getValueAt(Column.BoardStatus, row);
+         
          switch (boardStatus) {
          case Open:
-         case Parked:
+         case NA:
+         case UnKnown:
+         case Bug:
             this.isPreDevProgress = true;
             break;
-         default:
-            this.isPreDevProgress = false;
+         case InDevProgress:
+            this.remainingDevEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Remain, row));
+            this.isInDevProgress = true;
             break;
+         case Approved:
+         case Complete:
+         case ForShowCase:
+         case InQAProgress:
+         case Resolved:
+            break;
+         }
+
+         Object isOld = boardTable.getValueAt(Column.Old, row);
+         if (isOld != null && Boolean.TRUE == isOld) {
+            isToIncludeInTotals = false;
          }
 
          System.out.print(jira);
          System.out.print(" devEst: " + devEstimate);
-         System.out.print(" remaining devEst: " + remainingDevEstimate);
-         System.out.println(" qaEst: " + qaEstimate);
+         System.out.print(" remDevEst: " + remainingDevEstimate);
+         System.out.print(" qaEst: " + qaEstimate);
+         System.out.print(" [isToIncludeInTotals: " + isToIncludeInTotals);
+         System.out.print(", isPreDevProgress: " + isPreDevProgress);
+         System.out.print(", isInDevProgress: " + isInDevProgress);
+         System.out.println("]");
+      }
+
+      public boolean isToIncludeInTotals() {
+         return isToIncludeInTotals;
       }
 
       public String getJira() {
@@ -237,7 +261,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
          return remainingDevEstimate;
       }
 
-      public boolean hasNotStartedDev() {
+      public boolean isPreDevProgress() {
          return isPreDevProgress;
       }
 
@@ -260,6 +284,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
          int rows = sourceTable.getRowCount();
          jiras = new HashMap<String, JiraStat>();
          duplicateJiras = new HashSet<String>();
+         System.out.println("calculating Jira Stats");
          for (int row = 0; row < rows; row++) {
             String jira = (String) sourceTable.getValueAt(Column.Jira, row);
             if (!jiras.containsKey(jira)) {

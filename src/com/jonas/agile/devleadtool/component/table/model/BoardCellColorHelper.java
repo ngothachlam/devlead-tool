@@ -20,7 +20,7 @@ public class BoardCellColorHelper {
       requiredDevEstimates.add(BoardStatusValue.InDevProgress);
       requiredDevEstimates.add(BoardStatusValue.InQAProgress);
       requiredDevEstimates.add(BoardStatusValue.Open);
-      requiredDevEstimates.add(BoardStatusValue.Parked);
+//      requiredDevEstimates.add(BoardStatusValue.Parked);
       requiredDevEstimates.add(BoardStatusValue.Resolved);
 
       requiredDevRemains.add(BoardStatusValue.InDevProgress);

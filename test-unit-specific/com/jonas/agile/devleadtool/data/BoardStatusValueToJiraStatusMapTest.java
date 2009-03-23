@@ -15,7 +15,7 @@ public class BoardStatusValueToJiraStatusMapTest extends TestCase {
       assertTrue(isMappingOk(BoardStatusValue.InQAProgress, "Resolved (Fixed)"));
       assertTrue(isMappingOk(BoardStatusValue.NA, "Open (Fixed)"));
       assertTrue(isMappingOk(BoardStatusValue.Open, "Open (Resolved)"));
-      assertTrue(isMappingOk(BoardStatusValue.Parked, "Open (Resolved)"));
+//      assertTrue(isMappingOk(BoardStatusValue.Parked, "Open (Resolved)"));
       assertTrue(isMappingOk(BoardStatusValue.Resolved, "Resolved (Resolved)"));
       assertTrue(isMappingOk(BoardStatusValue.UnKnown, "Open (Resolved)"));
 
