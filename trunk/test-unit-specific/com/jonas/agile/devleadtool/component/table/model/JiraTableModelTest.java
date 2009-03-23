@@ -107,7 +107,7 @@ public class JiraTableModelTest extends JonasTestCase {
       assertTrue(jiraModel.isSprintOk(BoardStatusValue.NA, null));
       assertFalse(jiraModel.isSprintOk(BoardStatusValue.Open, null));
       assertFalse(jiraModel.isSprintOk(BoardStatusValue.Bug, null));
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Parked, null));
+//      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Parked, null));
       assertFalse(jiraModel.isSprintOk(BoardStatusValue.InDevProgress, null));
       assertFalse(jiraModel.isSprintOk(BoardStatusValue.Resolved, null));
       assertFalse(jiraModel.isSprintOk(BoardStatusValue.InQAProgress, null));
