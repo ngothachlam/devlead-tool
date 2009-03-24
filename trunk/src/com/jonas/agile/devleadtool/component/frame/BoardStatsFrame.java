@@ -137,7 +137,7 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       // create the chart...
       JFreeChart chart = ChartFactory.createXYLineChart("Sprint Burndown - " + dateHelper.getTodaysDateAsString(), // chart title
             "Day in Sprint", // x axis label
-            "Points", // y axis label
+            "Outstanding Points", // y axis label
             dataset, // data
             PlotOrientation.VERTICAL, true, // include legend
             true, // tooltips
@@ -145,7 +145,6 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
             );
       legend = chart.getLegend();
       
-
       XYPlot plot = chart.getXYPlot();
       domainAxis = plot.getDomainAxis();
       domainAxis.setLowerBound(0);
