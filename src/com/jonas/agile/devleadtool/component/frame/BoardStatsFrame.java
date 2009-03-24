@@ -8,7 +8,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.BorderFactory;
@@ -24,6 +23,7 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -40,7 +40,8 @@ import com.jonas.common.string.StringHelper;
 public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndownGrapher {
 
    private XYSeries dataSeries;
-   private XYSeries prognosisSeries;
+   // private XYSeries prognosisSeries;
+   private XYSeries idealSeries;
    private JTextField dayInSprintTextField;
    private ValueAxis domainAxis;
    private JTextField lengthOfSprintTextField;
@@ -49,6 +50,7 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
    private DateHelper dateHelper;
    private TextTitle source;
    private NumberAxis rangeAxis;
+   private LegendTitle legend;
 
    public BoardStatsFrame(Component parent, int width, int height, MyTable sourceTable, DateHelper dateHelper) {
       super(parent, width, height);
@@ -60,7 +62,8 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
    public void calculateAndPrintBurndown(double totalDevEstimates, double remainingDevEstimates, Set<String> projects) {
       source.setText(StringHelper.getNiceString(projects));
       dataSeries.clear();
-      prognosisSeries.clear();
+      // prognosisSeries.clear();
+      idealSeries.clear();
 
       rangeAxis.setAutoRange(true);
       domainAxis.setLowerBound(0d);
@@ -75,10 +78,15 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       if (dayInSprint < lengthOfSprint) {
          double prognosisChangePerDay = ((totalDevEstimates - remainingDevEstimates) / dayInSprint);
          double prognosisDays = lengthOfSprint - dayInSprint;
-         prognosisSeries.add(dayInSprint, remainingDevEstimates);
-         prognosisSeries.add(lengthOfSprint, remainingDevEstimates - (prognosisChangePerDay * prognosisDays));
+         // prognosisSeries.add(dayInSprint, remainingDevEstimates);
+         // prognosisSeries.add(lengthOfSprint, remainingDevEstimates - (prognosisChangePerDay * prognosisDays));
       }
+      idealSeries.add(0, totalDevEstimates);
+      idealSeries.add(lengthOfSprint, 0);
+
       rangeAxis.setLowerBound(0d);
+      
+      
    }
 
    @Override
@@ -90,36 +98,53 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
    }
 
    private Component getTopPanel() {
-      JPanel panel = new JPanel(new GridLayout(3, 2, 3, 3));
+      JPanel panel = new JPanel(new GridLayout(1, 2, 5, 5));
+      JPanel inputPanel = getSubInputPanel();
+      JPanel buttonPanel = getSubButtonPanel();
+      panel.setBorder(BorderFactory.createTitledBorder("Sprint Info"));
+      panel.add(inputPanel);
+      panel.add(buttonPanel);
+      return panel;
+   }
+
+   private JPanel getSubButtonPanel() {
+      JPanel panel = new JPanel(new GridLayout(1, 1, 3, 3));
+      panel.add(new JButton(new CalculateSprintBurndownAction("Calculate Burndown", "Calculate Burndown", this, sourceTable, this)));
+      return panel;
+   }
+
+   private JPanel getSubInputPanel() {
+      JPanel panel = new JPanel(new GridLayout(2, 2, 3, 3));
       panel.add(new JLabel("Day in Sprint: "));
       dayInSprintTextField = new JTextField(5);
       panel.add(dayInSprintTextField);
       panel.add(new JLabel("Length of Sprint: "));
       lengthOfSprintTextField = new JTextField(5);
       panel.add(lengthOfSprintTextField);
-      panel.add(new JLabel(""));
-      panel.add(new JButton(new CalculateSprintBurndownAction("Calculate Burndown", "Calculate Burndown", this, sourceTable, this)));
-      panel.setBorder(BorderFactory.createTitledBorder("Sprint Info"));
       return panel;
    }
 
    public void prepareBurndown() {
-      dataSeries = new XYSeries("Remaining Dev Estimates");
-      prognosisSeries = new XYSeries("Prognosed Dev Estimates");
+      dataSeries = new XYSeries("Current Development Progression");
+      // prognosisSeries = new XYSeries("Prognosed Dev Estimates");
+      idealSeries = new XYSeries("Ideal Development Progression");
 
       XYSeriesCollection dataset = new XYSeriesCollection();
       dataset.addSeries(dataSeries);
-      dataset.addSeries(prognosisSeries);
+      // dataset.addSeries(prognosisSeries);
+      dataset.addSeries(idealSeries);
 
       // create the chart...
-      JFreeChart chart = ChartFactory.createXYLineChart("Sprint Burndown on " + dateHelper.getTodaysDateAsString(), // chart title
+      JFreeChart chart = ChartFactory.createXYLineChart("Sprint Burndown - " + dateHelper.getTodaysDateAsString(), // chart title
             "Day in Sprint", // x axis label
             "Points", // y axis label
             dataset, // data
-            PlotOrientation.VERTICAL, false, // include legend
+            PlotOrientation.VERTICAL, true, // include legend
             true, // tooltips
             false // urls
             );
+      legend = chart.getLegend();
+      
 
       XYPlot plot = chart.getXYPlot();
       domainAxis = plot.getDomainAxis();
@@ -195,7 +220,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
       private double devEstimate = 0d;
       private double remainingDevEstimate = 0d;
       private double qaEstimate = 0d;
-      
+
       private boolean isInDevProgress = false;
       private boolean isPreDevProgress = false;
       private boolean isToIncludeInTotals = true;
@@ -204,9 +229,9 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
          this.jira = jira;
          this.devEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Estimate, row));
          this.qaEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.QA_Estimate, row));
-         
+
          BoardStatusValue boardStatus = (BoardStatusValue) boardTable.getValueAt(Column.BoardStatus, row);
-         
+
          switch (boardStatus) {
          case Open:
          case NA:
