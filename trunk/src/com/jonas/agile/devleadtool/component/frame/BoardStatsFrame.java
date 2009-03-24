@@ -234,7 +234,9 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
          switch (boardStatus) {
          case Open:
          case NA:
+            isToIncludeInTotals = false;
          case UnKnown:
+            isToIncludeInTotals = false;
          case Bug:
             this.isPreDevProgress = true;
             break;
