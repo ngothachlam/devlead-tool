@@ -8,6 +8,7 @@ import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.CalculatorHelper;
 import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.JiraFilter;
 
 public class JiraTableModel extends MyTableModel {
 
@@ -91,31 +92,12 @@ public class JiraTableModel extends MyTableModel {
 
    boolean isFixVersionOk(Object boardValue, Object jiraValue) {
       log.debug("boardValue: \"" + boardValue + "\" jiraValue: " + jiraValue);
-      if (!(jiraValue instanceof List)) {
-         log.warn("jiraValue: " + jiraValue + " is not of List type!!");
-         return false;
-      }
-      List<Object> jiraFixVersions = (List<Object>) jiraValue;
+      if ( jiraValue == null  && (boardValue == null))
+         return true;
+      String jiraFixVersions = (String) jiraValue;
       String boardValueAsString = (String) boardValue;
 
-      if (boardValueAsString.trim().length() == 0 && jiraFixVersions.size() == 0)
-         return true;
-
-      String[] boardFixVersions = boardValueAsString.split("[ \t]*,[ \t]*");
-
-      if (boardFixVersions.length != jiraFixVersions.size())
-         return false;
-      for (Object jiraFixVersion : jiraFixVersions) {
-         log.debug("jiraFixVersion: \"" + jiraFixVersion + "\" (" + jiraFixVersion.getClass() + ")");
-      }
-      for (String boardFixVersion : boardFixVersions) {
-         log.debug("boardFixVersion: \"" + boardFixVersion + "\" (" + boardFixVersion.getClass() + ")");
-         if (jiraFixVersions.contains(boardFixVersion)) {
-            log.debug("jiraFixVersions does not contain the boardFixVersion");
-            return true;
-         }
-      }
-      return false;
+      return jiraFixVersions.equals(boardValueAsString);
    }
 
    boolean isJiraNumberOk(Object boardValue, Object jiraValue) {

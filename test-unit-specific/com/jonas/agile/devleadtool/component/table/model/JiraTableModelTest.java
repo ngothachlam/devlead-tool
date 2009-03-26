@@ -126,16 +126,16 @@ public class JiraTableModelTest extends JonasTestCase {
    
    public void testShouldCompareFixversionsOk(){
       jiraModel = new JiraTableModel();
-      ArrayList<String> jiraFixVersion = new ArrayList<String>();
+      String jiraFixVersion = null;
       assertFalse(jiraModel.isFixVersionOk("LLU 12", jiraFixVersion));
-      assertTrue(jiraModel.isFixVersionOk("", new ArrayList()));
+      assertTrue(jiraModel.isFixVersionOk("", ""));
       
-      jiraFixVersion.add("LLU 13");
+      jiraFixVersion = "LLU 13";
       assertFalse(jiraModel.isFixVersionOk("LLU 12", jiraFixVersion));
       assertTrue(jiraModel.isFixVersionOk("LLU 13", jiraFixVersion));
       assertTrue(jiraModel.isFixVersionOk(new String("LLU 13"), jiraFixVersion));
       
-      jiraFixVersion.add("LLU 12");
+      jiraFixVersion = "LLU 13, LLU 12";
       assertFalse(jiraModel.isFixVersionOk("LLU 12", jiraFixVersion));
       assertFalse(jiraModel.isFixVersionOk("LLU 13", jiraFixVersion));
       assertTrue(jiraModel.isFixVersionOk("LLU 12, LLU 13", jiraFixVersion));
