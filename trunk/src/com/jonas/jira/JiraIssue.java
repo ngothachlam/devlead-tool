@@ -12,7 +12,7 @@ public class JiraIssue {
    private String deliveryDate;
    private String estimate;
    private List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
-   private String fixVersionsAsStrings = "";
+   private StringBuffer fixVersionsAsStrings = new StringBuffer("");
    private final String key;
    private int lluListPriority;
    private String project;
@@ -51,12 +51,10 @@ public class JiraIssue {
    public void addFixVersions(JiraVersion fixVersion) {
       if (fixVersion != null) {
          fixVersions.add(fixVersion);
-         for (int i = 0; i < fixVersions.size(); i++) {
-            JiraVersion aFixVersion = fixVersions.get(i);
-            fixVersionsAsStrings += aFixVersion;
-            if (i + 1 < fixVersions.size())
-               fixVersionsAsStrings += ", ";
+         if (fixVersions.size() > 1) {
+            fixVersionsAsStrings.append(", ");
          }
+         fixVersionsAsStrings.append(fixVersion.getName());
       }
    }
 
@@ -136,7 +134,7 @@ public class JiraIssue {
    }
 
    public String getFixVersionsAsStrings() {
-      return fixVersionsAsStrings;
+      return fixVersionsAsStrings.toString();
    }
 
    public String getKey() {
