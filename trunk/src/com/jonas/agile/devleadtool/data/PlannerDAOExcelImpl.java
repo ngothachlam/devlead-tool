@@ -97,7 +97,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
                
                Column column = model.getColumn(colCount);
-               valueAt = column.parseToData(valueAt);
+               valueAt = column.parseToPersistanceStore(valueAt);
                
                if (valueAt == null)
                   cell.setCellValue(new HSSFRichTextString(""));
@@ -211,7 +211,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             + cellContents + "\"!");
       Object parsed = null;
       if (column.isToLoad()) {
-         parsed = column.parseFromData(cellContents);
+         parsed = column.parseFromPersistanceStore(cellContents);
          rowData.add(parsed);
       }
    }

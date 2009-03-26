@@ -10,7 +10,7 @@ public enum Column {
    // String Defaults
    Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false) {
 
-      public String parseFromData(Object cellContents) {
+      public String parseFromPersistanceStore(Object cellContents) {
          if (cellContents == null)
             return null;
          return cellContents.toString().toUpperCase();
@@ -28,7 +28,7 @@ public enum Column {
    Note(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false),
    Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false),
    BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false) {
-      public BoardStatusValue parseFromData(Object cellContents) {
+      public BoardStatusValue parseFromPersistanceStore(Object cellContents) {
          return BoardStatusValue.get(cellContents.toString());
       }
    },
@@ -37,24 +37,7 @@ public enum Column {
    J_Status(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
    J_Resolution(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
    J_BuildNo(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
-   J_FixVersion(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false) {
-      @Override
-      public Object parseFromData(Object cellContents) {
-         List<String> arrayList = new ArrayList<String>();
-         if (cellContents instanceof String) {
-            String cellContentsAsString = cellContents.toString();
-            if (cellContentsAsString == null || cellContentsAsString.trim().length() == 0) {
-               return arrayList;
-            }
-            cellContentsAsString = cellContentsAsString.substring(1, cellContentsAsString.length() - 1);
-            String[] split = cellContentsAsString.split("(, )");
-            for (String string : split) {
-               arrayList.add(string);
-            }
-         }
-         return arrayList;
-      }
-   },
+   J_FixVersion(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
    J_Type(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
    J_Dev_Estimate(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, true),
    J_Dev_Spent(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, true),
@@ -64,7 +47,7 @@ public enum Column {
 
    // Integer
    prio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, true) {
-      public Integer parseFromData(Object cellContents) {
+      public Integer parseFromPersistanceStore(Object cellContents) {
          String cellContentsString = cellContents.toString();
          if (cellContentsString == null || cellContentsString.trim().length() == 0)
             return -1;
@@ -76,7 +59,7 @@ public enum Column {
 
    // Boolean Defaults
    isParked(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false) {
-      public Boolean parseFromData(Object cellContents) {
+      public Boolean parseFromPersistanceStore(Object cellContents) {
          if(cellContents == null)
             return Boolean.FALSE;
          String cellContentsString = cellContents.toString();
@@ -84,7 +67,7 @@ public enum Column {
       }
    },
    Old(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false) {
-      public Boolean parseFromData(Object cellContents) {
+      public Boolean parseFromPersistanceStore(Object cellContents) {
          if(cellContents == null)
             return Boolean.FALSE;
          String cellContentsString = cellContents.toString();
@@ -140,7 +123,7 @@ public enum Column {
       return isToLoad.boolValue();
    }
 
-   public Object parseFromData(Object cellContents) {
+   public Object parseFromPersistanceStore(Object cellContents) {
       return cellContents == null ? "" : cellContents.toString();
    }
 
@@ -150,7 +133,7 @@ public enum Column {
     * @param value
     * @return
     */
-   public Object parseToData(Object value) {
+   public Object parseToPersistanceStore(Object value) {
       if(isNumeric && value != null && value instanceof String ){
          String string = (String) value;
          if (string.trim().isEmpty()) {
