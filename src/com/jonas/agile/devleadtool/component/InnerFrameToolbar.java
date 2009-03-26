@@ -4,10 +4,13 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.util.HashSet;
 import java.util.Set;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
-import com.jonas.agile.devleadtool.component.Action.BasicAbstractGUIAction;
+import com.jonas.agile.devleadtool.component.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.component.dialog.AddBoardReconcileDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
@@ -25,21 +28,37 @@ public class InnerFrameToolbar extends JToolBar {
 
    public InnerFrameToolbar(final Frame parentFrame, BoardPanel boardPanel, JiraPanel jiraPanel, DnDTreePanel sprintPanel, MyTable boardTable,
          final MyTable jiraTable) {
-      FreezeManipulationAction a = new FreezeManipulationAction(parentFrame);
-      a.setPanels(boardPanel, jiraPanel, sprintPanel);
-      this.add(new JCheckBox(a));
 
-      this.addSeparator();
       final MyTable[] tables = { boardTable, jiraTable };
 
-      this.add(new JButton(new ReconcileManuallyAction(parentFrame, jiraTable)));
-      this.add(new JButton(new AddManuallyAction(parentFrame, tables)));
-      this.add(new JButton(new AddFromJiraFilterAction(parentFrame, tables)));
-      this.add(new JButton(new AddFromJiraVersionAction(parentFrame, tables)));
-      this.addSeparator();
-      this.add(new JButton(new CheckForDuplicatesAction("Duplicates?", "Higlight Duplicates in Board", parentFrame, boardTable)));
-      this.addSeparator();
-      this.add(new JButton(new BoardStatsAction("Board Stats", "Showing Board Statistics", parentFrame, boardTable)));
+      BasicAbstractGUIAction freezeAction = new FreezeManipulationAction(parentFrame, boardPanel, jiraPanel, sprintPanel);
+      BasicAbstractGUIAction dupeAction = new CheckForDuplicatesAction("Identify Duplicates", "Higlight Duplicates in Board", parentFrame,
+            boardTable);
+      BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown", "Showing Board Statistics", parentFrame, boardTable);
+      BasicAbstractGUIAction reconcileAction = new ReconcileManuallyAction(parentFrame, jiraTable);
+      BasicAbstractGUIAction addManualAction = new AddManuallyAction(parentFrame, tables);
+      BasicAbstractGUIAction addFilterAction = new AddFromJiraFilterAction(parentFrame, tables);
+      BasicAbstractGUIAction addVersionAction = new AddFromJiraVersionAction(parentFrame, tables);
+
+      JMenuBar comp = new JMenuBar();
+      comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null, freezeAction, dupeAction));
+      comp.add(getDataModificationMenu("Statistics", boardStats));
+      this.add(comp);
+
+   }
+
+   private JMenu getDataModificationMenu(String menuTitle, BasicAbstractGUIAction... actions) {
+      JMenu menu = new JMenu(menuTitle);
+      for (BasicAbstractGUIAction action : actions) {
+         if (action == null) {
+            menu.addSeparator();
+         } else if (action.isCheckBoxAction()) {
+            menu.add(new JCheckBoxMenuItem(action));
+         } else {
+            menu.add(new JMenuItem(action));
+         } 
+      }
+      return menu;
    }
 }
 
@@ -50,11 +69,8 @@ final class FreezeManipulationAction extends BasicAbstractGUIAction {
    private JiraPanel jiraPanel;
    private DnDTreePanel sprintPanel;
 
-   FreezeManipulationAction(Frame parentFrame) {
-      super("Freeze", "Freezes the manipulation of data", parentFrame);
-   }
-
-   public void setPanels(BoardPanel boardPanel, JiraPanel jiraPanel, DnDTreePanel sprintPanel) {
+   FreezeManipulationAction(Frame parentFrame, BoardPanel boardPanel, JiraPanel jiraPanel, DnDTreePanel sprintPanel) {
+      super("Freeze", "Does not allow manipulation of data whilst checked", parentFrame);
       this.boardPanel = boardPanel;
       this.jiraPanel = jiraPanel;
       this.sprintPanel = sprintPanel;
@@ -62,12 +78,17 @@ final class FreezeManipulationAction extends BasicAbstractGUIAction {
 
    @Override
    public void doActionPerformed(ActionEvent evt) {
-      JCheckBox cb = (JCheckBox) evt.getSource();
+      JCheckBoxMenuItem cb = (JCheckBoxMenuItem) evt.getSource();
 
       boolean isSel = !cb.isSelected();
       boardPanel.setEditable(isSel);
       sprintPanel.setEditable(isSel);
       jiraPanel.setEditable(isSel);
+   }
+
+   @Override
+   public boolean isCheckBoxAction() {
+      return true;
    }
 }
 
@@ -114,10 +135,10 @@ final class CheckForDuplicatesAction extends BasicAbstractGUIAction {
 }
 
 
-final class BoardStatsAction extends BasicAbstractGUIAction {
+final class BurndownAction extends BasicAbstractGUIAction {
    private final MyTable sourceTable;
 
-   BoardStatsAction(String name, String description, Frame parentFrame, MyTable sourceTable) {
+   BurndownAction(String name, String description, Frame parentFrame, MyTable sourceTable) {
       super(name, description, parentFrame);
       this.sourceTable = sourceTable;
    }
@@ -135,7 +156,7 @@ final class ReconcileManuallyAction extends BasicAbstractGUIAction {
    private final MyTable jiraTable;
 
    public ReconcileManuallyAction(Frame parentFrame, MyTable jiraTable) {
-      super("Reconcile", "Reconcile with the real visual board and the virtual Sprinter Board", parentFrame);
+      super("Commence Reconciliation", "Reconcile with the real visual board and the virtual Sprinter Board", parentFrame);
       this.jiraTable = jiraTable;
    }
 
@@ -164,7 +185,7 @@ abstract class BasicAbstractGUIActionWithTables extends BasicAbstractGUIAction {
 final class AddManuallyAction extends BasicAbstractGUIActionWithTables {
 
    public AddManuallyAction(Frame parentFrame, MyTable... tables) {
-      super("Add", "Add jiras manually", parentFrame, tables);
+      super("Add Manually", "Add jiras manually", parentFrame, tables);
    }
 
    @Override
@@ -177,7 +198,7 @@ final class AddManuallyAction extends BasicAbstractGUIActionWithTables {
 
 final class AddFromJiraFilterAction extends BasicAbstractGUIActionWithTables {
    public AddFromJiraFilterAction(Frame parentFrame, MyTable... tables) {
-      super("Filter", "Use predefined jira filters to add jiras to Sprinter", parentFrame, tables);
+      super("Add Filters", "Use predefined jira filters to add jiras to Sprinter", parentFrame, tables);
    }
 
    @Override
@@ -189,7 +210,7 @@ final class AddFromJiraFilterAction extends BasicAbstractGUIActionWithTables {
 
 final class AddFromJiraVersionAction extends BasicAbstractGUIActionWithTables {
    public AddFromJiraVersionAction(Frame parentFrame, MyTable[] tables) {
-      super("Versions", "", parentFrame, tables);
+      super("Add Versions", "", parentFrame, tables);
    }
 
    @Override
