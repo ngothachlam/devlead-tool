@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.Action;
+package com.jonas.agile.devleadtool.component.Actiona;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -31,4 +31,8 @@ public abstract class BasicAbstractGUIAction extends AbstractAction {
 
    public abstract void doActionPerformed(ActionEvent e);
 
+   public boolean isCheckBoxAction(){
+      return false;
+   }
+   
 }

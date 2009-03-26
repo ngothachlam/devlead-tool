@@ -29,7 +29,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.burndown.SprintBurndownGrapher;
-import com.jonas.agile.devleadtool.component.Action.BasicAbstractGUIAction;
+import com.jonas.agile.devleadtool.component.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
