@@ -1,7 +1,6 @@
 package com.jonas.agile.devleadtool.component.table.model;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Vector;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
@@ -105,15 +104,14 @@ public class JiraTableModelTest extends JonasTestCase {
       jiraModel = new JiraTableModel();
       assertTrue(jiraModel.isSprintOk(BoardStatusValue.UnKnown, null));
       assertTrue(jiraModel.isSprintOk(BoardStatusValue.NA, null));
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Open, null));
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Bug, null));
-//      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Parked, null));
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.InDevProgress, null));
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Resolved, null));
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.InQAProgress, null));
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Complete, null));
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.ForShowCase, null));
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Approved, null));
+      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Open, null));
+      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Bug, null));
+      assertTrue(jiraModel.isSprintOk(BoardStatusValue.InDevProgress, null));
+      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Resolved, null));
+      assertTrue(jiraModel.isSprintOk(BoardStatusValue.InQAProgress, null));
+      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Complete, null));
+      assertTrue(jiraModel.isSprintOk(BoardStatusValue.ForShowCase, null));
+      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Approved, null));
    }
    
    public void testShouldHiglightIncorrectProjects(){
@@ -138,7 +136,7 @@ public class JiraTableModelTest extends JonasTestCase {
       jiraFixVersion = "LLU 13, LLU 12";
       assertFalse(jiraModel.isFixVersionOk("LLU 12", jiraFixVersion));
       assertFalse(jiraModel.isFixVersionOk("LLU 13", jiraFixVersion));
-      assertTrue(jiraModel.isFixVersionOk("LLU 12, LLU 13", jiraFixVersion));
+      assertFalse(jiraModel.isFixVersionOk("LLU 12, LLU 13", jiraFixVersion));
       assertTrue(jiraModel.isFixVersionOk("LLU 13, LLU 12", jiraFixVersion));
       assertFalse(jiraModel.isFixVersionOk("LLU 13, LLU 12, LLU 14", jiraFixVersion));
    }

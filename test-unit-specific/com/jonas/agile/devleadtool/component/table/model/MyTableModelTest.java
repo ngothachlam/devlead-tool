@@ -10,9 +10,11 @@ import org.apache.log4j.Logger;
 import org.easymock.classextension.EasyMock;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.component.tree.nodes.FixVersionNode;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
+import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.TestObjects;
 
@@ -187,10 +189,17 @@ public class MyTableModelTest extends JonasTestCase {
    public void testShouldAddJiraOk() {
       model.addJira("llu-1");
 
+      
       assertEquals("LLU-1", model.getValueAt(0, 0));
+      assertEquals("LLU-1", model.getValueAt(Column.Jira, 0));
+      
       assertEquals("", model.getValueAt(0, 1));
-      assertEquals(BoardStatusValue.NA, model.getValueAt(0, 2));
-      assertEquals(null, model.getValueAt(0, 3));
+      assertEquals("", model.getValueAt(Column.Description, 0));
+      
+      assertEquals(null, model.getValueAt(Column.prio, 0));
+      
+      assertEquals("", model.getValueAt(0, 3));
+      assertEquals("", model.getValueAt(Column.Note, 0));
    }
 
    public void testShouldCalculateAlreadyExistsOk() {
@@ -203,10 +212,11 @@ public class MyTableModelTest extends JonasTestCase {
    public void testShouldGetColumnInfoOk() {
       assertEquals(0, model.getColumnIndex(Column.Jira));
       assertEquals(1, model.getColumnIndex(Column.Description));
-      assertEquals(3, model.getColumnIndex(Column.prio));
-      assertEquals(4, model.getColumnIndex(Column.Note));
-      assertEquals(5, model.getColumnIndex(Column.J_BuildNo));
-      assertEquals(6, model.getColumnIndex(Column.J_Dev_Estimate));
+      assertEquals(2, model.getColumnIndex(Column.prio));
+      assertEquals(3, model.getColumnIndex(Column.Note));
+      assertEquals(4, model.getColumnIndex(Column.J_BuildNo));
+      assertEquals(5, model.getColumnIndex(Column.J_Dev_Estimate));
+      assertEquals(6, model.getColumnIndex(Column.Dev_Estimate));
       assertEquals(-1, model.getColumnIndex(Column.BoardStatus));
    }
 
@@ -230,14 +240,14 @@ public class MyTableModelTest extends JonasTestCase {
 
       verify();
       assertEquals(1, model.getRowCount());
-      assertEquals(8, model.getColumnCount());
+      assertEquals(7, model.getColumnCount());
       assertModelRow("LLU-1", Column.Jira, 0, 0);
       assertModelRow("Summary1", Column.Description, 1, 0);
-      assertModelRow(5800, Column.prio, 3, 0);
-      assertModelRow("", Column.Note, 4, 0);
-      assertModelRow("BuildNo1", Column.J_BuildNo, 5, 0);
-      assertModelRow("1.4", Column.J_Dev_Estimate, 6, 0);
-      assertModelRow("", Column.Dev_Estimate, 7, 0);
+      assertModelRow(5800, Column.prio, 2, 0);
+      assertModelRow("", Column.Note, 3, 0);
+      assertModelRow("BuildNo1", Column.J_BuildNo, 4, 0);
+      assertModelRow("1.4", Column.J_Dev_Estimate, 5, 0);
+      assertModelRow("", Column.Dev_Estimate, 6, 0);
    }
 
    private void assertModelRow(Object string, Column column, int col, int row) {
@@ -247,41 +257,23 @@ public class MyTableModelTest extends JonasTestCase {
    }
 
    public void testShouldGetValueOfSameClassAsColumnType() {
-      MyTableModel model = new TestTableModelTwo();
+      MyTableModel model = new TestTableModel();
 
       JiraIssue jiraIssue = new JiraIssue("key", "summary", "status", "resolution", "type", "buildNo", "estimate", 1, "sprint", "project");
+      JiraVersion fixVersion = new JiraVersion("",  JiraProject.LLU, "", false);
+      jiraIssue.addFixVersions(fixVersion);
       assertEquals("KEY", model.getValueFromIssue(jiraIssue, Column.Jira));
       assertEquals("type", model.getValueFromIssue(jiraIssue, Column.J_Type));
       assertEquals("summary", model.getValueFromIssue(jiraIssue, Column.Description));
-      assertTrue(model.getValueFromIssue(jiraIssue, Column.J_FixVersion) instanceof List);
+      Object fixVersions = model.getValueFromIssue(jiraIssue, Column.J_FixVersion);
+      assertTrue(fixVersions instanceof String);
+      assertEquals("", fixVersions.toString());
       assertEquals("status", model.getValueFromIssue(jiraIssue, Column.J_Status));
-      assertEquals("resolution", model.getValueFromIssue(jiraIssue, Column.J_Resolution));
+      assertEquals("status (resolution)", model.getValueFromIssue(jiraIssue, Column.J_Resolution));
       assertEquals("buildNo", model.getValueFromIssue(jiraIssue, Column.J_BuildNo));
       assertEquals(1, model.getValueFromIssue(jiraIssue, Column.prio));
       assertEquals("estimate", model.getValueFromIssue(jiraIssue, Column.J_Dev_Estimate));
       assertEquals("sprint", model.getValueFromIssue(jiraIssue, Column.J_Sprint));
       assertEquals(null, model.getValueFromIssue(jiraIssue, Column.J_Dev_Spent));
    }
-}
-
-
-class TestTableModelTwo extends MyTableModel {
-
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.prio, Column.Note, Column.J_BuildNo,
-         Column.J_Dev_Estimate, Column.Dev_Estimate };
-   private Logger log = MyLogger.getLogger(JiraTableModel.class);
-
-   public TestTableModelTwo() {
-      super(columns);
-   }
-
-   public TestTableModelTwo(Vector<Vector<Object>> contents, Vector<Column> header) {
-      super(columns, contents, header);
-   }
-
-   @Override
-   public Color getColor(Object value, int row, Column column) {
-      return null;
-   }
-
 }

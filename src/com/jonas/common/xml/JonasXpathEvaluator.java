@@ -16,10 +16,12 @@ public class JonasXpathEvaluator {
 
    private XPath xpath;
 
-   public JonasXpathEvaluator(String xpathExpression) {
+   private final XMLOutputter outputter;
+   
+   public JonasXpathEvaluator(String xpathExpression, XMLOutputter outputter) {
+      this.outputter = outputter;
       try {
          xpath = XPath.newInstance(xpathExpression);
-         // xpath.addNamespace("xmlns", "http://www.w3.org/2001/XMLSchema");
       } catch (JDOMException e) {
          e.printStackTrace();
       }
@@ -28,7 +30,7 @@ public class JonasXpathEvaluator {
    protected String getStringRepresentationOfXml(Element element) {
       StringWriter stringWriter = new StringWriter();
       try {
-         new XMLOutputter().output(element, stringWriter);
+         outputter.output(element, stringWriter);
       } catch (IOException e) {
          e.printStackTrace();
       }

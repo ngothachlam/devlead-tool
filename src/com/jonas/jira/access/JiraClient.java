@@ -5,6 +5,7 @@ import java.util.List;
 import javax.xml.rpc.ServiceException;
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
+import org.jdom.output.XMLOutputter;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
@@ -22,7 +23,7 @@ import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraClient {
 
-   private static final JonasXpathEvaluator JONAS_XPATH_EVALUATOR = new JonasXpathEvaluator("/rss/channel/item");
+   private static final JonasXpathEvaluator JONAS_XPATH_EVALUATOR = new JonasXpathEvaluator("/rss/channel/item", new XMLOutputter());
    
    public static final JiraClient JiraClientAolBB = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB), new JiraSoapClient(
          ClientConstants.AOLBB_WS), JiraBuilder.getInstance());

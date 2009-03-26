@@ -60,7 +60,7 @@ public enum Column {
    // Boolean Defaults
    isParked(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false) {
       public Boolean parseFromPersistanceStore(Object cellContents) {
-         if(cellContents == null)
+         if (cellContents == null)
             return Boolean.FALSE;
          String cellContentsString = cellContents.toString();
          return Boolean.parseBoolean(cellContentsString);
@@ -68,7 +68,7 @@ public enum Column {
    },
    Old(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false) {
       public Boolean parseFromPersistanceStore(Object cellContents) {
-         if(cellContents == null)
+         if (cellContents == null)
             return Boolean.FALSE;
          String cellContentsString = cellContents.toString();
          return Boolean.parseBoolean(cellContentsString);
@@ -84,7 +84,8 @@ public enum Column {
 
    // private static Map<String, Column> columns;
 
-   private <T> Column(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad, Boolean isNumeric) {
+   private <T> Column(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad,
+         Boolean isNumeric) {
       this.defaultClass = defaultClass;
       this.defaultValue = defaultValue;
       this.isEditable = isEditable;
@@ -128,13 +129,17 @@ public enum Column {
    }
 
    /**
-    * The idea is that anything that can be interpreted to a double should be converted to a double when saving the data
-    * So that SUM(A:A) can be done for instance. Loading it back again needs to display it as a string.
+    * The idea is that anything that can be interpreted to a double should be converted to a double when saving the data So that SUM(A:A) can be
+    * done for instance. Loading it back again needs to display it as a string.
+    * 
     * @param value
     * @return
     */
    public Object parseToPersistanceStore(Object value) {
-      if(isNumeric && value != null && value instanceof String ){
+      if (value == null)
+         return "";
+
+      if (isNumeric && value != null && value instanceof String) {
          String string = (String) value;
          if (string.trim().isEmpty()) {
             return string;

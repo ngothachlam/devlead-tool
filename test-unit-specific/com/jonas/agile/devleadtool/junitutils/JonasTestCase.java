@@ -104,7 +104,6 @@ public class JonasTestCase extends TestCase {
    @Override
    protected void setUp() throws Exception {
       super.setUp();
-      TestObjects.createTestObjects();
       // EasyMock.expect(mockFactory.getJiraBuilder()).andReturn(mockJiraBuilder).anyTimes();
    }
 

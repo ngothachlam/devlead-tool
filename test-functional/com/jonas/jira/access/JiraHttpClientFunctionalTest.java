@@ -5,6 +5,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
+import org.jdom.output.XMLOutputter;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
@@ -26,13 +27,13 @@ public class JiraHttpClientFunctionalTest extends TestCase {
    }
 
    public void testGetJira() throws IOException, HttpException, JiraException, JDOMException {
-      JiraIssue jira = client_Atlassain.getJira("TST-124", new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
+      JiraIssue jira = client_Atlassain.getJira("TST-124", new JonasXpathEvaluator("/rss/channel/item", new XMLOutputter()), JiraBuilder.getInstance());
       
       assertEquals("what the heck a test", jira.getSummary());
    }
    
    public void testApacheCommonsAttempt() throws IOException, HttpException, JiraException, JDOMException {
-      JiraIssue jira = client_Aol.getJira("LLU-4139", new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
+      JiraIssue jira = client_Aol.getJira("LLU-4139", new JonasXpathEvaluator("/rss/channel/item", new XMLOutputter()), JiraBuilder.getInstance());
       
       assertEquals("llu-inventory-build-2933 / llu-master-build-4066", jira.getBuildNo());
       assertEquals("1.0", jira.getEstimate());
@@ -40,7 +41,7 @@ public class JiraHttpClientFunctionalTest extends TestCase {
    }
    
    public void testShouldGetFilter() throws HttpException, IOException, JiraException, JDOMException{
-      List<JiraIssue> jiras = client_Aol.getJirasFromFilter(JiraFilter.DevsupportPrioFilter_UnClosed, new JonasXpathEvaluator("/rss/channel/item"), JiraBuilder.getInstance());
+      List<JiraIssue> jiras = client_Aol.getJirasFromFilter(JiraFilter.DevsupportPrioFilter_UnClosed, new JonasXpathEvaluator("/rss/channel/item", new XMLOutputter()), JiraBuilder.getInstance());
       
       for (JiraIssue jiraIssue : jiras) {
          System.out.println(jiraIssue.getKey());
