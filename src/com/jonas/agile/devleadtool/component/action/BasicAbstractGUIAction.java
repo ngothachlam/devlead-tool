@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.Actiona;
+package com.jonas.agile.devleadtool.component.action;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
