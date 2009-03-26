@@ -92,8 +92,12 @@ public class JiraTableModel extends MyTableModel {
 
    boolean isFixVersionOk(Object boardValue, Object jiraValue) {
       log.debug("boardValue: \"" + boardValue + "\" jiraValue: " + jiraValue);
-      if ( jiraValue == null  && (boardValue == null))
-         return true;
+      if (jiraValue == null) {
+         if (boardValue == null || boardValue.toString().trim().length() == 0)
+            return true;
+         else
+            return false;
+      }
       String jiraFixVersions = (String) jiraValue;
       String boardValueAsString = (String) boardValue;
 

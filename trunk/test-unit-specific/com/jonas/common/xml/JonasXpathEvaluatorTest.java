@@ -2,13 +2,14 @@ package com.jonas.common.xml;
 
 import org.jdom.Attribute;
 import org.jdom.Element;
+import org.jdom.output.XMLOutputter;
 
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class JonasXpathEvaluatorTest extends JonasTestCase {
-	JonasXpathEvaluator jonasXpathEvaluator = new JonasXpathEvaluator("/test/child2[@childAttr='childAttrvalue']");
-	JonasXpathEvaluator jonasXpathEvaluatorWithIncorrectXpath = new JonasXpathEvaluator("/test/child2[@childAttr='chidldAttrvalue']");
-	JonasXpathEvaluator jonasXpathEvaluatorWithAttribute = new JonasXpathEvaluator("/test/child2/@childAttr");
+	JonasXpathEvaluator jonasXpathEvaluator = new JonasXpathEvaluator("/test/child2[@childAttr='childAttrvalue']", new XMLOutputter());
+	JonasXpathEvaluator jonasXpathEvaluatorWithIncorrectXpath = new JonasXpathEvaluator("/test/child2[@childAttr='chidldAttrvalue']", new XMLOutputter());
+	JonasXpathEvaluator jonasXpathEvaluatorWithAttribute = new JonasXpathEvaluator("/test/child2/@childAttr", new XMLOutputter());
 	private Element element;
 
 	public JonasXpathEvaluatorTest() {

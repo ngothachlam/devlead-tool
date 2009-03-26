@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
+import org.jdom.output.XMLOutputter;
 import com.atlassian.jira.rpc.soap.beans.RemoteCustomFieldValue;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.agile.devleadtool.PlannerHelper;
@@ -88,7 +89,7 @@ public class JiraBuilder {
    }
 
    private static void addXpathAction(String xPath, XpathAction action) {
-      jiraXpathActions.add(new XPathImplementor(xPath, action));
+      jiraXpathActions.add(new XPathImplementor(action, new JonasXpathEvaluator(xPath, new XMLOutputter())));
    }
 
    JiraBuilder() {
@@ -206,9 +207,9 @@ class XPathImplementor {
    private final XpathAction xpathAction;
    private JonasXpathEvaluator xpathEvaluator;
 
-   public XPathImplementor(String xpathExpression, XpathAction xpathAction) {
+   public XPathImplementor(XpathAction xpathAction, JonasXpathEvaluator jonasXpathEvaluator) {
       this.xpathAction = xpathAction;
-      xpathEvaluator = new JonasXpathEvaluator(xpathExpression);
+      xpathEvaluator = jonasXpathEvaluator;
    }
 
    public void execute(Element element, JiraIssue jira) {

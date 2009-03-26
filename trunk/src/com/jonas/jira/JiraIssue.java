@@ -51,18 +51,12 @@ public class JiraIssue {
    public void addFixVersions(JiraVersion fixVersion) {
       if (fixVersion != null) {
          fixVersions.add(fixVersion);
-         fixVersionsAsStrings = "[";
-         for (JiraVersion aFixVersion : fixVersions) {
-            fixVersionsAsStrings += aFixVersion ;
-            fixVersionsAsStrings += ", " ;
+         for (int i = 0; i < fixVersions.size(); i++) {
+            JiraVersion aFixVersion = fixVersions.get(i);
+            fixVersionsAsStrings += aFixVersion;
+            if (i + 1 < fixVersions.size())
+               fixVersionsAsStrings += ", ";
          }
-         fixVersionsAsStrings += "]" ;
-         
-         if(fixVersionsAsStrings.length() >2 ){
-            fixVersionsAsStrings = fixVersionsAsStrings.substring(0, fixVersionsAsStrings.length()-3);
-         }
-         
-         fixVersionsAsStrings += "]" ;
       }
    }
 

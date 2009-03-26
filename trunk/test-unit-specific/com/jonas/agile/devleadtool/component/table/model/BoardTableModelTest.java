@@ -63,11 +63,12 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(new Integer(5).intValue(), columnNames.get(Column.BoardStatus).intValue());
       assertEquals(new Integer(6).intValue(), columnNames.get(Column.Old).intValue());
       assertEquals(new Integer(7).intValue(), columnNames.get(Column.Dev_Estimate).intValue());
-      assertEquals(new Integer(8).intValue(), columnNames.get(Column.Dev_Actual).intValue());
-      assertEquals(new Integer(9).intValue(), columnNames.get(Column.QA_Estimate).intValue());
-      assertEquals(new Integer(10).intValue(), columnNames.get(Column.prio).intValue());
-      assertEquals(new Integer(11).intValue(), columnNames.get(Column.Note).intValue());
-      assertEquals(12, columnNames.size());
+      assertEquals(new Integer(8).intValue(), columnNames.get(Column.Dev_Remain).intValue());
+      assertEquals(new Integer(9).intValue(), columnNames.get(Column.Dev_Actual).intValue());
+      assertEquals(new Integer(10).intValue(), columnNames.get(Column.QA_Estimate).intValue());
+      assertEquals(new Integer(11).intValue(), columnNames.get(Column.prio).intValue());
+      assertEquals(new Integer(12).intValue(), columnNames.get(Column.Note).intValue());
+      assertEquals(13, columnNames.size());
    }
 
    public void testShouldGetAnyBoolColumnBackOk() {
@@ -86,12 +87,14 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(true, model.isBoardValueEither(0, list));
       list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress, BoardStatusValue.Resolved);
       assertEquals(false, model.isBoardValueEither(0, list));
-      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress, BoardStatusValue.Resolved, BoardStatusValue.Open);
+      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress, BoardStatusValue.Resolved,
+            BoardStatusValue.Open);
       assertEquals(true, model.isBoardValueEither(0, list));
       // set To Complete
       model.setValueAt(BoardStatusValue.Complete, 0, Column.BoardStatus);
       assertEquals(BoardStatusValue.Complete, model.getValueAt(Column.BoardStatus, "LLU-1"));
-      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress, BoardStatusValue.Resolved, BoardStatusValue.Open);
+      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress, BoardStatusValue.Resolved,
+            BoardStatusValue.Open);
       assertEquals(true, model.isBoardValueEither(0, list));
    }
 
@@ -125,7 +128,7 @@ public class BoardTableModelTest extends JonasTestCase {
       MyTableModel model = new BoardTableModel(contents, header);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(12, model.getColumnCount());
+      assertEquals(13, model.getColumnCount());
       assertEquals("0.0", model.getValueAt(0, 0));
       assertEquals("0.1", model.getValueAt(0, 1));
       assertEquals("0.2", model.getValueAt(0, 2));
@@ -146,32 +149,24 @@ public class BoardTableModelTest extends JonasTestCase {
 
    public void testGetEmptyRowFromBoard() {
       Object[] emptyRow = model.getEmptyRow();
-      assertEquals(12, emptyRow.length);
-      assertEquals("", emptyRow[0]);
-      assertEquals("", emptyRow[1]);
-      assertEquals("", emptyRow[2]);
-      assertEquals("", emptyRow[3]);
-      assertEquals("", emptyRow[4]);
-      assertEquals(BoardStatusValue.UnKnown, emptyRow[5]);
-      assertEquals(false, emptyRow[6]);
-      assertEquals("", emptyRow[7]);
-      assertEquals("", emptyRow[8]);
-      assertEquals("", emptyRow[9]);
-      assertEquals(null, emptyRow[10]);
-      assertEquals("", emptyRow[11]);
+      assertEquals("", emptyRow[0]); // Column.Jira
+      assertEquals("", emptyRow[1]); // Column.Description
+      assertEquals("", emptyRow[2]); // J_Resolution
+      assertEquals("", emptyRow[3]); // Release
+      assertEquals("", emptyRow[4]); // Merge
+      assertEquals(BoardStatusValue.UnKnown, emptyRow[5]); // BoardStatus
+      assertEquals(false, emptyRow[6]); // Old
+      assertEquals("", emptyRow[7]); // Dev_Estimate
+      assertEquals("", emptyRow[8]); // Dev_Remain
+      assertEquals("", emptyRow[9]); // Dev Actual
+      assertEquals("", emptyRow[10]); // QA Estimate
+      assertEquals(null, emptyRow[11]); // Prio
+      assertEquals("", emptyRow[12]); // Note
+      assertEquals(13, emptyRow.length);
    }
 
    public void testGetEmptyRowFromBodard() {
-      assertTrue( BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Approved, "Closed (Fixed)") );
-      assertFalse( BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Bug, "Closed (Fixed)"));
-//      model.isMappedOk(BoardStatusValue.Complete, "Closed (Fixed)");
-//      model.isMappedOk(BoardStatusValue.ForShowCase, "Closed (Fixed)");
-//      model.isMappedOk(BoardStatusValue.InDevProgress, "Closed (Fixed)");
-//      model.isMappedOk(BoardStatusValue.InQAProgress, "Closed (Fixed)");
-//      model.isMappedOk(BoardStatusValue.NA, "Closed (Fixed)");
-//      model.isMappedOk(BoardStatusValue.Open, "Closed (Fixed)");
-//      model.isMappedOk(BoardStatusValue.Parked, "Closed (Fixed)");
-//      model.isMappedOk(BoardStatusValue.Resolved, "Closed (Fixed)");
-//      model.isMappedOk(BoardStatusValue.UnKnown, "Closed (Fixed)");
+      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Approved, "Closed (Fixed)"));
+      assertFalse(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Bug, "Closed (Fixed)"));
    }
 }
