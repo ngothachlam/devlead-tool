@@ -2,21 +2,21 @@ package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Action;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import com.jonas.common.MyPanel;
 
 public class AddReconcilePanel extends AbstractAddPanel {
 
-   private final JFrame frame;
+   private final Frame frame;
    private ActionListener addButtonListener;
    private JButton addButton;
 
-   public AddReconcilePanel(final JFrame frame) {
+   public AddReconcilePanel(final Frame frame) {
       super(new BorderLayout(), frame);
       this.frame = frame;
    }

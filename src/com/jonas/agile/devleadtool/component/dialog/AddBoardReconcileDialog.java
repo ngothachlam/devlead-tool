@@ -1,6 +1,7 @@
 package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.Container;
+import java.awt.Frame;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -11,8 +12,8 @@ import com.jonas.common.SwingUtil;
 
 public class AddBoardReconcileDialog extends JFrame {
 
-   public AddBoardReconcileDialog(JFrame parentFrame, MyTable jiraTable) {
-      this.setContentPane(getPanel(this, jiraTable));
+   public AddBoardReconcileDialog(Frame parentFrame, MyTable... tables) {
+      this.setContentPane(getPanel(this));
       this.pack();
       this.setSize(450, 450);
 
@@ -20,9 +21,9 @@ public class AddBoardReconcileDialog extends JFrame {
       setVisible(true);
    }
 
-   private Container getPanel(JFrame parentFrame, MyTable jiraTable) {
+   private Container getPanel(Frame parentFrame, MyTable... tables) {
       AddReconcilePanel mainPanel = new AddReconcilePanel(parentFrame);
-      JPanel reconcilidationTablePanel = new ReconciliationTablePanel(jiraTable);
+      JPanel reconcilidationTablePanel = new ReconciliationTablePanel(tables);
 
       JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainPanel, reconcilidationTablePanel);
       splitPane.setDividerLocation(-1);
