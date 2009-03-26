@@ -10,12 +10,12 @@ import com.jonas.common.MyPanel;
 
 public class ReconciliationTablePanel extends MyPanel {
 
+   private final MyTable[] tables;
    private JTable table;
-   private final MyTable jiraTable;
 
-   public ReconciliationTablePanel(MyTable jiraTable) {
+   public ReconciliationTablePanel(MyTable... tables) {
       super(new BorderLayout());
-      this.jiraTable = jiraTable;
+      this.tables = tables;
       table = new JTable(getRowData(), getColumnData());
 
       JScrollPane scrollpane = new MyScrollPane(table);

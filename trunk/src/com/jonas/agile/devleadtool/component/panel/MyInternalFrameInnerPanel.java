@@ -2,18 +2,10 @@ package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -31,20 +23,12 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.Action.BasicAbstractGUIAction;
-import com.jonas.agile.devleadtool.component.dialog.AddBoardReconcileDialog;
-import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
-import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
-import com.jonas.agile.devleadtool.component.dialog.AddVersionDialog;
-import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.component.frame.BasicMessageFrame;
-import com.jonas.agile.devleadtool.component.frame.BoardStatsFrame;
+import com.jonas.agile.devleadtool.component.InnerFrameToolbar;
 import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.component.listener.TableListener;
 import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.component.menu.SprintTreePopupMenu;
-import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.editor.MyEditor;
@@ -58,10 +42,8 @@ import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
-import com.jonas.common.DateHelper;
 import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.common.string.StringHelper;
 
 public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
@@ -71,7 +53,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private BoardPanel boardPanel;
    private JiraPanel jiraPanel;
-   private JCheckBox editableCheckBox;
    private DnDTreePanel sprintPanel;
 
    private MyTable boardTable;
@@ -125,43 +106,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       return tabPane;
    }
 
-   private Component getAddPanel(final PlannerHelper helper, final MyTable boardTable, final MyTable jiraTable) {
-      JPanel panel = new JPanel(new GridLayout(1, 2, 5, 5));
-      final List<MyTable> tables = new ArrayList<MyTable>();
-      tables.add(boardTable);
-      tables.add(jiraTable);
-
-      final MyTable[] array = tables.toArray(new MyTable[tables.size()]);
-      addButton(panel, "Reconcile", new BasicActionListener(helper.getParentFrame()) {
-         @Override
-         public void doActionPerformed(ActionEvent e) {
-            new AddBoardReconcileDialog(helper.getParentFrame(), jiraTable);
-         }
-      });
-      addButton(panel, "Add", new BasicActionListener(helper.getParentFrame()) {
-         @Override
-         public void doActionPerformed(ActionEvent e) {
-            new AddManualDialog(helper.getParentFrame(), array);
-         }
-      });
-      addButton(panel, "Filters", new BasicActionListener(helper.getParentFrame()) {
-         @Override
-         public void doActionPerformed(ActionEvent e) {
-            new AddFilterDialog(helper.getParentFrame(), array);
-         }
-      });
-      addButton(panel, "Versions", new BasicActionListener(helper.getParentFrame()) {
-         @Override
-         public void doActionPerformed(ActionEvent e) {
-            new AddVersionDialog(helper.getParentFrame(), array);
-         }
-      });
-      addButton(panel, new CheckForDuplicatesAction("Duplicates?", "Higlight Duplicates in Board", helper.getParentFrame(), boardTable));
-      addButton(panel, new BoardStatsAction("Board Stats", "Showing Board Statistics", helper.getParentFrame(), boardTable));
-
-      return panel;
-   }
-
    public BoardPanel getBoardPanel() {
       return boardPanel;
    }
@@ -191,7 +135,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable);
       new SprintTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder, jiraTable, boardTable);
 
-      addNorth(createAndGetTopPanel(helper));
+      addNorth(new InnerFrameToolbar(helper.getParentFrame(), boardPanel, jiraPanel, sprintPanel, boardTable, jiraTable));
       addCenter(combineIntoSplitPane(boardPanel, jiraMainPanel, sprintPanel));
    }
 
@@ -201,14 +145,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
             jiraPanel.getTable());
       jiraButtonPanel.add(new JCheckBox(highlightAction));
       return jiraButtonPanel;
-   }
-
-   private JPanel createAndGetTopPanel(PlannerHelper helper) {
-      JPanel topPanel = new JPanel();
-      editableCheckBox = new JCheckBox("Editable?", true);
-      topPanel.add(editableCheckBox);
-      topPanel.add(getAddPanel(helper, boardTable, jiraTable));
-      return topPanel;
    }
 
    private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, final MyTable jiraTable, SprintTree sprintTree) {
@@ -236,67 +172,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       setJiraDataListener(jiraModel, boardModel, sprintTree, boardTable);
       setSprintDataListener(sprintTree, boardTable, jiraTable);
 
-      editableCheckBox.addActionListener(new EditableListener());
-
       jiraParseListener.setTree(tree);
-   }
-
-   private final class BoardStatsAction extends BasicAbstractGUIAction {
-      private final MyTable sourceTable;
-
-      private BoardStatsAction(String name, String description, Frame parentFrame, MyTable sourceTable) {
-         super(name, description, parentFrame);
-         this.sourceTable = sourceTable;
-      }
-
-      @Override
-      public void doActionPerformed(ActionEvent e) {
-         BoardStatsFrame boardStatsFrame = new BoardStatsFrame(getParentFrame(), 600, 500, sourceTable, new DateHelper());
-         boardStatsFrame.setVisible(true);
-      }
-
-     
-   }
-
-   private final class CheckForDuplicatesAction extends BasicAbstractGUIAction {
-      private final MyTable sourceTable;
-
-      private CheckForDuplicatesAction(String name, String description, Frame parentFrame, MyTable sourceTable) {
-         super(name, description, parentFrame);
-         this.sourceTable = sourceTable;
-      }
-
-      @Override
-      public void doActionPerformed(ActionEvent e) {
-         Set<String> duplicateJiras = findAnyDuplicateJirasInTable(sourceTable);
-         presentTheDuplicateJiras(duplicateJiras);
-      }
-
-      private Set<String> findAnyDuplicateJirasInTable(final MyTable boardTable) {
-         int rows = boardTable.getRowCount();
-         Set<String> duplicateJirasInTable = new HashSet<String>();
-         for (int row = 0; row < rows; row++) {
-            String jira = (String) boardTable.getValueAt(Column.Jira, row);
-            if (!duplicateJirasInTable.contains(jira)) {
-               for (int compareRow = row + 1; compareRow < rows; compareRow++) {
-                  String compareJira = (String) boardTable.getValueAt(Column.Jira, compareRow);
-                  if (jira.equalsIgnoreCase(compareJira)) {
-                     duplicateJirasInTable.add(jira);
-                  }
-               }
-            }
-         }
-         return duplicateJirasInTable;
-      }
-
-      private void presentTheDuplicateJiras(Set<String> duplicateJiras) {
-         StringBuffer sb = new StringBuffer();
-         for (String string : duplicateJiras) {
-            sb.append(string).append(" ");
-         }
-
-         AlertDialog.alertMessage(getParentFrame(), sb.toString());
-      }
    }
 
    private final class FireUpdateOnOtherTableWhenUpdatedListener implements TableModelListener {
@@ -340,15 +216,9 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
          int[] selectedRows = saveSelection();
 
-         if (button.isSelected()) {
-            jiraModel.setRenderColors(true);
-            jiraModel.fireTableDataChanged();
-            log.debug("Setting rendering colors to TRUE");
-         } else {
-            jiraModel.setRenderColors(false);
-            jiraModel.fireTableDataChanged();
-            log.debug("Setting rendering colors to FALSE");
-         }
+         jiraModel.setRenderColors(button.isSelected());
+         jiraModel.fireTableDataChanged();
+         log.debug("Setting rendering colors to " + button.isSelected());
 
          resetSelection(selectedRows);
       }
@@ -452,14 +322,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       }
    }
 
-   private final class EditableListener implements ActionListener {
-      public void actionPerformed(ActionEvent e) {
-         boardPanel.setEditable(editableCheckBox.isSelected());
-         sprintPanel.setEditable(editableCheckBox.isSelected());
-         jiraPanel.setEditable(editableCheckBox.isSelected());
-      }
-   }
-
    private final class MyBoardTableCheckboxEditorListener implements CellEditorListener {
       public void editingCanceled(ChangeEvent e) {
       }
@@ -480,27 +342,4 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          jiraTable.fireTableDataChangedForJira(jira);
       }
    }
-}
-
-
-abstract class BasicActionListener implements ActionListener {
-
-   private Frame parentFrame;
-
-   public BasicActionListener(Frame parentFrame) {
-      super();
-      this.parentFrame = parentFrame;
-   }
-
-   @Override
-   public final void actionPerformed(ActionEvent e) {
-      try {
-         doActionPerformed(e);
-      } catch (Throwable ex) {
-         AlertDialog.alertException(parentFrame, ex);
-      }
-   }
-
-   public abstract void doActionPerformed(ActionEvent e);
-
 }

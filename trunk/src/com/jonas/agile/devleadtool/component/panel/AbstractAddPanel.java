@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -9,7 +10,6 @@ import java.util.Enumeration;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -47,7 +47,7 @@ public abstract class AbstractAddPanel extends MyPanel {
       return statusCombo;
    }
 
-   public AbstractAddPanel(BorderLayout borderLayout, JFrame frame, MyTable... tables) {
+   public AbstractAddPanel(BorderLayout borderLayout, Frame frame, MyTable... tables) {
       super(borderLayout);
       
       
