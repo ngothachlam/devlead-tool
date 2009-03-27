@@ -6,8 +6,8 @@ import com.atlassian.jira.rpc.exception.RemoteException;
 
 public class JiraSoapClientFunctionalTest extends TestCase {
 
-   JiraSoapClient clientAtlassain = new JiraSoapClient(ClientConstants.ATLASSIN_WS);
-   JiraSoapClient clientAolBB = new JiraSoapClient(ClientConstants.AOLBB_WS);
+   JiraSoapClient clientAtlassain = JiraSoapClient.ATLASSIN;
+   JiraSoapClient clientAolBB = JiraSoapClient.AOLBB;
 
    protected void setUp() throws Exception {
       super.setUp();
