@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.component.listener;
+package com.jonas.agile.devleadtool.controller.listener;
 
 import java.awt.Frame;
 import java.util.List;

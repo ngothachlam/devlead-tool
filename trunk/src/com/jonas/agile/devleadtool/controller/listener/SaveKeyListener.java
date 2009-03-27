@@ -1,17 +1,20 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.component;
+package com.jonas.agile.devleadtool.controller.listener;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
+import com.jonas.common.logging.MyLogger;
 
 public class SaveKeyListener extends KeyAdapter {
    private PlannerHelper helper;
    private boolean pressed = false;
    private SavePlannerDialog savePlannerDialog;
+   private Logger log = MyLogger.getLogger(SaveKeyListener.class);
 
    public SaveKeyListener(PlannerHelper helper, SavePlannerDialog savePlannerDialog) {
       super();
@@ -21,12 +24,12 @@ public class SaveKeyListener extends KeyAdapter {
 
    @Override
    public void keyPressed(KeyEvent e) {
-      MyInternalFrame.log.debug("Pressed: KeyCode : " + e.getKeyCode() + " ModifiersEx : " + e.getModifiersEx() + " Pressed : " + pressed);
+      log.debug("Pressed: KeyCode : " + e.getKeyCode() + " ModifiersEx : " + e.getModifiersEx() + " Pressed : " + pressed);
 
       if (!pressed && (e.getModifiersEx() & e.CTRL_DOWN_MASK) == e.CTRL_DOWN_MASK) {
          if (e.getKeyCode() == e.VK_S) {
             pressed = true;
-            MyInternalFrame.log.debug("***");
+            log.debug("***");
             savePlannerDialog.save(helper.getActiveInternalFrame(), false);
          }
       }
@@ -34,9 +37,7 @@ public class SaveKeyListener extends KeyAdapter {
 
    @Override
    public void keyReleased(KeyEvent e) {
-      // log.debug("Released: KeyCode : " + e.getKeyCode() + " ModifiersEx : " + e.getModifiersEx() + " Pressed : " + pressed);
       if (e.getKeyCode() == e.VK_S || e.getKeyCode() == e.VK_CONTROL) {
-         // log.debug("Release!");
          pressed = false;
       }
    }
