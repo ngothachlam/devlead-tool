@@ -34,6 +34,9 @@ public class JiraSoapClient {
    private static final String LOGIN_NAME = "soaptester";
    private static final String LOGIN_PASSWORD = "soaptester";
 
+   public static final JiraSoapClient AOLBB = new JiraSoapClient(ClientConstants.AOLBB_WS);
+   public static final JiraSoapClient ATLASSIN = new JiraSoapClient(ClientConstants.ATLASSIN_WS);
+
    private JiraSoapService jiraSoapService = null;
 
    private String token;
@@ -43,7 +46,7 @@ public class JiraSoapClient {
       customFieldsForCloning.add(JiraCustomFields.LLUProject.toString());
    }
 
-   public JiraSoapClient(String address) {
+   private JiraSoapClient(String address) {
       jiraSoapServiceServiceLocator = getLocator();
       jiraSoapServiceServiceLocator.setJirasoapserviceV2EndpointAddress(address);
       log.debug("setting up " + jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
@@ -82,7 +85,7 @@ public class JiraSoapClient {
       cloneIssue.setSummary("[Merge for " + originalJiraIssue.getKey() + "] " + originalJiraIssue.getSummary());
       cloneIssue.setAffectsVersions(originalJiraIssue.getAffectsVersions());
       cloneIssue.setPriority("1");
-//      setOriginalEstimateToZero(cloneIssue);
+      // setOriginalEstimateToZero(cloneIssue);
       // setProjectToMerge(cloneIssue);
 
       RemoteVersion[] clonedFixVersions = setFixVersionOnClone(jira, mergeFixVersionName, cloneIssue);

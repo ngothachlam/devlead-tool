@@ -25,10 +25,8 @@ public class JiraClient {
 
    private static final JonasXpathEvaluator JONAS_XPATH_EVALUATOR = new JonasXpathEvaluator("/rss/channel/item", new XMLOutputter());
    
-   public static final JiraClient JiraClientAolBB = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB), new JiraSoapClient(
-         ClientConstants.AOLBB_WS), JiraBuilder.getInstance());
-   public static final JiraClient JiraClientAtlassin = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN), new JiraSoapClient(
-         ClientConstants.ATLASSIN_WS), JiraBuilder.getInstance());
+   public static final JiraClient JiraClientAolBB = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB), JiraSoapClient.AOLBB, JiraBuilder.getInstance());
+   public static final JiraClient JiraClientAtlassin = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN), JiraSoapClient.ATLASSIN, JiraBuilder.getInstance());
 
    private JiraHttpClient httpClient;
    private JiraBuilder jiraBuilder;
