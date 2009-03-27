@@ -3,7 +3,7 @@ package com.jonas.agile.devleadtool.component.frame;
 import java.awt.Component;
 import java.awt.Container;
 import javax.swing.JFrame;
-import com.jonas.common.SwingUtil;
+import com.jonas.common.swing.SwingUtil;
 
 public abstract class AbstractBasicFrame extends JFrame {
 

@@ -8,7 +8,7 @@ import org.easymock.EasyMock;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
-import com.jonas.common.SwingUtil;
+import com.jonas.common.swing.SwingUtil;
 
 public class CheckBoxTableCellRendererTest extends JonasTestCase {
 

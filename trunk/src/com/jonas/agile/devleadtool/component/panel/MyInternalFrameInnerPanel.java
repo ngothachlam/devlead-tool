@@ -42,8 +42,8 @@ import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
-import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.MyComponentPanel;
 
 public class MyInternalFrameInnerPanel extends MyComponentPanel {
 

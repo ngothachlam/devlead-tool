@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import com.jonas.agile.devleadtool.component.panel.AbstractAddPanel;
 import com.jonas.agile.devleadtool.component.panel.AddManualPanel;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.common.SwingUtil;
+import com.jonas.common.swing.SwingUtil;
 
 public class AddManualDialog extends JFrame {
 

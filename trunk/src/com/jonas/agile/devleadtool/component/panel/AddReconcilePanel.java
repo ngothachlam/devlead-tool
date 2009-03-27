@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Action;
 import javax.swing.JButton;
-import com.jonas.common.MyPanel;
+import com.jonas.common.swing.MyPanel;
 
 public class AddReconcilePanel extends AbstractAddPanel {
 

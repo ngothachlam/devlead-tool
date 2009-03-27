@@ -9,8 +9,8 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.common.ColorUtil;
-import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.SwingUtil;
 
 public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
 
