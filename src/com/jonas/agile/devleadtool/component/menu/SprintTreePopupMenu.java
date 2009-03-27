@@ -27,7 +27,7 @@ import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
-import com.jonas.agile.devleadtool.component.tree.xml.JiraParseListener;
+import com.jonas.agile.devleadtool.controller.listener.JiraParseListener;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;

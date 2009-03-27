@@ -2,7 +2,7 @@ package com.jonas.agile.devleadtool.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.jonas.agile.devleadtool.component.listener.PlanFixVersionListener;
+import com.jonas.agile.devleadtool.controller.listener.PlanFixVersionListener;
 import com.jonas.jira.JiraProject;
 
 public class PlanFixVersion {

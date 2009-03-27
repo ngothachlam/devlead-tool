@@ -5,6 +5,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+import com.jonas.agile.devleadtool.controller.listener.JiraParseListener;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraException;
 
