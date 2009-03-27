@@ -6,8 +6,8 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import org.apache.log4j.Logger;
-import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.SwingUtil;
 
 public class JiraCellEditor extends DefaultCellEditor implements MyEditor {
 

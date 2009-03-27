@@ -5,7 +5,7 @@ import java.util.Vector;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
-import com.jonas.common.SwingUtil;
+import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
 
 public class JiraTableModelTest extends JonasTestCase {

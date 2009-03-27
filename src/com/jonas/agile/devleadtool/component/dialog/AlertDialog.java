@@ -13,9 +13,9 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
-import com.jonas.common.MyPanel;
-import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.MyPanel;
+import com.jonas.common.swing.SwingUtil;
 
 public class AlertDialog extends JDialog {
    private static Logger log = MyLogger.getLogger(AlertDialog.class);

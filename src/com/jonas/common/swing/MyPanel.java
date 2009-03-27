@@ -1,4 +1,4 @@
-package com.jonas.common;
+package com.jonas.common.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

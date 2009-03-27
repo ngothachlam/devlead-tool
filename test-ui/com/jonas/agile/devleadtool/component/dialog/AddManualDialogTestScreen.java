@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
-import com.jonas.common.MyComponentPanel;
+import com.jonas.common.swing.MyComponentPanel;
 import com.jonas.testHelpers.TryoutTester;
 
 public class AddManualDialogTestScreen {

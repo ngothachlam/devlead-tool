@@ -1,6 +1,7 @@
-package com.jonas.common;
+package com.jonas.common.swing;
 
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
+import com.jonas.common.swing.SwingUtil;
 
 public class SwingUtilTest extends JonasTestCase {
    

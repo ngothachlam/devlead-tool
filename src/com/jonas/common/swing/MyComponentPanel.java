@@ -1,4 +1,4 @@
-package com.jonas.common;
+package com.jonas.common.swing;
 
 import java.awt.LayoutManager;
 import java.util.ArrayList;

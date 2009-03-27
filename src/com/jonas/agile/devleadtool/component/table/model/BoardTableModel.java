@@ -10,9 +10,9 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
-import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.string.StringHelper;
+import com.jonas.common.swing.SwingUtil;
 
 public class BoardTableModel extends MyTableModel {
 

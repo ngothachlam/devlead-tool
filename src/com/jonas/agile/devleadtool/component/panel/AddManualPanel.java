@@ -19,7 +19,7 @@ import com.jonas.agile.devleadtool.component.dialog.NewOldValues;
 import com.jonas.agile.devleadtool.component.listener.AddNewRowAction;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.common.MyPanel;
+import com.jonas.common.swing.MyPanel;
 import com.jonas.jira.JiraIssue;
 
 public class AddManualPanel extends AbstractAddPanel {

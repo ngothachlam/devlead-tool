@@ -6,8 +6,8 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.common.CalculatorHelper;
-import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraFilter;
 
 public class JiraTableModel extends MyTableModel {

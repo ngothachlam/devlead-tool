@@ -9,8 +9,8 @@ import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.MyComponentPanel;
 
 public class BoardPanel extends MyComponentPanel {
 

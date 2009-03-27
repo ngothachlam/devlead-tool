@@ -12,9 +12,9 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.data.SystemProperties;
-import com.jonas.common.MyPanel;
-import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.MyPanel;
+import com.jonas.common.swing.SwingUtil;
 
 public class ClosePlannerDialog extends JDialog {
    private final class Worker extends SwingWorker<Boolean, Object> {

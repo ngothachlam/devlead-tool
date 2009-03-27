@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
-import com.jonas.common.SwingUtil;
+import com.jonas.common.swing.SwingUtil;
 
 public class ProgressDialog extends JDialog {
 

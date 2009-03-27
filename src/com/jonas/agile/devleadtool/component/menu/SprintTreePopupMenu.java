@@ -29,8 +29,8 @@ import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraParseListener;
 import com.jonas.common.HyperLinker;
-import com.jonas.common.SwingUtil;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraProject;
 
 public class SprintTreePopupMenu extends MyPopupMenu {

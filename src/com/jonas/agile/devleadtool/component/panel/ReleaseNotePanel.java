@@ -8,8 +8,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.component.tree.model.ReleaseTreeModel;
-import com.jonas.common.MyComponentPanel;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.MyComponentPanel;
 
 public class ReleaseNotePanel extends MyComponentPanel {
 

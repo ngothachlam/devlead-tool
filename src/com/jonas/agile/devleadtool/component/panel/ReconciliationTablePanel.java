@@ -6,7 +6,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import com.jonas.agile.devleadtool.component.MyScrollPane;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.common.MyPanel;
+import com.jonas.common.swing.MyPanel;
 
 public class ReconciliationTablePanel extends MyPanel {
 
