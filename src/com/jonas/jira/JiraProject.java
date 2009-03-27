@@ -15,6 +15,7 @@ public class JiraProject {
    private static Vector<JiraProject> projects = new Vector<JiraProject>();
    
    public static final JiraProject LLU = new JiraProject(JiraClient.JiraClientAolBB, "LLU", "LLU", "10070");
+   public static final JiraProject TALK = new JiraProject(JiraClient.JiraClientAolBB, "CPS", "CPS", "10021");
    public static final JiraProject LLUDEVSUP = new JiraProject(JiraClient.JiraClientAolBB, "LLUDEVSUP", "LLUDEVSUP", "10192");
    public static final JiraProject BBMS = new JiraProject(JiraClient.JiraClientAolBB, "BBMS", "BBMS", "10000");
    public static final JiraProject ATLASSIN_TST = new JiraProject(JiraClient.JiraClientAtlassin, "Atlassin", "TST", "10420");

@@ -25,8 +25,8 @@ public class JiraClient {
 
    private static final JonasXpathEvaluator JONAS_XPATH_EVALUATOR = new JonasXpathEvaluator("/rss/channel/item", new XMLOutputter());
    
-   public static final JiraClient JiraClientAolBB = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB), JiraSoapClient.AOLBB, JiraBuilder.getInstance());
-   public static final JiraClient JiraClientAtlassin = new JiraClient(new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN), JiraSoapClient.ATLASSIN, JiraBuilder.getInstance());
+   public static final JiraClient JiraClientAolBB = new JiraClient(JiraHttpClient.AOLBB, JiraSoapClient.AOLBB, JiraBuilder.getInstance());
+   public static final JiraClient JiraClientAtlassin = new JiraClient(JiraHttpClient.ATLASSIN, JiraSoapClient.ATLASSIN, JiraBuilder.getInstance());
 
    private JiraHttpClient httpClient;
    private JiraBuilder jiraBuilder;
@@ -71,6 +71,13 @@ public class JiraClient {
       // return jiraIssue;
    }
 
+   public JiraIssue[] getJirasFromFixVersion(JiraVersion version, String criteria) throws HttpException, IOException, JDOMException, JiraException {
+      loadResolutionsIfRequired();
+      loadJiraTypesIfRequired();
+      List<JiraIssue> jiras = httpClient.getJiras(version, JONAS_XPATH_EVALUATOR, jiraBuilder, criteria);
+      return jiras.toArray(new JiraIssue[jiras.size()]);
+   }
+   
    public JiraIssue[] getJirasFromFixVersion(JiraVersion version) throws HttpException, IOException, JDOMException, JiraException {
       loadResolutionsIfRequired();
       loadJiraTypesIfRequired();

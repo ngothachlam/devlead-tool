@@ -8,50 +8,29 @@ public class JiraFilter {
 
    private static List<JiraFilter> list = new ArrayList<JiraFilter>();
 
-   public static final JiraFilter DevsupportPrioFilter_UnClosed = new JiraFilter(JiraProject.LLUDEVSUP, "Dev Support (UnClosed)", 
-         "/secure/IssueNavigator.jspa?view=rss&" +
-         "&"+JiraCustomFields.LLUListPrio+"%3AlessThan=00001000000000.000" +
-         "&"+JiraCustomFields.LLUListPrio+"%3AgreaterThan=00000000000000.000" +
-         "&pid=10192&status=1" +
-         "&status=3" +
-         "&status=4" +
-         "&status=5" +
-         "&sorter/field=created" +
-         "&sorter/order=ASC" +
-         "&sorter/field=" + JiraCustomFields.LLUDeliveryDate+
-         "&sorter/order=ASC" +
-         "&sorter/field="+JiraCustomFields.LLUListPrio +
-         "&sorter/order=DESC" +
-         "&tempMax=10000" +
-         "&reset=true" +
-         "&decorator=none");
-   
-   //FIXME use Dynamic filter to get the sprint start!!
-   public static final JiraFilter Sprint_Specific = new JiraFilter(JiraProject.LLU, "Sprint Specific", 
-         "/secure/IssueNavigator.jspa?view=rss&" +
-         "&pid=10070" +
-         "&tempMax=1000" +
-         "&reset=true" +
-         "&decorator=none"+
-         "&customfield_10282="      
-   );
+   public static final JiraFilter DevsupportPrioFilter_UnClosed = new JiraFilter(JiraProject.LLUDEVSUP, "Dev Support (UnClosed)",
+         "/secure/IssueNavigator.jspa?view=rss&" + "&" + JiraCustomFields.LLUListPrio + "%3AlessThan=00001000000000.000" + "&"
+               + JiraCustomFields.LLUListPrio + "%3AgreaterThan=00000000000000.000" + "&pid=10192&status=1" + "&status=3" + "&status=4"
+               + "&status=5" + "&sorter/field=created" + "&sorter/order=ASC" + "&sorter/field=" + JiraCustomFields.LLUDeliveryDate
+               + "&sorter/order=ASC" + "&sorter/field=" + JiraCustomFields.LLUListPrio + "&sorter/order=DESC" + "&tempMax=10000" + "&reset=true"
+               + "&decorator=none");
 
-   public static final JiraFilter DevsupportPrioFilter_UnResolved = new JiraFilter(JiraProject.LLUDEVSUP, "Dev Support (UnResolved)", 
-         "/secure/IssueNavigator.jspa?view=rss&" +
-         "&"+JiraCustomFields.LLUListPrio+"%3AlessThan=00001000000000.000" +
-         "&"+JiraCustomFields.LLUListPrio+"%3AgreaterThan=00000000000000.000" +
-         "&pid=10192" +
-         "&resolution=-1" +
-         "&sorter/field=created" +
-         "&sorter/order=ASC" +
-         "&sorter/field=" + JiraCustomFields.LLUDeliveryDate +
-         "&sorter/order=ASC" +
-         "&sorter/field=" + JiraCustomFields.LLUListPrio +
-         "&sorter/order=DESC" +
-         "&tempMax=10000" +
-         "&reset=true" +
-         "&decorator=none");
-   
+   // FIXME use Dynamic filter to get the sprint start!!
+   public static final JiraFilter Sprint_Specific = new JiraFilter(JiraProject.LLU, "Sprint Specific", "/secure/IssueNavigator.jspa?view=rss&"
+         + "&pid=10070" + "&tempMax=1000" + "&reset=true" + "&decorator=none" + "&customfield_10282=");
+
+   public static final JiraFilter DevsupportPrioFilter_UnResolved = new JiraFilter(JiraProject.LLUDEVSUP, "Dev Support (UnResolved)",
+         "/secure/IssueNavigator.jspa?view=rss&" + "&" + JiraCustomFields.LLUListPrio + "%3AlessThan=00001000000000.000" + "&"
+               + JiraCustomFields.LLUListPrio + "%3AgreaterThan=00000000000000.000" + "&pid=10192" + "&resolution=-1" + "&sorter/field=created"
+               + "&sorter/order=ASC" + "&sorter/field=" + JiraCustomFields.LLUDeliveryDate + "&sorter/order=ASC" + "&sorter/field="
+               + JiraCustomFields.LLUListPrio + "&sorter/order=DESC" + "&tempMax=10000" + "&reset=true" + "&decorator=none");
+
+   // http://10.155.38.105/jira/secure/IssueNavigator.jspa?reset=true&fixfor=10722&pid=10021&status=1&status=3&status=4&status=5
+
+   public static final JiraFilter TALK_FOR_CLOSING = new JiraFilter(JiraProject.TALK, "Talk for closing",
+         "/secure/IssueNavigator.jspa?view=rss&tempMax=10000&reset=true&decorator=none&"
+               + "fixfor=10215&pid=10021&status=1&status=3&status=4&status=5");
+
    private final String url;
    private final String name;
    private final JiraProject jiraProject;
@@ -60,7 +39,7 @@ public class JiraFilter {
       this.jiraProject = jiraProject;
       this.name = name;
       this.url = url;
-      
+
       list.add(this);
    }
 

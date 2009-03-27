@@ -42,7 +42,7 @@ public class JiraSoapClientFunctionalTest extends TestCase {
    // }
 
    public void testReOpenJira() throws RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
-      clientAolBB.login();
+//      clientAolBB.login();
       // clientAolBB.testGetAvailableActions("LLU-4382");
       // try {
       // clientAolBB.testCloseJira("LLU-4382");
