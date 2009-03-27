@@ -4,7 +4,6 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.util.HashSet;
 import java.util.Set;
-import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
