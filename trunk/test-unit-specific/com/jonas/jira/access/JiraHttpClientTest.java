@@ -6,7 +6,7 @@ import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class JiraHttpClientTest extends JonasTestCase {
 
-   JiraHttpClient client = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
+   JiraHttpClient client = JiraHttpClient.AOLBB;
 
    public void testApacheCommonsAttempt() throws IOException, HttpException, JiraException {
       client.loginToJira();

@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<form action="CommentAssignIssue.jspa" method="post" name="jiraform"
+	onsubmit="if (this.submitted) return false; this.submitted = true; return true"
+	ENCTYPE="multipart/form-data">
+
+
+<select name="resolution"
+			id="resolution">
+			<option value="1">Fixed</option>
+			<option value="2">Won't Fix</option>
+			<option value="3">Duplicate</option>
+			<option value="5">Cannot Reproduce</option>
+
+			<option value="11">Outsourced</option>
+			<option value="10">QA Untestable</option>
+			<option value="9">Installed</option>
+			<option value="7">DEV Complete</option>
+			<option value="8">QA Passed</option>
+			<option value="16">QA Passed - Pending CR Installation</option>
+
+			<option value="4">Incomplete</option>
+			<option value="6">Invalid</option>
+			<option value="12">Complete</option>
+			<option value="13" selected>Working as Intended</option>
+			<option value="14">Unresolved</option>
+			<option value="15">Deferred to next version</option>
+
+			<option value="17">Stalled</option>
+		</select> 
+
+
+
+
+
+<select name="assignee" id="assignee">
+
+
+			<option value="">Unassigned</option>
+
+
+			<option value="-1">- Automatic -</option>
+
+
+			<optgroup label="---------------">
+
+			</optgroup>
+
+
+			<option value="abdulrahimx">Abdul Rahim</option>
+
+
+			<option value="andymyersam">Andy Myers</option>
+
+
+			<option value="farshiddehmeshki">Farshid Dehmeshki</option>
+
+
+			<option value="jonasjolofsson">Jonas Olofsson</option>
+
+
+			<option value="learath1008">Liya Earath</option>
+
+
+
+			<option value="pauldaviesuk">Paul Davies</option>
+
+
+			<option value="soaptester">SoapTester (Jonas')</option>
+		</select> <a class="subText" title="Assign this issue to me"
+			onclick="document.getElementById('assignee').value = 'jonasjolofsson';return false;"
+			href="#">Assign to me</a></td>
+	</tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<tr>
+		<td colspan="2" bgcolor="ffffff">&nbsp;
+		<style type="text/css">
+<!--
+.fieldLabelArea {
+	width: 30%;
+}
+-->
+</style>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" bgcolor="f0f0f0"><b>Comment</b>: (an optional
+		comment describing this update)</td>
+	</tr>
+	<tr>
+		<td class="fieldLabelArea">Update comment</td>
+
+		<td><textarea name="comment" id="comment" rows="15"
+			wrap="virtual" cols="" accesskey="m" class="textarea"></textarea></td>
+	</tr>
+
+
+
+
+
+
+
+
+
+	<tr>
+
+
+
+
+		<td class="fieldLabelArea">Comment Viewable By:</td>
+
+
+
+
+
+
+
+		<td bgcolor="ffffff" class="fieldValueArea"><select
+			name="commentLevel" id="commentLevel_select">
+
+			<option value="">All Users</option>
+
+
+
+
+
+
+
+
+
+
+			<option value="jira-users">jira-users</option>
+
+			<option value="jira-developers">jira-developers</option>
+
+			<option value="jira-managers">jira-managers</option>
+
+			<option value="Access Project Admin">Access Project Admin</option>
+
+
+			<option value="Access">Access</option>
+
+			<option value="llu-users">llu-users</option>
+
+			<option value="jira-administrators">jira-administrators</option>
+
+			<option value="LLU Development Support PriorityList Stakeholders">
+
+
+			LLU Development Support PriorityList Stakeholders</option>
+
+			<option value="Software Development Bristol">Software
+			Development Bristol</option>
+
+			<option value="llu-admin">llu-admin</option>
+
+			<option value="Audience">Audience</option>
+
+
+			<option value="Talk-Admin">Talk-Admin</option>
+
+
+		</select> <span class="selectDescription" id="commentLevel_summary"></span></td>
+	</tr>
+
+
+
+
+
+
+
+	<tr class="hidden">
+		<td><input type="hidden" id="action" name="action" value="701" />
+		</td>
+	</tr>
+
+
+
+
+	<tr class="hidden">
+		<td><input type="hidden" id="id" name="id" value="41170" /></td>
+	</tr>
+
+
+
+
+	<tr class="hidden">
+		<td><input type="hidden" id="viewIssueKey" name="viewIssueKey" />
+		</td>
+	</tr>
+
+
+	<tr>
+		<td colspan="2" class="fullyCentered jiraformfooter"><input
+			type="submit" name="Close Issue" value="Close Issue" accesskey="S"
+			title="Press Alt+S to submit form" class="spaced" /> <input
+			id="cancelButton" type="button" accesskey="`"
+			title="Cancel (Alt + `)" name="/jira/browse/CPS-3985" value="Cancel"
+			onclick="location.href='/jira/browse/CPS-3985'" /></td>
+	</tr>
+
+
+
+
+</table>
+
+
+
+
+</form>
+
+
+<script language="javascript" type="text/javascript">
+	    try { document.jiraform.elements[0].focus(); } catch (e) {}
+	</script>
+
+
+
+<td></td>
+<tr></tr>
+<table></table>
+<td></td>
+<tr></tr>
+<table></table>
+
+
+
+
+
+
+<div class="footer">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+	<tr>
+		<td bgcolor="bbbbbb"><img src="/jira/images/border/spacer.gif"
+			height="1" width="100" border="0" alt=""></td>
+	</tr>
+	<tr>
+
+	</tr>
+
+	<tr>
+		<td height="12" background="/jira/images/border/border_bottom.gif"><img
+			src="/jira/images/border/spacer.gif" width="1" height="1" border="0"
+			alt=""></td>
+	</tr>
+</table>
+
+<span class="poweredbymessage"> Powered by <a
+	href="http://www.atlassian.com/jira-bug-tracking/?edition=Enterprise"
+	class="smalltext">Atlassian JIRA&trade;</a> the <a
+	href="http://www.atlassian.com/jira-bug-tracking/?edition=Enterprise">Professional
+Issue Tracker</a>. <span style="color: #666666;">(Enterprise Edition,
+Version: 3.4.1-#107)</span> - <a
+	href="http://jira.atlassian.com/default.jsp?clicked=footer">Bug/feature
+request</a> - <a href="/jira/secure/Administrators.jspa">Contact
+Administrators</a> </span></div>
+
+
+
+</body>
+</html>

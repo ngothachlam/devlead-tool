@@ -13,8 +13,8 @@ import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraHttpClientFunctionalTest extends TestCase {
 
-   JiraHttpClient client_Atlassain = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
-   JiraHttpClient client_Aol = new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB);
+   JiraHttpClient client_Atlassain = JiraHttpClient.ATLASSIN;
+   JiraHttpClient client_Aol = JiraHttpClient.AOLBB;
    
    @Override
    protected void setUp() throws Exception {

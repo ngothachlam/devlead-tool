@@ -15,6 +15,7 @@ import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssueType;
 import com.atlassian.jira.rpc.soap.beans.RemoteNamedObject;
 import com.atlassian.jira.rpc.soap.beans.RemoteResolution;
+import com.atlassian.jira.rpc.soap.beans.RemoteUser;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapService;
 import com.atlassian.jira.rpc.soap.jirasoapservice_v2.JiraSoapServiceServiceLocator;
@@ -39,8 +40,11 @@ public class JiraSoapClient {
 
    private JiraSoapService jiraSoapService = null;
 
-   private String token;
+   private Object tokenLock = new Object();
+
+   private String token = null;
    private String type = "13";
+   private RemoteUser user;
    static {
       customFieldsForCloning.add(JiraCustomFields.LLUSprint.toString());
       customFieldsForCloning.add(JiraCustomFields.LLUProject.toString());
@@ -63,11 +67,27 @@ public class JiraSoapClient {
       return jiraSoapServiceServiceLocator;
    }
 
-   public void closeJira(String issueKey, String resolution) throws com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
-      RemoteFieldValue[] actionParams = new RemoteFieldValue[2];
-      actionParams[0] = new RemoteFieldValue("assignee", new String[] { "" });
-      actionParams[1] = new RemoteFieldValue("resolution", new String[] { resolution });
-      jiraSoapService.progressWorkflowAction(getToken(), issueKey, "2", actionParams);
+   public void closeJira(String issueKey, String resolution, String assignee) throws com.atlassian.jira.rpc.exception.RemoteException,
+         RemoteException {
+      // RemoteFieldValue[] actionParams = new RemoteFieldValue[2];
+      // actionParams[1] = new RemoteFieldValue("resolution", new String[] { newResolution });
+      // actionParams[0] = new RemoteFieldValue("assignee", new String[] { "" });
+      // jiraSoapService.progressWorkflowAction(getToken(), issueKey, "7", actionParams);
+
+      // RemoteField[] fields = jiraSoapService.getFieldsForAction(getToken(), issueKey, "701");
+
+      String actionId = "701"; // close
+
+      ArrayList<RemoteFieldValue> actionParamBuilder = new ArrayList<RemoteFieldValue>();
+
+      actionParamBuilder.add(new RemoteFieldValue("resolution", new String[] { resolution }));
+      actionParamBuilder.add(new RemoteFieldValue("assignee", new String[] { assignee }));
+
+      RemoteFieldValue actionParams[] = new RemoteFieldValue[actionParamBuilder.size()];
+      actionParams = actionParamBuilder.toArray(actionParams);
+      log.debug("trying to close: " + issueKey + " actionId: " + actionId + " resolution: " + resolution + " assignee: " + assignee);
+      jiraSoapService.progressWorkflowAction(getToken(), issueKey, actionId, actionParams);
+
    }
 
    @SuppressWarnings("finally")
@@ -253,9 +273,9 @@ public class JiraSoapClient {
       return execute;
    }
 
-   public void login() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
-      renewToken();
-   }
+   // public void login() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+   // renewToken();
+   // }
 
    public void testGetActions(String issueKey) throws java.rmi.RemoteException {
       System.out.println("Progressing workflow of " + issueKey + "...");
@@ -316,16 +336,17 @@ public class JiraSoapClient {
    private String getToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
       log.debug("Getting Token!");
       if (token == null) {
-         log.trace("Syncing Token Block");
-         synchronized (this) {
-            log.trace("Syncing Token Block has been synced");
+         log.trace("Token is null!");
+         synchronized (tokenLock) {
+            log.trace("Token Block has been synced");
             if (token == null) {
                log.debug("Token needs renewing!");
                renewToken();
             }
-            log.trace("Block Synced Done!");
          }
+         log.trace("Token Block has been un-synced");
       }
+      log.debug("Done Getting Token!");
       return token;
    }
 
@@ -350,11 +371,22 @@ public class JiraSoapClient {
       jiraSoapService.updateIssue(token, originalJiraIssue.getKey(), remoteFieldValues);
    }
 
-   private synchronized void renewToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
-         RemoteException {
-      log.debug("Renewing Token");
-      token = jiraSoapService.login(LOGIN_NAME, LOGIN_PASSWORD);
-      log.debug("Renewing Token Done!");
+   public void renewToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+      synchronized (tokenLock) {
+         log.debug("Renewing Token");
+         clearToken();
+         token = jiraSoapService.login(LOGIN_NAME, LOGIN_PASSWORD);
+         // user = jiraSoapService.getUser(LOGIN_NAME, LOGIN_PASSWORD);
+         log.debug("Renewing Token Done!");
+      }
+   }
+
+   public boolean clearToken() throws RemoteException {
+      synchronized (tokenLock) {
+         boolean logout = jiraSoapService.logout(token);
+         token = null;
+         return logout;
+      }
    }
 
    private RemoteVersion[] setFixVersionOnClone(final String jira, final String mergeFixVersionName, RemoteIssue cloneIssue)
@@ -455,9 +487,19 @@ public class JiraSoapClient {
          } catch (RemoteAuthenticationException e) {
             log.info(e);
             log.info("Session timed out. Renewing token again!");
-            renewToken();
+            // renewToken();
          }
          return action.accessJiraAndReturn();
       }
+   }
+
+   public RemoteIssue getJira(String jira) throws RemotePermissionException, RemoteAuthenticationException,
+         com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+      return jiraSoapService.getIssue(getToken(), jira);
+   }
+
+   public RemoteField[] getFieldsForAction(String string, String string2) throws RemoteAuthenticationException,
+         com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
+      return jiraSoapService.getFieldsForAction(getToken(), string, string2);
    }
 }
