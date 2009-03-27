@@ -32,7 +32,7 @@ public class JiraClient {
    private JiraBuilder jiraBuilder;
    private JiraSoapClient jiraSoapClient;
 
-   public JiraClient(JiraHttpClient jiraHttpClient, JiraSoapClient jiraSoapClient, JiraBuilder jiraBuilder) {
+   private JiraClient(JiraHttpClient jiraHttpClient, JiraSoapClient jiraSoapClient, JiraBuilder jiraBuilder) {
       this.httpClient = jiraHttpClient;
       this.jiraSoapClient = jiraSoapClient;
       this.jiraBuilder = jiraBuilder;
@@ -59,32 +59,15 @@ public class JiraClient {
       loadResolutionsIfRequired();
       JiraIssue jiraIssue = httpClient.getJira(jira, JONAS_XPATH_EVALUATOR, jiraBuilder);
       return jiraIssue;
-      // // TODO thread this!!
-      // loadResolutionsIfRequired();
-      // loadJiraTypesIfRequired();
-      // JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_JIRA);
-      // RemoteIssue remoteJira = jiraSoapClient.getJira(jira.toUpperCase());
-      // JiraIssue jiraIssue = jiraBuilder.buildJira(remoteJira, project);
-      // if (jiraIssue == null) {
-      // throw new JiraIssueNotFoundException("Jira [" + jira + "] doesn't exist in " + project.getJiraKey());
-      // }
-      // return jiraIssue;
    }
 
-   public JiraIssue[] getJirasFromFixVersion(JiraVersion version, String criteria) throws HttpException, IOException, JDOMException, JiraException {
+   public JiraIssue[] getJirasFromFixVersion(JiraVersion version, String... criterias) throws HttpException, IOException, JDOMException, JiraException {
       loadResolutionsIfRequired();
       loadJiraTypesIfRequired();
-      List<JiraIssue> jiras = httpClient.getJiras(version, JONAS_XPATH_EVALUATOR, jiraBuilder, criteria);
+      List<JiraIssue> jiras = httpClient.getJiras(version, JONAS_XPATH_EVALUATOR, jiraBuilder, criterias);
       return jiras.toArray(new JiraIssue[jiras.size()]);
    }
    
-   public JiraIssue[] getJirasFromFixVersion(JiraVersion version) throws HttpException, IOException, JDOMException, JiraException {
-      loadResolutionsIfRequired();
-      loadJiraTypesIfRequired();
-      List<JiraIssue> jiras = httpClient.getJiras(version, JONAS_XPATH_EVALUATOR, jiraBuilder);
-      return jiras.toArray(new JiraIssue[jiras.size()]);
-   }
-
    public JiraIssue[] getJirasFromFilter(JiraFilter jiraFilter) throws HttpException, IOException, JiraException, JDOMException{
       loadResolutionsIfRequired();
       loadJiraTypesIfRequired();

@@ -1,4 +1,4 @@
-package com.jonas.testing;
+package com.jonas.jira.access;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,10 +12,6 @@ import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
-import com.jonas.jira.access.JiraClient;
-import com.jonas.jira.access.JiraException;
-import com.jonas.jira.access.JiraHttpClient;
-import com.jonas.jira.access.JiraSoapClient;
 
 public class JiraCloseHelper {
 
