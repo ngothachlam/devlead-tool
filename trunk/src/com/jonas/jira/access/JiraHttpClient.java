@@ -14,6 +14,7 @@ import org.jdom.JDOMException;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
+import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.JiraFilter;
 import com.jonas.jira.utils.JiraBuilder;
@@ -103,6 +104,9 @@ public class JiraHttpClient extends HttpClient {
       log.debug("Logging onto Jira Done!");
    }
 
+   public void closeJira(String id, String resolution, JiraProject project) throws HttpException, IOException, JiraException {
+      this.closeJira(id, resolution, project.getCloseAction());
+   }
    public void closeJira(String id, String resolution, String closeActionId) throws HttpException, IOException, JiraException {
       // TODO make this work as logging in, in the background as it does take some time to login
       // TODO how long will the session stay as logged in? Will it require a timeout before automatically logging in (in the
