@@ -15,7 +15,7 @@ public class JiraIssue {
    private StringBuffer fixVersionsAsStrings = new StringBuffer("");
    private final String key;
    private int lluListPriority;
-   private String project;
+   private String projectAsString;
    private String release = "";
    private final String resolution;
    private String spent;
@@ -45,7 +45,7 @@ public class JiraIssue {
       this.estimate = estimate;
       this.sprint = sprint;
       this.lluListPriority = listPrio;
-      this.project = project;
+      this.projectAsString = project;
    }
 
    public void addFixVersions(JiraVersion fixVersion) {
@@ -145,8 +145,8 @@ public class JiraIssue {
       return lluListPriority;
    }
 
-   public String getProject() {
-      return project;
+   public String getProjectAsString() {
+      return projectAsString;
    }
 
    public String getRelease() {
@@ -211,7 +211,7 @@ public class JiraIssue {
    }
 
    public void setProject(String project) {
-      this.project = project;
+      this.projectAsString = project;
    }
 
    public void setSpent(String days) {
