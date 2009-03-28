@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.common.HyperLinker;
 
 public class OpenJirasListener implements ActionListener {

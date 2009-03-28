@@ -2,7 +2,7 @@ package com.jonas.agile.devleadtool;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.guice.DevLeadToolModule;
 import com.jonas.common.logging.MyLogger;
 

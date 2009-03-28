@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.dialog;
+package com.jonas.agile.devleadtool.gui.component.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

@@ -3,10 +3,10 @@ package com.jonas.agile.devleadtool.component.listener;
 import java.awt.Frame;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.MyStatusBar;
-import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraParseListener;
+import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.common.logging.MyLogger;
 
 public class JiraParseListenerImpl implements JiraParseListener {

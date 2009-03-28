@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JMenuItem;
-import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 
 public abstract class MyMenuItem extends JMenuItem implements ActionListener {
 
