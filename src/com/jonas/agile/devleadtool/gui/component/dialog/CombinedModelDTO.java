@@ -3,8 +3,8 @@
  */
 package com.jonas.agile.devleadtool.gui.component.dialog;
 
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
+import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
 
 public class CombinedModelDTO{
    private final BoardTableModel boardModel;

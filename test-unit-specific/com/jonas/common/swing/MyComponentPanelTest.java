@@ -3,9 +3,9 @@ package com.jonas.common.swing;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
-import com.jonas.agile.devleadtool.component.table.Column;
-import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.common.swing.MyComponentPanel;
 
 public class MyComponentPanelTest extends TestCase {

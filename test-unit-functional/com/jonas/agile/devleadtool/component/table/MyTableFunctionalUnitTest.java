@@ -8,7 +8,9 @@ import javax.swing.SortOrder;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.table.TableModel;
 import junit.framework.TestCase;
-import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 
 public class MyTableFunctionalUnitTest extends TestCase {
    private Column[] columns = { Column.Jira };

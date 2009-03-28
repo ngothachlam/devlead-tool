@@ -5,9 +5,9 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.SaveKeyListener;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
+import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
 import com.jonas.common.logging.MyLogger;
 
 public class NewPlannerDialog {

@@ -19,12 +19,12 @@ import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import com.jonas.agile.devleadtool.component.table.Column;
-import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
-import com.jonas.agile.devleadtool.component.table.model.JiraTableModel;
-import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.component.table.model.PlanTableModel;
+import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
+import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.gui.component.table.model.PlanTableModel;
 
 public class BasicDnD extends JPanel {
    private static JFrame frame;

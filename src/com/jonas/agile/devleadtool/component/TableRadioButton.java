@@ -1,7 +1,7 @@
 package com.jonas.agile.devleadtool.component;
 
 import javax.swing.JRadioButton;
-import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 
 public class TableRadioButton extends JRadioButton {
    private final MyTable myTable;

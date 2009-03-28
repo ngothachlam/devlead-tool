@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
-import com.jonas.agile.devleadtool.component.table.Column;
-import com.jonas.agile.devleadtool.component.table.model.TableModelDTO;
+import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.model.TableModelDTO;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class PlannerDAOExcelImplTest extends JonasTestCase {

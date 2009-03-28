@@ -4,14 +4,15 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.MyStatusBar;
-import com.jonas.agile.devleadtool.component.listener.JiraParseListenerImpl;
-import com.jonas.agile.devleadtool.component.menu.SprintTreePopupMenu;
 import com.jonas.agile.devleadtool.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParser;
 import com.jonas.agile.devleadtool.component.tree.xml.XmlParserImpl;
+import com.jonas.agile.devleadtool.gui.component.menu.SprintTreePopupMenu;
+import com.jonas.agile.devleadtool.gui.component.panel.DnDTreePanel;
+import com.jonas.agile.devleadtool.gui.listener.JiraParseListenerImpl;
 
 public class DnDTreePanelTestScreen {
    public static void main(String... args) {

@@ -5,9 +5,9 @@ import java.awt.Frame;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import com.jonas.agile.devleadtool.component.panel.AddReconcilePanel;
-import com.jonas.agile.devleadtool.component.panel.ReconciliationTablePanel;
-import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.component.panel.AddReconcilePanel;
+import com.jonas.agile.devleadtool.gui.component.panel.ReconciliationTablePanel;
+import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.common.swing.SwingUtil;
 
 public class AddBoardReconcileDialog extends JFrame {
