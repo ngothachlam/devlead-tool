@@ -9,7 +9,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
-import com.jonas.agile.devleadtool.component.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.component.dialog.AddBoardReconcileDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.component.dialog.AddManualDialog;
@@ -21,6 +20,7 @@ import com.jonas.agile.devleadtool.component.panel.DnDTreePanel;
 import com.jonas.agile.devleadtool.component.panel.JiraPanel;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.common.DateHelper;
 
 public class InnerFrameToolbar extends JToolBar {
