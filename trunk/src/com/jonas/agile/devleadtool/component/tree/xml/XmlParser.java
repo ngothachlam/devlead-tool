@@ -3,7 +3,6 @@ package com.jonas.agile.devleadtool.component.tree.xml;
 import java.io.IOException;
 import org.apache.commons.httpclient.HttpException;
 import org.xml.sax.SAXException;
-import com.jonas.agile.devleadtool.controller.listener.JiraParseListener;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraException;
 

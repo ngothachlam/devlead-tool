@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import com.jonas.agile.devleadtool.controller.listener.JiraParseListener;
 import com.jonas.common.logging.MyLogger;
 
 public class JiraSaxHandler extends DefaultHandler {

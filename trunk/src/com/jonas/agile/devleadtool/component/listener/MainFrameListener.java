@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.controller.listener;
+package com.jonas.agile.devleadtool.component.listener;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

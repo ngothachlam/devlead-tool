@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.controller.listener;
+package com.jonas.agile.devleadtool.component.listener;
 
 import com.jonas.agile.devleadtool.data.PlanFixVersion;
 import com.jonas.jira.JiraProject;

@@ -12,8 +12,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.component.table.Column;
-import com.jonas.agile.devleadtool.controller.listener.TableModelListenerAlerter;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 

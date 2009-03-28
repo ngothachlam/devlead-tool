@@ -22,6 +22,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.component.listener.TableListener;
+import com.jonas.agile.devleadtool.component.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.component.table.editor.BoardStatusCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.component.table.editor.JiraCellEditor;
@@ -29,8 +31,6 @@ import com.jonas.agile.devleadtool.component.table.editor.MyDefaultCellEditor;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.component.table.renderer.CheckBoxTableCellRenderer;
 import com.jonas.agile.devleadtool.component.table.renderer.StringTableCellRenderer;
-import com.jonas.agile.devleadtool.controller.listener.TableListener;
-import com.jonas.agile.devleadtool.controller.listener.TableModelListenerAlerter;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 

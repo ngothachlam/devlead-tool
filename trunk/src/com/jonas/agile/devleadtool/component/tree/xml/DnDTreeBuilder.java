@@ -4,7 +4,6 @@ import java.io.IOException;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
-import com.jonas.agile.devleadtool.controller.listener.JiraParseListener;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraException;

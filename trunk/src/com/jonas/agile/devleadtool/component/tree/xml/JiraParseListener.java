@@ -1,6 +1,4 @@
-package com.jonas.agile.devleadtool.controller.listener;
-
-import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
+package com.jonas.agile.devleadtool.component.tree.xml;
 
 public interface JiraParseListener {
 

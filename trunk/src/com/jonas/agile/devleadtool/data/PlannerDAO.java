@@ -3,8 +3,8 @@ package com.jonas.agile.devleadtool.data;
 import java.io.File;
 import java.io.IOException;
 import com.jonas.agile.devleadtool.component.dialog.CombinedModelDTO;
+import com.jonas.agile.devleadtool.component.listener.DaoListener;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.controller.listener.DaoListener;
 
 public interface PlannerDAO {
 
