@@ -9,7 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import com.jonas.agile.devleadtool.component.action.BasicAbstractGUIAction;
+import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 
 public class BasicMessageFrame extends AbstractBasicFrame {
 

@@ -29,11 +29,11 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.burndown.SprintBurndownGrapher;
-import com.jonas.agile.devleadtool.component.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.common.DateHelper;
 import com.jonas.common.string.StringHelper;
 
