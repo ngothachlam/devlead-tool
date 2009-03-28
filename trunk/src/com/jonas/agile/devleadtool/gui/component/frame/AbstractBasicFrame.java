@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.frame;
+package com.jonas.agile.devleadtool.gui.component.frame;
 
 import java.awt.Component;
 import java.awt.Container;

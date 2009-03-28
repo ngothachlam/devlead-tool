@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.frame.main;
+package com.jonas.agile.devleadtool.gui.component.frame.main;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;

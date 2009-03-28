@@ -10,7 +10,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import com.jonas.agile.devleadtool.component.frame.AbstractBasicFrame;
+import com.jonas.agile.devleadtool.gui.component.frame.AbstractBasicFrame;
 
 public class TestChartPanel {
 
