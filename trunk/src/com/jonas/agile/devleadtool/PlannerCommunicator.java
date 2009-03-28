@@ -1,8 +1,8 @@
 package com.jonas.agile.devleadtool;
 
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
-import com.jonas.agile.devleadtool.component.table.BoardStatusValue;
-import com.jonas.agile.devleadtool.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 
 public class PlannerCommunicator {
 

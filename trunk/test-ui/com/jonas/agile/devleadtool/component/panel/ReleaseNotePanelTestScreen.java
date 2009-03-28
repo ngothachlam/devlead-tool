@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.component.panel;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import com.jonas.agile.devleadtool.gui.component.panel.ReleaseNotePanel;
 import com.jonas.testHelpers.TryoutTester;
 
 public class ReleaseNotePanelTestScreen  {

@@ -10,8 +10,8 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
-import com.jonas.agile.devleadtool.component.table.Column;
-import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 
 final class TableTransferHandler extends TransferHandler {
 

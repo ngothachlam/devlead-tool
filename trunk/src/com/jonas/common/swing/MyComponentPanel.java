@@ -3,8 +3,8 @@ package com.jonas.common.swing;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.List;
-import com.jonas.agile.devleadtool.component.table.Column;
-import com.jonas.agile.devleadtool.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 
 public class MyComponentPanel extends MyPanel {
 

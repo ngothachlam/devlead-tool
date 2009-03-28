@@ -1,6 +1,6 @@
 package com.jonas.agile.devleadtool.gui.component.dialog;
 
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.Column;
 
 public class NewOldValues {
 

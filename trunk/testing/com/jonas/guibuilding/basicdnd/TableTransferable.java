@@ -4,7 +4,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.util.Vector;
-import com.jonas.agile.devleadtool.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.Column;
 
 public class TableTransferable implements Transferable {
    private DataFlavor[] flavors = new DataFlavor[] { TableTransferHandler.vectorFlavor };

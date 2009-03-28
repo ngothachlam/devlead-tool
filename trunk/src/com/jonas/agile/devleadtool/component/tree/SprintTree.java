@@ -10,12 +10,12 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.table.renderer.DnDTreeCellRenderer;
 import com.jonas.agile.devleadtool.component.tree.dnd.DnDTreeTransferHandler;
 import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
 import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
+import com.jonas.agile.devleadtool.gui.component.table.renderer.DnDTreeCellRenderer;
 import com.jonas.common.logging.MyLogger;
 
 public class SprintTree extends JTree {
