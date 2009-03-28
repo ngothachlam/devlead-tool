@@ -16,9 +16,9 @@ import javax.swing.JFrame;
 import javax.swing.text.JTextComponent;
 import com.jonas.agile.devleadtool.component.TableRadioButton;
 import com.jonas.agile.devleadtool.component.dialog.NewOldValues;
+import com.jonas.agile.devleadtool.component.listener.AddNewRowAction;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.controller.listener.AddNewRowAction;
 import com.jonas.common.swing.MyPanel;
 import com.jonas.jira.JiraIssue;
 

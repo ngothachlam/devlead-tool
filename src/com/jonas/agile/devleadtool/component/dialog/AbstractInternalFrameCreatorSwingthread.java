@@ -5,8 +5,8 @@ import javax.swing.SwingWorker;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.DesktopPane;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
+import com.jonas.agile.devleadtool.component.SaveKeyListener;
 import com.jonas.agile.devleadtool.component.panel.MyInternalFrameInnerPanel;
-import com.jonas.agile.devleadtool.controller.listener.SaveKeyListener;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 
 public abstract class AbstractInternalFrameCreatorSwingthread extends SwingWorker<CombinedModelDTO, Object> {

@@ -5,8 +5,6 @@ import javax.swing.JFrame;
 import org.easymock.EasyMock;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.component.table.MyTable;
-import com.jonas.agile.devleadtool.controller.listener.SyncWithJiraActionListenerListener;
-import com.jonas.agile.devleadtool.controller.listener.SyncWithJiraListener;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class SyncWithJiraActionListenerTest extends JonasTestCase {
