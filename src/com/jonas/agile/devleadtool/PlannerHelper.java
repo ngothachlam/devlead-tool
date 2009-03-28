@@ -10,7 +10,7 @@ import org.jdom.JDOMException;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.jonas.agile.devleadtool.component.MyInternalFrame;
-import com.jonas.agile.devleadtool.component.frame.main.MainFrame;
+import com.jonas.agile.devleadtool.gui.component.frame.main.MainFrame;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;

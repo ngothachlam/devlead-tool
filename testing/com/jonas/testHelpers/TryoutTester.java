@@ -3,8 +3,8 @@ package com.jonas.testHelpers;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JPanel;
-import com.jonas.agile.devleadtool.component.frame.main.MainFrame;
 import com.jonas.agile.devleadtool.data.SystemProperties;
+import com.jonas.agile.devleadtool.gui.component.frame.main.MainFrame;
 
 public class TryoutTester {
 
