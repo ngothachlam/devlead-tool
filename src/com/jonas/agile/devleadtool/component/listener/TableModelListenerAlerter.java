@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 
 public class TableModelListenerAlerter implements TableModelListener {
    private Map<Integer, String> rowsModified = new HashMap<Integer, String>();

@@ -6,7 +6,7 @@ package com.jonas.agile.devleadtool.component;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
+import com.jonas.agile.devleadtool.gui.component.dialog.SavePlannerDialog;
 
 public class SaveKeyListener extends KeyAdapter {
    private PlannerHelper helper;

@@ -18,8 +18,6 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.component.dialog.SavePlannerDialog;
 import com.jonas.agile.devleadtool.component.listener.PlannerListeners;
 import com.jonas.agile.devleadtool.component.panel.BoardPanel;
 import com.jonas.agile.devleadtool.component.panel.JiraPanel;
@@ -28,6 +26,8 @@ import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.constants.CutoverLength;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
+import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.gui.component.dialog.SavePlannerDialog;
 import com.jonas.common.logging.MyLogger;
 
 public class MyInternalFrame extends JInternalFrame {

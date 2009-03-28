@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.JOptionPane;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.component.table.Column;
 import com.jonas.agile.devleadtool.component.table.MyTable;
 import com.jonas.agile.devleadtool.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.gui.component.dialog.ProgressDialog;
 
 public class CopyToTableListener implements ActionListener {
    private final MyTable sourceTable;

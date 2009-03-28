@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.dialog;
+package com.jonas.agile.devleadtool.gui.component.dialog;
 
 import java.io.File;
 import javax.swing.JFileChooser;
