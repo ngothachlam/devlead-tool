@@ -37,7 +37,7 @@ public class JiraPanel extends MyComponentPanel {
    }
 
    public MyTableModel getJiraModel() {
-      return ((MyTableModel) table.getModel());
+      return table.getMyModel();
    }
 
    public MyTable getTable() {
@@ -45,7 +45,7 @@ public class JiraPanel extends MyComponentPanel {
    }
 
    public void setEditable(boolean selected) {
-      ((MyTableModel) table.getModel()).setEditable(selected);
+      table.getMyModel().setEditable(selected);
    }
 
 }

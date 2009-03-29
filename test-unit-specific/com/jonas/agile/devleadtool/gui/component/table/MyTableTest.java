@@ -12,7 +12,7 @@ public class MyTableTest extends JonasTestCase {
 
    protected void setUp() throws Exception {
       super.setUp();
-      table = new MyTable("", false);
+      table = new MyTable("", null, false);
    }
 
    protected void tearDown() throws Exception {

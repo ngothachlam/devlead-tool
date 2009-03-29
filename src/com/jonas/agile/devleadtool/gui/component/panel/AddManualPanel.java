@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.text.JTextComponent;
 import com.jonas.agile.devleadtool.gui.component.TableRadioButton;
 import com.jonas.agile.devleadtool.gui.component.dialog.NewOldValues;
+import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraParseListener;
@@ -55,19 +56,16 @@ public class AddManualPanel extends AbstractAddPanel {
 class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledListener {
 
    private ButtonGroup group;
-   private final JComboBox status;
-   private MyTable table;
 
    public AddFromRadioButtons(ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas, JTextComponent release,
          JComboBox statusCombo, Frame parentFrame) {
-      super("Add", "Adding manually", jiraPrefix, jiraCommas, release, parentFrame);
+      super("Add", "Adding manually", jiraPrefix, jiraCommas, release, statusCombo, parentFrame);
       this.group = group;
-      this.status = statusCombo;
       addJiraToBeReconciledListener(this);
    }
 
    public MyTable getTargetTable() {
-      table = null;
+      MyTable table = null;
       Enumeration<AbstractButton> elements = group.getElements();
       while (elements.hasMoreElements()) {
          TableRadioButton button = (TableRadioButton) elements.nextElement();
@@ -79,21 +77,22 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
    }
 
    @Override
-   public void jiraAdded(String jira, String estimate, String actual, String release, String remainder, String qaEst) {
-      if (table.doesJiraExist(jira)) {
-         List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
+   public void jiraAdded(MyTable table, String jira, String estimate, String actual, String release, String remainder, String qaEst, BoardStatusValue status) {
+      if (!table.doesJiraExist(jira)) {
+         table.addJira(jira);
+      }
+      List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 
-         addNewOldValueIfColumnIsInTable(table, Column.BoardStatus, jira, status.getSelectedItem(), newOldValues);
-         addNewOldValueIfColumnIsInTable(table, Column.Dev_Estimate, jira, estimate, newOldValues);
-         addNewOldValueIfColumnIsInTable(table, Column.Dev_Actual, jira, actual, newOldValues);
-         addNewOldValueIfColumnIsInTable(table, Column.Release, jira, release, newOldValues);
-         addNewOldValueIfColumnIsInTable(table, Column.Dev_Remain, jira, remainder, newOldValues);
-         addNewOldValueIfColumnIsInTable(table, Column.QA_Estimate, jira, qaEst, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, Column.BoardStatus, jira, status, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, Column.Dev_Estimate, jira, estimate, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, Column.Dev_Actual, jira, actual, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, Column.Release, jira, release, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, Column.Dev_Remain, jira, remainder, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, Column.QA_Estimate, jira, qaEst, newOldValues);
 
-         for (NewOldValues newOldValue : newOldValues) {
-            if (newOldValue.isValueNew())
-               table.setValueAt(newOldValue.getNewValue(), jira, newOldValue.getColumn());
-         }
+      for (NewOldValues newOldValue : newOldValues) {
+         if (newOldValue.isValueNew())
+            table.setValueAt(newOldValue.getNewValue(), jira, newOldValue.getColumn());
       }
    }
 

@@ -7,6 +7,7 @@ import javax.swing.JSplitPane;
 import com.jonas.agile.devleadtool.gui.component.panel.AbstractAddPanel;
 import com.jonas.agile.devleadtool.gui.component.panel.AddReconcilePanel;
 import com.jonas.agile.devleadtool.gui.component.panel.ReconciliationTablePanel;
+import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.listener.AddNewRowAction;
 import com.jonas.agile.devleadtool.gui.listener.JiraToBeReconciledListener;
@@ -28,27 +29,26 @@ public class AddBoardReconcileDialog extends JFrame {
 
    private Container getPanel(Frame parentFrame) {
       AddReconcilePanel mainPanel = new AddReconcilePanel(parentFrame);
-      ReconciliationTablePanel reconcilidationTablePanel = new ReconciliationTablePanel(boardTable);
+      ReconciliationTablePanel reconcilidationTablePanel = new ReconciliationTablePanel(boardTable, this);
 
       JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainPanel, reconcilidationTablePanel);
       splitPane.setDividerLocation(-1);
 
-      mainPanel.setAddButtonAction(new AddButtonAction(this, mainPanel, reconcilidationTablePanel));
-
+      mainPanel.setAddButtonAction(new AddToReconciliationTableAction(this, mainPanel, reconcilidationTablePanel));
       return splitPane;
    }
 
 }
 
 
-class AddButtonAction extends AddNewRowAction implements JiraToBeReconciledListener {
+class AddToReconciliationTableAction extends AddNewRowAction implements JiraToBeReconciledListener {
 
    private final AbstractAddPanel mainPanel;
    private final ReconciliationTablePanel reconcilidationTablePanel;
 
-   public AddButtonAction(Frame parentFrame, AbstractAddPanel mainPanel, ReconciliationTablePanel reconcilidationTablePanel) {
+   public AddToReconciliationTableAction(Frame parentFrame, AbstractAddPanel mainPanel, ReconciliationTablePanel reconcilidationTablePanel) {
       super("Reconcile", "Add to the reconcile table", mainPanel.getJiraPrefixTextField(), mainPanel.getJiraCommasTextField(), mainPanel
-            .getDefaultReleaseTextField(), parentFrame);
+            .getDefaultReleaseTextField(), mainPanel.getStatusComboBox(), parentFrame);
       this.mainPanel = mainPanel;
       this.reconcilidationTablePanel = reconcilidationTablePanel;
       addJiraToBeReconciledListener(this);
@@ -60,8 +60,8 @@ class AddButtonAction extends AddNewRowAction implements JiraToBeReconciledListe
    }
 
    @Override
-   public void jiraAdded(String jira, String devEst, String devAct, String release, String remainder, String qaEst) {
-      System.out.println("adding: " + jira);
+   public void jiraAdded(MyTable table, String jira, String devEst, String devAct, String release, String remainder, String qaEst, BoardStatusValue status) {
+      System.out.println("adding: " + jira + " to " + table.getTitle());
    }
 
 }
