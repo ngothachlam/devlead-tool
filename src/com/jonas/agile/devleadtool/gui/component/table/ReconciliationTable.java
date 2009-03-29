@@ -14,8 +14,13 @@ public class ReconciliationTable extends MyTable {
    }
 
    public void getReconciledData() {
-      // TODO Auto-generated method stub
-      throw new RuntimeException("Method not implemented yet!");
+      System.out.println("getReconciledData");
+   }
+
+   public void addForReconciliation(String jira, String devEst, String devAct, String release, String remainder, String qaEst,
+         BoardStatusValue status) {
+      System.out.println("addForReconciliation to " + this.getTitle());
+      this.addJira(jira);
    }
 
 }

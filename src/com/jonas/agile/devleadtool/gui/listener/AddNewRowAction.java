@@ -90,7 +90,7 @@ public abstract class AddNewRowAction extends BasicAbstractGUIAction {
 
    private void notifyJirasAdded(MyTable table, String jira, String devEst, String actual, String release, String remainder, String qaEst, BoardStatusValue status) {
       for (JiraToBeReconciledListener jiraToBeReconciledListener : listeners) {
-         jiraToBeReconciledListener.jiraAdded(table, jira, devEst, actual, release, remainder, qaEst, status);
+         jiraToBeReconciledListener.jiraAdded(jira, devEst, actual, release, remainder, qaEst, status);
       }
    }
 

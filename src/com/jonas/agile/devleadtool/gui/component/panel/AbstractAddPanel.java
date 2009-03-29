@@ -81,8 +81,11 @@ public abstract class AbstractAddPanel extends MyPanel {
       statusCombo = panel.addComboBox(panel, BoardStatusValue.values(), c);
 
       setNewRow(c);
+      c.fill = GridBagConstraints.NONE;
+      c.anchor = GridBagConstraints.NORTHWEST;
       panel.add(new JLabel("Numbers:"), c);
       set2ndCol(c);
+      c.fill = GridBagConstraints.BOTH;
       c.weighty = 1;
       jiraCommas = panel.addTextArea(panel, 4, 10, c);
       jiraCommas.setLineWrap(true);
