@@ -13,7 +13,6 @@ import com.jonas.common.swing.MyPanel;
 public class AddReconcilePanel extends AbstractAddPanel {
 
    private final Frame frame;
-   private ActionListener addButtonListener;
    private JButton addButton;
 
    public AddReconcilePanel(final Frame frame) {
@@ -38,4 +37,5 @@ public class AddReconcilePanel extends AbstractAddPanel {
    public void setAddButtonAction(Action action){
       addButton.setAction(action);
    }
+
 }

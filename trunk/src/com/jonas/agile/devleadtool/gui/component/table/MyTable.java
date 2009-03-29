@@ -53,7 +53,7 @@ public class MyTable extends JTable {
       }
 
       private boolean isMarked(int row) {
-         if (allowMarking == false)
+         if (!allowMarking)
             return false;
          if (row >= getRowCount() || row == -1)
             return false;
@@ -61,10 +61,14 @@ public class MyTable extends JTable {
       }
 
       protected void mark(int row) {
-         model.mark(convertRowIndexToModel(row));
+         if (allowMarking) {
+            model.mark(convertRowIndexToModel(row));
+         }
       }
 
       public void markSelected() {
+         if (!allowMarking)
+            return;
          int[] rows = getSelectedRows();
          for (int row : rows) {
             mark(row);
