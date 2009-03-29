@@ -19,19 +19,17 @@ public abstract class AddNewRowAction extends AbstractAction {
    private final JTextComponent jiraPrefix;
    private Logger log = MyLogger.getLogger(AddNewRowAction.class);
    private JiraRegexParser parser;
-   private MyTable targetTable;
    private final Frame parentFrame;
 
-   public AddNewRowAction(MyTable targetTable, JTextComponent jiraPrefix, JTextComponent jiraCommas, Frame parentFrame) {
-      this.targetTable = targetTable;
+   public AddNewRowAction(JTextComponent jiraPrefix, JTextComponent jiraCommas, Frame parentFrame) {
       this.jiraPrefix = jiraPrefix;
       this.jiraCommas = jiraCommas;
       this.parentFrame = parentFrame;
       parser = new JiraRegexParser();
    }
 
-   public void addJiraToTable() {
-      TableModelListenerAlerter tableModelListenerAlerter = targetTable.getTableModelListenerAlerter();
+   public void addJiraToTable(MyTable table) {
+      TableModelListenerAlerter tableModelListenerAlerter = table.getTableModelListenerAlerter();
       synchronized (tableModelListenerAlerter) {
          tableModelListenerAlerter.activate();
          List<String> jiras = parser.separateIntoJiras(jiraCommas.getText());
@@ -49,14 +47,14 @@ public abstract class AddNewRowAction extends AbstractAction {
             JiraIssue jiraIssue = getJiraIssue(jiraString);
             if (jiraIssue == null) {
                log.warn("jiraIssue is null!");
-               targetTable.addJira(jiraString);
+               table.addJira(jiraString);
             } else {
                log.debug("jiraIssue is NOT null!");
-               targetTable.addJira(jiraIssue);
+               table.addJira(jiraIssue);
             }
             String release = jiraIssue.getRelease().trim();
             log.debug("added jira " + jiraString);
-            jiraAdded(jiraString, targetTable, devEst, actual, release, remainder, qaEst);
+            jiraAdded(jiraString, table, devEst, actual, release, remainder, qaEst);
          }
          tableModelListenerAlerter.setParent(parentFrame);
          tableModelListenerAlerter.deActivateAndAlert();
@@ -76,8 +74,4 @@ public abstract class AddNewRowAction extends AbstractAction {
     * @param remainder
     */
    public abstract void jiraAdded(String jiraKey, MyTable table, String estimate, String actual, String release, String remainder, String qaEst);
-
-   public void setTable(MyTable table) {
-      this.targetTable = table;
-   }
 }

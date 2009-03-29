@@ -152,16 +152,16 @@ final class BurndownAction extends BasicAbstractGUIAction {
 
 
 final class ReconcileManuallyAction extends BasicAbstractGUIAction {
-   private final MyTable jiraTable;
+   private final MyTable boardTable;
 
-   public ReconcileManuallyAction(Frame parentFrame, MyTable jiraTable) {
+   public ReconcileManuallyAction(Frame parentFrame, MyTable boardTable) {
       super("Commence Reconciliation", "Reconcile with the real visual board and the virtual Sprinter Board", parentFrame);
-      this.jiraTable = jiraTable;
+      this.boardTable = boardTable;
    }
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      new AddBoardReconcileDialog(getParentFrame(), jiraTable);
+      new AddBoardReconcileDialog(getParentFrame(), boardTable);
    }
 }
 
