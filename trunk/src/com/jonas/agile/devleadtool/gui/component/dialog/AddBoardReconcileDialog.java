@@ -60,8 +60,8 @@ class AddToReconciliationTableAction extends AddNewRowAction implements JiraToBe
    }
 
    @Override
-   public void jiraAdded(MyTable table, String jira, String devEst, String devAct, String release, String remainder, String qaEst, BoardStatusValue status) {
-      System.out.println("adding: " + jira + " to " + table.getTitle());
+   public void jiraAdded(String jira, String devEst, String devAct, String release, String remainder, String qaEst, BoardStatusValue status) {
+      reconcilidationTablePanel.getTable().addForReconciliation(jira, devEst, devAct, release, remainder, qaEst, status);
    }
 
 }

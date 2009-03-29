@@ -3,10 +3,13 @@ package com.jonas.agile.devleadtool.gui.component.panel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.MyScrollPane;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
@@ -20,13 +23,29 @@ public class ReconciliationTablePanel extends MyPanel {
    private final MyTable boardTable;
 
    public ReconciliationTablePanel(MyTable boardTable, Frame parentFrame) {
-      super(new BorderLayout());
+      super(new GridBagLayout());
       this.boardTable = boardTable;
-      table = new ReconciliationTable(boardTable);
+      
+      GridBagConstraints c = new GridBagConstraints();
 
-      JScrollPane scrollpane = new MyScrollPane(table);
-      addCenter(scrollpane);
-      addSouth(buttonPanel(parentFrame));
+      c.insets = new Insets(5, 5, 5, 5);
+      c.fill = GridBagConstraints.BOTH;
+      c.weightx = 1;
+      c.weighty = 1;
+      c.gridx = 0;
+      c.gridy = 0;
+
+      add(getTablePanel(), c);
+
+      c.gridy++;
+      c.weighty = 0;
+      add(buttonPanel(parentFrame), c);
+   }
+
+   private JComponent getTablePanel() {
+      table = new ReconciliationTable(boardTable);
+      MyScrollPane myScrollPane = new MyScrollPane(table);
+      return myScrollPane;
    }
 
    private Component buttonPanel(Frame parentFrame) {
@@ -48,7 +67,7 @@ class AddFromReconciliationToBoardAction extends BasicAbstractGUIAction {
    private final MyTable boardTable;
 
    public AddFromReconciliationToBoardAction(Frame parentFrame, ReconciliationTable table, MyTable boardTable) {
-      super("Add", "Add to Board Panel", parentFrame);
+      super("Addss", "Add to Board Panel", parentFrame);
       this.table = table;
       this.boardTable = boardTable;
    }

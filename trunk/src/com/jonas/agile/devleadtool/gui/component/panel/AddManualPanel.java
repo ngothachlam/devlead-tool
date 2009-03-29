@@ -15,15 +15,14 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.text.JTextComponent;
 import com.jonas.agile.devleadtool.gui.component.TableRadioButton;
+import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.NewOldValues;
 import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
-import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraParseListener;
 import com.jonas.agile.devleadtool.gui.listener.AddNewRowAction;
 import com.jonas.agile.devleadtool.gui.listener.JiraToBeReconciledListener;
 import com.jonas.common.swing.MyPanel;
-import com.jonas.jira.JiraIssue;
 
 public class AddManualPanel extends AbstractAddPanel {
 
@@ -56,6 +55,7 @@ public class AddManualPanel extends AbstractAddPanel {
 class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledListener {
 
    private ButtonGroup group;
+   private MyTable table;
 
    public AddFromRadioButtons(ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas, JTextComponent release,
          JComboBox statusCombo, Frame parentFrame) {
@@ -65,7 +65,7 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
    }
 
    public MyTable getTargetTable() {
-      MyTable table = null;
+      table = null;
       Enumeration<AbstractButton> elements = group.getElements();
       while (elements.hasMoreElements()) {
          TableRadioButton button = (TableRadioButton) elements.nextElement();
@@ -77,7 +77,10 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
    }
 
    @Override
-   public void jiraAdded(MyTable table, String jira, String estimate, String actual, String release, String remainder, String qaEst, BoardStatusValue status) {
+   public void jiraAdded(String jira, String estimate, String actual, String release, String remainder, String qaEst, BoardStatusValue status) {
+      if(table == null){
+         AlertDialog.alertMessage(getParentFrame(), "No table Selected!!");
+      }
       if (!table.doesJiraExist(jira)) {
          table.addJira(jira);
       }
