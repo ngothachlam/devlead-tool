@@ -5,22 +5,21 @@ import com.jonas.agile.devleadtool.gui.component.table.model.ReconciliationTable
 
 public class ReconciliationTable extends MyTable {
 
-   private final MyTable boardTableModel;
-
    public ReconciliationTable(MyTable boardTableModel) {
       super("ReconcileTable", new ReconciliationTableModel(boardTableModel), false);
-      this.boardTableModel = boardTableModel;
       
-   }
-
-   public void getReconciledData() {
-      System.out.println("getReconciledData");
    }
 
    public void addForReconciliation(String jira, String devEst, String devAct, String release, String remainder, String qaEst,
          BoardStatusValue status) {
-      System.out.println("addForReconciliation to " + this.getTitle());
       this.addJira(jira);
+      int row = this.getRowWithJira(jira);
+      this.setValueAt(devEst, row, Column.Dev_Estimate);
+      this.setValueAt(devAct, row, Column.Dev_Actual);
+      this.setValueAt(release, row, Column.Release);
+      this.setValueAt(remainder, row, Column.Dev_Remain);
+      this.setValueAt(qaEst, row, Column.QA_Estimate);
+      this.setValueAt(status, row, Column.BoardStatus);
    }
 
 }

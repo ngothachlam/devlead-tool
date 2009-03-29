@@ -205,9 +205,9 @@ public class MyTableModelTest extends JonasTestCase {
 
    public void testShouldCalculateAlreadyExistsOk() {
       String jira = "Jira-1";
-      assertFalse(model.doesJiraExist(jira));
+      assertFalse(model.isJiraPresent(jira));
       model.addJira(jira);
-      assertTrue(model.doesJiraExist(jira));
+      assertTrue(model.isJiraPresent(jira));
    }
 
    public void testShouldGetColumnInfoOk() {

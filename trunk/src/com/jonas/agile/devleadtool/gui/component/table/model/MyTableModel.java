@@ -180,7 +180,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    public void addJira(JiraIssue jiraIssue) {
-      if (!doesJiraExist(jiraIssue.getKey())) {
+      if (!isJiraPresent(jiraIssue.getKey())) {
          Set<Column> columnSet = columnNames.keySet();
          Vector<Object> contents = new Vector<Object>();
          for (Column column : columnSet) {
@@ -192,7 +192,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public void addJira(String jira) {
       jira = jira.toUpperCase();
-      if (!doesJiraExist(jira)) {
+      if (!isJiraPresent(jira)) {
          Object[] row = getEmptyRow();
          row[0] = jira;
          log.debug("adding Jira " + jira + " of row size: " + row.length);
@@ -230,7 +230,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       getMarker().clearMarked();
    }
 
-   final public boolean doesJiraExist(String name) {
+   final public boolean isJiraPresent(String name) {
       log.debug("does " + name + " exist in " + getClass());
       for (int row = 0; row < getRowCount(); row++) {
          if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
@@ -369,6 +369,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public Object getValueAt(Column column, int row) {
       int columnIndex = getColumnIndex(column);
+      log.debug("getting value at column " + columnIndex + " and row " + row);
       return row > -1 && row < getRowCount() ? getValueAt(row, columnIndex) : null;
    }
 
@@ -439,7 +440,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    @Override
    public void insertRow(int row, Vector rowData) {
-      if (!doesJiraExist((String) rowData.get(0))) {
+      if (!isJiraPresent((String) rowData.get(0))) {
          super.insertRow(row, rowData);
       }
    }

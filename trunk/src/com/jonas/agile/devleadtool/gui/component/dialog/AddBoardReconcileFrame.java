@@ -13,15 +13,16 @@ import com.jonas.agile.devleadtool.gui.listener.AddNewRowAction;
 import com.jonas.agile.devleadtool.gui.listener.JiraToBeReconciledListener;
 import com.jonas.common.swing.SwingUtil;
 
-public class AddBoardReconcileDialog extends JFrame {
+public class AddBoardReconcileFrame extends JFrame {
 
    private final MyTable boardTable;
 
-   public AddBoardReconcileDialog(Frame parentFrame, MyTable boardTable) {
+   public AddBoardReconcileFrame(Frame parentFrame, MyTable boardTable) {
+      super("Reconciliation with Board");
       this.boardTable = boardTable;
       this.setContentPane(getPanel(this));
       this.pack();
-      this.setSize(450, 450);
+      this.setSize(650, 450);
 
       SwingUtil.centreWindowWithinWindow(this, parentFrame);
       setVisible(true);
@@ -43,13 +44,11 @@ public class AddBoardReconcileDialog extends JFrame {
 
 class AddToReconciliationTableAction extends AddNewRowAction implements JiraToBeReconciledListener {
 
-   private final AbstractAddPanel mainPanel;
    private final ReconciliationTablePanel reconcilidationTablePanel;
 
    public AddToReconciliationTableAction(Frame parentFrame, AbstractAddPanel mainPanel, ReconciliationTablePanel reconcilidationTablePanel) {
       super("Reconcile", "Add to the reconcile table", mainPanel.getJiraPrefixTextField(), mainPanel.getJiraCommasTextField(), mainPanel
             .getDefaultReleaseTextField(), mainPanel.getStatusComboBox(), parentFrame);
-      this.mainPanel = mainPanel;
       this.reconcilidationTablePanel = reconcilidationTablePanel;
       addJiraToBeReconciledListener(this);
    }

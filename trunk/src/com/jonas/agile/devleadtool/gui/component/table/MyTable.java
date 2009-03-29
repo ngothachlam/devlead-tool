@@ -209,8 +209,8 @@ public class MyTable extends JTable {
       return false;
    }
 
-   public boolean doesJiraExist(String jira) {
-      return model.doesJiraExist(jira);
+   public boolean isJiraPresent(String jira) {
+      return model.isJiraPresent(jira);
    }
 
    public void fireTableDataChangedForJira(String jira) {

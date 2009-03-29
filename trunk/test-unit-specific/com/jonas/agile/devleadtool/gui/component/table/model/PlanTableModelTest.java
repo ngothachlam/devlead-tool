@@ -16,22 +16,22 @@ public class PlanTableModelTest extends JonasTestCase {
    }
 
    public void testShouldAddJiraAndCalculateIfJiraExistsCorrectly() {
-      assertFalse(model.doesJiraExist("llu-1"));
+      assertFalse(model.isJiraPresent("llu-1"));
       model.addJira("llu-1");
-      assertTrue(model.doesJiraExist("llu-1"));
-      assertFalse(model.doesJiraExist("llu-2"));
+      assertTrue(model.isJiraPresent("llu-1"));
+      assertFalse(model.isJiraPresent("llu-2"));
       assertEquals(1, model.getRowCount());
       model.addJira("llu-2");
-      assertTrue(model.doesJiraExist("llu-1"));
-      assertTrue(model.doesJiraExist("lLu-1"));
-      assertTrue(model.doesJiraExist("llu-2"));
-      assertTrue(model.doesJiraExist("lLu-2"));
+      assertTrue(model.isJiraPresent("llu-1"));
+      assertTrue(model.isJiraPresent("lLu-1"));
+      assertTrue(model.isJiraPresent("llu-2"));
+      assertTrue(model.isJiraPresent("lLu-2"));
       assertEquals(2, model.getRowCount());
       model.removeRow(0);
-      assertFalse(model.doesJiraExist("llu-1"));
-      assertFalse(model.doesJiraExist("lLu-1"));
-      assertTrue(model.doesJiraExist("llu-2"));
-      assertTrue(model.doesJiraExist("lLu-2"));
+      assertFalse(model.isJiraPresent("llu-1"));
+      assertFalse(model.isJiraPresent("lLu-1"));
+      assertTrue(model.isJiraPresent("llu-2"));
+      assertTrue(model.isJiraPresent("lLu-2"));
       assertEquals(1, model.getRowCount());
    }
 
@@ -75,16 +75,16 @@ public class PlanTableModelTest extends JonasTestCase {
       String jira_one = "llu-1";
       String jira_two = "llu-2";
       
-      assertFalse(model.doesJiraExist(jira_one));
-      assertFalse(model.doesJiraExist(jira_two));
+      assertFalse(model.isJiraPresent(jira_one));
+      assertFalse(model.isJiraPresent(jira_two));
       assertEquals(0, model.getRowCount());
       assertEquals(11, model.getColumnCount());
 
       model.addJira(jira_one);
       model.addJira(jira_two);
 
-      assertTrue(model.doesJiraExist(jira_one));
-      assertTrue(model.doesJiraExist(jira_two));
+      assertTrue(model.isJiraPresent(jira_one));
+      assertTrue(model.isJiraPresent(jira_two));
 
       assertEquals(2, model.getRowCount());
       assertEquals(11, model.getColumnCount());
