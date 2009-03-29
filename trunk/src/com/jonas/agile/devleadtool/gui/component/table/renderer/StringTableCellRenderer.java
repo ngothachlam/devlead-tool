@@ -3,7 +3,7 @@ package com.jonas.agile.devleadtool.gui.component.table.renderer;
 import java.awt.Component;
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 
@@ -11,7 +11,7 @@ public class StringTableCellRenderer extends MyTableCellRenderer {
 
    private MyTableModel model = null;
 
-   public StringTableCellRenderer(AbstractTableModel model) {
+   public StringTableCellRenderer(TableModel model) {
       if (model instanceof MyTableModel)
          this.model = (MyTableModel) model;
    }

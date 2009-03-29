@@ -7,8 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 
@@ -17,7 +17,7 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
    private JCheckBox checkbox = new JCheckBox();
    private MyTableModel model = null;
 
-   public CheckBoxTableCellRenderer(AbstractTableModel model) {
+   public CheckBoxTableCellRenderer(TableModel model) {
       super(new BorderLayout());
       if (model instanceof MyTableModel)
          this.model = (MyTableModel) model;
