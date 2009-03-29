@@ -56,6 +56,7 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
 
    private ButtonGroup group;
    private final JComboBox status;
+   private MyTable table;
 
    public AddFromRadioButtons(ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas, JTextComponent release,
          JComboBox statusCombo, Frame parentFrame) {
@@ -65,8 +66,8 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
       addJiraToBeReconciledListener(this);
    }
 
-   private MyTable getTargetTable() {
-      MyTable table = null;
+   public MyTable getTargetTable() {
+      table = null;
       Enumeration<AbstractButton> elements = group.getElements();
       while (elements.hasMoreElements()) {
          TableRadioButton button = (TableRadioButton) elements.nextElement();
@@ -78,7 +79,7 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
    }
 
    @Override
-   public void jiraAdded(String jira, MyTable table, String estimate, String actual, String release, String remainder, String qaEst) {
+   public void jiraAdded(String jira, String estimate, String actual, String release, String remainder, String qaEst) {
       if (table.doesJiraExist(jira)) {
          List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 
@@ -115,14 +116,5 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
          return null;
       Object valueAt = table.getValueAt(column, jira);
       return valueAt == null ? "" : valueAt.toString();
-   }
-
-   @Override
-   public void doActionPerformed(ActionEvent e) {
-      MyTable table = getTargetTable();
-
-      if (table == null)
-         return;
-      addJiraToTable(table);
    }
 }

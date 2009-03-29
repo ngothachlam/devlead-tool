@@ -60,12 +60,13 @@ public class JiraSoapClient {
          return action.accessJiraAndReturn();
       }
    }
+   private static final Logger log = MyLogger.getLogger(JiraSoapClient.class);
    public static final JiraSoapClient AOLBB = new JiraSoapClient(ClientConstants.AOLBB_WS);
    public static final JiraSoapClient ATLASSIN = new JiraSoapClient(ClientConstants.ATLASSIN_WS);
+   
    private static List<String> customFieldsForCloning = new ArrayList<String>(1);
 
    private static JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
-   private static final Logger log = MyLogger.getLogger(JiraSoapClient.class);
 
    private static final String LOGIN_NAME = "soaptester";
 

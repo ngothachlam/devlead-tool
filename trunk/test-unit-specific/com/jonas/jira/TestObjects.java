@@ -11,8 +11,8 @@ public class TestObjects {
 	
 	public static Element elementSimple ;
 	
-	public static JiraProject Project_TST1 = new JiraProject(null, "tstProject1", "tstKey1", "tstId1");
-	public static JiraProject Project_TST2 = new JiraProject(null, "tstProject2", "tstKey2", "tstId2");
+	public static JiraProject Project_TST1 = new JiraProject(null, "tstProject1", "tstKey1", "tstId1", null);
+	public static JiraProject Project_TST2 = new JiraProject(null, "tstProject2", "tstKey2", "tstId2", null);
 	
 	public static JiraVersion Version_10 = new JiraVersion("11382", JiraProject.LLU, "Version 10", false);
 	public static JiraVersion Version_11 = new JiraVersion("11432", JiraProject.LLU, "Version 11", false);

@@ -2,7 +2,6 @@ package com.jonas.agile.devleadtool.gui.component.panel;
 
 import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import com.jonas.agile.devleadtool.gui.component.MyScrollPane;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.ReconciliationTable;
@@ -18,6 +17,10 @@ public class ReconciliationTablePanel extends MyPanel {
 
       JScrollPane scrollpane = new MyScrollPane(table);
       addCenter(scrollpane);
+   }
+
+   public ReconciliationTable getTable() {
+      return table;
    }
 
 }
