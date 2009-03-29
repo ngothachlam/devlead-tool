@@ -6,27 +6,28 @@ package com.jonas.agile.devleadtool.gui.listener;
 import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.AbstractAction;
 import javax.swing.text.JTextComponent;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.dto.JiraStringDTO;
+import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.string.JiraRegexParser;
 import com.jonas.jira.JiraIssue;
 
-public abstract class AddNewRowAction extends AbstractAction {
+public abstract class AddNewRowAction extends BasicAbstractGUIAction {
    private final JTextComponent jiraCommas;
    private final JTextComponent jiraPrefix;
+   private final JTextComponent release;
    private Logger log = MyLogger.getLogger(AddNewRowAction.class);
    private JiraRegexParser parser;
-   private final Frame parentFrame;
    private List<JiraToBeReconciledListener> listeners = new ArrayList<JiraToBeReconciledListener>();
 
-   public AddNewRowAction(JTextComponent jiraPrefix, JTextComponent jiraCommas, Frame parentFrame) {
+   public AddNewRowAction(String title, String desc, JTextComponent jiraPrefix, JTextComponent jiraCommas, JTextComponent release, Frame parentFrame) {
+      super(title, desc, parentFrame);
       this.jiraPrefix = jiraPrefix;
       this.jiraCommas = jiraCommas;
-      this.parentFrame = parentFrame;
+      this.release = release;
       parser = new JiraRegexParser();
    }
 
@@ -36,7 +37,7 @@ public abstract class AddNewRowAction extends AbstractAction {
          synchronized (tableModelListenerAlerter) {
             tableModelListenerAlerter.activate();
             addJiras(table);
-            tableModelListenerAlerter.setParent(parentFrame);
+            tableModelListenerAlerter.setParent(getParentFrame());
             tableModelListenerAlerter.deActivateAndAlert();
          }
       } else {
@@ -82,6 +83,8 @@ public abstract class AddNewRowAction extends AbstractAction {
       listeners.add(jiraToBeReconciledListener);
    }
    
-   public abstract JiraIssue getJiraIssue(String jira);
+   public JiraIssue getJiraIssue(String jira){
+      return new JiraIssue(jira, release.getText());
+   }
 
 }

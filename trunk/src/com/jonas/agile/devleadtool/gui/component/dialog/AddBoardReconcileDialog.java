@@ -6,10 +6,13 @@ import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
+import com.jonas.agile.devleadtool.gui.component.panel.AbstractAddPanel;
 import com.jonas.agile.devleadtool.gui.component.panel.AddReconcilePanel;
 import com.jonas.agile.devleadtool.gui.component.panel.ReconciliationTablePanel;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.listener.AddNewRowAction;
 import com.jonas.common.swing.SwingUtil;
+import com.jonas.jira.JiraIssue;
 
 public class AddBoardReconcileDialog extends JFrame {
 
@@ -40,18 +43,24 @@ public class AddBoardReconcileDialog extends JFrame {
 }
 
 
-class AddButtonAction extends BasicAbstractGUIAction {
+class AddButtonAction extends AddNewRowAction {
 
-   private final AddReconcilePanel mainPanel;
+   private final AbstractAddPanel mainPanel;
    private final ReconciliationTablePanel reconcilidationTablePanel;
 
-   public AddButtonAction(Frame parentFrame, AddReconcilePanel mainPanel, ReconciliationTablePanel reconcilidationTablePanel) {
-      super("Reconcile", "Add to the reconcile table", parentFrame);
+   public AddButtonAction(Frame parentFrame, AbstractAddPanel mainPanel, ReconciliationTablePanel reconcilidationTablePanel) {
+      super("Reconcile", "Add to the reconcile table", mainPanel.getJiraPrefixTextField(), mainPanel.getJiraCommasTextField(), mainPanel.getDefaultReleaseTextField(),parentFrame);
       this.mainPanel = mainPanel;
       this.reconcilidationTablePanel = reconcilidationTablePanel;
    }
 
    @Override
    public void doActionPerformed(ActionEvent e) {
+   }
+
+   @Override
+   public JiraIssue getJiraIssue(String jira) {
+      // TODO Auto-generated method stub
+      throw new RuntimeException("Method not implemented yet!");
    }
 }
