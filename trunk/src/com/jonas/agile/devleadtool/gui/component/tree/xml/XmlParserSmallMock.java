@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.tree.xml;
+package com.jonas.agile.devleadtool.gui.component.tree.xml;
 
 import java.io.IOException;
 import org.apache.commons.httpclient.HttpException;
@@ -8,18 +8,18 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraException;
 
-public class XmlParserLargeMock implements XmlParser {
+public class XmlParserSmallMock implements XmlParser {
 
    private XMLReader reader;
 
-   public XmlParserLargeMock(JiraSaxHandler nodeCounter) throws SAXException {
+   public XmlParserSmallMock(JiraSaxHandler saxHandler) throws SAXException {
       super();
       reader = XMLReaderFactory.createXMLReader();
-      reader.setContentHandler(nodeCounter);
+      reader.setContentHandler(saxHandler);
    }
 
    public void parse(JiraProject project, String sprint) throws IOException, SAXException {
-      reader.parse("test-data/ListOfSprintJirasMany.xml");
+      reader.parse("test-data/ListOfSprintJiras.xml");
    }
 
    @Override

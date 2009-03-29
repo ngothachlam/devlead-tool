@@ -9,7 +9,7 @@ import java.util.Properties;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.name.Names;
-import com.jonas.agile.devleadtool.component.DesktopPane;
+import com.jonas.agile.devleadtool.gui.component.DesktopPane;
 import com.jonas.agile.devleadtool.gui.component.frame.main.MainFrame;
 
 public class DevLeadToolModule extends AbstractModule {

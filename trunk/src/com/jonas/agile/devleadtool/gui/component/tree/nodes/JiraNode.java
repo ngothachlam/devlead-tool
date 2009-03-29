@@ -1,9 +1,9 @@
-package com.jonas.agile.devleadtool.component.tree.nodes;
+package com.jonas.agile.devleadtool.gui.component.tree.nodes;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
-import com.jonas.agile.devleadtool.component.tree.ToolTipper;
+import com.jonas.agile.devleadtool.gui.component.tree.ToolTipper;
 import com.jonas.common.CalculatorHelper;
 
 public class JiraNode extends DefaultMutableTreeNode implements ToolTipper{

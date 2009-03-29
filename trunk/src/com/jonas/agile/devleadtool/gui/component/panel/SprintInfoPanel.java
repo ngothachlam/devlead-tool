@@ -8,9 +8,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
-import com.jonas.agile.devleadtool.component.tree.nodes.Status;
-import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode.SprintAnalyser;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.SprintNode;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.Status;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.SprintNode.SprintAnalyser;
 import com.jonas.common.CalculatorHelper;
 
 public class SprintInfoPanel extends JPanel {

@@ -1,8 +1,8 @@
-package com.jonas.agile.devleadtool.component.tree.dnd;
+package com.jonas.agile.devleadtool.gui.component.tree.dnd;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.JiraNode;
 
 public class JiraNodesTransferableDTO {
 

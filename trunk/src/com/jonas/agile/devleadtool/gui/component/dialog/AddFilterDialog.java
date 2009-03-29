@@ -19,7 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
-import com.jonas.agile.devleadtool.component.TableRadioButton;
+import com.jonas.agile.devleadtool.gui.component.TableRadioButton;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.common.swing.MyPanel;
 import com.jonas.common.swing.SwingUtil;

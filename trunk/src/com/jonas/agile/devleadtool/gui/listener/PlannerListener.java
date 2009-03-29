@@ -1,6 +1,6 @@
 package com.jonas.agile.devleadtool.gui.listener;
 
-import com.jonas.agile.devleadtool.component.MyInternalFrame;
+import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
 
 public interface PlannerListener {
 

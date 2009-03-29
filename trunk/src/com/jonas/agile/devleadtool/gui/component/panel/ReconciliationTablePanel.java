@@ -4,7 +4,7 @@ import java.awt.BorderLayout;
 import java.util.Vector;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import com.jonas.agile.devleadtool.component.MyScrollPane;
+import com.jonas.agile.devleadtool.gui.component.MyScrollPane;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.common.swing.MyPanel;
 

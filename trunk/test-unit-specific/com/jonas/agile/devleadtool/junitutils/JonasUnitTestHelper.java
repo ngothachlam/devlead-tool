@@ -1,9 +1,9 @@
 package com.jonas.agile.devleadtool.junitutils;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import com.jonas.agile.devleadtool.component.tree.model.DnDTreeModel;
-import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
-import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
+import com.jonas.agile.devleadtool.gui.component.tree.model.DnDTreeModel;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.SprintNode;
+import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraDTO;
 
 public class JonasUnitTestHelper {
 

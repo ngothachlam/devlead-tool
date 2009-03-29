@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.constants.CutoverLength;
+import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class InternalFrameTest extends JonasTestCase {

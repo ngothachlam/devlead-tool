@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.tree.xml;
+package com.jonas.agile.devleadtool.gui.component.tree.xml;
 
 public interface JiraParseListener {
 

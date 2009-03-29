@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.tree.model;
+package com.jonas.agile.devleadtool.gui.component.tree.model;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -8,11 +8,11 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.tree.nodes.FixVersionNode;
-import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
-import com.jonas.agile.devleadtool.component.tree.nodes.ProjectNode;
-import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
-import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.FixVersionNode;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.JiraNode;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.ProjectNode;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.SprintNode;
+import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraDTO;
 import com.jonas.common.logging.MyLogger;
 
 public class DnDTreeModel extends DefaultTreeModel {
