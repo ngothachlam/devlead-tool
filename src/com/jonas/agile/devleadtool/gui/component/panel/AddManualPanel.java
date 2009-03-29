@@ -18,7 +18,9 @@ import com.jonas.agile.devleadtool.gui.component.TableRadioButton;
 import com.jonas.agile.devleadtool.gui.component.dialog.NewOldValues;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraParseListener;
 import com.jonas.agile.devleadtool.gui.listener.AddNewRowAction;
+import com.jonas.agile.devleadtool.gui.listener.JiraToBeReconciledListener;
 import com.jonas.common.swing.MyPanel;
 import com.jonas.jira.JiraIssue;
 
@@ -50,7 +52,7 @@ public class AddManualPanel extends AbstractAddPanel {
 }
 
 
-class AddFromRadioButtons extends AddNewRowAction {
+class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledListener {
 
    private ButtonGroup group;
    private final JTextComponent release;
@@ -62,6 +64,7 @@ class AddFromRadioButtons extends AddNewRowAction {
       this.group = group;
       this.release = release;
       this.status = statusCombo;
+      addJiraToBeReconciledListener(this);
    }
 
    @Override
