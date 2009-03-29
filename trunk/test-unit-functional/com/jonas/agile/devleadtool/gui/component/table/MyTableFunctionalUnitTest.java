@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.table;
+package com.jonas.agile.devleadtool.gui.component.table;
 
 import java.awt.Color;
 import java.util.ArrayList;

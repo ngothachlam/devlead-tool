@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.tree.model;
+package com.jonas.agile.devleadtool.gui.component.tree.model;
 
 import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
