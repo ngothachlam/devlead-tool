@@ -39,7 +39,7 @@ public class AddManualPanel extends AbstractAddPanel {
       buttonPanel.bordered();
       AddFromRadioButtons addFromRadioButtons = new AddFromRadioButtons(getTablesButtonGroup(), getJiraPrefixTextField(),
             getJiraCommasTextField(), getDefaultReleaseTextField(), getStatusComboBox(), frame);
-      this.addButton(buttonPanel, "Add", addFromRadioButtons);
+      this.addButton(buttonPanel, addFromRadioButtons);
       this.addButton(buttonPanel, "Close", new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -55,25 +55,14 @@ public class AddManualPanel extends AbstractAddPanel {
 class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledListener {
 
    private ButtonGroup group;
-   private final JTextComponent release;
    private final JComboBox status;
 
    public AddFromRadioButtons(ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas, JTextComponent release,
          JComboBox statusCombo, Frame parentFrame) {
-      super(jiraPrefix, jiraCommas, parentFrame);
+      super("Add", "Adding manually", jiraPrefix, jiraCommas, release, parentFrame);
       this.group = group;
-      this.release = release;
       this.status = statusCombo;
       addJiraToBeReconciledListener(this);
-   }
-
-   @Override
-   public void actionPerformed(ActionEvent e) {
-      MyTable table = getTargetTable();
-
-      if (table == null)
-         return;
-      addJiraToTable(table);
    }
 
    private MyTable getTargetTable() {
@@ -129,7 +118,11 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
    }
 
    @Override
-   public JiraIssue getJiraIssue(String jira) {
-      return new JiraIssue(jira, release.getText());
+   public void doActionPerformed(ActionEvent e) {
+      MyTable table = getTargetTable();
+
+      if (table == null)
+         return;
+      addJiraToTable(table);
    }
 }
