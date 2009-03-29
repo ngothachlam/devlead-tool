@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.tree.dnd;
+package com.jonas.agile.devleadtool.gui.component.tree.dnd;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -10,10 +10,10 @@ import javax.swing.TransferHandler;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.tree.SprintTree;
-import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
-import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
-import com.jonas.agile.devleadtool.component.tree.xml.JiraDTO;
+import com.jonas.agile.devleadtool.gui.component.tree.SprintTree;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.JiraNode;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.SprintNode;
+import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraDTO;
 import com.jonas.common.logging.MyLogger;
 
 public class DnDTreeTransferHandler extends TransferHandler {

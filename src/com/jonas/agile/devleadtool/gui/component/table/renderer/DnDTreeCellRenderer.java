@@ -6,9 +6,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.tree.nodes.FixVersionNode;
-import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
-import com.jonas.agile.devleadtool.component.tree.nodes.SprintNode;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.FixVersionNode;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.JiraNode;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.SprintNode;
 import com.jonas.common.logging.MyLogger;
 
 public class DnDTreeCellRenderer extends DefaultTreeCellRenderer {

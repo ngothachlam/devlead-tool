@@ -27,7 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.TableRadioButton;
+import com.jonas.agile.devleadtool.gui.component.TableRadioButton;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.listener.DownloadJiraListener;
 import com.jonas.agile.devleadtool.gui.listener.SyncWithJiraActionListenerListener;

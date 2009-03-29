@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.tree.dnd;
+package com.jonas.agile.devleadtool.gui.component.tree.dnd;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -7,7 +7,7 @@ import java.io.IOException;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-import com.jonas.agile.devleadtool.component.tree.nodes.JiraNode;
+import com.jonas.agile.devleadtool.gui.component.tree.nodes.JiraNode;
 
 final class JiraNodeTransferable implements Transferable {
    private final JTree tree;

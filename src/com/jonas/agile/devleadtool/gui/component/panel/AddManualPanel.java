@@ -14,7 +14,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.text.JTextComponent;
-import com.jonas.agile.devleadtool.component.TableRadioButton;
+import com.jonas.agile.devleadtool.gui.component.TableRadioButton;
 import com.jonas.agile.devleadtool.gui.component.dialog.NewOldValues;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;

@@ -5,7 +5,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.table.JTableHeader;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.MyScrollPane;
+import com.jonas.agile.devleadtool.gui.component.MyScrollPane;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;

@@ -5,8 +5,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
+import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
 import com.jonas.common.logging.MyLogger;
 
 public class SavePlannerDialog extends JFileChooser {

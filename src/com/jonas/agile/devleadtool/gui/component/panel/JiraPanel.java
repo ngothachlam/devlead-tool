@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.MyScrollPane;
+import com.jonas.agile.devleadtool.gui.component.MyScrollPane;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.common.logging.MyLogger;

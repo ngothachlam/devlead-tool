@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.tree;
+package com.jonas.agile.devleadtool.gui.component.tree;
 
 public interface ToolTipper {
 

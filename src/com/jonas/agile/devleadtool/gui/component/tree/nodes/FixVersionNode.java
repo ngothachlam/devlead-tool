@@ -1,10 +1,10 @@
-package com.jonas.agile.devleadtool.component.tree.nodes;
+package com.jonas.agile.devleadtool.gui.component.tree.nodes;
 
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.component.tree.ToolTipper;
+import com.jonas.agile.devleadtool.gui.component.tree.ToolTipper;
 import com.jonas.common.logging.MyLogger;
 
 public class FixVersionNode extends DefaultMutableTreeNode implements ToolTipper {

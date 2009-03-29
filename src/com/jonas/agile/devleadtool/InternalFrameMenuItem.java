@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.DesktopManager;
 import javax.swing.JMenuItem;
-import com.jonas.agile.devleadtool.component.MyInternalFrame;
+import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
 
 public class InternalFrameMenuItem extends JMenuItem {
 

@@ -15,6 +15,9 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraDTO;
+import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraParseListener;
+import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraSaxHandler;
 
 public class JiraSaxHandlerTest extends TestCase {
 
