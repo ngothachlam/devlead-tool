@@ -126,47 +126,23 @@ public class MyTable extends JTable {
 
    private String title;
 
-   private MyTable(String title, AbstractTableModel defaultTableModel, final boolean allowMarking) {
-      super(defaultTableModel);
+   public MyTable(String title, MyTableModel model, final boolean allowMarking) {
+      super(model);
       this.title = title;
+      this.model = model;
       marker.setAllowMarking(allowMarking);
       getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
       setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
       setColumnSelectionAllowed(false);
       setRowSelectionAllowed(true);
 
-      CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(defaultTableModel);
-      checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
-
-      setDefaultRenderer(Object.class, new MyDefaultCellRenderer());
-      setDefaultRenderer(Integer.class, new MyDefaultCellRenderer());
-      // setDefaultRenderer(BoardStatusValue.class, new MyDefaultCellRenderer());
-      setDefaultRenderer(String.class, new StringTableCellRenderer(defaultTableModel));
-      setDefaultRenderer(Boolean.class, checkBoxRenderer);
-      setComboEditors();
-
-      setDefaultEditor(Boolean.class, checkBoxEditor);
+      setRenderers();
+      setEditors();
 
       setDragEnabled(true);
       setDropMode(DropMode.INSERT);
       setFillsViewportHeight(true);
       setAutoCreateRowSorter(true);
-
-      if (getModel() instanceof MyTableModel) {
-         model = (MyTableModel) getModel();
-         int colIndex = getColumnIndex(Column.Release);
-         if (colIndex > -1) {
-            TableColumn tc = getTableColumn(colIndex);
-            tc.setCellEditor(new MyDefaultCellEditor(new JTextField()));
-         }
-         colIndex = getColumnIndex(Column.Jira);
-         if (colIndex > -1) {
-            jiraEditor = new JiraCellEditor(new JTextField());
-            TableColumn tc = getTableColumn(colIndex);
-            tc.setCellEditor(jiraEditor);
-         }
-
-      }
 
       // TODO add tooltip for the contents of the table as well by owerriding the getToolTipText method in MyTable (or create JiraTable...)
       setTableHeader(new JTableHeader(columnModel) {
@@ -181,8 +157,12 @@ public class MyTable extends JTable {
       this.addKeyListener(new MarkKeyListener(allowMarking));
    }
 
-   public MyTable(String title, MyTableModel modelModel, boolean allowMarking) {
-      this(title, (AbstractTableModel) modelModel, allowMarking);
+   private void setRenderers() {
+      CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(getModel());
+      setDefaultRenderer(Object.class, new MyDefaultCellRenderer());
+      setDefaultRenderer(Integer.class, new MyDefaultCellRenderer());
+      setDefaultRenderer(String.class, new StringTableCellRenderer(getModel()));
+      setDefaultRenderer(Boolean.class, checkBoxRenderer);
    }
 
    public void addCheckBoxEditorListener(CellEditorListener cellEditorListener) {
@@ -364,9 +344,23 @@ public class MyTable extends JTable {
       tc.setCellRenderer(renderer);
    }
 
-   private void setComboEditors() {
+   private void setEditors() {
+      checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
+      setDefaultEditor(Boolean.class, checkBoxEditor);
       JComboBox combo = new JComboBox(BoardStatusValue.values());
       setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
+      
+      int colIndex = getColumnIndex(Column.Release);
+      if (colIndex > -1) {
+         TableColumn tc = getTableColumn(colIndex);
+         tc.setCellEditor(new MyDefaultCellEditor(new JTextField()));
+      }
+      colIndex = getColumnIndex(Column.Jira);
+      if (colIndex > -1) {
+         jiraEditor = new JiraCellEditor(new JTextField());
+         TableColumn tc = getTableColumn(colIndex);
+         tc.setCellEditor(jiraEditor);
+      }
    }
 
    public void setModel(MyTableModel model) {
@@ -408,12 +402,12 @@ public class MyTable extends JTable {
    public void unSort() {
       setAutoCreateRowSorter(true);
    }
-   
-   public MyTableModel getMyModel(){
+
+   public MyTableModel getMyModel() {
       return model;
    }
-   
-   public TableModel getModel(){
+
+   public TableModel getModel() {
       return super.getModel();
    }
 }
