@@ -273,7 +273,9 @@ public class MyTable extends JTable {
    }
 
    public TableModelListenerAlerter getTableModelListenerAlerter() {
-      return model.getTableModelListenerAlerter();
+      if (model != null)
+         return model.getTableModelListenerAlerter();
+      return null;
    }
 
    public String getTitle() {

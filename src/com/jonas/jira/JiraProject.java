@@ -17,8 +17,8 @@ public class JiraProject {
    public static final JiraProject LLU = new JiraProject(JiraClient.JiraClientAolBB, "LLU", "LLU", "10070", "2");
    public static final JiraProject TALK = new JiraProject(JiraClient.JiraClientAolBB, "CPS", "CPS", "10021", "701");
    public static final JiraProject LLUDEVSUP = new JiraProject(JiraClient.JiraClientAolBB, "LLUDEVSUP", "LLUDEVSUP", "10192", "2");
-   public static final JiraProject BBMS = new JiraProject(JiraClient.JiraClientAolBB, "BBMS", "BBMS", "10000");
-   public static final JiraProject ATLASSIN_TST = new JiraProject(JiraClient.JiraClientAtlassin, "Atlassin", "TST", "10420");
+   public static final JiraProject BBMS = new JiraProject(JiraClient.JiraClientAolBB, "BBMS", "BBMS", "10000", null);
+   public static final JiraProject ATLASSIN_TST = new JiraProject(JiraClient.JiraClientAtlassin, "Atlassin", "TST", "10420", null);
 
    private static Logger log = MyLogger.getLogger(JiraProject.class);
 
@@ -29,17 +29,13 @@ public class JiraProject {
    private final String name;
    private String closeAction;
 
-   JiraProject(JiraClient client, String name, String jiraKey, String id) {
+   JiraProject(JiraClient client, String name, String jiraKey, String id, String closeAction) {
       this.client = client;
       this.name = name;
       this.jiraKey = jiraKey;
       this.id = id;
-      projects.add(this);
-   }
-
-   private JiraProject(JiraClient client, String name, String jiraKey, String id, String closeAction) {
-      this(client, name, jiraKey, id);
       this.closeAction = closeAction;
+      projects.add(this);
    }
 
    public static JiraProject getProjectByKey(String key) {

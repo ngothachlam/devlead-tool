@@ -23,7 +23,7 @@ public class JiraProjectTest extends JonasTestCase{
 	}
 
 	public void testJiraProjectAndFixVersion(){
-		JiraProject jiraProject = new JiraProject(JiraClient.JiraClientAolBB, "test", "key", "4321");
+		JiraProject jiraProject = new JiraProject(JiraClient.JiraClientAolBB, "test", "key", "4321", null);
 		assertEquals(0, jiraProject.getFixVersions(false).length);
 		assertEquals(0, jiraProject.getFixVersions(true).length);
 		new JiraVersion("1234", jiraProject, "test", false);
