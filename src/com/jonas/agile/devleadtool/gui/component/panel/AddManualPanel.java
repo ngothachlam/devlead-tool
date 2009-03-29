@@ -58,7 +58,7 @@ class AddFromRadioButtons extends AddNewRowAction {
 
    public AddFromRadioButtons(ButtonGroup group, JTextComponent jiraPrefix, JTextComponent jiraCommas, JTextComponent release,
          JComboBox statusCombo, Frame parentFrame) {
-      super(null, jiraPrefix, jiraCommas, parentFrame);
+      super(jiraPrefix, jiraCommas, parentFrame);
       this.group = group;
       this.release = release;
       this.status = statusCombo;
@@ -66,6 +66,14 @@ class AddFromRadioButtons extends AddNewRowAction {
 
    @Override
    public void actionPerformed(ActionEvent e) {
+      MyTable table = getTargetTable();
+
+      if (table == null)
+         return;
+      addJiraToTable(table);
+   }
+
+   private MyTable getTargetTable() {
       MyTable table = null;
       Enumeration<AbstractButton> elements = group.getElements();
       while (elements.hasMoreElements()) {
@@ -74,11 +82,7 @@ class AddFromRadioButtons extends AddNewRowAction {
             table = button.getTable();
          }
       }
-
-      if (table == null)
-         return;
-      super.setTable(table);
-      addJiraToTable();
+      return table;
    }
 
    @Override
