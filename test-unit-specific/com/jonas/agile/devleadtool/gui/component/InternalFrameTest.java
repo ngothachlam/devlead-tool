@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component;
+package com.jonas.agile.devleadtool.gui.component;
 
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;

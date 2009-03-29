@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.tree.nodes;
+package com.jonas.agile.devleadtool.gui.component.tree.nodes;
 
 import com.jonas.agile.devleadtool.gui.component.tree.model.DnDTreeModel;
 import com.jonas.agile.devleadtool.gui.component.tree.nodes.SprintNode;

@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.component.listener;
+package com.jonas.agile.devleadtool.gui.component.listener;
 
 import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
