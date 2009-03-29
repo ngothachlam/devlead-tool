@@ -133,7 +133,7 @@ public class BoardTableModel extends MyTableModel {
    }
 
    public String getRelease(String jira) {
-      if (doesJiraExist(jira))
+      if (isJiraPresent(jira))
          return (String) getValueAt(Column.Release, jira);
       return "";
    }

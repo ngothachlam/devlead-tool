@@ -10,7 +10,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
-import com.jonas.agile.devleadtool.gui.component.dialog.AddBoardReconcileDialog;
+import com.jonas.agile.devleadtool.gui.component.dialog.AddBoardReconcileFrame;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddVersionDialog;
@@ -34,7 +34,7 @@ public class InnerFrameToolbar extends JToolBar {
       BasicAbstractGUIAction dupeAction = new CheckForDuplicatesAction("Identify Duplicates", "Higlight Duplicates in Board", parentFrame,
             boardTable);
       BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown", "Showing Board Statistics", parentFrame, boardTable);
-      BasicAbstractGUIAction reconcileAction = new ReconcileManuallyAction(parentFrame, jiraTable);
+      BasicAbstractGUIAction reconcileAction = new ReconcileManuallyAction(parentFrame, boardTable);
       BasicAbstractGUIAction addManualAction = new AddManuallyAction(parentFrame, tables);
       BasicAbstractGUIAction addFilterAction = new AddFromJiraFilterAction(parentFrame, tables);
       BasicAbstractGUIAction addVersionAction = new AddFromJiraVersionAction(parentFrame, tables);
@@ -161,7 +161,7 @@ final class ReconcileManuallyAction extends BasicAbstractGUIAction {
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      new AddBoardReconcileDialog(getParentFrame(), boardTable);
+      new AddBoardReconcileFrame(getParentFrame(), boardTable);
    }
 }
 

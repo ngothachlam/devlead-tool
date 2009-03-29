@@ -40,8 +40,9 @@ import com.jonas.common.string.StringHelper;
 public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndownGrapher {
 
    private XYSeries dataSeries;
-   // private XYSeries prognosisSeries;
    private XYSeries idealSeries;
+   // private XYSeries prognosisSeries;
+
    private JTextField dayInSprintTextField;
    private ValueAxis domainAxis;
    private JTextField lengthOfSprintTextField;
@@ -61,7 +62,7 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
 
    public void calculateAndPrintBurndown(double totalDevEstimates, double remainingDevEstimates, Set<String> projects) {
       source.setText(StringHelper.getNiceString(projects));
-      dataSeries.clear();
+      // dataSeries.clear();
       // prognosisSeries.clear();
       idealSeries.clear();
 
@@ -75,18 +76,17 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       dataSeries.add(dayInSprint, remainingDevEstimates);
       domainAxis.setUpperBound(Math.max(lengthOfSprint, dayInSprint) + 0.2d);
 
-      if (dayInSprint < lengthOfSprint) {
-         double prognosisChangePerDay = ((totalDevEstimates - remainingDevEstimates) / dayInSprint);
-         double prognosisDays = lengthOfSprint - dayInSprint;
-         // prognosisSeries.add(dayInSprint, remainingDevEstimates);
-         // prognosisSeries.add(lengthOfSprint, remainingDevEstimates - (prognosisChangePerDay * prognosisDays));
-      }
+      // if (dayInSprint < lengthOfSprint) {
+      // double prognosisChangePerDay = ((totalDevEstimates - remainingDevEstimates) / dayInSprint);
+      // double prognosisDays = lengthOfSprint - dayInSprint;
+      // prognosisSeries.add(dayInSprint, remainingDevEstimates);
+      // prognosisSeries.add(lengthOfSprint, remainingDevEstimates - (prognosisChangePerDay * prognosisDays));
+      // }
       idealSeries.add(0, totalDevEstimates);
       idealSeries.add(lengthOfSprint, 0);
 
       rangeAxis.setLowerBound(0d);
-      
-      
+
    }
 
    @Override
@@ -144,7 +144,7 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
             false // urls
             );
       legend = chart.getLegend();
-      
+
       XYPlot plot = chart.getXYPlot();
       domainAxis = plot.getDomainAxis();
       domainAxis.setLowerBound(0);
@@ -233,10 +233,13 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
 
          switch (boardStatus) {
          case Open:
+            this.isPreDevProgress = true;
+            break;
          case NA:
-            isToIncludeInTotals = false;
          case UnKnown:
-            isToIncludeInTotals = false;
+            this.isPreDevProgress = true;
+            this.isToIncludeInTotals = false;
+            break;
          case Bug:
             this.isPreDevProgress = true;
             break;

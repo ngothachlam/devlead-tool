@@ -12,10 +12,10 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.MyScrollPane;
+import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.ReconciliationTable;
 import com.jonas.common.swing.MyPanel;
-import com.jonas.jira.JiraIssue;
 
 public class ReconciliationTablePanel extends MyPanel {
 
@@ -25,7 +25,7 @@ public class ReconciliationTablePanel extends MyPanel {
    public ReconciliationTablePanel(MyTable boardTable, Frame parentFrame) {
       super(new GridBagLayout());
       this.boardTable = boardTable;
-      
+
       GridBagConstraints c = new GridBagConstraints();
 
       c.insets = new Insets(5, 5, 5, 5);
@@ -39,6 +39,8 @@ public class ReconciliationTablePanel extends MyPanel {
 
       c.gridy++;
       c.weighty = 0;
+      c.fill = GridBagConstraints.NONE;
+      c.anchor = GridBagConstraints.EAST;
       add(buttonPanel(parentFrame), c);
    }
 
@@ -67,16 +69,29 @@ class AddFromReconciliationToBoardAction extends BasicAbstractGUIAction {
    private final MyTable boardTable;
 
    public AddFromReconciliationToBoardAction(Frame parentFrame, ReconciliationTable table, MyTable boardTable) {
-      super("Addss", "Add to Board Panel", parentFrame);
+      super("Add", "Add to Board Panel", parentFrame);
       this.table = table;
       this.boardTable = boardTable;
    }
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      table.getReconciledData();
-      JiraIssue jiraIssue = new JiraIssue("llu-1", "release");
-      boardTable.addJira(jiraIssue);
+      for (int row = 0; row < table.getRowCount(); row++) {
+         String jira = (String) table.getValueAt(Column.Jira, row);
+         
+         if(!boardTable.isJiraPresent(jira)){
+            boardTable.addJira(jira);
+         }
+         
+         for (int col = 0; col < table.getColumnCount(); col++) {
+            Column column = table.getColumnEnum(col);
+            if (column != Column.Jira) {
+               Object newValue = table.getValueAt(row, col);
+               boardTable.setValueAt(newValue, jira, column);
+            }
+         }
+      }
+
    }
 
 }

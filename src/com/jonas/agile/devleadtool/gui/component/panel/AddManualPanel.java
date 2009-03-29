@@ -81,7 +81,7 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
       if(table == null){
          AlertDialog.alertMessage(getParentFrame(), "No table Selected!!");
       }
-      if (!table.doesJiraExist(jira)) {
+      if (!table.isJiraPresent(jira)) {
          table.addJira(jira);
       }
       List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
@@ -114,7 +114,7 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
    }
 
    protected String getValue(String jira, MyTable table, Column column) {
-      if (!table.doesJiraExist(jira))
+      if (!table.isJiraPresent(jira))
          return null;
       Object valueAt = table.getValueAt(column, jira);
       return valueAt == null ? "" : valueAt.toString();

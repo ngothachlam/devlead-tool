@@ -17,9 +17,9 @@ import com.jonas.common.logging.MyLogger;
 
 public class SwingUtil {
 
-   public static final Color cellRed = new Color(210, 0, 0);
-   public static final Color cellGreen = new Color(0, 210, 0);
-   public static final Color cellBlue = new Color(0, 0, 210);
+   public static final Color cellRed = new Color(180, 0, 0);
+   public static final Color cellGreen = new Color(0, 180, 0);
+   public static final Color cellBlue = new Color(0, 0, 180);
 
    public static final Border focusCellBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.yellow);
    public static final Border defaultCellBorder = UIManager.getBorder("Table.focusSelectedCellHighlightBorder");
