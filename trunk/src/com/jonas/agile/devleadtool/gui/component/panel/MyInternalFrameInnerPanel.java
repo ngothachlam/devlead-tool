@@ -141,7 +141,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private JPanel getJiraPanelButtonRow() {
       JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
-      HighlightIssuesAction highlightAction = new HighlightIssuesAction("Higlight Issues", (MyTableModel) jiraPanel.getTable().getModel(),
+      HighlightIssuesAction highlightAction = new HighlightIssuesAction("Higlight Issues", jiraPanel.getTable().getMyModel(),
             jiraPanel.getTable());
       jiraButtonPanel.add(new JCheckBox(highlightAction));
       return jiraButtonPanel;
@@ -329,7 +329,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       public void editingStopped(ChangeEvent e) {
          MyEditor editor = (MyEditor) e.getSource();
          MyTable table = boardPanel.getTable();
-         MyTableModel model = (MyTableModel) table.getModel();
+         MyTableModel model = table.getMyModel();
          model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor
                .getColEdited()));
       }

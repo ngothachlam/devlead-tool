@@ -28,7 +28,7 @@ public class BoardPanel extends MyComponentPanel {
    }
 
    public MyTableModel getModel() {
-      return ((MyTableModel) table.getModel());
+      return table.getMyModel();
    }
 
    public MyTable getTable() {
@@ -48,6 +48,6 @@ public class BoardPanel extends MyComponentPanel {
    }
 
    public void setEditable(boolean selected) {
-      ((MyTableModel) table.getModel()).setEditable(selected);
+      table.getMyModel().setEditable(selected);
    }
 }

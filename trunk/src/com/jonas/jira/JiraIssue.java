@@ -25,11 +25,11 @@ public class JiraIssue {
    private final String type;
 
    public JiraIssue(String key, String release) {
-      this(key.toUpperCase(), "", "", "", "");
+      this(key, "", "", "", "");
       this.release = release;
       log.debug("Setting release to " + this.release + " = " + release);
    }
-
+   
    public JiraIssue(String key, String summary, String status, String resolution, String type) {
       this.key = key.toUpperCase();
       this.summary = summary;

@@ -21,6 +21,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.gui.component.table.editor.BoardStatusCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.CheckBoxTableCellEditor;
@@ -178,10 +179,6 @@ public class MyTable extends JTable {
       });
 
       this.addKeyListener(new MarkKeyListener(allowMarking));
-   }
-
-   MyTable(String title, boolean allowMarking) {
-      this(title, new DefaultTableModel(), allowMarking);
    }
 
    public MyTable(String title, MyTableModel modelModel, boolean allowMarking) {
@@ -389,10 +386,6 @@ public class MyTable extends JTable {
       super.setValueAt(value, row, column);
    }
 
-   // public void fireTableDataChanged() {
-   // model.fireTableDataChanged();
-   // }
-
    public void setValueAt(Object value, String jira, Column column) {
       int row = getRowWithJira(jira.toUpperCase());
       if (row < 0) {
@@ -414,5 +407,13 @@ public class MyTable extends JTable {
 
    public void unSort() {
       setAutoCreateRowSorter(true);
+   }
+   
+   public MyTableModel getMyModel(){
+      return model;
+   }
+   
+   public TableModel getModel(){
+      return super.getModel();
    }
 }

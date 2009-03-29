@@ -56,7 +56,7 @@ public class CopyToTableListener implements ActionListener {
       Map<Column, Object> map = new HashMap<Column, Object>();
       Column[] columns = sourceTable.getColumns();
       for (Column column : columns) {
-         MyTableModel model = (MyTableModel) sourceTable.getModel();
+         MyTableModel model = sourceTable.getMyModel();
          int row = model.getRowWithJira(jiraString);
          map.put(column, model.getValueAt(column, row));
       }
