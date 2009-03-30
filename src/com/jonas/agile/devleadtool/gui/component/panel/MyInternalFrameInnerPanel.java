@@ -4,26 +4,22 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
-import com.jonas.agile.devleadtool.MyStatusBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.InnerFrameToolbar;
+import com.jonas.agile.devleadtool.gui.component.listener.KeyListenerToHighlightSprintSelectionElsewhere;
 import com.jonas.agile.devleadtool.gui.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.menu.SprintTreePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
@@ -34,7 +30,6 @@ import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.gui.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.gui.component.tree.model.DnDTreeModel;
-import com.jonas.agile.devleadtool.gui.component.tree.nodes.JiraNode;
 import com.jonas.agile.devleadtool.gui.component.tree.xml.DnDTreeBuilder;
 import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.gui.component.tree.xml.XmlParser;
@@ -141,8 +136,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private JPanel getJiraPanelButtonRow() {
       JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
-      HighlightIssuesAction highlightAction = new HighlightIssuesAction("Higlight Issues", jiraPanel.getTable().getMyModel(),
-            jiraPanel.getTable());
+      HighlightIssuesAction highlightAction = new HighlightIssuesAction("Higlight Issues", jiraPanel.getTable().getMyModel(), jiraPanel
+            .getTable());
       jiraButtonPanel.add(new JCheckBox(highlightAction));
       return jiraButtonPanel;
    }
@@ -232,93 +227,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       private int[] saveSelection() {
          int[] selectedRows = jiraTable.getSelectedRows();
          return selectedRows;
-      }
-   }
-
-   private final class KeyListenerToHighlightSprintSelectionElsewhere extends KeyAdapter {
-      private final SprintTree sprintTree;
-      private final MyTable boardTable;
-      private final MyTable jiraTable;
-      private boolean pressed = false;
-      private ListSelectionModel lsm;
-
-      private KeyListenerToHighlightSprintSelectionElsewhere(SprintTree sprintTree, MyTable boardTable, MyTable jiraTable) {
-         this.sprintTree = sprintTree;
-         this.boardTable = boardTable;
-         this.jiraTable = jiraTable;
-         lsm = boardTable.getSelectionModel();
-      }
-
-      @Override
-      public void keyPressed(KeyEvent e) {
-         // ctrl-f for finding in the other tables!
-         if (e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK && e.getKeyCode() == KeyEvent.VK_F && !pressed) {
-            pressed = true;
-            ListSelectionModel boardSelectionModel = boardTable.getSelectionModel();
-            ListSelectionModel jiraSelectionModel = jiraTable.getSelectionModel();
-            boardSelectionModel.setValueIsAdjusting(true);
-            jiraSelectionModel.setValueIsAdjusting(true);
-            log.debug("KeyPressed Source: " + e.getSource());
-            jiraTable.clearSelection();
-            if (e.getSource() instanceof SprintTree)
-               setSelectionToOthersIfSourceisTree();
-            else if (e.getSource() instanceof MyTable)
-               setSelectionToOthersIfSourceisTable();
-            jiraTable.scrollToSelection();
-            boardSelectionModel.setValueIsAdjusting(false);
-            jiraSelectionModel.setValueIsAdjusting(false);
-         }
-      }
-
-      private void setSelectionToOthersIfSourceisTable() {
-         sprintTree.clearSelection();
-         if (!lsm.isSelectionEmpty()) {
-            for (int i = lsm.getMinSelectionIndex(); i <= lsm.getMaxSelectionIndex(); i++) {
-               if (lsm.isSelectedIndex(i)) {
-                  String jira = (String) boardTable.getValueAt(Column.Jira, i);
-                  log.debug("Jira: " + jira);
-                  jiraTable.addSelection(jira);
-                  sprintTree.addSelection(jira);
-               }
-            }
-            sprintTree.scrollToSelection();
-         }
-      }
-
-      private void setSelectionToOthersIfSourceisTree() {
-         boardTable.clearSelection();
-         TreePath[] jiraTreePaths = sprintTree.getSelectionPaths();
-         StringBuffer boardSb = new StringBuffer("");
-         StringBuffer jiraSb = new StringBuffer("");
-         for (int i = 0; i < jiraTreePaths.length; i++) {
-            TreePath jiraTreePath = jiraTreePaths[i];
-            Object lastPathComponent = jiraTreePath.getLastPathComponent();
-            if (lastPathComponent instanceof JiraNode) {
-               JiraNode jiraNode = (JiraNode) lastPathComponent;
-               sprintTree.addSelection(jiraNode.getKey());
-               if (!boardTable.addSelection(jiraNode.getKey()))
-                  boardSb.append(jiraNode.getKey()).append(", ");
-               if (!jiraTable.addSelection(jiraNode.getKey()))
-                  jiraSb.append(jiraNode.getKey()).append(", ");
-            }
-         }
-         if (jiraTreePaths.length == 1)
-            sprintTree.setLeadSelectionPath(jiraTreePaths[0]);
-         boardTable.scrollToSelection();
-         sprintTree.scrollToSelection();
-         boardSb.append(" not found on 'Board' and ").append(jiraSb).append(" not found on 'Jira'");
-         MyStatusBar.getInstance().setMessage(boardSb.toString(), true);
-      }
-
-      @Override
-      public void keyReleased(KeyEvent e) {
-         if (e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK || e.getKeyCode() == KeyEvent.VK_F) {
-            pressed = false;
-         }
-      }
-
-      @Override
-      public void keyTyped(KeyEvent e) {
       }
    }
 

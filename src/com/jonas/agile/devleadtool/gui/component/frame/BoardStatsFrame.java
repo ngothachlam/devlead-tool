@@ -70,8 +70,8 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       domainAxis.setLowerBound(0d);
       dataSeries.add(0d, totalDevEstimates);
 
-      double dayInSprint = StringHelper.getDouble(dayInSprintTextField.getText());
-      double lengthOfSprint = StringHelper.getDouble(lengthOfSprintTextField.getText());
+      double dayInSprint = StringHelper.getDoubleOrZero(dayInSprintTextField.getText());
+      double lengthOfSprint = StringHelper.getDoubleOrZero(lengthOfSprintTextField.getText());
 
       dataSeries.add(dayInSprint, remainingDevEstimates);
       domainAxis.setUpperBound(Math.max(lengthOfSprint, dayInSprint) + 0.2d);
@@ -226,8 +226,8 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
 
       public JiraStat(String jira, MyTable boardTable, int row) {
          this.jira = jira;
-         this.devEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Estimate, row));
-         this.qaEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.QA_Estimate, row));
+         this.devEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.Dev_Estimate, row));
+         this.qaEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.QA_Estimate, row));
 
          BoardStatusValue boardStatus = (BoardStatusValue) boardTable.getValueAt(Column.BoardStatus, row);
 
@@ -244,7 +244,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
             this.isPreDevProgress = true;
             break;
          case InDevProgress:
-            this.remainingDevEstimate = StringHelper.getDouble(boardTable.getValueAt(Column.Dev_Remain, row));
+            this.remainingDevEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.Dev_Remain, row));
             this.isInDevProgress = true;
             break;
          case Approved:
