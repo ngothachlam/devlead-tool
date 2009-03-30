@@ -57,6 +57,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
       log.debug("menuItem Parent: " + menuItem.getParent());
       add(menuItem);
       add(new MenuItem_UnMark(parentFrame, "unMark Selected Rows", source));
+      add(new MenuItem_UnSelect(parentFrame, "clear Selected Rows", source));
       addSeparator();
       add(new MenuItem_Add("Add Jiras", source, parentFrame, tables));
       add(new MenuItem_Remove("Remove Jiras", sourceTable, helper.getParentFrame()));
@@ -66,7 +67,6 @@ public class MyTablePopupMenu extends MyPopupMenu {
       add(new MenuItem_Sync(sourceTable, helper));
       addSeparator();
       add(new MenuItem_Rollforwards(sourceTable, helper));
-      addSeparator();
       add(new MenuItem_CreateMerge("Create Merge", source, helper.getParentFrame()));
    }
 
@@ -81,23 +81,12 @@ public class MyTablePopupMenu extends MyPopupMenu {
 
    private class MenuItem_CreateMerge extends MyMenuItem {
 
-      private Frame parent;
       private final MyTable source;
 
       public MenuItem_CreateMerge(String string, final MyTable source, JFrame parent) {
-         super(string);
+         super(parent, string);
          this.source = source;
-         this.parent = parent;
 
-      }
-
-      @Override
-      public void executeOnFinal() {
-      }
-
-      @Override
-      public Frame getParentFrame() {
-         return parent;
       }
 
       @Override
@@ -105,7 +94,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
             java.rmi.RemoteException, NotJiraException {
          int[] selectedRows = source.getSelectedRows();
          if (selectedRows.length == 0) {
-            JOptionPane.showMessageDialog(parent, "No Jiras Selected!");
+            JOptionPane.showMessageDialog(getParentFrame(), "No Jiras Selected!");
             return;
          }
 
@@ -123,7 +112,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
          JiraClient client = project.getJiraClient();
 
          JiraVersion[] fixVersions = client.getFixVersionsFromProject(project, false);
-         JiraVersion fixVersionToCreateMergesAgainst = (JiraVersion) JOptionPane.showInputDialog(parent, sb.toString(),
+         JiraVersion fixVersionToCreateMergesAgainst = (JiraVersion) JOptionPane.showInputDialog(getParentFrame(), sb.toString(),
                "What Fix Version for the merges?", JOptionPane.QUESTION_MESSAGE, null, fixVersions, null);
          log.debug("result " + fixVersionToCreateMergesAgainst);
          if (fixVersionToCreateMergesAgainst != null) {
@@ -142,11 +131,11 @@ public class MyTablePopupMenu extends MyPopupMenu {
                   setTableValuesForMerge(originalJira, fixVersionName, mergeJiraCreated);
                   
                } catch (Throwable e1) {
-                  AlertDialog.alertException(parent, e1);
+                  AlertDialog.alertException(getParentFrame(), e1);
                }
             }
             sb.append("\nOpen them in browser?\n\n(You need to link them to the original Jira!!");
-            int shallOpenInBrowser = JOptionPane.showConfirmDialog(parent, sb.toString());
+            int shallOpenInBrowser = JOptionPane.showConfirmDialog(getParentFrame(), sb.toString());
             if (shallOpenInBrowser == JOptionPane.YES_OPTION) {
                try {
                   for (String aJiraMerged : jirasMerged) {
@@ -175,11 +164,9 @@ public class MyTablePopupMenu extends MyPopupMenu {
 
    private abstract class MenuItem_Marking_Abstract extends MyMenuItem {
       protected MyTable source;
-      private Frame parentFrame;
 
       public MenuItem_Marking_Abstract(Frame parentFrame, String string, final MyTable source) {
-         super(string);
-         this.parentFrame = parentFrame;
+         super(parentFrame, string);
          init(source);
       }
 
@@ -198,15 +185,6 @@ public class MyTablePopupMenu extends MyPopupMenu {
       }
 
       protected abstract void doAction();
-
-      @Override
-      public void executeOnFinal() {
-      }
-
-      @Override
-      public Frame getParentFrame() {
-         return parentFrame;
-      }
    }
 
    private class MenuItem_Mark extends MenuItem_Marking_Abstract {
@@ -224,6 +202,20 @@ public class MyTablePopupMenu extends MyPopupMenu {
 
    }
 
+   private class MenuItem_UnSelect extends MyMenuItem {
+      private final MyTable source;
+
+      public MenuItem_UnSelect(Frame parent, String string, final MyTable source) {
+         super(parent, string);
+         this.source = source;
+      }
+      
+      @Override
+      public void myActionPerformed(ActionEvent e) throws Throwable {
+         source.clearSelection();
+      }
+   }
+   
    private class MenuItem_UnMark extends MenuItem_Marking_Abstract {
       public MenuItem_UnMark(Frame parent, String string, final MyTable source) {
          super(parent, string, source);
@@ -238,43 +230,31 @@ public class MyTablePopupMenu extends MyPopupMenu {
    private class MenuItem_Add extends MyMenuItem {
 
       private final MyTable source;
-      private final JFrame frame;
       private final MyTable[] dtos;
 
       public MenuItem_Add(String string, final MyTable source, final JFrame frame, final MyTable... dtos) {
-         super(string);
+         super(frame, string);
          this.source = source;
-         this.frame = frame;
          this.dtos = dtos;
       }
 
       @Override
       public void myActionPerformed(ActionEvent e) {
-         AddManualDialog addManualDialog = new AddManualDialog(frame, dtos);
+         AddManualDialog addManualDialog = new AddManualDialog(getParentFrame(), dtos);
          addManualDialog.setSourceTable(source);
          addManualDialog.focusPrefix();
       }
 
-      @Override
-      public void executeOnFinal() {
-      }
-
-      @Override
-      public Frame getParentFrame() {
-         return frame;
-      }
    }
 
    private class MenuItem_Copy extends MyMenuItem {
 
       private final MyTable destinationTable;
-      private JFrame parent;
       private MyTable sourceTable;
       private ProgressDialog dialog;
 
       public MenuItem_Copy(JFrame frame, String string, MyTable source, MyTable table) {
-         super(string);
-         this.parent = frame;
+         super(frame, string);
          this.sourceTable = source;
          this.destinationTable = table;
       }
@@ -282,9 +262,9 @@ public class MyTablePopupMenu extends MyPopupMenu {
       public void myActionPerformed(ActionEvent e) {
          final int[] selectedRows = sourceTable.getSelectedRows();
          if (selectedRows.length == 0) {
-            AlertDialog.alertMessage(parent, "No rows selected!");
+            AlertDialog.alertMessage(getParentFrame(), "No rows selected!");
          }
-         dialog = new ProgressDialog(parent, "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length, true);
+         dialog = new ProgressDialog(getParentFrame(), "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length, true);
          for (int i = 0; i < selectedRows.length; i++) {
             String jiraString = (String) sourceTable.getValueAt(Column.Jira, selectedRows[i]);
             addJira(jiraString, destinationTable);
@@ -308,31 +288,15 @@ public class MyTablePopupMenu extends MyPopupMenu {
          if (dialog != null)
             dialog.setCompleteWithDelay(300);
       }
-
-      @Override
-      public Frame getParentFrame() {
-         return parent;
-      }
    }
 
    private class MenuItem_Default extends MyMenuItem {
 
-      private final Frame parent;
       private final ActionListener actionListener;
 
       public MenuItem_Default(String string, ActionListener actionListener, Frame parent) {
-         super(string);
+         super(parent, string);
          this.actionListener = actionListener;
-         this.parent = parent;
-      }
-
-      @Override
-      public void executeOnFinal() {
-      }
-
-      @Override
-      public Frame getParentFrame() {
-         return parent;
       }
 
       @Override
@@ -343,13 +307,11 @@ public class MyTablePopupMenu extends MyPopupMenu {
 
    private class MenuItem_Remove extends MyMenuItem {
       private MyTable sourceTable;
-      private final Frame parent;
       private ProgressDialog dialog;
 
       public MenuItem_Remove(String string, MyTable sourceTable, Frame parent) {
-         super(string);
+         super(parent, string);
          this.sourceTable = sourceTable;
-         this.parent = parent;
       }
 
       @Override
@@ -362,10 +324,10 @@ public class MyTablePopupMenu extends MyPopupMenu {
          for (int aSelectedRow : selectedRows) {
             sb.append("\n").append(sourceTable.getValueAt(Column.Jira, aSelectedRow));
          }
-         int result = JOptionPane.showConfirmDialog(parent, sb.toString(), "Remove jiras?", JOptionPane.YES_NO_OPTION);
+         int result = JOptionPane.showConfirmDialog(getParentFrame(), sb.toString(), "Remove jiras?", JOptionPane.YES_NO_OPTION);
          log.debug(result);
          if (result == JOptionPane.YES_OPTION) {
-            dialog = new ProgressDialog(parent, "Removing...", "Removing selected Jiras...", 0, true);
+            dialog = new ProgressDialog(getParentFrame(), "Removing...", "Removing selected Jiras...", 0, true);
             if (sourceTable.getSelectedRowCount() <= 0) {
                dialog.setNote("Nothing selected!!");
                dialog.setCompleteWithDelay(2000);
@@ -373,11 +335,6 @@ public class MyTablePopupMenu extends MyPopupMenu {
 
             sourceTable.removeSelectedRows();
          }
-      }
-
-      @Override
-      public Frame getParentFrame() {
-         return parent;
       }
 
       @Override
@@ -394,7 +351,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
       private RollforwardParser parser;
 
       public MenuItem_Rollforwards(MyTable sourceTable, PlannerHelper helper) {
-         super("Show Rollforwards");
+         super(helper.getParentFrame(), "Show Rollforwards");
          this.sourceTable = sourceTable;
          this.helper = helper;
          xmlHelper = new JiraXMLHelper(ClientConstants.JIRA_URL_AOLBB);
@@ -486,15 +443,6 @@ public class MyTablePopupMenu extends MyPopupMenu {
             url.append("browse/").append(jiraStr).append("?page=com.atlassian.jira.plugin.ext.subversion:subversion-commits-tabpanel");
             return url.toString();
          }
-      }
-
-      @Override
-      public void executeOnFinal() {
-      }
-
-      @Override
-      public Frame getParentFrame() {
-         return helper.getParentFrame();
       }
    }
 

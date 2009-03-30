@@ -18,8 +18,11 @@ import com.jonas.common.logging.MyLogger;
 public class SwingUtil {
 
    public static final Color cellRed = new Color(180, 0, 0);
+   public static final Color cellLightRed = new Color(255, 70, 70);
    public static final Color cellGreen = new Color(0, 180, 0);
+   public static final Color cellLightGreen = new Color(0, 235, 55);
    public static final Color cellBlue = new Color(0, 0, 180);
+   public static final Color cellLightBlue = new Color(51, 195, 255);
 
    public static final Border focusCellBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.yellow);
    public static final Border defaultCellBorder = UIManager.getBorder("Table.focusSelectedCellHighlightBorder");
@@ -43,8 +46,8 @@ public class SwingUtil {
    public static void centreWindowWithHeightOffset(Window window, int startMenuSize) {
       Toolkit toolkit = window.getToolkit();
       Dimension screenSize = toolkit.getScreenSize();
-      window.setLocation(getRelativeXLocationConsideringStartMenu(screenSize.width, window.getWidth()), getRelativeYLocationConsideringStartMenu(
-            screenSize.height, window.getHeight(), startMenuSize));
+      window.setLocation(getRelativeXLocationConsideringStartMenu(screenSize.width, window.getWidth()),
+            getRelativeYLocationConsideringStartMenu(screenSize.height, window.getHeight(), startMenuSize));
    }
 
    static int getRelativeXLocationConsideringStartMenu(int screenWidth, int windowWidth) {

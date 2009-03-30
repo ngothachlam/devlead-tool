@@ -15,8 +15,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.CellEditorListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -136,8 +134,8 @@ public class MyTable extends JTable {
       setColumnSelectionAllowed(false);
       setRowSelectionAllowed(true);
 
-      setRenderers();
-      setEditors();
+      setDefaultRenderers();
+      setDefaultEditors();
 
       setDragEnabled(true);
       setDropMode(DropMode.INSERT);
@@ -155,14 +153,6 @@ public class MyTable extends JTable {
       });
 
       this.addKeyListener(new MarkKeyListener(allowMarking));
-   }
-
-   private void setRenderers() {
-      CheckBoxTableCellRenderer checkBoxRenderer = new CheckBoxTableCellRenderer(getModel());
-      setDefaultRenderer(Object.class, new MyDefaultCellRenderer());
-      setDefaultRenderer(Integer.class, new MyDefaultCellRenderer());
-      setDefaultRenderer(String.class, new StringTableCellRenderer(getModel()));
-      setDefaultRenderer(Boolean.class, checkBoxRenderer);
    }
 
    public void addCheckBoxEditorListener(CellEditorListener cellEditorListener) {
@@ -209,10 +199,6 @@ public class MyTable extends JTable {
       return false;
    }
 
-   public boolean isJiraPresent(String jira) {
-      return model.isJiraPresent(jira);
-   }
-
    public void fireTableDataChangedForJira(String jira) {
       int row = getRowWithJira(jira);
       if (row > -1)
@@ -234,6 +220,14 @@ public class MyTable extends JTable {
    public Column[] getColumns() {
       Map<Column, Integer> columnNames = model.getColumnNames();
       return columnNames.keySet().toArray(new Column[columnNames.size()]);
+   }
+
+   public TableModel getModel() {
+      return super.getModel();
+   }
+
+   public MyTableModel getMyModel() {
+      return model;
    }
 
    public int getRowWithJira(String jira) {
@@ -292,6 +286,10 @@ public class MyTable extends JTable {
       return column.equals(getColumnEnum(colNoToCompare));
    }
 
+   public boolean isJiraPresent(String jira) {
+      return model.isJiraPresent(jira);
+   }
+
    public boolean isMarked(int row) {
       return marker.isMarked(row);
    }
@@ -344,12 +342,12 @@ public class MyTable extends JTable {
       tc.setCellRenderer(renderer);
    }
 
-   private void setEditors() {
+   private void setDefaultEditors() {
       checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
       setDefaultEditor(Boolean.class, checkBoxEditor);
       JComboBox combo = new JComboBox(BoardStatusValue.values());
       setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
-      
+
       int colIndex = getColumnIndex(Column.Release);
       if (colIndex > -1) {
          TableColumn tc = getTableColumn(colIndex);
@@ -361,6 +359,14 @@ public class MyTable extends JTable {
          TableColumn tc = getTableColumn(colIndex);
          tc.setCellEditor(jiraEditor);
       }
+   }
+
+   private void setDefaultRenderers() {
+      setDefaultRenderer(Object.class, new MyDefaultCellRenderer(getModel()));
+      setDefaultRenderer(Integer.class, new MyDefaultCellRenderer(getModel()));
+      setDefaultRenderer(String.class, new StringTableCellRenderer(getModel()));
+      setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(getModel()));
+      System.out.println("BoardStatusValue rendered:" + getDefaultRenderer(BoardStatusValue.class).getClass());
    }
 
    public void setModel(MyTableModel model) {
@@ -401,13 +407,5 @@ public class MyTable extends JTable {
 
    public void unSort() {
       setAutoCreateRowSorter(true);
-   }
-
-   public MyTableModel getMyModel() {
-      return model;
-   }
-
-   public TableModel getModel() {
-      return super.getModel();
    }
 }
