@@ -1,14 +1,12 @@
 package com.jonas.agile.devleadtool.gui.component.table.model;
 
 import java.awt.Color;
-import java.util.List;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.common.CalculatorHelper;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;
-import com.jonas.jira.JiraFilter;
 
 public class JiraTableModel extends MyTableModel {
 
@@ -57,26 +55,37 @@ public class JiraTableModel extends MyTableModel {
       log.debug("... The Jira was found in the board. We now want to check the " + column + " as it's value is \"" + value + "\"");
       switch (column) {
       case Jira:
+         setToolTipText(row, getColumnIndex(column), "Exists in the board!");
          return SwingUtil.cellGreen;
       case J_FixVersion:
-         if (!isFixVersionOk(boardModel.getValueAt(Column.Release, jiraRowInBoardModel), value))
+         if (!isFixVersionOk(boardModel.getValueAt(Column.Release, jiraRowInBoardModel), value)){
+            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
             return SwingUtil.cellRed;
+         }
          break;
       case J_Sprint:
-         if (!isSprintOk(boardModel.getValueAt(Column.BoardStatus, jiraRowInBoardModel), value))
+         if (!isSprintOk(boardModel.getValueAt(Column.BoardStatus, jiraRowInBoardModel), value)){
+            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
             return SwingUtil.cellRed;
+         }
          break;
       case J_Project:
-         if (!isProjectOk(value))
+         if (!isProjectOk(value)){
+            setToolTipText(row, getColumnIndex(column), "Should not be empty!");
             return SwingUtil.cellRed;
+         }
          break;
       case J_Dev_Estimate:
-         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, jiraRowInBoardModel), value))
+         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, jiraRowInBoardModel), value)){
+            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
             return SwingUtil.cellRed;
+         }
          break;
       case J_Dev_Spent:
-         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Actual, jiraRowInBoardModel), value))
+         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Actual, jiraRowInBoardModel), value)){
+            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
             return SwingUtil.cellRed;
+         }
          break;
       }
       return null;

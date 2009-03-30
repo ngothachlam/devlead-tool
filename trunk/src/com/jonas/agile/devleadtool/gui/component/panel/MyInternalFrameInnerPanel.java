@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.InnerFrameToolbar;
-import com.jonas.agile.devleadtool.gui.component.listener.KeyListenerToHighlightSprintSelectionElsewhere;
 import com.jonas.agile.devleadtool.gui.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.menu.SprintTreePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
@@ -35,6 +34,7 @@ import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraSaxHandler;
 import com.jonas.agile.devleadtool.gui.component.tree.xml.XmlParser;
 import com.jonas.agile.devleadtool.gui.component.tree.xml.XmlParserImpl;
 import com.jonas.agile.devleadtool.gui.listener.JiraParseListenerImpl;
+import com.jonas.agile.devleadtool.gui.listener.KeyListenerToHighlightSprintSelectionElsewhere;
 import com.jonas.agile.devleadtool.gui.listener.TableListener;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
 import com.jonas.common.logging.MyLogger;
@@ -142,7 +142,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       return jiraButtonPanel;
    }
 
-   private void setBoardDataListeners(final BoardTableModel boardModel, final MyTable boardTable, final MyTable jiraTable, SprintTree sprintTree) {
+   private void setBoardDataListeners(final MyTableModel boardModel, final MyTable boardTable, final MyTable jiraTable, SprintTree sprintTree) {
       boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
       boardTable.addListener(new MyBoardTableListener());
       boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
@@ -153,12 +153,12 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       sprintTree.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
    }
 
-   private void setJiraDataListener(MyTableModel jiraModel, final BoardTableModel boardModel, SprintTree sprintTree, MyTable boardTable) {
+   private void setJiraDataListener(MyTableModel jiraModel, final MyTableModel boardModel, SprintTree sprintTree, MyTable boardTable) {
       jiraPanel.getTable().addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, jiraPanel.getTable(), boardTable));
       jiraModel.addTableModelListener(new FireUpdateOnOtherTableWhenUpdatedListener(boardTable));
    }
 
-   public void wireUpListeners(BoardTableModel boardModel, MyTableModel jiraModel, SprintTree tree) {
+   public void wireUpListeners(MyTableModel boardModel, MyTableModel jiraModel, SprintTree tree) {
       MyTable boardTable = boardPanel.getTable();
       MyTable jiraTable = jiraPanel.getTable();
       SprintTree sprintTree = sprintPanel.getTree();

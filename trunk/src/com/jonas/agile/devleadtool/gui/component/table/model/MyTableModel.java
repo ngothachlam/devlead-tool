@@ -149,6 +149,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    private boolean renderColors = false;
 
    private TableModelListenerAlerter tableModelListenerAlerter;
+   private Map<String, String> extraToolTipText = new HashMap<String, String>();
 
    protected MyTableModel(Column[] columns) {
       super(columns, 0);
@@ -557,12 +558,11 @@ public abstract class MyTableModel extends DefaultTableModel {
       getMarker().unMark(row);
    }
 
-   /**
-    * Override as you see fit
-    * @param colIndex 
-    * @param rowIndex 
-    */
    public String getExtraToolTipText(int rowIndex, int colIndex) {
-      return "";
+      return extraToolTipText.get(rowIndex + "-" + colIndex);
+   }
+
+   protected void setToolTipText(int row, int columnIndex, String string) {
+      extraToolTipText.put(row + "-" + columnIndex, string);
    }
 }

@@ -25,8 +25,6 @@ public class BoardStatusCellEditor extends DefaultCellEditor implements MyEditor
 
             @Override
             public void actionPerformed(ActionEvent e) {
-               // when space is prssed we want to start editing and expand the ComboBox as well as focus it 
-               // (to allow for arrow key selection changes)
                boolean ok = table.editCellAt(table.getSelectedRow(), table.getSelectedColumn());
                Component comp = table.getEditorComponent();
                if (ok && comp instanceof JComboBox) {

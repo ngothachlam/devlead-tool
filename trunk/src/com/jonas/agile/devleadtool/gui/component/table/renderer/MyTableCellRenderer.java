@@ -16,8 +16,8 @@ public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
 
    private static Logger log = MyLogger.getLogger(MyTableCellRenderer.class);
 
-   public static void setBackground(final JTable table, final boolean isSelected, final boolean hasFocus, final int row, final int column, final Component cell,
-         final MyTableModel model, final Object value, JComponent borderComponent, final MyTable myTable) {
+   public static void setBackground(final JTable table, final boolean isSelected, final boolean hasFocus, final int row, final int column,
+         final Component cell, final MyTableModel model, final Object value, JComponent borderComponent, final MyTable myTable) {
       if (hasFocus) {
          cell.setBackground(SwingUtil.getTableCellFocusBackground());
          if (borderComponent != null) {
@@ -39,21 +39,12 @@ public abstract class MyTableCellRenderer extends DefaultTableCellRenderer {
       }
 
       if (model != null) {
-         // FIXME we should only do this when we edit a field!!
-         // SwingUtilities.invokeLater(new Runnable() {
-         // @Override
-         // public void run() {
-         // TODO Auto-generated method stub
-         // log.debug("value: " + value + " row " + row + " column " + column);
          setColor(table, isSelected, hasFocus, row, column, cell, model, value, myTable);
-         //
-         // }
-         // });
       }
    }
 
-   private static void setColor(final JTable table, final boolean isSelected, final boolean hasFocus, final int row, final int column, final Component cell,
-         final MyTableModel model, final Object value, final MyTable myTable) {
+   private static void setColor(final JTable table, final boolean isSelected, final boolean hasFocus, final int row, final int column,
+         final Component cell, final MyTableModel model, final Object value, final MyTable myTable) {
       Color color = model.getColor(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column));
       if (color != null) {
          if (isSelected) {

@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.gui.component.listener;
+package com.jonas.agile.devleadtool.gui.listener;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

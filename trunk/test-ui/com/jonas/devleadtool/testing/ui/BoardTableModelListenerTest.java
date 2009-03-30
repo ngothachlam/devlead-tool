@@ -16,7 +16,7 @@ public class BoardTableModelListenerTest extends JonasTestCase {
    private MyTable jiraTable;
 
    protected void setUp() throws Exception {
-      BoardTableModel boardModel = new BoardTableModel();
+      MyTableModel boardModel = new BoardTableModel();
       MyTableModel jiraModel = new JiraTableModel();
 
       boardTable = new MyTable("board", boardModel, true);

@@ -1,9 +1,7 @@
 package com.jonas.agile.devleadtool.gui.component.table.model;
 
 import java.awt.Color;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import org.apache.log4j.Logger;
@@ -20,7 +18,6 @@ public class BoardTableModel extends MyTableModel {
          Column.BoardStatus, Column.Old, Column.Dev_Estimate, Column.Dev_Remain, Column.Dev_Actual, Column.QA_Estimate, Column.prio, Column.Note };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
-   private Map<String, String> extraToolTipText = new HashMap<String, String>();
 
    public BoardTableModel() {
       super(columns);
@@ -33,12 +30,10 @@ public class BoardTableModel extends MyTableModel {
    @Override
    public Color getColor(Object value, int row, Column column) {
       log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
-      if (!isString(value)) {
-         return null;
-      }
-      String stringValue = (String) value;
+      String stringValue;
       switch (column) {
       case J_Resolution:
+         stringValue = (String) value;
          if (!isEmptyString(stringValue)) {
             BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(Column.BoardStatus, row);
             if (!BoardStatusValueToJiraStatusMap.isMappedOk(boardStatus, stringValue)) {
@@ -48,6 +43,7 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case Dev_Remain:
+         stringValue = (String) value;
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
                setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
@@ -64,6 +60,7 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case Dev_Estimate:
+         stringValue = (String) value;
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevEstimates())) {
                setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
@@ -74,6 +71,7 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case Dev_Actual:
+         stringValue = (String) value;
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevActuals())) {
                setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
@@ -87,6 +85,7 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case QA_Estimate:
+         stringValue = (String) value;
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredQAEstimates())) {
                setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
@@ -95,33 +94,25 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case BoardStatus:
-         // TODO this is not working! the renderer for BoardStatusValue must not get in here for some reason!
-         BoardStatusValue newValue = BoardStatusValue.get(stringValue);
+         log.debug("value: " + value + " valueclass: " + value.getClass());
+         BoardStatusValue newValue = (BoardStatusValue) value;
          switch (newValue) {
          case Resolved:
          case InQAProgress:
-            return SwingUtil.cellBlue;
+            return SwingUtil.cellLightBlue;
          case Approved:
          case Complete:
          case ForShowCase:
-            return SwingUtil.cellGreen;
+            return SwingUtil.cellLightGreen;
          case Bug:
-            return SwingUtil.cellRed;
+            setToolTipText(row, getColumnIndex(column), "This is a bug!");
+            return SwingUtil.cellLightRed;
          default:
             break;
          }
          break;
       }
       return null;
-   }
-
-   @Override
-   public String getExtraToolTipText(int rowIndex, int colIndex) {
-      return extraToolTipText.get(rowIndex + "-" + colIndex);
-   }
-
-   private void setToolTipText(int row, int columnIndex, String string) {
-      extraToolTipText.put(row + "-" + columnIndex, string);
    }
 
    private boolean isString(Object value) {

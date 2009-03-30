@@ -171,4 +171,8 @@ public class BoardTableModelTest extends JonasTestCase {
       assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Approved, "Closed (Fixed)"));
       assertFalse(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Bug, "Closed (Fixed)"));
    }
+   
+   public void testShouldGetColors(){
+      assertEquals(null, model.getColor(BoardStatusValue.Bug, 0, Column.BoardStatus));
+   }
 }
