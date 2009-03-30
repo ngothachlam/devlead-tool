@@ -78,7 +78,18 @@ public class StringHelper {
       }
    }
 
-   public static double getDouble(Object string) {
+   public static Double getDoubleOrNull(Object string) {
+      if (string == null) {
+         return null;
+      }
+      try {
+         return Double.valueOf(string.toString());
+      } catch (NumberFormatException e) {
+         return null;
+      }
+   }
+   
+   public static double getDoubleOrZero(Object string) {
       if (string == null) {
          return 0d;
       }
