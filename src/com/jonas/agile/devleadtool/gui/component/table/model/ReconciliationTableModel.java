@@ -32,7 +32,6 @@ public class ReconciliationTableModel extends MyTableModel {
          }
          break;
       case BoardStatus:
-         System.out.println("Investigate if the BoardStatus is green or red!! (" + this.getClass() + ")");
       case Release:
       case Dev_Estimate:
       case Dev_Remain:
@@ -40,6 +39,9 @@ public class ReconciliationTableModel extends MyTableModel {
       case QA_Estimate:
          jira = jiras.get(row);
          if (!boardTableModel.isJiraPresent(jira)) {
+            return null;
+         }
+         if(!isModified(value)){
             return null;
          }
          Object boardValue = boardTableModel.getValueAt(column, jira);
@@ -50,6 +52,13 @@ public class ReconciliationTableModel extends MyTableModel {
          return SwingUtil.cellRed;
       }
       return null;
+   }
+
+   private boolean isModified(Object value) {
+      return !isEmpty(value);
+   }
+   public boolean isModified(int row, int col) {
+      return isModified(getValueAt(row, col));
    }
 
    private String getStringForToolTip(Object value, Object boardValue) {
@@ -80,4 +89,5 @@ public class ReconciliationTableModel extends MyTableModel {
    private boolean isEmpty(Object valueOne) {
       return valueOne == null || valueOne.toString().trim().length() == 0;
    }
+
 }

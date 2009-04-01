@@ -80,16 +80,18 @@ class AddFromReconciliationToBoardAction extends BasicAbstractGUIAction {
    public void doActionPerformed(ActionEvent e) {
       for (int row = 0; row < table.getRowCount(); row++) {
          String jira = (String) table.getValueAt(Column.Jira, row);
-         
-         if(!boardTable.isJiraPresent(jira)){
+
+         if (!boardTable.isJiraPresent(jira)) {
             boardTable.addJira(jira);
          }
-         
+
          for (int col = 0; col < table.getColumnCount(); col++) {
             Column column = table.getColumnEnum(col);
             if (column != Column.Jira) {
                Object newValue = table.getValueAt(row, col);
-               boardTable.setValueAt(newValue, jira, column);
+               if (table.isModified(row, col)) {
+                  boardTable.setValueAt(newValue, jira, column);
+               }
             }
          }
       }

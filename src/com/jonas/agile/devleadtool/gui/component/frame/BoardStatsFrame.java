@@ -62,8 +62,8 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
 
    public void calculateAndPrintBurndown(double totalDevEstimates, double remainingDevEstimates, Set<String> projects) {
       source.setText(StringHelper.getNiceString(projects));
-      // dataSeries.clear();
       // prognosisSeries.clear();
+      dataSeries.clear();
       idealSeries.clear();
 
       rangeAxis.setAutoRange(true);
