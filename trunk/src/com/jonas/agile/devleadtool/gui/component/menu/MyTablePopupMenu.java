@@ -1,11 +1,14 @@
 package com.jonas.agile.devleadtool.gui.component.menu;
 
+import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +16,10 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingWorker;
+import javax.swing.JTable.PrintMode;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
@@ -32,6 +37,7 @@ import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.gui.listener.OpenJirasListener;
 import com.jonas.agile.devleadtool.gui.listener.SyncWithJiraActionListenerListener;
 import com.jonas.agile.devleadtool.gui.listener.SyncWithJiraListener;
+import com.jonas.common.DateHelper;
 import com.jonas.common.HyperLinker;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
@@ -58,6 +64,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
       add(menuItem);
       add(new MenuItem_UnMark(parentFrame, "unMark Selected Rows", source));
       add(new MenuItem_UnSelect(parentFrame, "clear Selected Rows", source));
+      add(new MenuItem_Print(parentFrame, "print Table", source));
       addSeparator();
       add(new MenuItem_Add("Add Jiras", source, parentFrame, tables));
       add(new MenuItem_Remove("Remove Jiras", sourceTable, helper.getParentFrame()));
@@ -99,7 +106,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
          }
 
          // FIXME - only allow one merge at a time or get the project, etc for each one!!
-         
+
          List<String> originalJiras = new ArrayList<String>();
          StringBuffer sb = new StringBuffer("Do you want to create merge Jiras for the following?\n");
          for (int aSelectedRow : selectedRows) {
@@ -126,10 +133,10 @@ public class MyTablePopupMenu extends MyPopupMenu {
                   String mergeJiraCreated = jiraClient.createMergeJira(originalJira, fixVersionName);
                   sb.append(mergeJiraCreated).append(" ");
                   jirasMerged.add(mergeJiraCreated);
-                  
+
                   setTableValuesForOriginal(originalJira, mergeJiraCreated);
                   setTableValuesForMerge(originalJira, fixVersionName, mergeJiraCreated);
-                  
+
                } catch (Throwable e1) {
                   AlertDialog.alertException(getParentFrame(), e1);
                }
@@ -202,6 +209,35 @@ public class MyTablePopupMenu extends MyPopupMenu {
 
    }
 
+   private class MenuItem_Print extends MyMenuItem {
+      private final MyTable source;
+      private DateHelper dateHelper;
+
+      public MenuItem_Print(Frame parent, String string, final MyTable source) {
+         super(parent, string);
+         this.source = source;
+         dateHelper = new DateHelper();
+      }
+
+      @Override
+      public void myActionPerformed(ActionEvent e) throws Throwable {
+         Runnable runner = new Runnable() {
+
+            public void run() {
+               try {
+                  MessageFormat headerFormat = new MessageFormat(source.getTitle() + " - " + dateHelper.getTodaysDateAsString());
+                  MessageFormat footerFormat = new MessageFormat("- Page {0} - ");
+                  source.print(PrintMode.FIT_WIDTH, headerFormat, footerFormat);
+               } catch (PrinterException pe) {
+                  System.err.println("Error printing: " + pe.getMessage());
+               }
+            }
+         };
+         // FIXME - this is quite slow!
+         EventQueue.invokeLater(runner);
+      }
+   }
+
    private class MenuItem_UnSelect extends MyMenuItem {
       private final MyTable source;
 
@@ -209,13 +245,13 @@ public class MyTablePopupMenu extends MyPopupMenu {
          super(parent, string);
          this.source = source;
       }
-      
+
       @Override
       public void myActionPerformed(ActionEvent e) throws Throwable {
          source.clearSelection();
       }
    }
-   
+
    private class MenuItem_UnMark extends MenuItem_Marking_Abstract {
       public MenuItem_UnMark(Frame parent, String string, final MyTable source) {
          super(parent, string, source);
@@ -264,7 +300,8 @@ public class MyTablePopupMenu extends MyPopupMenu {
          if (selectedRows.length == 0) {
             AlertDialog.alertMessage(getParentFrame(), "No rows selected!");
          }
-         dialog = new ProgressDialog(getParentFrame(), "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length, true);
+         dialog = new ProgressDialog(getParentFrame(), "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length,
+               true);
          for (int i = 0; i < selectedRows.length; i++) {
             String jiraString = (String) sourceTable.getValueAt(Column.Jira, selectedRows[i]);
             addJira(jiraString, destinationTable);
