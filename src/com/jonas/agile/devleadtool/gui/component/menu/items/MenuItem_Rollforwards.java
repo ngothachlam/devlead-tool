@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.gui.component.menu;
+package com.jonas.agile.devleadtool.gui.component.menu.items;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import org.apache.commons.httpclient.HttpException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.ProgressDialog;
+import com.jonas.agile.devleadtool.gui.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.jira.access.ClientConstants;
@@ -19,7 +20,7 @@ import com.jonas.jira.access.JiraException;
 import com.jonas.rollforwardapp.RollforwardParser;
 import com.jonas.testHelpers.JiraXMLHelper;
 
-class MenuItem_Rollforwards extends MyMenuItem {
+public class MenuItem_Rollforwards extends MyMenuItem {
    private final MyTable sourceTable;
    private final PlannerHelper helper;
    private JiraXMLHelper xmlHelper;
@@ -87,7 +88,6 @@ class MenuItem_Rollforwards extends MyMenuItem {
       }
 
       public void done() {
-         MyTablePopupMenu.log.debug("Syncing Finished!");
          dialog.setCompleteWithDelay(300);
       }
    }

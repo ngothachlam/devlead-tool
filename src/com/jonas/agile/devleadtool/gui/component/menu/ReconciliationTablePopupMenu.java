@@ -2,6 +2,10 @@ package com.jonas.agile.devleadtool.gui.component.menu;
 
 import java.awt.Frame;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Default;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Print;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Remove;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_UnSelect;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.listener.OpenJirasListener;
 import com.jonas.common.logging.MyLogger;
