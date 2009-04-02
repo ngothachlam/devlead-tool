@@ -31,6 +31,12 @@ public class BoardTableModel extends MyTableModel {
    public Color getColor(Object value, int row, Column column) {
       log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
       String stringValue;
+      
+      if(value == null){
+         setToolTipText(row, getColumnIndex(column), "Should be filled out based!");
+         return SwingUtil.cellRed;
+      }
+      
       switch (column) {
       case J_Resolution:
          stringValue = (String) value;
@@ -94,7 +100,6 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case BoardStatus:
-         log.debug("value: " + value + " valueclass: " + value.getClass());
          BoardStatusValue newValue = (BoardStatusValue) value;
          switch (newValue) {
          case Resolved:
@@ -148,7 +153,6 @@ public class BoardTableModel extends MyTableModel {
          BoardStatusValue type = iter.next();
          log.debug("\tset contains: " + type);
       }
-      log.debug("BoardStatus value for row " + row + " is \"" + value + "\"(" + value.getClass() + ") and is required: " + contains);
       return contains;
    }
 }

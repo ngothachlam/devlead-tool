@@ -7,6 +7,10 @@ import com.jonas.jira.JiraStatus;
 public class BoardStatusValueToJiraStatusMap {
 
    public static boolean isMappedOk(BoardStatusValue boardStatus, String jiraStatus) {
+      if (boardStatus == null) {
+         return jiraStatus == null || jiraStatus.toString().trim().length() == 0;
+      }
+
       Set<JiraStatus> jiraStatuses = boardStatus.getJiraStatuses();
       for (JiraStatus string : jiraStatuses) {
          if (jiraStatus.length() >= string.getTitle().length()) {
