@@ -11,16 +11,11 @@ import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 
 public class MenuItem_Add extends MyMenuItem {
 
-   /**
-    * 
-    */
-   private final MyTablePopupMenu aa;
    private final MyTable source;
    private final MyTable[] dtos;
 
    public MenuItem_Add(MyTablePopupMenu myTablePopupMenu, String string, final MyTable source, final JFrame frame, final MyTable... dtos) {
       super(frame, string);
-      aa = myTablePopupMenu;
       this.source = source;
       this.dtos = dtos;
    }

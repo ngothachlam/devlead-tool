@@ -19,14 +19,12 @@ public class MenuItem_Copy extends MyMenuItem {
    /**
     * 
     */
-   private final MyTablePopupMenu aa;
    private final MyTable destinationTable;
    private MyTable sourceTable;
    private ProgressDialog dialog;
 
    public MenuItem_Copy(MyTablePopupMenu myTablePopupMenu, JFrame frame, String string, MyTable source, MyTable table) {
       super(frame, string);
-      aa = myTablePopupMenu;
       this.sourceTable = source;
       this.destinationTable = table;
    }

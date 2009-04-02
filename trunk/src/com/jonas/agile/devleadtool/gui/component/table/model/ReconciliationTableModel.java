@@ -66,24 +66,21 @@ public class ReconciliationTableModel extends MyTableModel {
    }
 
    boolean isEqual(Object boardValue, Object reconcileValue) {
-      System.out.println("boardValue: \"" + boardValue + "\" - reconcileValue: \"" + reconcileValue + "\"");
       if (isEmpty(boardValue) && isEmpty(reconcileValue)) {
          return true;
       }
+      
       if ((isEmpty(boardValue) && !isEmpty(reconcileValue)) || (!isEmpty(boardValue) && isEmpty(reconcileValue))) {
          return false;
       }
+      
       Double boardDouble = StringHelper.getDoubleOrNull(boardValue);
       Double reconcileDouble = StringHelper.getDoubleOrNull(reconcileValue);
-      System.out.println("boardDouble: \"" + boardDouble + "\" - reconcileDouble: \"" + reconcileDouble + "\"");
       if (boardDouble == null) {
          return boardValue.toString().trim().toUpperCase().equals(reconcileValue.toString().trim().toUpperCase());
       }
+      
       return boardDouble.equals(reconcileDouble);
-   }
-
-   private boolean nullTest(Object valueOne, Object valueTwo) {
-      return valueOne == null && valueTwo != null && valueTwo.toString().trim().length() == 0;
    }
 
    private boolean isEmpty(Object valueOne) {
