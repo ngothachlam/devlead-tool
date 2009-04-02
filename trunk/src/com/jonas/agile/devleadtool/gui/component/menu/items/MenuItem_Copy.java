@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.gui.component.menu;
+package com.jonas.agile.devleadtool.gui.component.menu.items;
 
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
@@ -9,11 +9,12 @@ import java.util.Map;
 import javax.swing.JFrame;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.ProgressDialog;
+import com.jonas.agile.devleadtool.gui.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 
-class MenuItem_Copy extends MyMenuItem {
+public class MenuItem_Copy extends MyMenuItem {
 
    /**
     * 

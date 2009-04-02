@@ -1,14 +1,14 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.gui.component.menu;
+package com.jonas.agile.devleadtool.gui.component.menu.items;
 
 import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import javax.swing.KeyStroke;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 
-class MenuItem_Mark extends MenuItem_Marking_Abstract {
+public class MenuItem_Mark extends MenuItem_Marking_Abstract {
 
    public MenuItem_Mark(Frame parentFrame, String string, final MyTable source) {
       super(parentFrame, string, source);

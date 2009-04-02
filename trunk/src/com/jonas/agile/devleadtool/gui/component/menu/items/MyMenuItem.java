@@ -1,4 +1,4 @@
-package com.jonas.agile.devleadtool.gui.component.menu;
+package com.jonas.agile.devleadtool.gui.component.menu.items;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.gui.component.menu;
+package com.jonas.agile.devleadtool.gui.component.menu.items;
 
 import java.awt.EventQueue;
 import java.awt.Frame;
@@ -12,7 +12,7 @@ import javax.swing.JTable.PrintMode;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.common.DateHelper;
 
-class MenuItem_Print extends MyMenuItem {
+public class MenuItem_Print extends MyMenuItem {
    private final MyTable source;
    private DateHelper dateHelper;
 

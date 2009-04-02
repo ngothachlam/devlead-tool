@@ -1,14 +1,15 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.gui.component.menu;
+package com.jonas.agile.devleadtool.gui.component.menu.items;
 
 import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddManualDialog;
+import com.jonas.agile.devleadtool.gui.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 
-class MenuItem_Add extends MyMenuItem {
+public class MenuItem_Add extends MyMenuItem {
 
    /**
     * 

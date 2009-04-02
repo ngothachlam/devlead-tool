@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.gui.component.menu;
+package com.jonas.agile.devleadtool.gui.component.menu.items;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -16,6 +16,7 @@ import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.gui.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.common.HyperLinker;
@@ -24,7 +25,7 @@ import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraClient;
 
-class MenuItem_CreateMerge extends MyMenuItem {
+public class MenuItem_CreateMerge extends MyMenuItem {
 
    private final MyTable source;
 
@@ -59,7 +60,6 @@ class MenuItem_CreateMerge extends MyMenuItem {
       JiraVersion[] fixVersions = client.getFixVersionsFromProject(project, false);
       JiraVersion fixVersionToCreateMergesAgainst = (JiraVersion) JOptionPane.showInputDialog(getParentFrame(), sb.toString(),
             "What Fix Version for the merges?", JOptionPane.QUESTION_MESSAGE, null, fixVersions, null);
-      MyTablePopupMenu.log.debug("result " + fixVersionToCreateMergesAgainst);
       if (fixVersionToCreateMergesAgainst != null) {
          sb = new StringBuffer("Created Merge Jiras:\n");
          List<String> jirasMerged = new ArrayList<String>();

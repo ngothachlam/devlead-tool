@@ -3,6 +3,17 @@ package com.jonas.agile.devleadtool.gui.component.menu;
 import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Add;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Copy;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_CreateMerge;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Default;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Mark;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Print;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Remove;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Rollforwards;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Sync;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_UnMark;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_UnSelect;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.listener.OpenJirasListener;
 import com.jonas.common.logging.MyLogger;
@@ -17,9 +28,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
       this.sourceTable = source;
       JFrame parentFrame = helper.getParentFrame();
 
-      MenuItem_Mark menuItem = new MenuItem_Mark(parentFrame, "Mark Selected Rows", source);
-      log.debug("menuItem Parent: " + menuItem.getParent());
-      add(menuItem);
+      add(new MenuItem_Mark(parentFrame, "Mark Selected Rows", source));
       add(new MenuItem_UnMark(parentFrame, "unMark Selected Rows", source));
       add(new MenuItem_UnSelect(parentFrame, "clear Selected Rows", source));
       add(new MenuItem_Print(parentFrame, "print Table", source));

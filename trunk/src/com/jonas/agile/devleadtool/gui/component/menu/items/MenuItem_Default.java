@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.jonas.agile.devleadtool.gui.component.menu;
+package com.jonas.agile.devleadtool.gui.component.menu.items;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-class MenuItem_Default extends MyMenuItem {
+public class MenuItem_Default extends MyMenuItem {
 
    private final ActionListener actionListener;
 
