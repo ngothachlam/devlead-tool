@@ -10,6 +10,7 @@ import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
+import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
 
 public class BoardTableModelTest extends JonasTestCase {
@@ -168,11 +169,12 @@ public class BoardTableModelTest extends JonasTestCase {
    }
 
    public void testGetEmptyRowFromBodard() {
+      assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(null, null));
       assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Approved, "Closed (Fixed)"));
       assertFalse(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Bug, "Closed (Fixed)"));
    }
    
    public void testShouldGetColors(){
-      assertEquals(null, model.getColor(BoardStatusValue.Bug, 0, Column.BoardStatus));
+      assertEquals(SwingUtil.cellLightRed, model.getColor(BoardStatusValue.Bug, 0, Column.BoardStatus));
    }
 }

@@ -12,6 +12,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.MyScrollPane;
+import com.jonas.agile.devleadtool.gui.component.menu.ReconciliationTablePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.ReconciliationTable;
@@ -36,7 +37,7 @@ public class ReconciliationTablePanel extends MyPanel {
       c.gridx = 0;
       c.gridy = 0;
 
-      add(getTablePanel(), c);
+      add(getTablePanel(parentFrame), c);
 
       c.gridy++;
       c.weighty = 0;
@@ -45,8 +46,9 @@ public class ReconciliationTablePanel extends MyPanel {
       add(buttonPanel(parentFrame), c);
    }
 
-   private JComponent getTablePanel() {
+   private JComponent getTablePanel(Frame parentFrame) {
       table = new ReconciliationTable(boardTable);
+      new ReconciliationTablePopupMenu(table, parentFrame);
       table.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(table, boardTable));
       MyScrollPane myScrollPane = new MyScrollPane(table);
       return myScrollPane;

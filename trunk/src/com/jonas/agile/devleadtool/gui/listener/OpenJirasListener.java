@@ -3,6 +3,7 @@
  */
 package com.jonas.agile.devleadtool.gui.listener;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -16,20 +17,21 @@ import com.jonas.common.HyperLinker;
 
 public class OpenJirasListener implements ActionListener {
    private final MyTable table;
-   private final PlannerHelper helper;
+   private Frame parentFrame;
 
    /**
+    * @param parentFrame 
     * @param jiraPanel
     */
-   public OpenJirasListener(MyTable tab1e, PlannerHelper helper) {
+   public OpenJirasListener(MyTable tab1e, Frame parentFrame) {
       this.table = tab1e;
-      this.helper = helper;
+      this.parentFrame = parentFrame;
    }
 
    public void actionPerformed(ActionEvent e) {
       int[] rows = table.getSelectedRows();
       if (rows.length == 0)
-         AlertDialog.alertMessage(helper.getParentFrame(), "No rows selected!");
+         AlertDialog.alertMessage(parentFrame, "No rows selected!");
       StringBuffer sb = new StringBuffer();
       for (int j = 0; j < rows.length; j++) {
          String jira = (String) table.getValueAt(Column.Jira, rows[j]);
@@ -52,7 +54,7 @@ public class OpenJirasListener implements ActionListener {
       }
       if (sb.length() > 0) {
          sb.append(" are incorrect!");
-         AlertDialog.alertMessage(helper.getParentFrame(), sb.toString());
+         AlertDialog.alertMessage(parentFrame, sb.toString());
       }
    }
 }
