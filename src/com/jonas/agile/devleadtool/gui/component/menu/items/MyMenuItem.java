@@ -13,6 +13,7 @@ public abstract class MyMenuItem extends JMenuItem implements ActionListener {
    public MyMenuItem(Frame parentFrame, String text) {
       super(text);
       addActionListener(this);
+      this.parentFrame = parentFrame;
    }
 
    @Override
