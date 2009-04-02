@@ -1,6 +1,8 @@
 package com.jonas.agile.devleadtool.gui.component.table.model;
 
 import java.awt.Color;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
@@ -10,8 +12,14 @@ import com.jonas.common.swing.SwingUtil;
 
 public class JiraTableModel extends MyTableModel {
 
+   private final static Set<String> nonAcceptedJiraFields = new HashSet<String>();
+   static {
+      nonAcceptedJiraFields.add("TBD");
+   }
+
    private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Type, Column.J_Sprint, Column.J_Project,
          Column.J_FixVersion, Column.J_Delivery, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent };
+
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
    private int tempRow = -1;
@@ -58,32 +66,38 @@ public class JiraTableModel extends MyTableModel {
          setToolTipText(row, getColumnIndex(column), "Exists in the board!");
          return SwingUtil.cellGreen;
       case J_FixVersion:
-         if (!isFixVersionOk(boardModel.getValueAt(Column.Release, jiraRowInBoardModel), value)){
-            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
+         if (!isFixVersionOk(boardModel.getValueAt(Column.Release, jiraRowInBoardModel), value)) {
+            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value or it is TBD!");
             return SwingUtil.cellRed;
          }
          break;
       case J_Sprint:
-         if (!isSprintOk(boardModel.getValueAt(Column.BoardStatus, jiraRowInBoardModel), value)){
+         if (!isSprintOk(boardModel.getValueAt(Column.BoardStatus, jiraRowInBoardModel), value)) {
             setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
             return SwingUtil.cellRed;
          }
          break;
       case J_Project:
-         if (!isProjectOk(value)){
+         if (!isProjectOk(value)) {
             setToolTipText(row, getColumnIndex(column), "Should not be empty!");
             return SwingUtil.cellRed;
          }
          break;
       case J_Dev_Estimate:
-         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, jiraRowInBoardModel), value)){
+         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, jiraRowInBoardModel), value)) {
             setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
             return SwingUtil.cellRed;
          }
          break;
       case J_Dev_Spent:
-         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Actual, jiraRowInBoardModel), value)){
+         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Actual, jiraRowInBoardModel), value)) {
             setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
+            return SwingUtil.cellRed;
+         }
+         break;
+      case J_Delivery:
+         if (false) {
+            setToolTipText(row, getColumnIndex(column), "Not implemented yet!!");
             return SwingUtil.cellRed;
          }
          break;
@@ -92,11 +106,27 @@ public class JiraTableModel extends MyTableModel {
    }
 
    boolean isProjectOk(Object value) {
-      return value != null && value.toString().trim().length() != 0;
+      if (value == null) {
+         return false;
+      }
+      
+      if (nonAcceptedJiraFields.contains(value.toString())) {
+         return false;
+      }
+
+      return value.toString().trim().length() != 0;
    }
 
    boolean isSprintOk(Object boardStatus, Object value) {
-      return true;
+      if (value == null) {
+         return false;
+      }
+      
+      if (nonAcceptedJiraFields.contains(value.toString())) {
+         return false;
+      }
+      
+      return value.toString().trim().length() != 0;
    }
 
    boolean isFixVersionOk(Object boardValue, Object jiraValue) {
@@ -104,12 +134,11 @@ public class JiraTableModel extends MyTableModel {
       if (jiraValue == null) {
          if (boardValue == null || boardValue.toString().trim().length() == 0)
             return true;
-         else
-            return false;
+         return false;
       }
-      String jiraFixVersions = (String) jiraValue;
-      String boardValueAsString = (String) boardValue;
 
+      String jiraFixVersions = jiraValue.toString();
+      String boardValueAsString = (String) boardValue;
       return jiraFixVersions.equals(boardValueAsString);
    }
 

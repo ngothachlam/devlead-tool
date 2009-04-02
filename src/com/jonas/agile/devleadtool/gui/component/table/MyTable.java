@@ -261,11 +261,22 @@ public class MyTable extends JTable {
       if (rowIndex == -1 || colIndex == -1) {
          return super.getToolTipText(event);
       }
-      Object valueAt = getValueAt(rowIndex, colIndex);
+      rowIndex = convertRowIndexToModel(rowIndex);
+      colIndex = convertColumnIndexToModel(colIndex);
+
+      Object valueAt = getModel().getValueAt(rowIndex, colIndex);
+      valueAt = (valueAt == null || valueAt.toString().length() == 0) ? " " : valueAt.toString().trim();
       String header = getModel().getColumnName(colIndex).trim();
-      String string = valueAt == null || valueAt.toString().length() == 0 ? " " : valueAt.toString().trim();
       String extra = model.getExtraToolTipText(rowIndex, colIndex);
-      return header + ": " + string + (extra != null && extra.trim().length() > 0 ? " - " + extra : "");
+
+      return getTTText(valueAt, header, extra);
+   }
+
+   private String getTTText(Object valueAt, String header, String extra) {
+      extra = extra != null && extra.trim().length() > 0 ? " - " + extra : "";
+      StringBuffer sb = new StringBuffer(header);
+      sb.append(": ").append(valueAt).append(extra);
+      return sb.toString();
    }
 
    public Object getValueAt(Column column, int rowInView) {
@@ -366,7 +377,6 @@ public class MyTable extends JTable {
       setDefaultRenderer(Integer.class, new MyDefaultCellRenderer(getModel()));
       setDefaultRenderer(String.class, new StringTableCellRenderer(getModel()));
       setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(getModel()));
-      System.out.println("BoardStatusValue rendered:" + getDefaultRenderer(BoardStatusValue.class).getClass());
    }
 
    public void setModel(MyTableModel model) {
