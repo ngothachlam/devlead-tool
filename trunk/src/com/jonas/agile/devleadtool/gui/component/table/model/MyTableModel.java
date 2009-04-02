@@ -557,11 +557,11 @@ public abstract class MyTableModel extends DefaultTableModel {
       getMarker().unMark(row);
    }
 
-   public String getExtraToolTipText(int rowIndex, int colIndex) {
-      return extraToolTipText.get(rowIndex + "-" + colIndex);
+   public String getExtraToolTipText(int row, int col) {
+      return extraToolTipText.get(row + "-" + col);
    }
 
-   protected void setToolTipText(int row, int columnIndex, String string) {
-      extraToolTipText.put(row + "-" + columnIndex, string);
+   protected void setToolTipText(int row, int col, String string) {
+      extraToolTipText.put(row + "-" + col, string);
    }
 }

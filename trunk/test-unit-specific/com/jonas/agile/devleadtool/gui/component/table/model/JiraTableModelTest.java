@@ -12,7 +12,14 @@ import com.jonas.jira.JiraIssue;
 
 public class JiraTableModelTest extends JonasTestCase {
 
+   @Override
+   protected void setUp() throws Exception {
+      jiraModel = new JiraTableModel();
+   }
+
    private JiraTableModel jiraModel;
+   
+   
 
    private void assertRow(String[] strings, MyTableModel model, int row) {
       int cols = 0;
@@ -20,7 +27,8 @@ public class JiraTableModelTest extends JonasTestCase {
          Object valueAt = model.getValueAt(row, cols);
          assertEquals("Value at column " + cols + " is incorrect", strings[cols], valueAt);
       }
-      assertEquals("Amount of cols are not as expected! (Expected : " + cols + " but is: " + model.getColumnCount() + ")", cols, model.getColumnCount());
+      assertEquals("Amount of cols are not as expected! (Expected : " + cols + " but is: " + model.getColumnCount() + ")", cols, model
+            .getColumnCount());
    }
 
    private Vector<Object> getTestRowVector(String[] strings, int i) {
@@ -68,25 +76,23 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldAddRowOk() {
-      jiraModel = new JiraTableModel();
       JiraIssue jiraIssue = new JiraIssue("Jira-1", "Summary 1", "Open", "Resolved", "Type");
       JiraIssue jiraIssue2 = new JiraIssue("Jira-2", "Summary 2", "Open", "Resolved", "Type");
       jiraModel.addJira("Jira-1");
    }
 
    public void testShouldGetColorOk() {
-      jiraModel = new JiraTableModel();
       jiraModel.setRenderColors(true);
       assertEquals(null, jiraModel.getColor("llu-1", 0, Column.Jira));
 
-      // add llu-1 and llu-2 to jiraModel 
+      // add llu-1 and llu-2 to jiraModel
       jiraModel.addJira("llu-1");
       jiraModel.addJira("llu-2");
-      
+
       assertEquals(null, jiraModel.getColor("llu-1", 0, Column.Jira));
       assertEquals(null, jiraModel.getColor("llu-2", 0, Column.Jira));
-      
-      //add jira llu-2 and llu-3 to boardModel with llu-2 having board's dev_estimate set to '1'
+
+      // add jira llu-2 and llu-3 to boardModel with llu-2 having board's dev_estimate set to '1'
       testBoardModel.addJira("llu-2");
       testBoardModel.addJira("llu-3");
       testBoardModel.setValueAt("1", 0, Column.Dev_Estimate);
@@ -95,56 +101,54 @@ public class JiraTableModelTest extends JonasTestCase {
       assertEquals(null, jiraModel.getColor("llu-1", 0, Column.Jira));
       assertEquals(null, jiraModel.getColor("est1", 0, Column.J_Dev_Estimate));
       assertEquals(null, jiraModel.getColor("est1", 0, Column.J_Dev_Spent));
-      
+
       assertEquals(SwingUtil.cellGreen, jiraModel.getColor("llu-2", 1, Column.Jira));
       assertEquals(SwingUtil.cellRed, jiraModel.getColor("est2", 1, Column.J_Dev_Estimate));
       assertEquals(null, jiraModel.getColor("est2", 1, Column.J_Dev_Spent));
    }
-   
-   
-   public void testShouldHiglightIncorrectSprints(){
-      jiraModel = new JiraTableModel();
-      assertTrue(jiraModel.isSprintOk(BoardStatusValue.UnKnown, null));
-      assertTrue(jiraModel.isSprintOk(BoardStatusValue.NA, null));
-      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Open, null));
-      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Bug, null));
-      assertTrue(jiraModel.isSprintOk(BoardStatusValue.InDevProgress, null));
-      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Resolved, null));
-      assertTrue(jiraModel.isSprintOk(BoardStatusValue.InQAProgress, null));
-      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Complete, null));
-      assertTrue(jiraModel.isSprintOk(BoardStatusValue.ForShowCase, null));
-      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Approved, null));
+
+   public void testShouldHiglightIncorrectSprints() {
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Approved, null));
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Approved, ""));
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Approved, " "));
+      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Approved, "TBD"));
+      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Approved, "13-1"));
+      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Approved, "A"));
    }
-   
-   public void testShouldHiglightIncorrectProjects(){
-      jiraModel = new JiraTableModel();
-      assertFalse(jiraModel.isProjectOk( null));
+
+   public void testShouldHiglightIncorrectProjects() {
+      assertFalse(jiraModel.isProjectOk(null));
       assertFalse(jiraModel.isProjectOk(""));
       assertFalse(jiraModel.isProjectOk("   "));
       assertTrue(jiraModel.isProjectOk("project"));
+      assertFalse(jiraModel.isProjectOk("TBD"));
    }
-   
-   public void testShouldCompareFixversionsOk(){
-      jiraModel = new JiraTableModel();
+
+   public void testShouldCompareFixversionsOk() {
       String jiraFixVersion = null;
       assertFalse(jiraModel.isFixVersionOk("LLU 12", jiraFixVersion));
-      assertTrue(jiraModel.isFixVersionOk("", ""));
+
+      jiraFixVersion = "";
+      assertTrue(jiraModel.isFixVersionOk("", jiraFixVersion));
+      assertFalse(jiraModel.isFixVersionOk("TBD", jiraFixVersion));
       
+
       jiraFixVersion = "LLU 13";
       assertFalse(jiraModel.isFixVersionOk("LLU 12", jiraFixVersion));
       assertTrue(jiraModel.isFixVersionOk("LLU 13", jiraFixVersion));
       assertTrue(jiraModel.isFixVersionOk(new String("LLU 13"), jiraFixVersion));
-      
+
       jiraFixVersion = "LLU 13, LLU 12";
       assertFalse(jiraModel.isFixVersionOk("LLU 12", jiraFixVersion));
       assertFalse(jiraModel.isFixVersionOk("LLU 13", jiraFixVersion));
       assertFalse(jiraModel.isFixVersionOk("LLU 12, LLU 13", jiraFixVersion));
       assertTrue(jiraModel.isFixVersionOk("LLU 13, LLU 12", jiraFixVersion));
       assertFalse(jiraModel.isFixVersionOk("LLU 13, LLU 12, LLU 14", jiraFixVersion));
+      
+      assertTrue(jiraModel.isFixVersionOk("TBD", "TBD"));
    }
 
    public void testShouldCompareEstimatesOk() {
-      jiraModel = new JiraTableModel();
       assertEquals(true, jiraModel.isJiraNumberOk("", null));
       assertEquals(true, jiraModel.isJiraNumberOk("", ""));
       assertEquals(true, jiraModel.isJiraNumberOk("", "0"));
@@ -155,7 +159,7 @@ public class JiraTableModelTest extends JonasTestCase {
       assertEquals(true, jiraModel.isJiraNumberOk(null, "0"));
       assertEquals(true, jiraModel.isJiraNumberOk(null, "0.0"));
       assertEquals(false, jiraModel.isJiraNumberOk(null, "0.1"));
-      
+
       assertEquals(true, jiraModel.isJiraNumberOk("0", ""));
       assertEquals(true, jiraModel.isJiraNumberOk("0", "0"));
       assertEquals(true, jiraModel.isJiraNumberOk("0", "0.0"));
@@ -181,8 +185,9 @@ public class JiraTableModelTest extends JonasTestCase {
 
    private Column[] columns = { Column.Jira, Column.Description, Column.Dev_Actual, Column.Dev_Estimate };
    public TestTableModelTemp testBoardModel = new TestTableModelTemp(columns);
+
    class TestTableModelTemp extends MyTableModel {
-      
+
       public TestTableModelTemp(Column[] columns) {
          super(columns);
       }
