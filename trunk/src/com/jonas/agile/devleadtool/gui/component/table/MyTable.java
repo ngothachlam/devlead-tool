@@ -5,6 +5,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -123,11 +124,15 @@ public class MyTable extends JTable {
    private MyTableModel model;
 
    private String title;
+   private Map<Column, TableColumn> tableColumns;
 
    public MyTable(String title, MyTableModel model, final boolean allowMarking) {
       super(model);
       this.title = title;
       this.model = model;
+
+      tableColumns = new HashMap<Column, TableColumn>();
+
       marker.setAllowMarking(allowMarking);
       getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
       setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
@@ -169,10 +174,10 @@ public class MyTable extends JTable {
          markJira(jiraIssue.getKey());
    }
 
-//   void addJira(String jira) {
-//      this.addJira(jira, false);
-//   }
-   
+   // void addJira(String jira) {
+   // this.addJira(jira, false);
+   // }
+
    public void addJira(String jira, boolean markIt) {
       model.addJira(jira);
       if (markIt)
@@ -423,5 +428,20 @@ public class MyTable extends JTable {
 
    public void unSort() {
       setAutoCreateRowSorter(true);
+   }
+
+   public void removeColumn(Column column) {
+      int colIndex = getColumnIndex(column);
+      if(colIndex < 0)
+         return;
+      TableColumn tableColumn = getTableColumn(colIndex);
+      tableColumns.put(column, tableColumn);
+      removeColumn(tableColumn);
+   }
+
+   public void addColumn(Column column) {
+      TableColumn tableColumn = tableColumns.get(column);
+      if (tableColumn != null)
+         addColumn(tableColumn);
    }
 }
