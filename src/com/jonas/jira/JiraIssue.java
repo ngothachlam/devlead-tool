@@ -7,21 +7,33 @@ import com.jonas.common.logging.MyLogger;
 
 public class JiraIssue {
 
+   public void setOwner(String owner) {
+      this.owner = owner;
+   }
+
+   public void setEnvironment(String environment) {
+      this.environment = environment;
+   }
+
    public static Logger log = MyLogger.getLogger(JiraIssue.class);
+   
    private String buildNo;
    private String deliveryDate;
    private String estimate;
    private List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
    private StringBuffer fixVersionsAsStrings = new StringBuffer("");
-   private final String key;
    private int lluListPriority;
    private String projectAsString;
    private String release = "";
-   private final String resolution;
    private String spent;
    private String sprint;
-   private final String status;
+   private String owner;
+   private String environment;
+   
+   private final String key;
    private final String summary;
+   private final String status;
+   private final String resolution;
    private final String type;
 
    public JiraIssue(String key, String release) {
@@ -39,13 +51,15 @@ public class JiraIssue {
    }
 
    public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate, int listPrio,
-         String sprint, String project) {
+         String sprint, String project, String environment, String owner) {
       this(key, summary, status, resolution, type);
-      this.buildNo = buildNo;
-      this.estimate = estimate;
-      this.sprint = sprint;
-      this.lluListPriority = listPrio;
-      this.projectAsString = project;
+      setBuildNo( buildNo);
+      setEstimate(estimate);
+      setSprint(sprint);
+      setLLUListPriority(listPrio);
+      setProject(project);
+      setEnvironment(environment);
+      setOwner(owner);
    }
 
    public void addFixVersions(JiraVersion fixVersion) {
@@ -245,5 +259,13 @@ public class JiraIssue {
       buffer.append(summary);
       buffer.append("]");
       return buffer.toString();
+   }
+
+   public String getEnvironment() {
+      return environment;
+   }
+
+   public String getOwner() {
+      return owner;
    }
 }

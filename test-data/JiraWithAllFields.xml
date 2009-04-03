@@ -80,6 +80,27 @@
                   </customfieldvalue>
                </customfieldvalues>
             </customfield>
+            
+            <customfield id="customfield_10305" key="com.atlassian.jira.plugin.system.customfieldtypes:multiselect">
+               <customfieldname>Affected Environment</customfieldname>
+
+               <customfieldvalues>
+                  <customfieldvalue>
+                     <![CDATA[QA]]>
+                  </customfieldvalue>
+               </customfieldvalues>
+            </customfield>
+
+            <customfield id="customfield_10306" key="com.atlassian.jira.plugin.system.customfieldtypes:multiselect">
+               <customfieldname>Requirement Backlog</customfieldname>
+
+               <customfieldvalues>
+                  <customfieldvalue>
+                     <![CDATA[Technology]]>
+                  </customfieldvalue>
+               </customfieldvalues>
+            </customfield>
+            
          </customfields>
       </item>
       </channel>
