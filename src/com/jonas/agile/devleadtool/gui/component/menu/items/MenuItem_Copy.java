@@ -51,7 +51,8 @@ public class MenuItem_Copy extends MyMenuItem {
          int row = model.getRowWithJira(jiraString);
          map.put(column, model.getValueAt(column, row));
       }
-      table.addJira(jiraString, map);
+      boolean toMark = !table.isJiraPresent(jiraString);
+      table.addJira(jiraString, map, toMark);
    }
 
    @Override

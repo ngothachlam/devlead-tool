@@ -78,12 +78,13 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
 
    @Override
    public void jiraAdded(String jira, String estimate, String actual, String release, String remainder, String qaEst, BoardStatusValue status) {
-      if(table == null){
+      if (table == null) {
          AlertDialog.alertMessage(getParentFrame(), "No table Selected!!");
       }
       if (!table.isJiraPresent(jira)) {
-         table.addJira(jira);
+         table.addJira(jira, true);
       }
+
       List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 
       addNewOldValueIfColumnIsInTable(table, Column.BoardStatus, jira, status, newOldValues);
