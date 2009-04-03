@@ -414,6 +414,12 @@ public abstract class MyTableModel extends DefaultTableModel {
       case J_Project:
          value = jiraIssue.getProjectAsString();
          break;
+      case J_Environment:
+         value = jiraIssue.getEnvironment();
+         break;
+      case J_Owner:
+         value = jiraIssue.getOwner();
+         break;
       case J_Delivery:
          value = jiraIssue.getDeliveryDate();
          break;

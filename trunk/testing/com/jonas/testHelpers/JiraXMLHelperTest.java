@@ -1,7 +1,6 @@
 package com.jonas.testHelpers;
 
 import java.io.IOException;
-import com.jonas.jira.JiraCustomFields;
 import com.jonas.jira.access.ClientConstants;
 import com.jonas.jira.access.JiraException;
 
@@ -14,7 +13,7 @@ public class JiraXMLHelperTest {
          helper.loginToJira();
          // System.out.println(helper.getXML(JiraFilter.Sprint_Specific.getUrl() + "12.4"));
          // System.out.println(helper.getXML("secure/IssueNavigator.jspa?view=rss&fixfor=-2&pid=10070&reset=true&decorator=none&tempMax=20&customfield_10282=12-6"));
-         System.out.println(helper.getXML("browse/LLU-4474?decorator=none&view=rss"));
+         System.out.println(helper.getXML("browse/LLU-4549?decorator=none&view=rss"));
       } catch (IOException e) {
          e.printStackTrace();
       } catch (JiraException e) {

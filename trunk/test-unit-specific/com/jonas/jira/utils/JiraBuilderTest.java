@@ -131,13 +131,7 @@ public class JiraBuilderTest extends JonasTestCase {
       assertJiraDetails(jiraIssue, "LLU-4119", "&apos;Quality Gateway&apos; tests set up", "Open", "Unresolved",
             "Story", new JiraVersion[] { TestObjects.Version_Backlog });
       assertEquals(null, jiraIssue.getBuildNo());
-      // assertEquals("Version 11 - Next Sprint (2)", jiraIssue.getFixVersions().get(0).getName());
    }
-
-   // public void testShouldBuildBuildNoOk() throws JDOMException, IOException {
-   // assertEquals("testBuildNo", JiraBuilder.getBuildNo(list.get(0),
-   // "/item/customfields/customfield[@id='customfield_10160']/customfieldvalues/customfieldvalue"));
-   // }
 
    public void testGetStringAsInt() {
       assertEquals(50, JiraBuilder.getStringAsIntIfNumeric("50"));

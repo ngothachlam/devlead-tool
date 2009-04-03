@@ -260,7 +260,7 @@ public class MyTableModelTest extends JonasTestCase {
    public void testShouldGetValueOfSameClassAsColumnType() {
       MyTableModel model = new TestTableModel();
 
-      JiraIssue jiraIssue = new JiraIssue("key", "summary", "status", "resolution", "type", "buildNo", "estimate", 1, "sprint", "project");
+      JiraIssue jiraIssue = new JiraIssue("key", "summary", "status", "resolution", "type", "buildNo", "estimate", 1, "sprint", "project", "environment", "owner");
       JiraVersion fixVersion = new JiraVersion("",  JiraProject.LLU, "", false);
       jiraIssue.addFixVersions(fixVersion);
       assertEquals("KEY", model.getValueFromIssue(jiraIssue, Column.Jira));
@@ -276,5 +276,7 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals("estimate", model.getValueFromIssue(jiraIssue, Column.J_Dev_Estimate));
       assertEquals("sprint", model.getValueFromIssue(jiraIssue, Column.J_Sprint));
       assertEquals(null, model.getValueFromIssue(jiraIssue, Column.J_Dev_Spent));
+      assertEquals("environment", model.getValueFromIssue(jiraIssue, Column.J_Environment));
+      assertEquals("owner", model.getValueFromIssue(jiraIssue, Column.J_Owner));
    }
 }

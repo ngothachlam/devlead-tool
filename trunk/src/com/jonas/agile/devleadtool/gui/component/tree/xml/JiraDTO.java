@@ -10,16 +10,18 @@ public class JiraDTO {
    }
 
    private List<String> fixVersions = new ArrayList<String>();
-   private String id;
    private boolean isToSync = false;
-   private String key;
    private int originalEstimate;
+   private int actual;
+   private String id;
+   private String key;
    private String resolution;
    private String sprint;
    private String status;
    private String summary;
    private String project = "";
-   private int actual;
+   private String environment = "";
+   private String owner = "";
 
    public JiraDTO() {
    }
@@ -143,6 +145,21 @@ public class JiraDTO {
 
    public String getProject() {
      return project;
+   }
+
+   public String getEnvironment() {
+      return environment;
+   }
+
+   public String getOwner() {
+      return owner;
+   }
+
+   public void setOwner(String value) {
+      this.owner = value;
+   }
+   public void setEnvironment(String value) {
+      this.environment = value;
    }
 
 }

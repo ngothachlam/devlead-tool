@@ -74,8 +74,19 @@ public class JiraBuilder {
                      e.printStackTrace();
                   }
                }
-
             });
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUEnvironment+ "']/customfieldvalues/customfieldvalue",
+            new XpathAction() {
+         public void XPathValueFound(String xpathValue, JiraIssue jira) {
+            jira.setEnvironment(xpathValue);
+         }
+      });
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUOwner+ "']/customfieldvalues/customfieldvalue",
+            new XpathAction() {
+         public void XPathValueFound(String xpathValue, JiraIssue jira) {
+            jira.setOwner(xpathValue);
+         }
+      });
    }
    private static SimpleDateFormat JiraDateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
    private static SimpleDateFormat OutputDateFormat = new SimpleDateFormat("yyyy-MM-dd");

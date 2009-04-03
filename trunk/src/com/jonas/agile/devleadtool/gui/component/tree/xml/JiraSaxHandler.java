@@ -22,15 +22,17 @@ public class JiraSaxHandler extends DefaultHandler {
    private static final String KEY = "key";
    private static final String SPRINT = "Sprint";
    private static final String PROJECT = "LLU Projects";
+   private static final String OWNER = "Requirement Backlog";
+   private static final String ENVIRONMENT = "Affected Environment";
 
-   private ElementDTO elementDTO = new ElementDTO();
-   
    private JiraDTO jira;
    private List<JiraParseListener> jiraParseListeners = new ArrayList<JiraParseListener>();
    private int nodeCount;
    private StringBuffer sb = new StringBuffer();
    private boolean sprintNextValue = false;
    private boolean projectNextValue = false;
+   private boolean ownerNextValue = false;
+   private boolean environmentNextValue = false;
    private Logger log = MyLogger.getLogger(JiraSaxHandler.class);
    private String element;
 
@@ -82,6 +84,16 @@ public class JiraSaxHandler extends DefaultHandler {
       } else if (CUSTOMFIELDVALUE.equals(qName) && projectNextValue) {
          projectNextValue = false;
          jira.setProject(value);
+      } else if (OWNER.equals(value) && CUSTOMFIELDNAME.equals(element)) {
+         ownerNextValue = true;
+      } else if (CUSTOMFIELDVALUE.equals(qName) && ownerNextValue) {
+         ownerNextValue = false;
+         jira.setOwner(value);
+      } else if (ENVIRONMENT.equals(value) && CUSTOMFIELDNAME.equals(element)) {
+         environmentNextValue = true;
+      } else if (CUSTOMFIELDVALUE.equals(qName) && environmentNextValue) {
+         environmentNextValue = false;
+         jira.setEnvironment(value);
       } else if (ITEM.equals(qName)) {
          notifyJiraParsed(jira);
       }
@@ -131,7 +143,4 @@ public class JiraSaxHandler extends DefaultHandler {
       jiraParseListeners.clear();
    }
    
-   private class ElementDTO{
-   }
-
 }
