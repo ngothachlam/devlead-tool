@@ -15,8 +15,8 @@ public class AddVersionDialogTestScreen {
       frame.setVisible(true);
       MyTable tableA = new MyTable("A", new BoardTableModel(), false);
       MyTable tableB = new MyTable("B", new JiraTableModel(), false);
-      tableA.addJira("bla-1");
-      tableB.addJira("bla-2");
+      tableA.addJira("bla-1", true);
+      tableB.addJira("bla-2", true);
 
       MyComponentPanel panel = new MyComponentPanel(new GridLayout(2, 1));
       panel.add(tableA);

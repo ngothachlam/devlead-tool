@@ -163,19 +163,26 @@ public class MyTable extends JTable {
       model.addEmptyRow();
    }
 
-   public void addJira(JiraIssue jiraIssue) {
+   public void addJira(JiraIssue jiraIssue, boolean markIt) {
       model.addJira(jiraIssue);
-      markJira(jiraIssue.getKey());
+      if (markIt)
+         markJira(jiraIssue.getKey());
    }
 
-   public void addJira(String jira) {
+//   void addJira(String jira) {
+//      this.addJira(jira, false);
+//   }
+   
+   public void addJira(String jira, boolean markIt) {
       model.addJira(jira);
-      markJira(jira);
+      if (markIt)
+         markJira(jira);
    }
 
-   public void addJira(String jira, Map<Column, Object> map) {
+   public void addJira(String jira, Map<Column, Object> map, boolean markIt) {
       model.addJira(jira, map);
-      markJira(jira);
+      if (markIt)
+         markJira(jira);
    }
 
    public void addJiraEditorListener(CellEditorListener cellEditorListener) {
@@ -404,7 +411,6 @@ public class MyTable extends JTable {
       }
       log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\" in table " + getTitle());
       setValueAt(value, row, column);
-      markJira(jira);
    }
 
    public void syncJira(JiraIssue jiraIssue, int tableRowSynced) {

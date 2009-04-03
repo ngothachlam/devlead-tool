@@ -20,7 +20,7 @@ public class MenuItem_Sync extends JMenuItem {
       SyncWithJiraListener actionListener = new SyncWithJiraListener(sourceTable, helper);
       SyncWithJiraActionListenerListener syncWithJiraActionListenerListener = new SyncWithJiraActionListenerListener() {
          public void jiraAdded(JiraIssue jiraIssue) {
-            sourceTable.addJira(jiraIssue);
+            sourceTable.addJira(jiraIssue, false);
          }
 
          public void jiraSynced(JiraIssue jiraIssue, int tableRowSynced) {

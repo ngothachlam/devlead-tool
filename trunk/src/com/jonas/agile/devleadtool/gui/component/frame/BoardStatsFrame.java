@@ -260,14 +260,14 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
             isToIncludeInTotals = false;
          }
 
-         System.out.print(jira);
-         System.out.print(" devEst: " + devEstimate);
-         System.out.print(" remDevEst: " + remainingDevEstimate);
-         System.out.print(" qaEst: " + qaEstimate);
-         System.out.print(" [isToIncludeInTotals: " + isToIncludeInTotals);
-         System.out.print(", isPreDevProgress: " + isPreDevProgress);
-         System.out.print(", isInDevProgress: " + isInDevProgress);
-         System.out.println("]");
+         // StringBuffer sb = new StringBuffer(jira);
+         // sb.append(" devEst: ").append(devEstimate);
+         // sb.append(" remEst: ").append(remainingDevEstimate);
+         // sb.append(" qaEst: ").append(qaEstimate);
+         // sb.append(" isTotal: ").append(isToIncludeInTotals);
+         // sb.append(" isPreDev: ").append(isPreDevProgress);
+         // sb.append(" isInDev: ").append(isInDevProgress);
+         // System.out.println(sb.toString());
       }
 
       public boolean isToIncludeInTotals() {
