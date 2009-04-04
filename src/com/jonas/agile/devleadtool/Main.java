@@ -1,5 +1,11 @@
 package com.jonas.agile.devleadtool;
 
+import java.awt.Dimension;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.RoundRectangle2D;
+import org.jdesktop.swingx.JXBusyLabel;
+import org.jdesktop.swingx.icon.EmptyIcon;
+import org.jdesktop.swingx.painter.BusyPainter;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
@@ -8,15 +14,14 @@ import com.jonas.common.logging.MyLogger;
 
 public class Main {
 
-   
    public static void main(String[] args) {
-      if(args.length > 0){
+      if (args.length > 0) {
          MyLogger.setup(args[0]);
       }
-      
+
       Injector injector = Guice.createInjector(new DevLeadToolModule());
       DevLeadTool tool = injector.getInstance(DevLeadTool.class);
-      
+
       try {
          tool.start();
       } catch (Throwable e) {
@@ -24,8 +29,9 @@ public class Main {
       }
    }
 
-   //FIXME removing selected jiras popup menu doesn't close the progress dialogue!
-   // USABILITY add color coding to the JiraPanel 1) Where Dev/Actuals are incorrect, 2) Where sprint is incorrect 3) Where fix Version is incorrect
+   // FIXME removing selected jiras popup menu doesn't close the progress dialogue!
+   // USABILITY add color coding to the JiraPanel 1) Where Dev/Actuals are incorrect, 2) Where sprint is incorrect 3) Where fix Version is
+   // incorrect
    // FIXME checking the setEditable checkbox resets the table column widths - it shouldn't!
    // TODO add a checkbox at the top for finding jiras! When ticked - all selects in tables are propagated to other tables and highlighted
    // TODO add a Window menu that allows you to see all open windows and swap to them
@@ -45,4 +51,24 @@ public class Main {
    // TODO add system properties to store last save and load location directory
    // TODO add a properties save location C:\devleadproperties.xml containing
    // TODO add property to save frames and locations.
+
+   // TODO:
+   //      
+   // JXBusyLabel label = new JXBusyLabel(new Dimension(32,33));
+   // BusyPainter painter = new BusyPainter(
+   // new RoundRectangle2D.Float(0, 0,11.0f,2.8f,10.0f,10.0f),
+   // new Ellipse2D.Float(5.0f,5.0f,23.0f,23.0f));
+   // painter.setTrailLength(4);
+   // painter.setPoints(15);
+   // painter.setFrame(1);
+   // label.setPreferredSize(new Dimension(32,33));
+   // label.setIcon(new EmptyIcon(32,33));
+   // label.setBusyPainter(painter);
+
+   // Todo: JXTaskPane for sprint stats?
+   // Shadows around JPanels
+   // Datepicker
+   // Addition of filter text
+   // Introduce tip of the day!
+   // decorator with beige text
 }
