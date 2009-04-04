@@ -20,6 +20,7 @@ import com.jonas.agile.devleadtool.gui.component.dialog.NewOldValues;
 import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.gui.listener.AddNewRowAction;
 import com.jonas.agile.devleadtool.gui.listener.JiraToBeReconciledListener;
 import com.jonas.common.swing.MyPanel;
@@ -83,7 +84,7 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
       }
       if (!table.isJiraPresent(jira)) {
          table.addJira(jira, true);
-      }
+      } 
 
       List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 
@@ -101,23 +102,23 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
    }
 
    private void addNewOldValueIfColumnIsInTable(MyTable table, Column column, String jira, Object newValue, List<NewOldValues> newOldValues) {
-      NewOldValues value = getNewOldValueIfColumnIsInTable(table, column, jira, newValue);
+      NewOldValues value = getNewOldValueIfColumnIsInModel(table.getMyModel(), column, jira, newValue);
       if (value != null) {
          newOldValues.add(value);
       }
    }
 
-   private NewOldValues getNewOldValueIfColumnIsInTable(MyTable table, Column column, String jira, Object newValue) {
-      if (table.getColumnIndex(column) < 0 || newValue == null || newValue.toString().trim().length() == 0)
+   private NewOldValues getNewOldValueIfColumnIsInModel(MyTableModel model, Column column, String jira, Object newValue) {
+      if (model.getColumnIndex(column) < 0 || newValue == null || newValue.toString().trim().length() == 0)
          return null;
 
-      return new NewOldValues(column, getValue(jira, table, column), newValue);
+      return new NewOldValues(column, getValue(jira, model, column), newValue);
    }
 
-   protected String getValue(String jira, MyTable table, Column column) {
-      if (!table.isJiraPresent(jira))
+   protected String getValue(String jira, MyTableModel model, Column column) {
+      if (!model.isJiraPresent(jira))
          return null;
-      Object valueAt = table.getValueAt(column, jira);
+      Object valueAt = model.getValueAt(column, jira);
       return valueAt == null ? "" : valueAt.toString();
    }
 }
