@@ -27,7 +27,7 @@ public class CheckBoxTableCellRenderer extends JPanel implements TableCellRender
 
    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
-      MyTableCellRenderer.setBackground(table, isSelected, hasFocus, row, column, checkbox, model, value, this, (MyTable) table);
+//      MyTableCellRenderer.setBackground(table, isSelected, hasFocus, row, column, checkbox, model, value, this, (MyTable) table);
       
       if (!table.isCellEditable(row, column)) {
          checkbox.setEnabled(false);

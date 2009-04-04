@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.apache.log4j.Logger;
+import com.jonas.common.ColorUtil;
 import com.jonas.common.logging.MyLogger;
 
 public class SwingUtil {
@@ -74,7 +75,7 @@ public class SwingUtil {
          synchronized (lock) {
             if (selectionBackground == null) {
                Color color = UIManager.getColor("Table.selectionBackground");
-               selectionBackground = new Color(color.getRed() + 25, color.getGreen() + 25, color.getBlue() + 25);
+               selectionBackground = ColorUtil.darkenColor(color, 45);
             }
          }
       }

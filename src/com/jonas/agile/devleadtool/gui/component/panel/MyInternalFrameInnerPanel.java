@@ -145,7 +145,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    private void setBoardDataListeners(final MyTableModel boardModel, final MyTable boardTable, final MyTable jiraTable, SprintTree sprintTree) {
       boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
       boardTable.addListener(new MyBoardTableListener());
-      boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
+//      boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
       boardModel.addTableModelListener(new FireUpdateOnOtherTableWhenUpdatedListener(jiraTable));
    }
 

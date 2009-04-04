@@ -19,7 +19,7 @@ public class StringTableCellRenderer extends MyTableCellRenderer {
    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
       Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-      setBackground(table, isSelected, hasFocus, row, column, cell, model, value, (JComponent) cell, (MyTable) table);
+//      setBackground(table, isSelected, hasFocus, row, column, cell, model, value, (JComponent) cell, (MyTable) table);
 
       return cell;
    }

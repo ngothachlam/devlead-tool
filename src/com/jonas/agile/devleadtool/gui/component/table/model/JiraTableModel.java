@@ -47,9 +47,8 @@ public class JiraTableModel extends MyTableModel {
          return null;
       }
 
-      log.debug("The row being edited is " + row + " and we previously edited " + this.tempRow);
+      log.debug("The row getting color for is " + row + " (col: "+column+")and we previously edited row " + this.tempRow);
       if (this.tempRow != row) {
-         log.debug("trace...");
          String jira = (String) getValueAt(Column.Jira, row);
          jiraRowInBoardModel = boardModel.getRowWithJira(jira);
          log.debug("... so we are editing a new row! Lets get the jira, which is " + jira + " and the board row for this jira: "
