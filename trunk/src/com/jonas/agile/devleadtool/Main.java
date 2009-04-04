@@ -71,4 +71,5 @@ public class Main {
    // Addition of filter text
    // Introduce tip of the day!
    // decorator with beige text
+   //JXStatusbar
 }
