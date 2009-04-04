@@ -148,10 +148,7 @@ public class MyTable extends JXTable {
 
       setDefaultEditors();
 
-      // setDragEnabled(true);
-      // setDropMode(DropMode.INSERT);
       setFillsViewportHeight(true);
-      // setAutoCreateRowSorter(true);
 
       // TODO add tooltip for the contents of the table as well by owerriding the getToolTipText method in MyTable (or create JiraTable...)
       // setTableHeader(new JTableHeader(columnModel) {
@@ -184,10 +181,6 @@ public class MyTable extends JXTable {
       if (markIt)
          markJira(jiraIssue.getKey());
    }
-
-   // void addJira(String jira) {
-   // this.addJira(jira, false);
-   // }
 
    public void addJira(String jira, boolean markIt) {
       model.addJira(jira);
@@ -403,21 +396,11 @@ public class MyTable extends JXTable {
    }
 
    public void setValueAt(Object value, int row, Column column) {
-      setValueAt(value, row, getColumnIndex(column));
-   }
-
-   public void setValueAt(Object value, int row, int column) {
-      super.setValueAt(value, row, column);
+      getMyModel().setValueAt(value, convertRowIndexToModel(row), column);
    }
 
    public void setValueAt(Object value, String jira, Column column) {
-      int row = getRowWithJira(jira.toUpperCase());
-      if (row < 0) {
-         log.warn("Jira " + jira + " doesn't exist in table " + title + " so I cannot setValue(" + value + "," + jira + "," + column + ")");
-         return;
-      }
-      log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\" in table " + getTitle());
-      setValueAt(value, row, column);
+      getMyModel().setValueAt(value, jira, column);
    }
 
    public void syncJira(JiraIssue jiraIssue, int tableRowSynced) {

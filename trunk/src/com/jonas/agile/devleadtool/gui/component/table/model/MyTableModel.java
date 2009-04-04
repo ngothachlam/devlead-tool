@@ -78,6 +78,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
 
    }
+
    private class ModelMarker implements TableModelListener {
 
       private Map<Integer, Boolean> marked = new HashMap<Integer, Boolean>();
@@ -139,6 +140,7 @@ public abstract class MyTableModel extends DefaultTableModel {
          marked.put(row, Boolean.FALSE);
       }
    }
+
    protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
    protected Counter counter = new Counter();
    protected boolean editable = true;
@@ -569,5 +571,15 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    protected void setToolTipText(int row, int col, String string) {
       extraToolTipText.put(row + "-" + col, string);
+   }
+
+   public void setValueAt(Object value, String jira, Column column) {
+      int row = getRowWithJira(jira.toUpperCase());
+      if (row < 0) {
+         log.warn("Jira " + jira + " isn't in model (" + this.getClass() + ") for setValue(" + value + "," + jira + "," + column + ")");
+         return;
+      }
+      log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\" in model " + this.getClass());
+      setValueAt(value, row, column);
    }
 }
