@@ -1,5 +1,7 @@
 package com.jonas.agile.devleadtool.gui.component.table;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -9,19 +11,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.swing.DropMode;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.CellEditorListener;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.decorator.AbstractHighlighter;
+import org.jdesktop.swingx.decorator.ComponentAdapter;
+import org.jdesktop.swingx.decorator.Highlighter;
 import com.jonas.agile.devleadtool.gui.component.table.editor.BoardStatusCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.JiraCellEditor;
@@ -31,10 +36,12 @@ import com.jonas.agile.devleadtool.gui.component.table.renderer.CheckBoxTableCel
 import com.jonas.agile.devleadtool.gui.component.table.renderer.StringTableCellRenderer;
 import com.jonas.agile.devleadtool.gui.listener.TableListener;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
+import com.jonas.common.ColorUtil;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
 
-public class MyTable extends JTable {
+public class MyTable extends JXTable {
 
    private class MarkDelegator {
       private boolean allowMarking;
@@ -134,30 +141,34 @@ public class MyTable extends JTable {
       tableColumns = new HashMap<Column, TableColumn>();
 
       marker.setAllowMarking(allowMarking);
-      getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+      setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
       setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
       setColumnSelectionAllowed(false);
       setRowSelectionAllowed(true);
 
-      setDefaultRenderers();
       setDefaultEditors();
 
-      setDragEnabled(true);
-      setDropMode(DropMode.INSERT);
+      // setDragEnabled(true);
+      // setDropMode(DropMode.INSERT);
       setFillsViewportHeight(true);
-      setAutoCreateRowSorter(true);
+      // setAutoCreateRowSorter(true);
 
       // TODO add tooltip for the contents of the table as well by owerriding the getToolTipText method in MyTable (or create JiraTable...)
-      setTableHeader(new JTableHeader(columnModel) {
-         @Override
-         public String getToolTipText(MouseEvent e) {
-            Point p = e.getPoint();
-            int colIndex = columnAtPoint(p);
-            return getColumnName(colIndex);
-         }
-      });
-
+      // setTableHeader(new JTableHeader(columnModel) {
+      // @Override
+      // public String getToolTipText(MouseEvent e) {
+      // Point p = e.getPoint();
+      // int colIndex = columnAtPoint(p);
+      // return getColumnName(colIndex);
+      // }
+      // });
+      getTableHeader().setToolTipText("blah");
+      this.setColumnControlVisible(true);
       this.addKeyListener(new MarkKeyListener(allowMarking));
+
+      Highlighter higlighter = new MyTableHighlighter(this);
+      addHighlighter(higlighter);
+      // setRolloverEnabled(true);
    }
 
    public void addCheckBoxEditorListener(CellEditorListener cellEditorListener) {
@@ -229,7 +240,7 @@ public class MyTable extends JTable {
       return convertColumnIndexToView(model.getColumnIndex(column));
    }
 
-   public Column[] getColumns() {
+   public Column[] getCols() {
       Map<Column, Integer> columnNames = model.getColumnNames();
       return columnNames.keySet().toArray(new Column[columnNames.size()]);
    }
@@ -366,29 +377,20 @@ public class MyTable extends JTable {
    }
 
    private void setDefaultEditors() {
-      checkBoxEditor = new CheckBoxTableCellEditor(new JCheckBox());
-      setDefaultEditor(Boolean.class, checkBoxEditor);
       JComboBox combo = new JComboBox(BoardStatusValue.values());
       setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
 
-      int colIndex = getColumnIndex(Column.Release);
-      if (colIndex > -1) {
-         TableColumn tc = getTableColumn(colIndex);
-         tc.setCellEditor(new MyDefaultCellEditor(new JTextField()));
-      }
-      colIndex = getColumnIndex(Column.Jira);
-      if (colIndex > -1) {
-         jiraEditor = new JiraCellEditor(new JTextField());
-         TableColumn tc = getTableColumn(colIndex);
-         tc.setCellEditor(jiraEditor);
-      }
-   }
-
-   private void setDefaultRenderers() {
-      setDefaultRenderer(Object.class, new MyDefaultCellRenderer(getModel()));
-      setDefaultRenderer(Integer.class, new MyDefaultCellRenderer(getModel()));
-      setDefaultRenderer(String.class, new StringTableCellRenderer(getModel()));
-      setDefaultRenderer(Boolean.class, new CheckBoxTableCellRenderer(getModel()));
+//      int colIndex = getColumnIndex(Column.Release);
+//      if (colIndex > -1) {
+//         TableColumn tc = getTableColumn(colIndex);
+//         tc.setCellEditor(new MyDefaultCellEditor(new JTextField()));
+//      }
+//      colIndex = getColumnIndex(Column.Jira);
+//      if (colIndex > -1) {
+//         jiraEditor = new JiraCellEditor(new JTextField());
+//         TableColumn tc = getTableColumn(colIndex);
+//         tc.setCellEditor(jiraEditor);
+//      }
    }
 
    public void setModel(MyTableModel model) {
@@ -432,7 +434,7 @@ public class MyTable extends JTable {
 
    public void removeColumn(Column column) {
       int colIndex = getColumnIndex(column);
-      if(colIndex < 0)
+      if (colIndex < 0)
          return;
       TableColumn tableColumn = getTableColumn(colIndex);
       tableColumns.put(column, tableColumn);
@@ -443,5 +445,68 @@ public class MyTable extends JTable {
       TableColumn tableColumn = tableColumns.get(column);
       if (tableColumn != null)
          addColumn(tableColumn);
+   }
+
+   class MyTableHighlighter extends AbstractHighlighter {
+
+      private final MyTable table;
+
+      public MyTableHighlighter(MyTable table) {
+         this.table = table;
+      }
+
+      @Override
+      protected Component doHighlight(Component component, ComponentAdapter adapter) {
+         TableAdapter adapter2 = (TableAdapter) adapter;
+         
+         boolean hasFocus = adapter.hasFocus();
+         boolean isSelected = adapter.isSelected();
+         int row = adapter2.row;
+         int column = adapter2.column;
+         
+         JComponent jComponent = null;
+         if (component instanceof JComponent){
+            jComponent = (JComponent) component;
+         } 
+         
+         if (hasFocus) {
+            component.setBackground(SwingUtil.getTableCellFocusBackground());
+            if (jComponent != null) {
+               jComponent.setBorder(SwingUtil.focusCellBorder);
+            }
+         } else if (isSelected) {
+            component.setBackground(table.getSelectionBackground());
+            if (jComponent != null) {
+               jComponent.setBorder(SwingUtil.defaultCellBorder);
+            }
+         } else {
+            component.setBackground(table.getBackground());
+            if (jComponent != null) {
+               jComponent.setBorder(SwingUtil.defaultCellBorder);
+            }
+         }
+         if (!adapter.isEditable() && !hasFocus) {
+            component.setBackground(ColorUtil.darkenColor(component.getBackground(), -75));
+         }
+
+         if (model != null) {
+            setColor(table, isSelected, hasFocus, row, column, component, model, adapter.getValue(), table);
+         }
+         
+         return component;
+      }
+
+      private void setColor(final JTable table, final boolean isSelected, final boolean hasFocus, final int row, final int column,
+            final Component cell, final MyTableModel model, final Object value, final MyTable myTable) {
+         Color color = model.getColor(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column));
+         if (color != null) {
+            if (isSelected) {
+               color = ColorUtil.darkenColor(color, -75);
+            }
+            cell.setBackground(color);
+         } else if (myTable != null && !isSelected && !hasFocus && myTable.isMarked(row)) {
+            cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -35));
+         }
+      }
    }
 }

@@ -59,5 +59,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jcommon-1.0.15.jar"/>
+	<classpathentry kind="lib" path="lib/swingx-0.9.6.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Documents and Settings/Jonas Olofsson/Desktop/swingx-0.9.6/swingx-0.9.6/docs/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/swingx-beaninfo-2009_03_29.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
