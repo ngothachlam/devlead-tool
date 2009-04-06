@@ -1,11 +1,5 @@
 package com.jonas.agile.devleadtool;
 
-import java.awt.Dimension;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.RoundRectangle2D;
-import org.jdesktop.swingx.JXBusyLabel;
-import org.jdesktop.swingx.icon.EmptyIcon;
-import org.jdesktop.swingx.painter.BusyPainter;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
