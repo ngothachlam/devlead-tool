@@ -97,8 +97,8 @@ public class JiraHttpClient extends HttpClient {
       // background)again?
       log.debug("Logging onto Jira");
       PostMethod loginMethod = new PostMethod(baseUrl + "/login.jsp");
-      loginMethod.addParameter("os_username", "soaptester");
-      loginMethod.addParameter("os_password", "soaptester");
+      loginMethod.addParameter("os_username", "jonasjolofsson");
+      loginMethod.addParameter("os_password", "password");
       executeMethod(loginMethod);
       throwJiraExceptionIfRequired(loginMethod);
       log.debug("Logging onto Jira Done!");
@@ -140,10 +140,16 @@ public class JiraHttpClient extends HttpClient {
    }
 
    protected List<JiraIssue> buildJirasFromXML(String string, JiraBuilder jiraBuilder, JonasXpathEvaluator jonasXpathEvaluator)
-         throws JDOMException, IOException {
+         throws IOException, JDOMException {
 //      log.debug("RSS feed responded with \"" + string + "\"");
       JonasXpathEvaluator evaluator = jonasXpathEvaluator;
-      List<Element> jiras = evaluator.getXpathElements(string);
+      List<Element> jiras;
+      try {
+         jiras = evaluator.getXpathElements(string);
+      } catch (JDOMException e) {
+         log.error(string);
+         throw e;
+      }
 
       return jiraBuilder.buildJiras(jiras);
    }

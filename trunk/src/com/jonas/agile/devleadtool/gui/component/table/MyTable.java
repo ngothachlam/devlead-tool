@@ -11,11 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.TableCellRenderer;
@@ -30,10 +28,7 @@ import org.jdesktop.swingx.decorator.Highlighter;
 import com.jonas.agile.devleadtool.gui.component.table.editor.BoardStatusCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.JiraCellEditor;
-import com.jonas.agile.devleadtool.gui.component.table.editor.MyDefaultCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.gui.component.table.renderer.CheckBoxTableCellRenderer;
-import com.jonas.agile.devleadtool.gui.component.table.renderer.StringTableCellRenderer;
 import com.jonas.agile.devleadtool.gui.listener.TableListener;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
 import com.jonas.common.ColorUtil;
@@ -94,7 +89,28 @@ public class MyTable extends JXTable {
          int[] selectedRows = getSelectedRows();
          for (int row : selectedRows) {
             unMark(row);
-            fireTableRowsUpdated(row, row);
+         }
+      }
+
+      public void changeMarkOfSelected() {
+         int[] selectedRows = getSelectedRows();
+         boolean atLeastOneMarked = false;
+         boolean atLeastOneUnMarked = false;
+         for (int row : selectedRows) {
+            if (!atLeastOneMarked && isMarked(row)) {
+               atLeastOneMarked = true;
+            } else if (!atLeastOneUnMarked && !isMarked(row)) {
+               atLeastOneUnMarked = true;
+            }
+
+            if (atLeastOneMarked && atLeastOneUnMarked) {
+               break;
+            }
+         }
+         if (atLeastOneMarked && !atLeastOneUnMarked) {
+            unMarkSelected();
+         } else if (atLeastOneMarked || atLeastOneUnMarked) {
+            markSelected();
          }
       }
 
@@ -112,7 +128,7 @@ public class MyTable extends JXTable {
          case KeyEvent.VK_M:
             if (allowMarking && e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
                log.debug("backspace and mark");
-               markSelected();
+               changeMarkOfSelected();
             }
             break;
          case KeyEvent.VK_ESCAPE:
@@ -335,6 +351,10 @@ public class MyTable extends JXTable {
       marker.markSelected();
    }
 
+   public void changeMarkOfSelected() {
+      marker.changeMarkOfSelected();
+   }
+
    private void notifyAllListenersThatJiraWasRemoved(String jira) {
       for (TableListener listener : listeners) {
          listener.jiraRemoved(jira);
@@ -373,17 +393,17 @@ public class MyTable extends JXTable {
       JComboBox combo = new JComboBox(BoardStatusValue.values());
       setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
 
-//      int colIndex = getColumnIndex(Column.Release);
-//      if (colIndex > -1) {
-//         TableColumn tc = getTableColumn(colIndex);
-//         tc.setCellEditor(new MyDefaultCellEditor(new JTextField()));
-//      }
-//      colIndex = getColumnIndex(Column.Jira);
-//      if (colIndex > -1) {
-//         jiraEditor = new JiraCellEditor(new JTextField());
-//         TableColumn tc = getTableColumn(colIndex);
-//         tc.setCellEditor(jiraEditor);
-//      }
+      // int colIndex = getColumnIndex(Column.Release);
+      // if (colIndex > -1) {
+      // TableColumn tc = getTableColumn(colIndex);
+      // tc.setCellEditor(new MyDefaultCellEditor(new JTextField()));
+      // }
+      // colIndex = getColumnIndex(Column.Jira);
+      // if (colIndex > -1) {
+      // jiraEditor = new JiraCellEditor(new JTextField());
+      // TableColumn tc = getTableColumn(colIndex);
+      // tc.setCellEditor(jiraEditor);
+      // }
    }
 
    public void setModel(MyTableModel model) {
@@ -441,17 +461,17 @@ public class MyTable extends JXTable {
       @Override
       protected Component doHighlight(Component component, ComponentAdapter adapter) {
          TableAdapter adapter2 = (TableAdapter) adapter;
-         
+
          boolean hasFocus = adapter.hasFocus();
          boolean isSelected = adapter.isSelected();
          int row = adapter2.row;
          int column = adapter2.column;
-         
+
          JComponent jComponent = null;
-         if (component instanceof JComponent){
+         if (component instanceof JComponent) {
             jComponent = (JComponent) component;
-         } 
-         
+         }
+
          if (hasFocus) {
             component.setBackground(SwingUtil.getTableCellFocusBackground());
             if (jComponent != null) {
@@ -475,7 +495,7 @@ public class MyTable extends JXTable {
          if (model != null) {
             setColor(table, isSelected, hasFocus, row, column, component, model, adapter.getValue(), table);
          }
-         
+
          return component;
       }
 
@@ -484,7 +504,7 @@ public class MyTable extends JXTable {
          Color color = model.getColor(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column));
          if (color != null) {
             if (isSelected) {
-               color = ColorUtil.darkenColor(color, -75);
+               color = ColorUtil.darkenColor(color, -55);
             }
             cell.setBackground(color);
          } else if (myTable != null && !isSelected && !hasFocus && myTable.isMarked(row)) {

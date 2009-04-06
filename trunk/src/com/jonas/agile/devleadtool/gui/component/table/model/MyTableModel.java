@@ -14,7 +14,9 @@ import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
+import com.jonas.common.ColorUtil;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
 
 class Counter {
@@ -275,7 +277,11 @@ public abstract class MyTableModel extends DefaultTableModel {
    public abstract Color getColor(Object value, int row, Column column);
 
    public Color getColor(Object value, int row, int column) {
-      return getColor(value, row, getColumn(column));
+      Color color = getColor(value, row, getColumn(column));
+      if (isMarked(row)) {
+         color = ColorUtil.darkenColor(color, -15);
+      }
+      return color;
    }
 
    final public Column getColumn(int columnNo) {

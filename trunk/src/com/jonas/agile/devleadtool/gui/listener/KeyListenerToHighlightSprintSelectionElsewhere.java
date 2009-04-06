@@ -35,7 +35,7 @@ public final class KeyListenerToHighlightSprintSelectionElsewhere extends KeyAda
    @Override
    public void keyPressed(KeyEvent e) {
       // ctrl-f for finding in the other tables!
-      if (e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK && e.getKeyCode() == KeyEvent.VK_F && !pressed) {
+      if (e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK && e.getKeyCode() == KeyEvent.VK_EQUALS && !pressed) {
          pressed = true;
          log.debug("KeyPressed Source: " + e.getSource());
          sourceTableSelectionModel.setValueIsAdjusting(true);
