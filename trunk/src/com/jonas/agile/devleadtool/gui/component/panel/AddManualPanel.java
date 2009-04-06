@@ -89,11 +89,11 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
       List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 
       addNewOldValueIfColumnIsInTable(table, Column.BoardStatus, jira, status, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, Column.Dev_Estimate, jira, estimate, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, Column.Dev_Actual, jira, actual, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, Column.DevEst, jira, estimate, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, Column.DevAct, jira, actual, newOldValues);
       addNewOldValueIfColumnIsInTable(table, Column.Release, jira, release, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, Column.Dev_Remain, jira, remainder, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, Column.QA_Estimate, jira, qaEst, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, Column.DevRem, jira, remainder, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, Column.QAEst, jira, qaEst, newOldValues);
 
       for (NewOldValues newOldValue : newOldValues) {
          if (newOldValue.isValueNew())

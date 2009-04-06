@@ -389,43 +389,43 @@ public abstract class MyTableModel extends DefaultTableModel {
       case Description:
          value = jiraIssue.getSummary();
          break;
-      case J_Type:
+      case Type:
          value = jiraIssue.getType();
          break;
-      case J_FixVersion:
+      case FixVersion:
          value = jiraIssue.getFixVersionsAsStrings();
          break;
-      case J_Status:
+      case Status:
          value = jiraIssue.getStatus();
          break;
-      case J_Resolution:
+      case Resolution:
          value = jiraIssue.getStatus() + " (" + jiraIssue.getResolution() + ")";
          break;
-      case J_BuildNo:
+      case BuildNo:
          value = jiraIssue.getBuildNo();
          break;
       case prio:
          value = jiraIssue.getLLUListPriority();
          break;
-      case J_Dev_Estimate:
+      case J_DevEst:
          value = jiraIssue.getEstimate();
          break;
-      case J_Sprint:
+      case Sprint:
          value = jiraIssue.getSprint();
          break;
-      case J_Project:
+      case Project:
          value = jiraIssue.getProjectAsString();
          break;
-      case J_Environment:
+      case Environment:
          value = jiraIssue.getEnvironment();
          break;
-      case J_Owner:
+      case Owner:
          value = jiraIssue.getOwner();
          break;
-      case J_Delivery:
+      case Delivery:
          value = jiraIssue.getDeliveryDate();
          break;
-      case J_Dev_Spent:
+      case J_DevAct:
          value = jiraIssue.getSpent();
          break;
       case Release:

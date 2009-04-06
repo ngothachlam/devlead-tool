@@ -112,11 +112,11 @@ public class PlanTableModelTest extends JonasTestCase {
       
       assertEquals("LLU-1", (String) model.getValueAt(Column.Jira, jira_one));
       assertEquals("blah1", (String) model.getValueAt(Column.Description, jira_one));
-      assertEquals("", (String) model.getValueAt(Column.J_Type, jira_one));
+      assertEquals("", (String) model.getValueAt(Column.Type, jira_one));
       
       assertEquals("LLU-2", (String) model.getValueAt(Column.Jira, jira_two));
       assertEquals("", (String) model.getValueAt(Column.Description, jira_two));
-      assertEquals("blah2", (String) model.getValueAt(Column.J_Type, jira_two));
+      assertEquals("blah2", (String) model.getValueAt(Column.Type, jira_two));
    }
    
    public void testGetEmptyRowFromPlan() {

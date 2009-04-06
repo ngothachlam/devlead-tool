@@ -10,8 +10,8 @@ import com.jonas.common.swing.SwingUtil;
 
 public class ReconciliationTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Release, Column.BoardStatus, Column.Dev_Estimate, Column.Dev_Remain,
-         Column.Dev_Actual, Column.QA_Estimate };
+   private static final Column[] columns = { Column.Jira, Column.Release, Column.BoardStatus, Column.DevEst, Column.DevRem,
+         Column.DevAct, Column.QAEst };
    private final MyTable boardTableModel;
    private Map<Integer, String> jiras = new HashMap<Integer, String>();
 
@@ -33,10 +33,10 @@ public class ReconciliationTableModel extends MyTableModel {
          break;
       case BoardStatus:
       case Release:
-      case Dev_Estimate:
-      case Dev_Remain:
-      case Dev_Actual:
-      case QA_Estimate:
+      case DevEst:
+      case DevRem:
+      case DevAct:
+      case QAEst:
          jira = jiras.get(row);
          if (!boardTableModel.isJiraPresent(jira)) {
             return null;

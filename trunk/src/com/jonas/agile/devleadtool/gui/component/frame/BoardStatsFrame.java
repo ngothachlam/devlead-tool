@@ -226,8 +226,8 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
 
       public JiraStat(String jira, MyTable boardTable, int row) {
          this.jira = jira;
-         this.devEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.Dev_Estimate, row));
-         this.qaEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.QA_Estimate, row));
+         this.devEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.DevEst, row));
+         this.qaEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.QAEst, row));
 
          BoardStatusValue boardStatus = (BoardStatusValue) boardTable.getValueAt(Column.BoardStatus, row);
 
@@ -244,7 +244,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
             this.isPreDevProgress = true;
             break;
          case InDevProgress:
-            this.remainingDevEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.Dev_Remain, row));
+            this.remainingDevEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.DevRem, row));
             this.isInDevProgress = true;
             break;
          case Approved:

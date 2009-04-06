@@ -103,6 +103,6 @@ public class MenuItem_CreateMerge extends MyMenuItem {
    private void setTableValuesForMerge(String originalJira, String fixVersionName, String mergeJiraCreated) {
       source.addJira(new JiraIssue(mergeJiraCreated, fixVersionName), true);
       source.setValueAt("For: " + originalJira, mergeJiraCreated, Column.Merge);
-      source.setValueAt("merge", mergeJiraCreated, Column.Dev_Estimate);
+      source.setValueAt("merge", mergeJiraCreated, Column.DevEst);
    }
 }
