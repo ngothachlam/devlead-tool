@@ -6,7 +6,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.gui.component.table.renderer.MyTableCellRenderer;
 
 public class MyDefaultCellRenderer extends DefaultTableCellRenderer implements TableCellRenderer {
 
