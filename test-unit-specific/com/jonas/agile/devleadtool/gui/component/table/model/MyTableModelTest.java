@@ -65,7 +65,7 @@ public class MyTableModelTest extends JonasTestCase {
       Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
       columnNames.put(Column.Jira, 0);
       columnNames.put(Column.Note, 1);
-      columnNames.put(Column.J_BuildNo, 2);
+      columnNames.put(Column.BuildNo, 2);
       columnNames.put(Column.Description, 3);
 
       List convert = model.getConvertionNumbers(header, columnNames);
@@ -130,13 +130,13 @@ public class MyTableModelTest extends JonasTestCase {
 
    public void testShouldReturnFirstOccurenceInSetThatDoesNotExistInVector() {
       Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
-      columnNames.put(Column.Dev_Actual, 0);
-      columnNames.put(Column.J_BuildNo, 1);
+      columnNames.put(Column.DevAct, 0);
+      columnNames.put(Column.BuildNo, 1);
       columnNames.put(Column.Closed_Sprint, 2);
 
       Vector<Column> vector = new Vector<Column>();
-      vector.add(Column.J_BuildNo);
-      assertEquals(Column.Dev_Actual, model.findIndexThatDoesNotExist(columnNames, vector, 0));
+      vector.add(Column.BuildNo);
+      assertEquals(Column.DevAct, model.findIndexThatDoesNotExist(columnNames, vector, 0));
       assertEquals(Column.Closed_Sprint, model.findIndexThatDoesNotExist(columnNames, vector, 1));
       assertEquals(null, model.findIndexThatDoesNotExist(columnNames, vector, 2));
    }
@@ -155,14 +155,14 @@ public class MyTableModelTest extends JonasTestCase {
       Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
       columnNames.put(Column.Jira, 0);
       columnNames.put(Column.Description, 1);
-      columnNames.put(Column.J_BuildNo, 2);
-      columnNames.put(Column.J_FixVersion, 3);
+      columnNames.put(Column.BuildNo, 2);
+      columnNames.put(Column.FixVersion, 3);
 
       Vector<Column> result = model.sortHeaderBasedOnList(originalList, mixedRowVector, columnNames);
       assertEquals(Column.Jira, result.get(0));
-      assertEquals(Column.J_BuildNo, result.get(1));
+      assertEquals(Column.BuildNo, result.get(1));
       assertEquals(Column.Description, result.get(2));
-      assertEquals(Column.J_FixVersion, result.get(3));
+      assertEquals(Column.FixVersion, result.get(3));
       assertEquals(4, result.size());
 
    }
@@ -215,9 +215,9 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals(1, model.getColumnIndex(Column.Description));
       assertEquals(2, model.getColumnIndex(Column.prio));
       assertEquals(3, model.getColumnIndex(Column.Note));
-      assertEquals(4, model.getColumnIndex(Column.J_BuildNo));
-      assertEquals(5, model.getColumnIndex(Column.J_Dev_Estimate));
-      assertEquals(6, model.getColumnIndex(Column.Dev_Estimate));
+      assertEquals(4, model.getColumnIndex(Column.BuildNo));
+      assertEquals(5, model.getColumnIndex(Column.J_DevEst));
+      assertEquals(6, model.getColumnIndex(Column.DevEst));
       assertEquals(-1, model.getColumnIndex(Column.BoardStatus));
    }
 
@@ -246,9 +246,9 @@ public class MyTableModelTest extends JonasTestCase {
       assertModelRow("Summary1", Column.Description, 1, 0);
       assertModelRow(5800, Column.prio, 2, 0);
       assertModelRow("", Column.Note, 3, 0);
-      assertModelRow("BuildNo1", Column.J_BuildNo, 4, 0);
-      assertModelRow("1.4", Column.J_Dev_Estimate, 5, 0);
-      assertModelRow("", Column.Dev_Estimate, 6, 0);
+      assertModelRow("BuildNo1", Column.BuildNo, 4, 0);
+      assertModelRow("1.4", Column.J_DevEst, 5, 0);
+      assertModelRow("", Column.DevEst, 6, 0);
    }
 
    private void assertModelRow(Object string, Column column, int col, int row) {
@@ -264,19 +264,19 @@ public class MyTableModelTest extends JonasTestCase {
       JiraVersion fixVersion = new JiraVersion("",  JiraProject.LLU, "", false);
       jiraIssue.addFixVersions(fixVersion);
       assertEquals("KEY", model.getValueFromIssue(jiraIssue, Column.Jira));
-      assertEquals("type", model.getValueFromIssue(jiraIssue, Column.J_Type));
+      assertEquals("type", model.getValueFromIssue(jiraIssue, Column.Type));
       assertEquals("summary", model.getValueFromIssue(jiraIssue, Column.Description));
-      Object fixVersions = model.getValueFromIssue(jiraIssue, Column.J_FixVersion);
+      Object fixVersions = model.getValueFromIssue(jiraIssue, Column.FixVersion);
       assertTrue(fixVersions instanceof String);
       assertEquals("", fixVersions.toString());
-      assertEquals("status", model.getValueFromIssue(jiraIssue, Column.J_Status));
-      assertEquals("status (resolution)", model.getValueFromIssue(jiraIssue, Column.J_Resolution));
-      assertEquals("buildNo", model.getValueFromIssue(jiraIssue, Column.J_BuildNo));
+      assertEquals("status", model.getValueFromIssue(jiraIssue, Column.Status));
+      assertEquals("status (resolution)", model.getValueFromIssue(jiraIssue, Column.Resolution));
+      assertEquals("buildNo", model.getValueFromIssue(jiraIssue, Column.BuildNo));
       assertEquals(1, model.getValueFromIssue(jiraIssue, Column.prio));
-      assertEquals("estimate", model.getValueFromIssue(jiraIssue, Column.J_Dev_Estimate));
-      assertEquals("sprint", model.getValueFromIssue(jiraIssue, Column.J_Sprint));
-      assertEquals(null, model.getValueFromIssue(jiraIssue, Column.J_Dev_Spent));
-      assertEquals("environment", model.getValueFromIssue(jiraIssue, Column.J_Environment));
-      assertEquals("owner", model.getValueFromIssue(jiraIssue, Column.J_Owner));
+      assertEquals("estimate", model.getValueFromIssue(jiraIssue, Column.J_DevEst));
+      assertEquals("sprint", model.getValueFromIssue(jiraIssue, Column.Sprint));
+      assertEquals(null, model.getValueFromIssue(jiraIssue, Column.J_DevAct));
+      assertEquals("environment", model.getValueFromIssue(jiraIssue, Column.Environment));
+      assertEquals("owner", model.getValueFromIssue(jiraIssue, Column.Owner));
    }
 }

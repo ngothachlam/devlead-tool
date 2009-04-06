@@ -14,8 +14,8 @@ import com.jonas.common.swing.SwingUtil;
 
 public class BoardTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Resolution, Column.Release, Column.Merge,
-         Column.BoardStatus, Column.Old, Column.Dev_Estimate, Column.Dev_Remain, Column.Dev_Actual, Column.QA_Estimate, Column.prio, Column.Note };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.Resolution, Column.Release, Column.Merge,
+         Column.BoardStatus, Column.Old, Column.DevEst, Column.DevRem, Column.DevAct, Column.QAEst, Column.prio, Column.Note };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
 
@@ -38,7 +38,7 @@ public class BoardTableModel extends MyTableModel {
       }
       
       switch (column) {
-      case J_Resolution:
+      case Resolution:
          stringValue = (String) value;
          if (!isEmptyString(stringValue)) {
             BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(Column.BoardStatus, row);
@@ -48,7 +48,7 @@ public class BoardTableModel extends MyTableModel {
             }
          }
          break;
-      case Dev_Remain:
+      case DevRem:
          stringValue = (String) value;
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
@@ -59,13 +59,13 @@ public class BoardTableModel extends MyTableModel {
             if (!isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
                setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value!");
                return SwingUtil.cellRed;
-            } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(Column.Dev_Estimate, row))) {
+            } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(Column.DevEst, row))) {
                setToolTipText(row, getColumnIndex(column), "Cannot be numeric if Dev Estimate is not!");
                return SwingUtil.cellRed;
             }
          }
          break;
-      case Dev_Estimate:
+      case DevEst:
          stringValue = (String) value;
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevEstimates())) {
@@ -76,7 +76,7 @@ public class BoardTableModel extends MyTableModel {
 
          }
          break;
-      case Dev_Actual:
+      case DevAct:
          stringValue = (String) value;
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevActuals())) {
@@ -90,7 +90,7 @@ public class BoardTableModel extends MyTableModel {
             }
          }
          break;
-      case QA_Estimate:
+      case QAEst:
          stringValue = (String) value;
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredQAEstimates())) {

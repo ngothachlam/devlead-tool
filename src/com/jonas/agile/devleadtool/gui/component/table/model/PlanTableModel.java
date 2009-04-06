@@ -12,7 +12,7 @@ import com.jonas.jira.JiraVersion;
 public class PlanTableModel extends MyTableModel {
 
    private Logger log = MyLogger.getLogger(PlanTableModel.class);
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Type, Column.Release, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.Dev_Estimate, Column.QA_Estimate, Column.Dev_Actual, Column.Note };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.Release, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.DevEst, Column.QAEst, Column.DevAct, Column.Note };
 
    public PlanTableModel() {
       super(columns);

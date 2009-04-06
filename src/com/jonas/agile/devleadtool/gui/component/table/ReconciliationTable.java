@@ -21,11 +21,11 @@ public class ReconciliationTable extends MyTable {
          BoardStatusValue status) {
       this.addJira(jira, false);
       int row = this.getRowWithJira(jira);
-      this.setValueAt(devEst, row, Column.Dev_Estimate);
-      this.setValueAt(devAct, row, Column.Dev_Actual);
+      this.setValueAt(devEst, row, Column.DevEst);
+      this.setValueAt(devAct, row, Column.DevAct);
       this.setValueAt(release, row, Column.Release);
-      this.setValueAt(remainder, row, Column.Dev_Remain);
-      this.setValueAt(qaEst, row, Column.QA_Estimate);
+      this.setValueAt(remainder, row, Column.DevRem);
+      this.setValueAt(qaEst, row, Column.QAEst);
       this.setValueAt(status, row, Column.BoardStatus);
    }
 

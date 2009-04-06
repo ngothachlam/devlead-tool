@@ -7,7 +7,7 @@ import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 
 public class TestTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.prio, Column.Note, Column.J_BuildNo, Column.J_Dev_Estimate, Column.Dev_Estimate};
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.prio, Column.Note, Column.BuildNo, Column.J_DevEst, Column.DevEst};
 
    public TestTableModel() {
       super(columns);

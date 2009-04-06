@@ -17,8 +17,8 @@ public class JiraTableModel extends MyTableModel {
       nonAcceptedJiraFields.add("TBD");
    }
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.J_Type, Column.J_Sprint, Column.J_Project,
-         Column.J_FixVersion, Column.J_Owner, Column.J_Environment, Column.J_Delivery, Column.J_Resolution, Column.J_BuildNo, Column.J_Dev_Estimate, Column.J_Dev_Spent };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.Sprint, Column.Project,
+         Column.FixVersion, Column.Owner, Column.Environment, Column.Delivery, Column.Resolution, Column.BuildNo, Column.J_DevEst, Column.J_DevAct };
 
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
@@ -64,37 +64,37 @@ public class JiraTableModel extends MyTableModel {
       case Jira:
          setToolTipText(row, getColumnIndex(column), "Exists in the board!");
          return SwingUtil.cellGreen;
-      case J_FixVersion:
+      case FixVersion:
          if (!isFixVersionOk(boardModel.getValueAt(Column.Release, jiraRowInBoardModel), value)) {
             setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value or it is TBD!");
             return SwingUtil.cellRed;
          }
          break;
-      case J_Sprint:
+      case Sprint:
          if (!isSprintOk(boardModel.getValueAt(Column.BoardStatus, jiraRowInBoardModel), value)) {
             setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
             return SwingUtil.cellRed;
          }
          break;
-      case J_Project:
+      case Project:
          if (!isProjectOk(value)) {
             setToolTipText(row, getColumnIndex(column), "Should not be empty!");
             return SwingUtil.cellRed;
          }
          break;
-      case J_Dev_Estimate:
-         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Estimate, jiraRowInBoardModel), value)) {
+      case J_DevEst:
+         if (!isJiraNumberOk(boardModel.getValueAt(Column.DevEst, jiraRowInBoardModel), value)) {
             setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
             return SwingUtil.cellRed;
          }
          break;
-      case J_Dev_Spent:
-         if (!isJiraNumberOk(boardModel.getValueAt(Column.Dev_Actual, jiraRowInBoardModel), value)) {
+      case J_DevAct:
+         if (!isJiraNumberOk(boardModel.getValueAt(Column.DevAct, jiraRowInBoardModel), value)) {
             setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
             return SwingUtil.cellRed;
          }
          break;
-      case J_Delivery:
+      case Delivery:
          if (false) {
             setToolTipText(row, getColumnIndex(column), "Not implemented yet!!");
             return SwingUtil.cellRed;
