@@ -109,6 +109,7 @@ public abstract class AbstractAddPanel extends MyPanel {
 
       for (MyTable myTable : tables) {
          TableRadioButton tableRadioButton = new TableRadioButton(myTable.getTitle(), myTable);
+         tableRadioButton.setMnemonic(myTable.getTitle().charAt(0));
          group.add(tableRadioButton);
          panel.add(tableRadioButton);
       }

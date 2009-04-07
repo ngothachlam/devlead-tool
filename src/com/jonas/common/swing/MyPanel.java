@@ -122,9 +122,9 @@ public class MyPanel extends JPanel {
       return textField;
    }
    
-   public JTextField addTextField(JPanel buttons, int textFieldLength, Object constraint, JLabel label, int displayMnemonic) {
+   public JTextField addTextField(JPanel buttons, int textFieldLength, Object constraint, JLabel label, char displayMnemonic) {
       JTextField textField = addTextField(buttons, textFieldLength, constraint);
-      textField.setRequestFocusEnabled(true);
+//      textField.setRequestFocusEnabled(true);
       label.setLabelFor(textField);
       label.setDisplayedMnemonic(displayMnemonic);
       return textField;
