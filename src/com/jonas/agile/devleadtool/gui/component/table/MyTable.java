@@ -203,7 +203,7 @@ public class MyTable extends JXTable {
          markJira(jira);
    }
 
-   public void addJira(String jira, Map<Column, Object> map, boolean markIt) {
+   void addJira(String jira, Map<Column, Object> map, boolean markIt) {
       model.addJira(jira, map);
       if (markIt)
          markJira(jira);
@@ -488,7 +488,9 @@ public class MyTable extends JXTable {
 
       private void setColor(final JTable table, final boolean isSelected, final boolean hasFocus, final int row, final int column,
             final Component cell, final MyTableModel model, final Object value, final MyTable myTable) {
-         Color color = model.getColor(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column));
+         ColorDTO colorDTO = model.getColor(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column));
+
+         Color color = colorDTO.getColor();
          if (color != null) {
             if (isSelected) {
                color = ColorUtil.darkenColor(color, -55);
@@ -497,6 +499,21 @@ public class MyTable extends JXTable {
          } else if (myTable != null && !isSelected && !hasFocus && myTable.isMarked(row)) {
             cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -35));
          }
+
+         if (colorDTO.isMarked()) {
+            cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -25));
+         }
       }
    }
+
+   public void addJiraAndMarkIfNew(JiraIssue jiraIssue) {
+      boolean toMark = !isJiraPresent(jiraIssue.getKey());
+      addJira(jiraIssue, toMark);
+   }
+
+   public void addJiraAndMarkIfNew(String jiraString, Map<Column, Object> map) {
+      boolean markIt = !isJiraPresent(jiraString);
+      addJira(jiraString, map, markIt);
+   }
+
 }

@@ -84,7 +84,9 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
       }
       if (!table.isJiraPresent(jira)) {
          table.addJira(jira, true);
-      } 
+      } else{
+         table.markJira(jira);
+      }
 
       List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 

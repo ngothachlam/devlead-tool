@@ -101,6 +101,8 @@ public class SyncWithJiraListener implements ActionListener {
          final int[] rows = table.getSelectedRows();
          dialog.increaseMax("Syncing...", rows.length);
          try {
+            helper.login();
+            int breakNo = 0;
             for (int row : rows) {
                if (isCancelled())
                   break;
@@ -113,8 +115,11 @@ public class SyncWithJiraListener implements ActionListener {
                try {
                   jira = helper.getJiraIssueFromName(jiraToGet, new JiraListenerImpl(dialog, jiraToGet));
                } catch (Exception e) {
+                  breakNo++;
                   AlertDialog.alertException(helper.getParentFrame(), e);
                   e.printStackTrace();
+                  if (breakNo >= 2)
+                     break;
                   continue;
                }
                log.debug("jiraToGet: " + jiraToGet + " jira: " + jira.getKey() + " rowSelected: " + row);

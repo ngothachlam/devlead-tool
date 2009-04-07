@@ -12,6 +12,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.gui.component.table.ColorDTO;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
 import com.jonas.common.ColorUtil;
@@ -105,6 +106,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
       public void mark(int row) {
          marked.put(row, Boolean.TRUE);
+         fireTableRowsUpdated(row, row);
       }
 
       @Override
@@ -140,6 +142,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
       public void unMark(int row) {
          marked.put(row, Boolean.FALSE);
+         fireTableRowsUpdated(row, row);
       }
    }
 
@@ -276,12 +279,9 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    public abstract Color getColor(Object value, int row, Column column);
 
-   public Color getColor(Object value, int row, int column) {
+   public ColorDTO getColor(Object value, int row, int column) {
       Color color = getColor(value, row, getColumn(column));
-      if (isMarked(row)) {
-         color = ColorUtil.darkenColor(color, -15);
-      }
-      return color;
+      return new ColorDTO(color, isMarked(row));
    }
 
    final public Column getColumn(int columnNo) {

@@ -213,8 +213,7 @@ class AddVersionPanel extends MyPanel {
          MyTable table = getSelectedTable();
          log.debug("Adding jira to table " + jiraIssue.getKey());
          if (table != null) {
-            boolean toMark = !table.isJiraPresent(jiraIssue.getKey());
-            table.addJira(jiraIssue, toMark);
+            table.addJiraAndMarkIfNew(jiraIssue);
          }
       }
 

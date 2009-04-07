@@ -154,8 +154,7 @@ public class AddFilterDialog extends JFrame {
          int i = 0;
          publish("Adding Jiras to table!");
          for (JiraIssue jiraIssue : jiras) {
-            boolean toMark = !table.isJiraPresent(jiraIssue.getKey());
-            table.addJira(jiraIssue, toMark);
+            table.addJiraAndMarkIfNew(jiraIssue);
             i++;
          }
          publish(i + "Jiras Added to table finished!");

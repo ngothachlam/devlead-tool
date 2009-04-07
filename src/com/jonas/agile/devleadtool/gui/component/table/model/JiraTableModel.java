@@ -137,8 +137,8 @@ public class JiraTableModel extends MyTableModel {
       }
 
       String jiraFixVersions = jiraValue.toString();
-      String boardValueAsString = (String) boardValue;
-      return jiraFixVersions.equals(boardValueAsString);
+      String boardValueAsString = boardValue.toString();
+      return jiraFixVersions.equalsIgnoreCase(boardValueAsString);
    }
 
    boolean isJiraNumberOk(Object boardValue, Object jiraValue) {
