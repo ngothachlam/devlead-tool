@@ -30,97 +30,31 @@ import com.jonas.common.logging.MyLogger;
 public class PlannerDAOExcelImpl implements PlannerDAO {
 
    private static Map<File, HSSFWorkbook> fileOrganiser = new HashMap<File, HSSFWorkbook>();
-   private Logger log = MyLogger.getLogger(PlannerDAOExcelImpl.class);
-   private File xlsFile;
    private List<DaoListener> listeners = new ArrayList<DaoListener>();
-   private int savesNow = 0;
    private int loadingNow = 0;
+   private Logger log = MyLogger.getLogger(PlannerDAOExcelImpl.class);
+   private int savesNow = 0;
+   private File xlsFile;
 
    public PlannerDAOExcelImpl() {
       super();
    }
 
-   public File getXlsFile() {
-      return xlsFile;
-   }
-
-   @Override
-   public CombinedModelDTO loadModels() throws IOException {
-      notifyLoadingStarted();
-      TableModelDTO dto = loadModel(xlsFile, "board");
-      BoardTableModel boardModel = new BoardTableModel(dto.getContents(), dto.getHeader());
-      dto = loadModel(xlsFile, "jira");
-      JiraTableModel jiraModel = new JiraTableModel(dto.getContents(), dto.getHeader());
-      notifyLoadingFinished();
-      return new CombinedModelDTO(boardModel, jiraModel);
-   }
-
-   @Override
-   public void saveModels(MyTableModel boardModel, MyTableModel jiraModel) throws IOException {
-      notifySavingStarted();
-      saveModel(xlsFile, boardModel, "board");
-      saveModel(xlsFile, jiraModel, "jira");
-      notifySavingFinished();
-   }
-
-   @Override
-   public void setXlsFile(File xlsFile) {
-      this.xlsFile = xlsFile;
-   }
-
-   private void saveModel(File xlsFile, MyTableModel model, String sheetName) throws IOException {
-      notifyListeners(DaoListenerEvent.SavingModelStarted, "Saving " + sheetName + " Started");
-      FileOutputStream fileOut = null;
-      try {
-         log.debug("Saving to " + xlsFile.getAbsolutePath());
-         HSSFWorkbook wb = getWorkBook(xlsFile);
-         HSSFSheet sheet = getSheet(sheetName, wb);
-
-         // HSSFCellStyle style_red_background = wb.createCellStyle();
-         // style_red_background.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-         // style_red_background.setFillForegroundColor(new HSSFColor.RED().getIndex());
-
-         // save column Headers
-         HSSFRow row = sheet.createRow((short) 0);
-         for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
-            HSSFCell cell = row.createCell((short) colCount);
-            Object valueAt = model.getColumnName(colCount);
-            cell.setCellValue(new HSSFRichTextString((String) valueAt));
-         }
-
-         // save all data rows...
-         for (int rowCount = 0; rowCount < model.getRowCount(); rowCount++) {
-            row = sheet.createRow((short) rowCount + 1);
-            for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
-               HSSFCell cell = row.createCell((short) colCount);
-               Object valueAt = model.getValueAt(rowCount, colCount);
-               log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
-               
-               Column column = model.getColumn(colCount);
-               valueAt = column.parseToPersistanceStore(valueAt);
-               
-               if (valueAt == null)
-                  cell.setCellValue(new HSSFRichTextString(""));
-               else if (valueAt instanceof Boolean) {
-                  cell.setCellValue(((Boolean) valueAt).booleanValue());
-               } else if (valueAt instanceof Double) {
-                  cell.setCellValue(((Double) valueAt).doubleValue());
-               } else if (valueAt instanceof Float) {
-                  cell.setCellValue(((Float) valueAt).floatValue());
-               } else {
-                  cell.setCellValue(new HSSFRichTextString(valueAt.toString()));
-               }
-            }
-         }
-
-         fileOut = new FileOutputStream(xlsFile);
-         //FIXME if the excel sheet is already open - this throws FileNotFoundException and thus fails
-         wb.write(fileOut);
-      } catch(Throwable t){
-         t.printStackTrace();
-      } finally {
-         fileOut.close();
+   private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, Object cellContents) {
+      Column column = columns.get(colCount);
+      log.debug("\tColumn " + column + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \""
+            + cellContents + "\"!");
+      Object parsed = null;
+      if (column.isToLoad()) {
+         parsed = column.parseFromPersistanceStore(cellContents);
+         rowData.add(parsed);
       }
+   }
+
+   @Override
+   public void addListener(DaoListener daoListener) {
+      log.debug("adding Listener");
+      listeners.add(daoListener);
    }
 
    protected HSSFSheet getSheet(String sheetName, HSSFWorkbook wb) {
@@ -138,7 +72,11 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       return workbook;
    }
 
-   TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException {
+   public File getXlsFile() {
+      return xlsFile;
+   }
+
+   TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException, PersistanceException {
       log.debug("Loading Model from " + xlsFile.getAbsolutePath() + " and sheet: " + sheetName);
       notifyListeners(DaoListenerEvent.LoadingModelStarted, "Loading " + sheetName + " Started");
 
@@ -188,14 +126,143 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       return dataModelDTO;
    }
 
+   @Override
+   public CombinedModelDTO loadModels() throws IOException, PersistanceException {
+      notifyLoadingStarted();
+      BoardTableModel boardModel = null;
+      JiraTableModel jiraModel = null;
+      try {
+         TableModelDTO dto = loadModel(xlsFile, "board");
+         boardModel = new BoardTableModel(dto.getContents(), dto.getHeader());
+         dto = loadModel(xlsFile, "jira");
+         jiraModel = new JiraTableModel(dto.getContents(), dto.getHeader());
+      } catch (IOException e) {
+         notifyListeners(DaoListenerEvent.LoadingErrored, "Exception occured! " + e.getMessage());
+         e.printStackTrace();
+         throw e;
+      } catch (PersistanceException e) {
+         notifyListeners(DaoListenerEvent.LoadingErrored, "Exception occured! " + e.getMessage());
+         e.printStackTrace();
+         throw e;
+      } catch (RuntimeException e) {
+         notifyListeners(DaoListenerEvent.LoadingErrored, "Exception occured! " + e.getMessage());
+         e.printStackTrace();
+         throw e;
+      }
+      notifyLoadingFinished();
+      return new CombinedModelDTO(boardModel, jiraModel);
+   }
+
+   public void notifyListeners(DaoListenerEvent event, String message) {
+      for (DaoListener listener : listeners) {
+         listener.notify(event, message);
+      }
+   }
+
+   private void notifyLoadingFinished() {
+      notifyLoadingFinished("Loading Finished!");
+   }
+
+   private void notifyLoadingFinished(String message) {
+      if (--loadingNow == 00) {
+         notifyListeners(DaoListenerEvent.LoadingFinished, message);
+      }
+   }
+
+   private void notifyLoadingStarted() {
+      if (loadingNow++ == 0) {
+         notifyListeners(DaoListenerEvent.LoadingStarted, "Loading Started!");
+      }
+   }
+
+   private void notifySavingFinished(final String message) {
+      if (--savesNow == 0) {
+         notifyListeners(DaoListenerEvent.SavingFinished, message);
+      }
+   }
+
+   private void notifySavingStarted() {
+      if (savesNow++ == 0) {
+         notifyListeners(DaoListenerEvent.SavingStarted, "Saving Started!");
+      }
+   }
+
+   @Override
+   public void removeListener(DaoListener daoListener) {
+      listeners.remove(daoListener);
+   }
+
+   private void saveModel(File xlsFile, MyTableModel model, String sheetName) throws IOException {
+      notifyListeners(DaoListenerEvent.SavingModelStarted, "Saving " + sheetName + " Started");
+      FileOutputStream fileOut = null;
+      try {
+         log.debug("Saving to " + xlsFile.getAbsolutePath());
+         HSSFWorkbook wb = getWorkBook(xlsFile);
+         HSSFSheet sheet = getSheet(sheetName, wb);
+
+         // HSSFCellStyle style_red_background = wb.createCellStyle();
+         // style_red_background.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+         // style_red_background.setFillForegroundColor(new HSSFColor.RED().getIndex());
+
+         // save column Headers
+         HSSFRow row = sheet.createRow((short) 0);
+         for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
+            HSSFCell cell = row.createCell((short) colCount);
+            Object valueAt = model.getColumnName(colCount);
+            cell.setCellValue(new HSSFRichTextString((String) valueAt));
+         }
+
+         // save all data rows...
+         for (int rowCount = 0; rowCount < model.getRowCount(); rowCount++) {
+            row = sheet.createRow((short) rowCount + 1);
+            for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
+               HSSFCell cell = row.createCell((short) colCount);
+               Object valueAt = model.getValueAt(rowCount, colCount);
+               log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
+
+               Column column = model.getColumn(colCount);
+               valueAt = column.parseToPersistanceStore(valueAt);
+
+               if (valueAt == null)
+                  cell.setCellValue(new HSSFRichTextString(""));
+               else if (valueAt instanceof Boolean) {
+                  cell.setCellValue(((Boolean) valueAt).booleanValue());
+               } else if (valueAt instanceof Double) {
+                  cell.setCellValue(((Double) valueAt).doubleValue());
+               } else if (valueAt instanceof Float) {
+                  cell.setCellValue(((Float) valueAt).floatValue());
+               } else {
+                  cell.setCellValue(new HSSFRichTextString(valueAt.toString()));
+               }
+            }
+         }
+
+         fileOut = new FileOutputStream(xlsFile);
+         // FIXME if the excel sheet is already open - this throws FileNotFoundException and thus fails
+         wb.write(fileOut);
+      } catch (Throwable t) {
+         t.printStackTrace();
+      } finally {
+         fileOut.close();
+      }
+   }
+
+   @Override
+   public void saveModels(MyTableModel boardModel, MyTableModel jiraModel) throws IOException {
+      notifySavingStarted();
+      saveModel(xlsFile, boardModel, "board");
+      saveModel(xlsFile, jiraModel, "jira");
+      notifySavingFinished("Saving Finished!");
+   }
+
    private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, Column> columns, Vector<Object> rowData, int colCount,
-         Object cellContents) {
+         Object cellContents) throws PersistanceException {
       if (rowCount == 0) {
          log.debug("\tHeader!");
          Column column = Column.getEnum(cellContents);
          if (column == null) {
-            throw new NullPointerException("Failed to add column (" + cellContents + ") to " + colCount + " of type " + column + " (size is "
-                  + columns.size() + ")");
+            throw new PersistanceException("Found column " + cellContents
+                  + " in file, but there is no such column representation. Update it to one of " + getStringOfColumns());
          }
          columns.put(colCount, column);
          if (column.isToLoad())
@@ -205,60 +272,22 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       }
    }
 
-   private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, Object cellContents) {
-      Column column = columns.get(colCount);
-      log.debug("\tColumn " + column + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \""
-            + cellContents + "\"!");
-      Object parsed = null;
-      if (column.isToLoad()) {
-         parsed = column.parseFromPersistanceStore(cellContents);
-         rowData.add(parsed);
+   private String getStringOfColumns() {
+      Column[] values = Column.values();
+      StringBuffer sb = new StringBuffer("(");
+      if(values.length >0){
+         sb.append(values[0]);
       }
-   }
-
-   public void notifyListeners(DaoListenerEvent event, String message) {
-      for (DaoListener listener : listeners) {
-         listener.notify(event, message);
+      for (int i = 1; i < values.length; i++) {
+         Column column = values[i];
+         sb.append(",").append(column);
       }
+      sb.append(")");
+      return sb.toString();
    }
 
    @Override
-   public void addListener(DaoListener daoListener) {
-      log.debug("adding Listener");
-      listeners.add(daoListener);
-   }
-
-   @Override
-   public void removeListener(DaoListener daoListener) {
-      log.debug("removing Listener");
-      listeners.remove(daoListener);
-   }
-
-   private void notifyLoadingFinished() {
-      if (--loadingNow == 00) {
-         log.debug("notifyLoadingFinished");
-         notifyListeners(DaoListenerEvent.LoadingFinished, "Loading Finished!");
-      }
-   }
-
-   private void notifyLoadingStarted() {
-      if (loadingNow++ == 0) {
-         log.debug("notifyLoadingStarted");
-         notifyListeners(DaoListenerEvent.LoadingStarted, "Loading Started!");
-      }
-   }
-
-   private void notifySavingFinished() {
-      if (--savesNow == 0) {
-         log.debug("notifySavingFinished");
-         notifyListeners(DaoListenerEvent.SavingFinished, "Saving Finished!");
-      }
-   }
-
-   private void notifySavingStarted() {
-      if (savesNow++ == 0) {
-         log.debug("notifySavingStarted");
-         notifyListeners(DaoListenerEvent.SavingStarted, "Saving Started!");
-      }
+   public void setXlsFile(File xlsFile) {
+      this.xlsFile = xlsFile;
    }
 }

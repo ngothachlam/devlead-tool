@@ -11,7 +11,7 @@ import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Mark;
 import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Print;
 import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Remove;
 import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Rollforwards;
-import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Sync;
+import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_DownLoadJiraInfo;
 import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_UnMark;
 import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_UnSelect;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
@@ -38,7 +38,7 @@ public class MyTablePopupMenu extends MyPopupMenu {
       addMenuItem_Copys(source, parentFrame, tables);
       addSeparator();
       add(new MenuItem_Default("Open in Browser", new OpenJirasListener(sourceTable, parentFrame), parentFrame));
-      add(new MenuItem_Sync(sourceTable, helper));
+      add(new MenuItem_DownLoadJiraInfo(sourceTable, helper));
       addSeparator();
       add(new MenuItem_Rollforwards(sourceTable, helper));
       add(new MenuItem_CreateMerge("Create Merge", source, parentFrame));

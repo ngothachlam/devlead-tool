@@ -4,7 +4,7 @@ import com.jonas.jira.JiraIssue;
 
 public interface SyncWithJiraActionListenerListener {
 
-   public void jiraSynced(JiraIssue jira, int tableRowSynced);
-   public void jiraAdded(JiraIssue jiraIssue);
+   public void jiraSynced(JiraIssue jira);
+   public void jiraAdded(JiraIssue jira);
 
 }

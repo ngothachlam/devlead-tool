@@ -39,6 +39,9 @@ public abstract class AbstractInternalFrameCreatorSwingthread extends SwingWorke
    protected void done() {
       try {
          CombinedModelDTO dto = get();
+         if (dto == null){
+            return;
+         }
          MyInternalFrameInnerPanel internalFrameTabPanel = new MyInternalFrameInnerPanel(helper, dto.getBoardModel(), dto.getJiraModel());
          MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog,
                saveKeyListener, desktopPane);

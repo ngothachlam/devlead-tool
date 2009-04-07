@@ -52,9 +52,9 @@ public class SyncWithJiraListener implements ActionListener {
       listeners.remove(listener);
    }
 
-   private void notifyThatJiraSynced(JiraIssue jira, int tableRowSynced) {
+   private void notifyThatJiraSynced(JiraIssue jira) {
       for (SyncWithJiraActionListenerListener listener : listeners) {
-         listener.jiraSynced(jira, tableRowSynced);
+         listener.jiraSynced(jira);
       }
    }
 
@@ -123,7 +123,7 @@ public class SyncWithJiraListener implements ActionListener {
                   continue;
                }
                log.debug("jiraToGet: " + jiraToGet + " jira: " + jira.getKey() + " rowSelected: " + row);
-               notifyThatJiraSynced(jira, row);
+               notifyThatJiraSynced(jira);
             }
          } catch (Exception e) {
             AlertDialog.alertException(helper.getParentFrame(), e);

@@ -149,14 +149,14 @@ public abstract class MyTableModel extends DefaultTableModel {
    protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
    protected Counter counter = new Counter();
    protected boolean editable = true;
+   private Map<String, String> extraToolTipText = new HashMap<String, String>();
+
    private Logger log = MyLogger.getLogger(MyTableModel.class);
 
    private ModelMarker modelMarkerDelegator;
 
    private boolean renderColors = false;
-
    private TableModelListenerAlerter tableModelListenerAlerter;
-   private Map<String, String> extraToolTipText = new HashMap<String, String>();
 
    protected MyTableModel(Column[] columns) {
       super(columns, 0);
@@ -187,8 +187,14 @@ public abstract class MyTableModel extends DefaultTableModel {
       this.addRow(getEmptyRow());
    }
 
-   public void addJira(JiraIssue jiraIssue) {
-      if (!isJiraPresent(jiraIssue.getKey())) {
+   /**
+    * 
+    * @param jiraIssue
+    * @return returns true if the jira is new to the table, otherwise false.
+    */
+   public boolean addJira(JiraIssue jiraIssue) {
+      boolean isJiraPresent = isJiraPresent(jiraIssue.getKey());
+      if (!isJiraPresent) {
          Set<Column> columnSet = columnNames.keySet();
          Vector<Object> contents = new Vector<Object>();
          for (Column column : columnSet) {
@@ -196,21 +202,32 @@ public abstract class MyTableModel extends DefaultTableModel {
          }
          super.addRow(contents);
       }
+      return !isJiraPresent;
    }
 
-   final public void addJira(String jira) {
-      jira = jira.toUpperCase();
-      if (!isJiraPresent(jira)) {
+   /**
+    * 
+    * @param jira
+    * @return returns true if the jire is new to the table, otherwise false. 
+    */
+   final public boolean addJira(String jira) {
+      boolean isJiraPresent = isJiraPresent(jira);
+      if (!isJiraPresent) {
          Object[] row = getEmptyRow();
          row[0] = jira;
          log.debug("adding Jira " + jira + " of row size: " + row.length);
          addRow(row);
       }
+      return !isJiraPresent;
    }
 
-   public void addJira(String jira, Map<Column, Object> map) {
-      // fixme - when not already in table model - raise a dialog and compare the results.
-      addJira(jira);
+   public boolean addJira(String jira, Map<Column, Object> map) {
+      boolean isJiraPresent = addJira(jira);
+      setValues(jira, map);
+      return !isJiraPresent;
+   }
+
+   private void setValues(String jira, Map<Column, Object> map) {
       int row = getRowWithJira(jira);
       for (Column column : map.keySet()) {
          Object value = map.get(column);
@@ -218,7 +235,6 @@ public abstract class MyTableModel extends DefaultTableModel {
          if (columnIndex != -1)
             setValueAt(value, row, columnIndex);
       }
-      fireTableRowsUpdated(row, row);
    }
 
    public void addJira(String jira, Map<Column, Object> map, int row) {
@@ -236,16 +252,6 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    public void clearMarked() {
       getMarker().clearMarked();
-   }
-
-   final public boolean isJiraPresent(String name) {
-      log.debug("does " + name + " exist in " + getClass());
-      for (int row = 0; row < getRowCount(); row++) {
-         if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
-            return true;
-         }
-      }
-      return false;
    }
 
    final Column findIndexThatDoesNotExist(Map<Column, Integer> columnNames, Vector<Column> realVector, int i) {
@@ -332,6 +338,10 @@ public abstract class MyTableModel extends DefaultTableModel {
          log.debug("column: " + column + " containing: " + objects[i - 1]);
       }
       return objects;
+   }
+
+   public String getExtraToolTipText(int row, int col) {
+      return extraToolTipText.get(row + "-" + col);
    }
 
    private ModelMarker getMarker() {
@@ -467,6 +477,16 @@ public abstract class MyTableModel extends DefaultTableModel {
       return editable;
    }
 
+   final public boolean isJiraPresent(String name) {
+      log.debug("does " + name + " exist in " + getClass());
+      for (int row = 0; row < getRowCount(); row++) {
+         if (name.equalsIgnoreCase(getValueAt(Column.Jira, row).toString())) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    public boolean isMarked(int row) {
       return getMarker().isMarked(row);
    }
@@ -502,12 +522,26 @@ public abstract class MyTableModel extends DefaultTableModel {
       this.addTableModelListener(listener);
    }
 
+   protected void setToolTipText(int row, int col, String string) {
+      extraToolTipText.put(row + "-" + col, string);
+   }
+
    final public void setValueAt(Object value, int rowIndex, Column column) {
       setValueAt(value, rowIndex, getColumnIndex(column));
    }
 
    final public void setValueAt(Object value, int rowIndex, int columnIndex) {
       super.setValueAt(value, rowIndex, columnIndex);
+   }
+
+   public void setValueAt(Object value, String jira, Column column) {
+      int row = getRowWithJira(jira.toUpperCase());
+      if (row < 0) {
+         log.warn("Jira " + jira + " isn't in model (" + this.getClass() + ") for setValue(" + value + "," + jira + "," + column + ")");
+         return;
+      }
+      log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\" in model " + this.getClass());
+      setValueAt(value, row, column);
    }
 
    protected boolean shouldRenderColors() {
@@ -553,39 +587,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       return result;
    }
 
-   public void syncJira(JiraIssue jiraIssue, int row) {
-      log.debug("Syncing Jira: " + jiraIssue.getKey());
-      Map<Column, Object> map = new HashMap<Column, Object>();
-      Set<Column> columns = getColumnNames().keySet();
-      for (Column column : columns) {
-         if (column.isJiraColumn()) {
-            Object valueAt = getValueFromIssue(jiraIssue, column);
-            log.debug("\tPutting " + column + " to \"" + valueAt + "\" for row " + row);
-            map.put(column, valueAt);
-         }
-      }
-      addJira(jiraIssue.getKey(), map, row);
-   }
-
    public void unMark(int row) {
       getMarker().unMark(row);
-   }
-
-   public String getExtraToolTipText(int row, int col) {
-      return extraToolTipText.get(row + "-" + col);
-   }
-
-   protected void setToolTipText(int row, int col, String string) {
-      extraToolTipText.put(row + "-" + col, string);
-   }
-
-   public void setValueAt(Object value, String jira, Column column) {
-      int row = getRowWithJira(jira.toUpperCase());
-      if (row < 0) {
-         log.warn("Jira " + jira + " isn't in model (" + this.getClass() + ") for setValue(" + value + "," + jira + "," + column + ")");
-         return;
-      }
-      log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\" in model " + this.getClass());
-      setValueAt(value, row, column);
    }
 }

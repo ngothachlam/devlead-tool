@@ -217,11 +217,11 @@ class AddVersionPanel extends MyPanel {
          }
       }
 
-      public void jiraSynced(JiraIssue jiraIssue, int tableRowSynced) {
+      public void jiraSynced(JiraIssue jiraIssue) {
          MyTable table = getSelectedTable();
          log.debug("Syncing jira to table " + jiraIssue.getKey());
          if (table != null)
-            table.syncJira(jiraIssue, tableRowSynced);
+            table.addJiraAndMarkIfNew(jiraIssue);
       }
 
       private MyTable getSelectedTable() {

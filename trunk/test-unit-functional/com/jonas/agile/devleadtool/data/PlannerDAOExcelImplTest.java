@@ -43,7 +43,7 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
       assertNotSame(wb, wb4);
    }
    
-   public void testShouldBlah() throws IOException{
+   public void testShouldBlah() throws IOException, PersistanceException{
       TableModelDTO dtoLoaded = dao.loadModel(new File("test-data\\test.xls"), "board");
 
       assertEquals(10, dtoLoaded.getHeader().size());

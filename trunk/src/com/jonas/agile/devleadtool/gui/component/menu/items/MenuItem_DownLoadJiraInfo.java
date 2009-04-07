@@ -10,8 +10,8 @@ import com.jonas.agile.devleadtool.gui.listener.SyncWithJiraActionListenerListen
 import com.jonas.agile.devleadtool.gui.listener.SyncWithJiraListener;
 import com.jonas.jira.JiraIssue;
 
-public class MenuItem_Sync extends JMenuItem {
-   public MenuItem_Sync(final MyTable sourceTable, PlannerHelper helper) {
+public class MenuItem_DownLoadJiraInfo extends JMenuItem {
+   public MenuItem_DownLoadJiraInfo(final MyTable sourceTable, PlannerHelper helper) {
       super("Dowload Jira Info");
       addActionListener(getActionListener(sourceTable, helper));
    }
@@ -20,11 +20,11 @@ public class MenuItem_Sync extends JMenuItem {
       SyncWithJiraListener actionListener = new SyncWithJiraListener(sourceTable, helper);
       SyncWithJiraActionListenerListener syncWithJiraActionListenerListener = new SyncWithJiraActionListenerListener() {
          public void jiraAdded(JiraIssue jiraIssue) {
-            sourceTable.addJira(jiraIssue, false);
+            sourceTable.addJiraAndMarkIfNew(jiraIssue);
          }
 
-         public void jiraSynced(JiraIssue jiraIssue, int tableRowSynced) {
-            sourceTable.syncJira(jiraIssue, tableRowSynced);
+         public void jiraSynced(JiraIssue jiraIssue) {
+            sourceTable.addJiraAndMarkIfNew(jiraIssue);
          }
       };
       actionListener.addListener(syncWithJiraActionListenerListener);
