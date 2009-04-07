@@ -10,8 +10,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
-import com.jonas.agile.devleadtool.gui.component.MyScrollPane;
 import com.jonas.agile.devleadtool.gui.component.menu.ReconciliationTablePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
@@ -50,7 +50,7 @@ public class ReconciliationTablePanel extends MyPanel {
       table = new ReconciliationTable(boardTable);
       new ReconciliationTablePopupMenu(table, parentFrame);
       table.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(table, boardTable));
-      MyScrollPane myScrollPane = new MyScrollPane(table);
+      JScrollPane myScrollPane = new JScrollPane(table);
       return myScrollPane;
    }
 

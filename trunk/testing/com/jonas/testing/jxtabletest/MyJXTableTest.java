@@ -33,7 +33,7 @@ public class MyJXTableTest {
       JScrollPane scrollPane = new JScrollPane(table);
       JPanel panel = new JPanel(new BorderLayout());
       panel.add(scrollPane);
-      test.viewPanel(panel);
+      test.showInFrame(panel);
    }
    
    public static void main(String[] args){

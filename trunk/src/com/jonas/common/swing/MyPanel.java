@@ -96,9 +96,15 @@ public class MyPanel extends JPanel {
       return button;
    }
 
-   public JLabel addLabel(JPanel buttons, String labelText) {
+   public JLabel addLabel(JPanel panel, String labelText) {
       JLabel label = new JLabel(labelText);
-      buttons.add(label);
+      panel.add(label);
+      return label;
+   }
+   
+   public JLabel addLabel(JPanel panel, String labelText, Object constraints) {
+      JLabel label = new JLabel(labelText);
+      panel.add(label, constraints);
       return label;
    }
 
@@ -115,11 +121,26 @@ public class MyPanel extends JPanel {
       buttons.add(textField, constraint);
       return textField;
    }
+   
+   public JTextField addTextField(JPanel buttons, int textFieldLength, Object constraint, JLabel label, int displayMnemonic) {
+      JTextField textField = addTextField(buttons, textFieldLength, constraint);
+      textField.setRequestFocusEnabled(true);
+      label.setLabelFor(textField);
+      label.setDisplayedMnemonic(displayMnemonic);
+      return textField;
+   }
 
    private void setDefaultFont(Font font) {
       defaultFont = font;
    }
 
+   public JTextArea addTextArea(JPanel buttons, int rows, int cols, Object constraint, JLabel label, char displayMnemonic) {
+      JTextArea textArea = addTextArea(buttons, rows, cols, constraint);
+      label.setLabelFor(textArea);
+      label.setDisplayedMnemonic(displayMnemonic);
+      return textArea;
+      
+   }
    public JTextArea addTextArea(JPanel buttons, int rows, int cols, Object constraint) {
       JTextArea textArea = new JTextArea(rows, cols);
       if (defaultFont == null){
@@ -139,6 +160,13 @@ public class MyPanel extends JPanel {
    public JComboBox addComboBox(JPanel buttons, Object[] boardStatusValues, Object constraint) {
       JComboBox component = new JComboBox(boardStatusValues);
       buttons.add(component, constraint);
+      return component;
+   }
+   
+   public JComboBox addComboBox(JPanel buttons, Object[] boardStatusValues, Object constraint, JLabel label, char displayMnemonic) {
+      JComboBox component = this.addComboBox(buttons, boardStatusValues, constraint);
+      label.setLabelFor(component);
+      label.setDisplayedMnemonic(displayMnemonic);
       return component;
    }
 

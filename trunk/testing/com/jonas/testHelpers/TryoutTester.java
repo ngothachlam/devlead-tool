@@ -10,7 +10,7 @@ public class TryoutTester {
 
 	private static MainFrame frame;
 
-	public static void viewPanel(JPanel panel) {
+	public static MainFrame showInFrame(JPanel panel) {
 		frame = new MainFrame("Tryout Tester Frame");
 		frame.setContentPane(panel);
 		frame.setSize(800, 400);
@@ -22,6 +22,7 @@ public class TryoutTester {
 			}
 		});
 		frame.setVisible(true);
+		return frame;
 	}
 
 	public static MainFrame getFrame() {
