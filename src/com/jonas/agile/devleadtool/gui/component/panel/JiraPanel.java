@@ -8,7 +8,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.gui.component.MyScrollPane;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.common.logging.MyLogger;
@@ -24,7 +23,7 @@ public class JiraPanel extends MyComponentPanel {
 
       table = new MyTable("Jira", jiraModel, false);
 
-      JScrollPane scrollpane = new MyScrollPane(table);
+      JScrollPane scrollpane = new JScrollPane(table);
 
       addCenter(scrollpane);
       setBorder(BorderFactory.createTitledBorder("Jira"));

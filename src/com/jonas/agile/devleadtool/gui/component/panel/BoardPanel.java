@@ -5,7 +5,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.table.JTableHeader;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.gui.component.MyScrollPane;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
@@ -42,7 +41,7 @@ public class BoardPanel extends MyComponentPanel {
 
    protected void makeContent(MyTableModel boardTableModel) {
       table = new MyTable("Board", boardTableModel, true);
-      JScrollPane scrollPane = new MyScrollPane(table);
+      JScrollPane scrollPane = new JScrollPane(table);
       setBorder(BorderFactory.createTitledBorder("Board"));
       addCenter(scrollPane);
    }

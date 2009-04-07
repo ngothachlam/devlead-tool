@@ -66,35 +66,35 @@ public abstract class AbstractAddPanel extends MyPanel {
       }
 
       setNewRow(c);
-      panel.add(new JLabel("Prefix:"), c);
+      JLabel prefixLabel = addLabel(panel, "Prefix:", c);
       set2ndCol(c);
-      jiraPrefix = panel.addTextField(panel, 10, c);
+      jiraPrefix = panel.addTextField(panel, 10, c, prefixLabel, 'p');
 
       setNewRow(c);
-      panel.add(new JLabel("Default Release:"), c);
+      JLabel releaseLabel = addLabel(panel, "Release:", c);
       set2ndCol(c);
-      defaultRelease = panel.addTextField(panel, 10, c);
+      defaultRelease = panel.addTextField(panel, 10, c, releaseLabel, 'r');
 
       setNewRow(c);
-      panel.add(new JLabel("Default Status:"), c);
+      JLabel statusLabel = addLabel(panel, "Status:", c);
       set2ndCol(c);
-      statusCombo = panel.addComboBox(panel, BoardStatusValue.values(), c);
+      statusCombo = panel.addComboBox(panel, BoardStatusValue.values(), c, statusLabel, 's');
 
       setNewRow(c);
       c.fill = GridBagConstraints.NONE;
       c.anchor = GridBagConstraints.NORTHWEST;
-      panel.add(new JLabel("Numbers:"), c);
+      JLabel numberLabel = addLabel(panel, "Numbers:", c);
       set2ndCol(c);
       c.fill = GridBagConstraints.BOTH;
       c.weighty = 1;
-      jiraCommas = panel.addTextArea(panel, 4, 10, c);
+      jiraCommas = panel.addTextArea(panel, 4, 10, c, numberLabel, 'n');
       jiraCommas.setLineWrap(true);
       jiraCommas.setWrapStyleWord(true);
 
       this.add(panel, BorderLayout.CENTER);
       this.add(getButtonPanel(), BorderLayout.PAGE_END);
 
-      setRequestFocusEnabled(true);
+//      setRequestFocusEnabled(true);
    }
    
    private void set2ndCol(GridBagConstraints c) {

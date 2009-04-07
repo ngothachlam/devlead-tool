@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -163,7 +164,6 @@ public class MyTable extends JXTable {
       setRowSelectionAllowed(true);
 
       setDefaultEditors();
-
       setFillsViewportHeight(true);
 
       // TODO add tooltip for the contents of the table as well by owerriding the getToolTipText method in MyTable (or create JiraTable...)
@@ -178,7 +178,6 @@ public class MyTable extends JXTable {
       getTableHeader().setToolTipText("blah");
       this.setColumnControlVisible(true);
       this.addKeyListener(new MarkKeyListener(allowMarking));
-
       Highlighter higlighter = new MyTableHighlighter(this);
       addHighlighter(higlighter);
       // setRolloverEnabled(true);
@@ -392,18 +391,6 @@ public class MyTable extends JXTable {
    private void setDefaultEditors() {
       JComboBox combo = new JComboBox(BoardStatusValue.values());
       setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
-
-      // int colIndex = getColumnIndex(Column.Release);
-      // if (colIndex > -1) {
-      // TableColumn tc = getTableColumn(colIndex);
-      // tc.setCellEditor(new MyDefaultCellEditor(new JTextField()));
-      // }
-      // colIndex = getColumnIndex(Column.Jira);
-      // if (colIndex > -1) {
-      // jiraEditor = new JiraCellEditor(new JTextField());
-      // TableColumn tc = getTableColumn(colIndex);
-      // tc.setCellEditor(jiraEditor);
-      // }
    }
 
    public void setModel(MyTableModel model) {
