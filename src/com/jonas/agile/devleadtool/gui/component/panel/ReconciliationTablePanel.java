@@ -34,6 +34,7 @@ public class ReconciliationTablePanel extends MyPanel {
       c.fill = GridBagConstraints.BOTH;
       c.weightx = 1;
       c.weighty = 1;
+      c.gridwidth = 2;
       c.gridx = 0;
       c.gridy = 0;
 
@@ -42,8 +43,13 @@ public class ReconciliationTablePanel extends MyPanel {
       c.gridy++;
       c.weighty = 0;
       c.fill = GridBagConstraints.NONE;
+      c.anchor = GridBagConstraints.WEST;
+      c.gridwidth = 1;
+      add(buttonPanel(parentFrame, new ClearFromReconciliationToBoardAction(parentFrame, table)), c);
+
+      c.gridx++;
       c.anchor = GridBagConstraints.EAST;
-      add(buttonPanel(parentFrame), c);
+      add(buttonPanel(parentFrame, new AddFromReconciliationToBoardAction(parentFrame, table, boardTable)), c);
    }
 
    private JComponent getTablePanel(Frame parentFrame) {
@@ -54,9 +60,9 @@ public class ReconciliationTablePanel extends MyPanel {
       return myScrollPane;
    }
 
-   private Component buttonPanel(Frame parentFrame) {
+   private Component buttonPanel(Frame parentFrame, BasicAbstractGUIAction action) {
       JPanel panel = new JPanel(new BorderLayout());
-      panel.add(new JButton(new AddFromReconciliationToBoardAction(parentFrame, table, boardTable)));
+      panel.add(new JButton(action));
       return panel;
    }
 
@@ -67,13 +73,28 @@ public class ReconciliationTablePanel extends MyPanel {
 }
 
 
+class ClearFromReconciliationToBoardAction extends BasicAbstractGUIAction {
+
+   private final ReconciliationTable table;
+
+   public ClearFromReconciliationToBoardAction(Frame parentFrame, ReconciliationTable table) {
+      super("Clear Table", "Clears this temporary table", parentFrame);
+      this.table = table;
+   }
+
+   @Override
+   public void doActionPerformed(ActionEvent e) {
+      table.getMyModel().setRowCount(0);
+   }
+   
+}
 class AddFromReconciliationToBoardAction extends BasicAbstractGUIAction {
 
    private final ReconciliationTable table;
    private final MyTable boardTable;
 
    public AddFromReconciliationToBoardAction(Frame parentFrame, ReconciliationTable table, MyTable boardTable) {
-      super("Add", "Add to Board Panel", parentFrame);
+      super("Add to Board", "Add to Board Panel", parentFrame);
       this.table = table;
       this.boardTable = boardTable;
    }
@@ -94,6 +115,8 @@ class AddFromReconciliationToBoardAction extends BasicAbstractGUIAction {
                }
             }
          }
+         
+         table.fireTableDataChanged();
       }
 
    }

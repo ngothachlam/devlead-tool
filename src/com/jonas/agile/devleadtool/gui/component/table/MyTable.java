@@ -117,6 +117,7 @@ public class MyTable extends JXTable {
 
    }
 
+   
    private final class MarkKeyListener extends KeyAdapter {
       private final boolean allowMarking;
 
@@ -204,20 +205,22 @@ public class MyTable extends JXTable {
 
          if (colorDTO.isMarked()) {
             cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -25));
+         } else{
+            cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), +25));
          }
       }
    }
 
    private CheckBoxTableCellEditor checkBoxEditor;
+
    private JiraCellEditor jiraEditor;
    private List<TableListener> listeners = new ArrayList<TableListener>();
    private Logger log = MyLogger.getLogger(MyTable.class);
-
    private MarkDelegator marker = new MarkDelegator();
 
    private MyTableModel model;
-   private Map<Column, TableColumn> tableColumns;
 
+   private Map<Column, TableColumn> tableColumns;
    private String title;
 
    public MyTable(String title, MyTableModel model, final boolean allowMarking) {
@@ -277,9 +280,9 @@ public class MyTable extends JXTable {
       addJira(jira, true);
    }
 
-   private void addJira(String jira, boolean isToMarkJiraIfNew) {
-      boolean isNewJiraInTable = model.addJira(jira);
-      if (isToMarkJiraIfNew && isNewJiraInTable)
+   private void addJira(String jira, boolean isToMarkJira) {
+      model.addJira(jira);
+      if (isToMarkJira)
          markJira(jira);
    }
 
@@ -324,6 +327,10 @@ public class MyTable extends JXTable {
 
    public void changeMarkOfSelected() {
       marker.changeMarkOfSelected();
+   }
+
+   public void fireTableDataChanged() {
+      getMyModel().fireTableDataChanged();
    }
 
    public void fireTableDataChangedForJira(String jira) {

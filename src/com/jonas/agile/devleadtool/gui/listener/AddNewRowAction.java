@@ -53,6 +53,7 @@ public abstract class AddNewRowAction extends BasicAbstractGUIAction {
          
          notifyJirasAdded(table, jiraString, devEst, actual, release.getText(), remainder, qaEst, (BoardStatusValue) statusCombo.getSelectedItem());
       }
+      table.getMyModel().fireTableDataChanged();
    }
 
    public void addJiraToBeReconciledListener(JiraToBeReconciledListener jiraToBeReconciledListener){
