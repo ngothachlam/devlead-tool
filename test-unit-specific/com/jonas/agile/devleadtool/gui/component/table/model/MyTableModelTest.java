@@ -190,9 +190,8 @@ public class MyTableModelTest extends JonasTestCase {
    public void testShouldAddJiraOk() {
       model.addJira("llu-1");
 
-      
-      assertEquals("LLU-1", model.getValueAt(0, 0));
-      assertEquals("LLU-1", model.getValueAt(Column.Jira, 0));
+      assertEquals("llu-1", model.getValueAt(0, 0));
+      assertEquals("llu-1", model.getValueAt(Column.Jira, 0));
       
       assertEquals("", model.getValueAt(0, 1));
       assertEquals("", model.getValueAt(Column.Description, 0));
@@ -237,7 +236,7 @@ public class MyTableModelTest extends JonasTestCase {
       EasyMock.expect(mock_jiraIssue.getLLUListPriority()).andReturn(5800).anyTimes();
       replay();
 
-      model.addJira(mock_jiraIssue);
+      boolean isAdded = model.addJira(mock_jiraIssue);
 
       verify();
       assertEquals(1, model.getRowCount());
@@ -249,6 +248,10 @@ public class MyTableModelTest extends JonasTestCase {
       assertModelRow("BuildNo1", Column.BuildNo, 4, 0);
       assertModelRow("1.4", Column.J_DevEst, 5, 0);
       assertModelRow("", Column.DevEst, 6, 0);
+      assertTrue(isAdded);
+      
+      isAdded = model.addJira(mock_jiraIssue);
+      assertFalse(isAdded);
    }
 
    private void assertModelRow(Object string, Column column, int col, int row) {

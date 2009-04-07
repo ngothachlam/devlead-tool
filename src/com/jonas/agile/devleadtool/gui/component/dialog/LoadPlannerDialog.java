@@ -1,12 +1,16 @@
 package com.jonas.agile.devleadtool.gui.component.dialog;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.data.PersistanceException;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.gui.component.DesktopPane;
 import com.jonas.agile.devleadtool.gui.component.SaveKeyListener;
@@ -22,7 +26,8 @@ public class LoadPlannerDialog extends JFileChooser {
    private SaveKeyListener saveKeyListener;
    private Logger log = MyLogger.getLogger(LoadPlannerDialog.class);
 
-   public LoadPlannerDialog(DesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper helper, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener) {
+   public LoadPlannerDialog(DesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper helper, SavePlannerDialog savePlannerDialog,
+         SaveKeyListener saveKeyListener) {
       super(new File("."));
       this.desktop = desktop;
       this.dao = plannerDAO;
@@ -30,7 +35,6 @@ public class LoadPlannerDialog extends JFileChooser {
       this.helper = helper;
       this.savePlannerDialog = savePlannerDialog;
       this.saveKeyListener = saveKeyListener;
-
 
       addChoosableFileFilter(new FileFilter() {
          public boolean accept(File f) {
@@ -53,15 +57,19 @@ public class LoadPlannerDialog extends JFileChooser {
          final File xlsFile = getSelectedFile();
 
          dao.setXlsFile(xlsFile);
-         
-         SwingWorker<CombinedModelDTO, Object> swingWorker = new AbstractInternalFrameCreatorSwingthread(helper, dao, savePlannerDialog, saveKeyListener, desktop, xlsFile) {
+
+         SwingWorker<CombinedModelDTO, Object> swingWorker = new AbstractInternalFrameCreatorSwingthread(helper, dao, savePlannerDialog,
+               saveKeyListener, desktop, xlsFile) {
             @Override
-            protected CombinedModelDTO doInBackground() throws Exception {
-               return dao.loadModels();
+            protected CombinedModelDTO doInBackground() throws Exception{
+               CombinedModelDTO loadModels = null;
+                     loadModels = dao.loadModels();
+               return loadModels;
             }
          };
-
-         swingWorker.execute();
+         
+         ExecutorService executor = Executors.newSingleThreadExecutor();
+         executor.execute(swingWorker);
       }
    }
 }

@@ -19,7 +19,7 @@ public class ReconciliationTable extends MyTable {
 
    public void addForReconciliation(String jira, String devEst, String devAct, String release, String remainder, String qaEst,
          BoardStatusValue status) {
-      this.addJira(jira, true);
+      this.addJira(jira);
       int row = this.getRowWithJira(jira);
       this.setValueAt(devEst, row, Column.DevEst);
       this.setValueAt(devAct, row, Column.DevAct);

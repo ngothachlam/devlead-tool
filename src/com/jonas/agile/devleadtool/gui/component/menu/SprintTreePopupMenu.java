@@ -225,8 +225,7 @@ public class SprintTreePopupMenu extends MyPopupMenu {
 
       private void addJiraToTable(Object selectedTreeNode) {
          JiraNode jiraNode = (JiraNode) selectedTreeNode;
-         boolean toMark = !table.isJiraPresent(jiraNode.getKey());
-         table.addJira(jiraNode.getKey(), toMark);
+         table.addJiraAndMarkIfNew(jiraNode.getKey());
       }
    }
 

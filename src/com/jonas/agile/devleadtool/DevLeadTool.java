@@ -74,7 +74,6 @@ public class DevLeadTool {
       SaveKeyListener saveKeyListener = new SaveKeyListener(helper, savePlannerDialog);
       NewPlannerDialog newPlannerDialog = new NewPlannerDialog(desktop, helper, plannerDAO, savePlannerDialog, saveKeyListener);
       JMenuItem planner = createMenuItem("New Planner", new NewPlannerActionListener(newPlannerDialog));
-      DaoListener daoListener = new DaoListenerImpl(frame);
       LoadPlannerDialog loadPlannerDialog = new LoadPlannerDialog(desktop, plannerDAO, frame, helper, savePlannerDialog, saveKeyListener);
       JMenuItem open = createMenuItem("Open Planner", new LoadPlannerActionListener(loadPlannerDialog));
       JMenuItem save = createMenuItem("Save Planner", new SavePlannerActionListener(false, savePlannerDialog));
@@ -159,39 +158,16 @@ public class DevLeadTool {
                dialog.setNote(message);
                dialog.setCompleteWithDelay(300);
                break;
+            case LoadingErrored:
+               dialog.setNote(message);
+               dialog.setIndeterminate(false);
+               dialog.setCompleteWithDelay(1500);
+               break;
             default:
                break;
             }
          }
       });
-   }
-
-   private final class DaoListenerImpl implements DaoListener {
-      private final JFrame frame;
-      ProgressDialog dialog;
-
-      private DaoListenerImpl(JFrame frame) {
-         this.frame = frame;
-      }
-
-      @Override
-      public void notify(DaoListenerEvent event, String message) {
-         switch (event) {
-         case LoadingStarted:
-            dialog = new ProgressDialog(frame, "Loading Planner", "Loading Planner", 0, true);
-            dialog.setIndeterminate(false);
-            break;
-         case LoadingModelStarted:
-            dialog.setNote(message);
-            break;
-         case LoadingFinished:
-            dialog.setNote(message);
-            dialog.setCompleteWithDelay(300);
-            break;
-         default:
-            break;
-         }
-      }
    }
 
    private final class NewPlannerActionListener implements ActionListener {

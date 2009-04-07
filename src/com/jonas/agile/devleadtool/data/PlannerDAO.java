@@ -8,7 +8,7 @@ import com.jonas.agile.devleadtool.gui.listener.DaoListener;
 
 public interface PlannerDAO {
 
-   public CombinedModelDTO loadModels() throws IOException;
+   public CombinedModelDTO loadModels() throws IOException, PersistanceException;
    public void saveModels(MyTableModel boardModel, MyTableModel jiraModel) throws IOException;
    
    public void setXlsFile(File selFile);

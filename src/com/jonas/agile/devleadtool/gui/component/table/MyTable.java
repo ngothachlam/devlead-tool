@@ -45,6 +45,28 @@ public class MyTable extends JXTable {
       private MarkDelegator() {
       }
 
+      public void changeMarkOfSelected() {
+         int[] selectedRows = getSelectedRows();
+         boolean atLeastOneMarked = false;
+         boolean atLeastOneUnMarked = false;
+         for (int row : selectedRows) {
+            if (!atLeastOneMarked && isMarked(row)) {
+               atLeastOneMarked = true;
+            } else if (!atLeastOneUnMarked && !isMarked(row)) {
+               atLeastOneUnMarked = true;
+            }
+
+            if (atLeastOneMarked && atLeastOneUnMarked) {
+               break;
+            }
+         }
+         if (atLeastOneMarked && !atLeastOneUnMarked) {
+            unMarkSelected();
+         } else if (atLeastOneMarked || atLeastOneUnMarked) {
+            markSelected();
+         }
+      }
+
       public void clearMarked() {
          for (int i = 0; i < getRowCount(); i++) {
             model.clearMarked();
@@ -93,28 +115,6 @@ public class MyTable extends JXTable {
          }
       }
 
-      public void changeMarkOfSelected() {
-         int[] selectedRows = getSelectedRows();
-         boolean atLeastOneMarked = false;
-         boolean atLeastOneUnMarked = false;
-         for (int row : selectedRows) {
-            if (!atLeastOneMarked && isMarked(row)) {
-               atLeastOneMarked = true;
-            } else if (!atLeastOneUnMarked && !isMarked(row)) {
-               atLeastOneUnMarked = true;
-            }
-
-            if (atLeastOneMarked && atLeastOneUnMarked) {
-               break;
-            }
-         }
-         if (atLeastOneMarked && !atLeastOneUnMarked) {
-            unMarkSelected();
-         } else if (atLeastOneMarked || atLeastOneUnMarked) {
-            markSelected();
-         }
-      }
-
    }
 
    private final class MarkKeyListener extends KeyAdapter {
@@ -139,16 +139,86 @@ public class MyTable extends JXTable {
       }
    }
 
+   class MyTableHighlighter extends AbstractHighlighter {
+
+      private final MyTable table;
+
+      public MyTableHighlighter(MyTable table) {
+         this.table = table;
+      }
+
+      @Override
+      protected Component doHighlight(Component component, ComponentAdapter adapter) {
+         TableAdapter adapter2 = (TableAdapter) adapter;
+
+         boolean hasFocus = adapter.hasFocus();
+         boolean isSelected = adapter.isSelected();
+         int row = adapter2.row;
+         int column = adapter2.column;
+
+         JComponent jComponent = null;
+         if (component instanceof JComponent) {
+            jComponent = (JComponent) component;
+         }
+
+         if (hasFocus) {
+            component.setBackground(SwingUtil.getTableCellFocusBackground());
+            if (jComponent != null) {
+               jComponent.setBorder(SwingUtil.focusCellBorder);
+            }
+         } else if (isSelected) {
+            component.setBackground(table.getSelectionBackground());
+            if (jComponent != null) {
+               jComponent.setBorder(SwingUtil.defaultCellBorder);
+            }
+         } else {
+            component.setBackground(table.getBackground());
+            if (jComponent != null) {
+               jComponent.setBorder(SwingUtil.defaultCellBorder);
+            }
+         }
+         if (!adapter.isEditable() && !hasFocus) {
+            component.setBackground(ColorUtil.darkenColor(component.getBackground(), -75));
+         }
+
+         if (model != null) {
+            setColor(table, isSelected, hasFocus, row, column, component, model, adapter.getValue(), table);
+         }
+
+         return component;
+      }
+
+      private void setColor(final JTable table, final boolean isSelected, final boolean hasFocus, final int row, final int column,
+            final Component cell, final MyTableModel model, final Object value, final MyTable myTable) {
+         ColorDTO colorDTO = model.getColor(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column));
+
+         Color color = colorDTO.getColor();
+         if (color != null) {
+            if (isSelected) {
+               color = ColorUtil.darkenColor(color, -55);
+            }
+            cell.setBackground(color);
+         } else if (myTable != null && !isSelected && !hasFocus && myTable.isMarked(row)) {
+            cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -35));
+         }
+
+         if (colorDTO.isMarked()) {
+            cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -25));
+         }
+      }
+   }
+
    private CheckBoxTableCellEditor checkBoxEditor;
    private JiraCellEditor jiraEditor;
    private List<TableListener> listeners = new ArrayList<TableListener>();
    private Logger log = MyLogger.getLogger(MyTable.class);
+
    private MarkDelegator marker = new MarkDelegator();
 
    private MyTableModel model;
+   private Map<Column, TableColumn> tableColumns;
 
    private String title;
-   private Map<Column, TableColumn> tableColumns;
 
    public MyTable(String title, MyTableModel model, final boolean allowMarking) {
       super(model);
@@ -187,26 +257,48 @@ public class MyTable extends JXTable {
       checkBoxEditor.addCellEditorListener(cellEditorListener);
    }
 
+   public void addColumn(Column column) {
+      TableColumn tableColumn = tableColumns.get(column);
+      if (tableColumn != null)
+         addColumn(tableColumn);
+   }
+
    public void addEmptyRow() {
       model.addEmptyRow();
    }
 
-   public void addJira(JiraIssue jiraIssue, boolean markIt) {
-      model.addJira(jiraIssue);
-      if (markIt)
+   private void addJira(JiraIssue jiraIssue, boolean isToMarkJiraIfNew) {
+      boolean isNewJiraInTable = model.addJira(jiraIssue);
+      if (isToMarkJiraIfNew && isNewJiraInTable)
          markJira(jiraIssue.getKey());
    }
 
-   public void addJira(String jira, boolean markIt) {
-      model.addJira(jira);
-      if (markIt)
+   public void addJira(String jira) {
+      addJira(jira, true);
+   }
+
+   private void addJira(String jira, boolean isToMarkJiraIfNew) {
+      boolean isNewJiraInTable = model.addJira(jira);
+      if (isToMarkJiraIfNew && isNewJiraInTable)
          markJira(jira);
    }
 
-   void addJira(String jira, Map<Column, Object> map, boolean markIt) {
-      model.addJira(jira, map);
-      if (markIt)
+   private void addJira(String jira, Map<Column, Object> map, boolean isToMarkJiraIfNew) {
+      boolean isNewJiraInTable  = model.addJira(jira, map);
+      if (isNewJiraInTable && isToMarkJiraIfNew)
          markJira(jira);
+   }
+
+   public void addJiraAndMarkIfNew(JiraIssue jiraIssue) {
+      addJira(jiraIssue, true);
+   }
+
+   public void addJiraAndMarkIfNew(String key) {
+      addJira(key, true);
+   }
+
+   public void addJiraAndMarkIfNew(String jiraString, Map<Column, Object> map) {
+      addJira(jiraString, map, true);
    }
 
    public void addJiraEditorListener(CellEditorListener cellEditorListener) {
@@ -230,6 +322,10 @@ public class MyTable extends JXTable {
       return false;
    }
 
+   public void changeMarkOfSelected() {
+      marker.changeMarkOfSelected();
+   }
+
    public void fireTableDataChangedForJira(String jira) {
       int row = getRowWithJira(jira);
       if (row > -1)
@@ -240,17 +336,17 @@ public class MyTable extends JXTable {
       model.fireTableRowsUpdated(convertRowIndexToModel(rowEdited), convertRowIndexToModel(rowEdited2));
    }
 
+   public Column[] getCols() {
+      Map<Column, Integer> columnNames = model.getColumnNames();
+      return columnNames.keySet().toArray(new Column[columnNames.size()]);
+   }
+
    public Column getColumnEnum(int itsColumn) {
       return model.getColumn(convertColumnIndexToModel(itsColumn));
    }
 
    public int getColumnIndex(Column column) {
       return convertColumnIndexToView(model.getColumnIndex(column));
-   }
-
-   public Column[] getCols() {
-      Map<Column, Integer> columnNames = model.getColumnNames();
-      return columnNames.keySet().toArray(new Column[columnNames.size()]);
    }
 
    public TableModel getModel() {
@@ -343,21 +439,25 @@ public class MyTable extends JXTable {
    public void markJira(String jira) {
       int jiraRow = getRowWithJira(jira);
       marker.mark(jiraRow);
-      fireTableDataChangedForJira(jira);
    }
 
    public void markSelected() {
       marker.markSelected();
    }
 
-   public void changeMarkOfSelected() {
-      marker.changeMarkOfSelected();
-   }
-
    private void notifyAllListenersThatJiraWasRemoved(String jira) {
       for (TableListener listener : listeners) {
          listener.jiraRemoved(jira);
       }
+   }
+
+   public void removeColumn(Column column) {
+      int colIndex = getColumnIndex(column);
+      if (colIndex < 0)
+         return;
+      TableColumn tableColumn = getTableColumn(colIndex);
+      tableColumns.put(column, tableColumn);
+      removeColumn(tableColumn);
    }
 
    public void removeSelectedRows() {
@@ -410,110 +510,12 @@ public class MyTable extends JXTable {
       getMyModel().setValueAt(value, jira, column);
    }
 
-   public void syncJira(JiraIssue jiraIssue, int tableRowSynced) {
-      model.syncJira(jiraIssue, convertRowIndexToModel(tableRowSynced));
-   }
-
    public void unMarkSelection() {
       marker.unMarkSelected();
    }
 
    public void unSort() {
       setAutoCreateRowSorter(true);
-   }
-
-   public void removeColumn(Column column) {
-      int colIndex = getColumnIndex(column);
-      if (colIndex < 0)
-         return;
-      TableColumn tableColumn = getTableColumn(colIndex);
-      tableColumns.put(column, tableColumn);
-      removeColumn(tableColumn);
-   }
-
-   public void addColumn(Column column) {
-      TableColumn tableColumn = tableColumns.get(column);
-      if (tableColumn != null)
-         addColumn(tableColumn);
-   }
-
-   class MyTableHighlighter extends AbstractHighlighter {
-
-      private final MyTable table;
-
-      public MyTableHighlighter(MyTable table) {
-         this.table = table;
-      }
-
-      @Override
-      protected Component doHighlight(Component component, ComponentAdapter adapter) {
-         TableAdapter adapter2 = (TableAdapter) adapter;
-
-         boolean hasFocus = adapter.hasFocus();
-         boolean isSelected = adapter.isSelected();
-         int row = adapter2.row;
-         int column = adapter2.column;
-
-         JComponent jComponent = null;
-         if (component instanceof JComponent) {
-            jComponent = (JComponent) component;
-         }
-
-         if (hasFocus) {
-            component.setBackground(SwingUtil.getTableCellFocusBackground());
-            if (jComponent != null) {
-               jComponent.setBorder(SwingUtil.focusCellBorder);
-            }
-         } else if (isSelected) {
-            component.setBackground(table.getSelectionBackground());
-            if (jComponent != null) {
-               jComponent.setBorder(SwingUtil.defaultCellBorder);
-            }
-         } else {
-            component.setBackground(table.getBackground());
-            if (jComponent != null) {
-               jComponent.setBorder(SwingUtil.defaultCellBorder);
-            }
-         }
-         if (!adapter.isEditable() && !hasFocus) {
-            component.setBackground(ColorUtil.darkenColor(component.getBackground(), -75));
-         }
-
-         if (model != null) {
-            setColor(table, isSelected, hasFocus, row, column, component, model, adapter.getValue(), table);
-         }
-
-         return component;
-      }
-
-      private void setColor(final JTable table, final boolean isSelected, final boolean hasFocus, final int row, final int column,
-            final Component cell, final MyTableModel model, final Object value, final MyTable myTable) {
-         ColorDTO colorDTO = model.getColor(value, table.convertRowIndexToModel(row), table.convertColumnIndexToModel(column));
-
-         Color color = colorDTO.getColor();
-         if (color != null) {
-            if (isSelected) {
-               color = ColorUtil.darkenColor(color, -55);
-            }
-            cell.setBackground(color);
-         } else if (myTable != null && !isSelected && !hasFocus && myTable.isMarked(row)) {
-            cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -35));
-         }
-
-         if (colorDTO.isMarked()) {
-            cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -25));
-         }
-      }
-   }
-
-   public void addJiraAndMarkIfNew(JiraIssue jiraIssue) {
-      boolean toMark = !isJiraPresent(jiraIssue.getKey());
-      addJira(jiraIssue, toMark);
-   }
-
-   public void addJiraAndMarkIfNew(String jiraString, Map<Column, Object> map) {
-      boolean markIt = !isJiraPresent(jiraString);
-      addJira(jiraString, map, markIt);
    }
 
 }

@@ -30,7 +30,7 @@ public class MyTableFunctionalUnitTest extends TestCase {
       assertEquals("should not have any rows", 0, table.getRowCount());
       assertFalse(table.isMarked(0));
 
-      table.addJira("test1", false);
+      table.addJira("test1");
 
       assertEquals("should only have one row", 1, table.getRowCount());
       assertFalse(table.isMarked(0));
@@ -38,8 +38,8 @@ public class MyTableFunctionalUnitTest extends TestCase {
    }
 
    public void testShouldOnlyNeedOneUnMarkIfSeveralMarksOccur() {
-      table.addJira("test1", false);
-      table.addJira("test2", false);
+      table.addJira("test1");
+      table.addJira("test2");
 
       table.addRowSelectionInterval(0, 0);
       table.markSelected();
@@ -55,9 +55,9 @@ public class MyTableFunctionalUnitTest extends TestCase {
    }
 
    public void testShouldMarkAndUnMarkOnSelectionOkWhenNothingAddedOrResorted_Basic() {
-      table.addJira("test1", false);
-      table.addJira("test5", false);
-      table.addJira("test3", false);
+      table.addJira("test1");
+      table.addJira("test5");
+      table.addJira("test3");
       table.addRowSelectionInterval(1, 1);
       table.markSelected();
 
@@ -86,9 +86,9 @@ public class MyTableFunctionalUnitTest extends TestCase {
    }
 
    public void testShouldMarkOkWhenRemovingRows() {
-      table.addJira("test1", false);
-      table.addJira("test5", false);
-      table.addJira("test3", false);
+      table.addJira("test1");
+      table.addJira("test5");
+      table.addJira("test3");
 
       table.addRowSelectionInterval(0, 0);
       table.addRowSelectionInterval(2, 2);
@@ -118,9 +118,9 @@ public class MyTableFunctionalUnitTest extends TestCase {
 
    public void testShouldMarkOkIfReSortingTable() {
       table.clearSelection();
-      table.addJira("test3", false);
-      table.addJira("test1", false);
-      table.addJira("test2", false);
+      table.addJira("test3");
+      table.addJira("test1");
+      table.addJira("test2");
 
       table.addRowSelectionInterval(0, 0);
       table.addRowSelectionInterval(2, 2);
@@ -146,10 +146,10 @@ public class MyTableFunctionalUnitTest extends TestCase {
    }
 
    public void testShouldMarkOkWhenRemovingRowsThatAreSorted() {
-      table.addJira("test3", false);
-      table.addJira("test1", false);
-      table.addJira("test5", false);
-      table.addJira("test2", false);
+      table.addJira("test3");
+      table.addJira("test1");
+      table.addJira("test5");
+      table.addJira("test2");
 
       table.addRowSelectionInterval(0, 0);
       table.addRowSelectionInterval(2, 2);
@@ -177,16 +177,16 @@ public class MyTableFunctionalUnitTest extends TestCase {
    }
 
    public void testShouldAddRowOkBeforeAndAfterMarkedRowWhenItsSorted() {
-      table.addJira("test2", false);
-      table.addJira("test1", false);
-      table.addJira("test3", false);
+      table.addJira("test2");
+      table.addJira("test1");
+      table.addJira("test3");
 
       table.addRowSelectionInterval(0, 0);
       table.addRowSelectionInterval(2, 2);
       table.markSelected();
       sortTable(table, 0, SortOrder.ASCENDING);
 
-      table.addJira("test0", false);
+      table.addJira("test0");
 
       assertEquals("TEST0", table.getValueAt(0, 0));
       assertEquals("TEST1", table.getValueAt(1, 0));
