@@ -80,8 +80,6 @@ public class PlannerHelper {
             throw new JiraException("Jira \"" + jira + "\" doesn't have a project related to it!");
          }
          JiraClient client = project.getJiraClient();
-         //FIXME how often to login!
-         client.login();
          return client.getJira(jira);
       } finally {
          if (jiraListener != null)
@@ -103,6 +101,10 @@ public class PlannerHelper {
 
    public void setActiveInternalFrame(MyInternalFrame internalFrame) {
       this.internalFrame = internalFrame;
+   }
+
+   public void login() throws HttpException, IOException, JiraException {
+      JiraClient.JiraClientAolBB.login();
    }
 
 }

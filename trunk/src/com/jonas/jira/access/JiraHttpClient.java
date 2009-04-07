@@ -97,8 +97,8 @@ public class JiraHttpClient extends HttpClient {
       // background)again?
       log.debug("Logging onto Jira");
       PostMethod loginMethod = new PostMethod(baseUrl + "/login.jsp");
-      loginMethod.addParameter("os_username", "jonasjolofsson");
-      loginMethod.addParameter("os_password", "password");
+      loginMethod.addParameter("os_username", "soaptester");
+      loginMethod.addParameter("os_password", "soaptester");
       executeMethod(loginMethod);
       throwJiraExceptionIfRequired(loginMethod);
       log.debug("Logging onto Jira Done!");

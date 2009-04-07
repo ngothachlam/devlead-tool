@@ -61,8 +61,7 @@ public class CopyToTableListener implements ActionListener {
          map.put(column, model.getValueAt(column, row));
       }
       MyTable destinationTable = destinationRetriever.getDestinationTable();
-      boolean toMark = !destinationTable.isJiraPresent(jiraString);
-      destinationTable.addJira(jiraString, map, toMark);
+      destinationTable.addJiraAndMarkIfNew(jiraString, map);
    }
 
 }
