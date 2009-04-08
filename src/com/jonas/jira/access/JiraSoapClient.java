@@ -33,6 +33,7 @@ public class JiraSoapClient {
       T accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException,
             RemoteException;
    }
+
    class JiraTokenCommand<T> {
 
       private final JiraAccessAction<T> action;
@@ -50,20 +51,19 @@ public class JiraSoapClient {
          // RemoteValidationException - If the arguments and their properties are incomplete or malformed.
 
          try {
-            log.debug("ConductingAction : " + action);
             return action.accessJiraAndReturn();
          } catch (RemoteAuthenticationException e) {
-            log.info(e);
             log.info("Session timed out. Renewing token again!");
-            // renewToken();
+            renewToken();
          }
          return action.accessJiraAndReturn();
       }
    }
+
    private static final Logger log = MyLogger.getLogger(JiraSoapClient.class);
    public static final JiraSoapClient AOLBB = new JiraSoapClient(ClientConstants.AOLBB_WS);
    public static final JiraSoapClient ATLASSIN = new JiraSoapClient(ClientConstants.ATLASSIN_WS);
-   
+
    private static List<String> customFieldsForCloning = new ArrayList<String>(1);
 
    private static JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
@@ -97,7 +97,6 @@ public class JiraSoapClient {
 
    private static JiraSoapServiceServiceLocator getLocator() {
       JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
-      // log.debug(jiraSoapServiceServiceLocator.getJirasoapserviceV2Address());
       return jiraSoapServiceServiceLocator;
    }
 
@@ -190,8 +189,6 @@ public class JiraSoapClient {
    }
 
    public RemoteResolution[] getResolutions() throws RemotePermissionException, RemoteAuthenticationException, RemoteException {
-      log.debug("Getting Resolutions");
-
       JiraAccessAction<RemoteResolution[]> action = new JiraAccessAction<RemoteResolution[]>() {
          public RemoteResolution[] accessJiraAndReturn() throws RemotePermissionException, RemoteAuthenticationException,
                com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
@@ -204,7 +201,6 @@ public class JiraSoapClient {
    }
 
    private String getToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
-      log.debug("Getting Token!");
       if (token == null) {
          log.trace("Token is null!");
          synchronized (tokenLock) {
@@ -216,7 +212,6 @@ public class JiraSoapClient {
          }
          log.trace("Token Block has been un-synced");
       }
-      log.debug("Done Getting Token!");
       return token;
    }
 

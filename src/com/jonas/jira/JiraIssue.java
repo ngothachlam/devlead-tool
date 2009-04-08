@@ -243,20 +243,18 @@ public class JiraIssue {
    public String toString() {
       StringBuffer buffer = new StringBuffer();
       buffer.append("[JiraIssue:");
-      buffer.append(" log: ");
-      buffer.append(log);
-      buffer.append(" buildNo: ");
-      buffer.append(buildNo);
-      buffer.append(" fixVersions: ");
-      buffer.append(fixVersions);
       buffer.append(" key: ");
       buffer.append(key);
-      buffer.append(" resolution: ");
-      buffer.append(resolution);
+      buffer.append(" fixVersions: ");
+      buffer.append(fixVersions);
       buffer.append(" status: ");
       buffer.append(status);
       buffer.append(" summary: ");
       buffer.append(summary);
+      buffer.append(" resolution: ");
+      buffer.append(resolution);
+      buffer.append(" buildNo: ");
+      buffer.append(buildNo);
       buffer.append("]");
       return buffer.toString();
    }

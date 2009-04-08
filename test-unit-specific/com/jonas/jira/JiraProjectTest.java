@@ -18,12 +18,11 @@ public class JiraProjectTest extends JonasTestCase{
 
 	private void assertJiraProject(String name, String key, String id, JiraProject project) {
 		assertEquals( key.toUpperCase(), project.getJiraKey() );
-		assertEquals( name, project.getName() );
 		assertEquals( id, project.getId() );
 	}
 
 	public void testJiraProjectAndFixVersion(){
-		JiraProject jiraProject = new JiraProject(JiraClient.JiraClientAolBB, "test", "key", "4321", null);
+		JiraProject jiraProject = new JiraProject(JiraClient.JiraClientAolBB, "key", "4321", null);
 		assertEquals(0, jiraProject.getFixVersions(false).length);
 		assertEquals(0, jiraProject.getFixVersions(true).length);
 		new JiraVersion("1234", jiraProject, "test", false);

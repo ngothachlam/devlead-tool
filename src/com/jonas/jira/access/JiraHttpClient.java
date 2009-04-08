@@ -1,11 +1,15 @@
 package com.jonas.jira.access;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodBase;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
@@ -13,10 +17,10 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
+import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
-import com.jonas.jira.JiraFilter;
 import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraHttpClient extends HttpClient {
@@ -38,11 +42,11 @@ public class JiraHttpClient extends HttpClient {
       log.debug("getting Jiras");
       String url = baseUrl + "/secure/IssueNavigator.jspa?view=rss&&fixfor=" + fixVersion.getId() + "&pid=" + fixVersion.getProject().getId()
             + "&sorter/field=issuekey&sorter/order=DESC&tempMax=" + MAX_RESULTS + "&reset=true&decorator=none";
-      
+
       for (String string : criterias) {
-         url+=string;
+         url += string;
       }
-      
+
       log.debug("calling " + url);
       GetMethod method = new GetMethod(url);
       executeMethod(method);
@@ -67,7 +71,6 @@ public class JiraHttpClient extends HttpClient {
          JDOMException, JiraException {
       log.debug("getting Jira");
 
-      // http://10.155.38.105/jira/browse/LLUDEVSUP-522?decorator=none&view=rss
       String url = baseUrl + "/browse/" + jira + "?decorator=none&view=rss";
       log.debug("calling " + url);
       GetMethod method = new GetMethod(url);
@@ -95,32 +98,54 @@ public class JiraHttpClient extends HttpClient {
       // TODO make this work as logging in, in the background as it does take some time to login
       // TODO how long will the session stay as logged in? Will it require a timeout before automatically logging in (in the
       // background)again?
-      log.debug("Logging onto Jira");
       PostMethod loginMethod = new PostMethod(baseUrl + "/login.jsp");
       loginMethod.addParameter("os_username", "soaptester");
       loginMethod.addParameter("os_password", "soaptester");
       executeMethod(loginMethod);
       throwJiraExceptionIfRequired(loginMethod);
-      log.debug("Logging onto Jira Done!");
+      log.debug("Logged into Jira!");
+   }
+
+   public void reOpenJira(String id, String resolution, JiraProject project) throws HttpException, IOException, JiraException {
+      defaultExecute(id, resolution, project, project.getReOpenAction());
    }
 
    public void closeJira(String id, String resolution, JiraProject project) throws HttpException, IOException, JiraException {
-      this.closeJira(id, resolution, project.getCloseAction());
+      defaultExecute(id, resolution, project, project.getCloseAction());
    }
-   public void closeJira(String id, String resolution, String closeActionId) throws HttpException, IOException, JiraException {
-      // TODO make this work as logging in, in the background as it does take some time to login
-      // TODO how long will the session stay as logged in? Will it require a timeout before automatically logging in (in the
-      // background)again?
-      log.debug("closing Jira " + id);
-      PostMethod loginMethod = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa"); // form action // see form method here as well!!
 
-      log.debug("URI: " + loginMethod.getURI());
-      loginMethod.addParameter("resolution", resolution); // name of input
-      loginMethod.addParameter("assignee", "");// name of input
-      loginMethod.addParameter("action", closeActionId);// name of input
-      loginMethod.addParameter("id", id);// name of input
-      loginMethod.addParameter("viewIssueKey", "viewIssueKey");// name of input
-      executeMethod(loginMethod);
+   private void defaultExecute(String id, String resolution, JiraProject project, String actionId) throws URIException, IOException,
+         HttpException, JiraException {
+      // TODO make this work as logging in, in the background as it does take some time to login
+      // TODO how long will the session stay as logged in? Will it require a timeout before automatically logging in again?
+      if (actionId == null) {
+         throw new RuntimeException("Action \"" + actionId + "\" is null for " + project);
+      }
+
+      Map<String, String> parameters = new HashMap<String, String>();
+      parameters.put("resolution", resolution);
+      parameters.put("assignee", "");
+
+      PostMethod method = getPostMethod(parameters);
+      addDefaultJiraWorkflowParams(method, id, actionId);
+
+      log.debug("executing URI: " + method.getURI() + " with action " + actionId + " on project " + project);
+      executeMethod(method);
+      throwJiraExceptionIfRequired(method);
+   }
+
+   private PostMethod getPostMethod(Map<String, String> parameters) {
+      PostMethod method = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa"); // form action // see form method here as well!!
+      for (String parameter : parameters.keySet()) {
+         method.addParameter(parameter, parameters.get(parameter)); // name of input
+      }
+      return method;
+   }
+
+   private void addDefaultJiraWorkflowParams(PostMethod method, String id, String actionId) {
+      method.addParameter("action", actionId); // name of input
+      method.addParameter("id", id); // name of input
+      method.addParameter("viewIssueKey", "viewIssueKey"); // name of input
    }
 
    public void setJiraUrl(String jiraUrl) {
@@ -141,7 +166,7 @@ public class JiraHttpClient extends HttpClient {
 
    protected List<JiraIssue> buildJirasFromXML(String string, JiraBuilder jiraBuilder, JonasXpathEvaluator jonasXpathEvaluator)
          throws IOException, JDOMException {
-//      log.debug("RSS feed responded with \"" + string + "\"");
+      // log.debug("RSS feed responded with \"" + string + "\"");
       JonasXpathEvaluator evaluator = jonasXpathEvaluator;
       List<Element> jiras;
       try {
