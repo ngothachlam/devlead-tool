@@ -30,6 +30,11 @@ public class JiraFilter {
    public static final JiraFilter TALK_FOR_CLOSING = new JiraFilter(JiraProject.TALK, "Talk for closing",
          "/secure/IssueNavigator.jspa?view=rss&tempMax=10000&reset=true&decorator=none&"
                + "fixfor=10215&pid=10021&status=1&status=3&status=4&status=5");
+   
+   public static final JiraFilter LLU_10_CLOSED = new JiraFilter(JiraProject.LLU, "LLU 10 Closed",
+         "/secure/IssueNavigator.jspa?view=rss&tempMax=10&reset=true&decorator=none&"
+         + "fixfor=11382&pid=10070&status=6");
+   
 
    private final String url;
    private final String name;

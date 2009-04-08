@@ -2,10 +2,7 @@ package com.jonas.agile.devleadtool.gui.component.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,9 +15,8 @@ import java.util.Map;
 import java.util.Vector;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -67,13 +63,15 @@ class AddVersionPanel extends MyPanel {
       JPanel panel = new JPanel(new GridLayout(3, 1, 3, 3));
       final JComboBox jiraProjectsCombo = new JComboBox(projects);
       final JComboBox jiraProjectFixVersionCombo = new JComboBox();
+      final JCheckBox isToIncludeArchivedVersions = new JCheckBox();
+      isToIncludeArchivedVersions.setSelected(false);
 
       final HashMap<JiraProject, JiraVersion[]> state = new HashMap<JiraProject, JiraVersion[]>();
-      RefreshVersionListener refreshFixVersionListener = new RefreshVersionListener(jiraProjectsCombo, jiraProjectFixVersionCombo, state, frame);
+      RefreshVersionListener refreshFixVersionListener = new RefreshVersionListener(jiraProjectsCombo, jiraProjectFixVersionCombo, state, frame, isToIncludeArchivedVersions);
       DownloadJiraListener downloadJirasListener = new DownloadJiraListener(jiraProjectFixVersionCombo, frame);
 
       panel.add(getSubPanel("Target Table", getTableRadios(tables)));
-      panel.add(getSubPanel("Source Projects", jiraProjectsCombo, getButton("Refresh", refreshFixVersionListener)));
+      panel.add(getSubPanel("Source Projects", jiraProjectsCombo, getArchiveButton(isToIncludeArchivedVersions), getButton("Refresh", refreshFixVersionListener)));
       panel.add(getSubPanel("Source FixVersion", jiraProjectFixVersionCombo, getButton("Get Jiras", downloadJirasListener)));
 
       AlterProjectListener alteringProjectListener = new AlterProjectListener(jiraProjectFixVersionCombo, state);
@@ -81,6 +79,13 @@ class AddVersionPanel extends MyPanel {
       downloadJirasListener.addListener(syncWithJiraListener);
       jiraProjectsCombo.addActionListener(alteringProjectListener);
 
+      return panel;
+   }
+
+   private Component getArchiveButton(JCheckBox isToIncludeArchivedVersions) {
+      JPanel panel = new JPanel(new GridLayout(1, 2, 5, 5));
+      panel.add(new JLabel("  Include Archive?"));
+      panel.add(isToIncludeArchivedVersions);
       return panel;
    }
 
@@ -134,13 +139,15 @@ class AddVersionPanel extends MyPanel {
       private JFrame parentFrame;
       private final JComboBox fixVersionCombo;
       private final JComboBox projectCombo;
+      private JCheckBox incudeArchivedCheckbox;
 
       private RefreshVersionListener(JComboBox jiraProjectsCombo, JComboBox jiraFixVersionCombo, Map<JiraProject, JiraVersion[]> state,
-            JFrame parentFrame) {
+            JFrame parentFrame, JCheckBox incudeArchivedCheckbox) {
          this.projectCombo = jiraProjectsCombo;
          this.fixVersionCombo = jiraFixVersionCombo;
          this.state = state;
          this.parentFrame = parentFrame;
+         this.incudeArchivedCheckbox = incudeArchivedCheckbox;
       }
 
       public void actionPerformed(ActionEvent e) {
@@ -156,7 +163,7 @@ class AddVersionPanel extends MyPanel {
                JiraProject selectedProject = (JiraProject) selectedObjects[0];
                dialog.setNote("Refreshing Fix Versions for " + selectedProject.getJiraKey() + "...");
                try {
-                  JiraVersion[] fixVersions = selectedProject.getJiraClient().getFixVersionsFromProject(selectedProject, false);
+                  JiraVersion[] fixVersions = selectedProject.getJiraClient().getFixVersionsFromProject(selectedProject, incudeArchivedCheckbox.isSelected());
                   Arrays.sort(fixVersions, new VersionComparator());
                   for (JiraVersion jiraVersion : fixVersions) {
                      fixVersionCombo.addItem(jiraVersion);
