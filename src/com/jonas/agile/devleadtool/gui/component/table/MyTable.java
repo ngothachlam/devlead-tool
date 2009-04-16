@@ -525,4 +525,7 @@ public class MyTable extends JXTable {
       setAutoCreateRowSorter(true);
    }
 
+   public void setJiraBasedOnJiraColumns(JiraIssue jira){
+      model.setJiraBasedOnJiraColumns(jira);
+   }
 }

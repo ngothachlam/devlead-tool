@@ -24,7 +24,7 @@ public class MenuItem_DownLoadJiraInfo extends JMenuItem {
          }
 
          public void jiraSynced(JiraIssue jiraIssue) {
-            sourceTable.addJiraAndMarkIfNew(jiraIssue);
+            sourceTable.setJiraBasedOnJiraColumns(jiraIssue);
          }
       };
       actionListener.addListener(syncWithJiraActionListenerListener);
