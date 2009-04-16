@@ -7,7 +7,7 @@ import com.jonas.testHelpers.TryoutTester;
 public class AlertDialogTestScreen  {
 
    public static void main(String[] args) {
-      JFrame frame = TryoutTester.getFrame();
+      JFrame frame = TryoutTester.getEmptyFrame();
       frame.setLocation(100, 100);
       frame.setVisible(true);
       AlertDialog.alertException(frame, TryoutTester.getTestException());

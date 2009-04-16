@@ -9,7 +9,7 @@ import com.jonas.testHelpers.TryoutTester;
 public class BoardPanelTestScreen {
 
    public static void main(String[] args) {
-      JFrame frame = TryoutTester.getFrame();
+      JFrame frame = TryoutTester.getEmptyFrame();
       PlannerHelper plannerHelper = new PlannerHelper();
       BoardPanel panel = new BoardPanel();
       frame.setContentPane(panel);
