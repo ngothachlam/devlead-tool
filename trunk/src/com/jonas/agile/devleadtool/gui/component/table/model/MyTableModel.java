@@ -187,6 +187,15 @@ public abstract class MyTableModel extends DefaultTableModel {
       this.addRow(getEmptyRow());
    }
 
+   public void setJiraBasedOnJiraColumns(JiraIssue jiraIssue) {
+      int row = getRowWithJira(jiraIssue.getKey());
+      Set<Column> columnSet = columnNames.keySet();
+      for (Column column : columnSet) {
+         if (column.isJiraColumn())
+            setValueAt(getValueFromIssue(jiraIssue, column), row, column);
+      }
+   }
+
    /**
     * 
     * @param jiraIssue
@@ -208,7 +217,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    /**
     * 
     * @param jira
-    * @return returns true if the jire is new to the table, otherwise false. 
+    * @return returns true if the jire is new to the table, otherwise false.
     */
    final public boolean addJira(String jira) {
       boolean isJiraPresent = isJiraPresent(jira);
