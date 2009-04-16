@@ -53,7 +53,7 @@ public class TestTreeTable {
       addAsChildren(sprint, fixVersionOne, fixVersionTwo);
       addAsChildren(fixVersionOne, jiraOne, jiraTwo);
 
-      DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root, BoardColumnMapper.boardColumnMapping);
+      DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root, BoardTreeTableColumns.boardColumnMapping);
       treeTable = new JXTreeTable(treeTableModel);
       treeTable.setFillsViewportHeight(true);
       treeTable.setColumnControlVisible(true);
@@ -253,17 +253,18 @@ class Jira extends DefaultUserObject {
 }
 
 
-interface ColumnMapper{
+interface TreeTableColumns{
    public Column getColumnForIndex(int columnIndex);
+   public int getColumnCount();
 }
 
-class BoardColumnMapper implements ColumnMapper {
+class BoardTreeTableColumns implements TreeTableColumns {
    private final Map<Integer, Column> indexMap = new HashMap<Integer, Column>();
 
    private static int columnIndex = 0;
-   public static final BoardColumnMapper boardColumnMapping = new BoardColumnMapper();
+   public static final BoardTreeTableColumns boardColumnMapping = new BoardTreeTableColumns();
    
-   private BoardColumnMapper() {
+   private BoardTreeTableColumns() {
       add(Column.JIRA);
       add(Column.DESCRIPTION);
    }
@@ -272,8 +273,14 @@ class BoardColumnMapper implements ColumnMapper {
       indexMap.put(columnIndex++, column);
    }
    
+   @Override
    public Column getColumnForIndex(int columnIndex) {
       return indexMap.get(columnIndex);
+   }
+
+   @Override
+   public int getColumnCount() {
+      return indexMap.size();
    }
    
 }
@@ -282,12 +289,12 @@ class BoardColumnMapper implements ColumnMapper {
 enum Column {
    JIRA("Jira"), DESCRIPTION("Description");
 
+   private final String name;
+   
    @Override
    public String toString() {
       return name;
    }
-
-   private final String name;
 
    Column(String name) {
       this.name = name;
@@ -297,30 +304,28 @@ enum Column {
 
 
 class JiraTreeTableModel extends DefaultTreeTableModel {
-   private static final Column[] columns = { Column.JIRA, Column.DESCRIPTION };
-   private final ColumnMapper columMapper;
+   private final TreeTableColumns columMapper;
 
-   public JiraTreeTableModel(TreeTableNode node, ColumnMapper columnMapper) {
+   public JiraTreeTableModel(TreeTableNode node, TreeTableColumns columnMapper) {
       super(node);
       this.columMapper = columnMapper;
    }
 
    public int getColumnCount() {
-      return columns.length;
+      return columMapper.getColumnCount();
    }
 
    /**
     * What the TableHeader displays when the Table is in a JScrollPane.
     */
-   public String getColumnName(int column) {
-      return columns[column].toString();
+   public String getColumnName(int columnIndex) {
+      return columMapper.getColumnForIndex(columnIndex).toString();
    }
 
    /**
     * Returns which object is displayed in this column.
     */
    public Object getValueAt(Object node, int columnIndex) {
-      Object res = "";
       if (node instanceof DefaultMutableTreeTableNode) {
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
          if (defNode.getUserObject() instanceof DefaultUserObject) {
@@ -329,7 +334,7 @@ class JiraTreeTableModel extends DefaultTreeTableModel {
             return defnode.getValueForColumn(column);
          }
       }
-      return res;
+      return "";
    }
 
    public boolean isCellEditable(Object node, int column) {
