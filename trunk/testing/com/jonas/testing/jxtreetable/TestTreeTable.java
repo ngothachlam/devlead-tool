@@ -63,19 +63,7 @@ public class TestTreeTable {
 }
 
 
-abstract class DefaultNode implements Transferable {
-   @Override
-   public final DataFlavor[] getTransferDataFlavors() {
-      return new DataFlavor[] { getDataFlavor() };
-   }
-
-   protected abstract DataFlavor getDataFlavor();
-
-   @Override
-   public final boolean isDataFlavorSupported(DataFlavor flavor) {
-      return flavor.equals(getDataFlavor());
-   }
-
+abstract class DefaultNode implements Comparable<Jira>, Transferable {
    @Override
    public final Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
       if (isDataFlavorSupported(flavor)) {
@@ -83,14 +71,22 @@ abstract class DefaultNode implements Transferable {
       }
       throw new UnsupportedFlavorException(flavor);
    }
+
+   @Override
+   public final DataFlavor[] getTransferDataFlavors() {
+      return new DataFlavor[] { getDataFlavor() };
+   }
+
+   @Override
+   public final boolean isDataFlavorSupported(DataFlavor flavor) {
+      return flavor.equals(getDataFlavor());
+   }
+
+   protected abstract DataFlavor getDataFlavor();
 }
 
 
-class FixVersion extends DefaultNode implements Comparable<Jira>, Transferable {
-
-   public String getName() {
-      return name;
-   }
+class FixVersion extends DefaultNode {
 
    private final String name;
 
@@ -99,32 +95,36 @@ class FixVersion extends DefaultNode implements Comparable<Jira>, Transferable {
    }
 
    @Override
-   protected DataFlavor getDataFlavor() {
-      return new DataFlavor(FixVersion.class, "FixVersion");
-   }
-
-   @Override
    public int compareTo(Jira o) {
       int res = 0;
       res = o.getKey().compareTo(getName());
       return res;
    }
+
+   public String getName() {
+      return name;
+   }
+
+   @Override
+   protected DataFlavor getDataFlavor() {
+      return new DataFlavor(FixVersion.class, "FixVersion");
+   }
 }
 
 
-class Jira extends DefaultNode implements Comparable<Jira>, Transferable {
+class Jira extends DefaultNode {
 
    private String description;
 
    private String key;
 
-   public Jira(String description, String key) {
-      super();
-      this.description = description;
+   public Jira(String key) {
       this.key = key;
    }
 
-   public Jira(String key) {
+   public Jira(String description, String key) {
+      super();
+      this.description = description;
       this.key = key;
    }
 
@@ -146,10 +146,6 @@ class Jira extends DefaultNode implements Comparable<Jira>, Transferable {
       return key;
    }
 
-   protected DataFlavor getDataFlavor() {
-      return new DataFlavor(Jira.class, "Jira");
-   }
-
    public void setDescription(String description) {
       this.description = description;
    }
@@ -158,26 +154,16 @@ class Jira extends DefaultNode implements Comparable<Jira>, Transferable {
       this.key = key;
    }
 
+   protected DataFlavor getDataFlavor() {
+      return new DataFlavor(Jira.class, "Jira");
+   }
 }
 
 
 class JiraTreeTableModel extends DefaultTreeTableModel {
-   @Override
-   public boolean isLeaf(Object node) {
-      if (node instanceof DefaultMutableTreeTableNode) {
-         DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
-         if (defNode.getUserObject() instanceof Jira) {
-            return true;
-         } else if (defNode.getUserObject() instanceof FixVersion) {
-            return false;
-         }
-      }
-      return super.isLeaf(node);
-   }
-
    private static final int DESCRIPTION = 1;
-   private static final int JIRA = 0;
 
+   private static final int JIRA = 0;
    public JiraTreeTableModel(TreeTableNode node) {
       super(node);
    }
@@ -225,7 +211,6 @@ class JiraTreeTableModel extends DefaultTreeTableModel {
             case DESCRIPTION:
                return "";
             }
-
          }
       }
       return res;
@@ -233,6 +218,19 @@ class JiraTreeTableModel extends DefaultTreeTableModel {
 
    public boolean isCellEditable(Object node, int column) {
       return true;
+   }
+
+   @Override
+   public boolean isLeaf(Object node) {
+      if (node instanceof DefaultMutableTreeTableNode) {
+         DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
+         if (defNode.getUserObject() instanceof Jira) {
+            return true;
+         } else if (defNode.getUserObject() instanceof FixVersion) {
+            return false;
+         }
+      }
+      return super.isLeaf(node);
    }
 
    /**
