@@ -162,30 +162,22 @@ class Jira extends DefaultNode {
 
 class JiraTreeTableModel extends DefaultTreeTableModel {
    private static final int DESCRIPTION = 1;
-
    private static final int JIRA = 0;
+   private static final String[] columns = {"Jira", "Description"};
+   
    public JiraTreeTableModel(TreeTableNode node) {
       super(node);
    }
 
    public int getColumnCount() {
-      return 2;
+      return columns.length;
    }
 
    /**
     * What the TableHeader displays when the Table is in a JScrollPane.
     */
    public String getColumnName(int column) {
-      String res = "";
-      switch (column) {
-      case JIRA:
-         res = "Jira";
-         break;
-      case DESCRIPTION:
-         res = "Description";
-         break;
-      }
-      return res;
+      return columns[column];
    }
 
    /**
