@@ -6,7 +6,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
-import javax.swing.tree.DefaultMutableTreeNode;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
@@ -41,24 +40,30 @@ public class TestTreeTable {
     * 
     */
    public void create() {
-      DefaultMutableTreeTableNode root = new DefaultMutableTreeTableNode("blah");
-      DefaultMutableTreeTableNode two = new DefaultMutableTreeTableNode(new FixVersion("LLU 11"));
-      DefaultMutableTreeTableNode three = new DefaultMutableTreeTableNode(new FixVersion("LLU 12"));
+      DefaultMutableTreeTableNode root = new DefaultMutableTreeTableNode("root");
+      DefaultMutableTreeTableNode sprint = new DefaultMutableTreeTableNode(new Sprint("12-1"));
+      DefaultMutableTreeTableNode fixVersionOne = new DefaultMutableTreeTableNode(new FixVersion("LLU 11"));
+      DefaultMutableTreeTableNode fixVersionTwo = new DefaultMutableTreeTableNode(new FixVersion("LLU 12"));
+      DefaultMutableTreeTableNode jiraOne = new DefaultMutableTreeTableNode(new Jira("llu-1", "Description for llu-1"));
+      DefaultMutableTreeTableNode jiraTwo = new DefaultMutableTreeTableNode(new Jira("llu-2", "Description for llu-2"));
 
-      DefaultMutableTreeTableNode twoOne = new DefaultMutableTreeTableNode(new Jira("llu-1"));
-      DefaultMutableTreeTableNode twoTwo = new DefaultMutableTreeTableNode(new Jira("llu-2"));
-
-      two.add(twoOne);
-      two.add(twoTwo);
-
-      root.add(two);
-      root.add(three);
+      addAsChildren(root, sprint);
+      addAsChildren(sprint, fixVersionOne, fixVersionTwo);
+      addAsChildren(fixVersionOne, jiraOne, jiraTwo);
 
       DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root);
       treeTable = new JXTreeTable(treeTableModel);
+      treeTable.setFillsViewportHeight(true);
+      treeTable.setColumnControlVisible(true);
 
       TryoutTester.showInFrame(new JScrollPane(treeTable));
 
+   }
+
+   private void addAsChildren(DefaultMutableTreeTableNode parent, DefaultMutableTreeTableNode... children) {
+      for (DefaultMutableTreeTableNode child : children) {
+         parent.add(child);
+      }
    }
 }
 
@@ -85,6 +90,31 @@ abstract class DefaultNode implements Comparable<Jira>, Transferable {
    protected abstract DataFlavor getDataFlavor();
 }
 
+
+class Sprint extends DefaultNode {
+   
+   private final String name;
+   
+   Sprint(String name) {
+      this.name = name;
+   }
+   
+   @Override
+   public int compareTo(Jira o) {
+      int res = 0;
+      res = o.getKey().compareTo(getName());
+      return res;
+   }
+   
+   public String getName() {
+      return name;
+   }
+   
+   @Override
+   protected DataFlavor getDataFlavor() {
+      return new DataFlavor(Sprint.class, "Sprint");
+   }
+}
 
 class FixVersion extends DefaultNode {
 
@@ -118,11 +148,15 @@ class Jira extends DefaultNode {
 
    private String key;
 
+   private String fixVersion;
+
+   private String sprint;
+
    public Jira(String key) {
       this.key = key;
    }
 
-   public Jira(String description, String key) {
+   public Jira(String key, String description) {
       super();
       this.description = description;
       this.key = key;
@@ -157,13 +191,22 @@ class Jira extends DefaultNode {
    protected DataFlavor getDataFlavor() {
       return new DataFlavor(Jira.class, "Jira");
    }
+
+   public String getFixVersion() {
+      return fixVersion;
+   }
+
+   public String getSprint() {
+      return sprint;
+   }
 }
 
 
 class JiraTreeTableModel extends DefaultTreeTableModel {
-   private static final int DESCRIPTION = 1;
    private static final int JIRA = 0;
-   private static final String[] columns = {"Jira", "Description"};
+   private static final int DESCRIPTION = 1;
+   
+   private static final String[] columns = {"Sprint", "FixVersion", "Jira", "Description"};
    
    public JiraTreeTableModel(TreeTableNode node) {
       super(node);
@@ -184,7 +227,7 @@ class JiraTreeTableModel extends DefaultTreeTableModel {
     * Returns which object is displayed in this column.
     */
    public Object getValueAt(Object node, int column) {
-      Object res = "n/a";
+      Object res = "";
       if (node instanceof DefaultMutableTreeTableNode) {
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
          if (defNode.getUserObject() instanceof Jira) {
@@ -200,8 +243,12 @@ class JiraTreeTableModel extends DefaultTreeTableModel {
             switch (column) {
             case JIRA:
                return fixVersion.getName();
-            case DESCRIPTION:
-               return "";
+            }
+         } else if (defNode.getUserObject() instanceof Sprint) {
+            Sprint sprint = (Sprint) defNode.getUserObject();
+            switch (column) {
+            case JIRA:
+               return sprint.getName();
             }
          }
       }
@@ -219,6 +266,8 @@ class JiraTreeTableModel extends DefaultTreeTableModel {
          if (defNode.getUserObject() instanceof Jira) {
             return true;
          } else if (defNode.getUserObject() instanceof FixVersion) {
+            return false;
+         } else if (defNode.getUserObject() instanceof Sprint) {
             return false;
          }
       }
