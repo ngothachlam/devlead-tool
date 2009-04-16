@@ -1,5 +1,6 @@
 package com.jonas.testHelpers;
 
+import java.awt.Container;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JPanel;
@@ -10,7 +11,7 @@ public class TryoutTester {
 
 	private static MainFrame frame;
 
-	public static MainFrame showInFrame(JPanel panel) {
+	public static MainFrame showInFrame(Container panel) {
 		frame = new MainFrame("Tryout Tester Frame");
 		frame.setContentPane(panel);
 		frame.setSize(800, 400);
@@ -25,11 +26,11 @@ public class TryoutTester {
 		return frame;
 	}
 
-	public static MainFrame getFrame() {
-		frame = new MainFrame("Tryout Tester Frame");
+	public static MainFrame getEmptyFrame() {
+		frame = new MainFrame("Tryout Tester Empty Frame");
 		JPanel contentPanel = new JPanel();
 		frame.setContentPane(contentPanel);
-		frame.setSize(800, 400);
+		frame.setSize(8, 8);
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				super.windowClosing(e);

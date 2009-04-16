@@ -11,7 +11,7 @@ import com.jonas.testHelpers.TryoutTester;
 
 public class AddManualDialogTestScreen {
    public static void main(String... args) {
-      JFrame frame = TryoutTester.getFrame();
+      JFrame frame = TryoutTester.getEmptyFrame();
       frame.setVisible(true);
       MyTable tableA = new MyTable("A", new BoardTableModel(), true);
       MyTable tableB = new MyTable("B", new JiraTableModel(), true);

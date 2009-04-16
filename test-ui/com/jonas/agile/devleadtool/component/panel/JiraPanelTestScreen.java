@@ -8,7 +8,7 @@ import com.jonas.testHelpers.TryoutTester;
 public class JiraPanelTestScreen {
 
    public static void main(String[] args) {
-      JFrame frame = TryoutTester.getFrame();
+      JFrame frame = TryoutTester.getEmptyFrame();
       JiraPanel panel = new JiraPanel(new JiraTableModel());
       frame.setContentPane(panel);
       frame.setVisible(true);

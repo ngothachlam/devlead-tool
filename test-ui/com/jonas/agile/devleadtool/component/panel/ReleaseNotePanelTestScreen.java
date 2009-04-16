@@ -8,7 +8,7 @@ import com.jonas.testHelpers.TryoutTester;
 public class ReleaseNotePanelTestScreen  {
 
    public static void main(String[] args) {
-      JFrame frame = TryoutTester.getFrame();
+      JFrame frame = TryoutTester.getEmptyFrame();
       JPanel panel = new ReleaseNotePanel();
       frame.setContentPane(panel);
       frame.setVisible(true);
