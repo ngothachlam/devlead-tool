@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -206,7 +205,7 @@ public class MyTable extends JXTable {
          if (colorDTO.isMarked()) {
             cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -25));
          } else{
-            cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), +25));
+            cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), +35));
          }
       }
    }
@@ -248,7 +247,7 @@ public class MyTable extends JXTable {
       // return getColumnName(colIndex);
       // }
       // });
-      getTableHeader().setToolTipText("blah");
+//      getTableHeader().setToolTipText("blah");
       this.setColumnControlVisible(true);
       this.addKeyListener(new MarkKeyListener(allowMarking));
       Highlighter higlighter = new MyTableHighlighter(this);

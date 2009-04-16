@@ -4,12 +4,15 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableNode;
+import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.testHelpers.TryoutTester;
 
 /**
@@ -51,13 +54,12 @@ public class TestTreeTable {
       addAsChildren(sprint, fixVersionOne, fixVersionTwo);
       addAsChildren(fixVersionOne, jiraOne, jiraTwo);
 
-      DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root);
+      DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root, BoardColumnMapping.boardColumnMapping);
       treeTable = new JXTreeTable(treeTableModel);
       treeTable.setFillsViewportHeight(true);
       treeTable.setColumnControlVisible(true);
 
       TryoutTester.showInFrame(new JScrollPane(treeTable));
-
    }
 
    private void addAsChildren(DefaultMutableTreeTableNode parent, DefaultMutableTreeTableNode... children) {
@@ -68,7 +70,34 @@ public class TestTreeTable {
 }
 
 
-abstract class DefaultNode implements Comparable<Jira>, Transferable {
+abstract class DefaultParentUserObject extends DefaultUserObject {
+   public final String getName() {
+      return name;
+   }
+
+   public DefaultParentUserObject(String name) {
+      super();
+      this.name = name;
+   }
+
+   public final void setName(String name) {
+      this.name = name;
+   }
+
+   private String name;
+
+   @Override
+   public final String getValueForColumn(Column column) {
+      switch (column) {
+      case JIRA:
+         return name;
+      }
+      return "";
+   }
+}
+
+
+abstract class DefaultUserObject implements Comparable<Jira>, Transferable {
    @Override
    public final Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
       if (isDataFlavorSupported(flavor)) {
@@ -76,6 +105,8 @@ abstract class DefaultNode implements Comparable<Jira>, Transferable {
       }
       throw new UnsupportedFlavorException(flavor);
    }
+
+   public abstract String getValueForColumn(Column column);
 
    @Override
    public final DataFlavor[] getTransferDataFlavors() {
@@ -88,40 +119,40 @@ abstract class DefaultNode implements Comparable<Jira>, Transferable {
    }
 
    protected abstract DataFlavor getDataFlavor();
+
+   public abstract void setValue(Column column, Object value);
 }
 
 
-class Sprint extends DefaultNode {
-   
-   private final String name;
-   
+class Sprint extends DefaultParentUserObject {
+
    Sprint(String name) {
-      this.name = name;
+      super(name);
    }
-   
+
    @Override
    public int compareTo(Jira o) {
       int res = 0;
       res = o.getKey().compareTo(getName());
       return res;
    }
-   
-   public String getName() {
-      return name;
-   }
-   
+
    @Override
    protected DataFlavor getDataFlavor() {
       return new DataFlavor(Sprint.class, "Sprint");
    }
+
+   @Override
+   public void setValue(Column column, Object value) {
+   }
+
 }
 
-class FixVersion extends DefaultNode {
 
-   private final String name;
+class FixVersion extends DefaultParentUserObject {
 
    FixVersion(String name) {
-      this.name = name;
+      super(name);
    }
 
    @Override
@@ -129,27 +160,24 @@ class FixVersion extends DefaultNode {
       int res = 0;
       res = o.getKey().compareTo(getName());
       return res;
-   }
-
-   public String getName() {
-      return name;
    }
 
    @Override
    protected DataFlavor getDataFlavor() {
       return new DataFlavor(FixVersion.class, "FixVersion");
    }
+
+   @Override
+   public void setValue(Column column, Object value) {
+   }
 }
 
 
-class Jira extends DefaultNode {
+class Jira extends DefaultUserObject {
 
    private String description;
-
    private String key;
-
    private String fixVersion;
-
    private String sprint;
 
    public Jira(String key) {
@@ -199,17 +227,79 @@ class Jira extends DefaultNode {
    public String getSprint() {
       return sprint;
    }
+
+   @Override
+   public String getValueForColumn(Column column) {
+      switch (column) {
+      case JIRA:
+         return key;
+      case DESCRIPTION:
+         return description;
+      }
+      return "";
+   }
+
+   @Override
+   public void setValue(Column column, Object value) {
+      switch (column) {
+      case JIRA:
+         setKey(value.toString());
+         break;
+      case DESCRIPTION:
+         setDescription(value.toString());
+         break;
+      }
+
+   }
+}
+
+
+class BoardColumnMapping {
+   private final Map<Integer, Column> indexMap = new HashMap<Integer, Column>();
+
+   private static int columnIndex = 0;
+   public static final BoardColumnMapping boardColumnMapping = new BoardColumnMapping();
+   
+   private BoardColumnMapping() {
+      add(Column.JIRA);
+      add(Column.DESCRIPTION);
+   }
+
+   private void add(Column column){
+      indexMap.put(columnIndex++, column);
+   }
+   
+   public Column getColumnForIndex(int columnIndex) {
+      return indexMap.get(columnIndex);
+   }
+   
+}
+
+
+enum Column {
+   JIRA("Jira"), DESCRIPTION("Description");
+
+   @Override
+   public String toString() {
+      return name;
+   }
+
+   private final String name;
+
+   Column(String name) {
+      this.name = name;
+   }
+
 }
 
 
 class JiraTreeTableModel extends DefaultTreeTableModel {
-   private static final int JIRA = 0;
-   private static final int DESCRIPTION = 1;
-   
-   private static final String[] columns = {"Sprint", "FixVersion", "Jira", "Description"};
-   
-   public JiraTreeTableModel(TreeTableNode node) {
+   private static final Column[] columns = { Column.JIRA, Column.DESCRIPTION };
+   private final BoardColumnMapping colIndexMapper;
+
+   public JiraTreeTableModel(TreeTableNode node, BoardColumnMapping colIndexMapper) {
       super(node);
+      this.colIndexMapper = colIndexMapper;
    }
 
    public int getColumnCount() {
@@ -220,36 +310,20 @@ class JiraTreeTableModel extends DefaultTreeTableModel {
     * What the TableHeader displays when the Table is in a JScrollPane.
     */
    public String getColumnName(int column) {
-      return columns[column];
+      return columns[column].toString();
    }
 
    /**
     * Returns which object is displayed in this column.
     */
-   public Object getValueAt(Object node, int column) {
+   public Object getValueAt(Object node, int columnIndex) {
       Object res = "";
       if (node instanceof DefaultMutableTreeTableNode) {
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
-         if (defNode.getUserObject() instanceof Jira) {
-            Jira jira = (Jira) defNode.getUserObject();
-            switch (column) {
-            case JIRA:
-               return jira.getKey();
-            case DESCRIPTION:
-               return jira.getDescription();
-            }
-         } else if (defNode.getUserObject() instanceof FixVersion) {
-            FixVersion fixVersion = (FixVersion) defNode.getUserObject();
-            switch (column) {
-            case JIRA:
-               return fixVersion.getName();
-            }
-         } else if (defNode.getUserObject() instanceof Sprint) {
-            Sprint sprint = (Sprint) defNode.getUserObject();
-            switch (column) {
-            case JIRA:
-               return sprint.getName();
-            }
+         if (defNode.getUserObject() instanceof DefaultUserObject) {
+            DefaultUserObject defnode = (DefaultUserObject) defNode.getUserObject();
+            Column column = colIndexMapper.getColumnForIndex(columnIndex);
+            return defnode.getValueForColumn(column);
          }
       }
       return res;
@@ -277,19 +351,13 @@ class JiraTreeTableModel extends DefaultTreeTableModel {
    /**
     * Called when done editing a cell.
     */
-   public void setValueAt(Object value, Object node, int column) {
+   public void setValueAt(Object value, Object node, int columnIndex) {
       if (node instanceof DefaultMutableTreeTableNode) {
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
-         if (defNode.getUserObject() instanceof Jira) {
-            Jira jira = (Jira) defNode.getUserObject();
-            switch (column) {
-            case JIRA:
-               jira.setKey(value.toString());
-               break;
-            case DESCRIPTION:
-               jira.setDescription(value.toString());
-               break;
-            }
+         if (defNode.getUserObject() instanceof DefaultUserObject) {
+            DefaultUserObject jira = (DefaultUserObject) defNode.getUserObject();
+            Column column = colIndexMapper.getColumnForIndex(columnIndex);
+            jira.setValue(column, value);
          }
       }
    }
