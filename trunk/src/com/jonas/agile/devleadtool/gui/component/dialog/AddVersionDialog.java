@@ -158,6 +158,7 @@ class AddVersionPanel extends MyPanel {
          final ProgressDialog dialog = new ProgressDialog(parentFrame, "Refreshing Fix Versions...", "Refreshing Fix Versions...",
                selectedObjects.length, true);
          SwingWorker worker = new SwingWorker() {
+            @Override
             public Object doInBackground() {
                dialog.setIndeterminate(false);
                JiraProject selectedProject = (JiraProject) selectedObjects[0];

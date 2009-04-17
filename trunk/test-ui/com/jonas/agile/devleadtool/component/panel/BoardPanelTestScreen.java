@@ -15,6 +15,6 @@ public class BoardPanelTestScreen {
       frame.setContentPane(panel);
       frame.setVisible(true);
       
-      ((MyTableModel)panel.getModel()).addJira("LLU-1");
+      (panel.getModel()).addJira("LLU-1");
    }
 }

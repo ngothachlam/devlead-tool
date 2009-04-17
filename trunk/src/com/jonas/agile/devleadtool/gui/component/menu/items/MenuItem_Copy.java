@@ -29,6 +29,7 @@ public class MenuItem_Copy extends MyMenuItem {
       this.destinationTable = table;
    }
 
+   @Override
    public void myActionPerformed(ActionEvent e) {
       final int[] selectedRows = sourceTable.getSelectedRows();
       if (selectedRows.length == 0) {

@@ -19,11 +19,13 @@ public class BoardTableModelTest extends JonasTestCase {
    Object[][] tableContents;
    BoardTableModel model;
 
+   @Override
    protected void setUp() throws Exception {
       super.setUp();
       model = new BoardTableModel();
    }
 
+   @Override
    protected void tearDown() throws Exception {
       super.tearDown();
    }

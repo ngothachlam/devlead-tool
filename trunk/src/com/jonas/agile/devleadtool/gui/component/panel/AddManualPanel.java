@@ -65,6 +65,7 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
       addJiraToBeReconciledListener(this);
    }
 
+   @Override
    public MyTable getTargetTable() {
       table = null;
       Enumeration<AbstractButton> elements = group.getElements();

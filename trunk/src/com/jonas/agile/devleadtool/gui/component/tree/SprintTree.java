@@ -38,6 +38,7 @@ public class SprintTree extends JTree {
       model.addJira(jira);
    }
 
+   @Override
    public DnDTreeModel getModel() {
       return model;
    }

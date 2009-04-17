@@ -16,6 +16,7 @@ public enum JiraCustomFields {
       this.customFieldJiraId = customFieldJiraId;
    }
 
+   @Override
    public String toString() {
       return customFieldJiraId;
    }

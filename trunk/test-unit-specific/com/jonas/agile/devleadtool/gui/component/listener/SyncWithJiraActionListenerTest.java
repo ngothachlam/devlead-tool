@@ -11,10 +11,12 @@ import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class SyncWithJiraActionListenerTest extends JonasTestCase {
 
+   @Override
    protected void setUp() throws Exception {
       super.setUp();
    }
 
+   @Override
    protected void tearDown() throws Exception {
       super.tearDown();
    }

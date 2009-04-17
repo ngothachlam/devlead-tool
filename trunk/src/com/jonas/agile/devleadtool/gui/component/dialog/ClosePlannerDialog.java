@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import org.apache.log4j.Logger;
@@ -62,7 +63,7 @@ public class ClosePlannerDialog extends JDialog {
       parent.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
       MyPanel panel = new MyPanel(new BorderLayout()).bordered(15, 15, 15, 15);
-      panel.addCenter(new JLabel("Closing... ", JLabel.CENTER));
+      panel.addCenter(new JLabel("Closing... ", SwingConstants.CENTER));
       setContentPane(panel);
       pack();
       SwingUtil.centreWindowWithinWindow(this, parent);

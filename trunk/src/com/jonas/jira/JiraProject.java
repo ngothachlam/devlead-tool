@@ -145,6 +145,7 @@ public class JiraProject {
       return jiraKey;
    }
 
+   @Override
    public String toString() {
       return jiraKey;
    }

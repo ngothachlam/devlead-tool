@@ -29,6 +29,7 @@ public class NewPlannerDialog {
    
    public void openNew(){
       SwingWorker<CombinedModelDTO, Object> worker = new AbstractInternalFrameCreatorSwingthread(helper, dao, savePlannerDialog, saveKeyListener, desktopPane){
+         @Override
          protected CombinedModelDTO doInBackground() throws Exception {
             return new CombinedModelDTO(new BoardTableModel(), new JiraTableModel());
          }

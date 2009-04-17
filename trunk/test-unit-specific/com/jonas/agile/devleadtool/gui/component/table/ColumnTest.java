@@ -1,6 +1,5 @@
 package com.jonas.agile.devleadtool.gui.component.table;
 
-import java.util.List;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import junit.framework.TestCase;
 

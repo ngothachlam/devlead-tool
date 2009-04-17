@@ -13,6 +13,7 @@ public class JiraClientTest extends JonasTestCase {
 
    JiraClient jiraClient = null;
 
+   @Override
    public void setUp() throws Exception {
       super.setUp();
       jiraClient = JiraClient.JiraClientAtlassin;

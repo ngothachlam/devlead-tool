@@ -138,7 +138,8 @@ public class RemoteAttachment  extends com.atlassian.jira.rpc.soap.beans.Abstrac
     }
 
     private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
+    @Override
+   public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof RemoteAttachment)) return false;
         RemoteAttachment other = (RemoteAttachment) obj;
         if (obj == null) return false;
@@ -169,7 +170,8 @@ public class RemoteAttachment  extends com.atlassian.jira.rpc.soap.beans.Abstrac
     }
 
     private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
+    @Override
+   public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
         }

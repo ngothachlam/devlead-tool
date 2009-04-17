@@ -162,6 +162,7 @@ public class AddFilterDialog extends JFrame {
          parentFrame.dispose();
       }
 
+      @Override
       public JiraIssue[] doInBackground() {
          JiraClient client = filter.getProject().getJiraClient();
          try {

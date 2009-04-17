@@ -16,7 +16,6 @@ import org.jdom.xpath.XPath;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
-import com.jonas.jira.TestObjects;
 import com.jonas.jira.utils.JiraBuilder;
 
 public class JonasTestCase extends TestCase {
@@ -109,15 +108,15 @@ public class JonasTestCase extends TestCase {
 
    protected void setupMockActualsForElementExtendedWithEstimate(Element e) {
       setupMockActualsForElement(e, "LLU-1", "Blah", "BlahStatus", "BlahResolution", "BlahType");
-      EasyMock.expect(e.getChildText("timeoriginalestimate")).andReturn("2 days");
+      org.easymock.EasyMock.expect(e.getChildText("timeoriginalestimate")).andReturn("2 days");
    }
 
    protected void setupMockActualsForElement(Element e, String key, String summary, String status, String resolution, String type) {
-      EasyMock.expect(e.getChildText("key")).andReturn(key);
-      EasyMock.expect(e.getChildText("summary")).andReturn(summary);
-      EasyMock.expect(e.getChildText("status")).andReturn(status);
-      EasyMock.expect(e.getChildText("resolution")).andReturn(resolution);
-      EasyMock.expect(e.getChildText("type")).andReturn(type);
+      org.easymock.EasyMock.expect(e.getChildText("key")).andReturn(key);
+      org.easymock.EasyMock.expect(e.getChildText("summary")).andReturn(summary);
+      org.easymock.EasyMock.expect(e.getChildText("status")).andReturn(status);
+      org.easymock.EasyMock.expect(e.getChildText("resolution")).andReturn(resolution);
+      org.easymock.EasyMock.expect(e.getChildText("type")).andReturn(type);
    }
 
    protected void verify() {

@@ -1,19 +1,14 @@
 package com.jonas.agile.devleadtool.gui.component.table.model;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import org.apache.log4j.Logger;
 import org.easymock.classextension.EasyMock;
-import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.gui.component.tree.nodes.FixVersionNode;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
-import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
@@ -27,11 +22,13 @@ public class MyTableModelTest extends JonasTestCase {
 
    private MyTableModel model;
 
+   @Override
    protected void setUp() throws Exception {
       super.setUp();
       model = new TestTableModel();
    }
 
+   @Override
    protected void tearDown() throws Exception {
       super.tearDown();
    }
@@ -223,17 +220,17 @@ public class MyTableModelTest extends JonasTestCase {
    public void testShouldAddJiraComplexObjectOk() {
       JiraIssue mock_jiraIssue = createClassMock(JiraIssue.class);
 
-      EasyMock.expect(mock_jiraIssue.getKey()).andReturn("LLU-1").anyTimes();
-      EasyMock.expect(mock_jiraIssue.getSummary()).andReturn("Summary1").anyTimes();
+      org.easymock.EasyMock.expect(mock_jiraIssue.getKey()).andReturn("LLU-1").anyTimes();
+      org.easymock.EasyMock.expect(mock_jiraIssue.getSummary()).andReturn("Summary1").anyTimes();
       List<JiraVersion> fixVersions = new ArrayList<JiraVersion>();
       fixVersions.add(TestObjects.Version_10);
       fixVersions.add(TestObjects.Version_11);
-      EasyMock.expect(mock_jiraIssue.getFixVersions()).andReturn(fixVersions).anyTimes();
-      EasyMock.expect(mock_jiraIssue.getStatus()).andReturn("Status1").anyTimes();
-      EasyMock.expect(mock_jiraIssue.getResolution()).andReturn("Resolution1").anyTimes();
-      EasyMock.expect(mock_jiraIssue.getBuildNo()).andReturn("BuildNo1").anyTimes();
-      EasyMock.expect(mock_jiraIssue.getEstimate()).andReturn("1.4").anyTimes();
-      EasyMock.expect(mock_jiraIssue.getLLUListPriority()).andReturn(5800).anyTimes();
+      org.easymock.EasyMock.expect(mock_jiraIssue.getFixVersions()).andReturn(fixVersions).anyTimes();
+      org.easymock.EasyMock.expect(mock_jiraIssue.getStatus()).andReturn("Status1").anyTimes();
+      org.easymock.EasyMock.expect(mock_jiraIssue.getResolution()).andReturn("Resolution1").anyTimes();
+      org.easymock.EasyMock.expect(mock_jiraIssue.getBuildNo()).andReturn("BuildNo1").anyTimes();
+      org.easymock.EasyMock.expect(mock_jiraIssue.getEstimate()).andReturn("1.4").anyTimes();
+      org.easymock.EasyMock.expect(mock_jiraIssue.getLLUListPriority()).andReturn(5800).anyTimes();
       replay();
 
       boolean isAdded = model.addJira(mock_jiraIssue);

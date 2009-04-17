@@ -13,13 +13,15 @@ public class InternalFrameTest extends JonasTestCase {
    PlannerHelper helperMock = createClassMock(PlannerHelper.class);
    private List<MyInternalFrame> internalFrames = new ArrayList<MyInternalFrame>();
 
+   @Override
    protected void tearDown() throws Exception {
       super.tearDown();
       clearInternalFrames();
    }
 
    private void clearInternalFrames() throws PropertyVetoException {
-      internalFrames.get(0).closeAll();
+      internalFrames.get(0);
+      MyInternalFrame.closeAll();
    }
 
    private MyInternalFrame getTestInternalFrame(String title) {

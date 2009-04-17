@@ -38,6 +38,7 @@ public class DownloadJiraListener implements ActionListener {
       SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
          private String error = null;
 
+         @Override
          public Object doInBackground() {
             dialog.setIndeterminate(false);
             for (int i = 0; i < selects.length; i++) {

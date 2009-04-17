@@ -61,6 +61,7 @@ public class JiraSaxHandlerTest extends TestCase {
 
    }
 
+   @Override
    protected void setUp() throws Exception {
       super.setUp();
       xmlReader = XMLReaderFactory.createXMLReader();
@@ -70,6 +71,7 @@ public class JiraSaxHandlerTest extends TestCase {
       saxHandler.addJiraParseListener(jiraParseListener);
    }
 
+   @Override
    protected void tearDown() throws Exception {
       saxHandler.clearAllListeners();
    }

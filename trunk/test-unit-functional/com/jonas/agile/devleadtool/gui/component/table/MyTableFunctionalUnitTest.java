@@ -16,12 +16,14 @@ public class MyTableFunctionalUnitTest extends TestCase {
    private Column[] columns = { Column.Jira };
    private MyTable table;
 
+   @Override
    protected void setUp() throws Exception {
       super.setUp();
       MyTableModel modelModel = new ATestTableModel(columns);
       table = new MyTable("table test", modelModel, true);
    }
 
+   @Override
    protected void tearDown() throws Exception {
       super.tearDown();
    }

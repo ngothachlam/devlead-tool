@@ -10,11 +10,13 @@ public class MyTableTest extends JonasTestCase {
 
    MyTable table;
 
+   @Override
    protected void setUp() throws Exception {
       super.setUp();
       table = new MyTable("", null, false);
    }
 
+   @Override
    protected void tearDown() throws Exception {
       super.tearDown();
    }

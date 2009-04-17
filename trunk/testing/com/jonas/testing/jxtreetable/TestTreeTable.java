@@ -42,7 +42,7 @@ public class TestTreeTable {
       addAsChildren(sprint, fixVersionOne, fixVersionTwo);
       addAsChildren(fixVersionOne, jiraOne, jiraTwo);
 
-      DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root, BoardColumnMapping.boardColumnMapping);
+      DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root, BoardColumnMapper.boardColumnMapping);
       treeTable = new JXTreeTable(treeTableModel);
       treeTable.setFillsViewportHeight(true);
       treeTable.setColumnControlVisible(true);

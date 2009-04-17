@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.gui.component.table;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -124,10 +125,11 @@ public class MyTable extends JXTable {
          this.allowMarking = allowMarking;
       }
 
+      @Override
       public void keyPressed(KeyEvent e) {
          switch (e.getKeyCode()) {
          case KeyEvent.VK_M:
-            if (allowMarking && e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
+            if (allowMarking && e.getModifiersEx() == InputEvent.CTRL_DOWN_MASK) {
                log.debug("backspace and mark");
                changeMarkOfSelected();
             }
@@ -355,6 +357,7 @@ public class MyTable extends JXTable {
       return convertColumnIndexToView(model.getColumnIndex(column));
    }
 
+   @Override
    public TableModel getModel() {
       return super.getModel();
    }

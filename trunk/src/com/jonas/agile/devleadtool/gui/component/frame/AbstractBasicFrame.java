@@ -17,6 +17,7 @@ public abstract class AbstractBasicFrame extends JFrame {
       this.height = height;
    }
 
+   @Override
    public final void setVisible(boolean isVisible) {
       if (isVisible) {
          this.setContentPane(getMyPanel());

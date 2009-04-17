@@ -148,6 +148,7 @@ public class DynamicTestChart extends JPanel {
       frame.setVisible(true);
       panel.new DataGenerator(100).start();
       frame.addWindowListener(new WindowAdapter() {
+         @Override
          public void windowClosing(WindowEvent e) {
             System.exit(0);
          }

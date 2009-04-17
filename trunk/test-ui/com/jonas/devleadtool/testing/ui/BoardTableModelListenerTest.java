@@ -15,6 +15,7 @@ public class BoardTableModelListenerTest extends JonasTestCase {
    private MyTable boardTable;
    private MyTable jiraTable;
 
+   @Override
    protected void setUp() throws Exception {
       MyTableModel boardModel = new BoardTableModel();
       MyTableModel jiraModel = new JiraTableModel();
@@ -30,6 +31,7 @@ public class BoardTableModelListenerTest extends JonasTestCase {
       super.setUp();
    }
 
+   @Override
    protected void tearDown() throws Exception {
       super.tearDown();
    }

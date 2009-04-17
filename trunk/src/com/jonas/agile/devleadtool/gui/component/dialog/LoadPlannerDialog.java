@@ -1,7 +1,6 @@
 package com.jonas.agile.devleadtool.gui.component.dialog;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.JFileChooser;
@@ -10,7 +9,6 @@ import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.data.PersistanceException;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.gui.component.DesktopPane;
 import com.jonas.agile.devleadtool.gui.component.SaveKeyListener;
@@ -37,12 +35,14 @@ public class LoadPlannerDialog extends JFileChooser {
       this.saveKeyListener = saveKeyListener;
 
       addChoosableFileFilter(new FileFilter() {
+         @Override
          public boolean accept(File f) {
             if (getTypeDescription(f).equalsIgnoreCase("Microsoft Excel Worksheet") || f.isDirectory())
                return true;
             return false;
          }
 
+         @Override
          public String getDescription() {
             return "XLS files";
          }

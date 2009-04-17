@@ -16,7 +16,8 @@ public class TryoutTester {
 		frame.setContentPane(panel);
 		frame.setSize(800, 400);
 		frame.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
+			@Override
+         public void windowClosing(WindowEvent e) {
 				super.windowClosing(e);
 				SystemProperties.close();
 				System.exit(0);
@@ -32,7 +33,8 @@ public class TryoutTester {
 		frame.setContentPane(contentPanel);
 		frame.setSize(8, 8);
 		frame.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
+			@Override
+         public void windowClosing(WindowEvent e) {
 				super.windowClosing(e);
 				SystemProperties.close();
 				System.exit(0);
