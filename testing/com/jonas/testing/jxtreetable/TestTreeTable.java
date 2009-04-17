@@ -68,6 +68,12 @@ public class TestTreeTable {
       TreeTableDao treeTableDao = new TreeTableDao();
       treeTableDao.persist(new File("testTreeTableDao"), treeTableModel);
       
+      /*
+       * TODO versioning: Allow the loader to
+       * 1) See what version of the loaded xml
+       * 2) Apply (in sequence) all rollforwards to get the file into the latest state!
+       */
+      
    }
 
    private void addChildrenToParent(DefaultMutableTreeTableNode parent, DefaultMutableTreeTableNode... children) {
