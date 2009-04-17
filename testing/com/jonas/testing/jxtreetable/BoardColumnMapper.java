@@ -18,8 +18,14 @@ public class BoardColumnMapper implements ColumnMapper {
       indexMap.put(columnIndex++, column);
    }
    
+   @Override
    public Column getColumnForIndex(int columnIndex) {
       return indexMap.get(columnIndex);
+   }
+
+   @Override
+   public int getColumnCount() {
+      return indexMap.size();
    }
    
 }
