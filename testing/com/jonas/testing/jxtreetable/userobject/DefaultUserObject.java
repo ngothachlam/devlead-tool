@@ -30,4 +30,6 @@ public abstract class DefaultUserObject implements Comparable<Jira>, Transferabl
    protected abstract DataFlavor getDataFlavor();
 
    public abstract void setValue(Column column, Object value);
+
+   public abstract boolean isLeaf();
 }
