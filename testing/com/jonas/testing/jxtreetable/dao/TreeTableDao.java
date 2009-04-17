@@ -1,45 +1,37 @@
 package com.jonas.testing.jxtreetable.dao;
 
-import java.io.BufferedWriter;
+import java.beans.XMLEncoder;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
-import org.jdesktop.swingx.treetable.TreeTableNode;
 
 public class TreeTableDao {
 
    public void persist(File file, DefaultTreeTableModel treeTableModel) throws IOException {
-      FileWriter fw = null;
-      BufferedWriter bw = null;
+      FileOutputStream fos = null;
+      BufferedOutputStream bos = null;
+      XMLEncoder xenc = null;
       try {
 
-         fw = new FileWriter(file);
-         bw = new BufferedWriter(fw);
+         fos = new FileOutputStream(file);
+         bos = new BufferedOutputStream(fos);
+         xenc = new XMLEncoder(bos);
 
-         TreeTableNode root = treeTableModel.getRoot();
-         TreeTableNode parent = root;
-         
-         printRecursively(bw, parent);
+         xenc.writeObject(treeTableModel.getRoot());
+         xenc.writeObject(treeTableModel.getRoot().getChildAt(0));
 
       } finally {
-         if (bw != null) {
-            bw.flush();
-            bw.close();
+         if (xenc != null) {
+            xenc.close();
          }
-         if (fw != null) {
-            fw.close();
+         if (bos != null) {
+            bos.close();
+         }
+         if (fos != null) {
+            fos.close();
          }
       }
    }
-
-   private void printRecursively(BufferedWriter bw, TreeTableNode parent) throws IOException {
-      int childCount = parent.getChildCount();
-      bw.write(parent.getUserObject().toString());
-      bw.write("\n");
-      for (int child = 0; child < childCount; child++) {
-         printRecursively(bw, parent.getChildAt(child));
-      }
-   }
-
 }
