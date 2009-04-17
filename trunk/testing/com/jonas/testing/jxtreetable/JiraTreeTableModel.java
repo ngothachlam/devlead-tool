@@ -9,7 +9,6 @@ import com.jonas.testing.jxtreetable.userobject.Jira;
 import com.jonas.testing.jxtreetable.userobject.Sprint;
 
 public class JiraTreeTableModel extends DefaultTreeTableModel {
-   private static final Column[] columns = { Column.JIRA, Column.DESCRIPTION };
    private final ColumnMapper colIndexMapper;
 
    public JiraTreeTableModel(TreeTableNode node, ColumnMapper colIndexMapper) {
@@ -19,15 +18,15 @@ public class JiraTreeTableModel extends DefaultTreeTableModel {
 
    @Override
    public int getColumnCount() {
-      return columns.length;
+      return colIndexMapper.getColumnCount();
    }
 
    /**
     * What the TableHeader displays when the Table is in a JScrollPane.
     */
    @Override
-   public String getColumnName(int column) {
-      return columns[column].toString();
+   public String getColumnName(int columnIndex) {
+      return colIndexMapper.getColumnForIndex(columnIndex).toString();
    }
 
    /**
