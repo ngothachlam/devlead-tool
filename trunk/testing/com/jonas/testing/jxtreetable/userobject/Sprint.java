@@ -25,4 +25,9 @@ public class Sprint extends DefaultParentUserObject {
    public void setValue(Column column, Object value) {
    }
 
+   @Override
+   public boolean isLeaf() {
+      return false;
+   }
+
 }

@@ -24,4 +24,9 @@ public class FixVersion extends DefaultParentUserObject {
    @Override
    public void setValue(Column column, Object value) {
    }
+
+   @Override
+   public boolean isLeaf() {
+      return false;
+   }
 }

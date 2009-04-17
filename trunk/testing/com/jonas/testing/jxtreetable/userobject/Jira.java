@@ -82,4 +82,9 @@ public class Jira extends DefaultUserObject {
       }
 
    }
+
+   @Override
+   public boolean isLeaf() {
+      return true;
+   }
 }
