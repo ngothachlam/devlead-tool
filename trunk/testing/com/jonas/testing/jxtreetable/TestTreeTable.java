@@ -9,9 +9,9 @@ import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import com.jonas.testHelpers.TryoutTester;
 import com.jonas.testing.jxtreetable.dao.TreeTableDao;
-import com.jonas.testing.jxtreetable.userobject.FixVersion;
-import com.jonas.testing.jxtreetable.userobject.Jira;
-import com.jonas.testing.jxtreetable.userobject.Sprint;
+import com.jonas.testing.jxtreetable.userobject.FixVersionUserObject;
+import com.jonas.testing.jxtreetable.userobject.JiraUserObject;
+import com.jonas.testing.jxtreetable.userobject.SprintUserObject;
 
 public class TestTreeTable {
    private JXTreeTable treeTable;
@@ -40,14 +40,14 @@ public class TestTreeTable {
     */
    public void create() throws IOException {
       DefaultMutableTreeTableNode root = new DefaultMutableTreeTableNode("root");
-      DefaultMutableTreeTableNode sprintOne = new DefaultMutableTreeTableNode(new Sprint("12-1"));
-      DefaultMutableTreeTableNode sprintTwo = new DefaultMutableTreeTableNode(new Sprint("12-2"));
-      DefaultMutableTreeTableNode fixVersionOne = new DefaultMutableTreeTableNode(new FixVersion("LLU 11"));
-      DefaultMutableTreeTableNode fixVersionTwo = new DefaultMutableTreeTableNode(new FixVersion("LLU 12"));
-      DefaultMutableTreeTableNode fixVersionTwoDupe = new DefaultMutableTreeTableNode(new FixVersion("LLU 12"));
-      DefaultMutableTreeTableNode jiraOne = new DefaultMutableTreeTableNode(new Jira("llu-1", "Description for llu-1"));
-      DefaultMutableTreeTableNode jiraTwo = new DefaultMutableTreeTableNode(new Jira("llu-2", "Description for llu-2"));
-      DefaultMutableTreeTableNode jiraTwoDupe = new DefaultMutableTreeTableNode(new Jira("llu-2", "Description for llu-2"));
+      DefaultMutableTreeTableNode sprintOne = new DefaultMutableTreeTableNode(new SprintUserObject("12-1"));
+      DefaultMutableTreeTableNode sprintTwo = new DefaultMutableTreeTableNode(new SprintUserObject("12-2"));
+      DefaultMutableTreeTableNode fixVersionOne = new DefaultMutableTreeTableNode(new FixVersionUserObject("LLU 11"));
+      DefaultMutableTreeTableNode fixVersionTwo = new DefaultMutableTreeTableNode(new FixVersionUserObject("LLU 12"));
+      DefaultMutableTreeTableNode fixVersionTwoDupe = new DefaultMutableTreeTableNode(new FixVersionUserObject("LLU 12"));
+      DefaultMutableTreeTableNode jiraOne = new DefaultMutableTreeTableNode(new JiraUserObject("llu-1", "Description for llu-1"));
+      DefaultMutableTreeTableNode jiraTwo = new DefaultMutableTreeTableNode(new JiraUserObject("llu-2", "Description for llu-2"));
+      DefaultMutableTreeTableNode jiraTwoDupe = new DefaultMutableTreeTableNode(new JiraUserObject("llu-2", "Description for llu-2"));
 
       addChildrenToParent(root, sprintOne);
       addChildrenToParent(root, sprintTwo);
@@ -57,7 +57,7 @@ public class TestTreeTable {
       addChildrenToParent(fixVersionOne, jiraOne);
       addChildrenToParent(fixVersionTwo, jiraTwo);
       addChildrenToParent(fixVersionTwoDupe, jiraTwoDupe);
-
+      
       DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root, BoardColumnMapper.boardColumnMapping);
       treeTable = new JXTreeTable(treeTableModel);
       treeTable.setFillsViewportHeight(true);

@@ -3,25 +3,25 @@ package com.jonas.testing.jxtreetable.userobject;
 import java.awt.datatransfer.DataFlavor;
 import com.jonas.testing.jxtreetable.Column;
 
-public class Jira extends DefaultUserObject {
+public class JiraUserObject extends DefaultUserObject {
 
    private String description;
    private String key;
    private String fixVersion;
    private String sprint;
 
-   public Jira(String key) {
+   public JiraUserObject(String key) {
       this.key = key;
    }
 
-   public Jira(String key, String description) {
+   public JiraUserObject(String key, String description) {
       super();
       this.description = description;
       this.key = key;
    }
 
    @Override
-   public int compareTo(Jira o) {
+   public int compareTo(JiraUserObject o) {
       int res = 0;
       res = o.getKey().compareTo(getKey());
       if (0 == res) {
@@ -48,7 +48,7 @@ public class Jira extends DefaultUserObject {
 
    @Override
    protected DataFlavor getDataFlavor() {
-      return new DataFlavor(Jira.class, "Jira");
+      return new DataFlavor(JiraUserObject.class, "Jira");
    }
 
    public String getFixVersion() {

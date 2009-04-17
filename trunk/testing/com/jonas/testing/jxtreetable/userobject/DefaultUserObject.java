@@ -6,7 +6,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import com.jonas.testing.jxtreetable.Column;
 
-public abstract class DefaultUserObject implements Comparable<Jira>, Transferable {
+public abstract class DefaultUserObject implements Comparable<JiraUserObject>, Transferable {
    @Override
    public final Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
       if (isDataFlavorSupported(flavor)) {

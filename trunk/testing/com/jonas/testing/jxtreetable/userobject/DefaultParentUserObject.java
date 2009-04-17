@@ -26,4 +26,18 @@ public abstract class DefaultParentUserObject extends DefaultUserObject {
       }
       return "";
    }
+   
+   @Override
+   public final void setValue(Column column, Object value) {
+   }
+
+   @Override
+   public final boolean isLeaf() {
+      return false;
+   }
+
+   @Override
+   public final boolean isEditable(Column column) {
+      return false;
+   }
 }

@@ -1,9 +1,9 @@
-root
-com.jonas.testing.jxtreetable.userobject.Sprint@92e78c
-com.jonas.testing.jxtreetable.userobject.FixVersion@1971afc
-com.jonas.testing.jxtreetable.userobject.Jira@16cd7d5
-com.jonas.testing.jxtreetable.userobject.FixVersion@cdedfd
-com.jonas.testing.jxtreetable.userobject.Jira@1c39a2d
-com.jonas.testing.jxtreetable.userobject.Sprint@198dfaf
-com.jonas.testing.jxtreetable.userobject.FixVersion@bf2d5e
-com.jonas.testing.jxtreetable.userobject.Jira@13bad12
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_07" class="java.beans.XMLDecoder"> 
+ <object class="org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode"> 
+  <void property="userObject"> 
+   <string>root</string> 
+  </void> 
+ </object> 
+ <object class="org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode"/> 
+</java> 

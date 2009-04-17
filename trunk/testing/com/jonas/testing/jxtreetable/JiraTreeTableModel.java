@@ -1,5 +1,6 @@
 package com.jonas.testing.jxtreetable;
 
+import java.io.Serializable;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
@@ -7,7 +8,7 @@ import org.jdesktop.swingx.treetable.TreeTableNode;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.testing.jxtreetable.userobject.DefaultUserObject;
 
-public class JiraTreeTableModel extends DefaultTreeTableModel {
+public class JiraTreeTableModel extends DefaultTreeTableModel implements Serializable{
    private final ColumnMapper colIndexMapper;
    private final static Logger log = MyLogger.getLogger(JiraTreeTableModel.class);
 
