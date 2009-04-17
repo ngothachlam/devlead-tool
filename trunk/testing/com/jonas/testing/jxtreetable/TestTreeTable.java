@@ -1,11 +1,14 @@
 package com.jonas.testing.jxtreetable;
 
+import java.io.File;
+import java.io.IOException;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import com.jonas.testHelpers.TryoutTester;
+import com.jonas.testing.jxtreetable.dao.TreeTableDao;
 import com.jonas.testing.jxtreetable.userobject.FixVersion;
 import com.jonas.testing.jxtreetable.userobject.Jira;
 import com.jonas.testing.jxtreetable.userobject.Sprint;
@@ -23,14 +26,19 @@ public class TestTreeTable {
          e.printStackTrace();
       }
       TestTreeTable test = new TestTreeTable();
-      test.create();
+      try {
+         test.create();
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
    }
 
    /**
     * creates the demo on the event dispatch thread.
+    * @throws IOException 
     * 
     */
-   public void create() {
+   public void create() throws IOException {
       DefaultMutableTreeTableNode root = new DefaultMutableTreeTableNode("root");
       DefaultMutableTreeTableNode sprintOne = new DefaultMutableTreeTableNode(new Sprint("12-1"));
       DefaultMutableTreeTableNode sprintTwo = new DefaultMutableTreeTableNode(new Sprint("12-2"));
@@ -56,6 +64,10 @@ public class TestTreeTable {
       treeTable.setColumnControlVisible(true);
 
       TryoutTester.showInFrame(new JScrollPane(treeTable));
+      
+      TreeTableDao treeTableDao = new TreeTableDao();
+      treeTableDao.persist(new File("testTreeTableDao"), treeTableModel);
+      
    }
 
    private void addChildrenToParent(DefaultMutableTreeTableNode parent, DefaultMutableTreeTableNode... children) {
