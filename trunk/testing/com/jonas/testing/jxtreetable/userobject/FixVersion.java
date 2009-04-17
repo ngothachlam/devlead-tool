@@ -29,4 +29,15 @@ public class FixVersion extends DefaultParentUserObject {
    public boolean isLeaf() {
       return false;
    }
+   
+   @Override
+   public boolean isEditable(Column column) {
+      switch (column) {
+      case REF:
+         return false;
+      case DESCRIPTION:
+         return false;
+      }
+      return false;
+   }
 }

@@ -1,7 +1,7 @@
 package com.jonas.testing.jxtreetable;
 
 public enum Column {
-   JIRA("Jira"), DESCRIPTION("Description");
+   REF("Ref"), DESCRIPTION("Description");
 
    @Override
    public String toString() {

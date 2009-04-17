@@ -62,7 +62,7 @@ public class Jira extends DefaultUserObject {
    @Override
    public String getValueForColumn(Column column) {
       switch (column) {
-      case JIRA:
+      case REF:
          return key;
       case DESCRIPTION:
          return description;
@@ -73,18 +73,28 @@ public class Jira extends DefaultUserObject {
    @Override
    public void setValue(Column column, Object value) {
       switch (column) {
-      case JIRA:
+      case REF:
          setKey(value.toString());
          break;
       case DESCRIPTION:
          setDescription(value.toString());
          break;
       }
-
    }
 
    @Override
    public boolean isLeaf() {
       return true;
+   }
+
+   @Override
+   public boolean isEditable(Column column) {
+      switch (column) {
+      case REF:
+         return true;
+      case DESCRIPTION:
+         return false;
+      }
+      return false;
    }
 }
