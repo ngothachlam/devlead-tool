@@ -30,4 +30,14 @@ public class Sprint extends DefaultParentUserObject {
       return false;
    }
 
+   @Override
+   public boolean isEditable(Column column) {
+      switch (column) {
+      case REF:
+         return false;
+      case DESCRIPTION:
+         return false;
+      }
+      return false;
+   }
 }

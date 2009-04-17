@@ -21,7 +21,7 @@ public abstract class DefaultParentUserObject extends DefaultUserObject {
    @Override
    public final String getValueForColumn(Column column) {
       switch (column) {
-      case JIRA:
+      case REF:
          return name;
       }
       return "";

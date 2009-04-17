@@ -10,7 +10,7 @@ public class BoardColumnMapper implements ColumnMapper {
    public static final ColumnMapper boardColumnMapping = new BoardColumnMapper();
    
    private BoardColumnMapper() {
-      add(Column.JIRA);
+      add(Column.REF);
       add(Column.DESCRIPTION);
    }
 

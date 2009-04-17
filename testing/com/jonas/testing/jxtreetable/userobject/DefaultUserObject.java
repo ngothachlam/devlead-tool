@@ -32,4 +32,6 @@ public abstract class DefaultUserObject implements Comparable<Jira>, Transferabl
    public abstract void setValue(Column column, Object value);
 
    public abstract boolean isLeaf();
+
+   public abstract boolean isEditable(Column column);
 }

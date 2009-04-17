@@ -51,8 +51,21 @@ public class JiraTreeTableModel extends DefaultTreeTableModel {
    }
 
    @Override
-   public boolean isCellEditable(Object node, int column) {
-      return true;
+   public boolean isCellEditable(Object node, int columnIndex) {
+      if (node instanceof DefaultMutableTreeTableNode) {
+         DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
+         Object userObject = defNode.getUserObject();
+         if (userObject instanceof DefaultUserObject) {
+            DefaultUserObject defnode = (DefaultUserObject) userObject;
+            Column column = colIndexMapper.getColumnForIndex(columnIndex);
+            return defnode.isEditable(column);
+         }
+         if (!"root".equalsIgnoreCase(userObject.toString()))
+            log.warn("User object [" + userObject.toString() + "] is not of DefaultUserObject type");
+      } else {
+         log.warn("Node [" + node.toString() + "] is not of DefaultMutableTreeTableNode type");
+      }
+      return super.isCellEditable(node, columnIndex);
    }
 
    @Override
