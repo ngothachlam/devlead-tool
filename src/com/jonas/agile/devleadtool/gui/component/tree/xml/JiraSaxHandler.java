@@ -40,6 +40,7 @@ public class JiraSaxHandler extends DefaultHandler {
       jiraParseListeners.add(jiraParseListener);
    }
 
+   @Override
    public void characters(char ch[], int start, int length) {
       for (int i = start; i < start + length; i++) {
          switch (ch[i]) {
@@ -59,6 +60,7 @@ public class JiraSaxHandler extends DefaultHandler {
       notifyParsingFinished();
    }
 
+   @Override
    public void endElement(String uri, String name, String qName) {
       String value = sb.toString().trim();
       log.debug("uri: " + uri + " name: " + name + " qName: " + qName + " value: " + value);
@@ -118,11 +120,13 @@ public class JiraSaxHandler extends DefaultHandler {
       }
    }
 
+   @Override
    public void startDocument() throws SAXException {
       notifyParsingStarted();
       nodeCount = 0;
    }
 
+   @Override
    public void startElement(String uri, String name, String qName, Attributes atts) throws SAXException {
       if (ITEM.equals(qName)) {
          jira = new JiraDTO();

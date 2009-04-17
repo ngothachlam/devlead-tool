@@ -67,6 +67,7 @@ public class SyncWithJiraListener implements ActionListener {
          this.jiraToGet = jiraToGet;
       }
 
+      @Override
       public void notifyOfAccess(JiraAccessUpdate accessUpdate) {
          switch (accessUpdate) {
          case LOGGING_IN:
@@ -97,6 +98,7 @@ public class SyncWithJiraListener implements ActionListener {
          this.dialog = dialog;
       }
 
+      @Override
       public Object doInBackground() {
          final int[] rows = table.getSelectedRows();
          dialog.increaseMax("Syncing...", rows.length);
@@ -132,6 +134,7 @@ public class SyncWithJiraListener implements ActionListener {
          return null;
       }
 
+      @Override
       public void done() {
          log.debug("Syncing Finished!");
          dialog.setCompleteWithDelay(300);

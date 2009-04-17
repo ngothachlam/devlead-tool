@@ -45,8 +45,8 @@ public class SprintInfoPanel extends JPanel {
       gbc.weightx = 1.0;
       gbc.weighty = 0;
       gbc.gridwidth = 2;
-      gbc.fill = gbc.HORIZONTAL;
-      gbc.anchor = gbc.CENTER;
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.anchor = GridBagConstraints.CENTER;
       add(comp, gbc);
 
       gbc.gridx = 0;
@@ -54,7 +54,7 @@ public class SprintInfoPanel extends JPanel {
       gbc.weightx = 0.5;
       gbc.weighty = 1;
       gbc.gridwidth = 1;
-      gbc.fill = gbc.BOTH;
+      gbc.fill = GridBagConstraints.BOTH;
       add(getJiraCountPanel(), gbc);
 
       gbc.gridx = 1;

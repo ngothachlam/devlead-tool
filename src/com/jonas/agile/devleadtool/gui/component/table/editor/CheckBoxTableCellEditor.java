@@ -5,6 +5,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
 
@@ -18,7 +19,7 @@ public class CheckBoxTableCellEditor extends DefaultCellEditor implements MyEdit
    public CheckBoxTableCellEditor(JCheckBox box) {
       super(box);
       this.box = box;
-      this.box.setHorizontalAlignment(JLabel.CENTER);
+      this.box.setHorizontalAlignment(SwingConstants.CENTER);
    }
 
    @Override

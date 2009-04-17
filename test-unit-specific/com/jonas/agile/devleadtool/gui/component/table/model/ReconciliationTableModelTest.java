@@ -8,6 +8,7 @@ public class ReconciliationTableModelTest extends TestCase {
    ReconciliationTableModel model;
    
    
+   @Override
    protected void setUp() throws Exception {
       super.setUp();
       model = new ReconciliationTableModel(null);

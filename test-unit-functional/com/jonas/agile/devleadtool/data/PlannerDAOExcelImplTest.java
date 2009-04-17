@@ -16,10 +16,12 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
 
    // TODO assert on saving cell background colors.
 
+   @Override
    protected void setUp() throws Exception {
       super.setUp();
    }
 
+   @Override
    protected void tearDown() throws Exception {
       super.tearDown();
    }

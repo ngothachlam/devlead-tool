@@ -15,9 +15,7 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.gui.component.table.ColorDTO;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
-import com.jonas.common.ColorUtil;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
 
 class Counter {
@@ -303,6 +301,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       return Column.getEnum(getColumnName(columnNo));
    }
 
+   @Override
    final public Class<?> getColumnClass(int columnIndex) {
       return getClassFromColumn(columnIndex);
    }
@@ -478,6 +477,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
    }
 
+   @Override
    final public boolean isCellEditable(int row, int column) {
       return isEditable() ? getColumn(column).isEditable() : false;
    }
@@ -539,6 +539,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       setValueAt(value, rowIndex, getColumnIndex(column));
    }
 
+   @Override
    final public void setValueAt(Object value, int rowIndex, int columnIndex) {
       super.setValueAt(value, rowIndex, columnIndex);
    }

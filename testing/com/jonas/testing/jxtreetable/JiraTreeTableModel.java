@@ -10,13 +10,14 @@ import com.jonas.testing.jxtreetable.userobject.Sprint;
 
 public class JiraTreeTableModel extends DefaultTreeTableModel {
    private static final Column[] columns = { Column.JIRA, Column.DESCRIPTION };
-   private final BoardColumnMapping colIndexMapper;
+   private final ColumnMapper colIndexMapper;
 
-   public JiraTreeTableModel(TreeTableNode node, BoardColumnMapping colIndexMapper) {
+   public JiraTreeTableModel(TreeTableNode node, ColumnMapper colIndexMapper) {
       super(node);
       this.colIndexMapper = colIndexMapper;
    }
 
+   @Override
    public int getColumnCount() {
       return columns.length;
    }
@@ -24,6 +25,7 @@ public class JiraTreeTableModel extends DefaultTreeTableModel {
    /**
     * What the TableHeader displays when the Table is in a JScrollPane.
     */
+   @Override
    public String getColumnName(int column) {
       return columns[column].toString();
    }
@@ -31,6 +33,7 @@ public class JiraTreeTableModel extends DefaultTreeTableModel {
    /**
     * Returns which object is displayed in this column.
     */
+   @Override
    public Object getValueAt(Object node, int columnIndex) {
       Object res = "";
       if (node instanceof DefaultMutableTreeTableNode) {
@@ -44,6 +47,7 @@ public class JiraTreeTableModel extends DefaultTreeTableModel {
       return res;
    }
 
+   @Override
    public boolean isCellEditable(Object node, int column) {
       return true;
    }
@@ -66,6 +70,7 @@ public class JiraTreeTableModel extends DefaultTreeTableModel {
    /**
     * Called when done editing a cell.
     */
+   @Override
    public void setValueAt(Object value, Object node, int columnIndex) {
       if (node instanceof DefaultMutableTreeTableNode) {
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;

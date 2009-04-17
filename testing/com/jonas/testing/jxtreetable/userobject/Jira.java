@@ -46,6 +46,7 @@ public class Jira extends DefaultUserObject {
       this.key = key;
    }
 
+   @Override
    protected DataFlavor getDataFlavor() {
       return new DataFlavor(Jira.class, "Jira");
    }

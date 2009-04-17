@@ -51,12 +51,14 @@ public class SavePlannerDialog extends JFileChooser {
    }
 
    private final class XLSFileFilter extends FileFilter {
+      @Override
       public boolean accept(File f) {
          if (getTypeDescription(f).equalsIgnoreCase("Microsoft Excel Worksheet") || f.isDirectory())
             return true;
          return false;
       }
 
+      @Override
       public String getDescription() {
          return "XLS files";
       }

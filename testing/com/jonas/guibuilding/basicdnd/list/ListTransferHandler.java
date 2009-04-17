@@ -21,10 +21,12 @@ final class ListTransferHandler extends TransferHandler {
    }
 
    // On the source object:
+   @Override
    public int getSourceActions(JComponent c) {
       return MOVE;
    }
 
+   @Override
    protected Transferable createTransferable(JComponent c) {
       {
          // ListElement values = (ListElement) list.getSelectedValues()[0];
@@ -33,7 +35,7 @@ final class ListTransferHandler extends TransferHandler {
       JList list = (JList) c;
       if (list.getSelectedValues().length > 1)
          throw new RuntimeException("Can currently not handle moving more than one selection!!");
-      Object[] values = (Object[]) list.getSelectedValues();
+      Object[] values = list.getSelectedValues();
       StringBuffer buff = new StringBuffer();
 
       for (int i = 0; i < values.length; i++) {
@@ -46,6 +48,7 @@ final class ListTransferHandler extends TransferHandler {
       return new StringSelection(buff.toString());
    }
 
+   @Override
    protected void exportDone(JComponent source, Transferable data, int action) {
       super.exportDone(source, data, action);
       if (action == MOVE) {
@@ -59,6 +62,7 @@ final class ListTransferHandler extends TransferHandler {
    }
 
    // On the destination object...
+   @Override
    public boolean canImport(TransferSupport info) {
       // we only import Strings
       // if (!info.isDataFlavorSupported(DataFlavor.stringFlavor)) {
@@ -72,6 +76,7 @@ final class ListTransferHandler extends TransferHandler {
       return false;
    }
 
+   @Override
    public boolean importData(TransferSupport info) {
       if (!info.isDrop()) {
          System.out.println("List doesn't accept !isDrop");

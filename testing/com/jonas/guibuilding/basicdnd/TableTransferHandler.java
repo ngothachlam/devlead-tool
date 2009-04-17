@@ -33,10 +33,12 @@ final class TableTransferHandler extends TransferHandler {
       this.table = table;
    }
 
+   @Override
    public int getSourceActions(JComponent c) {
       return MOVE;
    }
 
+   @Override
    protected Transferable createTransferable(JComponent c) {
       MyTable table = (MyTable) c;
       if (table.getSelectedRows().length > 1)
@@ -62,6 +64,7 @@ final class TableTransferHandler extends TransferHandler {
       return new TableTransferable(columns, data);
    }
 
+   @Override
    protected void exportDone(JComponent source, Transferable data, int action) {
       super.exportDone(source, data, action);
       if (action == MOVE) {
@@ -76,6 +79,7 @@ final class TableTransferHandler extends TransferHandler {
    }
 
    // On the destination object...
+   @Override
    public boolean canImport(TransferSupport info) {
       // we only import Strings
       if (!info.isDataFlavorSupported(vectorFlavor)) {
@@ -88,6 +92,7 @@ final class TableTransferHandler extends TransferHandler {
       return false;
    }
 
+   @Override
    public boolean importData(TransferSupport info) {
       if (!info.isDrop()) {
          BasicDnD.debugDropLocation("List doesn't accept drop");

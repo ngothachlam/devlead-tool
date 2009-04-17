@@ -16,6 +16,7 @@ public final class MainFrameListener extends WindowAdapter {
       this.plannerHelper = plannerHelper;
    }
 
+   @Override
    public void windowClosing(WindowEvent e) {
       new ClosePlannerDialog(frame, plannerHelper);
    }

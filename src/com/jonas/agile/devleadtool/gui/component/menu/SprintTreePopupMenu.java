@@ -13,6 +13,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.SwingWorker;
+import javax.swing.WindowConstants;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.NotJiraException;
@@ -106,7 +107,7 @@ public class SprintTreePopupMenu extends MyPopupMenu {
             panel.calculateInfo(component);
 
             JFrame frame = new JFrame();
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             frame.setResizable(false);
             frame.getContentPane().add(panel, BorderLayout.CENTER);
             frame.pack();

@@ -3,6 +3,7 @@
  */
 package com.jonas.agile.devleadtool.gui.component;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import com.jonas.agile.devleadtool.PlannerHelper;
@@ -23,8 +24,8 @@ public class SaveKeyListener extends KeyAdapter {
    public void keyPressed(KeyEvent e) {
       MyInternalFrame.log.debug("Pressed: KeyCode : " + e.getKeyCode() + " ModifiersEx : " + e.getModifiersEx() + " Pressed : " + pressed);
 
-      if (!pressed && (e.getModifiersEx() & e.CTRL_DOWN_MASK) == e.CTRL_DOWN_MASK) {
-         if (e.getKeyCode() == e.VK_S) {
+      if (!pressed && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) == InputEvent.CTRL_DOWN_MASK) {
+         if (e.getKeyCode() == KeyEvent.VK_S) {
             pressed = true;
             MyInternalFrame.log.debug("***");
             savePlannerDialog.save(helper.getActiveInternalFrame(), false);
@@ -35,7 +36,7 @@ public class SaveKeyListener extends KeyAdapter {
    @Override
    public void keyReleased(KeyEvent e) {
       // log.debug("Released: KeyCode : " + e.getKeyCode() + " ModifiersEx : " + e.getModifiersEx() + " Pressed : " + pressed);
-      if (e.getKeyCode() == e.VK_S || e.getKeyCode() == e.VK_CONTROL) {
+      if (e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_CONTROL) {
          // log.debug("Release!");
          pressed = false;
       }

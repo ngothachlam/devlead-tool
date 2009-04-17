@@ -29,6 +29,7 @@ public class HyperLinkOpenerAdapter extends MouseAdapter {
       this.jiraColumn = jiraColumn;
    }
 
+   @Override
    public void mouseClicked(MouseEvent e) {
       MyTable table = (MyTable) e.getSource();
       int itsRow = table.rowAtPoint(e.getPoint());

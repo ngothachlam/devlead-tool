@@ -25,6 +25,7 @@ abstract class MenuItem_Marking_Abstract extends MyMenuItem {
       }
    }
 
+   @Override
    public void myActionPerformed(ActionEvent e) {
       doAction();
       MyStatusBar.getInstance().setMessage("Rows in " + source.getTitle() + " where marked/unmarked!", true);

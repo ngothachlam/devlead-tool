@@ -122,6 +122,7 @@ public class JiraDTO {
       this.isToSync = isToSync;
    }
 
+   @Override
    public String toString() {
       StringBuffer sb = new StringBuffer();
       sb.append("[JiraDTO ");

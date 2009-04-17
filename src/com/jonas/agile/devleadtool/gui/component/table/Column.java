@@ -3,13 +3,11 @@
  */
 package com.jonas.agile.devleadtool.gui.component.table;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public enum Column {
    // String Defaults
    Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false) {
 
+      @Override
       public String parseFromPersistanceStore(Object cellContents) {
          if (cellContents == null)
             return null;
@@ -28,6 +26,7 @@ public enum Column {
    Note(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false),
    Release(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false),
    BoardStatus(BoardStatusValue.class, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false) {
+      @Override
       public BoardStatusValue parseFromPersistanceStore(Object cellContents) {
          return BoardStatusValue.get(cellContents.toString());
       }
@@ -49,6 +48,7 @@ public enum Column {
 
    // Integer
    prio(Integer.class, null, IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, true) {
+      @Override
       public Integer parseFromPersistanceStore(Object cellContents) {
          String cellContentsString = cellContents.toString();
          if (cellContentsString == null || cellContentsString.trim().length() == 0)
@@ -61,6 +61,7 @@ public enum Column {
 
    // Boolean Defaults
    isParked(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false) {
+      @Override
       public Boolean parseFromPersistanceStore(Object cellContents) {
          if (cellContents == null)
             return Boolean.FALSE;
@@ -69,6 +70,7 @@ public enum Column {
       }
    },
    Old(Boolean.class, Boolean.FALSE, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false) {
+      @Override
       public Boolean parseFromPersistanceStore(Object cellContents) {
          if (cellContents == null)
             return Boolean.FALSE;

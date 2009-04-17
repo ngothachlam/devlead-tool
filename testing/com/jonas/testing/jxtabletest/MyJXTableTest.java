@@ -6,11 +6,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
-import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
-import org.jdesktop.swingx.treetable.TreeTableModel;
-import org.jdesktop.swingx.treetable.TreeTableNode;
 import com.jonas.testHelpers.TryoutTester;
 
 public class MyJXTableTest {
@@ -33,7 +28,7 @@ public class MyJXTableTest {
       JScrollPane scrollPane = new JScrollPane(table);
       JPanel panel = new JPanel(new BorderLayout());
       panel.add(scrollPane);
-      test.showInFrame(panel);
+      TryoutTester.showInFrame(panel);
    }
    
    public static void main(String[] args){

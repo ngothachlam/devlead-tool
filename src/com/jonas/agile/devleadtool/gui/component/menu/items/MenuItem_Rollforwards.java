@@ -49,6 +49,7 @@ public class MenuItem_Rollforwards extends MyMenuItem {
          this.dialog = dialog;
       }
 
+      @Override
       public Object doInBackground() {
          dialog.setVisible(true);
          int[] selectedRows = sourceTable.getSelectedRows();
@@ -86,6 +87,7 @@ public class MenuItem_Rollforwards extends MyMenuItem {
          return null;
       }
 
+      @Override
       public void done() {
          dialog.setCompleteWithDelay(300);
       }

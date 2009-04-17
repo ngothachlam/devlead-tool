@@ -7,7 +7,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -87,7 +86,7 @@ class TestAction extends AbstractAction {
    }
    public TestAction(String name, String shortDesc, Integer mnemonic, Integer accelerator) {
       this(name, shortDesc, mnemonic);
-      putValue(this.ACCELERATOR_KEY, accelerator);
+      putValue(ACCELERATOR_KEY, accelerator);
    }
 
    public TestAction(String name) {
@@ -108,14 +107,17 @@ class MousePopupListener extends MouseAdapter {
       this.popup = menu;
    }
 
+   @Override
    public void mousePressed(MouseEvent e) {
       checkPopup(e);
    }
 
+   @Override
    public void mouseClicked(MouseEvent e) {
       checkPopup(e);
    }
 
+   @Override
    public void mouseReleased(MouseEvent e) {
       checkPopup(e);
    }

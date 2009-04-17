@@ -54,6 +54,7 @@ public class PlanFixVersion {
       this.text = text;
    }
 
+   @Override
    public String toString() {
       StringBuffer sb = new StringBuffer();
       sb.append(text).append(" <").append(project).append(">");

@@ -8,7 +8,8 @@ public class JiraListenerTest extends JonasTestCase {
 	public static void testJiraListener() {
 		final BooleanWrapper access = new BooleanWrapper(false);
 		JiraListener jiraListener = new JiraListener() {
-			public void notifyOfAccess(JiraAccessUpdate accessUpdate) {
+			@Override
+         public void notifyOfAccess(JiraAccessUpdate accessUpdate) {
 				access.setValue(true);
 			}
 		};

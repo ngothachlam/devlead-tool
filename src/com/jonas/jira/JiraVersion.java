@@ -138,6 +138,7 @@ public class JiraVersion {
 
    }
 
+   @Override
    public String toString() {
       return name;
    }

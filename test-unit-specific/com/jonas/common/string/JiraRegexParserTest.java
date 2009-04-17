@@ -8,11 +8,13 @@ public class JiraRegexParserTest extends JonasTestCase {
 
    JiraRegexParser parser;
    
+   @Override
    protected void setUp() throws Exception {
       parser = new JiraRegexParser();
       super.setUp();
    }
 
+   @Override
    protected void tearDown() throws Exception {
       super.tearDown();
    }
