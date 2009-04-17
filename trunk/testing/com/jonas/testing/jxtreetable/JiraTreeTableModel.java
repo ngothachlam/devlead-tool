@@ -81,9 +81,9 @@ public class JiraTreeTableModel extends DefaultTreeTableModel {
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
          Object userObject = defNode.getUserObject();
          if (userObject instanceof DefaultUserObject) {
-            DefaultUserObject jira = (DefaultUserObject) userObject;
+            DefaultUserObject defnode = (DefaultUserObject) userObject;
             Column column = colIndexMapper.getColumnForIndex(columnIndex);
-            jira.setValue(column, value);
+            defnode.setValue(column, value);
          } else {
             if (!"root".equalsIgnoreCase(userObject.toString()))
                log.warn("User object [" + userObject.toString() + "]is not of DefaultUserObject type");
