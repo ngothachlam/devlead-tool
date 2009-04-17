@@ -32,15 +32,17 @@ public class TestTreeTable {
     */
    public void create() {
       DefaultMutableTreeTableNode root = new DefaultMutableTreeTableNode("root");
-      DefaultMutableTreeTableNode sprint = new DefaultMutableTreeTableNode(new Sprint("12-1"));
+      DefaultMutableTreeTableNode sprintOne = new DefaultMutableTreeTableNode(new Sprint("12-1"));
+      DefaultMutableTreeTableNode sprintTwo = new DefaultMutableTreeTableNode(new Sprint("12-2"));
       DefaultMutableTreeTableNode fixVersionOne = new DefaultMutableTreeTableNode(new FixVersion("LLU 11"));
       DefaultMutableTreeTableNode fixVersionTwo = new DefaultMutableTreeTableNode(new FixVersion("LLU 12"));
       DefaultMutableTreeTableNode jiraOne = new DefaultMutableTreeTableNode(new Jira("llu-1", "Description for llu-1"));
       DefaultMutableTreeTableNode jiraTwo = new DefaultMutableTreeTableNode(new Jira("llu-2", "Description for llu-2"));
 
-      addAsChildren(root, sprint);
-      addAsChildren(sprint, fixVersionOne, fixVersionTwo);
-      addAsChildren(fixVersionOne, jiraOne, jiraTwo);
+      addChildrenToParent(root, sprintOne);
+      addChildrenToParent(root, sprintTwo);
+      addChildrenToParent(sprintOne, fixVersionOne, fixVersionTwo);
+      addChildrenToParent(fixVersionOne, jiraOne, jiraTwo);
 
       DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root, BoardColumnMapper.boardColumnMapping);
       treeTable = new JXTreeTable(treeTableModel);
@@ -50,7 +52,7 @@ public class TestTreeTable {
       TryoutTester.showInFrame(new JScrollPane(treeTable));
    }
 
-   private void addAsChildren(DefaultMutableTreeTableNode parent, DefaultMutableTreeTableNode... children) {
+   private void addChildrenToParent(DefaultMutableTreeTableNode parent, DefaultMutableTreeTableNode... children) {
       for (DefaultMutableTreeTableNode child : children) {
          parent.add(child);
       }

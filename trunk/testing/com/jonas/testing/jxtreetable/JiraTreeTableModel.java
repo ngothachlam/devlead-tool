@@ -1,5 +1,6 @@
 package com.jonas.testing.jxtreetable;
 
+import org.apache.log4j.Logger;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableNode;
@@ -8,6 +9,7 @@ import com.jonas.testing.jxtreetable.userobject.DefaultUserObject;
 
 public class JiraTreeTableModel extends DefaultTreeTableModel {
    private final ColumnMapper colIndexMapper;
+   private final static Logger log = MyLogger.getLogger(JiraTreeTableModel.class);
 
    public JiraTreeTableModel(TreeTableNode node, ColumnMapper colIndexMapper) {
       super(node);
@@ -34,14 +36,16 @@ public class JiraTreeTableModel extends DefaultTreeTableModel {
    public Object getValueAt(Object node, int columnIndex) {
       if (node instanceof DefaultMutableTreeTableNode) {
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
-         if (defNode.getUserObject() instanceof DefaultUserObject) {
-            DefaultUserObject defnode = (DefaultUserObject) defNode.getUserObject();
+         Object userObject = defNode.getUserObject();
+         if (userObject instanceof DefaultUserObject) {
+            DefaultUserObject defnode = (DefaultUserObject) userObject;
             Column column = colIndexMapper.getColumnForIndex(columnIndex);
             return defnode.getValueForColumn(column);
          }
-         MyLogger.warn(JiraTreeTableModel.class, "User object [" + defNode.getUserObject().toString() + "]is not of DefaultUserObject type");
+         if (!"root".equalsIgnoreCase(userObject.toString()))
+            log.warn("User object [" + userObject.toString() + "]is not of DefaultUserObject type");
       } else {
-         MyLogger.warn(JiraTreeTableModel.class, "Node [" + node.toString() + "]is not of DefaultMutableTreeTableNode type");
+         log.warn("Node [" + node.toString() + "] is not of DefaultMutableTreeTableNode type");
       }
       return "";
    }
@@ -55,13 +59,15 @@ public class JiraTreeTableModel extends DefaultTreeTableModel {
    public boolean isLeaf(Object node) {
       if (node instanceof DefaultMutableTreeTableNode) {
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
-         if (defNode.getUserObject() instanceof DefaultUserObject) {
-            DefaultUserObject defnode = (DefaultUserObject) defNode.getUserObject();
+         Object userObject = defNode.getUserObject();
+         if (userObject instanceof DefaultUserObject) {
+            DefaultUserObject defnode = (DefaultUserObject) userObject;
             return defnode.isLeaf();
          }
-         MyLogger.warn(JiraTreeTableModel.class, "User object [" + defNode.getUserObject().toString() + "]is not of DefaultUserObject type");
+         if (!"root".equalsIgnoreCase(userObject.toString()))
+            log.warn("User object [" + userObject.toString() + "] is not of DefaultUserObject type");
       } else {
-         MyLogger.warn(JiraTreeTableModel.class, "Node [" + node.toString() + "]is not of DefaultMutableTreeTableNode type");
+         log.warn("Node [" + node.toString() + "] is not of DefaultMutableTreeTableNode type");
       }
       return super.isLeaf(node);
    }
@@ -73,15 +79,17 @@ public class JiraTreeTableModel extends DefaultTreeTableModel {
    public void setValueAt(Object value, Object node, int columnIndex) {
       if (node instanceof DefaultMutableTreeTableNode) {
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
-         if (defNode.getUserObject() instanceof DefaultUserObject) {
-            DefaultUserObject jira = (DefaultUserObject) defNode.getUserObject();
+         Object userObject = defNode.getUserObject();
+         if (userObject instanceof DefaultUserObject) {
+            DefaultUserObject jira = (DefaultUserObject) userObject;
             Column column = colIndexMapper.getColumnForIndex(columnIndex);
             jira.setValue(column, value);
          } else {
-            MyLogger.warn(JiraTreeTableModel.class, "User object [" + defNode.getUserObject().toString() + "]is not of DefaultUserObject type");
+            if (!"root".equalsIgnoreCase(userObject.toString()))
+               log.warn("User object [" + userObject.toString() + "]is not of DefaultUserObject type");
          }
       } else {
-         MyLogger.warn(JiraTreeTableModel.class, "Node [" + node.toString() + "]is not of DefaultMutableTreeTableNode type");
+         log.warn("Node [" + node.toString() + "] is not of DefaultMutableTreeTableNode type");
       }
    }
 }
