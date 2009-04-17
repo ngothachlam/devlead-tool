@@ -18,7 +18,9 @@ public class TreeTableDao {
          bw = new BufferedWriter(fw);
 
          TreeTableNode root = treeTableModel.getRoot();
-         bw.write(root.getUserObject().toString());
+         TreeTableNode parent = root;
+         
+         printRecursively(bw, parent);
 
       } finally {
          if (bw != null) {
@@ -28,6 +30,15 @@ public class TreeTableDao {
          if (fw != null) {
             fw.close();
          }
+      }
+   }
+
+   private void printRecursively(BufferedWriter bw, TreeTableNode parent) throws IOException {
+      int childCount = parent.getChildCount();
+      bw.write(parent.getUserObject().toString());
+      bw.write("\n");
+      for (int child = 0; child < childCount; child++) {
+         printRecursively(bw, parent.getChildAt(child));
       }
    }
 
