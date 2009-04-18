@@ -161,14 +161,14 @@
 
 
 	<target name="stopDerby">
-		<property name="DBURL" value="jdbc:derby:db/my/test;create=true" />
+		<property name="DBURL" value="jdbc:derby:db/data/test;create=true" />
 		<stopDatabase url="${DBURL}" />
 		<stopDerby />
 	</target>
 
 	<target name="test.db">
 
-		<property name="DBURL" value="jdbc:derby:db/my/test;create=true" />
+		<property name="DBURL" value="jdbc:derby:db/data/test;create=true" />
 		<property name="DRIVER" value="org.apache.derby.jdbc.EmbeddedDriver" />
 		<property name="USERID" value="" />
 		<property name="PASSWORD" value="" />
