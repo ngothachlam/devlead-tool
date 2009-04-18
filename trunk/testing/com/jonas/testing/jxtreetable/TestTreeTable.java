@@ -87,7 +87,6 @@ public class TestTreeTable {
       JXTreeTable treeTable = new JXTreeTable(treeTableModel);
       treeTable.setFillsViewportHeight(true);
       treeTable.setColumnControlVisible(true);
-      treeTable.setTreeCellRenderer(cellRenderer);
       return treeTable;
    }
 
