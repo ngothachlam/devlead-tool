@@ -16,7 +16,7 @@
               <string>Description for llu-1</string> 
              </void> 
              <void property="key"> 
-              <string>llu-1</string> 
+              <string>llu-123</string> 
              </void> 
             </object> 
            </void> 
@@ -38,12 +38,12 @@
          <void method="add"> 
           <object class="com.jonas.testing.jxtreetable.dao.DaoTreeNode"> 
            <void property="userObject"> 
-            <object class="com.jonas.testing.jxtreetable.userobject.JiraUserObject"> 
+            <object id="JiraUserObject0" class="com.jonas.testing.jxtreetable.userobject.JiraUserObject"> 
              <void property="description"> 
               <string>Description for llu-2</string> 
              </void> 
              <void property="key"> 
-              <string>llu-2</string> 
+              <string>llu-23</string> 
              </void> 
             </object> 
            </void> 
@@ -51,7 +51,7 @@
          </void> 
         </void> 
         <void property="userObject"> 
-         <object class="com.jonas.testing.jxtreetable.userobject.FixVersionUserObject"> 
+         <object id="FixVersionUserObject0" class="com.jonas.testing.jxtreetable.userobject.FixVersionUserObject"> 
           <void property="name"> 
            <string>LLU 12</string> 
           </void> 
@@ -78,24 +78,13 @@
          <void method="add"> 
           <object class="com.jonas.testing.jxtreetable.dao.DaoTreeNode"> 
            <void property="userObject"> 
-            <object class="com.jonas.testing.jxtreetable.userobject.JiraUserObject"> 
-             <void property="description"> 
-              <string>Description for llu-2</string> 
-             </void> 
-             <void property="key"> 
-              <string>llu-2</string> 
-             </void> 
-            </object> 
+            <object idref="JiraUserObject0"/> 
            </void> 
           </object> 
          </void> 
         </void> 
         <void property="userObject"> 
-         <object class="com.jonas.testing.jxtreetable.userobject.FixVersionUserObject"> 
-          <void property="name"> 
-           <string>LLU 12</string> 
-          </void> 
-         </object> 
+         <object idref="FixVersionUserObject0"/> 
         </void> 
        </object> 
       </void> 
