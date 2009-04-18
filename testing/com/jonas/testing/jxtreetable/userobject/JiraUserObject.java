@@ -10,6 +10,9 @@ public class JiraUserObject extends DefaultUserObject {
    private String fixVersion;
    private String sprint;
 
+   public JiraUserObject() {
+   }
+   
    public JiraUserObject(String key) {
       this.key = key;
    }
