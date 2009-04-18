@@ -7,6 +7,10 @@ public abstract class DefaultParentUserObject extends DefaultUserObject {
       return name;
    }
 
+   public DefaultParentUserObject() {
+      super();
+   }
+   
    public DefaultParentUserObject(String name) {
       super();
       this.name = name;

@@ -1,5 +1,6 @@
 package com.jonas.testing.jxtreetable;
 
+import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JScrollPane;
@@ -8,13 +9,13 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import com.jonas.testHelpers.TryoutTester;
+import com.jonas.testing.jxtreetable.dao.TreeBuilder;
 import com.jonas.testing.jxtreetable.dao.TreeTableDao;
 import com.jonas.testing.jxtreetable.userobject.FixVersionUserObject;
 import com.jonas.testing.jxtreetable.userobject.JiraUserObject;
 import com.jonas.testing.jxtreetable.userobject.SprintUserObject;
 
 public class TestTreeTable {
-   private JXTreeTable treeTable;
 
    public TestTreeTable() {
    }
@@ -59,21 +60,32 @@ public class TestTreeTable {
       addChildrenToParent(fixVersionTwoDupe, jiraTwoDupe);
       
       DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root, BoardColumnMapper.boardColumnMapping);
-      treeTable = new JXTreeTable(treeTableModel);
-      treeTable.setFillsViewportHeight(true);
-      treeTable.setColumnControlVisible(true);
-
+      Component treeTable = getTreeTable(treeTableModel); 
       TryoutTester.showInFrame(new JScrollPane(treeTable));
       
       TreeTableDao treeTableDao = new TreeTableDao();
-      treeTableDao.persist(new File("testTreeTableDao"), treeTableModel);
+      TreeBuilder treeBuilder = new TreeBuilder();
+      treeTableDao.persist(new File("testTreeTableDao"), treeTableModel, treeBuilder);
       
+      DefaultMutableTreeTableNode root2 = treeTableDao.read(new File("testTreeTableDao"), treeBuilder);
+      JiraTreeTableModel model = new JiraTreeTableModel(root2, BoardColumnMapper.boardColumnMapping);
+      
+      Component treeTable2 = getTreeTable(model); 
+
+      TryoutTester.showInFrame(new JScrollPane(treeTable2));
       /*
        * TODO versioning: Allow the loader to
        * 1) See what version of the loaded xml
        * 2) Apply (in sequence) all rollforwards to get the file into the latest state!
        */
       
+   }
+
+   private Component getTreeTable(DefaultTreeTableModel treeTableModel) {
+      JXTreeTable treeTable = new JXTreeTable(treeTableModel);
+      treeTable.setFillsViewportHeight(true);
+      treeTable.setColumnControlVisible(true);
+      return treeTable;
    }
 
    private void addChildrenToParent(DefaultMutableTreeTableNode parent, DefaultMutableTreeTableNode... children) {

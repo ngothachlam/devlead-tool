@@ -1,9 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <java version="1.6.0_07" class="java.beans.XMLDecoder"> 
- <object class="org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode"> 
+ <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+  <void property="children"> 
+   <void method="add"> 
+    <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+     <void property="children"> 
+      <void method="add"> 
+       <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+        <void property="children"> 
+         <void method="add"> 
+          <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+           <void property="userObject"> 
+            <object class="com.jonas.testing.jxtreetable.userobject.JiraUserObject"> 
+             <void property="description"> 
+              <string>Description for llu-1</string> 
+             </void> 
+             <void property="key"> 
+              <string>llu-1</string> 
+             </void> 
+            </object> 
+           </void> 
+          </object> 
+         </void> 
+        </void> 
+        <void property="userObject"> 
+         <object class="com.jonas.testing.jxtreetable.userobject.FixVersionUserObject"> 
+          <void property="name"> 
+           <string>LLU 11</string> 
+          </void> 
+         </object> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+        <void property="children"> 
+         <void method="add"> 
+          <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+           <void property="userObject"> 
+            <object class="com.jonas.testing.jxtreetable.userobject.JiraUserObject"> 
+             <void property="description"> 
+              <string>Description for llu-2</string> 
+             </void> 
+             <void property="key"> 
+              <string>llu-2</string> 
+             </void> 
+            </object> 
+           </void> 
+          </object> 
+         </void> 
+        </void> 
+        <void property="userObject"> 
+         <object class="com.jonas.testing.jxtreetable.userobject.FixVersionUserObject"> 
+          <void property="name"> 
+           <string>LLU 12</string> 
+          </void> 
+         </object> 
+        </void> 
+       </object> 
+      </void> 
+     </void> 
+     <void property="userObject"> 
+      <object class="com.jonas.testing.jxtreetable.userobject.SprintUserObject"> 
+       <void property="name"> 
+        <string>12-1</string> 
+       </void> 
+      </object> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+     <void property="children"> 
+      <void method="add"> 
+       <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+        <void property="children"> 
+         <void method="add"> 
+          <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+           <void property="userObject"> 
+            <object class="com.jonas.testing.jxtreetable.userobject.JiraUserObject"> 
+             <void property="description"> 
+              <string>Description for llu-2</string> 
+             </void> 
+             <void property="key"> 
+              <string>llu-2</string> 
+             </void> 
+            </object> 
+           </void> 
+          </object> 
+         </void> 
+        </void> 
+        <void property="userObject"> 
+         <object class="com.jonas.testing.jxtreetable.userobject.FixVersionUserObject"> 
+          <void property="name"> 
+           <string>LLU 12</string> 
+          </void> 
+         </object> 
+        </void> 
+       </object> 
+      </void> 
+     </void> 
+     <void property="userObject"> 
+      <object class="com.jonas.testing.jxtreetable.userobject.SprintUserObject"> 
+       <void property="name"> 
+        <string>12-2</string> 
+       </void> 
+      </object> 
+     </void> 
+    </object> 
+   </void> 
+  </void> 
   <void property="userObject"> 
    <string>root</string> 
   </void> 
  </object> 
- <object class="org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode"/> 
 </java> 

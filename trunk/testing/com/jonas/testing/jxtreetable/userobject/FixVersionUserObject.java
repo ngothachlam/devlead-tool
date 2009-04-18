@@ -4,6 +4,9 @@ import java.awt.datatransfer.DataFlavor;
 
 public class FixVersionUserObject extends DefaultParentUserObject {
 
+   public FixVersionUserObject() {
+   }
+   
    public FixVersionUserObject(String name) {
       super(name);
    }

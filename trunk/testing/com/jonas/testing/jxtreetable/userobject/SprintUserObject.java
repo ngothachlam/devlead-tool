@@ -4,6 +4,9 @@ import java.awt.datatransfer.DataFlavor;
 
 public class SprintUserObject extends DefaultParentUserObject {
 
+   public SprintUserObject() {
+   }
+   
    public SprintUserObject(String name) {
       super(name);
    }
