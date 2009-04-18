@@ -4,8 +4,6 @@ import java.util.List;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableNode;
-import com.jonas.testing.jxtreetable.BoardColumnMapper;
-import com.jonas.testing.jxtreetable.JiraTreeTableModel;
 
 public class TreeBuilder {
 
@@ -37,7 +35,6 @@ public class TreeBuilder {
    private DefaultMutableTreeTableNode readTreeRecursively(XMLGroup tree) {
       DefaultMutableTreeTableNode parent = new DefaultMutableTreeTableNode(tree.getUserObject());
       List<XMLGroup> children = tree.getChildren();
-      System.out.println("tree: " + tree.getUserObject());
       for (XMLGroup child : children) {
          parent.add(readTreeRecursively(child));
       }
