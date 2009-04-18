@@ -1,7 +1,7 @@
 package com.jonas.testing.jxtreetable.userobject;
 
 import java.awt.datatransfer.DataFlavor;
-import com.jonas.testing.jxtreetable.Column;
+import com.jonas.testing.jxtreetable.column.Column;
 
 public class JiraUserObject extends DefaultUserObject {
 

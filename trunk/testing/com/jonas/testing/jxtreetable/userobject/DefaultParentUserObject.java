@@ -1,6 +1,6 @@
 package com.jonas.testing.jxtreetable.userobject;
 
-import com.jonas.testing.jxtreetable.Column;
+import com.jonas.testing.jxtreetable.column.Column;
 
 public abstract class DefaultParentUserObject extends DefaultUserObject {
    public final String getName() {

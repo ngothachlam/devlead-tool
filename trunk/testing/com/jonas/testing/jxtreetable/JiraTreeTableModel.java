@@ -6,14 +6,16 @@ import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableNode;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.testing.jxtreetable.column.Column;
+import com.jonas.testing.jxtreetable.column.ColumnMapper;
 import com.jonas.testing.jxtreetable.userobject.DefaultUserObject;
 
 public class JiraTreeTableModel extends DefaultTreeTableModel implements Serializable{
    private final ColumnMapper colIndexMapper;
    private final static Logger log = MyLogger.getLogger(JiraTreeTableModel.class);
 
-   public JiraTreeTableModel(TreeTableNode node, ColumnMapper colIndexMapper) {
-      super(node);
+   public JiraTreeTableModel(TreeTableNode root, ColumnMapper colIndexMapper) {
+      super(root);
       this.colIndexMapper = colIndexMapper;
    }
 
@@ -27,7 +29,7 @@ public class JiraTreeTableModel extends DefaultTreeTableModel implements Seriali
     */
    @Override
    public String getColumnName(int columnIndex) {
-      return colIndexMapper.getColumnForIndex(columnIndex).toString();
+      return colIndexMapper.getColumn(columnIndex).toString();
    }
 
    /**
@@ -40,7 +42,7 @@ public class JiraTreeTableModel extends DefaultTreeTableModel implements Seriali
          Object userObject = defNode.getUserObject();
          if (userObject instanceof DefaultUserObject) {
             DefaultUserObject defnode = (DefaultUserObject) userObject;
-            Column column = colIndexMapper.getColumnForIndex(columnIndex);
+            Column column = colIndexMapper.getColumn(columnIndex);
             return defnode.getValueForColumn(column);
          }
          if (!"root".equalsIgnoreCase(userObject.toString()))
@@ -58,7 +60,7 @@ public class JiraTreeTableModel extends DefaultTreeTableModel implements Seriali
          Object userObject = defNode.getUserObject();
          if (userObject instanceof DefaultUserObject) {
             DefaultUserObject defnode = (DefaultUserObject) userObject;
-            Column column = colIndexMapper.getColumnForIndex(columnIndex);
+            Column column = colIndexMapper.getColumn(columnIndex);
             return defnode.isEditable(column);
          }
          if (!"root".equalsIgnoreCase(userObject.toString()))
@@ -96,7 +98,7 @@ public class JiraTreeTableModel extends DefaultTreeTableModel implements Seriali
          Object userObject = defNode.getUserObject();
          if (userObject instanceof DefaultUserObject) {
             DefaultUserObject defnode = (DefaultUserObject) userObject;
-            Column column = colIndexMapper.getColumnForIndex(columnIndex);
+            Column column = colIndexMapper.getColumn(columnIndex);
             defnode.setValue(column, value);
          } else {
             if (!"root".equalsIgnoreCase(userObject.toString()))

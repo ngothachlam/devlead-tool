@@ -1,4 +1,4 @@
-package com.jonas.testing.jxtreetable;
+package com.jonas.testing.jxtreetable.column;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ public class BoardColumnMapper implements ColumnMapper {
    }
    
    @Override
-   public Column getColumnForIndex(int columnIndex) {
+   public Column getColumn(int columnIndex) {
       return indexMap.get(columnIndex);
    }
 
