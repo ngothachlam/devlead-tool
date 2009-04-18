@@ -7,10 +7,8 @@ import org.apache.tools.ant.Task;
 
 public class StopDatabaseTask extends Task {
 
-   private ArrayList subTasks;
-
    private String url;
-
+   
    public String getUrl() {
       return url;
    }
@@ -23,11 +21,11 @@ public class StopDatabaseTask extends Task {
       try {
          String newUrl = url + ";shutdown=true";
          System.out.println(newUrl);
-         Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+         StartDerbyTask.initialiseDriver();
          DriverManager.getConnection(newUrl);
+         System.out.println("Database has been shutdown");
       } catch (Exception e) {
          e.printStackTrace();
-         System.out.println("Database has been shutdown");
       }
    }
 
