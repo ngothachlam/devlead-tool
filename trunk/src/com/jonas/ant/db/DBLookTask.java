@@ -1,6 +1,7 @@
 package com.jonas.ant.db;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import org.apache.derby.tools.dblook;
@@ -12,7 +13,7 @@ public class DBLookTask extends Task {
    private String url; // -d
    private String dest; // -o
    private String schema; // -z
-   private Vector tables; // -t
+   private Vector<String> tables; // -t
    private boolean append; // -append
    private boolean verbose; // -verbose
    private boolean noview; // -noview
@@ -51,7 +52,7 @@ public class DBLookTask extends Task {
 
    public void setTables(String tables) {
       if (this.tables == null)
-         this.tables = new Vector();
+         this.tables = new Vector<String>();
       StringTokenizer st = new StringTokenizer(tables, " ");
       while (st.hasMoreTokens()) {
          this.tables.add(st.nextToken());
@@ -85,7 +86,7 @@ public class DBLookTask extends Task {
    }
 
    public void execute() throws BuildException {
-      ArrayList args = new ArrayList();
+      List<Object> args = new ArrayList<Object>();
       args.add("-d");
       args.add(url);
 
@@ -116,7 +117,7 @@ public class DBLookTask extends Task {
          args.add("-noview");
 
       String[] argsarray = new String[args.size()];
-      argsarray = (String[]) args.toArray(argsarray);
+      argsarray = args.toArray(argsarray);
       try {
          StartDerbyTask.initialiseDriver();
          dblook.main(argsarray);
