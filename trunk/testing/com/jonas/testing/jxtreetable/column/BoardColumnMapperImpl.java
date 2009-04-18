@@ -3,13 +3,13 @@ package com.jonas.testing.jxtreetable.column;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BoardColumnMapper implements ColumnMapper {
+public class BoardColumnMapperImpl implements ColumnMapper {
    final Map<Integer, Column> indexMap = new HashMap<Integer, Column>();
 
    private static int columnIndex = 0;
-   public static final ColumnMapper boardColumnMapping = new BoardColumnMapper();
+   public static final ColumnMapper boardColumnMapping = new BoardColumnMapperImpl();
    
-   private BoardColumnMapper() {
+   private BoardColumnMapperImpl() {
       add(Column.REF);
       add(Column.DESCRIPTION);
    }

@@ -9,8 +9,8 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import com.jonas.testHelpers.TryoutTester;
-import com.jonas.testing.jxtreetable.column.BoardColumnMapper;
-import com.jonas.testing.jxtreetable.dao.TreeBuilder;
+import com.jonas.testing.jxtreetable.column.BoardColumnMapperImpl;
+import com.jonas.testing.jxtreetable.dao.DaoTreeBuilder;
 import com.jonas.testing.jxtreetable.dao.TreeTableDaoImpl;
 import com.jonas.testing.jxtreetable.userobject.FixVersionUserObject;
 import com.jonas.testing.jxtreetable.userobject.JiraUserObject;
@@ -60,16 +60,16 @@ public class TestTreeTable {
       addChildrenToParent(fixVersionTwo, jiraTwo);
       addChildrenToParent(fixVersionTwoDupe, jiraTwoDupe);
       
-      DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root, BoardColumnMapper.boardColumnMapping);
+      DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root, BoardColumnMapperImpl.boardColumnMapping);
       Component treeTable = getTreeTable(treeTableModel); 
       TryoutTester.showInFrame(new JScrollPane(treeTable));
       
       TreeTableDaoImpl treeTableDao = new TreeTableDaoImpl();
-      TreeBuilder treeBuilder = new TreeBuilder();
+      DaoTreeBuilder treeBuilder = new DaoTreeBuilder();
       treeTableDao.persist(new File("testTreeTableDao"), treeTableModel, treeBuilder);
       
       DefaultMutableTreeTableNode root2 = treeTableDao.read(new File("testTreeTableDao"), treeBuilder);
-      JiraTreeTableModel model = new JiraTreeTableModel(root2, BoardColumnMapper.boardColumnMapping);
+      JiraTreeTableModel model = new JiraTreeTableModel(root2, BoardColumnMapperImpl.boardColumnMapping);
       
       Component treeTable2 = getTreeTable(model); 
 

@@ -5,7 +5,7 @@ import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableNode;
 
-public class TreeBuilder {
+public class DaoTreeBuilder {
 
    public DaoTreeNode buildDaoTree(DefaultTreeTableModel treeTableModel) {
       TreeTableNode parent = treeTableModel.getRoot();
