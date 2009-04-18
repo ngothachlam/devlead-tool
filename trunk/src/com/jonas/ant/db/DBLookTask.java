@@ -3,6 +3,7 @@ package com.jonas.ant.db;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import org.apache.derby.tools.dblook;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
@@ -116,6 +117,6 @@ public class DBLookTask extends Task {
 
       String[] argsarray = new String[args.size()];
       argsarray = (String[]) args.toArray(argsarray);
-//      dblook.main(argsarray);
+      dblook.main(argsarray);
    }
 }

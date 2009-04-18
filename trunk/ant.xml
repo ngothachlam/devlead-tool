@@ -154,15 +154,21 @@
 
 	<target name="default" depends="run.tests.unit, run.tests.functional ,dist, clean.after" />
 
-	<taskdef name="startDerby" classname="com.jonas.ant.db.StartDerbyTask" classpath="bin;lib/derby.jar"/>
-	<taskdef name="stopDerby" classname="com.jonas.ant.db.StopDerbyTask"  classpath="bin;lib/derby.jar"/>
-	<taskdef name="stopDatabase" classname="com.jonas.ant.db.StopDatabaseTask"  classpath="bin;lib/derby.jar"/>
-	<taskdef name="ddlExport" classname="com.jonas.ant.db.DBLookTask"  classpath="bin;lib/derby.jar"/>
+	<taskdef name="startDerby" classname="com.jonas.ant.db.StartDerbyTask" classpath="bin;lib/derby.jar" />
+	<taskdef name="stopDerby" classname="com.jonas.ant.db.StopDerbyTask" classpath="bin;lib/derby.jar" />
+	<taskdef name="stopDatabase" classname="com.jonas.ant.db.StopDatabaseTask" classpath="bin;lib/derby.jar" />
+	<taskdef name="ddlExport" classname="com.jonas.ant.db.DBLookTask" classpath="bin;lib/derby.jar;lib/derbytools.jar" />
 
+
+	<target name="stopDerby">
+		<property name="DBURL" value="jdbc:derby:/db/my/test;create=true" />
+		<stopDatabase url="${DBURL}" />
+		<stopDerby />
+	</target>
 
 	<target name="test.db">
 
-		<property name="DBURL" value="jdbc:derby:my/test;create=true" />
+		<property name="DBURL" value="jdbc:derby:/db/my/test;create=true" />
 		<property name="DRIVER" value="org.apache.derby.jdbc.EmbeddedDriver" />
 		<property name="USERID" value="" />
 		<property name="PASSWORD" value="" />
@@ -191,7 +197,7 @@
 		<!-- Package the DB up for read-only distribution -->
 		<jar destfile="db.jar">
 			<fileset dir=".">
-				<include name="my/**/*" />
+				<include name="db/my/**/*" />
 			</fileset>
 		</jar>
 
