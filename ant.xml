@@ -160,11 +160,11 @@
 
 	<target name="default" depends="run.tests.unit, run.tests.functional ,dist, clean.after" />
 
-	<taskdef name="startDerby" classname="com.jonas.ant.db.StartDerbyTask" classpath="${DERBYCLASSPTH}" />
-	<taskdef name="stopDerby" classname="com.jonas.ant.db.StopDerbyTask" classpath="${DERBYCLASSPTH}" />
-	<taskdef name="stopDatabase" classname="com.jonas.ant.db.StopDatabaseTask" classpath="${DERBYCLASSPTH}" />
-	<taskdef name="ddlExport" classname="com.jonas.ant.db.DBLookTask" classpath="${DERBYCLASSPTH}" />
-	<taskdef name="testDatabase" classname="com.jonas.ant.db.TestDatabaseTask" classpath="${DERBYCLASSPTH}" />
+	<taskdef name="startDerby" classname="com.jonas.ant.db.StartDerbyTask" classpath="${DERBYCLASSPTH}" loaderref="db.loader" />
+	<taskdef name="stopDerby" classname="com.jonas.ant.db.StopDerbyTask" classpath="${DERBYCLASSPTH}" loaderref="db.loader" />
+	<taskdef name="stopDatabase" classname="com.jonas.ant.db.StopDatabaseTask" classpath="${DERBYCLASSPTH}" loaderref="db.loader" />
+	<taskdef name="ddlExport" classname="com.jonas.ant.db.DBLookTask" classpath="${DERBYCLASSPTH}" loaderref="db.loader" />
+	<taskdef name="testDatabase" classname="com.jonas.ant.db.TestDatabaseTask" classpath="${DERBYCLASSPTH}" loaderref="db.loader" />
 
 	<target name="db.start">
 		<startDerby />
