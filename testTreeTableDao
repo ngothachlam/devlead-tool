@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <java version="1.6.0_07" class="java.beans.XMLDecoder"> 
- <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+ <object class="com.jonas.testing.jxtreetable.dao.DaoTreeNode"> 
   <void property="children"> 
    <void method="add"> 
-    <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+    <object class="com.jonas.testing.jxtreetable.dao.DaoTreeNode"> 
      <void property="children"> 
       <void method="add"> 
-       <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+       <object class="com.jonas.testing.jxtreetable.dao.DaoTreeNode"> 
         <void property="children"> 
          <void method="add"> 
-          <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+          <object class="com.jonas.testing.jxtreetable.dao.DaoTreeNode"> 
            <void property="userObject"> 
             <object class="com.jonas.testing.jxtreetable.userobject.JiraUserObject"> 
              <void property="description"> 
@@ -33,10 +33,10 @@
        </object> 
       </void> 
       <void method="add"> 
-       <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+       <object class="com.jonas.testing.jxtreetable.dao.DaoTreeNode"> 
         <void property="children"> 
          <void method="add"> 
-          <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+          <object class="com.jonas.testing.jxtreetable.dao.DaoTreeNode"> 
            <void property="userObject"> 
             <object class="com.jonas.testing.jxtreetable.userobject.JiraUserObject"> 
              <void property="description"> 
@@ -70,13 +70,13 @@
     </object> 
    </void> 
    <void method="add"> 
-    <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+    <object class="com.jonas.testing.jxtreetable.dao.DaoTreeNode"> 
      <void property="children"> 
       <void method="add"> 
-       <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+       <object class="com.jonas.testing.jxtreetable.dao.DaoTreeNode"> 
         <void property="children"> 
          <void method="add"> 
-          <object class="com.jonas.testing.jxtreetable.dao.XMLGroup"> 
+          <object class="com.jonas.testing.jxtreetable.dao.DaoTreeNode"> 
            <void property="userObject"> 
             <object class="com.jonas.testing.jxtreetable.userobject.JiraUserObject"> 
              <void property="description"> 

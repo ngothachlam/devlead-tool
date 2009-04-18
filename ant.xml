@@ -82,7 +82,7 @@
 	</target>
 
 	<target name="run.tests.unit" depends="run.tests.unit.specific, run.tests.unit.functional" description="Run unit tests" />
-	
+
 	<target name="run.tests.unit.specific" description="Run unit tests">
 		<delete includeEmptyDirs="true" quiet="true">
 			<fileset dir="${build.tests.results}" includes="**/*" />
@@ -105,7 +105,7 @@
 			</batchtest>
 		</junit>
 	</target>
-	
+
 	<target name="run.tests.unit.functional" description="Run unit tests">
 		<delete includeEmptyDirs="true" quiet="true">
 			<fileset dir="${build.tests.results}" includes="**/*" />
@@ -153,5 +153,53 @@
 	</target>
 
 	<target name="default" depends="run.tests.unit, run.tests.functional ,dist, clean.after" />
+
+	<taskdef name="startDerby" classname="com.jonas.ant.db.StartDerbyTask" classpath="bin;lib/derby.jar"/>
+	<taskdef name="stopDerby" classname="com.jonas.ant.db.StopDerbyTask"  classpath="bin;lib/derby.jar"/>
+	<taskdef name="stopDatabase" classname="com.jonas.ant.db.StopDatabaseTask"  classpath="bin;lib/derby.jar"/>
+	<taskdef name="ddlExport" classname="com.jonas.ant.db.DBLookTask"  classpath="bin;lib/derby.jar"/>
+
+
+	<target name="test.db">
+
+		<property name="DBURL" value="jdbc:derby:my/test;create=true" />
+		<property name="DRIVER" value="org.apache.derby.jdbc.EmbeddedDriver" />
+		<property name="USERID" value="" />
+		<property name="PASSWORD" value="" />
+		<property name="TEST" value="testing" />
+
+		<startDerby />
+
+		<!-- This is the default Ant sql task -->
+		<sql classpath="lib/derby.jar" driver="${DRIVER}" url="${DBURL}" userid="${USERID}" password="${PASSWORD}" autocommit="yes" onerror="continue" caching="yes">
+		      DROP TABLE TEST;
+		      CREATE TABLE TEST (pkey int not null generated always as 
+		      identity (start with 1, increment by 1), firstfield char(10), 
+		      secondfield int);
+		      INSERT INTO TEST (firstfield, secondfield) VALUES ('${TEST}', 10);
+		      SELECT * FROM TEST;
+		    </sql>
+
+		<!-- The SQL Command will leave the Derby database is a started state.
+		         To protect the integrity of the database, you should explicitly 
+		         stop the database -->
+		<stopDatabase url="${DBURL}" />
+
+		<!-- Use the dblook tool to generate DDL for the tables -->
+		<ddlExport url="${DBURL}" dest="tables.sql" verbose="yes" />
+
+		<!-- Package the DB up for read-only distribution -->
+		<jar destfile="db.jar">
+			<fileset dir=".">
+				<include name="my/**/*" />
+			</fileset>
+		</jar>
+
+		<!-- Shutdown Derby properly.  This should be done every time,
+		         but only when you're absolutely done using Derby -->
+		<stopDerby />
+
+
+	</target>
 
 </project>
