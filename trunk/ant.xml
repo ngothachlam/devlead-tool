@@ -180,11 +180,8 @@
 		<stopDerby />
 	</target>
 
-	<target name="db.test.all" depends="db.start">
-		<property name="TEST" value="testing" />
-
+	<target name="db.test.setup" depends="db.start">
 		<!-- This is the default Ant sql task -->
-		<!--
 		<sql classpath="lib/derby.jar" driver="${DRIVER}" url="${DBURL}" userid="${USERID}" password="${PASSWORD}" autocommit="yes" onerror="continue" caching="yes">
 		      DROP TABLE TEST;
 		      CREATE TABLE TEST (
@@ -193,19 +190,22 @@
 		      INSERT INTO TEST (name) VALUES ('${TEST}');
 		      SELECT * FROM TEST;
 		    </sql>
--->
-		<testDatabase url="${DBURL}" sql="SELECT * FROM TEST" />
-		<!--<testDatabase url="${DBURL};" />-->
-
 		<!-- The SQL Command will leave the Derby database is a started state.
 		         To protect the integrity of the database, you should explicitly 
 		         stop the database -->
 
+	</target>
+
+	<target name="db.test.all" depends="db.start">
+		<property name="TEST" value="testing" />
+
+		<testDatabase url="${DBURL}" sql="SELECT * FROM TEST" />
+
 		<!-- Use the dblook tool to generate DDL for the tables -->
-		<ddlExport url="${DBURL}" dest="tables.sql" verbose="yes" />
+		<ddlExport url="${DBURL}" dest="db/tables.sql" verbose="yes" />
 
 		<!-- Package the DB up for read-only distribution -->
-		<jar destfile="db.jar">
+		<jar destfile="db/db.jar">
 			<fileset dir=".">
 				<include name="db/my/**/*" />
 			</fileset>
