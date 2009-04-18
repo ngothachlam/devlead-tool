@@ -9,6 +9,7 @@ public class StartDerbyTask extends Task {
 
    public void execute() throws BuildException {
       try {
+         driver = null;
          initialiseDriver();
       } catch (Exception e) {
          System.out.println("Derby could not start. Most likely " + "due to missing Derby JAR files in classpath.");

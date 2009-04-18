@@ -1,7 +1,7 @@
 -- ============================
 
 -- This file was created using Derby's dblook utility.
--- Timestamp: 2009-04-18 14:53:41.703
+-- Timestamp: 2009-04-18 16:05:06.64
 -- Source database is: db/data/test
 -- Connection URL is: jdbc:derby:db/data/test;create=true
 -- appendLogs: false
