@@ -117,6 +117,11 @@ public class DBLookTask extends Task {
 
       String[] argsarray = new String[args.size()];
       argsarray = (String[]) args.toArray(argsarray);
-      dblook.main(argsarray);
+      try {
+         StartDerbyTask.initialiseDriver();
+         dblook.main(argsarray);
+      } catch (ClassNotFoundException e) {
+         e.printStackTrace();
+      }
    }
 }

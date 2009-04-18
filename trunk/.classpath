@@ -68,5 +68,6 @@
 	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry kind="lib" path="lib/derby.jar"/>
 	<classpathentry kind="lib" path="lib/derbytools.jar"/>
+	<classpathentry kind="lib" path="lib/derbynet.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
