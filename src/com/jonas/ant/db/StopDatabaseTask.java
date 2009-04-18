@@ -21,8 +21,12 @@ public class StopDatabaseTask extends Task {
 
    public void execute() throws BuildException {
       try {
-         DriverManager.getConnection(url + ";shutdown=true");
+         String newUrl = url + ";shutdown=true";
+         System.out.println(newUrl);
+         Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+         DriverManager.getConnection(newUrl);
       } catch (Exception e) {
+         e.printStackTrace();
          System.out.println("Database has been shutdown");
       }
    }
