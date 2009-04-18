@@ -7,35 +7,35 @@ import org.jdesktop.swingx.treetable.TreeTableNode;
 
 public class TreeBuilder {
 
-   public XMLGroup buildTree(DefaultTreeTableModel treeTableModel) {
+   public DaoTreeNode buildDaoTree(DefaultTreeTableModel treeTableModel) {
       TreeTableNode parent = treeTableModel.getRoot();
-      XMLGroup tree = new XMLGroup(parent.getUserObject());
+      DaoTreeNode tree = new DaoTreeNode(parent.getUserObject());
       
       buildTreeRecursively(treeTableModel, parent, tree);
       
       return tree;
    }
 
-   private void buildTreeRecursively(DefaultTreeTableModel treeTableModel, TreeTableNode parent, XMLGroup tree) {
+   private void buildTreeRecursively(DefaultTreeTableModel treeTableModel, TreeTableNode parent, DaoTreeNode tree) {
       int childCount = treeTableModel.getChildCount(parent);
       for (int childIndex = 0; childIndex < childCount; childIndex++) {
          TreeTableNode child = (TreeTableNode) treeTableModel.getChild(parent, childIndex);
-         XMLGroup childTree = tree.addChild(child.getUserObject());
+         DaoTreeNode childTree = tree.addChild(child.getUserObject());
          if(child.getChildCount()>0){
             buildTreeRecursively(treeTableModel, child, childTree);
          }
       }
    }
 
-   public DefaultMutableTreeTableNode readTree(XMLGroup tree) {
+   public DefaultMutableTreeTableNode readDaoTreeAndGetRoot(DaoTreeNode tree) {
       DefaultMutableTreeTableNode parent = readTreeRecursively(tree);
       return parent;
    }
 
-   private DefaultMutableTreeTableNode readTreeRecursively(XMLGroup tree) {
+   private DefaultMutableTreeTableNode readTreeRecursively(DaoTreeNode tree) {
       DefaultMutableTreeTableNode parent = new DefaultMutableTreeTableNode(tree.getUserObject());
-      List<XMLGroup> children = tree.getChildren();
-      for (XMLGroup child : children) {
+      List<DaoTreeNode> children = tree.getChildren();
+      for (DaoTreeNode child : children) {
          parent.add(readTreeRecursively(child));
       }
       return parent;

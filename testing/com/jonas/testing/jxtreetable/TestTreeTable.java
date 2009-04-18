@@ -9,8 +9,9 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import com.jonas.testHelpers.TryoutTester;
+import com.jonas.testing.jxtreetable.column.BoardColumnMapper;
 import com.jonas.testing.jxtreetable.dao.TreeBuilder;
-import com.jonas.testing.jxtreetable.dao.TreeTableDao;
+import com.jonas.testing.jxtreetable.dao.TreeTableDaoImpl;
 import com.jonas.testing.jxtreetable.userobject.FixVersionUserObject;
 import com.jonas.testing.jxtreetable.userobject.JiraUserObject;
 import com.jonas.testing.jxtreetable.userobject.SprintUserObject;
@@ -63,7 +64,7 @@ public class TestTreeTable {
       Component treeTable = getTreeTable(treeTableModel); 
       TryoutTester.showInFrame(new JScrollPane(treeTable));
       
-      TreeTableDao treeTableDao = new TreeTableDao();
+      TreeTableDaoImpl treeTableDao = new TreeTableDaoImpl();
       TreeBuilder treeBuilder = new TreeBuilder();
       treeTableDao.persist(new File("testTreeTableDao"), treeTableModel, treeBuilder);
       

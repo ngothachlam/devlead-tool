@@ -3,26 +3,26 @@ package com.jonas.testing.jxtreetable.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XMLGroup {
+public class DaoTreeNode {
 
-   private List<XMLGroup> children = new ArrayList<XMLGroup>();
+   private List<DaoTreeNode> children = new ArrayList<DaoTreeNode>();
 
    private Object userObject;
 
-   public XMLGroup() {
+   public DaoTreeNode() {
    }
 
-   public XMLGroup(Object userObject) {
+   public DaoTreeNode(Object userObject) {
       this.userObject = userObject;
    }
 
-   public XMLGroup addChild(Object child) {
-      XMLGroup newChild = new XMLGroup(child);
+   public DaoTreeNode addChild(Object child) {
+      DaoTreeNode newChild = new DaoTreeNode(child);
       children.add(newChild);
       return newChild;
    }
 
-   public List<XMLGroup> getChildren() {
+   public List<DaoTreeNode> getChildren() {
       return children;
    }
 
@@ -30,7 +30,7 @@ public class XMLGroup {
       return userObject;
    }
 
-   public void setChildren(List<XMLGroup> children) {
+   public void setChildren(List<DaoTreeNode> children) {
       this.children = children;
    }
 

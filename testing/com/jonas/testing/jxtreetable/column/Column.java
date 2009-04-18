@@ -1,4 +1,4 @@
-package com.jonas.testing.jxtreetable;
+package com.jonas.testing.jxtreetable.column;
 
 public enum Column {
    REF("Ref"), DESCRIPTION("Description");

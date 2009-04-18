@@ -4,7 +4,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import com.jonas.testing.jxtreetable.Column;
+import com.jonas.testing.jxtreetable.column.Column;
 
 public abstract class DefaultUserObject implements Comparable<JiraUserObject>, Transferable {
    @Override

@@ -11,7 +11,7 @@ import java.io.IOException;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
-public class TreeTableDao {
+public class TreeTableDaoImpl {
 
    public DefaultMutableTreeTableNode read(File file, TreeBuilder treeBuilder) throws IOException {
       FileInputStream fs = null;
@@ -23,9 +23,9 @@ public class TreeTableDao {
          bs = new BufferedInputStream(fs);
          xdec = new XMLDecoder(bs);
          
-         XMLGroup tree = (XMLGroup) xdec.readObject(); 
+         DaoTreeNode tree = (DaoTreeNode) xdec.readObject(); 
          
-         return treeBuilder.readTree(tree);
+         return treeBuilder.readDaoTreeAndGetRoot(tree);
          
       } finally {
          if (xdec != null) {
@@ -50,7 +50,7 @@ public class TreeTableDao {
          bos = new BufferedOutputStream(fos);
          xenc = new XMLEncoder(bos);
 
-         XMLGroup tree = treeBuilder.buildTree(treeTableModel);
+         DaoTreeNode tree = treeBuilder.buildDaoTree(treeTableModel);
          
          xenc.writeObject(tree);
 
