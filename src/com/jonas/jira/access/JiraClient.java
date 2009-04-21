@@ -39,10 +39,10 @@ public class JiraClient {
       this.jiraBuilder = jiraBuilder;
    }
 
-   private void buildJiraVersions(RemoteVersion[] fixVersions, JiraProject jiraProject) {
+   private void cacheJiraVersions(RemoteVersion[] fixVersions, JiraProject jiraProject) {
       jiraProject.clearFixVersions();
       for (int i = 0; i < fixVersions.length; i++) {
-         jiraBuilder.buildJiraVersion(fixVersions[i], jiraProject);
+         jiraBuilder.cachedJiraVersion(fixVersions[i], jiraProject);
       }
    }
 
@@ -54,10 +54,15 @@ public class JiraClient {
 
    public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean includeArchived, boolean includeNonArchived)
          throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
+      cacheJiraVersionsForProject(jiraProject);
+      return jiraProject.getFixVersions(includeArchived, includeNonArchived);
+   }
+
+   public void cacheJiraVersionsForProject(JiraProject jiraProject) throws RemotePermissionException, RemoteAuthenticationException,
+         RemoteException, java.rmi.RemoteException {
       JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_FIXVERSION);
       RemoteVersion[] fixVersions = jiraSoapClient.getFixVersions(jiraProject);
-      buildJiraVersions(fixVersions, jiraProject);
-      return jiraProject.getFixVersions(includeArchived, includeNonArchived);
+      cacheJiraVersions(fixVersions, jiraProject);
    }
 
    public JiraIssue getJira(String jira) throws HttpException, IOException, JDOMException, JiraException {

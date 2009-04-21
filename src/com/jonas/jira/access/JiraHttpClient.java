@@ -165,11 +165,9 @@ public class JiraHttpClient extends HttpClient {
 
    protected List<JiraIssue> buildJirasFromXML(String string, JiraBuilder jiraBuilder, JonasXpathEvaluator jonasXpathEvaluator)
          throws IOException, JDOMException {
-      // log.debug("RSS feed responded with \"" + string + "\"");
-      JonasXpathEvaluator evaluator = jonasXpathEvaluator;
       List<Element> jiras;
       try {
-         jiras = evaluator.getXpathElements(string);
+         jiras = jonasXpathEvaluator.getXpathElements(string);
       } catch (JDOMException e) {
          log.error(string);
          throw e;

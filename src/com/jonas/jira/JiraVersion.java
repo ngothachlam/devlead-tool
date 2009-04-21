@@ -23,10 +23,14 @@ public class JiraVersion {
       this.id = id;
       this.archived = archived;
       this.jiraProject = jiraProject;
+   }
+   
+   public JiraVersion cache(){
       addVersion(this);
+      return this;
    }
 
-   public static void addVersion(JiraVersion version) {
+   private static void addVersion(JiraVersion version) {
       JiraVersion jiraVersion = versions.get(version.getId());
       if (jiraVersion != null) {
          log.warn("version " + version + "(with id=" + version.getId() + ") already exists - not adding it, but overwriting values!");

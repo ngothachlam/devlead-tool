@@ -14,13 +14,13 @@ public class TestObjects {
 	public static JiraProject Project_TST1 = new JiraProject(null, "tstKey1", "tstId1", null);
 	public static JiraProject Project_TST2 = new JiraProject(null, "tstKey2", "tstId2", null);
 	
-	public static JiraVersion Version_10 = new JiraVersion("11382", JiraProject.LLU, "Version 10", false);
-	public static JiraVersion Version_11 = new JiraVersion("11432", JiraProject.LLU, "Version 11", false);
-	public static JiraVersion Version_11Next = new JiraVersion("11449", JiraProject.LLU, "Version 11 - Next Sprint (3)", false);
+	public static JiraVersion Version_10 = new JiraVersion("11382", JiraProject.LLU, "Version 10", false).cache();
+	public static JiraVersion Version_11 = new JiraVersion("11432", JiraProject.LLU, "Version 11", false).cache();
+	public static JiraVersion Version_11Next = new JiraVersion("11449", JiraProject.LLU, "Version 11 - Next Sprint (3)", false).cache();
 
-	public static JiraVersion Version_9  = new JiraVersion("11264", JiraProject.LLU, "Version 9", false);
-	public static JiraVersion Version_AtlassainTST  = new JiraVersion("13187", JiraProject.ATLASSIN_TST, "Dev Version", false);
-	public static JiraVersion Version_Backlog  = new JiraVersion("11388", JiraProject.LLU, "Backlog", false);
-	public static JiraVersion Version_PamsBacklog = new JiraVersion("11458", JiraProject.LLU, "Pam's Backlog", false);
+	public static JiraVersion Version_9  = new JiraVersion("11264", JiraProject.LLU, "Version 9", false).cache();
+	public static JiraVersion Version_AtlassainTST  = new JiraVersion("13187", JiraProject.ATLASSIN_TST, "Dev Version", false).cache();
+	public static JiraVersion Version_Backlog  = new JiraVersion("11388", JiraProject.LLU, "Backlog", false).cache();
+	public static JiraVersion Version_PamsBacklog = new JiraVersion("11458", JiraProject.LLU, "Pam's Backlog", false).cache();
 
 }

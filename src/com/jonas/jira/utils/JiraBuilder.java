@@ -175,8 +175,8 @@ public class JiraBuilder {
       return jiras;
    }
 
-   public JiraVersion buildJiraVersion(RemoteVersion remoteVersion, JiraProject jiraProject) {
-      return new JiraVersion(remoteVersion.getId(), jiraProject, remoteVersion.getName(), remoteVersion.isArchived());
+   public void cachedJiraVersion(RemoteVersion remoteVersion, JiraProject jiraProject) {
+      new JiraVersion(remoteVersion.getId(), jiraProject, remoteVersion.getName(), remoteVersion.isArchived()).cache();
    }
 
    public String get(Element element, String string) {
