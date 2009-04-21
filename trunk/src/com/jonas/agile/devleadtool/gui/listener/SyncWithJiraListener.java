@@ -114,8 +114,11 @@ public class SyncWithJiraListener implements ActionListener {
                dialog.increseProgress("Syncing " + jiraToGet);
                log.debug("Syncing Jira" + jiraToGet + " on the selected row " + row + " out of " + rows.length);
                JiraIssue jira;
+               JiraListenerImpl jiraListener = null;
                try {
-                  jira = helper.getJiraIssueFromName(jiraToGet, new JiraListenerImpl(dialog, jiraToGet));
+                  jiraListener = new JiraListenerImpl(dialog, jiraToGet);
+                  JiraListener.addJiraListener(jiraListener);
+                  jira = helper.getJiraIssueFromName(jiraToGet);
                } catch (Exception e) {
                   breakNo++;
                   AlertDialog.alertException(helper.getParentFrame(), e);
@@ -123,6 +126,9 @@ public class SyncWithJiraListener implements ActionListener {
                   if (breakNo >= 2)
                      break;
                   continue;
+               } finally {
+                  if (jiraListener != null)
+                     JiraListener.removeJiraListener(jiraListener);
                }
                log.debug("jiraToGet: " + jiraToGet + " jira: " + jira.getKey() + " rowSelected: " + row);
                notifyThatJiraSynced(jira);

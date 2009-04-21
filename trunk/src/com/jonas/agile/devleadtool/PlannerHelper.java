@@ -33,7 +33,7 @@ public class PlannerHelper {
 
    public PlannerHelper() {
    }
-   
+
    @Inject
    public PlannerHelper(MainFrame frame, @Named("plannerHelper.title") String title) {
       this.frame = frame;
@@ -65,26 +65,18 @@ public class PlannerHelper {
       return false;
    }
 
-
    public MyInternalFrame getActiveInternalFrame() {
       return internalFrame;
    }
 
-   public JiraIssue getJiraIssueFromName(String jira, JiraListener jiraListener) throws JiraException, HttpException, IOException, JDOMException {
-      if (jiraListener != null)
-         JiraListener.addJiraListener(jiraListener);
-      try {
-         String projectKey = getProjectKey(jira);
-         JiraProject project = JiraProject.getProjectByKey(projectKey);
-         if (project == null) {
-            throw new JiraException("Jira \"" + jira + "\" doesn't have a project related to it!");
-         }
-         JiraClient client = project.getJiraClient();
-         return client.getJira(jira);
-      } finally {
-         if (jiraListener != null)
-            JiraListener.removeJiraListener(jiraListener);
+   public JiraIssue getJiraIssueFromName(String jira) throws JiraException, HttpException, IOException, JDOMException {
+      String projectKey = getProjectKey(jira);
+      JiraProject project = JiraProject.getProjectByKey(projectKey);
+      if (project == null) {
+         throw new JiraException("Jira \"" + jira + "\" doesn't have a project related to it!");
       }
+      JiraClient client = project.getJiraClient();
+      return client.getJira(jira);
    }
 
    public JFrame getParentFrame() {
