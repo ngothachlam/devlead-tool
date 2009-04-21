@@ -6,6 +6,7 @@ import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.guice.DevLeadToolModule;
 import com.jonas.common.logging.MyLogger;
 
+
 public class Main {
 
    public static void main(String[] args) {
@@ -15,7 +16,7 @@ public class Main {
 
       Injector injector = Guice.createInjector(new DevLeadToolModule());
       DevLeadTool tool = injector.getInstance(DevLeadTool.class);
-
+      
       try {
          tool.start();
       } catch (Throwable e) {
