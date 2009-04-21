@@ -3,6 +3,8 @@ package com.jonas.agile.devleadtool;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -16,6 +18,7 @@ import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.agile.devleadtool.gui.component.DesktopPane;
 import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.gui.component.SaveKeyListener;
+import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.LoadPlannerDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.NewPlannerDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.ProgressDialog;
@@ -25,6 +28,10 @@ import com.jonas.agile.devleadtool.gui.listener.DaoListener;
 import com.jonas.agile.devleadtool.gui.listener.MainFrameListener;
 import com.jonas.agile.devleadtool.gui.listener.PlannerListener;
 import com.jonas.agile.devleadtool.gui.listener.PlannerListeners;
+import com.jonas.agile.devleadtool.properties.Property;
+import com.jonas.agile.devleadtool.properties.SprinterPropertieSetter;
+import com.jonas.agile.devleadtool.properties.SprinterProperties;
+import com.jonas.agile.devleadtool.properties.SprinterPropertiesManager;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.MyPanel;
 import com.jonas.common.swing.SwingUtil;
@@ -85,6 +92,11 @@ public class DevLeadTool {
       return helper;
    }
 
+   private File file = new File("C:\\Sprinter.properties");
+   private SprinterProperties properties = new SprinterProperties(file);
+   private SprinterPropertieSetter propSetter = new SprinterPropertieSetter();
+   private SprinterPropertiesManager propManager = new SprinterPropertiesManager(properties, propSetter);
+
    private void makeUI() {
       JPanel contentPanel = new MyPanel(new BorderLayout());
 
@@ -98,14 +110,29 @@ public class DevLeadTool {
       wireListeners(frame);
 
       frame.setVisible(true);
+
    }
 
    public void start() {
       SwingUtilities.invokeLater(new Runnable() {
          public void run() {
-            makeUI();
+            try {
+               makeUI();
+               loadOrInitiateProperties();
+               File file = (File) properties.getPropertyObject(Property.SAVE_DIRECTORY);
+               if (file != null)
+                  System.out.println(file.getAbsolutePath() + " exists? " + file.exists());
+            } catch (Throwable e) {
+               AlertDialog.alertException(helper.getParentFrame(), e);
+            }
          }
+
       });
+   }
+
+   private void loadOrInitiateProperties() throws IOException {
+      propSetter.setFrameForDefaultPropertiesQuery(frame);
+      propManager.loadProperties();
    }
 
    private void wireListeners(final JFrame frame) {
