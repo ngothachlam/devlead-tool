@@ -7,7 +7,7 @@ public interface SprintCreationSource {
    public String getName();
    public Date getStart();
    public Date getEnd();
-   public int getLength();
+   public Integer getLength();
    public void clear();
 
 }
