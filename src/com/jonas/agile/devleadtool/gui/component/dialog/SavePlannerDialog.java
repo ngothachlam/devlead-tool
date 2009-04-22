@@ -5,19 +5,25 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
 import com.jonas.common.logging.MyLogger;
 
 public class SavePlannerDialog extends JFileChooser {
 
+   public static final File[] RESETFILES = {new File("")};
+   
    private final PlannerDAO dao;
    private Logger log = MyLogger.getLogger(SavePlannerDialog.class);
    private final JFrame parent;
-   public SavePlannerDialog(PlannerDAO dao, JFrame parent) {
-      super(new File("."));
+   private final PlannerHelper helper;
+
+   public SavePlannerDialog(PlannerDAO dao, JFrame parent, PlannerHelper helper) {
+      super();
       this.dao = dao;
       this.parent = parent;
+      this.helper = helper;
       addChoosableFileFilter(new XLSFileFilter());
    }
 
@@ -27,8 +33,16 @@ public class SavePlannerDialog extends JFileChooser {
       if (isFileChoosable || file == null) {
          if (file != null) {
             setSelectedFile(file);
+            System.out.println("*file*" + file.getAbsolutePath());
+         } else {
+            setCurrentDirectory(helper.getSaveDirectory());
+            setSelectedFiles(RESETFILES);
          }
-
+         System.out.println("current dir: " + getCurrentDirectory());
+         File[] selectedFiles = getSelectedFiles();
+         for (File file2 : selectedFiles) {
+            System.out.println("selected file: " + file2.getAbsolutePath());
+         }
 
          int result = showSaveDialog(parent);
          if (result == JFileChooser.APPROVE_OPTION) {

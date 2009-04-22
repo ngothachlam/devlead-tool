@@ -77,7 +77,7 @@ public class DevLeadTool {
    }
 
    private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
-      SavePlannerDialog savePlannerDialog = new SavePlannerDialog(plannerDAO, frame);
+      SavePlannerDialog savePlannerDialog = new SavePlannerDialog(plannerDAO, frame, helper);
       SaveKeyListener saveKeyListener = new SaveKeyListener(helper, savePlannerDialog);
       NewPlannerDialog newPlannerDialog = new NewPlannerDialog(desktop, helper, plannerDAO, savePlannerDialog, saveKeyListener);
       JMenuItem planner = createMenuItem("New Planner", new NewPlannerActionListener(newPlannerDialog));
