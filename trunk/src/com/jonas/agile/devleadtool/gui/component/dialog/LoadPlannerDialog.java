@@ -53,6 +53,7 @@ public class LoadPlannerDialog extends JFileChooser {
       log.trace("load");
       
       setCurrentDirectory(helper.getSaveDirectory());
+      setSelectedFiles(savePlannerDialog.RESETFILES);
       
       int result = showOpenDialog(frame);
 
