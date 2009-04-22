@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
@@ -92,7 +93,7 @@ public class ExcelSprintDao {
    }
 
    private void createSprintData(HSSFSheet sheet, int columnMaxCount, SprintCache sprintCache) {
-      Set<Sprint> sprints = sprintCache.getSprints();
+      Vector<Sprint> sprints = sprintCache.getSprints();
       short rowCounter = 0;
       for (Sprint sprint : sprints) {
          HSSFRow row = sheet.createRow(++rowCounter);

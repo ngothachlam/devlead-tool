@@ -6,11 +6,16 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Set;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.AbstractBorder;
+import javax.swing.event.ListDataListener;
 import javax.swing.text.JTextComponent;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXDatePicker;
@@ -41,8 +46,8 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
    }
 
    private JPanel getContentPane() {
-      JPanel addSprint = getAddPanel(BorderFactory.createTitledBorder("Add Sprint"));
       JPanel viewSprint = getSprintsPanel(BorderFactory.createTitledBorder("View Sprints"));
+      JPanel addSprint = getAddPanel(BorderFactory.createTitledBorder("Add Sprint"));
       
       JPanel contentPanel = new JPanel(new GridBagLayout());
       GridBagConstraints gbc = new GridBagConstraints();
@@ -58,6 +63,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
    public void doActionPerformed(ActionEvent e) {
       source.clear();
       frame.pack();
+      SwingUtil.centreWindowWithinWindow(frame, getParentFrame());
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
    }
@@ -72,6 +78,16 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       return startDatePicker;
    }
 
+   private JComboBox addCheckBoxField(JPanel panel, String labelText, GridBagConstraints gbc) {
+      gbc.gridx = 0;
+      panel.add(new JXLabel(labelText), gbc);
+      gbc.gridx++;
+      JComboBox nameTextField = new JComboBox(SprintCache.getInstance().getSprints());
+      panel.add(nameTextField, gbc);
+      gbc.gridy++;
+      return nameTextField;
+      
+   }
    private JTextField addTextField(JPanel panel, String labelText, GridBagConstraints gbc) {
       gbc.gridx = 0;
       panel.add(new JXLabel(labelText), gbc);
@@ -110,12 +126,12 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       GridBagConstraints gbc = new GridBagConstraints();
       SwingUtil.defaultGridBagConstraints(gbc);
 
-      JTextField nameTextField = addTextField(panel, "Sprint Count:", gbc);
+      JComboBox sprintsCombo = addCheckBoxField(panel, "Sprint Count:", gbc);
 
       gbc.gridx = 0;
       gbc.gridwidth = 2;
       gbc.anchor = GridBagConstraints.CENTER;
-      Action refreshAction = new RefreshAction(getParentFrame(), nameTextField);
+      Action refreshAction = new RefreshAction(getParentFrame(), sprintsCombo);
       panel.add(new JXButton(refreshAction), gbc);
 
       panel.setBorder(titledBorder);
@@ -125,16 +141,18 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
 
 
 class RefreshAction extends BasicAbstractGUIAction {
-   private JTextComponent nameTextField;
+   private JComboBox sprintsCombo;
 
-   public RefreshAction(Frame parentFrame, JTextComponent nameTextField) {
+   public RefreshAction(Frame parentFrame, JComboBox sprintsCombo) {
       super("Refresh Sprint count", "", parentFrame);
-      this.nameTextField = nameTextField;
+      this.sprintsCombo = sprintsCombo;
    }
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      nameTextField.setText(""+SprintCache.getInstance().getSprints().size());
+//      sprintsCombo.set
+      
+//      sprintsCombo.setText(""+SprintCache.getInstance().getSprints().size());
    }
 }
 

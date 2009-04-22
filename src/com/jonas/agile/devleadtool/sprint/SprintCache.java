@@ -4,16 +4,19 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Vector;
 
 public class SprintCache {
 
-   private final static Set<Sprint> sprints = new HashSet<Sprint>();
+   private final static Vector<Sprint> sprints = new Vector<Sprint>();
    private static final SprintCache instance = new SprintCache();
 
-   public void cache(Sprint sprint) {
-      sprints.add(sprint);
+   public boolean cache(Sprint sprint) {
+      if (!sprints.contains(sprint)){
+         sprints.add(sprint);
+         return true;
+      }
+      return false;
    }
 
    public static SprintCache getInstance() {
@@ -42,7 +45,7 @@ public class SprintCache {
       return sprints.size();
    }
 
-   public Set<Sprint> getSprints() {
+   public Vector<Sprint> getSprints() {
       return sprints;
    }
 
