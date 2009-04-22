@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 
 public class SprinterPropertiesManager {
 
@@ -15,15 +18,20 @@ public class SprinterPropertiesManager {
       this.sprinterPropertySetter = sprinterPropertySetter;
    }
 
-   public void loadProperties() throws IOException {
+   public void loadProperties(PlannerHelper helper, ExcelSprintDao sprintDao) throws IOException {
       File file = properties.getFile();
       if (!file.exists()) {
          file.createNewFile();
-         properties.initiateNewProperties();
+         properties.createNewPropertiesCache();
          setDefaultProperties();
       } else {
          properties.loadProperties();
          checkAndSetMissingDefaultProperties();
+      }
+      
+      File sprintFile = helper.getSprintFile();
+      if (sprintFile.exists()) {
+         sprintDao.load(SprintCache.getInstance(), sprintFile);
       }
    }
 
@@ -32,23 +40,27 @@ public class SprinterPropertiesManager {
    }
 
    private void checkAndSetMissingDefaultProperties() {
-      Set<Property> defaultProperties = Property.SAVE_DIRECTORY.getDefaultProperties();
+      Set<Property> props = Property.SAVE_DIRECTORY.getProperties();
       Set<Property> emptyDefaultProperties = new HashSet<Property>();
 
-      for (Property property : defaultProperties) {
+      for (Property property : props) {
          String value = properties.getProperty(property);
          if (value == null) {
-            emptyDefaultProperties.add(property);
+            if (property.isDefault()) {
+               emptyDefaultProperties.add(property);
+            }
+         } else {
+            Property.initialise();
          }
       }
       if (emptyDefaultProperties.size() > 0) {
-         sprinterPropertySetter.queryAndSetDefaultProperties(this, emptyDefaultProperties);
+         sprinterPropertySetter.queryAndSetMissingProperties(this, emptyDefaultProperties);
       }
    }
 
    private void setDefaultProperties() {
-      Set<Property> defaultProperties = Property.SAVE_DIRECTORY.getDefaultProperties();
-      sprinterPropertySetter.queryAndSetDefaultProperties(this, defaultProperties);
+      Set<Property> defaultMissingProperties = Property.SAVE_DIRECTORY.getDefaultProperties();
+      sprinterPropertySetter.queryAndSetMissingProperties(this, defaultMissingProperties);
    }
 
    public void setProperty(Property property, String temporaryValue) {

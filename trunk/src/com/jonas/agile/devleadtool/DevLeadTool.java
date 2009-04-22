@@ -127,9 +127,7 @@ public class DevLeadTool {
    private void loadOrInitiateProperties() throws IOException {
       propSetter.setFrameForDefaultPropertiesQuery(frame);
       helper.setSprinterProperties(properties);
-      propManager.loadProperties();
-      
-      sprintDao.load(SprintCache.getInstance(), helper.getSprintFile());
+      propManager.loadProperties(helper, sprintDao);
    }
 
    private void makeUI() {

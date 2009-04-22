@@ -30,21 +30,33 @@ public class Property {
       return propertyType;
    }
 
+   public Set<Property> getProperties() {
+      Set<Property> returnVal = new HashSet<Property>();
+      for (Property property : values) {
+         returnVal.add(property);
+      }
+      return returnVal;
+   }
+
    public Set<Property> getDefaultProperties() {
       Set<Property> returnVal = new HashSet<Property>();
       for (Property property : values) {
-         if (property.isDefault) {
+         if (property.isDefault()) {
             returnVal.add(property);
          }
       }
       return returnVal;
    }
 
+   public boolean isDefault() {
+      return isDefault;
+   }
+
    public String getKeyName() {
       return keyName;
    }
 
-   public String getDescription() {
+   public String getDesc() {
       return description;
    }
 
@@ -54,6 +66,10 @@ public class Property {
          return new File(propertyObject);
       }
       return propertyObject;
+   }
+
+   public static void initialise() {
+
    }
 
 }
