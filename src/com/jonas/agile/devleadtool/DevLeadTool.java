@@ -119,9 +119,8 @@ public class DevLeadTool {
             try {
                makeUI();
                loadOrInitiateProperties();
-               File file = (File) properties.getPropertyObject(Property.SAVE_DIRECTORY);
-               if (file != null)
-                  System.out.println(file.getAbsolutePath() + " exists? " + file.exists());
+               file = helper.getSaveDirectory();
+               System.out.println(file.getAbsolutePath() + " exists? " + file.exists());
             } catch (Throwable e) {
                AlertDialog.alertException(helper.getParentFrame(), e);
             }
@@ -132,6 +131,7 @@ public class DevLeadTool {
 
    private void loadOrInitiateProperties() throws IOException {
       propSetter.setFrameForDefaultPropertiesQuery(frame);
+      helper.setSprinterProperties(properties);
       propManager.loadProperties();
    }
 

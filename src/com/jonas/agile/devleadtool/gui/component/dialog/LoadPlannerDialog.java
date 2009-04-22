@@ -26,7 +26,7 @@ public class LoadPlannerDialog extends JFileChooser {
 
    public LoadPlannerDialog(DesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper helper, SavePlannerDialog savePlannerDialog,
          SaveKeyListener saveKeyListener) {
-      super(new File("."));
+      super();
       this.desktop = desktop;
       this.dao = plannerDAO;
       this.frame = frame;
@@ -51,6 +51,9 @@ public class LoadPlannerDialog extends JFileChooser {
 
    public void load() {
       log.trace("load");
+      
+      setCurrentDirectory(helper.getSaveDirectory());
+      
       int result = showOpenDialog(frame);
 
       if (result == JFileChooser.APPROVE_OPTION) {

@@ -10,7 +10,7 @@ public class BoardPanelTestScreen {
 
    public static void main(String[] args) {
       JFrame frame = TryoutTester.getEmptyFrame();
-      PlannerHelper plannerHelper = new PlannerHelper();
+      PlannerHelper plannerHelper = new PlannerHelper(null, "test");
       BoardPanel panel = new BoardPanel();
       frame.setContentPane(panel);
       frame.setVisible(true);
