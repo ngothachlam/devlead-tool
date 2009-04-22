@@ -3,7 +3,6 @@ package com.jonas.agile.devleadtool.properties;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ public class SprinterPropertieSetter {
    public SprinterPropertieSetter() {
    }
 
-   public void queryAndSetDefaultProperties(SprinterPropertiesManager sprinterPropertiesManager, Set<Property> defaultProperties) {
+   public void queryAndSetMissingProperties(SprinterPropertiesManager sprintPropMgr, Set<Property> missingProperties) {
       frame = new JFrame();
       JPanel panel = new JPanel(new GridBagLayout());
       GridBagConstraints gbc = new GridBagConstraints();
@@ -36,23 +35,22 @@ public class SprinterPropertieSetter {
 
       Map<Property, Getter> state = new HashMap<Property, Getter>();
 
-      for (Property property : defaultProperties) {
+      for (Property prop : missingProperties) {
          gbc.gridx = 0;
-         panel.add(new JLabel(property.getDescription()), gbc);
+         panel.add(new JLabel(prop.getDesc()), gbc);
          gbc.gridx++;
-         switch (property.getType()) {
+         switch (prop.getType()) {
          case DIRECTORY:
             JTextFieldGetter browsePath = new JTextFieldGetter(30);
             browsePath.setEditable(false);
             panel.add(browsePath, gbc);
 
-            BrowseAction browseAction = new BrowseAction("Browse", "Browse to set the file for "
-                  + property.getDescription(), browsePath, frame, property.getType());
+            BrowseAction browseAction = new BrowseAction("Browse", "Set the file for " + prop.getDesc(), browsePath, frame, prop.getType());
             JButton browseButton = new JButton(browseAction);
             gbc.gridx++;
             panel.add(browseButton, gbc);
 
-            state.put(property, browsePath);
+            state.put(prop, browsePath);
 
             break;
          }
@@ -63,7 +61,7 @@ public class SprinterPropertieSetter {
       gbc.gridwidth = 3;
       gbc.anchor = GridBagConstraints.CENTER;
 
-      JButton saveButton = new JButton(new SaveAction("Save", "Save Properties", frame, state, defaultProperties, sprinterPropertiesManager));
+      JButton saveButton = new JButton(new SaveAction("Save", "Save Properties", frame, state, missingProperties, sprintPropMgr));
       panel.add(saveButton, gbc);
 
       frame.setResizable(false);
@@ -101,26 +99,26 @@ class SaveAction extends BasicAbstractGUIAction {
 
    private final Map<Property, Getter> state;
    private final Set<Property> defaultProperties;
-   private final SprinterPropertiesManager sprinterPropertiesManager;
+   private final SprinterPropertiesManager sprintPropMgr;
 
-   public SaveAction(String name, String description, Frame parentFrame, Map<Property, Getter> state, Set<Property> defaultProperties,
-         SprinterPropertiesManager sprinterPropertiesManager) {
-      super(name, description, parentFrame);
+   public SaveAction(String name, String descr, Frame parent, Map<Property, Getter> state, Set<Property> props,
+         SprinterPropertiesManager sprintPropMgr) {
+      super(name, descr, parent);
       this.state = state;
-      this.defaultProperties = defaultProperties;
-      this.sprinterPropertiesManager = sprinterPropertiesManager;
+      this.defaultProperties = props;
+      this.sprintPropMgr = sprintPropMgr;
    }
 
    @Override
    public void doActionPerformed(ActionEvent e) {
       for (Property property : defaultProperties) {
          Getter getter = state.get(property);
-         sprinterPropertiesManager.setProperty(property, getter.getValue());
+         sprintPropMgr.setProperty(property, getter.getValue());
       }
       if (defaultProperties.size() > 0) {
          try {
             System.out.println("saving...");
-            sprinterPropertiesManager.saveProperties();
+            sprintPropMgr.saveProperties();
          } catch (IOException e1) {
             throw new RuntimeException(e1);
          }

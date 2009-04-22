@@ -28,7 +28,7 @@ public class SprinterProperties {
    }
 
    public void loadProperties() throws IOException {
-      initiateNewProperties();
+      createNewPropertiesCache();
       FileInputStream inStream = null;
       try {
          inStream = new FileInputStream(file);
@@ -39,7 +39,7 @@ public class SprinterProperties {
       }
    }
 
-   public void initiateNewProperties() {
+   public void createNewPropertiesCache() {
       properties = new Properties();
    }
 

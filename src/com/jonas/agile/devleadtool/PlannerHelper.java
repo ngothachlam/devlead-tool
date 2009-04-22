@@ -19,7 +19,6 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.access.JiraClient;
 import com.jonas.jira.access.JiraException;
-import com.jonas.jira.access.listener.JiraListener;
 
 public class PlannerHelper {
 
