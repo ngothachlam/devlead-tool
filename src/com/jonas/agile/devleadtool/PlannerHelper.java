@@ -110,4 +110,10 @@ public class PlannerHelper {
       return (File) propertyObject;
    }
 
+   public File getSprintFile() {
+      File saveDirectory = getSaveDirectory();
+      File sprintFile = new File(saveDirectory, "sprints.xls");
+      return sprintFile;
+   }
+
 }

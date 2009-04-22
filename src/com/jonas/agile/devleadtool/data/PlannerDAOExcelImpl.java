@@ -80,48 +80,57 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       log.debug("Loading Model from " + xlsFile.getAbsolutePath() + " and sheet: " + sheetName);
       notifyListeners(DaoListenerEvent.LoadingModelStarted, "Loading " + sheetName + " Started");
 
+      InputStream inp = null;
+
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       Vector<Column> header = new Vector<Column>();
       TableModelDTO dataModelDTO = new TableModelDTO(header, contents);
-      InputStream inp = new FileInputStream(xlsFile);
-      HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(inp));
-      int rowCount = -1;
+      try {
+         int rowCount = -1;
 
-      HSSFSheet sheet = wb.getSheet(sheetName);
-      Map<Integer, Column> columns = new HashMap<Integer, Column>();
-      // for each row in the sheet...
-      for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {
-         Vector<Object> rowData = new Vector<Object>();
-         rowCount++;
-         HSSFRow row = rit.next();
-         log.debug("Loading row " + rowCount);
-         int colCount = -1;
-         // for each column in the row...
-         for (Iterator<HSSFCell> cit = row.cellIterator(); cit.hasNext();) {
-            colCount++;
-            HSSFCell cell = cit.next();
-            int cellType = cell.getCellType();
-            log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + colCount);
-            Object cellContents = null;
-            switch (cellType) {
-            case HSSFCell.CELL_TYPE_BLANK:
-               cellContents = "";
-            case HSSFCell.CELL_TYPE_BOOLEAN:
-               cellContents = cell.getBooleanCellValue();
-               break;
-            case HSSFCell.CELL_TYPE_NUMERIC:
-               String valueOf = String.valueOf(cell.getNumericCellValue());
-               cellContents = (valueOf == null ? "" : valueOf);
-               break;
-            case HSSFCell.CELL_TYPE_STRING:
-               HSSFRichTextString cellHeader = cell.getRichStringCellValue();
-               cellContents = (cellHeader == null ? "" : cellHeader.getString());
-               break;
+         inp = new FileInputStream(xlsFile);
+         POIFSFileSystem fileSystem = new POIFSFileSystem(inp);
+         HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
+
+         HSSFSheet sheet = wb.getSheet(sheetName);
+         Map<Integer, Column> columns = new HashMap<Integer, Column>();
+         // for each row in the sheet...
+         for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {
+            Vector<Object> rowData = new Vector<Object>();
+            rowCount++;
+            HSSFRow row = rit.next();
+            log.debug("Loading row " + rowCount);
+            int colCount = -1;
+            // for each column in the row...
+            for (Iterator<HSSFCell> cit = row.cellIterator(); cit.hasNext();) {
+               colCount++;
+               HSSFCell cell = cit.next();
+               int cellType = cell.getCellType();
+               log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + colCount);
+               Object cellContents = null;
+               switch (cellType) {
+               case HSSFCell.CELL_TYPE_BLANK:
+                  cellContents = "";
+               case HSSFCell.CELL_TYPE_BOOLEAN:
+                  cellContents = cell.getBooleanCellValue();
+                  break;
+               case HSSFCell.CELL_TYPE_NUMERIC:
+                  String valueOf = String.valueOf(cell.getNumericCellValue());
+                  cellContents = (valueOf == null ? "" : valueOf);
+                  break;
+               case HSSFCell.CELL_TYPE_STRING:
+                  HSSFRichTextString cellHeader = cell.getRichStringCellValue();
+                  cellContents = (cellHeader == null ? "" : cellHeader.getString());
+                  break;
+               }
+               setValue(dataModelDTO, rowCount, columns, rowData, colCount, cellContents);
             }
-            setValue(dataModelDTO, rowCount, columns, rowData, colCount, cellContents);
+            if (rowCount != 0)
+               dataModelDTO.getContents().add(rowData);
          }
-         if (rowCount != 0)
-            dataModelDTO.getContents().add(rowData);
+      } finally {
+         if (inp != null)
+            inp.close();
       }
       return dataModelDTO;
    }
@@ -275,7 +284,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    private String getStringOfColumns() {
       Column[] values = Column.values();
       StringBuffer sb = new StringBuffer("(");
-      if(values.length >0){
+      if (values.length > 0) {
          sb.append(values[0]);
       }
       for (int i = 1; i < values.length; i++) {

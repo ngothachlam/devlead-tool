@@ -3,7 +3,9 @@ package com.jonas.common.swing;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -119,6 +121,16 @@ public class SwingUtil {
             e.printStackTrace();
          }
       }
+   }
+
+   public static void defaultGridBagConstraints(GridBagConstraints gbc) {
+      gbc.insets = new Insets(5, 5, 5, 5);
+      gbc.gridheight = 1;
+      gbc.gridwidth = 1;
+      gbc.gridy = 0;
+      gbc.weightx = 0.5;
+      gbc.weighty = 0;
+      gbc.anchor = GridBagConstraints.WEST;
    }
 
 }
