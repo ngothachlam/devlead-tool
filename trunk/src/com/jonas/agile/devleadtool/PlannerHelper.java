@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,6 +12,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.gui.component.frame.main.MainFrame;
+import com.jonas.agile.devleadtool.properties.Property;
+import com.jonas.agile.devleadtool.properties.SprinterProperties;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
@@ -31,13 +34,16 @@ public class PlannerHelper {
 
    private String title;
 
-   public PlannerHelper() {
-   }
+   private SprinterProperties properties;
 
    @Inject
    public PlannerHelper(MainFrame frame, @Named("plannerHelper.title") String title) {
       this.frame = frame;
       this.title = title;
+   }
+
+   public void setSprinterProperties(SprinterProperties properties) {
+      this.properties = properties;
    }
 
    public static String getJiraUrl(String jira) throws NotJiraException {
@@ -97,6 +103,11 @@ public class PlannerHelper {
 
    public void login() throws HttpException, IOException, JiraException {
       JiraClient.JiraClientAolBB.login();
+   }
+
+   public File getSaveDirectory() {
+      Object propertyObject = properties.getPropertyObject(Property.SAVE_DIRECTORY);
+      return (File) propertyObject;
    }
 
 }
