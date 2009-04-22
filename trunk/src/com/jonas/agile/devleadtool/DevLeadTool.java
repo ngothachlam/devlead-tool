@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import com.google.inject.Inject;
 import com.jonas.agile.devleadtool.data.DaoListenerEvent;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
+import com.jonas.agile.devleadtool.gui.action.SprintManagerGuiAction;
 import com.jonas.agile.devleadtool.gui.component.DesktopPane;
 import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.gui.component.SaveKeyListener;
@@ -28,22 +29,30 @@ import com.jonas.agile.devleadtool.gui.listener.DaoListener;
 import com.jonas.agile.devleadtool.gui.listener.MainFrameListener;
 import com.jonas.agile.devleadtool.gui.listener.PlannerListener;
 import com.jonas.agile.devleadtool.gui.listener.PlannerListeners;
-import com.jonas.agile.devleadtool.properties.Property;
 import com.jonas.agile.devleadtool.properties.SprinterPropertieSetter;
 import com.jonas.agile.devleadtool.properties.SprinterProperties;
 import com.jonas.agile.devleadtool.properties.SprinterPropertiesManager;
+import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.MyPanel;
 import com.jonas.common.swing.SwingUtil;
 
 public class DevLeadTool {
 
+   private final ExcelSprintDao sprintDao = new ExcelSprintDao();
+   private final DesktopPane desktop;
+   private File file = new File("C:\\Sprinter.properties");
+   private final JFrame frame;
+   private final PlannerHelper helper;
    private Logger log = MyLogger.getLogger(DevLeadTool.class);
    private final PlannerDAOExcelImpl plannerDAO;
-   private final PlannerHelper helper;
+
+   private SprinterProperties properties = new SprinterProperties(file);
+   private SprinterPropertieSetter propSetter = new SprinterPropertieSetter();
+   private SprinterPropertiesManager propManager = new SprinterPropertiesManager(properties, propSetter);
+
    private JMenu windowMenu;
-   private final JFrame frame;
-   private final DesktopPane desktop;
 
    @Inject
    public DevLeadTool(MainFrame frame, DesktopPane desktop, PlannerDAOExcelImpl plannerDAO, PlannerHelper helper) {
@@ -51,6 +60,24 @@ public class DevLeadTool {
       this.frame = frame;
       this.desktop = desktop;
       this.plannerDAO = plannerDAO;
+   }
+
+   public PlannerHelper getHelper() {
+      return helper;
+   }
+
+   public void start() {
+      SwingUtilities.invokeLater(new Runnable() {
+         public void run() {
+            try {
+               makeUI();
+               loadOrInitiateProperties();
+            } catch (Throwable e) {
+               AlertDialog.alertException(helper.getParentFrame(), e);
+            }
+         }
+
+      });
    }
 
    private JMenu createFileMenu(String title, JMenuItem[] menuItemList) {
@@ -63,9 +90,11 @@ public class DevLeadTool {
 
    private JMenuBar createMenuBar() {
       JMenu fileMenuFile = createFileMenu("File", getFileMenuItemArray(frame, desktop));
+      JMenu sprintMenu = createSprintMenu();
       windowMenu = new JMenu("Windows");
       JMenuBar menuBar = new JMenuBar();
       menuBar.add(fileMenuFile);
+      menuBar.add(sprintMenu);
       menuBar.add(windowMenu);
       return menuBar;
    }
@@ -74,6 +103,13 @@ public class DevLeadTool {
       JMenuItem menuItem = new JMenuItem(menuTitle);
       menuItem.addActionListener(actionListener);
       return menuItem;
+   }
+
+   private JMenu createSprintMenu() {
+      SprintManagerGuiAction addSprintUsingGUIAction = new SprintManagerGuiAction(helper.getParentFrame(), helper, sprintDao);
+      JMenu menu = new JMenu("Sprint");
+      menu.add(new JMenuItem(addSprintUsingGUIAction));
+      return menu;
    }
 
    private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
@@ -88,14 +124,13 @@ public class DevLeadTool {
       return new JMenuItem[] { planner, open, save, saveAs };
    }
 
-   public PlannerHelper getHelper() {
-      return helper;
+   private void loadOrInitiateProperties() throws IOException {
+      propSetter.setFrameForDefaultPropertiesQuery(frame);
+      helper.setSprinterProperties(properties);
+      propManager.loadProperties();
+      
+      sprintDao.load(SprintCache.getInstance(), helper.getSprintFile());
    }
-
-   private File file = new File("C:\\Sprinter.properties");
-   private SprinterProperties properties = new SprinterProperties(file);
-   private SprinterPropertieSetter propSetter = new SprinterPropertieSetter();
-   private SprinterPropertiesManager propManager = new SprinterPropertiesManager(properties, propSetter);
 
    private void makeUI() {
       JPanel contentPanel = new MyPanel(new BorderLayout());
@@ -113,30 +148,15 @@ public class DevLeadTool {
 
    }
 
-   public void start() {
-      SwingUtilities.invokeLater(new Runnable() {
-         public void run() {
-            try {
-               makeUI();
-               loadOrInitiateProperties();
-               file = helper.getSaveDirectory();
-               System.out.println(file.getAbsolutePath() + " exists? " + file.exists());
-            } catch (Throwable e) {
-               AlertDialog.alertException(helper.getParentFrame(), e);
-            }
-         }
-
-      });
-   }
-
-   private void loadOrInitiateProperties() throws IOException {
-      propSetter.setFrameForDefaultPropertiesQuery(frame);
-      helper.setSprinterProperties(properties);
-      propManager.loadProperties();
-   }
-
    private void wireListeners(final JFrame frame) {
       PlannerListeners.addListener(new PlannerListener() {
+         @Override
+         public void frameChangedTitle(MyInternalFrame internalFrame) {
+            InternalFrameMenuItem internalFrameMenuItem = InternalFrameMenuItem.get(internalFrame);
+            if (internalFrameMenuItem != null)
+               internalFrameMenuItem.titleChanged();
+         }
+
          @Override
          public void frameWasClosed(MyInternalFrame internalFrame) {
             windowMenu.remove(InternalFrameMenuItem.get(internalFrame));
@@ -146,13 +166,6 @@ public class DevLeadTool {
          public void frameWasCreated(MyInternalFrame internalFrame) {
             InternalFrameMenuItem windowMenuItem = new InternalFrameMenuItem(internalFrame);
             windowMenu.add(windowMenuItem);
-         }
-
-         @Override
-         public void frameChangedTitle(MyInternalFrame internalFrame) {
-            InternalFrameMenuItem internalFrameMenuItem = InternalFrameMenuItem.get(internalFrame);
-            if (internalFrameMenuItem != null)
-               internalFrameMenuItem.titleChanged();
          }
       });
       frame.addWindowListener(new MainFrameListener(frame, helper));
@@ -197,18 +210,6 @@ public class DevLeadTool {
       });
    }
 
-   private final class NewPlannerActionListener implements ActionListener {
-      private NewPlannerDialog newPlannerDialog;
-
-      private NewPlannerActionListener(NewPlannerDialog newPlannerDialog) {
-         this.newPlannerDialog = newPlannerDialog;
-      }
-
-      public void actionPerformed(ActionEvent e) {
-         newPlannerDialog.openNew();
-      }
-   }
-
    private final class LoadPlannerActionListener implements ActionListener {
       private LoadPlannerDialog loadPlannerDialog;
 
@@ -218,6 +219,18 @@ public class DevLeadTool {
 
       public void actionPerformed(ActionEvent e) {
          loadPlannerDialog.load();
+      }
+   }
+
+   private final class NewPlannerActionListener implements ActionListener {
+      private NewPlannerDialog newPlannerDialog;
+
+      private NewPlannerActionListener(NewPlannerDialog newPlannerDialog) {
+         this.newPlannerDialog = newPlannerDialog;
+      }
+
+      public void actionPerformed(ActionEvent e) {
+         newPlannerDialog.openNew();
       }
    }
 

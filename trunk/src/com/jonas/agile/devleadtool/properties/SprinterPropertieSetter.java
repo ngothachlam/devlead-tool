@@ -32,13 +32,7 @@ public class SprinterPropertieSetter {
       GridBagConstraints gbc = new GridBagConstraints();
       frame.setContentPane(panel);
 
-      gbc.insets = new Insets(5, 5, 5, 5);
-      gbc.gridheight = 1;
-      gbc.gridwidth = 1;
-      gbc.gridy = 0;
-      gbc.weightx = 0.5;
-      gbc.weighty = 0;
-      gbc.anchor = GridBagConstraints.WEST;
+      SwingUtil.defaultGridBagConstraints(gbc);
 
       Map<Property, Getter> state = new HashMap<Property, Getter>();
 
