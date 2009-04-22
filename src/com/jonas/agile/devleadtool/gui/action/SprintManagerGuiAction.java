@@ -1,13 +1,15 @@
 package com.jonas.agile.devleadtool.gui.action;
 
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Date;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -16,6 +18,7 @@ import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXLabel;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.gui.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.gui.component.frame.main.MainFrame;
 import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 import com.jonas.agile.devleadtool.sprint.Sprint;
@@ -30,6 +33,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
    private final PlannerHelper helper;
    private SprintCreationSource source;
    private final ExcelSprintDao sprintDao;
+   private JComboBox sprintsCombo;
 
    public SprintManagerGuiAction(Frame parentFrame, PlannerHelper helper, ExcelSprintDao sprintDao) {
       super("Add Sprint", "Add a Sprint to be Cached!", parentFrame);
@@ -43,7 +47,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
    private JPanel getContentPane() {
       JPanel viewSprint = getSprintsPanel(BorderFactory.createTitledBorder("View Sprints"));
       JPanel addSprint = getAddPanel(BorderFactory.createTitledBorder("Add Sprint"));
-      
+
       JPanel contentPanel = new JPanel(new GridBagLayout());
       GridBagConstraints gbc = new GridBagConstraints();
       SwingUtil.defaultGridBagConstraints(gbc);
@@ -81,8 +85,9 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       panel.add(nameTextField, gbc);
       gbc.gridy++;
       return nameTextField;
-      
+
    }
+
    private JTextField addTextField(JPanel panel, String labelText, GridBagConstraints gbc) {
       gbc.gridx = 0;
       panel.add(new JXLabel(labelText), gbc);
@@ -107,6 +112,9 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao);
       AddSprintAction addSprintAction = new AddSprintAction(getParentFrame(), source, target);
 
+      SprintCacheListener listener = new SprintCacheListenerImpl(frame, sprintsCombo);
+      addSprintAction.addListener(listener);
+
       gbc.gridx = 0;
       gbc.gridwidth = 2;
       gbc.anchor = GridBagConstraints.CENTER;
@@ -121,13 +129,13 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       GridBagConstraints gbc = new GridBagConstraints();
       SwingUtil.defaultGridBagConstraints(gbc);
 
-      JComboBox sprintsCombo = addCheckBoxField(panel, "Sprint Count:", gbc);
+      sprintsCombo = addCheckBoxField(panel, "Sprint Count:", gbc);
 
-      gbc.gridx = 0;
-      gbc.gridwidth = 2;
-      gbc.anchor = GridBagConstraints.CENTER;
-      Action refreshAction = new RefreshAction(getParentFrame(), sprintsCombo);
-      panel.add(new JXButton(refreshAction), gbc);
+      // gbc.gridx = 0;
+      // gbc.gridwidth = 2;
+      // gbc.anchor = GridBagConstraints.CENTER;
+      // Action refreshAction = new RefreshAction(getParentFrame(), sprintsCombo);
+      // panel.add(new JXButton(refreshAction), gbc);
 
       panel.setBorder(titledBorder);
       return panel;
@@ -135,22 +143,21 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
 }
 
 
-class RefreshAction extends BasicAbstractGUIAction {
-   private JComboBox sprintsCombo;
-
-   public RefreshAction(Frame parentFrame, JComboBox sprintsCombo) {
-      super("Refresh Sprint count", "", parentFrame);
-      this.sprintsCombo = sprintsCombo;
-   }
-
-   @Override
-   public void doActionPerformed(ActionEvent e) {
-//      sprintsCombo.set
-      
-//      sprintsCombo.setText(""+SprintCache.getInstance().getSprints().size());
-   }
-}
-
+// class RefreshAction extends BasicAbstractGUIAction {
+// private JComboBox sprintsCombo;
+//
+// public RefreshAction(Frame parentFrame, JComboBox sprintsCombo) {
+// super("Refresh Sprint count", "", parentFrame);
+// this.sprintsCombo = sprintsCombo;
+// }
+//
+// @Override
+// public void doActionPerformed(ActionEvent e) {
+// // sprintsCombo.set
+//
+// // sprintsCombo.setText(""+SprintCache.getInstance().getSprints().size());
+// }
+// }
 
 class SprintCreationSourceImpl implements SprintCreationSource {
 
@@ -180,8 +187,11 @@ class SprintCreationSourceImpl implements SprintCreationSource {
    }
 
    @Override
-   public int getLength() {
-      return new Integer(lengthTextField.getText());
+   public Integer getLength() {
+      String text = lengthTextField.getText();
+      if (text.trim().length() == 0)
+         return null;
+      return new Integer(text);
    }
 
    @Override
@@ -212,4 +222,41 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
       sprintCache.cache(sprint);
       dao.save(sprintCache, helper.getSprintFile());
    }
+}
+
+
+class SprintCacheListenerImpl implements SprintCacheListener {
+
+   private Frame parent;
+   private ProgressDialog dialog;
+   private JComboBox combo;
+
+   public SprintCacheListenerImpl(Frame parent, JComboBox combo) {
+      super();
+      this.parent = parent;
+      this.combo = combo;
+   }
+
+   @Override
+   public void notify(SprintCacheNotification notification) {
+      switch (notification) {
+      case ADDINGTOCACHE:
+         System.out.println("ADDINGTOCACHE creating dialog");
+         dialog = new ProgressDialog(parent, "running...", "note", 0, true);
+         System.out.println("done creating dialog");
+         break;
+      case ADDEDTOCACHE:
+         System.out.println("ADDEDTOCACHE is null?");
+         if (dialog != null) {
+            System.out.println("not null");
+            dialog.setCompleteWithDelay(100);
+         }
+         ComboBoxModel model = combo.getModel();
+         Object anObject = new Object();
+         DefaultComboBoxModel dModel = (DefaultComboBoxModel) model;
+         dModel.addElement(anObject);
+         dModel.removeElement(anObject);
+         break;
+   }
+}
 }

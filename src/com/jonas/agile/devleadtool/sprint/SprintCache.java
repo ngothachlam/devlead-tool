@@ -10,9 +10,9 @@ public class SprintCache {
 
    private final static Vector<Sprint> sprints = new Vector<Sprint>();
    private static final SprintCache instance = new SprintCache();
-
+ 
    public boolean cache(Sprint sprint) {
-      if (!sprints.contains(sprint)){
+      if (!sprints.contains(sprint)) {
          sprints.add(sprint);
          return true;
       }
