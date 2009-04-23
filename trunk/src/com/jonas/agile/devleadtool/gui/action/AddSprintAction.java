@@ -40,14 +40,14 @@ public class AddSprintAction extends BasicAbstractGUIAction {
          Date endDate = source.getEnd();
          Integer length = source.getLength();
 
-         if(startDate == null || endDate == null || length == null || name == null){
+         if (startDate == null || endDate == null || length == null || name == null) {
             notifyListeners(SprintCacheNotification.REQUIREDFIELDMISSING);
             return;
          }
-         
+
          Sprint sprint = new Sprint(name, startDate, endDate, length);
          try {
-            target.addSprint(sprint);
+            target.addOrSetSprint(sprint);
          } catch (IOException e1) {
             throw new RuntimeException(e1);
          }

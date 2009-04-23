@@ -44,7 +44,7 @@ public class Sprint {
    private Date startDate;
 
    public Sprint(String name, Date startDate, Date endDate, int length) {
-      this.name = name;
+      this.name = name.trim();
       this.startDate = startDate;
       this.endDate = endDate;
       this.length = length;
@@ -57,7 +57,7 @@ public class Sprint {
       return endDate;
    }
 
-   public int getLength() {
+   public Integer getLength() {
       return length;
    }
 

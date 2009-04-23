@@ -15,10 +15,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.AbstractBorder;
+import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXTable;
+import org.jfree.util.Log;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.ProgressDialog;
@@ -30,16 +32,25 @@ import com.jonas.agile.devleadtool.sprint.SprintCreationSource;
 import com.jonas.agile.devleadtool.sprint.SprintCreationTarget;
 import com.jonas.agile.devleadtool.sprint.SprintLengthCalculationTarget;
 import com.jonas.agile.devleadtool.sprint.table.JXSprintTableModel;
+import com.jonas.agile.devleadtool.sprint.table.ListSelectionListenerImpl;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;
 
 public class SprintManagerGuiAction extends BasicAbstractGUIAction {
+
+   @Override
+   protected void finalize() throws Throwable {
+      throw new RuntimeException("Method not implemented yet!");
+   }
 
    private MainFrame frame;
    private final PlannerHelper helper;
    private SprintCreationSource source;
    private final ExcelSprintDao sprintDao;
-   private JXSprintTableModel sprintTableModel;
-
+   private JXSprintTableModel sprintsTableModel;
+   private ListSelectionListenerImpl tableSelectionListener;
+   private JXTable sprintsTable;
+   
    public SprintManagerGuiAction(Frame parentFrame, PlannerHelper helper, ExcelSprintDao sprintDao) {
       super("Add Sprint", "Add a Sprint to be Cached!", parentFrame);
       this.helper = helper;
@@ -48,7 +59,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       JPanel contentPanel = getContentPane();
       frame.setContentPane(contentPanel);
    }
-   
+
    private JPanel getContentPane() {
       JPanel viewSprint = getSprintsPanel(BorderFactory.createTitledBorder("View Sprints"));
       JPanel addSprint = getAddPanel(BorderFactory.createTitledBorder("Add Sprint"));
@@ -60,7 +71,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       gbc.fill = gbc.BOTH;
       gbc.weightx = 1.0;
       gbc.weighty = 1.0;
-      viewSprint.setPreferredSize(new Dimension(300,100));
+      viewSprint.setPreferredSize(new Dimension(300, 100));
       contentPanel.add(viewSprint, gbc);
       gbc.fill = gbc.NONE;
       gbc.weightx = 0.0;
@@ -69,19 +80,25 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       contentPanel.add(addSprint, gbc);
       return contentPanel;
    }
-   
+
    private JPanel getSprintsPanel(AbstractBorder titledBorder) {
       JPanel panel = new JPanel(new BorderLayout());
 
-      sprintTableModel = new JXSprintTableModel();
-      JXTable table = new JXTable(sprintTableModel);
-      table.setColumnControlVisible(true);
-      JScrollPane scrollpane = new JScrollPane(table);
+      sprintsTableModel = new JXSprintTableModel();
+      sprintsTable = new JXTable(sprintsTableModel);
+      sprintsTable.setColumnControlVisible(true);
+
+      tableSelectionListener = new ListSelectionListenerImpl();
+      sprintsTable.getSelectionModel().addListSelectionListener(tableSelectionListener);
+      sprintsTable.setColumnSelectionAllowed(false);
+      sprintsTable.setRowSelectionAllowed(true);
+
+      JScrollPane scrollpane = new JScrollPane(sprintsTable);
       panel.add(scrollpane, BorderLayout.CENTER);
 
       return panel;
    }
-   
+
    private JPanel getAddPanel(AbstractBorder titledBorder) {
       JPanel panel = new JPanel(new GridBagLayout());
       GridBagConstraints gbc = new GridBagConstraints();
@@ -94,7 +111,10 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       addButton(panel, "", gbc, calculateLengthAction);
       JTextField lengthTextField = addTextField(panel, "Length:", gbc);
 
-      SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao, sprintTableModel);
+      tableSelectionListener.setSourceTable(sprintsTable);
+      tableSelectionListener.setTargets(nameTextField, startDatePicker, endDatePicker, lengthTextField);
+      
+      SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao, sprintsTableModel);
       source = new SprintCreationSourceImpl(nameTextField, startDatePicker, endDatePicker, lengthTextField);
       AddSprintAction addSprintAction = new AddSprintAction(getParentFrame(), source, target);
       calculateLengthAction.setLengthSource(source);
@@ -111,7 +131,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       panel.setBorder(titledBorder);
       return panel;
    }
-   
+
    private JComponent add_Component(JPanel panel, String labelText, GridBagConstraints gbc, JComponent fieldield) {
       gbc.gridx = 0;
       panel.add(new JXLabel(labelText), gbc);
@@ -138,7 +158,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
    private JTextField addTextField(JPanel panel, String labelText, GridBagConstraints gbc) {
       return (JTextField) add_Component(panel, labelText, gbc, new JTextField(13));
    }
-   
+
    @Override
    public void doActionPerformed(ActionEvent e) {
       source.clear();
@@ -236,6 +256,7 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
    private final ExcelSprintDao dao;
    private final PlannerHelper helper;
    private final JXSprintTableModel sprintTableModel;
+   private static final Logger log = MyLogger.getLogger(SprintCreationTargetImpl.class);
 
    public SprintCreationTargetImpl(PlannerHelper helper, ExcelSprintDao dao, JXSprintTableModel sprintTableModel) {
       this.helper = helper;
@@ -244,10 +265,27 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
    }
 
    @Override
-   public void addSprint(Sprint sprint) throws IOException {
+   public void addOrSetSprint(Sprint sprint) throws IOException {
       SprintCache sprintCache = SprintCache.getInstance();
-      sprintCache.cache(sprint);
-      dao.save(sprintCache, helper.getSprintFile());
+
+      Sprint oldSprint = sprintCache.getSprintWithName(sprint.getName());
+      log.debug("new sprint has name: " + sprint.getName() + " and we found oldSprint " + oldSprint);
+      boolean saveToDao;
+      if (oldSprint != null) {
+         oldSprint.setStartDate(sprint.getStartDate());
+         oldSprint.setEndDate(sprint.getEndDate());
+         oldSprint.setLength(sprint.getLength());
+         saveToDao = true;
+      } else {
+         saveToDao = sprintCache.cache(sprint, true);
+      }
+      
+      if (saveToDao) {
+         dao.save(sprintCache, helper.getSprintFile());
+      } else {
+         AlertDialog.alertMessage(helper.getParentFrame(), "Did not add Sprint. Are you sure this sprint (name: "+sprint.getName()+") has not been used already?");
+      }
+
       sprintTableModel.fireTableDataChanged();
    }
 }
