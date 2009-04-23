@@ -1,16 +1,18 @@
 package com.jonas.agile.devleadtool.gui.action;
 
 import java.awt.Frame;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Vector;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.AbstractBorder;
@@ -18,6 +20,7 @@ import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXLabel;
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.ProgressDialog;
 import com.jonas.agile.devleadtool.gui.component.frame.main.MainFrame;
 import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
@@ -25,6 +28,7 @@ import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.agile.devleadtool.sprint.SprintCreationSource;
 import com.jonas.agile.devleadtool.sprint.SprintCreationTarget;
+import com.jonas.agile.devleadtool.sprint.SprintLengthTarget;
 import com.jonas.common.swing.SwingUtil;
 
 public class SprintManagerGuiAction extends BasicAbstractGUIAction {
@@ -44,6 +48,74 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       frame.setContentPane(contentPanel);
    }
 
+   @Override
+   public void doActionPerformed(ActionEvent e) {
+      source.clear();
+      frame.pack();
+      SwingUtil.centreWindowWithinWindow(frame, getParentFrame());
+      frame.setLocationRelativeTo(null);
+      frame.setVisible(true);
+   }
+
+   private JComponent add_Component(JPanel panel, String labelText, GridBagConstraints gbc, JComponent fieldield) {
+      gbc.gridx = 0;
+      panel.add(new JXLabel(labelText), gbc);
+      gbc.gridx++;
+      int prefill = gbc.fill;
+      gbc.fill = gbc.VERTICAL;
+      panel.add(fieldield, gbc);
+      gbc.fill = prefill;
+      gbc.gridy++;
+      return fieldield;
+   }
+   
+   private JXButton addButton(JPanel panel, String labelText, GridBagConstraints gbc, Action action) {
+      return (JXButton) add_Component(panel, labelText, gbc, new JXButton(action));
+   }
+
+   private JComboBox addCheckBoxField(JPanel panel, String labelText, Vector<Sprint> contents, GridBagConstraints gbc) {
+      return (JComboBox) add_Component(panel, labelText, gbc, new JComboBox(contents));
+   }
+
+
+   private JXDatePicker addDateField(JPanel panel, String labelText, GridBagConstraints gbc) {
+      return (JXDatePicker) add_Component(panel, labelText, gbc, new JXDatePicker());
+   }
+
+   private JTextField addTextField(JPanel panel, String labelText, GridBagConstraints gbc) {
+      return (JTextField) add_Component(panel, labelText, gbc, new JTextField(13));
+   }
+
+   private JPanel getAddPanel(AbstractBorder titledBorder) {
+      JPanel panel = new JPanel(new GridBagLayout());
+      GridBagConstraints gbc = new GridBagConstraints();
+      SwingUtil.defaultGridBagConstraints(gbc);
+
+      JTextField nameTextField = addTextField(panel, "Name:", gbc);
+      JXDatePicker startDatePicker = addDateField(panel, "Start:", gbc);
+      JXDatePicker endDatePicker = addDateField(panel, "End:", gbc);
+      CalculateSprintLengthAction calculateLengthAction = new CalculateSprintLengthAction(frame);
+      addButton(panel, "", gbc, calculateLengthAction);
+      JTextField lengthTextField = addTextField(panel, "Length:", gbc);
+
+      SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao);
+      source = new SprintCreationSourceImpl(nameTextField, startDatePicker, endDatePicker, lengthTextField);
+      AddSprintAction addSprintAction = new AddSprintAction(getParentFrame(), source, target);
+      calculateLengthAction.setLengthSource(source);
+      calculateLengthAction.setLengthTarget(new SprintLengthTargetImpl(lengthTextField));
+
+      SprintCacheListener listener = new SprintCacheListenerImpl(frame, sprintsCombo);
+      addSprintAction.addListener(listener);
+
+      gbc.gridx = 0;
+      gbc.gridwidth = 2;
+      gbc.anchor = GridBagConstraints.CENTER;
+      panel.add(new JXButton(addSprintAction), gbc);
+
+      panel.setBorder(titledBorder);
+      return panel;
+   }
+
    private JPanel getContentPane() {
       JPanel viewSprint = getSprintsPanel(BorderFactory.createTitledBorder("View Sprints"));
       JPanel addSprint = getAddPanel(BorderFactory.createTitledBorder("Add Sprint"));
@@ -58,78 +130,12 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       return contentPanel;
    }
 
-   @Override
-   public void doActionPerformed(ActionEvent e) {
-      source.clear();
-      frame.pack();
-      SwingUtil.centreWindowWithinWindow(frame, getParentFrame());
-      frame.setLocationRelativeTo(null);
-      frame.setVisible(true);
-   }
-
-   private JXDatePicker addDateField(JPanel panel, String labelText, GridBagConstraints gbc) {
-      gbc.gridx = 0;
-      panel.add(new JXLabel(labelText), gbc);
-      gbc.gridx++;
-      JXDatePicker startDatePicker = new JXDatePicker();
-      panel.add(startDatePicker, gbc);
-      gbc.gridy++;
-      return startDatePicker;
-   }
-
-   private JComboBox addCheckBoxField(JPanel panel, String labelText, GridBagConstraints gbc) {
-      gbc.gridx = 0;
-      panel.add(new JXLabel(labelText), gbc);
-      gbc.gridx++;
-      JComboBox nameTextField = new JComboBox(SprintCache.getInstance().getSprints());
-      panel.add(nameTextField, gbc);
-      gbc.gridy++;
-      return nameTextField;
-
-   }
-
-   private JTextField addTextField(JPanel panel, String labelText, GridBagConstraints gbc) {
-      gbc.gridx = 0;
-      panel.add(new JXLabel(labelText), gbc);
-      gbc.gridx++;
-      JTextField nameTextField = new JTextField(20);
-      panel.add(nameTextField, gbc);
-      gbc.gridy++;
-      return nameTextField;
-   }
-
-   private JPanel getAddPanel(AbstractBorder titledBorder) {
-      JPanel panel = new JPanel(new GridBagLayout());
-      GridBagConstraints gbc = new GridBagConstraints();
-      SwingUtil.defaultGridBagConstraints(gbc);
-
-      JTextField nameTextField = addTextField(panel, "Name:", gbc);
-      JXDatePicker startDatePicker = addDateField(panel, "Start:", gbc);
-      JXDatePicker endDatePicker = addDateField(panel, "End:", gbc);
-      JTextField lengthTextField = addTextField(panel, "Length:", gbc);
-
-      source = new SprintCreationSourceImpl(nameTextField, startDatePicker, endDatePicker, lengthTextField);
-      SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao);
-      AddSprintAction addSprintAction = new AddSprintAction(getParentFrame(), source, target);
-
-      SprintCacheListener listener = new SprintCacheListenerImpl(frame, sprintsCombo);
-      addSprintAction.addListener(listener);
-
-      gbc.gridx = 0;
-      gbc.gridwidth = 2;
-      gbc.anchor = GridBagConstraints.CENTER;
-      panel.add(new JXButton(addSprintAction), gbc);
-
-      panel.setBorder(titledBorder);
-      return panel;
-   }
-
    private JPanel getSprintsPanel(AbstractBorder titledBorder) {
       JPanel panel = new JPanel(new GridBagLayout());
       GridBagConstraints gbc = new GridBagConstraints();
       SwingUtil.defaultGridBagConstraints(gbc);
 
-      sprintsCombo = addCheckBoxField(panel, "Sprint Count:", gbc);
+      sprintsCombo = addCheckBoxField(panel, "Sprint Count:", SprintCache.getInstance().getSprints(), gbc);
 
       // gbc.gridx = 0;
       // gbc.gridwidth = 2;
@@ -158,6 +164,47 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
 // // sprintsCombo.setText(""+SprintCache.getInstance().getSprints().size());
 // }
 // }
+
+class SprintCacheListenerImpl implements SprintCacheListener {
+
+   private JComboBox combo;
+   private ProgressDialog dialog;
+   private Frame parent;
+
+   public SprintCacheListenerImpl(Frame parent, JComboBox combo) {
+      super();
+      this.parent = parent;
+      this.combo = combo;
+   }
+
+   @Override
+   public void notify(SprintCacheNotification notification) {
+      switch (notification) {
+      case REQUIREDFIELDMISSING:
+         dialog.setCompleteWithDelay(100);
+         AlertDialog.alertMessage(parent, "Required fields not filled out!");
+         break;
+      case ADDINGTOCACHE:
+         System.out.println("ADDINGTOCACHE creating dialog");
+         dialog = new ProgressDialog(parent, "running...", "note", 0, true);
+         System.out.println("done creating dialog");
+         break;
+      case ADDEDTOCACHE:
+         System.out.println("ADDEDTOCACHE is null?");
+         if (dialog != null) {
+            System.out.println("not null");
+            dialog.setCompleteWithDelay(100);
+         }
+         ComboBoxModel model = combo.getModel();
+         Object anObject = new Object();
+         DefaultComboBoxModel dModel = (DefaultComboBoxModel) model;
+         dModel.addElement(anObject);
+         dModel.removeElement(anObject);
+         break;
+   }
+}
+}
+
 
 class SprintCreationSourceImpl implements SprintCreationSource {
 
@@ -224,39 +271,17 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
    }
 }
 
+class SprintLengthTargetImpl implements SprintLengthTarget{
 
-class SprintCacheListenerImpl implements SprintCacheListener {
+   private final JTextField lengthTextField;
 
-   private Frame parent;
-   private ProgressDialog dialog;
-   private JComboBox combo;
-
-   public SprintCacheListenerImpl(Frame parent, JComboBox combo) {
-      super();
-      this.parent = parent;
-      this.combo = combo;
+   public SprintLengthTargetImpl(JTextField lengthTextField) {
+      this.lengthTextField = lengthTextField;
    }
 
    @Override
-   public void notify(SprintCacheNotification notification) {
-      switch (notification) {
-      case ADDINGTOCACHE:
-         System.out.println("ADDINGTOCACHE creating dialog");
-         dialog = new ProgressDialog(parent, "running...", "note", 0, true);
-         System.out.println("done creating dialog");
-         break;
-      case ADDEDTOCACHE:
-         System.out.println("ADDEDTOCACHE is null?");
-         if (dialog != null) {
-            System.out.println("not null");
-            dialog.setCompleteWithDelay(100);
-         }
-         ComboBoxModel model = combo.getModel();
-         Object anObject = new Object();
-         DefaultComboBoxModel dModel = (DefaultComboBoxModel) model;
-         dModel.addElement(anObject);
-         dModel.removeElement(anObject);
-         break;
+   public void setWorkingDays(Integer days) {
+      lengthTextField.setText(days.toString());
    }
-}
+   
 }
