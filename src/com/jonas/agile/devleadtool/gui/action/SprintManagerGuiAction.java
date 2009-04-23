@@ -20,7 +20,6 @@ import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXTable;
-import org.jfree.util.Log;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.ProgressDialog;
@@ -38,10 +37,7 @@ import com.jonas.common.swing.SwingUtil;
 
 public class SprintManagerGuiAction extends BasicAbstractGUIAction {
 
-   @Override
-   protected void finalize() throws Throwable {
-      throw new RuntimeException("Method not implemented yet!");
-   }
+   private static final Logger log = MyLogger.getLogger(SprintManagerGuiAction.class);
 
    private MainFrame frame;
    private final PlannerHelper helper;
@@ -50,7 +46,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
    private JXSprintTableModel sprintsTableModel;
    private ListSelectionListenerImpl tableSelectionListener;
    private JXTable sprintsTable;
-   
+
    public SprintManagerGuiAction(Frame parentFrame, PlannerHelper helper, ExcelSprintDao sprintDao) {
       super("Add Sprint", "Add a Sprint to be Cached!", parentFrame);
       this.helper = helper;
@@ -113,8 +109,8 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
 
       tableSelectionListener.setSourceTable(sprintsTable);
       tableSelectionListener.setTargets(nameTextField, startDatePicker, endDatePicker, lengthTextField);
-      
-      SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao, sprintsTableModel);
+
+      SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao, sprintsTableModel, frame);
       source = new SprintCreationSourceImpl(nameTextField, startDatePicker, endDatePicker, lengthTextField);
       AddSprintAction addSprintAction = new AddSprintAction(getParentFrame(), source, target);
       calculateLengthAction.setLengthSource(source);
@@ -163,8 +159,8 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
    public void doActionPerformed(ActionEvent e) {
       source.clear();
       frame.pack();
+      log.debug("gui's parent frame: " + getParentFrame());
       SwingUtil.centreWindowWithinWindow(frame, getParentFrame());
-      frame.setLocationRelativeTo(null);
       frame.setVisible(true);
    }
 }
@@ -256,12 +252,14 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
    private final ExcelSprintDao dao;
    private final PlannerHelper helper;
    private final JXSprintTableModel sprintTableModel;
+   private final Frame parentFrame;
    private static final Logger log = MyLogger.getLogger(SprintCreationTargetImpl.class);
 
-   public SprintCreationTargetImpl(PlannerHelper helper, ExcelSprintDao dao, JXSprintTableModel sprintTableModel) {
+   public SprintCreationTargetImpl(PlannerHelper helper, ExcelSprintDao dao, JXSprintTableModel sprintTableModel, Frame parentFrame) {
       this.helper = helper;
       this.dao = dao;
       this.sprintTableModel = sprintTableModel;
+      this.parentFrame = parentFrame;
    }
 
    @Override
@@ -279,11 +277,12 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
       } else {
          saveToDao = sprintCache.cache(sprint, true);
       }
-      
+
       if (saveToDao) {
          dao.save(sprintCache, helper.getSprintFile());
       } else {
-         AlertDialog.alertMessage(helper.getParentFrame(), "Did not add Sprint. Are you sure this sprint (name: "+sprint.getName()+") has not been used already?");
+         AlertDialog.alertMessage(parentFrame, "Did not add Sprint. Are you sure this sprint (name: " + sprint.getName()
+               + ") has not been used already?");
       }
 
       sprintTableModel.fireTableDataChanged();
