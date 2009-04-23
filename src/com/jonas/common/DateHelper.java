@@ -6,7 +6,7 @@ import java.util.Date;
 
 
 public class DateHelper {
-   private SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM-yyyy");
+   private SimpleDateFormat dateformat = new SimpleDateFormat("EEE dd-MM-yyyy");
 
    public static int getRealDayOfWeek(Calendar startCalendar) {
       int i = startCalendar.get(Calendar.DAY_OF_WEEK) - 1;

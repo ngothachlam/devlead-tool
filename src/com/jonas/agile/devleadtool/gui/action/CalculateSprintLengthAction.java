@@ -6,14 +6,14 @@ import java.util.Calendar;
 import java.util.Date;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.sprint.SprintLengthSource;
-import com.jonas.agile.devleadtool.sprint.SprintLengthTarget;
+import com.jonas.agile.devleadtool.sprint.SprintLengthCalculationTarget;
 import com.jonas.common.DateHelper;
 import com.jonas.common.logging.MyLogger;
 
 public class CalculateSprintLengthAction extends BasicAbstractGUIAction {
 
    private SprintLengthSource lengthSource;
-   private SprintLengthTarget lengthTarget;
+   private SprintLengthCalculationTarget lengthTarget;
    private static final Logger log = MyLogger.getLogger(CalculateSprintLengthAction.class);
 
    public CalculateSprintLengthAction(Frame parentFrame) {
@@ -29,7 +29,7 @@ public class CalculateSprintLengthAction extends BasicAbstractGUIAction {
       this.lengthSource = lengthSource;
    }
 
-   public void setLengthTarget(SprintLengthTarget lengthTarget) {
+   public void setLengthTarget(SprintLengthCalculationTarget lengthTarget) {
       this.lengthTarget = lengthTarget;
    }
 

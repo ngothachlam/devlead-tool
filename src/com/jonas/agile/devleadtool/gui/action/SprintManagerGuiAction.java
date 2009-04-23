@@ -1,24 +1,24 @@
 package com.jonas.agile.devleadtool.gui.action;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Vector;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.AbstractBorder;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXTable;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.ProgressDialog;
@@ -28,7 +28,8 @@ import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.agile.devleadtool.sprint.SprintCreationSource;
 import com.jonas.agile.devleadtool.sprint.SprintCreationTarget;
-import com.jonas.agile.devleadtool.sprint.SprintLengthTarget;
+import com.jonas.agile.devleadtool.sprint.SprintLengthCalculationTarget;
+import com.jonas.agile.devleadtool.sprint.table.JXSprintTableModel;
 import com.jonas.common.swing.SwingUtil;
 
 public class SprintManagerGuiAction extends BasicAbstractGUIAction {
@@ -37,7 +38,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
    private final PlannerHelper helper;
    private SprintCreationSource source;
    private final ExcelSprintDao sprintDao;
-   private JComboBox sprintsCombo;
+   private JXSprintTableModel sprintTableModel;
 
    public SprintManagerGuiAction(Frame parentFrame, PlannerHelper helper, ExcelSprintDao sprintDao) {
       super("Add Sprint", "Add a Sprint to be Cached!", parentFrame);
@@ -47,45 +48,40 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       JPanel contentPanel = getContentPane();
       frame.setContentPane(contentPanel);
    }
+   
+   private JPanel getContentPane() {
+      JPanel viewSprint = getSprintsPanel(BorderFactory.createTitledBorder("View Sprints"));
+      JPanel addSprint = getAddPanel(BorderFactory.createTitledBorder("Add Sprint"));
 
-   @Override
-   public void doActionPerformed(ActionEvent e) {
-      source.clear();
-      frame.pack();
-      SwingUtil.centreWindowWithinWindow(frame, getParentFrame());
-      frame.setLocationRelativeTo(null);
-      frame.setVisible(true);
-   }
+      JPanel contentPanel = new JPanel(new GridBagLayout());
+      GridBagConstraints gbc = new GridBagConstraints();
+      SwingUtil.defaultGridBagConstraints(gbc);
 
-   private JComponent add_Component(JPanel panel, String labelText, GridBagConstraints gbc, JComponent fieldield) {
-      gbc.gridx = 0;
-      panel.add(new JXLabel(labelText), gbc);
-      gbc.gridx++;
-      int prefill = gbc.fill;
-      gbc.fill = gbc.VERTICAL;
-      panel.add(fieldield, gbc);
-      gbc.fill = prefill;
+      gbc.fill = gbc.BOTH;
+      gbc.weightx = 1.0;
+      gbc.weighty = 1.0;
+      viewSprint.setPreferredSize(new Dimension(300,100));
+      contentPanel.add(viewSprint, gbc);
+      gbc.fill = gbc.NONE;
+      gbc.weightx = 0.0;
+      gbc.weighty = 0.0;
       gbc.gridy++;
-      return fieldield;
+      contentPanel.add(addSprint, gbc);
+      return contentPanel;
    }
    
-   private JXButton addButton(JPanel panel, String labelText, GridBagConstraints gbc, Action action) {
-      return (JXButton) add_Component(panel, labelText, gbc, new JXButton(action));
+   private JPanel getSprintsPanel(AbstractBorder titledBorder) {
+      JPanel panel = new JPanel(new BorderLayout());
+
+      sprintTableModel = new JXSprintTableModel();
+      JXTable table = new JXTable(sprintTableModel);
+      table.setColumnControlVisible(true);
+      JScrollPane scrollpane = new JScrollPane(table);
+      panel.add(scrollpane, BorderLayout.CENTER);
+
+      return panel;
    }
-
-   private JComboBox addCheckBoxField(JPanel panel, String labelText, Vector<Sprint> contents, GridBagConstraints gbc) {
-      return (JComboBox) add_Component(panel, labelText, gbc, new JComboBox(contents));
-   }
-
-
-   private JXDatePicker addDateField(JPanel panel, String labelText, GridBagConstraints gbc) {
-      return (JXDatePicker) add_Component(panel, labelText, gbc, new JXDatePicker());
-   }
-
-   private JTextField addTextField(JPanel panel, String labelText, GridBagConstraints gbc) {
-      return (JTextField) add_Component(panel, labelText, gbc, new JTextField(13));
-   }
-
+   
    private JPanel getAddPanel(AbstractBorder titledBorder) {
       JPanel panel = new JPanel(new GridBagLayout());
       GridBagConstraints gbc = new GridBagConstraints();
@@ -98,13 +94,13 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       addButton(panel, "", gbc, calculateLengthAction);
       JTextField lengthTextField = addTextField(panel, "Length:", gbc);
 
-      SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao);
+      SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao, sprintTableModel);
       source = new SprintCreationSourceImpl(nameTextField, startDatePicker, endDatePicker, lengthTextField);
       AddSprintAction addSprintAction = new AddSprintAction(getParentFrame(), source, target);
       calculateLengthAction.setLengthSource(source);
-      calculateLengthAction.setLengthTarget(new SprintLengthTargetImpl(lengthTextField));
+      calculateLengthAction.setLengthTarget(new SprintLengthCalculationTargetImpl(lengthTextField));
 
-      SprintCacheListener listener = new SprintCacheListenerImpl(frame, sprintsCombo);
+      SprintCacheListener listener = new SprintCacheListenerImpl(frame);
       addSprintAction.addListener(listener);
 
       gbc.gridx = 0;
@@ -115,66 +111,53 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       panel.setBorder(titledBorder);
       return panel;
    }
-
-   private JPanel getContentPane() {
-      JPanel viewSprint = getSprintsPanel(BorderFactory.createTitledBorder("View Sprints"));
-      JPanel addSprint = getAddPanel(BorderFactory.createTitledBorder("Add Sprint"));
-
-      JPanel contentPanel = new JPanel(new GridBagLayout());
-      GridBagConstraints gbc = new GridBagConstraints();
-      SwingUtil.defaultGridBagConstraints(gbc);
-
-      contentPanel.add(viewSprint, gbc);
+   
+   private JComponent add_Component(JPanel panel, String labelText, GridBagConstraints gbc, JComponent fieldield) {
+      gbc.gridx = 0;
+      panel.add(new JXLabel(labelText), gbc);
+      gbc.gridx++;
+      double preweight = gbc.weightx;
+      int prefill = gbc.fill;
+      gbc.fill = gbc.VERTICAL;
+      gbc.weightx = 1;
+      panel.add(fieldield, gbc);
+      gbc.fill = prefill;
+      gbc.weightx = preweight;
       gbc.gridy++;
-      contentPanel.add(addSprint, gbc);
-      return contentPanel;
+      return fieldield;
    }
 
-   private JPanel getSprintsPanel(AbstractBorder titledBorder) {
-      JPanel panel = new JPanel(new GridBagLayout());
-      GridBagConstraints gbc = new GridBagConstraints();
-      SwingUtil.defaultGridBagConstraints(gbc);
+   private JXButton addButton(JPanel panel, String labelText, GridBagConstraints gbc, Action action) {
+      return (JXButton) add_Component(panel, labelText, gbc, new JXButton(action));
+   }
 
-      sprintsCombo = addCheckBoxField(panel, "Sprint Count:", SprintCache.getInstance().getSprints(), gbc);
+   private JXDatePicker addDateField(JPanel panel, String labelText, GridBagConstraints gbc) {
+      return (JXDatePicker) add_Component(panel, labelText, gbc, new JXDatePicker());
+   }
 
-      // gbc.gridx = 0;
-      // gbc.gridwidth = 2;
-      // gbc.anchor = GridBagConstraints.CENTER;
-      // Action refreshAction = new RefreshAction(getParentFrame(), sprintsCombo);
-      // panel.add(new JXButton(refreshAction), gbc);
-
-      panel.setBorder(titledBorder);
-      return panel;
+   private JTextField addTextField(JPanel panel, String labelText, GridBagConstraints gbc) {
+      return (JTextField) add_Component(panel, labelText, gbc, new JTextField(13));
+   }
+   
+   @Override
+   public void doActionPerformed(ActionEvent e) {
+      source.clear();
+      frame.pack();
+      SwingUtil.centreWindowWithinWindow(frame, getParentFrame());
+      frame.setLocationRelativeTo(null);
+      frame.setVisible(true);
    }
 }
 
 
-// class RefreshAction extends BasicAbstractGUIAction {
-// private JComboBox sprintsCombo;
-//
-// public RefreshAction(Frame parentFrame, JComboBox sprintsCombo) {
-// super("Refresh Sprint count", "", parentFrame);
-// this.sprintsCombo = sprintsCombo;
-// }
-//
-// @Override
-// public void doActionPerformed(ActionEvent e) {
-// // sprintsCombo.set
-//
-// // sprintsCombo.setText(""+SprintCache.getInstance().getSprints().size());
-// }
-// }
-
 class SprintCacheListenerImpl implements SprintCacheListener {
 
-   private JComboBox combo;
    private ProgressDialog dialog;
    private Frame parent;
 
-   public SprintCacheListenerImpl(Frame parent, JComboBox combo) {
+   public SprintCacheListenerImpl(Frame parent) {
       super();
       this.parent = parent;
-      this.combo = combo;
    }
 
    @Override
@@ -195,14 +178,9 @@ class SprintCacheListenerImpl implements SprintCacheListener {
             System.out.println("not null");
             dialog.setCompleteWithDelay(100);
          }
-         ComboBoxModel model = combo.getModel();
-         Object anObject = new Object();
-         DefaultComboBoxModel dModel = (DefaultComboBoxModel) model;
-         dModel.addElement(anObject);
-         dModel.removeElement(anObject);
          break;
+      }
    }
-}
 }
 
 
@@ -257,10 +235,12 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
 
    private final ExcelSprintDao dao;
    private final PlannerHelper helper;
+   private final JXSprintTableModel sprintTableModel;
 
-   public SprintCreationTargetImpl(PlannerHelper helper, ExcelSprintDao dao) {
+   public SprintCreationTargetImpl(PlannerHelper helper, ExcelSprintDao dao, JXSprintTableModel sprintTableModel) {
       this.helper = helper;
       this.dao = dao;
+      this.sprintTableModel = sprintTableModel;
    }
 
    @Override
@@ -268,14 +248,16 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
       SprintCache sprintCache = SprintCache.getInstance();
       sprintCache.cache(sprint);
       dao.save(sprintCache, helper.getSprintFile());
+      sprintTableModel.fireTableDataChanged();
    }
 }
 
-class SprintLengthTargetImpl implements SprintLengthTarget{
+
+class SprintLengthCalculationTargetImpl implements SprintLengthCalculationTarget {
 
    private final JTextField lengthTextField;
 
-   public SprintLengthTargetImpl(JTextField lengthTextField) {
+   public SprintLengthCalculationTargetImpl(JTextField lengthTextField) {
       this.lengthTextField = lengthTextField;
    }
 
@@ -283,5 +265,5 @@ class SprintLengthTargetImpl implements SprintLengthTarget{
    public void setWorkingDays(Integer days) {
       lengthTextField.setText(days.toString());
    }
-   
+
 }
