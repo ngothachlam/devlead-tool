@@ -113,4 +113,9 @@ public class SprintCache {
       return null;
    }
 
+   public void removeSprint(Sprint sprint) {
+      sprints.remove(sprint);
+      sprintNames.remove(sprint.getName());
+   }
+
 }

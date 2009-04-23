@@ -33,6 +33,7 @@ import com.jonas.agile.devleadtool.sprint.SprintCreationTarget;
 import com.jonas.agile.devleadtool.sprint.SprintLengthCalculationTarget;
 import com.jonas.agile.devleadtool.sprint.table.JXSprintTableModel;
 import com.jonas.agile.devleadtool.sprint.table.ListSelectionListenerImpl;
+import com.jonas.agile.devleadtool.sprint.table.SprintsTablePopupMenu;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;
 
@@ -85,6 +86,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       sprintsTable = new JXTable(sprintsTableModel);
       sprintsTable.setColumnControlVisible(true);
       sprintsTable.packAll();
+      new SprintsTablePopupMenu(sprintsTable, frame);
 
       tableSelectionListener = new ListSelectionListenerImpl();
       sprintsTable.getSelectionModel().addListSelectionListener(tableSelectionListener);
