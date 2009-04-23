@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Date;
@@ -83,6 +84,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       sprintsTableModel = new JXSprintTableModel();
       sprintsTable = new JXTable(sprintsTableModel);
       sprintsTable.setColumnControlVisible(true);
+      sprintsTable.packAll();
 
       tableSelectionListener = new ListSelectionListenerImpl();
       sprintsTable.getSelectionModel().addListSelectionListener(tableSelectionListener);
@@ -91,6 +93,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
 
       JScrollPane scrollpane = new JScrollPane(sprintsTable);
       panel.add(scrollpane, BorderLayout.CENTER);
+      panel.setBorder(BorderFactory.createTitledBorder("Sprints"));
 
       return panel;
    }
@@ -104,8 +107,10 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       JXDatePicker startDatePicker = addDateField(panel, "Start:", gbc);
       JXDatePicker endDatePicker = addDateField(panel, "End:", gbc);
       CalculateSprintLengthAction calculateLengthAction = new CalculateSprintLengthAction(frame);
-      addButton(panel, "", gbc, calculateLengthAction);
-      JTextField lengthTextField = addTextField(panel, "Length:", gbc);
+
+      // addButton(panel, "", gbc, calculateLengthAction);
+      // JTextField lengthTextField = addTextField(panel, "Length:", gbc);
+      JTextField lengthTextField = addPanel(panel, "Length:", gbc, calculateLengthAction);
 
       tableSelectionListener.setSourceTable(sprintsTable);
       tableSelectionListener.setTargets(nameTextField, startDatePicker, endDatePicker, lengthTextField);
@@ -149,6 +154,19 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
 
    private JXDatePicker addDateField(JPanel panel, String labelText, GridBagConstraints gbc) {
       return (JXDatePicker) add_Component(panel, labelText, gbc, new JXDatePicker());
+   }
+
+   private JTextField addPanel(JPanel panel, String labelText, GridBagConstraints gbc, Action components) {
+      JPanel subPanel = new JPanel(new BorderLayout());
+      JTextField fieldield = new JTextField(6);
+      subPanel.add(fieldield, BorderLayout.CENTER);
+      JXButton comp = new JXButton(components);
+      Insets margin = comp.getMargin();
+      margin.set(margin.top, margin.left - 10, margin.bottom, margin.right - 10);
+      comp.setMargin(margin);
+      subPanel.add(comp, BorderLayout.EAST);
+      add_Component(panel, labelText, gbc, subPanel);
+      return fieldield;
    }
 
    private JTextField addTextField(JPanel panel, String labelText, GridBagConstraints gbc) {
