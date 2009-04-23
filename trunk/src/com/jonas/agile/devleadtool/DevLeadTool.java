@@ -33,7 +33,6 @@ import com.jonas.agile.devleadtool.properties.SprinterPropertieSetter;
 import com.jonas.agile.devleadtool.properties.SprinterProperties;
 import com.jonas.agile.devleadtool.properties.SprinterPropertiesManager;
 import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
-import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.MyPanel;
 import com.jonas.common.swing.SwingUtil;
@@ -106,7 +105,7 @@ public class DevLeadTool {
    }
 
    private JMenu createSprintMenu() {
-      SprintManagerGuiAction addSprintUsingGUIAction = new SprintManagerGuiAction(helper.getParentFrame(), helper, sprintDao);
+      SprintManagerGuiAction addSprintUsingGUIAction = new SprintManagerGuiAction(frame, helper, sprintDao);
       JMenu menu = new JMenu("Sprint");
       menu.add(new JMenuItem(addSprintUsingGUIAction));
       return menu;
