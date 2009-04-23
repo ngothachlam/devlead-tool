@@ -4,19 +4,28 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 public class SprintCache {
 
    private final static Vector<Sprint> sprints = new Vector<Sprint>();
    private static final SprintCache instance = new SprintCache();
- 
-   public boolean cache(Sprint sprint) {
-      if (!sprints.contains(sprint)) {
+   private final static Set<String> sprintNames = new HashSet<String>();
+
+   public boolean cache(Sprint sprint, boolean allowDupes) {
+      if (!allowDupes && !sprintNames.contains(sprint.getName())) {
          sprints.add(sprint);
+         sprintNames.add(sprint.getName());
+         return true;
+      } else if (allowDupes) {
+         sprints.add(sprint);
+         sprintNames.add(sprint.getName());
          return true;
       }
       return false;
+
    }
 
    public static SprintCache getInstance() {
@@ -87,6 +96,19 @@ public class SprintCache {
          return sprint.getEndDate();
       case 3:
          return sprint.getLength();
+      }
+      return null;
+   }
+
+   public Sprint getSprintFromRow(int row) {
+      return sprints.get(row);
+   }
+
+   public Sprint getSprintWithName(String name) {
+      for (Sprint sprint : sprints) {
+         if (sprint.getName().equals(name.trim())) {
+            return sprint;
+         }
       }
       return null;
    }

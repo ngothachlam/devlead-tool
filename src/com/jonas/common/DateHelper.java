@@ -6,7 +6,8 @@ import java.util.Date;
 
 
 public class DateHelper {
-   private SimpleDateFormat dateformat = new SimpleDateFormat("EEE dd-MM-yyyy");
+   private final static SimpleDateFormat simpleDateformat = new SimpleDateFormat("dd-MM-yyyy");
+   private final static SimpleDateFormat advancDateformat = new SimpleDateFormat("EEE dd-MM-yyyy");
 
    public static int getRealDayOfWeek(Calendar startCalendar) {
       int i = startCalendar.get(Calendar.DAY_OF_WEEK) - 1;
@@ -21,13 +22,17 @@ public class DateHelper {
       return true;
    }
 
-   public String getTodaysDateAsString() {
+   public static String getTodaysDateAsString() {
       Date dateNow = new Date ();
       return getDateAsString(dateNow);
    }
 
-   String getDateAsString(Date dateNow) {
-      return dateformat.format( dateNow );
+   public static String getDateAsString(Date dateNow) {
+      return advancDateformat.format( dateNow );
+   }
+
+   public static String getDateAsSimpleString(Date dateNow) {
+      return simpleDateformat.format( dateNow );
    }
 
 }

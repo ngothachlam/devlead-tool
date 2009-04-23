@@ -60,7 +60,7 @@ public class ExcelSprintDao {
                   sprintCache.setValueAt(cellContents, newSprint, colCount);
                   colCount++;
                }
-               sprintCache.cache(newSprint);
+               sprintCache.cache(newSprint, true);
             }
             rowCount++;
          }

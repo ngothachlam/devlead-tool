@@ -6,6 +6,7 @@ import org.apache.commons.httpclient.util.DateUtil;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
+import com.jonas.common.DateHelper;
 import com.jonas.common.logging.MyLogger;
 
 public class JXSprintTableModel extends DefaultTableModel {
@@ -16,7 +17,7 @@ public class JXSprintTableModel extends DefaultTableModel {
    }
 
    private static final Logger log = MyLogger.getLogger(JXSprintTableModel.class);
-   
+
    @Override
    public void setValueAt(Object value, int row, int column) {
       SprintCache instance = SprintCache.getInstance();
@@ -27,12 +28,14 @@ public class JXSprintTableModel extends DefaultTableModel {
    @Override
    public Object getValueAt(int row, int column) {
       SprintCache instance = SprintCache.getInstance();
-      Sprint sprint = instance.getSprints().get(row);
+      log.debug("getting row: " + row + " and col " + column + " size: " + instance.getSprints().size());
+
+      Sprint sprint = instance.getSprintFromRow(row);
       Object valueAt = instance.getValueAt(sprint, (short) column);
-      if(valueAt instanceof Date){
-         valueAt = DateUtil.formatDate((Date) valueAt, "dd-MM-yyyy");
+      if (valueAt instanceof Date) {
+         valueAt = DateHelper.getDateAsSimpleString((Date) valueAt);
       }
-      
+
       log.debug("valueat: row: " + row + " col: " + column + " is " + valueAt);
       return valueAt;
    }
@@ -45,7 +48,7 @@ public class JXSprintTableModel extends DefaultTableModel {
    @Override
    public int getColumnCount() {
       int columnCount = SprintCache.getInstance().getColumnCount();
-      log.debug(columnCount +  "");
+      log.debug(columnCount + "");
       return columnCount;
    }
 
