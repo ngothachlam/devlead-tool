@@ -124,7 +124,7 @@ public class SwingUtil {
    }
 
    public static void defaultGridBagConstraints(GridBagConstraints gbc) {
-      gbc.insets = new Insets(5, 5, 5, 5);
+      gbc.insets = new Insets(2, 5, 2, 5);
       gbc.gridheight = 1;
       gbc.gridwidth = 1;
       gbc.gridy = 0;

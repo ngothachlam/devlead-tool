@@ -17,7 +17,7 @@ public class CalculateSprintLengthAction extends BasicAbstractGUIAction {
    private static final Logger log = MyLogger.getLogger(CalculateSprintLengthAction.class);
 
    public CalculateSprintLengthAction(Frame parentFrame) {
-      super("Calculate Length", "Calculate Sprint Length based on start and end", parentFrame);
+      super("Calculate", "Calculate Sprint Length based on start and end", parentFrame);
    }
    @Override
    public void doActionPerformed(ActionEvent e) {
