@@ -1,6 +1,6 @@
 package com.jonas.agile.devleadtool.sprint;
 
-public interface SprintLengthTarget {
+public interface SprintLengthCalculationTarget {
 
    public void setWorkingDays(Integer days);
 
