@@ -5,17 +5,19 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
+import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.menu.MyPopupMenu;
 import com.jonas.agile.devleadtool.gui.component.menu.items.MyMenuItem;
+import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 
 public class SprintsTablePopupMenu extends MyPopupMenu {
 
-   public SprintsTablePopupMenu(Component source, Frame parent) {
+   public SprintsTablePopupMenu(Component source, Frame parent, ExcelSprintDao sprintDao, PlannerHelper helper) {
       super(source);
-      add(new DeleteSprintMenuItem((JXTable) source, parent, "Delete Sprint"));
+      add(new DeleteSprintMenuItem((JXTable) source, parent, "Delete Sprint", sprintDao, helper));
    }
 }
 
@@ -25,11 +27,15 @@ class DeleteSprintMenuItem extends MyMenuItem {
    private static final Logger log = MyLogger.getLogger(DeleteSprintMenuItem.class);
    private final JXTable source;
    private final JXSprintTableModel model;
+   private final ExcelSprintDao sprintDao;
+   private final PlannerHelper helper;
 
-   public DeleteSprintMenuItem(JXTable source, Frame parentFrame, String text) {
+   public DeleteSprintMenuItem(JXTable source, Frame parentFrame, String text, ExcelSprintDao sprintDao, PlannerHelper helper) {
       super(parentFrame, text);
       this.source = source;
+      this.helper = helper;
       model = (JXSprintTableModel) source.getModel();
+      this.sprintDao = sprintDao;
    }
 
    @Override
@@ -42,9 +48,8 @@ class DeleteSprintMenuItem extends MyMenuItem {
          log.debug("trying to delete row: " + viewRow + " (model row: " + row + ")");
          Sprint sprint = instance.getSprintFromRow(row);
          instance.removeSprint(sprint);
+         sprintDao.save(SprintCache.getInstance(), helper.getSprintFile());
          model.fireTableDataChanged();
-         
-         Thread.sleep(2000L);
       }
    }
 
