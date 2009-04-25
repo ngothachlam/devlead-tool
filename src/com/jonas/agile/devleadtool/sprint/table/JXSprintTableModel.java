@@ -2,7 +2,6 @@ package com.jonas.agile.devleadtool.sprint.table;
 
 import java.util.Date;
 import javax.swing.table.DefaultTableModel;
-import org.apache.commons.httpclient.util.DateUtil;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
@@ -33,7 +32,7 @@ public class JXSprintTableModel extends DefaultTableModel {
       Sprint sprint = instance.getSprintFromRow(row);
       Object valueAt = instance.getValueAt(sprint, (short) column);
       if (valueAt instanceof Date) {
-         valueAt = DateHelper.getDateAsSimpleString((Date) valueAt);
+         valueAt = DateHelper.getDateAsSimpleOrderableString((Date) valueAt);
       }
 
       log.debug("valueat: row: " + row + " col: " + column + " is " + valueAt);

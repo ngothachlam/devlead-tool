@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-
 public class DateHelper {
+   private final static SimpleDateFormat simpleDateformatOrderable = new SimpleDateFormat("yyyy-MM-dd");
    private final static SimpleDateFormat simpleDateformat = new SimpleDateFormat("dd-MM-yyyy");
    private final static SimpleDateFormat advancDateformat = new SimpleDateFormat("EEE dd-MM-yyyy");
 
@@ -16,23 +16,27 @@ public class DateHelper {
 
    public static boolean isWorkingDay(Calendar startCalendar) {
       int dayOfWeek = startCalendar.get(Calendar.DAY_OF_WEEK);
-      if(dayOfWeek == 1 || dayOfWeek == 7){
+      if (dayOfWeek == 1 || dayOfWeek == 7) {
          return false;
       }
       return true;
    }
 
    public static String getTodaysDateAsString() {
-      Date dateNow = new Date ();
+      Date dateNow = new Date();
       return getDateAsString(dateNow);
    }
 
    public static String getDateAsString(Date dateNow) {
-      return advancDateformat.format( dateNow );
+      return advancDateformat.format(dateNow);
    }
 
    public static String getDateAsSimpleString(Date dateNow) {
-      return simpleDateformat.format( dateNow );
+      return simpleDateformat.format(dateNow);
+   }
+
+   public static String getDateAsSimpleOrderableString(Date dateNow) {
+      return simpleDateformatOrderable.format(dateNow);
    }
 
 }
