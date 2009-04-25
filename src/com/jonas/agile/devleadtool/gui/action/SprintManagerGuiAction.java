@@ -86,7 +86,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       sprintsTable = new JXTable(sprintsTableModel);
       sprintsTable.setColumnControlVisible(true);
       sprintsTable.packAll();
-      new SprintsTablePopupMenu(sprintsTable, frame);
+      new SprintsTablePopupMenu(sprintsTable, frame, sprintDao, helper);
 
       tableSelectionListener = new ListSelectionListenerImpl();
       sprintsTable.getSelectionModel().addListSelectionListener(tableSelectionListener);
