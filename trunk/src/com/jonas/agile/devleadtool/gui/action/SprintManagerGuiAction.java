@@ -50,7 +50,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
    private JXTable sprintsTable;
 
    public SprintManagerGuiAction(Frame parentFrame, PlannerHelper helper, ExcelSprintDao sprintDao) {
-      super("Add Sprint", "Add a Sprint to be Cached!", parentFrame);
+      super("Manage Sprints", "Manage sprints!", parentFrame);
       this.helper = helper;
       this.sprintDao = sprintDao;
       frame = new MainFrame("Sprint Manager");
