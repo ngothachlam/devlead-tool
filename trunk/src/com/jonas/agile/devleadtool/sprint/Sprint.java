@@ -26,12 +26,7 @@ public class Sprint {
 
    @Override
    public String toString() {
-      StringBuffer sb = new StringBuffer();
-      sb.append(name);
-      sb.append(" (start:").append(format(startDate)).append(", ");
-      sb.append("end:").append(format(endDate)).append(", ");
-      sb.append("length:").append(length).append(")");
-      return sb.toString();
+      return name;
    }
 
    String format(Date date) {

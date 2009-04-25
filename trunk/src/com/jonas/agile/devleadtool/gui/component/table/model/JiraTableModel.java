@@ -17,7 +17,7 @@ public class JiraTableModel extends MyTableModel {
       nonAcceptedJiraFields.add("TBD");
    }
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.Sprint, Column.Project,
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.J_Sprint, Column.Project,
          Column.FixVersion, Column.Owner, Column.Environment, Column.Delivery, Column.Resolution, Column.BuildNo, Column.J_DevEst, Column.J_DevAct };
 
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
@@ -70,7 +70,7 @@ public class JiraTableModel extends MyTableModel {
             return SwingUtil.cellRed;
          }
          break;
-      case Sprint:
+      case J_Sprint:
          if (!isSprintOk(boardModel.getValueAt(Column.BoardStatus, jiraRowInBoardModel), value)) {
             setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
             return SwingUtil.cellRed;

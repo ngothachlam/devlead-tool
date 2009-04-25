@@ -15,7 +15,7 @@ import com.jonas.common.swing.SwingUtil;
 public class BoardTableModel extends MyTableModel {
 
    private static final Column[] columns = { Column.Jira, Column.Description, Column.Resolution, Column.Release, Column.Merge,
-         Column.BoardStatus, Column.Old, Column.DevEst, Column.DevRem, Column.DevAct, Column.QAEst, Column.prio, Column.Note };
+         Column.BoardStatus, Column.Old, Column.DevEst, Column.DevRem, Column.DevAct, Column.QAEst, Column.prio, Column.Note, Column.Sprint };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
 
