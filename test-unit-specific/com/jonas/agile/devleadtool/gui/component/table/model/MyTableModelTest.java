@@ -274,7 +274,7 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals("buildNo", model.getValueFromIssue(jiraIssue, Column.BuildNo));
       assertEquals(1, model.getValueFromIssue(jiraIssue, Column.prio));
       assertEquals("estimate", model.getValueFromIssue(jiraIssue, Column.J_DevEst));
-      assertEquals("sprint", model.getValueFromIssue(jiraIssue, Column.Sprint));
+      assertEquals("sprint", model.getValueFromIssue(jiraIssue, Column.J_Sprint));
       assertEquals(null, model.getValueFromIssue(jiraIssue, Column.J_DevAct));
       assertEquals("environment", model.getValueFromIssue(jiraIssue, Column.Environment));
       assertEquals("owner", model.getValueFromIssue(jiraIssue, Column.Owner));

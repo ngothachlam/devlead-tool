@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -32,6 +33,8 @@ import com.jonas.agile.devleadtool.gui.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.gui.listener.TableListener;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
+import com.jonas.agile.devleadtool.sprint.Sprint;
+import com.jonas.agile.devleadtool.sprint.table.SprintComboBoxModel;
 import com.jonas.common.ColorUtil;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;
@@ -499,7 +502,11 @@ public class MyTable extends JXTable {
 
    private void setDefaultEditors() {
       JComboBox combo = new JComboBox(BoardStatusValue.values());
+      ComboBoxModel model = new SprintComboBoxModel();
+      JComboBox sprintCombo = new JComboBox(model);
+      
       setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
+      setDefaultEditor(Sprint.class, new BoardStatusCellEditor(sprintCombo, this));
    }
 
    public void setModel(MyTableModel model) {

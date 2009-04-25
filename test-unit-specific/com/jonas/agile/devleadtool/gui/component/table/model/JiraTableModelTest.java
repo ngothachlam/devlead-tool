@@ -45,7 +45,7 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.Jira);
       header.add(Column.Description);
       header.add(Column.Type);
-      header.add(Column.Sprint);
+      header.add(Column.J_Sprint);
       header.add(Column.Project);
       header.add(Column.FixVersion);
       header.add(Column.Delivery);

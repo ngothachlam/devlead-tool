@@ -3,6 +3,9 @@
  */
 package com.jonas.agile.devleadtool.gui.component.table;
 
+import com.jonas.agile.devleadtool.sprint.Sprint;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
+
 public enum Column {
    // String Defaults
    Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false) {
@@ -32,6 +35,20 @@ public enum Column {
       }
    },
 
+   // Complex Objects:
+   Sprint(Sprint.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false) {
+      @Override
+      public String parseToPersistanceStore(Object value) {
+         Sprint sprint = (Sprint) value;
+         return sprint == null ? "" : sprint.getName();
+      }
+
+      @Override
+      public Sprint parseFromPersistanceStore(Object cellContents) {
+         return SprintCache.getInstance().getSprintWithName(cellContents.toString());
+      }
+   },
+
    // Jira Sync columns:
    Status(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
    Resolution(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
@@ -40,10 +57,10 @@ public enum Column {
    Type(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
    J_DevEst(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, true),
    J_DevAct(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, true),
-   Sprint(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
+   J_Sprint(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
    Project(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
    Delivery(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.No, false),
-   Owner (String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
+   Owner(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
    Environment(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false),
 
    // Integer
