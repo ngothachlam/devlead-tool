@@ -12,8 +12,8 @@ import com.jonas.common.logging.MyLogger;
 
 public class SavePlannerDialog extends JFileChooser {
 
-   public static final File[] RESETFILES = {new File("")};
-   
+   public static final File[] RESETFILES = { new File("") };
+
    private final PlannerDAO dao;
    private Logger log = MyLogger.getLogger(SavePlannerDialog.class);
    private final JFrame parent;
@@ -56,12 +56,21 @@ public class SavePlannerDialog extends JFileChooser {
          log.debug("saving!");
          if (file == null) {
             AlertDialog.alertMessage(parent, "Can't save file choose another one!");
+            return;
          }
+         file = addExtensionShouldNoneBeDefined(file, ".xls");
 
          internalFrame.setSaveFile(file);
          dao.setXlsFile(file);
          internalFrame.saveModels(dao);
       }
+   }
+
+   private File addExtensionShouldNoneBeDefined(File file, String extension) {
+      if (!file.getName().contains(".")) {
+         file = new File(file.getAbsolutePath() + extension);
+      }
+      return file;
    }
 
    private final class XLSFileFilter extends FileFilter {
