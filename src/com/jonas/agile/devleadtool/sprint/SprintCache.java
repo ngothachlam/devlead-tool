@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.sprint;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -116,6 +117,32 @@ public class SprintCache {
    public void removeSprint(Sprint sprint) {
       sprints.remove(sprint);
       sprintNames.remove(sprint.getName());
+   }
+
+   public SprintTime getSprintTime(Sprint sprint) {
+      Date startDate = sprint.getStartDate();
+      Date endDate = sprint.getEndDate();
+
+      Calendar calendar = Calendar.getInstance();
+      Date today = calendar.getTime();
+
+      boolean startDatePreToday = today.compareTo(startDate) >= 0;
+      boolean endDatePostToday = today.compareTo(endDate) <= 0;
+
+      System.out.println("Today: " + today);
+      System.out.println("Start: " + sprint.getStartDate());
+      System.out.println("End  : " + sprint.getEndDate());
+      System.out.println("startDatePreToday: " + startDatePreToday + " today.compareTo(startDate): " + today.compareTo(startDate));
+      System.out.println("endDatePostToday : " + endDatePostToday + " today.compareTo(endDate)  : " + today.compareTo(endDate));
+
+      if (startDatePreToday && endDatePostToday) {
+         return SprintTime.currentSprint;
+      } else if (startDatePreToday && !endDatePostToday) {
+         return SprintTime.beforeCurrentSprint;
+      } else if (!startDatePreToday && endDatePostToday) {
+         return SprintTime.afterCurrentSprint;
+      }
+      return null;
    }
 
 }

@@ -6,8 +6,12 @@ import java.util.Set;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
+import com.jonas.agile.devleadtool.data.JiraStatistic;
 import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.sprint.Sprint;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
+import com.jonas.agile.devleadtool.sprint.SprintTime;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.string.StringHelper;
 import com.jonas.common.swing.SwingUtil;
@@ -31,12 +35,12 @@ public class BoardTableModel extends MyTableModel {
    public Color getColor(Object value, int row, Column column) {
       log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
       String stringValue;
-      
-      if(value == null){
+
+      if (value == null) {
          setToolTipText(row, getColumnIndex(column), "Should be filled out based!");
          return SwingUtil.cellRed;
       }
-      
+
       switch (column) {
       case Resolution:
          stringValue = (String) value;
@@ -65,6 +69,35 @@ public class BoardTableModel extends MyTableModel {
             }
          }
          break;
+      case Sprint:
+         Sprint sprint = (Sprint) value;
+         JiraStatistic jiraStat = getJiraStat(row, column);
+         SprintTime sprintTime = SprintCache.getInstance().getSprintTime(sprint);
+         switch (jiraStat.devStatus()) {
+         case preDevelopment:
+            switch (sprintTime) {
+            case beforeCurrentSprint:
+               setToolTipText(row, getColumnIndex(column), "The jira is in pre-development and the sprint is in the past!");
+               return SwingUtil.cellRed;
+            }
+            return null;
+         case inDevelopment:
+         case inTesting:
+            switch (sprintTime) {
+            case afterCurrentSprint:
+            case beforeCurrentSprint:
+               setToolTipText(row, getColumnIndex(column), "The jira is in-progress and the sprint is not current!");
+               return SwingUtil.cellRed;
+            }
+            return null;
+         case closed:
+            switch (sprintTime) {
+            case afterCurrentSprint:
+               setToolTipText(row, getColumnIndex(column), "The jira is closed and the sprint is not current nor in the past!");
+               return SwingUtil.cellRed;
+            }
+            return null;
+         }
       case DevEst:
          stringValue = (String) value;
          if (isEmptyString(stringValue)) {
@@ -120,8 +153,8 @@ public class BoardTableModel extends MyTableModel {
       return null;
    }
 
-   private boolean isString(Object value) {
-      return value instanceof String;
+   private JiraStatistic getJiraStat(int row, Column column) {
+      return new JiraStatistic((BoardStatusValue) this.getValueAt(Column.BoardStatus, row));
    }
 
    private boolean isEmptyString(String stringValue) {
