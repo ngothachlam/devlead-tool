@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.gui.component.frame;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -116,28 +117,35 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
    }
 
    private JPanel getSubInputPanel() {
-      JPanel panel = new JPanel(new GridLayout(2, 2, 3, 3));
-      panel.add(new JLabel("Day in Sprint: "));
+      JPanel panel = new JPanel(new GridLayout(3, 2, 3, 3));
+      panel.add(new JLabel("Sprint Name:"));
+      JTextField sprintName = new JTextField(5);
+      sprintName.setEditable(false);
+      sprintName.setToolTipText("To edit - 'Manage Sprints'!");
+      panel.add(sprintName);
+
+      panel.add(new JLabel("Day in Sprint:"));
       dayInSprintTextField = new JTextField(5);
-      
-      Sprint currentSprint = SprintCache.getInstance().getCurrentSprint();
-      dayInSprintTextField.setText(currentSprint.calculateDayInSprint());
-      
       panel.add(dayInSprintTextField);
-      panel.add(new JLabel("Length of Sprint: "));
+      
+      panel.add(new JLabel("Length of Sprint:"));
       lengthOfSprintTextField = new JTextField(5);
       panel.add(lengthOfSprintTextField);
+
+      Sprint currentSprint = SprintCache.getInstance().getCurrentSprint();
+      sprintName.setText(currentSprint.getName());
+      dayInSprintTextField.setText(currentSprint.calculateDayInSprint().toString());
+      lengthOfSprintTextField.setText(currentSprint.getLength().toString());
+
       return panel;
    }
 
    public void prepareBurndown() {
       dataSeries = new XYSeries("Current Development Progression");
-      // prognosisSeries = new XYSeries("Prognosed Dev Estimates");
       idealSeries = new XYSeries("Ideal Development Progression");
 
       XYSeriesCollection dataset = new XYSeriesCollection();
       dataset.addSeries(dataSeries);
-      // dataset.addSeries(prognosisSeries);
       dataset.addSeries(idealSeries);
 
       // create the chart...
