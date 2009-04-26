@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import com.google.inject.Inject;
 import com.jonas.agile.devleadtool.data.DaoListenerEvent;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
-import com.jonas.agile.devleadtool.gui.action.SprintManagerGuiAction;
 import com.jonas.agile.devleadtool.gui.component.DesktopPane;
 import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.gui.component.SaveKeyListener;
@@ -89,11 +88,9 @@ public class DevLeadTool {
 
    private JMenuBar createMenuBar() {
       JMenu fileMenuFile = createFileMenu("File", getFileMenuItemArray(frame, desktop));
-      JMenu sprintMenu = createSprintMenu();
       windowMenu = new JMenu("Windows");
       JMenuBar menuBar = new JMenuBar();
       menuBar.add(fileMenuFile);
-      menuBar.add(sprintMenu);
       menuBar.add(windowMenu);
       return menuBar;
    }
@@ -104,19 +101,12 @@ public class DevLeadTool {
       return menuItem;
    }
 
-   private JMenu createSprintMenu() {
-      SprintManagerGuiAction addSprintUsingGUIAction = new SprintManagerGuiAction(frame, helper, sprintDao);
-      JMenu menu = new JMenu("Sprint");
-      menu.add(new JMenuItem(addSprintUsingGUIAction));
-      return menu;
-   }
-
    private JMenuItem[] getFileMenuItemArray(final JFrame frame, final DesktopPane desktop) {
       SavePlannerDialog savePlannerDialog = new SavePlannerDialog(plannerDAO, frame, helper);
       SaveKeyListener saveKeyListener = new SaveKeyListener(helper, savePlannerDialog);
-      NewPlannerDialog newPlannerDialog = new NewPlannerDialog(desktop, helper, plannerDAO, savePlannerDialog, saveKeyListener);
+      NewPlannerDialog newPlannerDialog = new NewPlannerDialog(desktop, helper, plannerDAO, savePlannerDialog, saveKeyListener, sprintDao);
       JMenuItem planner = createMenuItem("New Planner", new NewPlannerActionListener(newPlannerDialog));
-      LoadPlannerDialog loadPlannerDialog = new LoadPlannerDialog(desktop, plannerDAO, frame, helper, savePlannerDialog, saveKeyListener);
+      LoadPlannerDialog loadPlannerDialog = new LoadPlannerDialog(desktop, plannerDAO, frame, helper, savePlannerDialog, saveKeyListener, sprintDao);
       JMenuItem open = createMenuItem("Open Planner", new LoadPlannerActionListener(loadPlannerDialog));
       JMenuItem save = createMenuItem("Save Planner", new SavePlannerActionListener(false, savePlannerDialog));
       JMenuItem saveAs = createMenuItem("Save Planner As", new SavePlannerActionListener(true, savePlannerDialog));
