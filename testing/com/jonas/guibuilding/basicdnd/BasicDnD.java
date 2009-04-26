@@ -142,7 +142,7 @@ public class BasicDnD extends JPanel {
       data.add(getTestRow("Board-1"));
       data.add(getTestRow("Board-2"));
       Vector<Column> columns = getTestColumns();
-      return new BoardTableModel(data, columns);
+      return new BoardTableModel(data, columns, null);
    }
 
    private MyTableModel getTestModelJira() {

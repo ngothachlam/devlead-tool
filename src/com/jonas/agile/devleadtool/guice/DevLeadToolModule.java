@@ -13,6 +13,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.agile.devleadtool.gui.component.DesktopPane;
 import com.jonas.agile.devleadtool.gui.component.frame.main.MainFrame;
+import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 
 public class DevLeadToolModule extends AbstractModule {
 
@@ -25,6 +26,7 @@ public class DevLeadToolModule extends AbstractModule {
          bind(DesktopPane.class).asEagerSingleton();
          bind(PlannerDAOExcelImpl.class).asEagerSingleton();
          bind(PlannerHelper.class).asEagerSingleton();
+         bind(ExcelSprintDao.class).asEagerSingleton();
          
          
       } catch (FileNotFoundException e) {

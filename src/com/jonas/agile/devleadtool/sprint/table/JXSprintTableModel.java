@@ -10,27 +10,36 @@ import com.jonas.common.logging.MyLogger;
 
 public class JXSprintTableModel extends DefaultTableModel {
 
+   private SprintCache sprintCache;
+
+   public JXSprintTableModel() {
+   }
+
    @Override
    public int getRowCount() {
-      return SprintCache.getInstance().getSprints().size();
+      if (sprintCache == null)
+         return 0;
+      return sprintCache.getSprints().size();
    }
 
    private static final Logger log = MyLogger.getLogger(JXSprintTableModel.class);
 
    @Override
    public void setValueAt(Object value, int row, int column) {
-      SprintCache instance = SprintCache.getInstance();
-      Sprint sprint = instance.getSprints().get(row);
-      instance.setValueAt(value, sprint, (short) column);
+      if (sprintCache == null)
+         return;
+      Sprint sprint = sprintCache.getSprints().get(row);
+      sprintCache.setValueAt(value, sprint, (short) column);
    }
 
    @Override
    public Object getValueAt(int row, int column) {
-      SprintCache instance = SprintCache.getInstance();
-      log.debug("getting row: " + row + " and col " + column + " size: " + instance.getSprints().size());
+      if (sprintCache == null)
+         return null;
+      log.debug("getting row: " + row + " and col " + column + " size: " + sprintCache.getSprints().size());
 
-      Sprint sprint = instance.getSprintFromRow(row);
-      Object valueAt = instance.getValueAt(sprint, (short) column);
+      Sprint sprint = sprintCache.getSprintFromRow(row);
+      Object valueAt = sprintCache.getValueAt(sprint, (short) column);
       if (valueAt instanceof Date) {
          valueAt = DateHelper.getDateAsSimpleOrderableString((Date) valueAt);
       }
@@ -46,16 +55,26 @@ public class JXSprintTableModel extends DefaultTableModel {
 
    @Override
    public int getColumnCount() {
-      int columnCount = SprintCache.getInstance().getColumnCount();
+      if (sprintCache == null)
+         return 0;
+
+      int columnCount = sprintCache.getColumnCount();
       log.debug(columnCount + "");
       return columnCount;
    }
 
    @Override
    public String getColumnName(int column) {
-      String columnName = SprintCache.getInstance().getColumnName(column);
+      if (sprintCache == null)
+         return null;
+
+      String columnName = sprintCache.getColumnName(column);
       log.debug(columnName);
       return columnName;
+   }
+
+   public void setSprintCache(SprintCache sprintCache) {
+      this.sprintCache = sprintCache;
    }
 
 }

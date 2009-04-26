@@ -26,13 +26,19 @@ public class ExcelSprintDao {
       return sheet;
    }
 
+   public SprintCache load(File xlsFile) throws IOException {
+      SprintCache sprintCache = new SprintCache();
+      load(sprintCache, xlsFile);
+      return sprintCache;
+   }
+
    public void load(SprintCache sprintCache, File xlsFile) throws IOException {
       InputStream inp = null;
       try {
          inp = new FileInputStream(xlsFile);
          POIFSFileSystem fileSystem = new POIFSFileSystem(inp);
          HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
-         HSSFSheet sheet = wb.getSheet(SPRINT_SHEETNAME);
+         HSSFSheet sheet = getSheet(SPRINT_SHEETNAME, wb);
 
          // for each row in the sheet...
          int rowCount = 0;
@@ -40,7 +46,7 @@ public class ExcelSprintDao {
             HSSFRow row = rit.next();
             if (rowCount != 0) {
                short colCount = 0;
-               Sprint newSprint= new Sprint();
+               Sprint newSprint = new Sprint();
                Object cellContents = null;
                for (Iterator<HSSFCell> cit = row.cellIterator(); cit.hasNext();) {
                   HSSFCell cell = cit.next();
@@ -71,16 +77,21 @@ public class ExcelSprintDao {
       }
    }
 
-   public void save(SprintCache sprintCache, File xlsFile) throws IOException {
+   public void save(File xlsFile, SprintCache sprintCache) throws IOException {
       FileOutputStream fileOut = null;
+      FileInputStream fileIn = null;
       try {
-         HSSFWorkbook wb = new HSSFWorkbook();
+         fileIn = new FileInputStream(xlsFile);
+         HSSFWorkbook wb = new HSSFWorkbook(fileIn);
+         if (fileIn != null)
+            fileIn.close();
          HSSFSheet sheet = getSheet(SPRINT_SHEETNAME, wb);
 
+         
          int columnMaxCount = createSprintHeaders(sheet, sprintCache);
          createSprintData(sheet, columnMaxCount, sprintCache);
 
-         resetTheSprintFileBeforeSaving(xlsFile);
+         // resetTheSprintFileBeforeSaving(xlsFile);
          fileOut = new FileOutputStream(xlsFile);
 
          // FIXME if the excel sheet is already open - this throws FileNotFoundException and thus fails

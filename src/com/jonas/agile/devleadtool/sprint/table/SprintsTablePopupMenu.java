@@ -40,15 +40,15 @@ class DeleteSprintMenuItem extends MyMenuItem {
 
    @Override
    public void myActionPerformed(ActionEvent e) throws Throwable {
-      SprintCache instance = SprintCache.getInstance();
+      SprintCache sprintCache = helper.getSprintCache();
       int[] rows = source.getSelectedRows();
       for (int counter = rows.length - 1; counter > -1; counter--) {
          int viewRow = rows[counter];
          int row = source.convertRowIndexToModel(viewRow);
          log.debug("trying to delete row: " + viewRow + " (model row: " + row + ")");
-         Sprint sprint = instance.getSprintFromRow(row);
-         instance.removeSprint(sprint);
-         sprintDao.save(SprintCache.getInstance(), helper.getSprintFile());
+         Sprint sprint = sprintCache.getSprintFromRow(row);
+         sprintCache.removeSprint(sprint);
+         sprintDao.save(helper.getExcelFile(), sprintCache);
          model.fireTableDataChanged();
       }
    }

@@ -7,14 +7,24 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
+import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.data.Cache;
+import com.jonas.agile.devleadtool.sprint.table.SprintComboBoxModel;
+import com.jonas.common.logging.MyLogger;
 
-public class SprintCache {
+public class SprintCache implements Cache {
 
-   private final static Vector<Sprint> sprints = new Vector<Sprint>();
-   private static final SprintCache instance = new SprintCache();
-   private final static Set<String> sprintNames = new HashSet<String>();
+   private final Vector<Sprint> sprints = new Vector<Sprint>();
+   // private final static SprintCache instance = new SprintCache();
+   private final Set<String> sprintNames = new HashSet<String>();
+   private static final Logger log = MyLogger.getLogger(SprintCache.class);
 
    public boolean cache(Sprint sprint, boolean allowDupes) {
+      if (sprint.isForCombobox()) {
+         log.debug("Sprint " + sprint + " is for the combobox only! cannot be cached! - likely a bug!");
+         return false;
+      }
+
       if (!allowDupes && !sprintNames.contains(sprint.getName())) {
          sprints.add(sprint);
          sprintNames.add(sprint.getName());
@@ -28,9 +38,10 @@ public class SprintCache {
 
    }
 
-   public static SprintCache getInstance() {
-      return instance;
-   }
+   // FIXME 1 Remove all static methods in SprintCache
+   // public static SprintCache getInstance() {
+   // return instance;
+   // }
 
    public int getColumnCount() {
       return 4;
@@ -110,6 +121,11 @@ public class SprintCache {
             return sprint;
          }
       }
+      for (Sprint sprint : Sprint.getComboSprints()) {
+         if (sprint.getName().equals(name.trim())) {
+            return sprint;
+         }
+      }
       return null;
    }
 
@@ -120,11 +136,12 @@ public class SprintCache {
 
    public Sprint getCurrentSprint() {
       for (Sprint sprint : sprints) {
-         if(sprint.calculateTime() == SprintTime.currentSprint)
+         if (sprint.calculateTime() == SprintTime.currentSprint)
             return sprint;
       }
       return null;
    }
+
    public SprintTime calculateSprintTime(Sprint sprint) {
       return sprint.calculateTime();
    }

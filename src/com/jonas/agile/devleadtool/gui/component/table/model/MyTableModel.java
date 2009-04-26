@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.gui.component.table.ColorDTO;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 
@@ -144,6 +145,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
    }
 
+   private SprintCache sprintCache;
    protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
    protected Counter counter = new Counter();
    protected boolean editable = true;
@@ -162,6 +164,14 @@ public abstract class MyTableModel extends DefaultTableModel {
 
       modelMarkerDelegator = new ModelMarker();
       addTableModelListener(modelMarkerDelegator);
+   }
+
+   public void setSprintCache(SprintCache sprintCache) {
+      this.sprintCache = sprintCache;
+   }
+
+   public SprintCache getSprintCache() {
+      return sprintCache;
    }
 
    MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header) {

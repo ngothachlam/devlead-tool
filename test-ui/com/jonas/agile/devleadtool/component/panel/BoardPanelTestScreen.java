@@ -3,7 +3,7 @@ package com.jonas.agile.devleadtool.component.panel;
 import javax.swing.JFrame;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.panel.BoardPanel;
-import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.testHelpers.TryoutTester;
 
 public class BoardPanelTestScreen {
@@ -11,7 +11,8 @@ public class BoardPanelTestScreen {
    public static void main(String[] args) {
       JFrame frame = TryoutTester.getEmptyFrame();
       PlannerHelper plannerHelper = new PlannerHelper(null, "test");
-      BoardPanel panel = new BoardPanel();
+      SprintCache sprintCache = null;
+      BoardPanel panel = new BoardPanel(sprintCache);
       frame.setContentPane(panel);
       frame.setVisible(true);
       

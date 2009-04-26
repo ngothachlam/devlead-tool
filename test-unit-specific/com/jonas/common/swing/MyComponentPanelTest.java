@@ -26,7 +26,7 @@ public class MyComponentPanelTest extends TestCase {
    }
 
    public void testShouldCalculateArrayCorrectly() {
-      MyTable myTable = new MyTable("Board", new BoardTableModel(), true);
+      MyTable myTable = new MyTable("Board", new BoardTableModel(null), true);
       MyComponentPanel listener = new MyComponentPanel(null);
       // FilterDocumentListenerListenerImpl listener = new FilterDocumentListenerListenerImpl();
       assertEquals(0, listener.getArrayOfIndices(myTable, Column.Closed_Sprint).length);

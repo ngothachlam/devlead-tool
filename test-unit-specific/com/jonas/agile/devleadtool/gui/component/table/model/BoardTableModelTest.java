@@ -22,7 +22,7 @@ public class BoardTableModelTest extends JonasTestCase {
    @Override
    protected void setUp() throws Exception {
       super.setUp();
-      model = new BoardTableModel();
+      model = new BoardTableModel(null);
    }
 
    @Override
@@ -130,7 +130,7 @@ public class BoardTableModelTest extends JonasTestCase {
       contents.add(getTestContentRow(header.size(), "0."));
       contents.add(getTestContentRow(header.size(), "1."));
 
-      MyTableModel model = new BoardTableModel(contents, header);
+      MyTableModel model = new BoardTableModel(contents, header, null);
 
       assertEquals(2, model.getRowCount());
       assertEquals(13, model.getColumnCount());

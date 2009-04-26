@@ -23,12 +23,14 @@ public class BoardTableModel extends MyTableModel {
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
 
-   public BoardTableModel() {
+   public BoardTableModel(SprintCache sprintCache) {
       super(columns);
+      setSprintCache(sprintCache);
    }
 
-   public BoardTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
+   public BoardTableModel(Vector<Vector<Object>> contents, Vector<Column> header, SprintCache sprintCache) {
       super(columns, contents, header);
+      setSprintCache(sprintCache);
    }
 
    @Override
@@ -70,30 +72,39 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case Sprint:
-         Sprint sprint = (Sprint) value;
+         if(getSprintCache() == null){
+            String errorMessage = "Error! No sprint cache defined!!";
+            setToolTipText(row, getColumnIndex(column), errorMessage);
+            log.error(errorMessage);
+            return SwingUtil.cellRed;
+         }
+         Sprint sprint = getSprintCache().getSprintWithName(value.toString());
+         log.debug("Value: " + value + " sprint: " + sprint);
          JiraStatistic jiraStat = getJiraStat(row, column);
-         SprintTime sprintTime = SprintCache.getInstance().calculateSprintTime(sprint);
+         SprintTime sprintTime = sprint.calculateTime();
          switch (jiraStat.devStatus()) {
          case preDevelopment:
             switch (sprintTime) {
             case beforeCurrentSprint:
-               setToolTipText(row, getColumnIndex(column), "The jira is in pre-development and the sprint is in the past!");
+               setToolTipText(row, getColumnIndex(column), "The jira is in pre-development and this sprint is not in the past!");
                return SwingUtil.cellRed;
             }
             return null;
          case inDevelopment:
          case inTesting:
             switch (sprintTime) {
+            case unKnown:
             case afterCurrentSprint:
             case beforeCurrentSprint:
-               setToolTipText(row, getColumnIndex(column), "The jira is in-progress and the sprint is not current!");
+               setToolTipText(row, getColumnIndex(column), "The jira is in-progress and this sprint is not current!");
                return SwingUtil.cellRed;
             }
             return null;
          case closed:
             switch (sprintTime) {
+            case unKnown:
             case afterCurrentSprint:
-               setToolTipText(row, getColumnIndex(column), "The jira is closed and the sprint is not current nor in the past!");
+               setToolTipText(row, getColumnIndex(column), "The jira is closed and this sprint is not current nor in the past!");
                return SwingUtil.cellRed;
             }
             return null;

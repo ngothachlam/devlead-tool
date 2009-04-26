@@ -12,7 +12,7 @@ public class PlanTableModelTest extends JonasTestCase {
    @Override
    protected void setUp() throws Exception {
       super.setUp();
-      model = new PlanTableModel();
+      model = new PlanTableModel(null, null);
    }
 
    public void testShouldAddJiraAndCalculateIfJiraExistsCorrectly() {
@@ -70,7 +70,7 @@ public class PlanTableModelTest extends JonasTestCase {
    }
 
    public void testShouldGetColumnForJiraOk() {
-      PlanTableModel model = new PlanTableModel();
+      PlanTableModel model = new PlanTableModel(null, null);
 
       String jira_one = "llu-1";
       String jira_two = "llu-2";

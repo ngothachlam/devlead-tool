@@ -10,9 +10,11 @@ public class SprintComboBoxModel extends AbstractListModel implements ComboBoxMo
 
    private Vector<Sprint> vector;
    private Object selectedItem;
+   
+   private static final Sprint EMPTYSPRINT = new Sprint("", null, null, 0).setForCombobox();
 
-   public SprintComboBoxModel() {
-      vector = SprintCache.getInstance().getSprints();
+   public SprintComboBoxModel(SprintCache sprintCache) {
+      vector = sprintCache.getSprints();
    }
 
    @Override
@@ -28,7 +30,7 @@ public class SprintComboBoxModel extends AbstractListModel implements ComboBoxMo
    @Override
    public Object getElementAt(int index) {
       if (index == 0)
-         return null;
+         return EMPTYSPRINT;
       return vector.get(index - 1);
    }
 

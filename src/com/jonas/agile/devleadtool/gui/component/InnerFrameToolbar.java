@@ -9,6 +9,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
+import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddBoardReconcileFrame;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddFilterDialog;
@@ -26,14 +27,14 @@ import com.jonas.common.DateHelper;
 public class InnerFrameToolbar extends JToolBar {
 
    public InnerFrameToolbar(final Frame parentFrame, BoardPanel boardPanel, JiraPanel jiraPanel, DnDTreePanel sprintPanel, MyTable boardTable,
-         final MyTable jiraTable) {
+         final MyTable jiraTable, PlannerHelper helper) {
 
       final MyTable[] tables = { boardTable, jiraTable };
 
       BasicAbstractGUIAction freezeAction = new FreezeManipulationAction(parentFrame, boardPanel, jiraPanel, sprintPanel);
       BasicAbstractGUIAction dupeAction = new CheckForDuplicatesAction("Identify Duplicates", "Higlight Duplicates in Board", parentFrame,
             boardTable);
-      BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown", "Showing Board Statistics", parentFrame, boardTable);
+      BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown", "Showing Board Statistics", parentFrame, boardTable, helper);
       BasicAbstractGUIAction reconcileAction = new ReconcileManuallyAction(parentFrame, boardTable);
       BasicAbstractGUIAction addManualAction = new AddManuallyAction(parentFrame, tables);
       BasicAbstractGUIAction addFilterAction = new AddFromJiraFilterAction(parentFrame, tables);
@@ -136,15 +137,17 @@ final class CheckForDuplicatesAction extends BasicAbstractGUIAction {
 
 final class BurndownAction extends BasicAbstractGUIAction {
    private final MyTable sourceTable;
+   private PlannerHelper helper;
 
-   BurndownAction(String name, String description, Frame parentFrame, MyTable sourceTable) {
+   BurndownAction(String name, String description, Frame parentFrame, MyTable sourceTable, PlannerHelper helper) {
       super(name, description, parentFrame);
       this.sourceTable = sourceTable;
+      this.helper = helper;
    }
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      BoardStatsFrame boardStatsFrame = new BoardStatsFrame(getParentFrame(), 600, 500, sourceTable, new DateHelper());
+      BoardStatsFrame boardStatsFrame = new BoardStatsFrame(getParentFrame(), 600, 500, sourceTable, new DateHelper(), helper.getSprintCache());
       boardStatsFrame.setVisible(true);
    }
 

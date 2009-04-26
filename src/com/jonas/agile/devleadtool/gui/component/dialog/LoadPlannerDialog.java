@@ -51,27 +51,25 @@ public class LoadPlannerDialog extends JFileChooser {
 
    public void load() {
       log.trace("load");
-      
+
       setCurrentDirectory(helper.getSaveDirectory());
       setSelectedFiles(savePlannerDialog.RESETFILES);
-      
+
       int result = showOpenDialog(frame);
 
       if (result == JFileChooser.APPROVE_OPTION) {
          final File xlsFile = getSelectedFile();
 
-         dao.setXlsFile(xlsFile);
-
          SwingWorker<CombinedModelDTO, Object> swingWorker = new AbstractInternalFrameCreatorSwingthread(helper, dao, savePlannerDialog,
                saveKeyListener, desktop, xlsFile) {
             @Override
-            protected CombinedModelDTO doInBackground() throws Exception{
+            protected CombinedModelDTO doInBackground() throws Exception {
                CombinedModelDTO loadModels = null;
-                     loadModels = dao.loadModels();
+               loadModels = dao.loadAllData(xlsFile);
                return loadModels;
             }
          };
-         
+
          ExecutorService executor = Executors.newSingleThreadExecutor();
          executor.execute(swingWorker);
       }

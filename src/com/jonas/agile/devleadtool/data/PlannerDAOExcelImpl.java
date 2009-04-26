@@ -18,6 +18,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import com.google.inject.Inject;
 import com.jonas.agile.devleadtool.gui.component.dialog.CombinedModelDTO;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
@@ -25,6 +26,8 @@ import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.TableModelDTO;
 import com.jonas.agile.devleadtool.gui.listener.DaoListener;
+import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 
 public class PlannerDAOExcelImpl implements PlannerDAO {
@@ -34,10 +37,14 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    private int loadingNow = 0;
    private Logger log = MyLogger.getLogger(PlannerDAOExcelImpl.class);
    private int savesNow = 0;
-   private File xlsFile;
+   private final ExcelSprintDao sprintDao;
+   private SprintCache sprintCache;
 
-   public PlannerDAOExcelImpl() {
+   @Inject
+   public PlannerDAOExcelImpl(ExcelSprintDao sprintDao) {
       super();
+      // FIXME 1 who calls this constructor? Guice?
+      this.sprintDao = sprintDao;
    }
 
    private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, Object cellContents) {
@@ -46,7 +53,11 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             + cellContents + "\"!");
       Object parsed = null;
       if (column.isToLoad()) {
-         parsed = column.parseFromPersistanceStore(cellContents);
+         if (column.isUsingCache()) {
+            parsed = column.parseFromPersistanceStore(cellContents, sprintCache);
+         } else {
+            parsed = column.parseFromPersistanceStore(cellContents);
+         }
          rowData.add(parsed);
       }
    }
@@ -61,19 +72,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       HSSFSheet sheet = wb.getSheet(sheetName);
       sheet = sheet == null ? wb.createSheet(sheetName) : sheet;
       return sheet;
-   }
-
-   protected HSSFWorkbook getWorkBook(File xlsFile) {
-      HSSFWorkbook workbook = fileOrganiser.get(xlsFile);
-      if (workbook == null) {
-         workbook = new HSSFWorkbook();
-         fileOrganiser.put(xlsFile, workbook);
-      }
-      return workbook;
-   }
-
-   public File getXlsFile() {
-      return xlsFile;
    }
 
    TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException, PersistanceException {
@@ -92,7 +90,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          POIFSFileSystem fileSystem = new POIFSFileSystem(inp);
          HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
 
-         HSSFSheet sheet = wb.getSheet(sheetName);
+         HSSFSheet sheet = getSheet(sheetName, wb);
          Map<Integer, Column> columns = new HashMap<Integer, Column>();
          // for each row in the sheet...
          for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {
@@ -136,14 +134,16 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    @Override
-   public CombinedModelDTO loadModels() throws IOException, PersistanceException {
+   public CombinedModelDTO loadAllData(File file) throws IOException, PersistanceException {
       notifyLoadingStarted();
       BoardTableModel boardModel = null;
       JiraTableModel jiraModel = null;
+      sprintCache = null;
       try {
-         TableModelDTO dto = loadModel(xlsFile, "board");
-         boardModel = new BoardTableModel(dto.getContents(), dto.getHeader());
-         dto = loadModel(xlsFile, "jira");
+         sprintCache = sprintDao.load(file);
+         TableModelDTO dto = loadModel(file, "board");
+         boardModel = new BoardTableModel(dto.getContents(), dto.getHeader(), sprintCache);
+         dto = loadModel(file, "jira");
          jiraModel = new JiraTableModel(dto.getContents(), dto.getHeader());
       } catch (IOException e) {
          notifyListeners(DaoListenerEvent.LoadingErrored, "Exception occured! " + e.getMessage());
@@ -159,7 +159,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          throw e;
       }
       notifyLoadingFinished();
-      return new CombinedModelDTO(boardModel, jiraModel);
+      return new CombinedModelDTO(boardModel, jiraModel, sprintCache);
    }
 
    public void notifyListeners(DaoListenerEvent event, String message) {
@@ -204,9 +204,14 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    private void saveModel(File xlsFile, MyTableModel model, String sheetName) throws IOException {
       notifyListeners(DaoListenerEvent.SavingModelStarted, "Saving " + sheetName + " Started");
       FileOutputStream fileOut = null;
+      FileInputStream fileIn = null;
       try {
          log.debug("Saving to " + xlsFile.getAbsolutePath());
-         HSSFWorkbook wb = getWorkBook(xlsFile);
+         fileIn = new FileInputStream(xlsFile);
+         HSSFWorkbook wb = new HSSFWorkbook(fileIn);
+         if (fileIn != null)
+            fileIn.close();
+
          HSSFSheet sheet = getSheet(sheetName, wb);
 
          // HSSFCellStyle style_red_background = wb.createCellStyle();
@@ -249,18 +254,20 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          fileOut = new FileOutputStream(xlsFile);
          // FIXME if the excel sheet is already open - this throws FileNotFoundException and thus fails
          wb.write(fileOut);
-      } catch (Throwable t) {
-         t.printStackTrace();
       } finally {
-         fileOut.close();
+         if (fileOut != null)
+            fileOut.close();
       }
    }
 
    @Override
-   public void saveModels(MyTableModel boardModel, MyTableModel jiraModel) throws IOException {
+   public void saveAllData(File file, MyTableModel boardModel, MyTableModel jiraModel, SprintCache sprintCache) throws IOException {
       notifySavingStarted();
-      saveModel(xlsFile, boardModel, "board");
-      saveModel(xlsFile, jiraModel, "jira");
+      fileOrganiser.clear();
+      saveModel(file, boardModel, "board");
+      saveModel(file, jiraModel, "jira");
+      sprintDao.save(file, sprintCache);
+      // FIXME 1 save sprint cache here to sprint sheet!
       notifySavingFinished("Saving Finished!");
    }
 
@@ -293,10 +300,5 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       }
       sb.append(")");
       return sb.toString();
-   }
-
-   @Override
-   public void setXlsFile(File xlsFile) {
-      this.xlsFile = xlsFile;
    }
 }

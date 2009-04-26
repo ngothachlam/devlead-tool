@@ -8,6 +8,7 @@ import com.jonas.agile.devleadtool.gui.component.DesktopPane;
 import com.jonas.agile.devleadtool.gui.component.SaveKeyListener;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 
 public class NewPlannerDialog {
@@ -31,7 +32,8 @@ public class NewPlannerDialog {
       SwingWorker<CombinedModelDTO, Object> worker = new AbstractInternalFrameCreatorSwingthread(helper, dao, savePlannerDialog, saveKeyListener, desktopPane){
          @Override
          protected CombinedModelDTO doInBackground() throws Exception {
-            return new CombinedModelDTO(new BoardTableModel(), new JiraTableModel());
+            SprintCache sprintCache = new SprintCache();
+            return new CombinedModelDTO(new BoardTableModel(sprintCache), new JiraTableModel(), sprintCache);
          }
       };
       worker.execute();

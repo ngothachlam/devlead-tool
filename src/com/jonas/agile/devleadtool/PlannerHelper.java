@@ -14,6 +14,7 @@ import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.gui.component.frame.main.MainFrame;
 import com.jonas.agile.devleadtool.properties.Property;
 import com.jonas.agile.devleadtool.properties.SprinterProperties;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
@@ -34,6 +35,10 @@ public class PlannerHelper {
    private String title;
 
    private SprinterProperties properties;
+
+   public SprintCache getSprintCache() {
+      return getActiveInternalFrame().getSprintCache();
+   }
 
    @Inject
    public PlannerHelper(MainFrame frame, @Named("plannerHelper.title") String title) {
@@ -109,10 +114,15 @@ public class PlannerHelper {
       return (File) propertyObject;
    }
 
-   public File getSprintFile() {
-      File saveDirectory = getSaveDirectory();
-      File sprintFile = new File(saveDirectory, "sprints.xls");
-      return sprintFile;
+   public File getExcelFile() {
+      return getActiveInternalFrame().getExcelFile();
    }
+
+   // FIXME 1 remove this!
+   // public File getSprintFile() {
+   // File saveDirectory = getSaveDirectory();
+   // File sprintFile = new File(saveDirectory, "sprints.xls");
+   // return sprintFile;
+   // }
 
 }
