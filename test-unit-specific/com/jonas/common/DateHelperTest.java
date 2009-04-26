@@ -6,6 +6,60 @@ import junit.framework.TestCase;
 public class DateHelperTest extends TestCase {
 
    DateHelper helper;
+   
+   public void testStartAdditional() {
+      assertEquals(5, DateHelper.startAdditional(1));
+      assertEquals(4, DateHelper.startAdditional(2));
+      assertEquals(3, DateHelper.startAdditional(3));
+      assertEquals(2, DateHelper.startAdditional(4));
+      assertEquals(1, DateHelper.startAdditional(5));
+      assertEquals(0, DateHelper.startAdditional(6));
+      assertEquals(0, DateHelper.startAdditional(7));
+   }
+
+   public void testEndAdditional() {
+      assertEquals(1, DateHelper.endAdditional(1));
+      assertEquals(2, DateHelper.endAdditional(2));
+      assertEquals(3, DateHelper.endAdditional(3));
+      assertEquals(4, DateHelper.endAdditional(4));
+      assertEquals(5, DateHelper.endAdditional(5));
+      assertEquals(5, DateHelper.endAdditional(6));
+      assertEquals(5, DateHelper.endAdditional(7));
+   }
+
+   public void testFullWorkingWeeks() {
+      Calendar startCalendar = getCalendar(5, 4, 2009); // sunday
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, startCalendar));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(6, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(7, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(8, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(9, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(10, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(11, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(12, 4, 2009)));
+      assertEquals(1, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(13, 4, 2009)));
+
+      startCalendar = getCalendar(6, 4, 2009); // monday
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, startCalendar));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(6, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(7, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(8, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(9, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(10, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(11, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(12, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(13, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(14, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(15, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(16, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(17, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(18, 4, 2009)));
+      assertEquals(0, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(19, 4, 2009)));
+      assertEquals(1, DateHelper.getFullWorkingWeeksBetween(startCalendar, getCalendar(20, 4, 2009)));
+
+      startCalendar = getCalendar(4, 4, 2009); // saturday
+   }
+   
 
    public void testDayOfWeek() {
       assertEquals(4, DateHelper.getRealDayOfWeek(getCalendar(1, 1, 2009)));
@@ -48,5 +102,6 @@ public class DateHelperTest extends TestCase {
    protected void setUp() throws Exception {
       helper = new DateHelper();
    }
+   
 
 }

@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import com.jonas.common.DateHelper;
 
 public class Sprint {
 
@@ -72,8 +73,8 @@ public class Sprint {
       Calendar calendar = Calendar.getInstance();
       Date today = calendar.getTime();
 
-      boolean startDatePreToday = today.compareTo(startDate) >= 0;
-      boolean endDatePostToday = today.compareTo(endDate) <= 0;
+      boolean startDatePreToday = DateHelper.isFirstBeforeSecond(startDate, today);
+      boolean endDatePostToday =  DateHelper.isFirstAfterSecond(endDate, today);
 
       if (startDatePreToday && endDatePostToday) {
          return SprintTime.currentSprint;
@@ -85,9 +86,10 @@ public class Sprint {
       return null;
    }
 
-   public int calculateDayInSprint() {
-      // TODO Auto-generated method stub
-      throw new RuntimeException("Method not implemented yet!");
+   public Integer calculateDayInSprint() {
+      Calendar calendar = Calendar.getInstance();
+      Date today = calendar.getTime();
+      return DateHelper.getWorkingDaysBetween(startDate, today);
    }
 
 }
