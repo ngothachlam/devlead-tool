@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.MyComponentPanel;
 
@@ -16,8 +17,8 @@ public class BoardPanel extends MyComponentPanel {
    private Logger log = MyLogger.getLogger(BoardPanel.class);
    public MyTable table;
 
-   public BoardPanel() {
-      this(new BoardTableModel());
+   public BoardPanel(SprintCache sprintCache) {
+      this(new BoardTableModel(sprintCache));
    }
 
    public BoardPanel(MyTableModel boardModel) {

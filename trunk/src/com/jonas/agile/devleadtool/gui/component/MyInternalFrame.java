@@ -28,6 +28,7 @@ import com.jonas.agile.devleadtool.gui.component.panel.MyInternalFrameInnerPanel
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.gui.listener.PlannerListeners;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 
 public class MyInternalFrame extends JInternalFrame {
@@ -43,6 +44,7 @@ public class MyInternalFrame extends JInternalFrame {
    private MyInternalFrameInnerPanel internalFrameTabPanel;
    private String originalTitle;
    private String originalTitleWithDuplicateNumber;
+
    public MyInternalFrame(final PlannerHelper client, String title, MyInternalFrameInnerPanel internalFrameTabPanel, PlannerDAO dao, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener, DesktopPane desktop) {
       this(title, client);
       log.trace("MyInternalFrame");
@@ -60,12 +62,16 @@ public class MyInternalFrame extends JInternalFrame {
       log.trace("MyInternalFrame");
    }
    
+   public SprintCache getSprintCache() {
+      return getBoardModel().getSprintCache();
+   }
+
    MyInternalFrame(String title, PlannerHelper helper) {
       super("", true, true, true, true);
-      log.trace("MyInternalFrame");
       this.helper = helper;
-      internalFrames.add(this);
       this.originalTitle = title;
+
+      internalFrames.add(this);
       originalTitleWithDuplicateNumber = createTitle(title);
       log.debug("created and setting Title: " + originalTitleWithDuplicateNumber);
       this.setTitle(originalTitleWithDuplicateNumber);
@@ -131,12 +137,12 @@ public class MyInternalFrame extends JInternalFrame {
       return string.length() > i ? string.substring(string.length() - i, string.length()) : string;
    }
 
-   public void saveModels(final PlannerDAO dao) {
+   public void saveModels(final PlannerDAO dao, final File file) {
       SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
          @Override
          protected Object doInBackground() throws Exception {
             try {
-               dao.saveModels(getBoardModel(), getJiraModel());
+               dao.saveAllData(file, getBoardModel(), getJiraModel(), getSprintCache());
             } catch (IOException e) {
                AlertDialog.alertException(helper.getParentFrame(), e);
             } 

@@ -34,6 +34,7 @@ import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.gui.listener.TableListener;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.sprint.Sprint;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.agile.devleadtool.sprint.table.SprintComboBoxModel;
 import com.jonas.common.ColorUtil;
 import com.jonas.common.logging.MyLogger;
@@ -120,7 +121,6 @@ public class MyTable extends JXTable {
 
    }
 
-   
    private final class MarkKeyListener extends KeyAdapter {
       private final boolean allowMarking;
 
@@ -209,7 +209,7 @@ public class MyTable extends JXTable {
 
          if (colorDTO.isMarked()) {
             cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), -25));
-         } else{
+         } else {
             cell.setBackground(ColorUtil.darkenColor(cell.getBackground(), +35));
          }
       }
@@ -252,7 +252,7 @@ public class MyTable extends JXTable {
       // return getColumnName(colIndex);
       // }
       // });
-//      getTableHeader().setToolTipText("blah");
+      // getTableHeader().setToolTipText("blah");
       this.setColumnControlVisible(true);
       this.addKeyListener(new MarkKeyListener(allowMarking));
       Highlighter higlighter = new MyTableHighlighter(this);
@@ -291,7 +291,7 @@ public class MyTable extends JXTable {
    }
 
    private void addJira(String jira, Map<Column, Object> map, boolean isToMarkJiraIfNew) {
-      boolean isNewJiraInTable  = model.addJira(jira, map);
+      boolean isNewJiraInTable = model.addJira(jira, map);
       if (isNewJiraInTable && isToMarkJiraIfNew)
          markJira(jira);
    }
@@ -502,11 +502,14 @@ public class MyTable extends JXTable {
 
    private void setDefaultEditors() {
       JComboBox combo = new JComboBox(BoardStatusValue.values());
-      ComboBoxModel model = new SprintComboBoxModel();
-      JComboBox sprintCombo = new JComboBox(model);
-      
       setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
-      setDefaultEditor(Sprint.class, new BoardStatusCellEditor(sprintCombo, this));
+
+      SprintCache sprintCache = getMyModel().getSprintCache();
+      if (sprintCache != null) {
+         ComboBoxModel model = new SprintComboBoxModel(sprintCache);
+         JComboBox sprintCombo = new JComboBox(model);
+         setDefaultEditor(Sprint.class, new BoardStatusCellEditor(sprintCombo, this));
+      }
    }
 
    public void setModel(MyTableModel model) {
@@ -534,7 +537,7 @@ public class MyTable extends JXTable {
       setAutoCreateRowSorter(true);
    }
 
-   public void setJiraBasedOnJiraColumns(JiraIssue jira){
+   public void setJiraBasedOnJiraColumns(JiraIssue jira) {
       model.setJiraBasedOnJiraColumns(jira);
    }
 }

@@ -37,6 +37,7 @@ import com.jonas.agile.devleadtool.gui.listener.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.gui.listener.KeyListenerToHighlightSprintSelectionElsewhere;
 import com.jonas.agile.devleadtool.gui.listener.TableListener;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.MyComponentPanel;
 
@@ -55,13 +56,10 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private JiraParseListenerImpl jiraParseListener;
 
-   public MyInternalFrameInnerPanel(PlannerHelper client) throws SAXException {
-      this(client, null, null);
-   }
-
-   public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel) throws SAXException {
+   public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel, SprintCache sprintCache) throws SAXException {
       super(new BorderLayout());
-      boardModel = (boardModel == null) ? new BoardTableModel() : boardModel;
+      //FIXME 1 - these null checks are not required I don't think? hence sprintCache need not be sent in as it is already in boardModel.
+      boardModel = (boardModel == null) ? new BoardTableModel(sprintCache) : boardModel;
       jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 
       jiraModel.setBoardModel(boardModel);
@@ -130,7 +128,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable);
       new SprintTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder, jiraTable, boardTable);
 
-      addNorth(new InnerFrameToolbar(helper.getParentFrame(), boardPanel, jiraPanel, sprintPanel, boardTable, jiraTable));
+      addNorth(new InnerFrameToolbar(helper.getParentFrame(), boardPanel, jiraPanel, sprintPanel, boardTable, jiraTable, helper));
       addCenter(combineIntoSplitPane(boardPanel, jiraMainPanel, sprintPanel));
    }
 

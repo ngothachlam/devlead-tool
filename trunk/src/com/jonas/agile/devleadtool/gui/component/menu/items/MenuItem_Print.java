@@ -36,7 +36,7 @@ public class MenuItem_Print extends MyMenuItem {
             }
          }
       };
-      // FIXME - this is quite slow!
+      // FIXME this is quite slow!
       EventQueue.invokeLater(runner);
    }
 }

@@ -169,7 +169,7 @@ public class DevLeadTool {
       plannerDAO.addListener(new DaoListener() {
          ProgressDialog dialog;
 
-         // FIXME - not very well done!
+         // FIXME not very well done!
          @Override
          public void notify(DaoListenerEvent event, String message) {
             switch (event) {

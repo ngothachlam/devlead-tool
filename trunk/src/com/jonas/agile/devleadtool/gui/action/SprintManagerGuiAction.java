@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import javax.swing.Action;
@@ -177,6 +178,9 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
 
    @Override
    public void doActionPerformed(ActionEvent e) {
+      tableSelectionListener.setSprintCache(helper.getSprintCache());
+      sprintsTableModel.setSprintCache(helper.getSprintCache());
+      sprintsTableModel.fireTableStructureChanged();
       source.clear();
       frame.pack();
       log.debug("gui's parent frame: " + getParentFrame());
@@ -284,7 +288,7 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
 
    @Override
    public void addOrSetSprint(Sprint sprint) throws IOException {
-      SprintCache sprintCache = SprintCache.getInstance();
+      SprintCache sprintCache = helper.getSprintCache();
 
       Sprint oldSprint = sprintCache.getSprintWithName(sprint.getName());
       log.debug("new sprint has name: " + sprint.getName() + " and we found oldSprint " + oldSprint);
@@ -298,11 +302,13 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
          saveToDao = sprintCache.cache(sprint, true);
       }
 
+      File excelFile = helper.getExcelFile();
+      if (excelFile == null ) {
+         saveToDao = false;
+      }
+
       if (saveToDao) {
-         dao.save(sprintCache, helper.getSprintFile());
-      } else {
-         AlertDialog.alertMessage(parentFrame, "Did not add Sprint. Are you sure this sprint (name: " + sprint.getName()
-               + ") has not been used already?");
+         dao.save(excelFile, sprintCache);
       }
 
       sprintTableModel.fireTableDataChanged();

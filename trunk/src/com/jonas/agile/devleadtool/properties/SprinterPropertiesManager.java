@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
-import com.jonas.agile.devleadtool.sprint.SprintCache;
 
 public class SprinterPropertiesManager {
 
@@ -28,11 +27,12 @@ public class SprinterPropertiesManager {
          properties.loadProperties();
          checkAndSetMissingDefaultProperties();
       }
-      
-      File sprintFile = helper.getSprintFile();
-      if (sprintFile.exists()) {
-         sprintDao.load(SprintCache.getInstance(), sprintFile);
-      }
+
+      // FIXME 1: Remove the sprintdao call from the PropertiesManager to load properties in!
+      // File sprintFile = helper.getSprintFile();
+      // if (sprintFile.exists()) {
+      // sprintDao.load(SprintCache.getInstance(), sprintFile);
+      // }
    }
 
    public void saveProperties() throws IOException {

@@ -54,12 +54,13 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
    private DateHelper dateHelper;
    private TextTitle source;
    private NumberAxis rangeAxis;
-   private LegendTitle legend;
+   private final SprintCache sprintCache;
 
-   public BoardStatsFrame(Component parent, int width, int height, MyTable sourceTable, DateHelper dateHelper) {
+   public BoardStatsFrame(Component parent, int width, int height, MyTable sourceTable, DateHelper dateHelper, SprintCache sprintCache) {
       super(parent, width, height);
       this.sourceTable = sourceTable;
       this.dateHelper = dateHelper;
+      this.sprintCache = sprintCache;
       this.prepareBurndown();
    }
 
@@ -132,7 +133,7 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       lengthOfSprintTextField = new JTextField(5);
       panel.add(lengthOfSprintTextField);
 
-      Sprint currentSprint = SprintCache.getInstance().getCurrentSprint();
+      Sprint currentSprint = sprintCache.getCurrentSprint();
       sprintName.setText(currentSprint.getName());
       dayInSprintTextField.setText(currentSprint.calculateDayInSprint().toString());
       lengthOfSprintTextField.setText(currentSprint.getLength().toString());
@@ -157,7 +158,6 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
             true, // tooltips
             false // urls
             );
-      legend = chart.getLegend();
 
       XYPlot plot = chart.getXYPlot();
       domainAxis = plot.getDomainAxis();

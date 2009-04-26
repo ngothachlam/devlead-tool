@@ -43,7 +43,7 @@ public class MenuItem_CreateMerge extends MyMenuItem {
          return;
       }
 
-      // FIXME - only allow one merge at a time or get the project, etc for each one!!
+      // FIXME only allow one merge at a time or get the project, etc for each one!!
 
       List<String> originalJiras = new ArrayList<String>();
       StringBuffer sb = new StringBuffer("Do you want to create merge Jiras for the following?\n");

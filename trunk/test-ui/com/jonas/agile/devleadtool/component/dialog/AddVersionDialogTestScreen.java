@@ -13,7 +13,7 @@ public class AddVersionDialogTestScreen {
    public static void main(String... args) {
       JFrame frame = TryoutTester.getEmptyFrame();
       frame.setVisible(true);
-      MyTable tableA = new MyTable("A", new BoardTableModel(), false);
+      MyTable tableA = new MyTable("A", new BoardTableModel(null), false);
       MyTable tableB = new MyTable("B", new JiraTableModel(), false);
       tableA.addJira("bla-1");
       tableB.addJira("bla-2");

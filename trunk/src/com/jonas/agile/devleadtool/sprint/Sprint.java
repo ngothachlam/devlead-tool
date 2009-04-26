@@ -4,12 +4,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Vector;
 import com.jonas.common.DateHelper;
 
 public class Sprint {
 
    private static final DateFormat format = new SimpleDateFormat("EEE dd-MMM-yy");
-   
+
    public void setEndDate(Date endDate) {
       this.endDate = endDate;
    }
@@ -39,12 +40,28 @@ public class Sprint {
    private int length;
    private String name;
    private Date startDate;
+   private boolean isForCombobox;
+   private static final Vector<Sprint> EXTRASPRINTS = new Vector<Sprint>();
 
    public Sprint(String name, Date startDate, Date endDate, int length) {
       this.name = name.trim();
       this.startDate = startDate;
       this.endDate = endDate;
       this.length = length;
+   }
+
+   public boolean isForCombobox() {
+      return isForCombobox;
+   }
+
+   public Sprint setForCombobox() {
+      EXTRASPRINTS.add(this);
+      isForCombobox = true;
+      return this;
+   }
+   
+   public static Vector<Sprint> getComboSprints(){
+      return EXTRASPRINTS;
    }
 
    public Sprint() {
@@ -70,11 +87,14 @@ public class Sprint {
       Date startDate = getStartDate();
       Date endDate = getEndDate();
 
+      if (startDate == null || endDate == null)
+         return SprintTime.unKnown;
+
       Calendar calendar = Calendar.getInstance();
       Date today = calendar.getTime();
 
       boolean startDatePreToday = DateHelper.isFirstBeforeSecond(startDate, today);
-      boolean endDatePostToday =  DateHelper.isFirstAfterSecond(endDate, today);
+      boolean endDatePostToday = DateHelper.isFirstAfterSecond(endDate, today);
 
       if (startDatePreToday && endDatePostToday) {
          return SprintTime.currentSprint;

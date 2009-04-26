@@ -60,9 +60,7 @@ public class SavePlannerDialog extends JFileChooser {
          }
          file = addExtensionShouldNoneBeDefined(file, ".xls");
 
-         internalFrame.setSaveFile(file);
-         dao.setXlsFile(file);
-         internalFrame.saveModels(dao);
+         internalFrame.saveModels(dao, file);
       }
    }
 

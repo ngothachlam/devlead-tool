@@ -17,6 +17,14 @@ public class ListSelectionListenerImpl implements ListSelectionListener {
    private JXDatePicker endDatePicker;
    private JTextField lengthTextField;
    private JXTable table;
+   private SprintCache sprintCache;
+   
+   public ListSelectionListenerImpl(){
+   }
+
+   public void setSprintCache(SprintCache sprintCache) {
+      this.sprintCache = sprintCache;
+   }
 
    private static final Logger log = MyLogger.getLogger(ListSelectionListenerImpl.class);
 
@@ -32,7 +40,7 @@ public class ListSelectionListenerImpl implements ListSelectionListener {
          log.debug("source: " + e.getSource());
          log.debug("getting row: " + row);
          String sprintName = (String) table.getModel().getValueAt(row, 0);
-         Sprint oldSprint = SprintCache.getInstance().getSprintFromRow(row);
+         Sprint oldSprint = sprintCache.getSprintFromRow(row);
 
          nameTextField.setText(oldSprint.getName());
          startDatePicker.setDate(oldSprint.getStartDate());
