@@ -12,6 +12,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.gui.component.DesktopPane;
 import com.jonas.agile.devleadtool.gui.component.SaveKeyListener;
+import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 import com.jonas.common.logging.MyLogger;
 
 public class LoadPlannerDialog extends JFileChooser {
@@ -23,9 +24,10 @@ public class LoadPlannerDialog extends JFileChooser {
    private SavePlannerDialog savePlannerDialog;
    private SaveKeyListener saveKeyListener;
    private Logger log = MyLogger.getLogger(LoadPlannerDialog.class);
+   private ExcelSprintDao sprintDao;
 
    public LoadPlannerDialog(DesktopPane desktop, PlannerDAO plannerDAO, JFrame frame, PlannerHelper helper, SavePlannerDialog savePlannerDialog,
-         SaveKeyListener saveKeyListener) {
+         SaveKeyListener saveKeyListener, ExcelSprintDao sprintDao) {
       super();
       this.desktop = desktop;
       this.dao = plannerDAO;
@@ -61,7 +63,7 @@ public class LoadPlannerDialog extends JFileChooser {
          final File xlsFile = getSelectedFile();
 
          SwingWorker<CombinedModelDTO, Object> swingWorker = new AbstractInternalFrameCreatorSwingthread(helper, dao, savePlannerDialog,
-               saveKeyListener, desktop, xlsFile) {
+               saveKeyListener, desktop, xlsFile, sprintDao) {
             @Override
             protected CombinedModelDTO doInBackground() throws Exception {
                CombinedModelDTO loadModels = null;

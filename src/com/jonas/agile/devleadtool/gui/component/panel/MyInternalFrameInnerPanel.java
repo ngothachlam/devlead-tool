@@ -37,6 +37,7 @@ import com.jonas.agile.devleadtool.gui.listener.JiraParseListenerImpl;
 import com.jonas.agile.devleadtool.gui.listener.KeyListenerToHighlightSprintSelectionElsewhere;
 import com.jonas.agile.devleadtool.gui.listener.TableListener;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
+import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.MyComponentPanel;
@@ -56,8 +57,11 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private JiraParseListenerImpl jiraParseListener;
 
-   public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel, SprintCache sprintCache) throws SAXException {
+   private ExcelSprintDao excelSprintDao;
+
+   public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel, SprintCache sprintCache, ExcelSprintDao excelSprintDao) throws SAXException {
       super(new BorderLayout());
+      this.excelSprintDao = excelSprintDao;
       //FIXME 1 - these null checks are not required I don't think? hence sprintCache need not be sent in as it is already in boardModel.
       boardModel = (boardModel == null) ? new BoardTableModel(sprintCache) : boardModel;
       jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
@@ -128,7 +132,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       new MyTablePopupMenu(jiraTable, helper, boardTable, jiraTable);
       new SprintTreePopupMenu(helper.getParentFrame(), tree, dndTreeBuilder, jiraTable, boardTable);
 
-      addNorth(new InnerFrameToolbar(helper.getParentFrame(), boardPanel, jiraPanel, sprintPanel, boardTable, jiraTable, helper));
+      addNorth(new InnerFrameToolbar(helper.getParentFrame(), boardPanel, jiraPanel, sprintPanel, boardTable, jiraTable, helper, excelSprintDao));
       addCenter(combineIntoSplitPane(boardPanel, jiraMainPanel, sprintPanel));
    }
 

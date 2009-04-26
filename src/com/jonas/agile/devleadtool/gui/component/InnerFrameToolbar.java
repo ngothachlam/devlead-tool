@@ -11,6 +11,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
+import com.jonas.agile.devleadtool.gui.action.SprintManagerGuiAction;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddBoardReconcileFrame;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddManualDialog;
@@ -22,27 +23,30 @@ import com.jonas.agile.devleadtool.gui.component.panel.DnDTreePanel;
 import com.jonas.agile.devleadtool.gui.component.panel.JiraPanel;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
+import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 import com.jonas.common.DateHelper;
 
 public class InnerFrameToolbar extends JToolBar {
 
    public InnerFrameToolbar(final Frame parentFrame, BoardPanel boardPanel, JiraPanel jiraPanel, DnDTreePanel sprintPanel, MyTable boardTable,
-         final MyTable jiraTable, PlannerHelper helper) {
+         final MyTable jiraTable, PlannerHelper helper, ExcelSprintDao sprintDao) {
 
       final MyTable[] tables = { boardTable, jiraTable };
 
       BasicAbstractGUIAction freezeAction = new FreezeManipulationAction(parentFrame, boardPanel, jiraPanel, sprintPanel);
       BasicAbstractGUIAction dupeAction = new CheckForDuplicatesAction("Identify Duplicates", "Higlight Duplicates in Board", parentFrame,
             boardTable);
-      BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown", "Showing Board Statistics", parentFrame, boardTable, helper);
       BasicAbstractGUIAction reconcileAction = new ReconcileManuallyAction(parentFrame, boardTable);
       BasicAbstractGUIAction addManualAction = new AddManuallyAction(parentFrame, tables);
       BasicAbstractGUIAction addFilterAction = new AddFromJiraFilterAction(parentFrame, tables);
       BasicAbstractGUIAction addVersionAction = new AddFromJiraVersionAction(parentFrame, tables);
+      
+      BasicAbstractGUIAction sprintManager = new SprintManagerGuiAction(parentFrame, helper, sprintDao);
+      BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown", "Showing Board Statistics", parentFrame, boardTable, helper);
 
       JMenuBar comp = new JMenuBar();
       comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null, freezeAction, dupeAction));
-      comp.add(getDataModificationMenu("Statistics", boardStats));
+      comp.add(getDataModificationMenu("Sprint", sprintManager, boardStats));
       this.add(comp);
 
    }

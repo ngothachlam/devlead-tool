@@ -8,25 +8,27 @@ import com.jonas.agile.devleadtool.gui.component.DesktopPane;
 import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.gui.component.SaveKeyListener;
 import com.jonas.agile.devleadtool.gui.component.panel.MyInternalFrameInnerPanel;
+import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 
 public abstract class AbstractInternalFrameCreatorSwingthread extends SwingWorker<CombinedModelDTO, Object> {
 
    private File xlsFile;
 
    public AbstractInternalFrameCreatorSwingthread(PlannerHelper helper, PlannerDAO dao, SavePlannerDialog savePlannerDialog,
-         SaveKeyListener saveKeyListener, DesktopPane desktopPane, File xlsFile) {
-      this(helper, dao, savePlannerDialog, saveKeyListener, desktopPane);
+         SaveKeyListener saveKeyListener, DesktopPane desktopPane, File xlsFile, ExcelSprintDao sprintDao) {
+      this(helper, dao, savePlannerDialog, saveKeyListener, desktopPane, sprintDao);
       this.xlsFile = xlsFile;
    }
 
    public AbstractInternalFrameCreatorSwingthread(PlannerHelper helper, PlannerDAO dao, SavePlannerDialog savePlannerDialog,
-         SaveKeyListener saveKeyListener, DesktopPane desktopPane) {
+         SaveKeyListener saveKeyListener, DesktopPane desktopPane, ExcelSprintDao sprintDao) {
       super();
       this.helper = helper;
       this.dao = dao;
       this.savePlannerDialog = savePlannerDialog;
       this.saveKeyListener = saveKeyListener;
       this.desktopPane = desktopPane;
+      this.sprintDao = sprintDao;
    }
 
    private PlannerHelper helper;
@@ -34,6 +36,7 @@ public abstract class AbstractInternalFrameCreatorSwingthread extends SwingWorke
    private SavePlannerDialog savePlannerDialog;
    private SaveKeyListener saveKeyListener;
    private DesktopPane desktopPane;
+   private ExcelSprintDao sprintDao;
 
    @Override
    protected void done() {
@@ -42,7 +45,7 @@ public abstract class AbstractInternalFrameCreatorSwingthread extends SwingWorke
          if (dto == null) {
             return;
          }
-         MyInternalFrameInnerPanel internalFrameTabPanel = new MyInternalFrameInnerPanel(helper, dto.getBoardModel(), dto.getJiraModel(), dto.getSprintCache());
+         MyInternalFrameInnerPanel internalFrameTabPanel = new MyInternalFrameInnerPanel(helper, dto.getBoardModel(), dto.getJiraModel(), dto.getSprintCache(), sprintDao);
          MyInternalFrame internalFrame = new MyInternalFrame(helper, helper.getTitle(), internalFrameTabPanel, dao, savePlannerDialog,
                saveKeyListener, desktopPane);
          if (xlsFile != null) {
