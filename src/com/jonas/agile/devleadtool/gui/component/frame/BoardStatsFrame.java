@@ -34,6 +34,8 @@ import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
+import com.jonas.agile.devleadtool.sprint.Sprint;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.DateHelper;
 import com.jonas.common.string.StringHelper;
 
@@ -117,6 +119,10 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       JPanel panel = new JPanel(new GridLayout(2, 2, 3, 3));
       panel.add(new JLabel("Day in Sprint: "));
       dayInSprintTextField = new JTextField(5);
+      
+      Sprint currentSprint = SprintCache.getInstance().getCurrentSprint();
+      dayInSprintTextField.setText(currentSprint.calculateDayInSprint());
+      
       panel.add(dayInSprintTextField);
       panel.add(new JLabel("Length of Sprint: "));
       lengthOfSprintTextField = new JTextField(5);

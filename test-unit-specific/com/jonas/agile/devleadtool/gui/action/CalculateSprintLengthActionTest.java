@@ -13,8 +13,6 @@ public class CalculateSprintLengthActionTest extends TestCase {
 
    CalculateSprintLengthAction action;
 
-   
-   
    public void testStartAdditional() {
       assertEquals(5, action.startAdditional(1));
       assertEquals(4, action.startAdditional(2));
