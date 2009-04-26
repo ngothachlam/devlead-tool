@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.sprint;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Sprint {
@@ -62,6 +63,31 @@ public class Sprint {
 
    public Date getStartDate() {
       return startDate;
+   }
+
+   public SprintTime calculateTime() {
+      Date startDate = getStartDate();
+      Date endDate = getEndDate();
+
+      Calendar calendar = Calendar.getInstance();
+      Date today = calendar.getTime();
+
+      boolean startDatePreToday = today.compareTo(startDate) >= 0;
+      boolean endDatePostToday = today.compareTo(endDate) <= 0;
+
+      if (startDatePreToday && endDatePostToday) {
+         return SprintTime.currentSprint;
+      } else if (startDatePreToday && !endDatePostToday) {
+         return SprintTime.beforeCurrentSprint;
+      } else if (!startDatePreToday && endDatePostToday) {
+         return SprintTime.afterCurrentSprint;
+      }
+      return null;
+   }
+
+   public int calculateDayInSprint() {
+      // TODO Auto-generated method stub
+      throw new RuntimeException("Method not implemented yet!");
    }
 
 }

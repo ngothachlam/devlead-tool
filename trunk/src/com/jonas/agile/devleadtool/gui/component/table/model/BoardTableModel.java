@@ -72,7 +72,7 @@ public class BoardTableModel extends MyTableModel {
       case Sprint:
          Sprint sprint = (Sprint) value;
          JiraStatistic jiraStat = getJiraStat(row, column);
-         SprintTime sprintTime = SprintCache.getInstance().getSprintTime(sprint);
+         SprintTime sprintTime = SprintCache.getInstance().calculateSprintTime(sprint);
          switch (jiraStat.devStatus()) {
          case preDevelopment:
             switch (sprintTime) {
