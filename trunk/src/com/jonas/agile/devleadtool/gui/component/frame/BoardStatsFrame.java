@@ -169,18 +169,18 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
 class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
 
    private class BurnDownDataDTO {
-      private final Map<String, JiraStat> jiras;
+      private final Map<String, JiraBurndownStat> jiras;
       double remainingDevEstimates = 0d;
       double totalDevEstimates = 0d;
       double totalQaEstimates = 0d;
       private Set<String> jiraProjects = new HashSet<String>();
 
-      protected BurnDownDataDTO(Map<String, JiraStat> jiras) {
+      protected BurnDownDataDTO(Map<String, JiraBurndownStat> jiras) {
          this.jiras = jiras;
       }
 
       public void calculateBurndownData() {
-         for (JiraStat statrow : jiras.values()) {
+         for (JiraBurndownStat statrow : jiras.values()) {
 
             if (statrow.isToIncludeInTotals()) {
                totalDevEstimates += statrow.getDevEstimate();
@@ -214,7 +214,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
 
    }
 
-   private class JiraStat {
+   private class JiraBurndownStat {
       private String jira;
       private double devEstimate = 0d;
       private double remainingDevEstimate = 0d;
@@ -224,7 +224,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
       private boolean isPreDevProgress = false;
       private boolean isToIncludeInTotals = true;
 
-      public JiraStat(String jira, MyTable boardTable, int row) {
+      public JiraBurndownStat(String jira, MyTable boardTable, int row) {
          this.jira = jira;
          this.devEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.DevEst, row));
          this.qaEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.QAEst, row));
@@ -260,14 +260,6 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
             isToIncludeInTotals = false;
          }
 
-         // StringBuffer sb = new StringBuffer(jira);
-         // sb.append(" devEst: ").append(devEstimate);
-         // sb.append(" remEst: ").append(remainingDevEstimate);
-         // sb.append(" qaEst: ").append(qaEstimate);
-         // sb.append(" isTotal: ").append(isToIncludeInTotals);
-         // sb.append(" isPreDev: ").append(isPreDevProgress);
-         // sb.append(" isInDev: ").append(isInDevProgress);
-         // System.out.println(sb.toString());
       }
 
       public boolean isToIncludeInTotals() {
@@ -302,7 +294,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
    private class JiraStatsDataDTO {
 
       private Set<String> duplicateJiras;
-      private Map<String, JiraStat> jiras;
+      private Map<String, JiraBurndownStat> jiras;
       private final MyTable sourceTable;
 
       public JiraStatsDataDTO(MyTable sourceTable) {
@@ -311,13 +303,13 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
 
       public void calculateJiraStats() {
          int rows = sourceTable.getRowCount();
-         jiras = new HashMap<String, JiraStat>();
+         jiras = new HashMap<String, JiraBurndownStat>();
          duplicateJiras = new HashSet<String>();
          System.out.println("calculating Jira Stats");
          for (int row = 0; row < rows; row++) {
             String jira = (String) sourceTable.getValueAt(Column.Jira, row);
             if (!jiras.containsKey(jira)) {
-               JiraStat statRow = new JiraStat(jira, sourceTable, row);
+               JiraBurndownStat statRow = new JiraBurndownStat(jira, sourceTable, row);
                jiras.put(jira, statRow);
             } else {
                duplicateJiras.add(jira);
@@ -329,7 +321,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
          return duplicateJiras;
       }
 
-      public Map<String, JiraStat> getJiras() {
+      public Map<String, JiraBurndownStat> getJiras() {
          return jiras;
       }
 
