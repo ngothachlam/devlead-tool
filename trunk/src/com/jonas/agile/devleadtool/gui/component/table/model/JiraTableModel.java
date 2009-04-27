@@ -17,8 +17,8 @@ public class JiraTableModel extends MyTableModel {
       nonAcceptedJiraFields.add("TBD");
    }
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.J_Sprint, Column.Project,
-         Column.FixVersion, Column.Owner, Column.Environment, Column.Delivery, Column.Resolution, Column.BuildNo, Column.J_DevEst, Column.J_DevAct };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.J_Sprint, Column.Project, Column.FixVersion,
+         Column.Owner, Column.Environment, Column.Delivery, Column.Resolution, Column.BuildNo, Column.J_DevEst, Column.J_DevAct };
 
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
@@ -47,7 +47,7 @@ public class JiraTableModel extends MyTableModel {
          return null;
       }
 
-      log.debug("The row getting color for is " + row + " (col: "+column+")and we previously edited row " + this.tempRow);
+      log.debug("The row getting color for is " + row + " (col: " + column + ")and we previously edited row " + this.tempRow);
       if (this.tempRow != row) {
          String jira = (String) getValueAt(Column.Jira, row);
          jiraRowInBoardModel = boardModel.getRowWithJira(jira);
@@ -65,14 +65,16 @@ public class JiraTableModel extends MyTableModel {
          setToolTipText(row, getColumnIndex(column), "Exists in the board!");
          return SwingUtil.cellGreen;
       case FixVersion:
-         if (!isFixVersionOk(boardModel.getValueAt(Column.Release, jiraRowInBoardModel), value)) {
-            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value or it is TBD!");
+         Object bRel = boardModel.getValueAt(Column.Release, jiraRowInBoardModel);
+         if (!isFixVersionOk(bRel, value)) {
+            setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Release value (" + bRel + ")!");
             return SwingUtil.cellRed;
          }
          break;
       case J_Sprint:
-         if (!isSprintOk(boardModel.getValueAt(Column.BoardStatus, jiraRowInBoardModel), value)) {
-            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
+         Object bSprint = boardModel.getValueAt(Column.Sprint, jiraRowInBoardModel);
+         if (!isSprintOk(bSprint, value)) {
+            setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Sprint value (" + bSprint + ")!");
             return SwingUtil.cellRed;
          }
          break;
@@ -108,7 +110,7 @@ public class JiraTableModel extends MyTableModel {
       if (value == null) {
          return false;
       }
-      
+
       if (nonAcceptedJiraFields.contains(value.toString())) {
          return false;
       }
@@ -116,16 +118,16 @@ public class JiraTableModel extends MyTableModel {
       return value.toString().trim().length() != 0;
    }
 
-   boolean isSprintOk(Object boardStatus, Object value) {
-      if (value == null) {
+   boolean isSprintOk(Object boardSprint, Object value) {
+      if (value == null || boardSprint == null) {
          return false;
       }
-      
+
       if (nonAcceptedJiraFields.contains(value.toString())) {
          return false;
       }
-      
-      return value.toString().trim().length() != 0;
+
+      return value.toString().trim().equalsIgnoreCase(boardSprint.toString());
    }
 
    boolean isFixVersionOk(Object boardValue, Object jiraValue) {

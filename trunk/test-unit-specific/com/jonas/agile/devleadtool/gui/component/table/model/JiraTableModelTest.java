@@ -48,6 +48,8 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.J_Sprint);
       header.add(Column.Project);
       header.add(Column.FixVersion);
+      header.add(Column.Owner);
+      header.add(Column.Environment);
       header.add(Column.Delivery);
       header.add(Column.Resolution);
       header.add(Column.BuildNo);
@@ -55,8 +57,8 @@ public class JiraTableModelTest extends JonasTestCase {
       header.add(Column.J_DevAct);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      String[] content = new String[] { "Jira", "Description", "J_Type", "J_Sprint", "J_Project", "J_FixVersion", "J_Delivery", "J_Resolution",
-            "J_BuildNo", "J_Dev_Estimate", "J_Dev_Spent" };
+      String[] content = new String[] { "Jira", "Desc", "J_Type", "J_Sprint", "Proj", "Fix", "Own", "Env", "Del", "Res",
+            "BuildNo", "J_DevEst", "J_DevAct" };
       contents.add(getTestRowVector(content, 0));
       contents.add(getTestRowVector(content, 1));
 
@@ -108,12 +110,14 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldHiglightIncorrectSprints() {
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Approved, null));
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Approved, ""));
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Approved, " "));
-      assertFalse(jiraModel.isSprintOk(BoardStatusValue.Approved, "TBD"));
-      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Approved, "13-1"));
-      assertTrue(jiraModel.isSprintOk(BoardStatusValue.Approved, "A"));
+      assertFalse(jiraModel.isSprintOk("", null));
+      assertFalse(jiraModel.isSprintOk("", "1"));
+      assertFalse(jiraModel.isSprintOk(null, ""));
+      
+      assertTrue(jiraModel.isSprintOk("", " "));
+      assertTrue(jiraModel.isSprintOk("", ""));
+      assertTrue(jiraModel.isSprintOk("13-1", "13-1"));
+      assertTrue(jiraModel.isSprintOk("A", "A"));
    }
 
    public void testShouldHiglightIncorrectProjects() {
