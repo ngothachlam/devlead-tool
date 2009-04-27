@@ -18,7 +18,6 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.CellEditorListener;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -478,7 +477,8 @@ public class MyTable extends JXTable {
          int tableSelectedRow = selectedRows[count];
          String jira = (String) getValueAt(Column.Jira, tableSelectedRow);
          int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
-         log.debug("Removing selected row: " + convertRowIndexToModel);
+         if (log.isDebugEnabled())
+            log.debug("Removing selected row: " + convertRowIndexToModel);
          model.removeRow(convertRowIndexToModel);
          notifyAllListenersThatJiraWasRemoved(jira);
       }
