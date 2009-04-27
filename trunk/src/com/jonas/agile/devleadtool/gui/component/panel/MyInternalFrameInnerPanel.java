@@ -59,14 +59,16 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private ExcelSprintDao excelSprintDao;
 
-   public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel, SprintCache sprintCache, ExcelSprintDao excelSprintDao) throws SAXException {
+   public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel, SprintCache sprintCache,
+         ExcelSprintDao excelSprintDao) throws SAXException {
       super(new BorderLayout());
       this.excelSprintDao = excelSprintDao;
-      //FIXME 1 - these null checks are not required I don't think? hence sprintCache need not be sent in as it is already in boardModel.
+      // FIXME 1 - these null checks are not required I don't think? hence sprintCache need not be sent in as it is already in boardModel.
       boardModel = (boardModel == null) ? new BoardTableModel(sprintCache) : boardModel;
       jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 
       jiraModel.setBoardModel(boardModel);
+      boardModel.setJiraModel(jiraModel);
 
       DnDTreeModel model = new DnDTreeModel("LLU");
       SprintTree tree = new SprintTree(model);
@@ -138,8 +140,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private JPanel getJiraPanelButtonRow() {
       JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
-      HighlightIssuesAction highlightAction = new HighlightIssuesAction("Higlight Issues", jiraPanel.getTable().getMyModel(), jiraPanel
-            .getTable());
+      HighlightIssuesAction highlightAction = new HighlightIssuesAction("Higlight Issues", jiraPanel.getTable(), boardPanel.getTable());
       jiraButtonPanel.add(new JCheckBox(highlightAction));
       return jiraButtonPanel;
    }
@@ -147,7 +148,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    private void setBoardDataListeners(final MyTableModel boardModel, final MyTable boardTable, final MyTable jiraTable, SprintTree sprintTree) {
       boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
       boardTable.addListener(new MyBoardTableListener());
-//      boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
+      // boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
       boardModel.addTableModelListener(new FireUpdateOnOtherTableWhenUpdatedListener(jiraTable));
    }
 
@@ -198,37 +199,34 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    }
 
    private final class HighlightIssuesAction extends AbstractAction {
-      private final MyTableModel jiraModel;
-      private final MyTable jiraTable;
 
-      private HighlightIssuesAction(String name, MyTableModel jiramodel, MyTable jiraTable) {
+      private final MyTable[] tables;
+
+      private HighlightIssuesAction(String name, MyTable... tables) {
          super(name);
-         this.jiraModel = jiramodel;
-         this.jiraTable = jiraTable;
+         this.tables = tables;
       }
 
       @Override
       public void actionPerformed(ActionEvent e) {
          JCheckBox button = (JCheckBox) e.getSource();
 
-         int[] selectedRows = saveSelection();
-
-         jiraModel.setRenderColors(button.isSelected());
-         jiraModel.fireTableDataChanged();
-         log.debug("Setting rendering colors to " + button.isSelected());
-
-         resetSelection(selectedRows);
-      }
-
-      private void resetSelection(int[] selectedRows) {
-         for (int i = 0; i < selectedRows.length; i++) {
-            jiraTable.setRowSelectionInterval(i, i);
+         for (MyTable table : tables) {
+            int[] selectedRows = table.getSelectedRows();
+            MyTableModel model = table.getMyModel();
+            model.setRenderColors(button.isSelected());
+            model.fireTableDataChanged();
+            restoreSelection(selectedRows, table);
          }
       }
 
-      private int[] saveSelection() {
-         int[] selectedRows = jiraTable.getSelectedRows();
-         return selectedRows;
+      private void restoreSelection(int[] selectedRows, MyTable table) {
+         log.debug("restore Selection");
+         for (int i : selectedRows) {
+            if (log.isDebugEnabled())
+               log.debug("selecting row " + i + " to table " + table.getTitle());
+            table.setRowSelectionInterval(i, i);
+         }
       }
    }
 

@@ -39,7 +39,7 @@ public class JiraTableModel extends MyTableModel {
 
    @Override
    public Color getColor(Object value, int row, Column column) {
-      if (shouldRenderColors()) {
+      if (shouldNotRenderColors()) {
          return null;
       }
 
@@ -52,8 +52,9 @@ public class JiraTableModel extends MyTableModel {
       if (this.tempRow != row) {
          String jira = (String) getValueAt(Column.Jira, row);
          jiraRowInBoardModel = boardModel.getRowWithJira(jira);
-         log.debug("... so we are editing a new row! Lets get the jira, which is " + jira + " and the board row for this jira: "
-               + jiraRowInBoardModel);
+         if (log.isDebugEnabled())
+            log.debug("... so we are editing a new row! Lets get the jira, which is " + jira + " and the board row for this jira: "
+                  + jiraRowInBoardModel);
          this.tempRow = row;
       }
 
