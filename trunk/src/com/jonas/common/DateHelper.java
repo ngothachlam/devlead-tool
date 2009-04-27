@@ -97,4 +97,14 @@ public class DateHelper {
    public static boolean isFirstBeforeSecond(Date first, Date second){
       return second.compareTo(first) >= 0;
    }
+
+   public static boolean isSameDay(Date start, Date second) {
+      Calendar cal1 = Calendar.getInstance();
+      cal1.setTime(start);
+      
+      Calendar cal2 = Calendar.getInstance();
+      cal2.setTime(second);
+
+      return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+   }
 }

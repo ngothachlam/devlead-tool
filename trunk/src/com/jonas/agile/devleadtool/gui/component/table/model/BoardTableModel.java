@@ -72,6 +72,7 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case Sprint:
+         
          if(getSprintCache() == null){
             String errorMessage = "Error! No sprint cache defined!!";
             setToolTipText(row, getColumnIndex(column), errorMessage);
@@ -86,7 +87,7 @@ public class BoardTableModel extends MyTableModel {
          case preDevelopment:
             switch (sprintTime) {
             case beforeCurrentSprint:
-               setToolTipText(row, getColumnIndex(column), "The jira is in pre-development and this sprint is not in the past!");
+               setToolTipText(row, getColumnIndex(column), "The jira is in pre-development ("+jiraStat.devStatus()+") and this sprint is not in the past ("+sprintTime+")!");
                return SwingUtil.cellRed;
             }
             return null;
@@ -96,7 +97,7 @@ public class BoardTableModel extends MyTableModel {
             case unKnown:
             case afterCurrentSprint:
             case beforeCurrentSprint:
-               setToolTipText(row, getColumnIndex(column), "The jira is in-progress and this sprint is not current!");
+               setToolTipText(row, getColumnIndex(column), "The jira is in-progress ("+jiraStat.devStatus()+") and this sprint is not current ("+sprintTime+")!");
                return SwingUtil.cellRed;
             }
             return null;
@@ -104,7 +105,7 @@ public class BoardTableModel extends MyTableModel {
             switch (sprintTime) {
             case unKnown:
             case afterCurrentSprint:
-               setToolTipText(row, getColumnIndex(column), "The jira is closed and this sprint is not current nor in the past!");
+               setToolTipText(row, getColumnIndex(column), "The jira is closed ("+jiraStat.devStatus()+") and this sprint is not current nor in the past ("+sprintTime+")!");
                return SwingUtil.cellRed;
             }
             return null;
