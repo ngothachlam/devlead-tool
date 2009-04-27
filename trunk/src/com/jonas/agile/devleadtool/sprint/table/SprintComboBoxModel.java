@@ -10,7 +10,7 @@ public class SprintComboBoxModel extends AbstractListModel implements ComboBoxMo
 
    private Vector<Sprint> vector;
    private Object selectedItem;
-   
+
    private static final Sprint EMPTYSPRINT = new Sprint("", null, null, 0).setForCombobox();
 
    public SprintComboBoxModel(SprintCache sprintCache) {
@@ -19,12 +19,12 @@ public class SprintComboBoxModel extends AbstractListModel implements ComboBoxMo
 
    @Override
    public Object getSelectedItem() {
-      return selectedItem;
+      return selectedItem == null ? EMPTYSPRINT : selectedItem;
    }
 
    @Override
    public void setSelectedItem(Object anItem) {
-      selectedItem = anItem;
+      selectedItem = anItem == null ? EMPTYSPRINT : anItem;
    }
 
    @Override
