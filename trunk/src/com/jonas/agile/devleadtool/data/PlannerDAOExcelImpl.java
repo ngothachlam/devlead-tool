@@ -39,6 +39,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    private int savesNow = 0;
    private final ExcelSprintDao sprintDao;
    private SprintCache sprintCache;
+   private int key;
 
    @Inject
    public PlannerDAOExcelImpl(ExcelSprintDao sprintDao) {
@@ -85,6 +86,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       TableModelDTO dataModelDTO = new TableModelDTO(header, contents);
       try {
          int rowCount = -1;
+         key = -1;
 
          inp = new FileInputStream(xlsFile);
          POIFSFileSystem fileSystem = new POIFSFileSystem(inp);
@@ -101,10 +103,9 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             int colCount = -1;
             // for each column in the row...
             for (Iterator<HSSFCell> cit = row.cellIterator(); cit.hasNext();) {
-               colCount++;
                HSSFCell cell = cit.next();
                int cellType = cell.getCellType();
-               log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + colCount);
+               log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + (++colCount));
                Object cellContents = null;
                switch (cellType) {
                case HSSFCell.CELL_TYPE_BLANK:
@@ -124,13 +125,26 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                setValue(dataModelDTO, rowCount, columns, rowData, colCount, cellContents);
             }
             if (rowCount != 0)
-               dataModelDTO.getContents().add(rowData);
+               addRowData(dataModelDTO, rowData);
          }
       } finally {
          if (inp != null)
             inp.close();
       }
       return dataModelDTO;
+   }
+
+   private void addRowData(TableModelDTO dataModelDTO, Vector<Object> rowData) {
+      Vector<Vector<Object>> contents = dataModelDTO.getContents();
+      
+      Object rowDataKey = rowData.get(key);
+      
+      for (Vector<Object> vector : contents) {
+         if(vector.get(key).equals(rowDataKey)){
+            return;
+         }
+      }
+      contents.add(rowData);
    }
 
    @Override
@@ -283,6 +297,9 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          columns.put(colCount, column);
          if (column.isToLoad())
             dataModelDTO.getHeader().add(column);
+         if(column.isKey()){
+            key = colCount;
+         }
       } else {
          addCellValue(columns, rowData, colCount, cellContents);
       }
