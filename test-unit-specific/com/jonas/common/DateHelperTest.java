@@ -1,11 +1,22 @@
 package com.jonas.common;
 
 import java.util.Calendar;
+import java.util.Date;
 import junit.framework.TestCase;
 
 public class DateHelperTest extends TestCase {
 
    DateHelper helper;
+   
+   public void testSameDay() {
+      assertTrue(DateHelper.isSameDay(getCalendar(27, 4, 2009).getTime(), getToday()));
+      assertFalse(DateHelper.isSameDay(getCalendar(26, 4, 2009).getTime(), getToday()));
+      assertFalse(DateHelper.isSameDay(getCalendar(28, 4, 2009).getTime(), getToday()));
+   }
+   private Date getToday() {
+      Calendar calendar = Calendar.getInstance();
+      return calendar.getTime();
+   }
    
    public void testStartAdditional() {
       assertEquals(5, DateHelper.startAdditional(1));
@@ -81,20 +92,14 @@ public class DateHelperTest extends TestCase {
       assertFalse(DateHelper.isWorkingDay(getCalendar(11, 1, 2009)));
    }
 
-   public void testShouldTestGettinNiceDateAsStringOk() {
-      Calendar calendar = Calendar.getInstance();
-      calendar.set(Calendar.DAY_OF_MONTH, 21);
-      calendar.set(Calendar.MONTH, 2);
-      calendar.set(Calendar.YEAR, 2009);
-
-      assertEquals("21/03-2009", helper.getDateAsString(calendar.getTime()));
-   }
-
    private Calendar getCalendar(int dayOfMonth, int month, int year) {
       Calendar calendar = Calendar.getInstance();
       calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
       calendar.set(Calendar.MONTH, month - 1);
       calendar.set(Calendar.YEAR, year);
+      calendar.set(Calendar.HOUR, 0);
+      calendar.set(Calendar.MINUTE, 0);
+      calendar.set(Calendar.SECOND, 0);
       return calendar;
    }
 

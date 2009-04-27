@@ -5,10 +5,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
+import org.apache.log4j.Logger;
+import org.jfree.util.Log;
 import com.jonas.common.DateHelper;
+import com.jonas.common.logging.MyLogger;
 
 public class Sprint {
 
+   private static final Logger log = MyLogger.getLogger(Sprint.class);
    private static final DateFormat format = new SimpleDateFormat("EEE dd-MMM-yy");
 
    public void setEndDate(Date endDate) {
@@ -59,8 +63,8 @@ public class Sprint {
       isForCombobox = true;
       return this;
    }
-   
-   public static Vector<Sprint> getComboSprints(){
+
+   public static Vector<Sprint> getComboSprints() {
       return EXTRASPRINTS;
    }
 
@@ -93,14 +97,17 @@ public class Sprint {
       Calendar calendar = Calendar.getInstance();
       Date today = calendar.getTime();
 
-      boolean startDatePreToday = DateHelper.isFirstBeforeSecond(startDate, today);
-      boolean endDatePostToday = DateHelper.isFirstAfterSecond(endDate, today);
+      boolean startDateIsTodayOrBefore = DateHelper.isFirstBeforeSecond(startDate, today);
+      boolean endDateIsTodayOrAfter = DateHelper.isSameDay(endDate, today) || DateHelper.isFirstAfterSecond(endDate, today);
 
-      if (startDatePreToday && endDatePostToday) {
+      log.debug("startDate: " + startDate + " endDate: " + endDate + " startDatePreToday: " + startDateIsTodayOrBefore + " endDatePostToday: "
+            + endDateIsTodayOrAfter);
+
+      if (startDateIsTodayOrBefore && endDateIsTodayOrAfter) {
          return SprintTime.currentSprint;
-      } else if (startDatePreToday && !endDatePostToday) {
+      } else if (startDateIsTodayOrBefore && !endDateIsTodayOrAfter) {
          return SprintTime.beforeCurrentSprint;
-      } else if (!startDatePreToday && endDatePostToday) {
+      } else if (!startDateIsTodayOrBefore && endDateIsTodayOrAfter) {
          return SprintTime.afterCurrentSprint;
       }
       return null;
@@ -109,7 +116,7 @@ public class Sprint {
    public Integer calculateDayInSprint() {
       Calendar calendar = Calendar.getInstance();
       Date today = calendar.getTime();
-      return DateHelper.getWorkingDaysBetween(startDate, today);
+      return DateHelper.getWorkingDaysBetween(startDate, today) - 1;
    }
 
 }
