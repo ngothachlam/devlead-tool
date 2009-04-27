@@ -22,6 +22,7 @@ public class BoardTableModel extends MyTableModel {
          Column.BoardStatus, Column.Old, Column.DevEst, Column.DevRem, Column.DevAct, Column.QAEst, Column.prio, Column.Note, Column.Sprint };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
+   private MyTableModel jiraModel;
 
    public BoardTableModel(SprintCache sprintCache) {
       super(columns);
@@ -31,6 +32,10 @@ public class BoardTableModel extends MyTableModel {
    public BoardTableModel(Vector<Vector<Object>> contents, Vector<Column> header, SprintCache sprintCache) {
       super(columns, contents, header);
       setSprintCache(sprintCache);
+   }
+
+   public void setJiraModel(MyTableModel jiraModel) {
+      this.jiraModel = jiraModel;
    }
 
    @Override
@@ -45,6 +50,14 @@ public class BoardTableModel extends MyTableModel {
       }
 
       switch (column) {
+      case Jira:
+         if (shouldNotRenderColors() || jiraModel == null)
+            return null;
+         if (jiraModel.isJiraPresent(value.toString())) {
+            setToolTipText(row, getColumnIndex(column), "Exists in the Jira Panel!");
+            return SwingUtil.cellGreen;
+         }
+         break;
       case Resolution:
          stringValue = (String) value;
          if (!isEmptyString(stringValue)) {

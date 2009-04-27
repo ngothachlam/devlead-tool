@@ -393,7 +393,9 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public int getRowWithJira(String name) {
       for (int row = 0; row < getRowCount(); row++) {
-         if (name.equalsIgnoreCase((String) getValueAt(Column.Jira, row))) {
+         Object jira = getValueAt(Column.Jira, row);
+         String jiraAsString = jira.toString();
+         if (name.equalsIgnoreCase(jiraAsString)) {
             return row;
          }
       }
@@ -498,12 +500,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public boolean isJiraPresent(String name) {
       log.debug("does " + name + " exist in " + getClass());
-      for (int row = 0; row < getRowCount(); row++) {
-         if (name.equalsIgnoreCase(getValueAt(Column.Jira, row).toString())) {
-            return true;
-         }
-      }
-      return false;
+      return getRowWithJira(name) == -1 ? false : true;
    }
 
    public boolean isMarked(int row) {
@@ -564,7 +561,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       setValueAt(value, row, column);
    }
 
-   protected boolean shouldRenderColors() {
+   protected boolean shouldNotRenderColors() {
       return renderColors != true;
    }
 
