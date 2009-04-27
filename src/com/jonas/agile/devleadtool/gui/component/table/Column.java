@@ -9,7 +9,7 @@ import com.jonas.agile.devleadtool.sprint.SprintCache;
 
 public enum Column {
    // String Defaults
-   Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false, CacheMode.noCache, true) {
+   Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false, CacheMode.noCache) {
 
       @Override
       public String parseFromPersistanceStore(Object cellContents) {
@@ -107,15 +107,9 @@ public enum Column {
    private final ToLoadColumn isToLoad;
    private final Boolean isNumeric;
    private final CacheMode cacheMode;
-   private boolean isKey = false;
 
    // private static Map<String, Column> columns;
 
-   private <T> Column(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad,
-         Boolean isNumeric, CacheMode cacheMode, Boolean isKey) {
-      this(defaultClass, defaultValue, isEditable, isJiraColumn, isToLoad, isNumeric, cacheMode);
-      this.isKey = isKey;
-   }
    private <T> Column(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad,
          Boolean isNumeric, CacheMode cacheMode) {
       this.defaultClass = defaultClass;
@@ -194,10 +188,6 @@ public enum Column {
 
    public boolean isUsingCache() {
       return cacheMode.equals(CacheMode.usesCache);
-   }
-
-   public boolean isKey() {
-      return isKey;
    }
 
 }

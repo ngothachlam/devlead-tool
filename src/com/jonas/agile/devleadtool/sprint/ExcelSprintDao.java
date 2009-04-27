@@ -14,17 +14,12 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.common.logging.MyLogger;
 
 public class ExcelSprintDao {
    private static final String SPRINT_SHEETNAME = "Sprints";
    private Logger log = MyLogger.getLogger(ExcelSprintDao.class);
-
-   protected HSSFSheet getSheet(String sheetName, HSSFWorkbook wb) {
-      HSSFSheet sheet = wb.getSheet(sheetName);
-      sheet = sheet == null ? wb.createSheet(sheetName) : sheet;
-      return sheet;
-   }
 
    public SprintCache load(File xlsFile) throws IOException {
       SprintCache sprintCache = new SprintCache();
@@ -38,7 +33,7 @@ public class ExcelSprintDao {
          inp = new FileInputStream(xlsFile);
          POIFSFileSystem fileSystem = new POIFSFileSystem(inp);
          HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
-         HSSFSheet sheet = getSheet(SPRINT_SHEETNAME, wb);
+         HSSFSheet sheet = PlannerDAOExcelImpl.getSheet(SPRINT_SHEETNAME, wb, false);
 
          // for each row in the sheet...
          int rowCount = 0;
@@ -85,7 +80,7 @@ public class ExcelSprintDao {
          HSSFWorkbook wb = new HSSFWorkbook(fileIn);
          if (fileIn != null)
             fileIn.close();
-         HSSFSheet sheet = getSheet(SPRINT_SHEETNAME, wb);
+         HSSFSheet sheet = PlannerDAOExcelImpl.getSheet(SPRINT_SHEETNAME, wb, true);
 
          
          int columnMaxCount = createSprintHeaders(sheet, sprintCache);
@@ -132,11 +127,4 @@ public class ExcelSprintDao {
       }
       return columnMaxCount;
    }
-
-   private void resetTheSprintFileBeforeSaving(File xlsFile) throws IOException {
-      if (xlsFile.exists())
-         xlsFile.delete();
-      xlsFile.createNewFile();
-   }
-
 }
