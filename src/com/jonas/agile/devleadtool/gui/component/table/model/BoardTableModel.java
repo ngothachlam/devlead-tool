@@ -35,7 +35,8 @@ public class BoardTableModel extends MyTableModel {
 
    @Override
    public Color getColor(Object value, int row, Column column) {
-      log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
+      if (log.isDebugEnabled())
+         log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
       String stringValue;
 
       if (value == null) {
@@ -72,22 +73,24 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case Sprint:
-         
-         if(getSprintCache() == null){
+
+         if (getSprintCache() == null) {
             String errorMessage = "Error! No sprint cache defined!!";
             setToolTipText(row, getColumnIndex(column), errorMessage);
             log.error(errorMessage);
             return SwingUtil.cellRed;
          }
          Sprint sprint = getSprintCache().getSprintWithName(value.toString());
-         log.debug("Value: " + value + " sprint: " + sprint);
+         if (log.isDebugEnabled())
+            log.debug("Value: " + value + " sprint: " + sprint);
          JiraStatistic jiraStat = getJiraStat(row, column);
          SprintTime sprintTime = sprint.calculateTime();
          switch (jiraStat.devStatus()) {
          case preDevelopment:
             switch (sprintTime) {
             case beforeCurrentSprint:
-               setToolTipText(row, getColumnIndex(column), "The jira is in pre-development ("+jiraStat.devStatus()+") and this sprint is not in the past ("+sprintTime+")!");
+               setToolTipText(row, getColumnIndex(column), "The jira is in pre-development (" + jiraStat.devStatus()
+                     + ") and this sprint is not in the past (" + sprintTime + ")!");
                return SwingUtil.cellRed;
             }
             return null;
@@ -97,7 +100,8 @@ public class BoardTableModel extends MyTableModel {
             case unKnown:
             case afterCurrentSprint:
             case beforeCurrentSprint:
-               setToolTipText(row, getColumnIndex(column), "The jira is in-progress ("+jiraStat.devStatus()+") and this sprint is not current ("+sprintTime+")!");
+               setToolTipText(row, getColumnIndex(column), "The jira is in-progress (" + jiraStat.devStatus()
+                     + ") and this sprint is not current (" + sprintTime + ")!");
                return SwingUtil.cellRed;
             }
             return null;
@@ -105,7 +109,8 @@ public class BoardTableModel extends MyTableModel {
             switch (sprintTime) {
             case unKnown:
             case afterCurrentSprint:
-               setToolTipText(row, getColumnIndex(column), "The jira is closed ("+jiraStat.devStatus()+") and this sprint is not current nor in the past ("+sprintTime+")!");
+               setToolTipText(row, getColumnIndex(column), "The jira is closed (" + jiraStat.devStatus()
+                     + ") and this sprint is not current nor in the past (" + sprintTime + ")!");
                return SwingUtil.cellRed;
             }
             return null;
@@ -181,10 +186,12 @@ public class BoardTableModel extends MyTableModel {
 
    public BoardStatusValue getStatus(String jira) {
       int row = getRowWithJira(jira);
-      log.debug("row: " + row + " for jira: " + jira);
+      if (log.isDebugEnabled())
+         log.debug("row: " + row + " for jira: " + jira);
       if (row >= 0) {
          BoardStatusValue valueAt = (BoardStatusValue) getValueAt(Column.BoardStatus, jira);
-         log.debug("valueat: " + valueAt);
+         if (log.isDebugEnabled())
+            log.debug("valueat: " + valueAt);
          return valueAt;
       }
       return BoardStatusValue.NA;
@@ -196,7 +203,8 @@ public class BoardTableModel extends MyTableModel {
       Iterator<BoardStatusValue> iter = set.iterator();
       while (iter.hasNext()) {
          BoardStatusValue type = iter.next();
-         log.debug("\tset contains: " + type);
+         if (log.isDebugEnabled())
+            log.debug("\tset contains: " + type);
       }
       return contains;
    }

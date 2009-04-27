@@ -47,7 +47,8 @@ public class JiraTableModel extends MyTableModel {
          return null;
       }
 
-      log.debug("The row getting color for is " + row + " (col: " + column + ")and we previously edited row " + this.tempRow);
+      if (log.isDebugEnabled())
+         log.debug("The row getting color for is " + row + " (col: " + column + ")and we previously edited row " + this.tempRow);
       if (this.tempRow != row) {
          String jira = (String) getValueAt(Column.Jira, row);
          jiraRowInBoardModel = boardModel.getRowWithJira(jira);
@@ -59,7 +60,8 @@ public class JiraTableModel extends MyTableModel {
       if (jiraRowInBoardModel == -1)
          return null;
 
-      log.debug("... The Jira was found in the board. We now want to check the " + column + " as it's value is \"" + value + "\"");
+      if (log.isDebugEnabled())
+         log.debug("... The Jira was found in the board. We now want to check the " + column + " as it's value is \"" + value + "\"");
       switch (column) {
       case Jira:
          setToolTipText(row, getColumnIndex(column), "Exists in the board!");
@@ -131,7 +133,8 @@ public class JiraTableModel extends MyTableModel {
    }
 
    boolean isFixVersionOk(Object boardValue, Object jiraValue) {
-      log.debug("boardValue: \"" + boardValue + "\" jiraValue: " + jiraValue);
+      if (log.isDebugEnabled())
+         log.debug("boardValue: \"" + boardValue + "\" jiraValue: " + jiraValue);
       if (jiraValue == null) {
          if (boardValue == null || boardValue.toString().trim().length() == 0)
             return true;
@@ -144,8 +147,9 @@ public class JiraTableModel extends MyTableModel {
    }
 
    boolean isJiraNumberOk(Object boardValue, Object jiraValue) {
-      log.debug("... We are trying to check if either the board or jira has numberical or string values (boardValue: " + boardValue
-            + ", jiraValue: " + jiraValue + ")");
+      if (log.isDebugEnabled())
+         log.debug("... We are trying to check if either the board or jira has numberical or string values (boardValue: " + boardValue
+               + ", jiraValue: " + jiraValue + ")");
       String boardString = boardValue == null ? null : boardValue.toString().trim();
       String jiraString = jiraValue == null ? null : jiraValue.toString().trim();
 
