@@ -39,7 +39,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    private int savesNow = 0;
    private final ExcelSprintDao sprintDao;
    private SprintCache sprintCache;
-   private int key;
 
    @Inject
    public PlannerDAOExcelImpl(ExcelSprintDao sprintDao) {
@@ -69,10 +68,16 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       listeners.add(daoListener);
    }
 
-   protected HSSFSheet getSheet(String sheetName, HSSFWorkbook wb) {
+   public static HSSFSheet getSheet(String sheetName, HSSFWorkbook wb, boolean deleteRows) {
       HSSFSheet sheet = wb.getSheet(sheetName);
-      sheet = sheet == null ? wb.createSheet(sheetName) : sheet;
-      return sheet;
+      
+      if(deleteRows && sheet != null){
+         int index = wb.getSheetIndex(sheetName);
+         wb.removeSheetAt(index);
+         sheet = null;
+      }
+      
+      return sheet == null ? wb.createSheet(sheetName) : sheet;
    }
 
    TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException, PersistanceException {
@@ -86,13 +91,12 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       TableModelDTO dataModelDTO = new TableModelDTO(header, contents);
       try {
          int rowCount = -1;
-         key = -1;
 
          inp = new FileInputStream(xlsFile);
          POIFSFileSystem fileSystem = new POIFSFileSystem(inp);
          HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
 
-         HSSFSheet sheet = getSheet(sheetName, wb);
+         HSSFSheet sheet = getSheet(sheetName, wb, false);
          Map<Integer, Column> columns = new HashMap<Integer, Column>();
          // for each row in the sheet...
          for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {
@@ -136,14 +140,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    private void addRowData(TableModelDTO dataModelDTO, Vector<Object> rowData) {
       Vector<Vector<Object>> contents = dataModelDTO.getContents();
-      
-      Object rowDataKey = rowData.get(key);
-      
-      for (Vector<Object> vector : contents) {
-         if(vector.get(key).equals(rowDataKey)){
-            return;
-         }
-      }
       contents.add(rowData);
    }
 
@@ -226,7 +222,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          if (fileIn != null)
             fileIn.close();
 
-         HSSFSheet sheet = getSheet(sheetName, wb);
+         HSSFSheet sheet = getSheet(sheetName, wb, true);
 
          // HSSFCellStyle style_red_background = wb.createCellStyle();
          // style_red_background.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
@@ -297,9 +293,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          columns.put(colCount, column);
          if (column.isToLoad())
             dataModelDTO.getHeader().add(column);
-         if(column.isKey()){
-            key = colCount;
-         }
       } else {
          addCellValue(columns, rowData, colCount, cellContents);
       }
