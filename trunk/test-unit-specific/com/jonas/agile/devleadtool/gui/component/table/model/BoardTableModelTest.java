@@ -58,24 +58,6 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(model.getColumnNames().size(), model.getEmptyRow().length);
    }
 
-   public void testColumnNames() {
-      Map<Column, Integer> columnNames = model.getColumnNames();
-      assertEquals(new Integer(0).intValue(), columnNames.get(Column.Jira).intValue());
-      assertEquals(new Integer(1).intValue(), columnNames.get(Column.Description).intValue());
-      assertEquals(new Integer(2).intValue(), columnNames.get(Column.Resolution).intValue());
-      assertEquals(new Integer(3).intValue(), columnNames.get(Column.Release).intValue());
-      assertEquals(new Integer(4).intValue(), columnNames.get(Column.Merge).intValue());
-      assertEquals(new Integer(5).intValue(), columnNames.get(Column.BoardStatus).intValue());
-      assertEquals(new Integer(6).intValue(), columnNames.get(Column.Old).intValue());
-      assertEquals(new Integer(7).intValue(), columnNames.get(Column.DevEst).intValue());
-      assertEquals(new Integer(8).intValue(), columnNames.get(Column.DevRem).intValue());
-      assertEquals(new Integer(9).intValue(), columnNames.get(Column.DevAct).intValue());
-      assertEquals(new Integer(10).intValue(), columnNames.get(Column.QAEst).intValue());
-      assertEquals(new Integer(11).intValue(), columnNames.get(Column.prio).intValue());
-      assertEquals(new Integer(12).intValue(), columnNames.get(Column.Note).intValue());
-      assertEquals(13, columnNames.size());
-   }
-
    public void testShouldGetAnyBoolColumnBackOk() {
       model.addJira(new JiraIssue("LLU-1", "llu-1 summary", "llu-1 status", "llu-1 resolution", "llu-1 type"));
 
@@ -133,7 +115,6 @@ public class BoardTableModelTest extends JonasTestCase {
       MyTableModel model = new BoardTableModel(contents, header, null);
 
       assertEquals(2, model.getRowCount());
-      assertEquals(13, model.getColumnCount());
       assertEquals("0.0", model.getValueAt(0, 0));
       assertEquals("0.1", model.getValueAt(0, 1));
       assertEquals("0.2", model.getValueAt(0, 2));
@@ -167,7 +148,6 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals("", emptyRow[10]); // QA Estimate
       assertEquals(null, emptyRow[11]); // Prio
       assertEquals("", emptyRow[12]); // Note
-      assertEquals(13, emptyRow.length);
    }
 
    public void testGetEmptyRowFromBodard() {

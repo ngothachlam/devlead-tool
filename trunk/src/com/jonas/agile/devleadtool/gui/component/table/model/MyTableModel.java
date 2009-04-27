@@ -34,128 +34,18 @@ class Counter {
 
 public abstract class MyTableModel extends DefaultTableModel {
 
-   private class JiraRowState implements TableModelListener {
-      List<String> jiras = new ArrayList<String>();;
-
-      private JiraRowState() {
-         for (int row = 0; row < getRowCount(); row++) {
-            jiras.add((String) getValueAt(row, 0));
-         }
-      }
-
-      public boolean contains(String name) {
-         return jiras.contains(name);
-      }
-
-      public int indexOf(String name) {
-         return jiras.indexOf(name);
-      }
-
-      @Override
-      public void tableChanged(TableModelEvent e) {
-         int firstRow = e.getFirstRow();
-         int lastRow = e.getLastRow();
-         switch (e.getType()) {
-         case TableModelEvent.INSERT:
-            log.debug("insert firstRow: " + firstRow + " lastRow: " + lastRow);
-            for (int row = firstRow; row <= lastRow; row++) {
-               jiras.add((String) getValueAt(row, 0));
-            }
-            break;
-         case TableModelEvent.DELETE:
-            log.debug("delete firstRow: " + firstRow + " lastRow: " + lastRow);
-            for (int row = firstRow; row <= lastRow; row++) {
-               jiras.remove(row);
-            }
-            break;
-         case TableModelEvent.UPDATE:
-            log.debug("update firstRow: " + firstRow + " lastRow: " + lastRow);
-            for (int row = firstRow; row <= lastRow; row++) {
-               if (e.getColumn() == TableModelEvent.ALL_COLUMNS || e.getColumn() == 0)
-                  jiras.remove(row);
-               jiras.add(row, (String) getValueAt(row, 0));
-            }
-            break;
-         }
-      }
-
-   }
-
-   private class ModelMarker implements TableModelListener {
-
-      private Map<Integer, Boolean> marked = new HashMap<Integer, Boolean>();
-
-      private ModelMarker() {
-         for (int row = 0; row < getRowCount(); row++) {
-            marked.put(row, Boolean.FALSE);
-         }
-      }
-
-      public void clearMarked() {
-         for (int row = 0; row < getRowCount(); row++) {
-            unMark(row);
-         }
-      }
-
-      public boolean isMarked(int row) {
-         if (marked == null || marked.size() == 0)
-            return false;
-         return marked.containsKey(row) ? marked.get(row) : false;
-      }
-
-      public void mark(int row) {
-         marked.put(row, Boolean.TRUE);
-         fireTableRowsUpdated(row, row);
-      }
-
-      @Override
-      public void tableChanged(TableModelEvent e) {
-         int firstRow = e.getFirstRow();
-         int lastRow = e.getLastRow();
-         switch (e.getType()) {
-         case TableModelEvent.DELETE:
-            log.debug("table changed by deleting " + firstRow + " to " + lastRow);
-            for (int i = firstRow; i <= lastRow; i++) {
-               log.debug("\ti = " + i);
-               for (int j = i; j < getRowCount(); j++) {
-                  log.debug("\t\tj = " + j);
-                  int newKey = j;
-                  int oldKey = newKey + 1;
-                  Boolean valueToMoveUp = marked.get(oldKey);
-                  log.debug("\t\tnewKey = " + newKey + " oldKey = " + oldKey + " valueToMoveUp = " + valueToMoveUp);
-                  marked.put(newKey, valueToMoveUp);
-               }
-               marked.remove((getRowCount() - 1) + 1);
-            }
-            break;
-         case TableModelEvent.INSERT:
-            log.debug("table changed by inserting " + firstRow + " to " + lastRow);
-            for (int i = firstRow; i <= lastRow; i++) {
-               marked.put(i, Boolean.FALSE);
-            }
-            break;
-         default:
-            break;
-         }
-      }
-
-      public void unMark(int row) {
-         marked.put(row, Boolean.FALSE);
-         fireTableRowsUpdated(row, row);
-      }
-   }
-
-   private SprintCache sprintCache;
    protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+
    protected Counter counter = new Counter();
+
    protected boolean editable = true;
    private Map<String, String> extraToolTipText = new HashMap<String, String>();
-
    private Logger log = MyLogger.getLogger(MyTableModel.class);
-
    private ModelMarker modelMarkerDelegator;
-
    private boolean renderColors = false;
+
+   private SprintCache sprintCache;
+
    private TableModelListenerAlerter tableModelListenerAlerter;
 
    protected MyTableModel(Column[] columns) {
@@ -165,15 +55,6 @@ public abstract class MyTableModel extends DefaultTableModel {
       modelMarkerDelegator = new ModelMarker();
       addTableModelListener(modelMarkerDelegator);
    }
-
-   public void setSprintCache(SprintCache sprintCache) {
-      this.sprintCache = sprintCache;
-   }
-
-   public SprintCache getSprintCache() {
-      return sprintCache;
-   }
-
    MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header) {
       log.trace("MyTableModel");
       initiateColumns(columns);
@@ -193,15 +74,6 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public void addEmptyRow() {
       this.addRow(getEmptyRow());
-   }
-
-   public void setJiraBasedOnJiraColumns(JiraIssue jiraIssue) {
-      int row = getRowWithJira(jiraIssue.getKey());
-      Set<Column> columnSet = columnNames.keySet();
-      for (Column column : columnSet) {
-         if (column.isJiraColumn())
-            setValueAt(getValueFromIssue(jiraIssue, column), row, column);
-      }
    }
 
    /**
@@ -242,16 +114,6 @@ public abstract class MyTableModel extends DefaultTableModel {
       boolean isJiraPresent = addJira(jira);
       setValues(jira, map);
       return !isJiraPresent;
-   }
-
-   private void setValues(String jira, Map<Column, Object> map) {
-      int row = getRowWithJira(jira);
-      for (Column column : map.keySet()) {
-         Object value = map.get(column);
-         int columnIndex = getColumnIndex(column);
-         if (columnIndex != -1)
-            setValueAt(value, row, columnIndex);
-      }
    }
 
    public void addJira(String jira, Map<Column, Object> map, int row) {
@@ -402,6 +264,10 @@ public abstract class MyTableModel extends DefaultTableModel {
       return -1;
    }
 
+   public SprintCache getSprintCache() {
+      return sprintCache;
+   }
+
    public TableModelListenerAlerter getTableModelListenerAlerter() {
       return tableModelListenerAlerter;
    }
@@ -529,8 +395,21 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
    }
 
+   public void setJiraBasedOnJiraColumns(JiraIssue jiraIssue) {
+      int row = getRowWithJira(jiraIssue.getKey());
+      Set<Column> columnSet = columnNames.keySet();
+      for (Column column : columnSet) {
+         if (column.isJiraColumn())
+            setValueAt(getValueFromIssue(jiraIssue, column), row, column);
+      }
+   }
+
    public void setRenderColors(boolean renderColors) {
       this.renderColors = renderColors;
+   }
+
+   public void setSprintCache(SprintCache sprintCache) {
+      this.sprintCache = sprintCache;
    }
 
    public void setTableModelListenerAlerter(TableModelListenerAlerter listener) {
@@ -559,6 +438,16 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
       log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\" in model " + this.getClass());
       setValueAt(value, row, column);
+   }
+
+   private void setValues(String jira, Map<Column, Object> map) {
+      int row = getRowWithJira(jira);
+      for (Column column : map.keySet()) {
+         Object value = map.get(column);
+         int columnIndex = getColumnIndex(column);
+         if (columnIndex != -1)
+            setValueAt(value, row, columnIndex);
+      }
    }
 
    protected boolean shouldNotRenderColors() {
@@ -606,5 +495,116 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    public void unMark(int row) {
       getMarker().unMark(row);
+   }
+
+   private class JiraRowState implements TableModelListener {
+      List<String> jiras = new ArrayList<String>();;
+
+      private JiraRowState() {
+         for (int row = 0; row < getRowCount(); row++) {
+            jiras.add((String) getValueAt(row, 0));
+         }
+      }
+
+      public boolean contains(String name) {
+         return jiras.contains(name);
+      }
+
+      public int indexOf(String name) {
+         return jiras.indexOf(name);
+      }
+
+      @Override
+      public void tableChanged(TableModelEvent e) {
+         int firstRow = e.getFirstRow();
+         int lastRow = e.getLastRow();
+         switch (e.getType()) {
+         case TableModelEvent.INSERT:
+            log.debug("insert firstRow: " + firstRow + " lastRow: " + lastRow);
+            for (int row = firstRow; row <= lastRow; row++) {
+               jiras.add((String) getValueAt(row, 0));
+            }
+            break;
+         case TableModelEvent.DELETE:
+            log.debug("delete firstRow: " + firstRow + " lastRow: " + lastRow);
+            for (int row = firstRow; row <= lastRow; row++) {
+               jiras.remove(row);
+            }
+            break;
+         case TableModelEvent.UPDATE:
+            log.debug("update firstRow: " + firstRow + " lastRow: " + lastRow);
+            for (int row = firstRow; row <= lastRow; row++) {
+               if (e.getColumn() == TableModelEvent.ALL_COLUMNS || e.getColumn() == 0)
+                  jiras.remove(row);
+               jiras.add(row, (String) getValueAt(row, 0));
+            }
+            break;
+         }
+      }
+
+   }
+
+   private class ModelMarker implements TableModelListener {
+
+      private Map<Integer, Boolean> marked = new HashMap<Integer, Boolean>();
+
+      private ModelMarker() {
+         for (int row = 0; row < getRowCount(); row++) {
+            marked.put(row, Boolean.FALSE);
+         }
+      }
+
+      public void clearMarked() {
+         for (int row = 0; row < getRowCount(); row++) {
+            unMark(row);
+         }
+      }
+
+      public boolean isMarked(int row) {
+         if (marked == null || marked.size() == 0)
+            return false;
+         return marked.containsKey(row) ? marked.get(row) : false;
+      }
+
+      public void mark(int row) {
+         marked.put(row, Boolean.TRUE);
+         fireTableRowsUpdated(row, row);
+      }
+
+      @Override
+      public void tableChanged(TableModelEvent e) {
+         int firstRow = e.getFirstRow();
+         int lastRow = e.getLastRow();
+         switch (e.getType()) {
+         case TableModelEvent.DELETE:
+            log.debug("table changed by deleting " + firstRow + " to " + lastRow);
+            for (int i = firstRow; i <= lastRow; i++) {
+               log.debug("\ti = " + i);
+               for (int j = i; j < getRowCount(); j++) {
+                  log.debug("\t\tj = " + j);
+                  int newKey = j;
+                  int oldKey = newKey + 1;
+                  Boolean valueToMoveUp = marked.get(oldKey);
+                  log.debug("\t\tnewKey = " + newKey + " oldKey = " + oldKey + " valueToMoveUp = " + valueToMoveUp);
+                  marked.put(newKey, valueToMoveUp);
+               }
+               marked.remove((getRowCount() - 1) + 1);
+            }
+            break;
+         case TableModelEvent.INSERT:
+            log.debug("table changed by inserting " + firstRow + " to " + lastRow);
+            for (int i = firstRow; i <= lastRow; i++) {
+               marked.put(i, Boolean.FALSE);
+            }
+            break;
+         default:
+            break;
+         }
+      }
+
+      public void unMark(int row) {
+         marked.put(row, Boolean.FALSE);
+         fireTableRowsUpdated(row, row);
+      }
    }
 }
