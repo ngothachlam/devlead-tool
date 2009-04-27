@@ -9,13 +9,13 @@ import java.util.Set;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.data.Cache;
-import com.jonas.agile.devleadtool.sprint.table.SprintComboBoxModel;
 import com.jonas.common.logging.MyLogger;
 
 public class SprintCache implements Cache {
 
+   public static final Sprint EMPTYSPRINT = new Sprint("", null, null, 0).setForCombobox();
+   
    private final Vector<Sprint> sprints = new Vector<Sprint>();
-   // private final static SprintCache instance = new SprintCache();
    private final Set<String> sprintNames = new HashSet<String>();
    private static final Logger log = MyLogger.getLogger(SprintCache.class);
 
@@ -118,14 +118,24 @@ public class SprintCache implements Cache {
    public Sprint getSprintWithName(String name) {
       for (Sprint sprint : sprints) {
          if (sprint.getName().equals(name.trim())) {
+            if (log.isDebugEnabled())
+               log.debug("got " + sprint + " from name " + name);
             return sprint;
          }
       }
-      for (Sprint sprint : Sprint.getComboSprints()) {
+      Vector<Sprint> comboSprints = Sprint.getComboSprints();
+      if (log.isDebugEnabled())
+         log.debug("getComboSprint: length " + comboSprints.size());
+      for (Sprint sprint : comboSprints) {
+         if (log.isDebugEnabled())
+            log.debug("getComboSprint: " + sprint + " has name: \"" + sprint.getName() + "\"");
          if (sprint.getName().equals(name.trim())) {
+            if (log.isDebugEnabled())
+               log.debug("got " + sprint + " from name " + name);
             return sprint;
          }
       }
+      log.warn("did not get a sprint from name \"" + name + "\"");
       return null;
    }
 

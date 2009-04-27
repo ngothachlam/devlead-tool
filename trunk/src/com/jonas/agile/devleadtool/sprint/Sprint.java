@@ -59,6 +59,7 @@ public class Sprint {
    }
 
    public Sprint setForCombobox() {
+      log.debug("setting for Combobox");
       EXTRASPRINTS.add(this);
       isForCombobox = true;
       return this;
