@@ -35,6 +35,7 @@ public class LoadPlannerDialog extends JFileChooser {
       this.helper = helper;
       this.savePlannerDialog = savePlannerDialog;
       this.saveKeyListener = saveKeyListener;
+      this.sprintDao = sprintDao;
 
       addChoosableFileFilter(new FileFilter() {
          @Override

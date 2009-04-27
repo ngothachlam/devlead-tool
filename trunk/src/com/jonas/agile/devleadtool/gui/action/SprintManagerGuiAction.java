@@ -118,7 +118,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       tableSelectionListener.setSourceTable(sprintsTable);
       tableSelectionListener.setTargets(nameTextField, startDatePicker, endDatePicker, lengthTextField);
 
-      SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao, sprintsTableModel, frame);
+      SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao, sprintsTableModel);
       source = new SprintCreationSourceImpl(nameTextField, startDatePicker, endDatePicker, lengthTextField);
       AddSprintAction addSprintAction = new AddSprintAction(getParentFrame(), source, target);
       calculateLengthAction.setLengthSource(source);
@@ -276,14 +276,12 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
    private final ExcelSprintDao dao;
    private final PlannerHelper helper;
    private final JXSprintTableModel sprintTableModel;
-   private final Frame parentFrame;
    private static final Logger log = MyLogger.getLogger(SprintCreationTargetImpl.class);
 
-   public SprintCreationTargetImpl(PlannerHelper helper, ExcelSprintDao dao, JXSprintTableModel sprintTableModel, Frame parentFrame) {
+   public SprintCreationTargetImpl(PlannerHelper helper, ExcelSprintDao dao, JXSprintTableModel sprintTableModel) {
       this.helper = helper;
       this.dao = dao;
       this.sprintTableModel = sprintTableModel;
-      this.parentFrame = parentFrame;
    }
 
    @Override
@@ -303,10 +301,11 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
       }
 
       File excelFile = helper.getExcelFile();
-      if (excelFile == null ) {
+      if (excelFile == null) {
          saveToDao = false;
       }
 
+      log.debug("dao: " + dao + " excelFile: " + excelFile + " sprintCache: " + sprintCache);
       if (saveToDao) {
          dao.save(excelFile, sprintCache);
       }
