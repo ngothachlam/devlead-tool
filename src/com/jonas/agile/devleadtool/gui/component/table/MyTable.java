@@ -495,11 +495,6 @@ public class MyTable extends JXTable {
 
    }
 
-   public void setColumnRenderer(int i, TableCellRenderer renderer) {
-      TableColumn tc = getTableColumn(i);
-      tc.setCellRenderer(renderer);
-   }
-
    private void setDefaultEditors() {
       JComboBox combo = new JComboBox(BoardStatusValue.values());
       setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
