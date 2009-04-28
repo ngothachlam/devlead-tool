@@ -9,13 +9,16 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.TableColumn;
@@ -25,7 +28,6 @@ import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
-import org.jdesktop.swingx.decorator.Highlighter;
 import com.jonas.agile.devleadtool.gui.component.table.editor.BoardStatusCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.JiraCellEditor;
@@ -143,6 +145,41 @@ public class MyTable extends JXTable {
       }
    }
 
+   class DuplicateHighlighter extends AbstractHighlighter {
+
+      public void setEnabledQuery(EnabledQuery enabledQuery) {
+         this.enabledQuery = enabledQuery;
+      }
+
+      MyTableModel model;
+      private final MyTable myTable;
+      private EnabledQuery enabledQuery;
+
+      public DuplicateHighlighter(MyTable myTable) {
+         this.myTable = myTable;
+         this.model = myTable.getMyModel();
+      }
+
+      @Override
+      protected Component doHighlight(Component cellComponent, ComponentAdapter componentAdapter) {
+         if (enabledQuery != null && enabledQuery.isEnabled()) {
+            if (cellComponent instanceof JComponent) {
+               TableAdapter adapter = (TableAdapter) componentAdapter;
+
+               if (adapter.column == 0) {
+                  JComponent textField = (JComponent) cellComponent;
+                  String jira = (String) myTable.getValueAt(Column.Jira, adapter.row);
+                  if (myTable.isJiraPresentAsDupe(jira)) {
+                     textField.setForeground(Color.RED);
+                  }
+               }
+            }
+         }
+         return cellComponent;
+      }
+
+   }
+
    class MyTableHighlighter extends AbstractHighlighter {
 
       private final MyTable table;
@@ -226,6 +263,8 @@ public class MyTable extends JXTable {
    private Map<Column, TableColumn> tableColumns;
    private String title;
 
+   private DuplicateHighlighter duplicateHighlighter;
+
    public MyTable(String title, MyTableModel model, final boolean allowMarking) {
       super(model);
       this.title = title;
@@ -254,9 +293,25 @@ public class MyTable extends JXTable {
       // getTableHeader().setToolTipText("blah");
       this.setColumnControlVisible(true);
       this.addKeyListener(new MarkKeyListener(allowMarking));
-      Highlighter higlighter = new MyTableHighlighter(this);
-      addHighlighter(higlighter);
+      addHighlighter(new MyTableHighlighter(this));
+      duplicateHighlighter = new DuplicateHighlighter(this);
+      addHighlighter(duplicateHighlighter);
       // setRolloverEnabled(true);
+   }
+
+   public boolean isJiraPresentAsDupe(String jira) {
+      int rowCount = getRowCount();
+      Set<String> jiras = new HashSet<String>();
+      for (int row = 0; row < rowCount; row++) {
+         String testJira = (String) getValueAt(Column.Jira, row);
+         if (jiras.contains(testJira)) {
+            return true;
+         }
+         if (jira.equalsIgnoreCase(testJira)) {
+            jiras.add(testJira);
+         }
+      }
+      return false;
    }
 
    public void addCheckBoxEditorListener(CellEditorListener cellEditorListener) {
@@ -534,5 +589,9 @@ public class MyTable extends JXTable {
 
    public void setJiraBasedOnJiraColumns(JiraIssue jira) {
       model.setJiraBasedOnJiraColumns(jira);
+   }
+
+   public void setDupelicateHighlighterEnableQuery(EnabledQuery checkForDuplicatesEnabledQueryAction) {
+      duplicateHighlighter.setEnabledQuery(checkForDuplicatesEnabledQueryAction);
    }
 }

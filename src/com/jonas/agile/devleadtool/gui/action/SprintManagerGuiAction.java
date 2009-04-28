@@ -34,6 +34,7 @@ import com.jonas.agile.devleadtool.sprint.SprintCreationTarget;
 import com.jonas.agile.devleadtool.sprint.SprintLengthCalculationTarget;
 import com.jonas.agile.devleadtool.sprint.table.JXSprintTableModel;
 import com.jonas.agile.devleadtool.sprint.table.ListSelectionListenerImpl;
+import com.jonas.agile.devleadtool.sprint.table.SprintsTableHighlighter;
 import com.jonas.agile.devleadtool.sprint.table.SprintsTablePopupMenu;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;
@@ -49,6 +50,8 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
    private JXSprintTableModel sprintsTableModel;
    private ListSelectionListenerImpl tableSelectionListener;
    private JXTable sprintsTable;
+
+   private SprintsTableHighlighter sprintsTableHighlighter;
 
    public SprintManagerGuiAction(Frame parentFrame, PlannerHelper helper, ExcelSprintDao sprintDao) {
       super("Manage Sprints", "Manage sprints!", parentFrame);
@@ -87,6 +90,8 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       sprintsTable = new JXTable(sprintsTableModel);
       sprintsTable.setColumnControlVisible(true);
       sprintsTable.packAll();
+      sprintsTableHighlighter = new SprintsTableHighlighter(sprintsTable);
+      sprintsTable.addHighlighter(sprintsTableHighlighter);
       new SprintsTablePopupMenu(sprintsTable, frame, sprintDao, helper);
 
       tableSelectionListener = new ListSelectionListenerImpl();
@@ -179,6 +184,7 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
    @Override
    public void doActionPerformed(ActionEvent e) {
       tableSelectionListener.setSprintCache(helper.getSprintCache());
+      sprintsTableHighlighter.setSprintCache(helper.getSprintCache());
       sprintsTableModel.setSprintCache(helper.getSprintCache());
       sprintsTableModel.fireTableStructureChanged();
       source.clear();
