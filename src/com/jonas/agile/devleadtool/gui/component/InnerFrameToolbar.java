@@ -11,6 +11,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
+import com.jonas.agile.devleadtool.gui.action.HighlightIssuesAction;
 import com.jonas.agile.devleadtool.gui.action.SprintManagerGuiAction;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddBoardReconcileFrame;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddFilterDialog;
@@ -33,6 +34,7 @@ public class InnerFrameToolbar extends JToolBar {
 
       final MyTable[] tables = { boardTable, jiraTable };
 
+      BasicAbstractGUIAction highlightAction = new HighlightIssuesAction("Higlight Issues", helper.getParentFrame(), jiraPanel.getTable(), boardPanel.getTable());
       BasicAbstractGUIAction freezeAction = new FreezeManipulationAction(parentFrame, boardPanel, jiraPanel, sprintPanel);
       BasicAbstractGUIAction dupeAction = new CheckForDuplicatesAction("Identify Duplicates", "Higlight Duplicates in Board", parentFrame,
             boardTable);
@@ -45,7 +47,7 @@ public class InnerFrameToolbar extends JToolBar {
       BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown", "Showing Board Statistics", parentFrame, boardTable, helper);
 
       JMenuBar comp = new JMenuBar();
-      comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null, freezeAction, dupeAction));
+      comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null, highlightAction, dupeAction, freezeAction));
       comp.add(getDataModificationMenu("Sprint", sprintManager, boardStats));
       this.add(comp);
 
