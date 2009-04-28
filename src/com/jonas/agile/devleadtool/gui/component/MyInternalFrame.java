@@ -22,8 +22,7 @@ import com.jonas.agile.devleadtool.constants.CutoverLength;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.SavePlannerDialog;
-import com.jonas.agile.devleadtool.gui.component.panel.BoardPanel;
-import com.jonas.agile.devleadtool.gui.component.panel.JiraPanel;
+import com.jonas.agile.devleadtool.gui.component.panel.MyDataPanel;
 import com.jonas.agile.devleadtool.gui.component.panel.MyInternalFrameInnerPanel;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
@@ -126,7 +125,7 @@ public class MyInternalFrame extends JInternalFrame {
    }
 
    public MyTableModel getJiraModel() {
-      return getJiraPanel().getJiraModel();
+      return getJiraPanel().getModel();
    }
 
    public MyTable getJiraTable() {
@@ -169,11 +168,11 @@ public class MyInternalFrame extends JInternalFrame {
       PlannerListeners.notifyListenersThatFrameChangedTitle(this);
    }
 
-   private BoardPanel getBoardPanel() {
+   private MyDataPanel getBoardPanel() {
       return internalFrameTabPanel.getBoardPanel();
    }
 
-   private JiraPanel getJiraPanel() {
+   private MyDataPanel getJiraPanel() {
       return internalFrameTabPanel.getJiraPanel();
    }
 

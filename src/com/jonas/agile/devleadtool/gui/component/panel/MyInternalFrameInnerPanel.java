@@ -48,7 +48,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private Logger log = MyLogger.getLogger(MyInternalFrameInnerPanel.class);
 
-   private BoardPanel boardPanel;
+   private MyDataPanel boardPanel;
    private JiraPanel jiraPanel;
    private DnDTreePanel sprintPanel;
 
@@ -105,11 +105,11 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       return tabPane;
    }
 
-   public BoardPanel getBoardPanel() {
+   public MyDataPanel getBoardPanel() {
       return boardPanel;
    }
 
-   public JiraPanel getJiraPanel() {
+   public MyDataPanel getJiraPanel() {
       return jiraPanel;
    }
 
