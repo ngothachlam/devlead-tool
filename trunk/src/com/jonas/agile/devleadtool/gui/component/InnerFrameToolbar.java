@@ -23,6 +23,7 @@ import com.jonas.agile.devleadtool.gui.component.panel.DnDTreePanel;
 import com.jonas.agile.devleadtool.gui.component.panel.JiraPanel;
 import com.jonas.agile.devleadtool.gui.component.panel.MyDataPanel;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.EnabledQuery;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 import com.jonas.common.DateHelper;
@@ -34,20 +35,22 @@ public class InnerFrameToolbar extends JToolBar {
 
       final MyTable[] tables = { boardTable, jiraTable };
 
-      BasicAbstractGUIAction highlightAction = new HighlightIssuesAction("Higlight Issues", helper.getParentFrame(), jiraPanel.getTable(), boardPanel.getTable());
+      BasicAbstractGUIAction highlightAction = new HighlightIssuesAction("Higlight Discrepancies", helper.getParentFrame(), jiraPanel.getTable(),
+            boardPanel.getTable());
       BasicAbstractGUIAction freezeAction = new FreezeManipulationAction(parentFrame, boardPanel, jiraPanel, sprintPanel);
-      BasicAbstractGUIAction dupeAction = new CheckForDuplicatesAction("Identify Duplicates", "Higlight Duplicates in Board", parentFrame,
+      BasicAbstractGUIAction dupeAction = new CheckForDuplicatesAction("Highlight Duplicates", "Higlight Duplicates in Board", parentFrame,
             boardTable);
       BasicAbstractGUIAction reconcileAction = new ReconcileManuallyAction(parentFrame, boardTable);
       BasicAbstractGUIAction addManualAction = new AddManuallyAction(parentFrame, tables);
       BasicAbstractGUIAction addFilterAction = new AddFromJiraFilterAction(parentFrame, tables);
       BasicAbstractGUIAction addVersionAction = new AddFromJiraVersionAction(parentFrame, tables);
-      
+
       BasicAbstractGUIAction sprintManager = new SprintManagerGuiAction(parentFrame, helper, sprintDao);
       BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown", "Showing Board Statistics", parentFrame, boardTable, helper);
 
       JMenuBar comp = new JMenuBar();
-      comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null, highlightAction, dupeAction, freezeAction));
+      comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null,
+            highlightAction, dupeAction, freezeAction));
       comp.add(getDataModificationMenu("Sprint", sprintManager, boardStats));
       this.add(comp);
 
@@ -62,7 +65,7 @@ public class InnerFrameToolbar extends JToolBar {
             menu.add(new JCheckBoxMenuItem(action));
          } else {
             menu.add(new JMenuItem(action));
-         } 
+         }
       }
       return menu;
    }
@@ -99,44 +102,21 @@ final class FreezeManipulationAction extends BasicAbstractGUIAction {
 }
 
 
-final class CheckForDuplicatesAction extends BasicAbstractGUIAction {
-   private final MyTable sourceTable;
+final class CheckForDuplicatesAction extends BasicAbstractGUIAction implements EnabledQuery{
+   @Override
+   public boolean isCheckBoxAction() {
+      return true;
+   }
 
-   CheckForDuplicatesAction(String name, String description, Frame parentFrame, MyTable sourceTable) {
+   CheckForDuplicatesAction(String name, String description, Frame parentFrame, MyTable... sourceTables) {
       super(name, description, parentFrame);
-      this.sourceTable = sourceTable;
+      for (MyTable myTable : sourceTables) {
+         myTable.setDupelicateHighlighterEnableQuery(this);
+      }
    }
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      Set<String> duplicateJiras = findAnyDuplicateJirasInTable(sourceTable);
-      presentTheDuplicateJiras(duplicateJiras);
-   }
-
-   private Set<String> findAnyDuplicateJirasInTable(final MyTable boardTable) {
-      int rows = boardTable.getRowCount();
-      Set<String> duplicateJirasInTable = new HashSet<String>();
-      for (int row = 0; row < rows; row++) {
-         String jira = (String) boardTable.getValueAt(Column.Jira, row);
-         if (!duplicateJirasInTable.contains(jira)) {
-            for (int compareRow = row + 1; compareRow < rows; compareRow++) {
-               String compareJira = (String) boardTable.getValueAt(Column.Jira, compareRow);
-               if (jira.equalsIgnoreCase(compareJira)) {
-                  duplicateJirasInTable.add(jira);
-               }
-            }
-         }
-      }
-      return duplicateJirasInTable;
-   }
-
-   private void presentTheDuplicateJiras(Set<String> duplicateJiras) {
-      StringBuffer sb = new StringBuffer();
-      for (String string : duplicateJiras) {
-         sb.append(string).append(" ");
-      }
-
-      AlertDialog.alertMessage(getParentFrame(), sb.toString());
    }
 }
 

@@ -108,7 +108,7 @@ class ClearAction extends AbstractAction{
    @Override
    public void actionPerformed(ActionEvent e) {
       for (Resetter resetter : resetters) {
-         resetter.setPattern("");
+         resetter.resetPattern();
       }
    }
    
@@ -132,10 +132,10 @@ class RefreshSearchKeyListener extends KeyAdapter implements Resetter {
       matchHighlighter.setHighlightPredicate(predicate);
    }
    
-   public void setPattern(String text) {
-      HighlightPredicate predicate = new SearchPredicate(text, -1, -1);
+   public void resetPattern() {
+      HighlightPredicate predicate = new SearchPredicate("", -1, -1);
       matchHighlighter.setHighlightPredicate(predicate);
-      highlightTextField.setText(text);
+      highlightTextField.setText("");
    }
 }
 
@@ -155,15 +155,15 @@ class RefreshFilterKeyListener extends KeyAdapter implements Resetter{
       patternFilter.setPattern(textField.getText(), Pattern.CASE_INSENSITIVE);
    }
 
-   public void setPattern(String text) {
-      patternFilter.setPattern(text, Pattern.CASE_INSENSITIVE);
+   public void resetPattern() {
+      patternFilter.setPattern("", Pattern.CASE_INSENSITIVE);
       filterTextField.setText("");
    }
 }
 
 interface Resetter {
 
-   abstract void setPattern(String text);
+   abstract void resetPattern();
    
 }
 
