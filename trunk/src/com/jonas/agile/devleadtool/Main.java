@@ -6,7 +6,6 @@ import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.guice.DevLeadToolModule;
 import com.jonas.common.logging.MyLogger;
 
-
 public class Main {
 
    public static void main(String[] args) {
@@ -16,7 +15,7 @@ public class Main {
 
       Injector injector = Guice.createInjector(new DevLeadToolModule());
       DevLeadTool tool = injector.getInstance(DevLeadTool.class);
-      
+
       try {
          tool.start();
       } catch (Throwable e) {
@@ -24,11 +23,15 @@ public class Main {
       }
    }
 
-   // TODO add a checkbox next to the filter to see if highlighting is required rather than filtering
+   // TODO change in-Dev Progress to "inProgress"
+   // TODO add qa remainder to board
+   // TODO add qa estimate to burndown
+   // TODO add type of issue to board: story, test, dev, bug, merge.
+   // TODO add column setup to the toolbar menu - dynamically inputted using property files (an lludevsup.sprinterini creates a lludevsup
+   // menuitem that shows/hides and rearranges columns
+
    // TODO add a status bar at the bottom showing the total of 1) selected, 2) table entries and 3) model entries for 4)each table
    // TODO drag'n'drop table rows = all tables!!
-   // TODO when refreshing jir a info on Jira tab - update combo box for fixversions for plan
-   // TODO ... and also save them for the next load session.
    // TODO handle 'issue not found' when syncing to jira and getting info (LLU-2)
    // TODO handle issue moved to other project (LLU-6 that has become LLUOLD-1)
 
@@ -51,5 +54,5 @@ public class Main {
    // Addition of filter text
    // Introduce tip of the day!
    // decorator with beige text
-   //JXStatusbar
+   // JXStatusbar
 }
