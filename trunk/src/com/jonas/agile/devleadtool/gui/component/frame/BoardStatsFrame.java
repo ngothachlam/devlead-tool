@@ -1,11 +1,12 @@
 package com.jonas.agile.devleadtool.gui.component.frame;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +25,6 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -39,21 +39,24 @@ import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.DateHelper;
 import com.jonas.common.string.StringHelper;
+import com.jonas.common.swing.SwingUtil;
 
 public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndownGrapher {
 
-   private XYSeries dataSeries;
-   private XYSeries idealSeries;
+   private XYSeries idealDevEstProgression;
+   private XYSeries devEstimateProgression;
+   private XYSeries idealQaEstProgression;
+   private XYSeries qaEstimateProgression;
    // private XYSeries prognosisSeries;
 
    private JTextField dayInSprintTextField;
-   private ValueAxis domainAxis;
+   private ValueAxis xAxis;
    private JTextField lengthOfSprintTextField;
    private ChartPanel panel;
    private final MyTable sourceTable;
    private DateHelper dateHelper;
    private TextTitle source;
-   private NumberAxis rangeAxis;
+   private NumberAxis yAxis;
    private final SprintCache sprintCache;
 
    public BoardStatsFrame(Component parent, int width, int height, MyTable sourceTable, DateHelper dateHelper, SprintCache sprintCache) {
@@ -64,32 +67,35 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       this.prepareBurndown();
    }
 
-   public void calculateAndPrintBurndown(double totalDevEstimates, double remainingDevEstimates, Set<String> projects) {
+   public void calculateAndPrintBurndown(double totalDevEstimates, double remainingDevEstimates, double totalQaEstimates,
+         double remainingQaEstimates, Set<String> projects) {
       source.setText(StringHelper.getNiceString(projects));
       // prognosisSeries.clear();
-      dataSeries.clear();
-      idealSeries.clear();
-
-      rangeAxis.setAutoRange(true);
-      domainAxis.setLowerBound(0d);
-      dataSeries.add(0d, totalDevEstimates);
+      idealDevEstProgression.clear();
+      devEstimateProgression.clear();
+      idealQaEstProgression.clear();
+      qaEstimateProgression.clear();
 
       double dayInSprint = StringHelper.getDoubleOrZero(dayInSprintTextField.getText());
       double lengthOfSprint = StringHelper.getDoubleOrZero(lengthOfSprintTextField.getText());
 
-      dataSeries.add(dayInSprint, remainingDevEstimates);
-      domainAxis.setUpperBound(Math.max(lengthOfSprint, dayInSprint) + 0.2d);
+      idealDevEstProgression.add(0, totalDevEstimates);
+      idealDevEstProgression.add(lengthOfSprint, 0);
 
-      // if (dayInSprint < lengthOfSprint) {
-      // double prognosisChangePerDay = ((totalDevEstimates - remainingDevEstimates) / dayInSprint);
-      // double prognosisDays = lengthOfSprint - dayInSprint;
-      // prognosisSeries.add(dayInSprint, remainingDevEstimates);
-      // prognosisSeries.add(lengthOfSprint, remainingDevEstimates - (prognosisChangePerDay * prognosisDays));
-      // }
-      idealSeries.add(0, totalDevEstimates);
-      idealSeries.add(lengthOfSprint, 0);
+      devEstimateProgression.add(0d, totalDevEstimates);
+      devEstimateProgression.add(dayInSprint, remainingDevEstimates);
 
-      rangeAxis.setLowerBound(0d);
+      idealQaEstProgression.add(0, totalQaEstimates);
+      idealQaEstProgression.add(lengthOfSprint, 0);
+
+      qaEstimateProgression.add(0d, totalQaEstimates);
+      qaEstimateProgression.add(dayInSprint, remainingQaEstimates);
+
+      xAxis.setLowerBound(0d);
+      xAxis.setUpperBound(Math.max(lengthOfSprint, dayInSprint) + 0.2d);
+
+      yAxis.setAutoRange(true);
+      yAxis.setLowerBound(0d);
 
    }
 
@@ -128,26 +134,31 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       panel.add(new JLabel("Day in Sprint:"));
       dayInSprintTextField = new JTextField(5);
       panel.add(dayInSprintTextField);
-      
+
       panel.add(new JLabel("Length of Sprint:"));
       lengthOfSprintTextField = new JTextField(5);
       panel.add(lengthOfSprintTextField);
 
       Sprint currentSprint = sprintCache.getCurrentSprint();
-      sprintName.setText(currentSprint.getName());
-      dayInSprintTextField.setText(currentSprint.calculateDayInSprint().toString());
-      lengthOfSprintTextField.setText(currentSprint.getLength().toString());
+      sprintName.setText(currentSprint == null ? "<NONE DEFINED>" : currentSprint.getName());
+      dayInSprintTextField.setText(currentSprint != null ? currentSprint.calculateDayInSprint().toString() : "");
+      lengthOfSprintTextField.setText(currentSprint != null ? currentSprint.getLength().toString() : "");
 
       return panel;
    }
 
    public void prepareBurndown() {
-      dataSeries = new XYSeries("Current Development Progression");
-      idealSeries = new XYSeries("Ideal Development Progression");
+      devEstimateProgression = new XYSeries("Current Development Progression");
+      idealDevEstProgression = new XYSeries("Ideal Development Progression");
+
+      qaEstimateProgression = new XYSeries("Current Testing Progression");
+      idealQaEstProgression = new XYSeries("Ideal Testing Progression");
 
       XYSeriesCollection dataset = new XYSeriesCollection();
-      dataset.addSeries(dataSeries);
-      dataset.addSeries(idealSeries);
+      dataset.addSeries(devEstimateProgression);
+      dataset.addSeries(idealDevEstProgression);
+      dataset.addSeries(qaEstimateProgression);
+      dataset.addSeries(idealQaEstProgression);
 
       // create the chart...
       JFreeChart chart = ChartFactory.createXYLineChart("Sprint Burndown - " + dateHelper.getTodaysDateAsString(), // chart title
@@ -160,20 +171,26 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
             );
 
       XYPlot plot = chart.getXYPlot();
-      domainAxis = plot.getDomainAxis();
-      domainAxis.setLowerBound(0);
-      domainAxis.setUpperBound(10);
+      xAxis = plot.getDomainAxis();
+      xAxis.setLowerBound(0);
+      xAxis.setUpperBound(10);
 
       XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
+
+      renderer.setSeriesPaint(0, SwingUtil.cellRed);
+      renderer.setSeriesPaint(1, SwingUtil.cellLightRed);
+      renderer.setSeriesPaint(2, SwingUtil.cellBlue);
+      renderer.setSeriesPaint(3, SwingUtil.cellLightBlue);
+      
       renderer.setShapesVisible(true);
       renderer.setShapesFilled(true);
 
       source = new TextTitle();
       chart.addSubtitle(source);
 
-      rangeAxis = (NumberAxis) plot.getRangeAxis();
-      domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-      rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+      yAxis = (NumberAxis) plot.getRangeAxis();
+      xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+      yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
       panel = new ChartPanel(chart);
    }
@@ -185,6 +202,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
    private class BurnDownDataDTO {
       private final Map<String, JiraBurndownStat> jiras;
       double remainingDevEstimates = 0d;
+      double remainingQaEstimates = 0d;
       double totalDevEstimates = 0d;
       double totalQaEstimates = 0d;
       private Set<String> jiraProjects = new HashSet<String>();
@@ -210,6 +228,11 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
                } else if (statrow.isInDevProgress()) {
                   remainingDevEstimates += statrow.getRemainingDevEstimate();
                }
+               if (statrow.isPreTestProgress()) {
+                  remainingQaEstimates += statrow.getQaEstimate();
+               } else if (statrow.isInTestProgress()) {
+                  remainingQaEstimates += statrow.getRemainingQaEstimate();
+               }
             }
          }
       }
@@ -226,16 +249,26 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
          return jiraProjects;
       }
 
+      public double getTotalQaEstimates() {
+         return totalQaEstimates;
+      }
+
+      public double getRemainingQaEstimates() {
+         return remainingQaEstimates;
+      }
+
    }
 
    private class JiraBurndownStat {
       private String jira;
       private double devEstimate = 0d;
-      private double remainingDevEstimate = 0d;
       private double qaEstimate = 0d;
-
+      private double remainingDevEstimate = 0d;
+      private double remainingQaEstimate = 0d;
       private boolean isInDevProgress = false;
+      private boolean isInQaProgress = false;
       private boolean isPreDevProgress = false;
+      private boolean isPreQaProgress = false;
       private boolean isToIncludeInTotals = true;
 
       public JiraBurndownStat(String jira, MyTable boardTable, int row) {
@@ -246,25 +279,24 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
          BoardStatusValue boardStatus = (BoardStatusValue) boardTable.getValueAt(Column.BoardStatus, row);
 
          switch (boardStatus) {
-         case Open:
-            this.isPreDevProgress = true;
-            break;
          case NA:
          case UnKnown:
-            this.isPreDevProgress = true;
             this.isToIncludeInTotals = false;
-            break;
+         case Open:
          case Bug:
             this.isPreDevProgress = true;
+            this.isPreQaProgress = true;
             break;
          case InProgress:
             this.remainingDevEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.DRem, row));
             this.isInDevProgress = true;
+         case Resolved:
+            this.isInQaProgress = true;
+            this.remainingQaEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.QRem, row));
             break;
          case Approved:
          case Complete:
          case ForShowCase:
-         case Resolved:
             break;
          }
 
@@ -273,6 +305,18 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
             isToIncludeInTotals = false;
          }
 
+      }
+
+      public double getRemainingQaEstimate() {
+         return remainingQaEstimate;
+      }
+
+      public boolean isInTestProgress() {
+         return isInQaProgress;
+      }
+
+      public boolean isPreTestProgress() {
+         return isPreQaProgress;
       }
 
       public boolean isToIncludeInTotals() {
@@ -376,7 +420,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
 
       alertOnDuplicateJirasIfTheraAreAny(jiraStatsDataDTO.getDuplicateJiras());
       grapher.calculateAndPrintBurndown(burnDownDataDTO.getTotalDevEstimates(), burnDownDataDTO.getRemainingDevEstimates(), burnDownDataDTO
-            .getJiraProjects());
+            .getTotalQaEstimates(), burnDownDataDTO.getRemainingQaEstimates(), burnDownDataDTO.getJiraProjects());
    }
 
 }

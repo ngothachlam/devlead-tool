@@ -4,6 +4,6 @@ import java.util.Set;
 
 public interface SprintBurndownGrapher {
 
-   public void calculateAndPrintBurndown(double totalDevEstimates, double remainingDevEstimates, Set<String> projects);
+   public void calculateAndPrintBurndown(double totalDevEstimates, double remainingDevEstimates, double totalQaEstimates, double remainingQaEstimates, Set<String> projects);
    
 }

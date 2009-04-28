@@ -25,6 +25,7 @@ public class BoardCellColorHelper {
       requiredDevRemains.add(BoardStatusValue.InProgress);
       
       requiredQARemains.add(BoardStatusValue.InProgress);
+      requiredQARemains.add(BoardStatusValue.Resolved);
 
       requiredDevActuals.add(BoardStatusValue.Approved);
       requiredDevActuals.add(BoardStatusValue.Complete);
