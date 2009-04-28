@@ -18,7 +18,7 @@ public class JiraTableModel extends MyTableModel {
    }
 
    private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.J_Sprint, Column.Project, Column.FixVersion,
-         Column.Owner, Column.Environment, Column.Delivery, Column.Resolution, Column.BuildNo, Column.J_DevEst, Column.J_DevAct };
+         Column.Owner, Column.Environment, Column.Delivery, Column.Resolution, Column.BuildNo, Column.J_DevEst, Column.J_DevAct, Column.prio };
 
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
