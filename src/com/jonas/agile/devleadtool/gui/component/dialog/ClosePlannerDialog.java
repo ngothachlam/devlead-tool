@@ -60,6 +60,11 @@ public class ClosePlannerDialog extends JDialog {
 
    public ClosePlannerDialog(final JFrame parent, final PlannerHelper plannerHelper) {
       super(parent, "Closing...", true);
+      /*
+       * FIXME add a listener onto the jira and board models to update a updatedSinceLastSave boolean - when saving set updatedSinceLastSave to
+       * false. As soon as a listener is updated on data change set updatedSinceLastSave to true. Only open this save dialogue below if
+       * updatedSinceLastSave is true;
+       */
       parent.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
       MyPanel panel = new MyPanel(new BorderLayout()).bordered(15, 15, 15, 15);

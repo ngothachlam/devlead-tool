@@ -38,11 +38,6 @@ public class SprintCache implements Cache {
 
    }
 
-   // FIXME 1 Remove all static methods in SprintCache
-   // public static SprintCache getInstance() {
-   // return instance;
-   // }
-
    public int getColumnCount() {
       return 4;
    }
