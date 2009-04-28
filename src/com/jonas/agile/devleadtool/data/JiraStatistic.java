@@ -14,11 +14,10 @@ public class JiraStatistic {
          break;
       case Open:
       case Bug:
-      case InDevProgress:
+      case InProgress:
          devStatus = DevStatus.inDevelopment;
          break;
       case Resolved:
-      case InQAProgress:
          devStatus = DevStatus.inTesting;
          break;
       case Complete:

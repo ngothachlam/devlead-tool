@@ -11,28 +11,28 @@ public class BoardCellColorHelper {
    private Set<BoardStatusValue> requiredDevRemains = new HashSet<BoardStatusValue>();
    private Set<BoardStatusValue> requiredDevActuals = new HashSet<BoardStatusValue>();
    private Set<BoardStatusValue> requiredBlankDevActuals = new HashSet<BoardStatusValue>();
+   private Set<BoardStatusValue> requiredQARemains = new HashSet<BoardStatusValue>();
 
    private BoardCellColorHelper() {
       requiredDevEstimates.add(BoardStatusValue.Approved);
       requiredDevEstimates.add(BoardStatusValue.Bug);
       requiredDevEstimates.add(BoardStatusValue.Complete);
       requiredDevEstimates.add(BoardStatusValue.ForShowCase);
-      requiredDevEstimates.add(BoardStatusValue.InDevProgress);
-      requiredDevEstimates.add(BoardStatusValue.InQAProgress);
+      requiredDevEstimates.add(BoardStatusValue.InProgress);
       requiredDevEstimates.add(BoardStatusValue.Open);
-//      requiredDevEstimates.add(BoardStatusValue.Parked);
       requiredDevEstimates.add(BoardStatusValue.Resolved);
 
-      requiredDevRemains.add(BoardStatusValue.InDevProgress);
+      requiredDevRemains.add(BoardStatusValue.InProgress);
+      
+      requiredQARemains.add(BoardStatusValue.InProgress);
 
       requiredDevActuals.add(BoardStatusValue.Approved);
       requiredDevActuals.add(BoardStatusValue.Complete);
       requiredDevActuals.add(BoardStatusValue.ForShowCase);
-      requiredDevActuals.add(BoardStatusValue.InQAProgress);
       requiredDevActuals.add(BoardStatusValue.Resolved);
 
       requiredBlankDevActuals.add(BoardStatusValue.Bug);
-      requiredBlankDevActuals.add(BoardStatusValue.InDevProgress);
+      requiredBlankDevActuals.add(BoardStatusValue.InProgress);
       requiredBlankDevActuals.add(BoardStatusValue.Open);
    }
 
@@ -58,5 +58,9 @@ public class BoardCellColorHelper {
 
    public Set<BoardStatusValue> getRequiredDevEstimates() {
       return requiredDevEstimates;
+   }
+
+   public Set<BoardStatusValue> getRequiredQARemains() {
+      return requiredQARemains;
    }
 }

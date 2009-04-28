@@ -67,7 +67,7 @@ public class MyTableTest extends JonasTestCase {
       assertEquals("", table.getValueAt(0, 6));
       
       table.setValueAt("newValue", 0, Column.Description);
-      table.setValueAt(1f, 0, Column.DevEst);
+      table.setValueAt(1f, 0, Column.DEst);
       
       assertEquals(1, table.getRowCount());
       assertEquals(7, table.getColumnCount());

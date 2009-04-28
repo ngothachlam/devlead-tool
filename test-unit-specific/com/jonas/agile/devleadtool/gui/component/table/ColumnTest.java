@@ -22,14 +22,14 @@ public class ColumnTest extends TestCase {
    }
    
    public void testShouldParseEstimateOk(){
-      assertEquals("", Column.DevEst.parseFromPersistanceStore(null));
-      assertEquals("", Column.DevEst.parseFromPersistanceStore(""));
-      assertEquals("key", Column.DevEst.parseFromPersistanceStore("key"));
-      assertEquals("key", Column.DevEst.parseToPersistanceStore("key"));
-      assertEquals("1.0", Column.DevEst.parseFromPersistanceStore("1.0"));
-      assertEquals(1.0d, Column.DevEst.parseToPersistanceStore("1.0"));
-      assertEquals("1", Column.DevEst.parseFromPersistanceStore("1"));
-      assertEquals(1d, Column.DevEst.parseToPersistanceStore("1"));
+      assertEquals("", Column.DEst.parseFromPersistanceStore(null));
+      assertEquals("", Column.DEst.parseFromPersistanceStore(""));
+      assertEquals("key", Column.DEst.parseFromPersistanceStore("key"));
+      assertEquals("key", Column.DEst.parseToPersistanceStore("key"));
+      assertEquals("1.0", Column.DEst.parseFromPersistanceStore("1.0"));
+      assertEquals(1.0d, Column.DEst.parseToPersistanceStore("1.0"));
+      assertEquals("1", Column.DEst.parseFromPersistanceStore("1"));
+      assertEquals(1d, Column.DEst.parseToPersistanceStore("1"));
    }
    public void testShouldParseFixVersionOk(){
       assertEquals("", Column.FixVersion.parseFromPersistanceStore(null));
