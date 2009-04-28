@@ -50,6 +50,13 @@ public class BoardTableModel extends MyTableModel {
       }
 
       switch (column) {
+      case Release:
+         stringValue = (String) value;
+         if (isEmptyString(stringValue)) {
+            setToolTipText(row, getColumnIndex(column), "Is empty!");
+            return SwingUtil.cellRed;
+         }
+         break;
       case Jira:
          if (shouldNotRenderColors() || jiraModel == null)
             return null;
@@ -72,12 +79,12 @@ public class BoardTableModel extends MyTableModel {
          stringValue = (String) value;
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
-               setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
+               setToolTipText(row, getColumnIndex(column), "Should be filled out as the BoardStatus value highlights a requirement!");
                return SwingUtil.cellRed;
             }
          } else {
             if (!isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
-               setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value!");
+               setToolTipText(row, getColumnIndex(column), "Should not be filled out as the BoardStatus value highlights a requirement!");
                return SwingUtil.cellRed;
             } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(Column.DevEst, row))) {
                setToolTipText(row, getColumnIndex(column), "Cannot be numeric if Dev Estimate is not!");
@@ -86,7 +93,6 @@ public class BoardTableModel extends MyTableModel {
          }
          break;
       case Sprint:
-
          if (getSprintCache() == null) {
             String errorMessage = "Error! No sprint cache defined!!";
             setToolTipText(row, getColumnIndex(column), errorMessage);

@@ -192,10 +192,15 @@ public class MyTable extends JXTable {
       protected Component doHighlight(Component component, ComponentAdapter adapter) {
          TableAdapter adapter2 = (TableAdapter) adapter;
 
-         boolean hasFocus = adapter.hasFocus();
-         boolean isSelected = adapter.isSelected();
          int row = adapter2.row;
          int column = adapter2.column;
+
+         if (log.isDebugEnabled())
+            log.debug("doHighlight of row: " + row + " and col: " + column);
+
+         boolean hasFocus = adapter.hasFocus();
+         boolean isSelected = adapter.isSelected();
+         boolean isEditable = adapter.isEditable();
 
          JComponent jComponent = null;
          if (component instanceof JComponent) {
@@ -218,7 +223,7 @@ public class MyTable extends JXTable {
                jComponent.setBorder(SwingUtil.defaultCellBorder);
             }
          }
-         if (!adapter.isEditable() && !hasFocus) {
+         if (!isEditable && !hasFocus) {
             component.setBackground(ColorUtil.darkenColor(component.getBackground(), -75));
          }
 
