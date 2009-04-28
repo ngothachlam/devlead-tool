@@ -2,11 +2,7 @@ package com.jonas.agile.devleadtool.gui.component.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -59,9 +55,12 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private ExcelSprintDao excelSprintDao;
 
+   private final PlannerHelper helper;
+
    public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel, SprintCache sprintCache,
          ExcelSprintDao excelSprintDao) throws SAXException {
       super(new BorderLayout());
+      this.helper = helper;
       this.excelSprintDao = excelSprintDao;
       // FIXME 1 - these null checks are not required I don't think? hence sprintCache need not be sent in as it is already in boardModel.
       boardModel = (boardModel == null) ? new BoardTableModel(sprintCache) : boardModel;
@@ -117,11 +116,9 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       boardPanel = new BoardPanel(boardModel);
       sprintPanel = new DnDTreePanel(tree, helper.getParentFrame());
       jiraPanel = new JiraPanel(jiraModel);
-      JPanel jiraButtonPanel = getJiraPanelButtonRow();
 
       JPanel jiraMainPanel = new JPanel(new BorderLayout());
       jiraMainPanel.add(jiraPanel, BorderLayout.CENTER);
-      jiraMainPanel.add(jiraButtonPanel, BorderLayout.SOUTH);
 
       boardTable = boardPanel.getTable();
       jiraTable = jiraPanel.getTable();
@@ -136,13 +133,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
       addNorth(new InnerFrameToolbar(helper.getParentFrame(), boardPanel, jiraPanel, sprintPanel, boardTable, jiraTable, helper, excelSprintDao));
       addCenter(combineIntoSplitPane(boardPanel, jiraMainPanel, sprintPanel));
-   }
-
-   private JPanel getJiraPanelButtonRow() {
-      JPanel jiraButtonPanel = new JPanel(new GridLayout(1, 1, 3, 3));
-      HighlightIssuesAction highlightAction = new HighlightIssuesAction("Higlight Issues", jiraPanel.getTable(), boardPanel.getTable());
-      jiraButtonPanel.add(new JCheckBox(highlightAction));
-      return jiraButtonPanel;
    }
 
    private void setBoardDataListeners(final MyTableModel boardModel, final MyTable boardTable, final MyTable jiraTable, SprintTree sprintTree) {
@@ -198,38 +188,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       }
    }
 
-   private final class HighlightIssuesAction extends AbstractAction {
-
-      private final MyTable[] tables;
-
-      private HighlightIssuesAction(String name, MyTable... tables) {
-         super(name);
-         this.tables = tables;
-      }
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         JCheckBox button = (JCheckBox) e.getSource();
-
-         for (MyTable table : tables) {
-            int[] selectedRows = table.getSelectedRows();
-            MyTableModel model = table.getMyModel();
-            model.setRenderColors(button.isSelected());
-            model.fireTableDataChanged();
-            restoreSelection(selectedRows, table);
-         }
-      }
-
-      private void restoreSelection(int[] selectedRows, MyTable table) {
-         log.debug("restore Selection");
-         for (int i : selectedRows) {
-            if (log.isDebugEnabled())
-               log.debug("selecting row " + i + " to table " + table.getTitle());
-            table.setRowSelectionInterval(i, i);
-         }
-      }
-   }
-
+   
    private final class MyBoardTableCheckboxEditorListener implements CellEditorListener {
       public void editingCanceled(ChangeEvent e) {
       }
