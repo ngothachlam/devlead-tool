@@ -43,7 +43,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    @Inject
    public PlannerDAOExcelImpl(ExcelSprintDao sprintDao) {
       super();
-      // FIXME 1 who calls this constructor? Guice?
       this.sprintDao = sprintDao;
    }
 
@@ -277,7 +276,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       saveModel(file, boardModel, "board");
       saveModel(file, jiraModel, "jira");
       sprintDao.save(file, sprintCache);
-      // FIXME 1 save sprint cache here to sprint sheet!
       notifySavingFinished("Saving Finished!");
    }
 

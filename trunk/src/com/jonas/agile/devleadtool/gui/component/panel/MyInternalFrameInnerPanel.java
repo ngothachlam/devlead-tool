@@ -55,12 +55,9 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private ExcelSprintDao excelSprintDao;
 
-   private final PlannerHelper helper;
-
    public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel, SprintCache sprintCache,
          ExcelSprintDao excelSprintDao) throws SAXException {
       super(new BorderLayout());
-      this.helper = helper;
       this.excelSprintDao = excelSprintDao;
       // FIXME 1 - these null checks are not required I don't think? hence sprintCache need not be sent in as it is already in boardModel.
       boardModel = (boardModel == null) ? new BoardTableModel(sprintCache) : boardModel;
@@ -146,7 +143,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       sprintTree.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
    }
 
-   private void setJiraDataListener(MyTableModel jiraModel, final MyTableModel boardModel, SprintTree sprintTree, MyTable boardTable) {
+   private void setJiraDataListener(MyTableModel jiraModel, SprintTree sprintTree, MyTable boardTable) {
       jiraPanel.getTable().addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, jiraPanel.getTable(), boardTable));
       jiraModel.addTableModelListener(new FireUpdateOnOtherTableWhenUpdatedListener(boardTable));
    }
@@ -157,7 +154,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       SprintTree sprintTree = sprintPanel.getTree();
 
       setBoardDataListeners(boardModel, boardTable, jiraTable, sprintTree);
-      setJiraDataListener(jiraModel, boardModel, sprintTree, boardTable);
+      setJiraDataListener(jiraModel, sprintTree, boardTable);
       setSprintDataListener(sprintTree, boardTable, jiraTable);
 
       jiraParseListener.setTree(tree);

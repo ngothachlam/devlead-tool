@@ -27,12 +27,6 @@ public class SprinterPropertiesManager {
          properties.loadProperties();
          checkAndSetMissingDefaultProperties();
       }
-
-      // FIXME 1: Remove the sprintdao call from the PropertiesManager to load properties in!
-      // File sprintFile = helper.getSprintFile();
-      // if (sprintFile.exists()) {
-      // sprintDao.load(SprintCache.getInstance(), sprintFile);
-      // }
    }
 
    public void saveProperties() throws IOException {
