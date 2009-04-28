@@ -102,6 +102,6 @@ public class MenuItem_CreateMerge extends MyMenuItem {
    private void setTableValuesForMerge(String originalJira, String fixVersionName, String mergeJiraCreated) {
       source.addJiraAndMarkIfNew(new JiraIssue(mergeJiraCreated, fixVersionName));
       source.setValueAt("For: " + originalJira, mergeJiraCreated, Column.Merge);
-      source.setValueAt("merge", mergeJiraCreated, Column.DevEst);
+      source.setValueAt("merge", mergeJiraCreated, Column.DEst);
    }
 }

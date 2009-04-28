@@ -41,8 +41,8 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
       assertEquals(Column.Release, dtoLoaded.getHeader().get(i++));
       assertEquals(Column.Merge, dtoLoaded.getHeader().get(i++));
       assertEquals(Column.BoardStatus, dtoLoaded.getHeader().get(i++));
-      assertEquals(Column.DevEst, dtoLoaded.getHeader().get(i++));
-      assertEquals(Column.DevAct, dtoLoaded.getHeader().get(i++));
+      assertEquals(Column.DEst, dtoLoaded.getHeader().get(i++));
+      assertEquals(Column.DAct, dtoLoaded.getHeader().get(i++));
       assertEquals(Column.prio, dtoLoaded.getHeader().get(i++));
       assertEquals(Column.Note, dtoLoaded.getHeader().get(i++));
       

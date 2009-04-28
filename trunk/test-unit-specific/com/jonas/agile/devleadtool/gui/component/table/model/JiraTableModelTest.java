@@ -97,7 +97,7 @@ public class JiraTableModelTest extends JonasTestCase {
       // add jira llu-2 and llu-3 to boardModel with llu-2 having board's dev_estimate set to '1'
       testBoardModel.addJira("llu-2");
       testBoardModel.addJira("llu-3");
-      testBoardModel.setValueAt("1", 0, Column.DevEst);
+      testBoardModel.setValueAt("1", 0, Column.DEst);
       jiraModel.setBoardModel(testBoardModel);
 
       assertEquals(null, jiraModel.getColor("llu-1", 0, Column.Jira));
@@ -187,7 +187,7 @@ public class JiraTableModelTest extends JonasTestCase {
       assertEquals(false, jiraModel.isJiraNumberOk("merge", "1.1"));
    }
 
-   private Column[] columns = { Column.Jira, Column.Description, Column.DevAct, Column.DevEst };
+   private Column[] columns = { Column.Jira, Column.Description, Column.DAct, Column.DEst };
    public TestTableModelTemp testBoardModel = new TestTableModelTemp(columns);
 
    class TestTableModelTemp extends MyTableModel {

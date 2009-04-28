@@ -12,7 +12,7 @@ import com.jonas.jira.JiraVersion;
 public class PlanTableModel extends MyTableModel {
 
    private Logger log = MyLogger.getLogger(PlanTableModel.class);
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.Release, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.DevEst, Column.QAEst, Column.DevAct, Column.Note };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.Release, Column.Planned_Sprint, Column.Resolved_Sprint, Column.Closed_Sprint, Column.DEst, Column.QEst, Column.DAct, Column.Note };
 
    //FIXME 1 we are using PlanTable still? Cannot all this be removed?
    public PlanTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {

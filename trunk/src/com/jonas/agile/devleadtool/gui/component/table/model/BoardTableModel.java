@@ -19,7 +19,7 @@ import com.jonas.common.swing.SwingUtil;
 public class BoardTableModel extends MyTableModel {
 
    private static final Column[] columns = { Column.Jira, Column.Description, Column.Resolution, Column.Release, Column.Merge,
-         Column.BoardStatus, Column.Old, Column.DevEst, Column.DevRem, Column.DevAct, Column.QAEst, Column.prio, Column.Note, Column.Sprint };
+         Column.BoardStatus, Column.Old, Column.DEst, Column.QEst, Column.DRem, Column.QRem, Column.DAct, Column.prio, Column.Note, Column.Sprint };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
    private MyTableModel jiraModel;
@@ -75,23 +75,6 @@ public class BoardTableModel extends MyTableModel {
             }
          }
          break;
-      case DevRem:
-         stringValue = (String) value;
-         if (isEmptyString(stringValue)) {
-            if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
-               setToolTipText(row, getColumnIndex(column), "Should be filled out as the BoardStatus value highlights a requirement!");
-               return SwingUtil.cellRed;
-            }
-         } else {
-            if (!isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
-               setToolTipText(row, getColumnIndex(column), "Should not be filled out as the BoardStatus value highlights a requirement!");
-               return SwingUtil.cellRed;
-            } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(Column.DevEst, row))) {
-               setToolTipText(row, getColumnIndex(column), "Cannot be numeric if Dev Estimate is not!");
-               return SwingUtil.cellRed;
-            }
-         }
-         break;
       case Sprint:
          if (getSprintCache() == null) {
             String errorMessage = "Error! No sprint cache defined!!";
@@ -134,18 +117,59 @@ public class BoardTableModel extends MyTableModel {
             }
             return null;
          }
-      case DevEst:
+      case DEst:
          stringValue = (String) value;
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevEstimates())) {
                setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
                return SwingUtil.cellRed;
             }
-         } else {
-
          }
          break;
-      case DevAct:
+      case QEst:
+         stringValue = (String) value;
+         if (isEmptyString(stringValue)) {
+            if (isBoardValueEither(row, cellColorHelper.getRequiredQAEstimates())) {
+               setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
+               return SwingUtil.cellRed;
+            }
+         }
+         break;
+      case DRem:
+         stringValue = (String) value;
+         if (isEmptyString(stringValue)) {
+            if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
+               setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
+               return SwingUtil.cellRed;
+            }
+         } else {
+            if (!isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
+               setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value!");
+               return SwingUtil.cellRed;
+            } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(Column.DEst, row))) {
+               setToolTipText(row, getColumnIndex(column), "Cannot be numeric if the Dev Estimate is not!");
+               return SwingUtil.cellRed;
+            }
+         }
+         break;
+      case QRem:
+         stringValue = (String) value;
+         if (isEmptyString(stringValue)) {
+            if (isBoardValueEither(row, cellColorHelper.getRequiredQARemains())) {
+               setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
+               return SwingUtil.cellRed;
+            }
+         } else {
+            if (!isBoardValueEither(row, cellColorHelper.getRequiredQARemains())) {
+               setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value!");
+               return SwingUtil.cellRed;
+            } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(Column.QEst, row))) {
+               setToolTipText(row, getColumnIndex(column), "Cannot be numeric if the QA Estimate is not!");
+               return SwingUtil.cellRed;
+            }
+         }
+         break;
+      case DAct:
          stringValue = (String) value;
          if (isEmptyString(stringValue)) {
             if (isBoardValueEither(row, cellColorHelper.getRequiredDevActuals())) {
@@ -159,20 +183,10 @@ public class BoardTableModel extends MyTableModel {
             }
          }
          break;
-      case QAEst:
-         stringValue = (String) value;
-         if (isEmptyString(stringValue)) {
-            if (isBoardValueEither(row, cellColorHelper.getRequiredQAEstimates())) {
-               setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
-               return SwingUtil.cellRed;
-            }
-         }
-         break;
       case BoardStatus:
          BoardStatusValue newValue = (BoardStatusValue) value;
          switch (newValue) {
          case Resolved:
-         case InQAProgress:
             return SwingUtil.cellLightBlue;
          case Approved:
          case Complete:

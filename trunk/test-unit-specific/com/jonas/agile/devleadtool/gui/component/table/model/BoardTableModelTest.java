@@ -64,7 +64,7 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(1, model.getRowCount());
 
       assertEquals(BoardStatusValue.UnKnown, model.getValueAt(Column.BoardStatus, "LLU-1"));
-      Set<BoardStatusValue> list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress);
+      Set<BoardStatusValue> list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress);
       assertEquals(false, model.isBoardValueEither(0, list));
 
       // set To Open
@@ -72,15 +72,15 @@ public class BoardTableModelTest extends JonasTestCase {
       assertEquals(BoardStatusValue.Open, model.getValueAt(Column.BoardStatus, "LLU-1"));
       list = getSet(BoardStatusValue.Open);
       assertEquals(true, model.isBoardValueEither(0, list));
-      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress, BoardStatusValue.Resolved);
+      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved);
       assertEquals(false, model.isBoardValueEither(0, list));
-      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress, BoardStatusValue.Resolved,
+      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved,
             BoardStatusValue.Open);
       assertEquals(true, model.isBoardValueEither(0, list));
       // set To Complete
       model.setValueAt(BoardStatusValue.Complete, 0, Column.BoardStatus);
       assertEquals(BoardStatusValue.Complete, model.getValueAt(Column.BoardStatus, "LLU-1"));
-      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InDevProgress, BoardStatusValue.Resolved,
+      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved,
             BoardStatusValue.Open);
       assertEquals(true, model.isBoardValueEither(0, list));
    }
@@ -104,9 +104,9 @@ public class BoardTableModelTest extends JonasTestCase {
       header.add(Column.Merge);
       header.add(Column.BoardStatus);
       header.add(Column.Old);
-      header.add(Column.DevEst);
-      header.add(Column.DevAct);
-      header.add(Column.QAEst);
+      header.add(Column.DEst);
+      header.add(Column.DAct);
+      header.add(Column.QEst);
       header.add(Column.prio);
       header.add(Column.Note);
       contents.add(getTestContentRow(header.size(), "0."));

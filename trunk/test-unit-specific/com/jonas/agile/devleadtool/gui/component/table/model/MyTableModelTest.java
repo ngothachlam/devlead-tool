@@ -127,13 +127,13 @@ public class MyTableModelTest extends JonasTestCase {
 
    public void testShouldReturnFirstOccurenceInSetThatDoesNotExistInVector() {
       Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
-      columnNames.put(Column.DevAct, 0);
+      columnNames.put(Column.DAct, 0);
       columnNames.put(Column.BuildNo, 1);
       columnNames.put(Column.Closed_Sprint, 2);
 
       Vector<Column> vector = new Vector<Column>();
       vector.add(Column.BuildNo);
-      assertEquals(Column.DevAct, model.findIndexThatDoesNotExist(columnNames, vector, 0));
+      assertEquals(Column.DAct, model.findIndexThatDoesNotExist(columnNames, vector, 0));
       assertEquals(Column.Closed_Sprint, model.findIndexThatDoesNotExist(columnNames, vector, 1));
       assertEquals(null, model.findIndexThatDoesNotExist(columnNames, vector, 2));
    }
@@ -213,7 +213,7 @@ public class MyTableModelTest extends JonasTestCase {
       assertEquals(3, model.getColumnIndex(Column.Note));
       assertEquals(4, model.getColumnIndex(Column.BuildNo));
       assertEquals(5, model.getColumnIndex(Column.J_DevEst));
-      assertEquals(6, model.getColumnIndex(Column.DevEst));
+      assertEquals(6, model.getColumnIndex(Column.DEst));
       assertEquals(-1, model.getColumnIndex(Column.BoardStatus));
    }
 
@@ -244,7 +244,7 @@ public class MyTableModelTest extends JonasTestCase {
       assertModelRow("", Column.Note, 3, 0);
       assertModelRow("BuildNo1", Column.BuildNo, 4, 0);
       assertModelRow("1.4", Column.J_DevEst, 5, 0);
-      assertModelRow("", Column.DevEst, 6, 0);
+      assertModelRow("", Column.DEst, 6, 0);
       assertTrue(isAdded);
       
       isAdded = model.addJira(mock_jiraIssue);
