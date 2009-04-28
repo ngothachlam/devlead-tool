@@ -22,7 +22,6 @@ public class JiraTableModel extends MyTableModel {
 
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
-   private int tempRow = -1;
    private int jiraRowInBoardModel;
 
    public JiraTableModel() {
@@ -48,14 +47,13 @@ public class JiraTableModel extends MyTableModel {
       }
 
       if (log.isDebugEnabled())
-         log.debug("The row getting color for is " + row + " (col: " + column + ")and we previously edited row " + this.tempRow);
-      if (this.tempRow != row) {
+         log.debug("The row getting color for is " + row + " (col: " + column + ") ");
+      if (getColumnIndex(column) == 0) {
          String jira = (String) getValueAt(Column.Jira, row);
          jiraRowInBoardModel = boardModel.getRowWithJira(jira);
          if (log.isDebugEnabled())
             log.debug("... so we are editing a new row! Lets get the jira, which is " + jira + " and the board row for this jira: "
                   + jiraRowInBoardModel);
-         this.tempRow = row;
       }
 
       if (jiraRowInBoardModel == -1)

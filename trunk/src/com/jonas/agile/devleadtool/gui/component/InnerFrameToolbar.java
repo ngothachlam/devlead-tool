@@ -18,9 +18,9 @@ import com.jonas.agile.devleadtool.gui.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddVersionDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.frame.BoardStatsFrame;
-import com.jonas.agile.devleadtool.gui.component.panel.BoardPanel;
 import com.jonas.agile.devleadtool.gui.component.panel.DnDTreePanel;
 import com.jonas.agile.devleadtool.gui.component.panel.JiraPanel;
+import com.jonas.agile.devleadtool.gui.component.panel.MyDataPanel;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
@@ -28,7 +28,7 @@ import com.jonas.common.DateHelper;
 
 public class InnerFrameToolbar extends JToolBar {
 
-   public InnerFrameToolbar(final Frame parentFrame, BoardPanel boardPanel, JiraPanel jiraPanel, DnDTreePanel sprintPanel, MyTable boardTable,
+   public InnerFrameToolbar(final Frame parentFrame, MyDataPanel boardPanel, JiraPanel jiraPanel, DnDTreePanel sprintPanel, MyTable boardTable,
          final MyTable jiraTable, PlannerHelper helper, ExcelSprintDao sprintDao) {
 
       final MyTable[] tables = { boardTable, jiraTable };
@@ -69,11 +69,11 @@ public class InnerFrameToolbar extends JToolBar {
 
 final class FreezeManipulationAction extends BasicAbstractGUIAction {
 
-   private BoardPanel boardPanel;
+   private MyDataPanel boardPanel;
    private JiraPanel jiraPanel;
    private DnDTreePanel sprintPanel;
 
-   FreezeManipulationAction(Frame parentFrame, BoardPanel boardPanel, JiraPanel jiraPanel, DnDTreePanel sprintPanel) {
+   FreezeManipulationAction(Frame parentFrame, MyDataPanel boardPanel, JiraPanel jiraPanel, DnDTreePanel sprintPanel) {
       super("Freeze", "Does not allow manipulation of data whilst checked", parentFrame);
       this.boardPanel = boardPanel;
       this.jiraPanel = jiraPanel;
