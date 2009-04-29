@@ -242,6 +242,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
          fileOut = new FileOutputStream(xlsFile);
          // FIXME if the excel sheet is already open - this throws FileNotFoundException and thus fails
+         wb.pack();
          wb.write(fileOut);
       } finally {
          if (fileOut != null)
