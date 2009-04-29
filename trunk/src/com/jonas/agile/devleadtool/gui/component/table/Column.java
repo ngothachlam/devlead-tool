@@ -3,11 +3,9 @@
  */
 package com.jonas.agile.devleadtool.gui.component.table;
 
-import org.jfree.util.Log;
 import com.jonas.agile.devleadtool.data.Cache;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
-import com.jonas.common.logging.MyLogger;
 
 public enum Column {
    

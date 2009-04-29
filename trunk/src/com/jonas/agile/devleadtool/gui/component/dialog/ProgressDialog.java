@@ -83,6 +83,7 @@ public class ProgressDialog extends JDialog {
             progressBar.setIndeterminate(false);
             progressBar.setValue(progressBar.getMaximum());
             try {
+               //FIXME - use a separate timer that closes the window - we don't want to freeze this method's calling thread. 
                Thread.sleep(millisecondsDelay);
             } catch (InterruptedException e) {
                e.printStackTrace();

@@ -32,11 +32,8 @@ import com.jonas.common.logging.MyLogger;
 
 public class PlannerDAOExcelImpl implements PlannerDAO {
 
-   private static Map<File, HSSFWorkbook> fileOrganiser = new HashMap<File, HSSFWorkbook>();
    private List<DaoListener> listeners = new ArrayList<DaoListener>();
-   private int loadingNow = 0;
    private Logger log = MyLogger.getLogger(PlannerDAOExcelImpl.class);
-   private int savesNow = 0;
    private final ExcelSprintDao sprintDao;
    private SprintCache sprintCache;
 
@@ -85,8 +82,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException, PersistanceException {
       log.debug("Loading Model from " + xlsFile.getAbsolutePath() + " and sheet: " + sheetName);
-      notifyListeners(DaoListenerEvent.LoadingModelStarted, "Loading " + sheetName + " Started");
-
       InputStream inp = null;
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
@@ -148,7 +143,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    @Override
    public CombinedModelDTO loadAllData(File file) throws IOException, PersistanceException {
-      notifyLoadingStarted();
+      notifyListeners(DaoListenerEvent.LoadingStarted);
       BoardTableModel boardModel = null;
       JiraTableModel jiraModel = null;
       sprintCache = null;
@@ -158,54 +153,26 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          boardModel = new BoardTableModel(dto.getContents(), dto.getHeader(), sprintCache);
          dto = loadModel(file, "jira");
          jiraModel = new JiraTableModel(dto.getContents(), dto.getHeader());
+         notifyListeners(DaoListenerEvent.LoadingFinished);
+         return new CombinedModelDTO(boardModel, jiraModel, sprintCache);
       } catch (IOException e) {
-         notifyListeners(DaoListenerEvent.LoadingErrored, "Exception occured! " + e.getMessage());
+         notifyListeners(DaoListenerEvent.LoadingErrored);
          e.printStackTrace();
          throw e;
       } catch (PersistanceException e) {
-         notifyListeners(DaoListenerEvent.LoadingErrored, "Exception occured! " + e.getMessage());
+         notifyListeners(DaoListenerEvent.LoadingErrored);
          e.printStackTrace();
          throw e;
       } catch (RuntimeException e) {
-         notifyListeners(DaoListenerEvent.LoadingErrored, "Exception occured! " + e.getMessage());
+         notifyListeners(DaoListenerEvent.LoadingErrored);
          e.printStackTrace();
          throw e;
       }
-      notifyLoadingFinished();
-      return new CombinedModelDTO(boardModel, jiraModel, sprintCache);
    }
 
-   public void notifyListeners(DaoListenerEvent event, String message) {
+   public void notifyListeners(DaoListenerEvent event) {
       for (DaoListener listener : listeners) {
-         listener.notify(event, message);
-      }
-   }
-
-   private void notifyLoadingFinished() {
-      notifyLoadingFinished("Loading Finished!");
-   }
-
-   private void notifyLoadingFinished(String message) {
-      if (--loadingNow == 00) {
-         notifyListeners(DaoListenerEvent.LoadingFinished, message);
-      }
-   }
-
-   private void notifyLoadingStarted() {
-      if (loadingNow++ == 0) {
-         notifyListeners(DaoListenerEvent.LoadingStarted, "Loading Started!");
-      }
-   }
-
-   private void notifySavingFinished(final String message) {
-      if (--savesNow == 0) {
-         notifyListeners(DaoListenerEvent.SavingFinished, message);
-      }
-   }
-
-   private void notifySavingStarted() {
-      if (savesNow++ == 0) {
-         notifyListeners(DaoListenerEvent.SavingStarted, "Saving Started!");
+         listener.notify(event);
       }
    }
 
@@ -215,13 +182,12 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    private void saveModel(File xlsFile, MyTableModel model, String sheetName) throws IOException {
-      notifyListeners(DaoListenerEvent.SavingModelStarted, "Saving " + sheetName + " Started");
       FileOutputStream fileOut = null;
       FileInputStream fileIn = null;
       try {
          log.debug("Saving to " + xlsFile.getAbsolutePath());
          fileIn = new FileInputStream(xlsFile);
-         HSSFWorkbook wb = new HSSFWorkbook(fileIn);
+         HSSFWorkbook wb = getWorkBook(fileIn, xlsFile);
          if (fileIn != null)
             fileIn.close();
 
@@ -273,14 +239,29 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       }
    }
 
+   private HSSFWorkbook getWorkBook(FileInputStream fileIn, File xlsFile) throws IOException {
+      if (!xlsFile.exists()) {
+         return new HSSFWorkbook();
+      }
+      return new HSSFWorkbook(fileIn);
+   }
+
    @Override
    public void saveAllData(File file, MyTableModel boardModel, MyTableModel jiraModel, SprintCache sprintCache) throws IOException {
-      notifySavingStarted();
-      fileOrganiser.clear();
-      saveModel(file, boardModel, "board");
-      saveModel(file, jiraModel, "jira");
-      sprintDao.save(file, sprintCache);
-      notifySavingFinished("Saving Finished!");
+      notifyListeners(DaoListenerEvent.SavingStarted);
+      try {
+         saveModel(file, boardModel, "board");
+         saveModel(file, jiraModel, "jira");
+         sprintDao.save(file, sprintCache);
+         notifyListeners(DaoListenerEvent.SavingFinished);
+      } catch (IOException e) {
+         notifyListeners(DaoListenerEvent.SavingErrored);
+         throw e;
+      } catch (RuntimeException e) {
+         notifyListeners(DaoListenerEvent.LoadingErrored);
+         e.printStackTrace();
+         throw e;
+      }
    }
 
    private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, Column> columns, Vector<Object> rowData, int colCount,
