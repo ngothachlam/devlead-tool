@@ -300,7 +300,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
             break;
          }
 
-         Object isOld = boardTable.getValueAt(Column.Old, row);
+         Object isOld = boardTable.getMyModel().getValueAt(Column.Old, row);
          if (isOld != null && Boolean.TRUE == isOld) {
             isToIncludeInTotals = false;
          }
