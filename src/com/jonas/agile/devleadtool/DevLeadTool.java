@@ -164,10 +164,8 @@ public class DevLeadTool {
          public void notify(DaoListenerEvent event) {
             switch (event) {
             case SavingStarted:
-               dialog = new ProgressDialog(frame, "Saving Planner", "Saving Planner", 0, true);
-               dialog.setIndeterminate(false);
             case LoadingStarted:
-               dialog = new ProgressDialog(frame, "Loading Planner", "Loading Planner", 0, true);
+               dialog = new ProgressDialog(frame, event.toString(), event.toString(), 0, true);
                dialog.setIndeterminate(false);
                break;
             case SavingFinished:
