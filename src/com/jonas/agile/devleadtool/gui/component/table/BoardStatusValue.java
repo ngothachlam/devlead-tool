@@ -10,8 +10,8 @@ public enum BoardStatusValue {
    Open(1, JiraStatus.Open),
    Bug(2, JiraStatus.Open, JiraStatus.ReOpened),
 //   Parked(1, JiraStatus.Open, JiraStatus.InProgress, JiraStatus.Resolved),
-   InProgress(2, JiraStatus.Open, JiraStatus.InProgress),
-   Resolved(3, JiraStatus.Resolved),
+   InProgress(3, JiraStatus.Open, JiraStatus.InProgress),
+   Resolved(4, JiraStatus.Resolved),
    Complete(5, JiraStatus.Closed),
    ForShowCase(6, JiraStatus.Closed),
    Approved(7, JiraStatus.Closed);

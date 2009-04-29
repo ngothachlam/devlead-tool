@@ -57,6 +57,10 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          } else {
             parsed = column.parseFromPersistanceStore(cellContents);
          }
+         if (parsed == null && log.isDebugEnabled()) {
+            log.warn("When trying to parse column " + column + " from store using value \"" + cellContents + "\" - we got null! (Cache was "
+                  + (column.isUsingCache() ? "" : "not") + " used)");
+         }
          rowData.add(parsed);
       }
    }
@@ -69,13 +73,13 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    public static HSSFSheet getSheet(String sheetName, HSSFWorkbook wb, boolean deleteRows) {
       HSSFSheet sheet = wb.getSheet(sheetName);
-      
-      if(deleteRows && sheet != null){
+
+      if (deleteRows && sheet != null) {
          int index = wb.getSheetIndex(sheetName);
          wb.removeSheetAt(index);
          sheet = null;
       }
-      
+
       return sheet == null ? wb.createSheet(sheetName) : sheet;
    }
 

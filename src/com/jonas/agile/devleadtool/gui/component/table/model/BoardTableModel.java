@@ -19,7 +19,8 @@ import com.jonas.common.swing.SwingUtil;
 public class BoardTableModel extends MyTableModel {
 
    private static final Column[] columns = { Column.Jira, Column.Description, Column.Resolution, Column.Release, Column.Merge,
-         Column.BoardStatus, Column.Old, Column.DEst, Column.QEst, Column.DRem, Column.QRem, Column.DAct, Column.prio, Column.Note, Column.Sprint };
+         Column.BoardStatus, Column.Old, Column.DEst, Column.QEst, Column.DRem, Column.QRem, Column.DAct, Column.prio, Column.Note,
+         Column.Sprint };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
    private MyTableModel jiraModel;
@@ -85,7 +86,7 @@ public class BoardTableModel extends MyTableModel {
          Sprint sprint = getSprintCache().getSprintWithName(value.toString());
          if (log.isDebugEnabled())
             log.debug("Value: " + value + " sprint: " + sprint);
-         JiraStatistic jiraStat = getJiraStat(row, column);
+         JiraStatistic jiraStat = getJiraStat(row);
          SprintTime sprintTime = sprint.calculateTime();
          switch (jiraStat.devStatus()) {
          case preDevelopment:
@@ -203,8 +204,11 @@ public class BoardTableModel extends MyTableModel {
       return null;
    }
 
-   private JiraStatistic getJiraStat(int row, Column column) {
-      return new JiraStatistic((BoardStatusValue) this.getValueAt(Column.BoardStatus, row));
+   private JiraStatistic getJiraStat(int row) {
+      Object valueAt = this.getValueAt(Column.BoardStatus, row);
+      if (log.isDebugEnabled())
+         log.debug("Getting BoardStatus value for row " + row + " is " + valueAt);
+      return new JiraStatistic((BoardStatusValue) valueAt);
    }
 
    private boolean isEmptyString(String stringValue) {
