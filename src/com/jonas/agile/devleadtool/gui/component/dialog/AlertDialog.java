@@ -12,6 +12,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.MyPanel;
@@ -62,8 +63,21 @@ public class AlertDialog extends JDialog {
       return new AlertDialog(parentFrame, title, preTextBoxText, textBoxText);
    }
 
-   public static void alertMessage(Frame parentFrame, String e) {
-      new AlertDialog(parentFrame, "Alert...", "Message:", e);
+   public static void alertMessage(final Frame parentFrame, final String e) {
+      if (SwingUtilities.isEventDispatchThread()) {
+         new AlertDialog(parentFrame, "Alert...", "Message:", e);
+      } else {
+         SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+               try {
+                  new AlertDialog(parentFrame, "Alert...", "Message:", e);
+               } catch (Exception e) {
+                  System.out.println("Exception in initialization");
+               }
+            }
+         });
+
+      }
    }
 
    public void addText(String string) {

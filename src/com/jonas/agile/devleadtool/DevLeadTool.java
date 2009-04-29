@@ -161,33 +161,23 @@ public class DevLeadTool {
 
          // FIXME not very well done!
          @Override
-         public void notify(DaoListenerEvent event, String message) {
+         public void notify(DaoListenerEvent event) {
             switch (event) {
             case SavingStarted:
                dialog = new ProgressDialog(frame, "Saving Planner", "Saving Planner", 0, true);
                dialog.setIndeterminate(false);
-               break;
-            case SavingModelStarted:
-               dialog.setNote(message);
-               break;
-            case SavingFinished:
-               dialog.setNote(message);
-               dialog.setCompleteWithDelay(300);
-               break;
             case LoadingStarted:
                dialog = new ProgressDialog(frame, "Loading Planner", "Loading Planner", 0, true);
                dialog.setIndeterminate(false);
                break;
-            case LoadingModelStarted:
-               dialog.setNote(message);
-               break;
+            case SavingFinished:
             case LoadingFinished:
-               dialog.setNote(message);
+               dialog.setNote(event.toString());
                dialog.setCompleteWithDelay(300);
                break;
             case LoadingErrored:
-               dialog.setNote(message);
-               dialog.setIndeterminate(false);
+            case SavingErrored:
+               dialog.setNote(event.toString());
                dialog.setCompleteWithDelay(1500);
                break;
             default:

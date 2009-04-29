@@ -44,23 +44,24 @@ public class MyInternalFrame extends JInternalFrame {
    private String originalTitle;
    private String originalTitleWithDuplicateNumber;
 
-   public MyInternalFrame(final PlannerHelper client, String title, MyInternalFrameInnerPanel internalFrameTabPanel, PlannerDAO dao, SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener, DesktopPane desktop) {
+   public MyInternalFrame(final PlannerHelper client, String title, MyInternalFrameInnerPanel internalFrameTabPanel, PlannerDAO dao,
+         SavePlannerDialog savePlannerDialog, SaveKeyListener saveKeyListener, DesktopPane desktop) {
       this(title, client);
       log.trace("MyInternalFrame");
       this.dao = dao;
       this.internalFrameTabPanel = internalFrameTabPanel;
       desktop.addInternalFrame(this);
-      
+
       setContentPane(internalFrameTabPanel);
       setFocusable(true);
       client.setActiveInternalFrame(this);
 
       wireListeners(client, savePlannerDialog, saveKeyListener);
-      
+
       PlannerListeners.notifyListenersThatFrameWasCreated(this);
       log.trace("MyInternalFrame");
    }
-   
+
    public SprintCache getSprintCache() {
       return getBoardModel().getSprintCache();
    }
@@ -76,7 +77,7 @@ public class MyInternalFrame extends JInternalFrame {
       this.setTitle(originalTitleWithDuplicateNumber);
       log.trace("MyInternalFrame");
    }
-   
+
    public static void closeAll() throws PropertyVetoException {
       if (!SwingUtilities.isEventDispatchThread()) {
          closeInEventThread();
@@ -143,8 +144,9 @@ public class MyInternalFrame extends JInternalFrame {
             try {
                dao.saveAllData(file, getBoardModel(), getJiraModel(), getSprintCache());
             } catch (IOException e) {
-               AlertDialog.alertException(helper.getParentFrame(), e);
-            } 
+                e.printStackTrace();
+                AlertDialog.alertException(helper.getParentFrame(), e);
+            }
             return null;
          }
       };
@@ -180,8 +182,8 @@ public class MyInternalFrame extends JInternalFrame {
       log.trace("wireListeners");
       MyInternalFrameListener myInternalFrameListener = new MyInternalFrameListener(this, helper);
       VetoListener vetoListener = new VetoListener(this, client.getParentFrame(), savePlannerDialog);
-      
-      addInternalFrameListener( myInternalFrameListener);
+
+      addInternalFrameListener(myInternalFrameListener);
       addVetoableChangeListener(vetoListener);
       addKeyListener(saveKeyListener);
    }
@@ -223,11 +225,13 @@ public class MyInternalFrame extends JInternalFrame {
    private final class MyInternalFrameListener extends InternalFrameAdapter {
       private PlannerHelper helper;
       private MyInternalFrame internalFrame;
+
       public MyInternalFrameListener(MyInternalFrame internalFrame, PlannerHelper helper) {
          super();
          this.internalFrame = internalFrame;
          this.helper = helper;
       }
+
       @Override
       public void internalFrameActivated(InternalFrameEvent e) {
          helper.setActiveInternalFrame(internalFrame);
