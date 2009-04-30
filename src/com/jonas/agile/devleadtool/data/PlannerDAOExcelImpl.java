@@ -187,11 +187,11 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       try {
          log.debug("Saving to " + xlsFile.getAbsolutePath());
          HSSFWorkbook wb = null;
-         if (xlsFile.exists()){
+         if (xlsFile.exists()) {
             fileIn = new FileInputStream(xlsFile);
-            try{
-            wb = new HSSFWorkbook(fileIn);
-            } catch(IOException e){
+            try {
+               wb = new HSSFWorkbook(fileIn);
+            } catch (IOException e) {
                wb = new HSSFWorkbook();
             }
          } else {
@@ -203,7 +203,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
          HSSFSheet sheet = getSheet(sheetName, wb, true);
 
-          HSSFCellStyle style_red_background = wb.createCellStyle();
+         // HSSFCellStyle style_red_background = wb.createCellStyle();
          // style_red_background.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
          // style_red_background.setFillForegroundColor(new HSSFColor.RED().getIndex());
 
@@ -242,7 +242,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
          fileOut = new FileOutputStream(xlsFile);
          // FIXME if the excel sheet is already open - this throws FileNotFoundException and thus fails
-         wb.pack();
+         // wb.pack();
          wb.write(fileOut);
       } finally {
          if (fileOut != null)

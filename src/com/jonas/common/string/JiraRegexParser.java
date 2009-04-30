@@ -11,7 +11,7 @@ public class JiraRegexParser {
 
    private Pattern jiraPattern = Pattern.compile("^([a-z\\-0-9]*)", Pattern.CASE_INSENSITIVE);
    private Pattern estimatePattern = Pattern.compile("'([0-9.,a-z]*)");
-   private Pattern remainderPattern = Pattern.compile(":([0-9.,a-z]*)");
+   private Pattern remainPattern = Pattern.compile(":([0-9.,a-z]*)");
 
    private String getStringAsNullIfEmpty(Matcher matcher) {
       String group = matcher.group(1);
@@ -22,12 +22,12 @@ public class JiraRegexParser {
       return this.separateString(string, " \t\n");
    }
 
-   public JiraStringDTO separateJira(String matcherString) {
+   public JiraStringDTO separateJira(String jiraString) {
       JiraStringDTO jiraStringDTO = new JiraStringDTO();
 
-      setJiraNameOnDTO(matcherString, jiraStringDTO);
-      setEstimatesAndActualsOnDTO(matcherString, jiraStringDTO);
-      setRemainderOnDTO(matcherString, jiraStringDTO);
+      setJiraNameOnDTO(jiraString, jiraStringDTO);
+      setEstimatesAndActualsOnDTO(jiraString, jiraStringDTO);
+      setRemainderOnDTO(jiraString, jiraStringDTO);
 
       return jiraStringDTO;
    }
@@ -69,9 +69,19 @@ public class JiraRegexParser {
    }
 
    private void setRemainderOnDTO(String matcherString, JiraStringDTO jiraStringDTO) {
-      Matcher matcher = remainderPattern.matcher(matcherString);
+      Matcher matcher = remainPattern.matcher(matcherString);
+      int occurence = 0;
+      while (matcher.find()) {
+         switch (occurence++) {
+         case 0:
+            jiraStringDTO.setDevRemainder(getStringAsNullIfEmpty(matcher));
+            break;
+         case 1:
+            jiraStringDTO.setQaRemainder(getStringAsNullIfEmpty(matcher));
+            break;
+         }
+      }
       if (matcher.find()) {
-         jiraStringDTO.setDevRemainder(getStringAsNullIfEmpty(matcher));
       }
    }
 
