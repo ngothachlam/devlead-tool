@@ -19,7 +19,7 @@ public enum Column {
          return cellContents.toString().toUpperCase();
       }
    },
-   Description(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false, CacheMode.noCache),
+   Description(String.class, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, false, CacheMode.noCache, false),
    Planned_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false, CacheMode.noCache),
    Merge(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false, CacheMode.noCache),
    Resolved_Sprint(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false, CacheMode.noCache),
@@ -109,9 +109,15 @@ public enum Column {
    private final ToLoadColumn isToLoad;
    private final Boolean isNumeric;
    private final CacheMode cacheMode;
+   private boolean isToAutoResize;
 
    // private static Map<String, Column> columns;
 
+   private <T> Column(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad,
+         Boolean isNumeric, CacheMode cacheMode, boolean isToAutoResize) {
+      this(defaultClass, defaultValue, isEditable, isJiraColumn, isToLoad, isNumeric, cacheMode);
+      this.isToAutoResize = isToAutoResize;
+   }
    private <T> Column(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad,
          Boolean isNumeric, CacheMode cacheMode) {
       this.defaultClass = defaultClass;
@@ -121,7 +127,9 @@ public enum Column {
       this.isToLoad = isToLoad;
       this.isNumeric = isNumeric;
       this.cacheMode = cacheMode;
+      this.isToAutoResize = true;
    }
+   
 
    public static Column getEnum(Object columnName) {
       for (Column col : Column.values()) {
@@ -190,6 +198,10 @@ public enum Column {
 
    public boolean isUsingCache() {
       return cacheMode.equals(CacheMode.usesCache);
+   }
+
+   public boolean isToAutoResize() {
+      return isToAutoResize;
    }
 
 }

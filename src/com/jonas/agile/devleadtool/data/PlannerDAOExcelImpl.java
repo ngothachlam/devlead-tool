@@ -216,8 +216,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          }
 
          // save all data rows...
-         for (int rowCount = 0; rowCount < model.getRowCount(); rowCount++) {
-            row = sheet.createRow((short) rowCount + 1);
+         for (short rowCount = 0; rowCount < model.getRowCount(); rowCount++) {
+            row = sheet.createRow(rowCount + 1);
             for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
                HSSFCell cell = row.createCell((short) colCount);
                Object valueAt = model.getValueAt(rowCount, colCount);
@@ -237,6 +237,16 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                } else {
                   cell.setCellValue(new HSSFRichTextString(valueAt.toString()));
                }
+            }
+         }
+
+         for (short colCount = 0; colCount < model.getColumnCount(); colCount++) {
+            Column column = model.getColumn(colCount);
+            log.debug("Column " + column + " is " + (!column.isToAutoResize() ? "not" : "") + " to be autoresized");
+            if (column.isToAutoResize()) {
+               if (log.isDebugEnabled()) {
+               }
+               sheet.autoSizeColumn(colCount);
             }
          }
 
