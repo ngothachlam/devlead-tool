@@ -186,18 +186,24 @@ public class BoardTableModel extends MyTableModel {
          break;
       case BoardStatus:
          BoardStatusValue newValue = (BoardStatusValue) value;
+         if (log.isDebugEnabled()) {
+            log.debug("boardStatus is " + newValue);
+         }
          switch (newValue) {
+         case InProgress:
+            if (log.isDebugEnabled()) {
+               log.debug("in progress");
+            }
+            return SwingUtil.cellLightYellow;
+         case Bug:
+            setToolTipText(row, getColumnIndex(column), "This is a bug!");
+            return SwingUtil.cellLightRed;
          case Resolved:
             return SwingUtil.cellLightBlue;
          case Approved:
          case Complete:
          case ForShowCase:
             return SwingUtil.cellLightGreen;
-         case Bug:
-            setToolTipText(row, getColumnIndex(column), "This is a bug!");
-            return SwingUtil.cellLightRed;
-         default:
-            break;
          }
          break;
       }

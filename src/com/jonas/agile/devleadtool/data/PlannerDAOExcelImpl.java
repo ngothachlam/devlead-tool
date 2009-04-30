@@ -11,15 +11,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import com.google.inject.Inject;
 import com.jonas.agile.devleadtool.gui.component.dialog.CombinedModelDTO;
+import com.jonas.agile.devleadtool.gui.component.table.ColorDTO;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
@@ -29,6 +33,7 @@ import com.jonas.agile.devleadtool.gui.listener.DaoListener;
 import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.SwingUtil;
 
 public class PlannerDAOExcelImpl implements PlannerDAO {
 
@@ -203,10 +208,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
          HSSFSheet sheet = getSheet(sheetName, wb, true);
 
-         // HSSFCellStyle style_red_background = wb.createCellStyle();
-         // style_red_background.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-         // style_red_background.setFillForegroundColor(new HSSFColor.RED().getIndex());
-
          // save column Headers
          HSSFRow row = sheet.createRow((short) 0);
          for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
@@ -223,6 +224,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                Object valueAt = model.getValueAt(rowCount, colCount);
                log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
 
+
                Column column = model.getColumn(colCount);
                valueAt = column.parseToPersistanceStore(valueAt);
 
@@ -237,6 +239,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                } else {
                   cell.setCellValue(new HSSFRichTextString(valueAt.toString()));
                }
+               setCellStyle(wb, model, rowCount, colCount, valueAt, cell);
             }
          }
 
@@ -257,6 +260,18 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       } finally {
          if (fileOut != null)
             fileOut.close();
+      }
+   }
+
+   private void setCellStyle(HSSFWorkbook wb, MyTableModel model, short rowCount, int colCount, Object valueAt, HSSFCell cell) {
+      HSSFCellStyle cellStyle = wb.createCellStyle();
+      ColorDTO modelColor = model.getColor(valueAt, rowCount, colCount, true);
+      HSSFColor color = modelColor.getHSSFColor();
+      if (color != null) {
+         log.debug("color index: " + color.getIndex());
+         cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+         cellStyle.setFillBackgroundColor(color.getIndex());
+         cell.setCellStyle(cellStyle);
       }
    }
 

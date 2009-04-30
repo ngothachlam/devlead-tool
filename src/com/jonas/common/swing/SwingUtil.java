@@ -20,12 +20,13 @@ import com.jonas.common.logging.MyLogger;
 
 public class SwingUtil {
 
-   public static final Color cellRed = new Color(180, 0, 0);
-   public static final Color cellLightRed = new Color(255, 95, 95);
-   public static final Color cellGreen = new Color(0, 180, 0);
-   public static final Color cellLightGreen = new Color(0, 235, 55);
+   public static final Color cellRed = new Color(210, 10, 10);
    public static final Color cellBlue = new Color(0, 0, 180);
+   public static final Color cellGreen = new Color(30, 200, 30);
+   public static final Color cellLightRed = new Color(255, 95, 95);
    public static final Color cellLightBlue = new Color(51, 195, 255);
+   public static final Color cellLightGreen = new Color(150, 250, 150);
+   public static final Color cellLightYellow = new Color(255, 255, 150);
 
    public static final Border focusCellBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.yellow);
    public static final Border defaultCellBorder = UIManager.getBorder("Table.focusSelectedCellHighlightBorder");
