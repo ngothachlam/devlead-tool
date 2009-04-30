@@ -12,11 +12,13 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.util.HSSFColor;
 import com.jonas.agile.devleadtool.gui.component.table.ColorDTO;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
 
 class Counter {
@@ -55,6 +57,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       modelMarkerDelegator = new ModelMarker();
       addTableModelListener(modelMarkerDelegator);
    }
+
    MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header) {
       log.trace("MyTableModel");
       initiateColumns(columns);
@@ -163,6 +166,33 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    public abstract Color getColor(Object value, int row, Column column);
+
+   public ColorDTO getColor(Object value, int row, int column, boolean includeHSSFColor) {
+      ColorDTO colorDto = getColor(value, row, column);
+      if (includeHSSFColor)
+         colorDto.setHSSFColor(getHSSFColor(colorDto.getColor()));
+      return colorDto;
+   }
+
+   private HSSFColor getHSSFColor(Color color) {
+      if (color == null)
+         return null;
+      if (SwingUtil.cellBlue.equals(color))
+         return new HSSFColor.BLUE();
+      if (SwingUtil.cellGreen.equals(color))
+         return new HSSFColor.GREEN();
+      if (SwingUtil.cellRed.equals(color))
+         return new HSSFColor.RED();
+      if (SwingUtil.cellLightBlue.equals(color))
+         return new HSSFColor.LIGHT_BLUE();
+      if (SwingUtil.cellLightGreen.equals(color))
+         return new HSSFColor.LIGHT_GREEN();
+      if (SwingUtil.cellLightRed.equals(color))
+         return new HSSFColor.ORANGE();
+      if (SwingUtil.cellLightYellow.equals(color))
+         return new HSSFColor.LIGHT_YELLOW();
+      return null;
+   }
 
    public ColorDTO getColor(Object value, int row, int column) {
       Color color = getColor(value, row, getColumn(column));
