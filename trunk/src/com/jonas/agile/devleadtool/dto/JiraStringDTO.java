@@ -7,20 +7,12 @@ public class JiraStringDTO {
    private String devRemainder;
    private String jira;
    private String qAEstimate;
+   private String qaReminder;
    
    public JiraStringDTO() {
       super();
    }
    
-   public JiraStringDTO(String jira, String devEstimate, String estimate, String devActual, String devRemainder) {
-      super();
-      this.jira = jira;
-      this.devEstimate = devEstimate;
-      qAEstimate = estimate;
-      this.devActual = devActual;
-      this.devRemainder = devRemainder;
-   }
-
    public String getDevActual() {
       return devActual;
    }
@@ -57,8 +49,16 @@ public class JiraStringDTO {
       this.jira = jira;
    }
 
-   public void setQAEstimate(String estimate) {
-      qAEstimate = estimate;
+   public void setQAEstimate(String qaEstimate) {
+      qAEstimate = qaEstimate;
+   }
+
+   public String getQaRemainder() {
+      return qaReminder;
+   }
+
+   public void setQaRemainder(String qaReminder) {
+      this.qaReminder = qaReminder;
    }
 
 }

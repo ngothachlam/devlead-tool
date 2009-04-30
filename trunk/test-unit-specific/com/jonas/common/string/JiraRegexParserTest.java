@@ -31,16 +31,18 @@ public class JiraRegexParserTest extends JonasTestCase {
    }
    
    public void testShouldSeparateJiraStringIntoDTOOk() {
-      assertJiraStringDTO(null, null, null, null, null, parser.separateJira("':"));
-      assertJiraStringDTO("1", null, null, null, null, parser.separateJira("1':"));
-      assertJiraStringDTO("llu-1", null, null, null, null, parser.separateJira("llu-1"));
-      assertJiraStringDTO("llu-1", null, null, null, "1", parser.separateJira("llu-1''':1"));
-      assertJiraStringDTO("llu-1", "2", "3", "4", "5", parser.separateJira("llu-1'2'3'4:5"));
-      assertJiraStringDTO("llu-1", "2", null, "4", "5", parser.separateJira("llu-1'2''4:5"));
-      assertJiraStringDTO("llu-1", "2", "3", "4", null, parser.separateJira("llu-1'2'3'4:"));
-      assertJiraStringDTO("llu-1", null, null, null, "2", parser.separateJira("llu-1:2"));
-      assertJiraStringDTO("llu-1", "2.6", "3.7", "4.8", "5.9", parser.separateJira("llu-1'2.6'3.7'4.8:5.9"));
-      assertJiraStringDTO("llu-1", "a", "b", "c2", "d", parser.separateJira("llu-1'a'b'c2:d"));
+      assertJiraStringDTO(null, null, null, null, null, null, parser.separateJira("':"));
+      assertJiraStringDTO("1", null, null, null, null, null, parser.separateJira("1':"));
+      assertJiraStringDTO("1", null, null, null, null, null, parser.separateJira("1'::"));
+      assertJiraStringDTO("1", null, "test", null, null, "2", parser.separateJira("1':test:2"));
+      assertJiraStringDTO("llu-1", null, null, null, null, null, parser.separateJira("llu-1"));
+      assertJiraStringDTO("llu-1", null, "1", null, null, null, parser.separateJira("llu-1''':1"));
+      assertJiraStringDTO("llu-1", "2", "5", "3", "4", null, parser.separateJira("llu-1'2'3'4:5"));
+      assertJiraStringDTO("llu-1", "2", "5", null, "4", null, parser.separateJira("llu-1'2''4:5"));
+      assertJiraStringDTO("llu-1", "2", null, "3", "4", null, parser.separateJira("llu-1'2'3'4:"));
+      assertJiraStringDTO("llu-1", null, "2", null, null, null, parser.separateJira("llu-1:2"));
+      assertJiraStringDTO("llu-1", "2.6", "5.9", "3.7", "4.8", null, parser.separateJira("llu-1'2.6'3.7'4.8:5.9"));
+      assertJiraStringDTO("llu-1", "a", "d", "b", "c2", "e", parser.separateJira("llu-1'a'b'c2:d:e:f"));
    }
    
    public void testShouldHyphenatePrefixProperly(){
@@ -50,12 +52,13 @@ public class JiraRegexParserTest extends JonasTestCase {
       
    }
 
-   private void assertJiraStringDTO(String jira, String devEstimate, String devActual, String qaEstimate, String devRemainder,
-         JiraStringDTO jiraStringDTO) {
+   private void assertJiraStringDTO(String jira, String devEstimate, String devRemainder, String devActual, String qaEstimate,
+         String qaRemainder, JiraStringDTO jiraStringDTO) {
       assertEquals(jira, jiraStringDTO.getJira());
       assertEquals(devEstimate, jiraStringDTO.getDevEstimate());
-      assertEquals(qaEstimate, jiraStringDTO.getQAEstimate());
-      assertEquals(devActual, jiraStringDTO.getDevActual());
       assertEquals(devRemainder, jiraStringDTO.getDevRemainder());
+      assertEquals(devActual, jiraStringDTO.getDevActual());
+      assertEquals(qaEstimate, jiraStringDTO.getQAEstimate());
+      assertEquals(qaRemainder, jiraStringDTO.getQaRemainder());
    }
 }
