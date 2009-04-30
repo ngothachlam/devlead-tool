@@ -86,14 +86,16 @@ public class JiraTableModel extends MyTableModel {
          }
          break;
       case J_DevEst:
-         if (!isJiraNumberOk(boardModel.getValueAt(Column.DEst, jiraRowInBoardModel), value)) {
-            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
+         Object dEst = boardModel.getValueAt(Column.DEst, jiraRowInBoardModel);
+         if (!isJiraNumberOk(dEst, value)) {
+            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dEst + ")!");
             return SwingUtil.cellRed;
          }
          break;
       case J_DevAct:
-         if (!isJiraNumberOk(boardModel.getValueAt(Column.DAct, jiraRowInBoardModel), value)) {
-            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value!");
+         Object dAct = boardModel.getValueAt(Column.DAct, jiraRowInBoardModel);
+         if (!isJiraNumberOk(dAct, value)) {
+            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dAct + ")!");
             return SwingUtil.cellRed;
          }
          break;

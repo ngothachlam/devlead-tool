@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.gui.listener;
 
+import java.awt.Component;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -37,6 +38,7 @@ public final class KeyListenerToHighlightSprintSelectionElsewhere extends KeyAda
    public void keyPressed(KeyEvent e) {
       // ctrl-f for finding in the other tables!
       if (e.getModifiersEx() == InputEvent.CTRL_DOWN_MASK && e.getKeyCode() == KeyEvent.VK_EQUALS && !pressed) {
+         
          pressed = true;
          log.debug("KeyPressed Source: " + e.getSource());
          sourceTableSelectionModel.setValueIsAdjusting(true);
@@ -53,6 +55,7 @@ public final class KeyListenerToHighlightSprintSelectionElsewhere extends KeyAda
             tableToHighlight.getSelectionModel().setValueIsAdjusting(false);
          }
          sourceTableSelectionModel.setValueIsAdjusting(false);
+         e.consume(); // so that we don't go into editing mode or something else when this is pressed...
       }
    }
 
