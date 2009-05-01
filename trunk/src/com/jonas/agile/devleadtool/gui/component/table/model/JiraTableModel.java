@@ -17,8 +17,8 @@ public class JiraTableModel extends MyTableModel {
       nonAcceptedJiraFields.add("TBD");
    }
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.J_Sprint, Column.Project, Column.FixVersion,
-         Column.Owner, Column.Environment, Column.Delivery, Column.Resolution, Column.BuildNo, Column.J_DevEst, Column.J_DevAct, Column.prio };
+   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.J_Sprint, Column.Project, Column.FixVersion, Column.Owner, Column.Environment, Column.Delivery, Column.Resolution, Column.BuildNo,
+         Column.J_DevEst, Column.J_DevAct, Column.prio };
 
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
@@ -52,8 +52,7 @@ public class JiraTableModel extends MyTableModel {
          String jira = (String) getValueAt(Column.Jira, row);
          jiraRowInBoardModel = boardModel.getRowWithJira(jira);
          if (log.isDebugEnabled())
-            log.debug("... so we are editing a new row! Lets get the jira, which is " + jira + " and the board row for this jira: "
-                  + jiraRowInBoardModel);
+            log.debug("... so we are editing a new row! Lets get the jira, which is " + jira + " and the board row for this jira: " + jiraRowInBoardModel);
       }
 
       if (jiraRowInBoardModel == -1)
@@ -62,49 +61,49 @@ public class JiraTableModel extends MyTableModel {
       if (log.isDebugEnabled())
          log.debug("... The Jira was found in the board. We now want to check the " + column + " as it's value is \"" + value + "\"");
       switch (column) {
-      case Jira:
-         setToolTipText(row, getColumnIndex(column), "Exists in the board!");
-         return SwingUtil.cellGreen;
-      case FixVersion:
-         Object bRel = boardModel.getValueAt(Column.Release, jiraRowInBoardModel);
-         if (!isFixVersionOk(bRel, value)) {
-            setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Release value (" + bRel + ")!");
-            return SwingUtil.cellRed;
-         }
-         break;
-      case J_Sprint:
-         Object bSprint = boardModel.getValueAt(Column.Sprint, jiraRowInBoardModel);
-         if (!isSprintOk(bSprint, value)) {
-            setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Sprint value (" + bSprint + ")!");
-            return SwingUtil.cellRed;
-         }
-         break;
-      case Project:
-         if (!isProjectOk(value)) {
-            setToolTipText(row, getColumnIndex(column), "Should not be empty!");
-            return SwingUtil.cellRed;
-         }
-         break;
-      case J_DevEst:
-         Object dEst = boardModel.getValueAt(Column.DEst, jiraRowInBoardModel);
-         if (!isJiraNumberOk(dEst, value)) {
-            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dEst + ")!");
-            return SwingUtil.cellRed;
-         }
-         break;
-      case J_DevAct:
-         Object dAct = boardModel.getValueAt(Column.DAct, jiraRowInBoardModel);
-         if (!isJiraNumberOk(dAct, value)) {
-            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dAct + ")!");
-            return SwingUtil.cellRed;
-         }
-         break;
-      case Delivery:
-         if (false) {
-            setToolTipText(row, getColumnIndex(column), "Not implemented yet!!");
-            return SwingUtil.cellRed;
-         }
-         break;
+         case Jira:
+            setToolTipText(row, getColumnIndex(column), "Exists in the board!");
+            return SwingUtil.cellGreen;
+         case FixVersion:
+            Object bRel = boardModel.getValueAt(Column.Release, jiraRowInBoardModel);
+            if (!isFixVersionOk(bRel, value)) {
+               setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Release value (" + bRel + ")!");
+               return SwingUtil.cellRed;
+            }
+            break;
+         case J_Sprint:
+            Object bSprint = boardModel.getValueAt(Column.Sprint, jiraRowInBoardModel);
+            if (!isSprintOk(bSprint, value)) {
+               setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Sprint value (" + bSprint + ")!");
+               return SwingUtil.cellRed;
+            }
+            break;
+         case Project:
+            if (!isProjectOk(value)) {
+               setToolTipText(row, getColumnIndex(column), "Should not be empty!");
+               return SwingUtil.cellRed;
+            }
+            break;
+         case J_DevEst:
+            Object dEst = boardModel.getValueAt(Column.DEst, jiraRowInBoardModel);
+            if (!isJiraNumberOk(dEst, value)) {
+               setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dEst + ")!");
+               return SwingUtil.cellRed;
+            }
+            break;
+         case J_DevAct:
+            Object dAct = boardModel.getValueAt(Column.DAct, jiraRowInBoardModel);
+            if (!isJiraNumberOk(dAct, value)) {
+               setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dAct + ")!");
+               return SwingUtil.cellRed;
+            }
+            break;
+         case Delivery:
+            if (false) {
+               setToolTipText(row, getColumnIndex(column), "Not implemented yet!!");
+               return SwingUtil.cellRed;
+            }
+            break;
       }
       return null;
    }
@@ -149,8 +148,7 @@ public class JiraTableModel extends MyTableModel {
 
    boolean isJiraNumberOk(Object boardValue, Object jiraValue) {
       if (log.isDebugEnabled())
-         log.debug("... We are trying to check if either the board or jira has numberical or string values (boardValue: " + boardValue
-               + ", jiraValue: " + jiraValue + ")");
+         log.debug("... We are trying to check if either the board or jira has numberical or string values (boardValue: " + boardValue + ", jiraValue: " + jiraValue + ")");
       String boardString = boardValue == null ? null : boardValue.toString().trim();
       String jiraString = jiraValue == null ? null : jiraValue.toString().trim();
 
