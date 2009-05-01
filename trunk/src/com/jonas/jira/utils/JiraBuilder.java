@@ -111,7 +111,7 @@ public class JiraBuilder {
    }
 
    JiraIssue buildJira(Element e) {
-      JiraIssue jiraIssue = new JiraIssue(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"), get(e, "type"));
+      JiraIssue jiraIssue = new JiraIssue(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"), get(e, "type"), get(e, "created"));
       for (XPathImplementor xPathImplementor : jiraXpathActions) {
          log.debug("executing xpathImplementor on Jira " + jiraIssue.getKey());
          xPathImplementor.execute(e, jiraIssue);

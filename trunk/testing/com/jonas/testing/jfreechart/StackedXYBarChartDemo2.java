@@ -7,14 +7,22 @@
 
 package com.jonas.testing.jfreechart;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.RenderingHints;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
+import org.apache.commons.httpclient.HttpException;
+import org.jdom.JDOMException;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -37,13 +45,20 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RefineryUtilities;
 import org.jfree.ui.TextAnchor;
 
+import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraDTO;
+import com.jonas.common.swing.SwingUtil;
+import com.jonas.jira.JiraIssue;
+import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraStatus;
-import com.jonas.jira.access.listener.JiraListener.JiraAccessUpdate;
+import com.jonas.jira.access.JiraClient;
+import com.jonas.jira.access.JiraException;
 
 /**
  * A simple stacked bar chart using time series data.
  */
 public class StackedXYBarChartDemo2 extends ApplicationFrame {
+
+   JiraClient jiraClient = JiraClient.JiraClientAolBB;
 
    /**
     * Creates a new demo.
@@ -53,15 +68,61 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
     */
    public StackedXYBarChartDemo2(String title) {
       super(title);
+
       DataSetAggregator dataSetAggregator = new DataSetAggregator();
-      dataSetAggregator.add(new Day(2, 5, 2009), JiraStatus.Open);
-      dataSetAggregator.add(new Day(2, 5, 2009), JiraStatus.Open);
-      dataSetAggregator.add(new Day(3, 5, 2009), JiraStatus.ReOpened);
-      dataSetAggregator.add(new Day(3, 5, 2009), JiraStatus.Resolved);
-      dataSetAggregator.add(new Day(4, 5, 2009), JiraStatus.Open);
-      JPanel chartPanel = createDemoPanel(dataSetAggregator);
-      chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
-      setContentPane(chartPanel);
+      try {
+         jiraClient.login();
+
+         boolean isWeek = false;
+         boolean aggregate = true;
+
+         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.BBMS, "&created%3Aprevious=-10w&created%3Anext=+1w");
+
+         for (JiraIssue jiraIssue : jiras) {
+            JiraStatus jiraStatus = JiraStatus.getJiraStatusByName(jiraIssue.getStatus());
+            dataSetAggregator.add(jiraIssue.getCreationDay(), jiraStatus, isWeek);
+         }
+
+//         setupTestData(dataSetAggregator, isWeek);
+
+         JPanel chartPanel = createDemoPanel(dataSetAggregator, aggregate);
+         chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+         System.out.println("creating chartPanel");
+         setContentPane(chartPanel);
+
+      } catch (HttpException e) {
+         e.printStackTrace();
+      } catch (IOException e) {
+         e.printStackTrace();
+      } catch (JiraException e) {
+         e.printStackTrace();
+      } catch (JDOMException e) {
+         e.printStackTrace();
+      }
+
+   }
+
+   private void setupTestData(DataSetAggregator dataSetAggregator, boolean isWeek) {
+      dataSetAggregator.add(getJiraIssue("Mon, 5 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Open, isWeek);
+
+      dataSetAggregator.add(getJiraIssue("Mon, 6 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Open, isWeek);
+      dataSetAggregator.add(getJiraIssue("Mon, 7 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Open, isWeek);
+      dataSetAggregator.add(getJiraIssue("Mon, 8 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.ReOpened, isWeek);
+      dataSetAggregator.add(getJiraIssue("Mon, 9 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.InProgress, isWeek);
+      dataSetAggregator.add(getJiraIssue("Mon, 10 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Closed, isWeek);
+      dataSetAggregator.add(getJiraIssue("Mon, 11 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.ReOpened, isWeek);
+      dataSetAggregator.add(getJiraIssue("Mon, 12 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Closed, isWeek);
+
+      dataSetAggregator.add(getJiraIssue("Mon, 13 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Open, isWeek);
+      dataSetAggregator.add(getJiraIssue("Mon, 14 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.ReOpened, isWeek);
+      dataSetAggregator.add(getJiraIssue("Mon, 15 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Resolved, isWeek);
+      dataSetAggregator.add(getJiraIssue("Mon, 16 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Closed, isWeek);
+
+      dataSetAggregator.add(getJiraIssue("Mon, 5 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Closed, isWeek);
+   }
+
+   private JiraIssue getJiraIssue(String date) {
+      return new JiraIssue("", "", "", "", "", date);
    }
 
    /**
@@ -69,25 +130,40 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
     * 
     * @return a sample dataset.
     */
-   private static TableXYDataset createDataset(DataSetAggregator dataSetAggregator) {
+   private TableXYDataset createDataset(DataSetAggregator dataSetAggregator, boolean aggregate) {
       TimeTableXYDataset dataset = new TimeTableXYDataset();
       // FIXME 1 - this is the stacked example to use!!
-      Collection<DaysAgreggator> days = dataSetAggregator.getDays();
+      List<DaysAgreggator> days = dataSetAggregator.getDays();
+      Collections.sort(days);
       for (DaysAgreggator daysAgreggator : days) {
          Day day = daysAgreggator.getDay();
-         addDataSet(dataset, JiraStatus.Open, daysAgreggator, day);
-         addDataSet(dataset, JiraStatus.ReOpened, daysAgreggator, day);
-         addDataSet(dataset, JiraStatus.InProgress, daysAgreggator, day);
-         addDataSet(dataset, JiraStatus.Resolved, daysAgreggator, day);
-         addDataSet(dataset, JiraStatus.Closed, daysAgreggator, day);
+         addDataSet(dataset, JiraStatus.Open, daysAgreggator, day, aggregate);
+         addDataSet(dataset, JiraStatus.ReOpened, daysAgreggator, day, aggregate);
+         addDataSet(dataset, JiraStatus.InProgress, daysAgreggator, day, aggregate);
+         addDataSet(dataset, JiraStatus.Resolved, daysAgreggator, day, aggregate);
+         addDataSet(dataset, JiraStatus.Closed, daysAgreggator, day, aggregate);
       }
       return dataset;
    }
 
-   private static void addDataSet(TimeTableXYDataset dataset, JiraStatus jiraStatus, DaysAgreggator daysAgreggator, Day day) {
+   private Map<JiraStatus, Integer> aggregators = new HashMap<JiraStatus, Integer>();
+
+   private void addDataSet(TimeTableXYDataset dataset, JiraStatus jiraStatus, DaysAgreggator daysAgreggator, Day day, boolean aggregate) {
       int amount = daysAgreggator.getAmount(jiraStatus);
-      System.out.println("adding amount of " + amount + " for " + jiraStatus + " on " + day);
-      addDataset(dataset, jiraStatus, day, amount);
+      Integer aggregator = 0;
+      if (aggregate) {
+         aggregator = aggregators.get(jiraStatus);
+         if (aggregator == null) {
+            aggregator = 0;
+            aggregators.put(jiraStatus, amount);
+         } else {
+            aggregators.put(jiraStatus, amount + aggregator);
+         }
+      }
+
+      System.out.println("amount for " + jiraStatus + " (on " + day + ") is " + amount + " and the aggregate before this was " + aggregator);
+
+      addDataset(dataset, jiraStatus, day, amount + aggregator);
    }
 
    private static void addDataset(TimeTableXYDataset dataset, JiraStatus jiraStatus, Day day, int amount) {
@@ -111,24 +187,25 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
       rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
       rangeAxis.setUpperMargin(0.10); // leave some space for item labels
       StackedXYBarRenderer renderer = new StackedXYBarRenderer(0.15);
-      renderer.setDrawBarOutline(false);
+      renderer.setDrawBarOutline(true);
       renderer.setBaseItemLabelsVisible(true);
       renderer.setBaseItemLabelGenerator(new StandardXYItemLabelGenerator());
-      renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER));
-      renderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator("{0} : {1} = {2}", new SimpleDateFormat("yyyy"), new DecimalFormat("0")));
+
+      renderer.setSeriesPaint(0, SwingUtil.cellWhite);
+      renderer.setSeriesPaint(1, SwingUtil.cellRed);
+      renderer.setSeriesPaint(2, SwingUtil.cellLightYellow);
+      renderer.setSeriesPaint(3, SwingUtil.cellBlue);
+      renderer.setSeriesPaint(4, SwingUtil.cellGreen);
+      renderer.setSeriesPaint(4, SwingUtil.cellGreen);
 
       XYPlot plot = new XYPlot(dataset, domainAxis, rangeAxis, renderer);
       JFreeChart chart = new JFreeChart("Jira States compared against their Creation Date", plot);
       chart.removeLegend();
       // chart.addSubtitle(new TextTitle("PGA Tour, 1983 to 2003"));
-      chart.setTextAntiAlias(RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
       LegendTitle legend = new LegendTitle(plot);
-      legend.setBackgroundPaint(Color.white);
       legend.setFrame(new BlockBorder());
       legend.setPosition(RectangleEdge.BOTTOM);
       chart.addSubtitle(legend);
-
-      ChartUtilities.applyCurrentTheme(chart);
 
       return chart;
 
@@ -138,11 +215,12 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
     * Creates a panel for the demo (used by SuperDemo.java).
     * 
     * @param dataSetAggregator
+    * @param isWeek
     * 
     * @return A panel.
     */
-   public static JPanel createDemoPanel(DataSetAggregator dataSetAggregator) {
-      JFreeChart chart = createChart(createDataset(dataSetAggregator));
+   public JPanel createDemoPanel(DataSetAggregator dataSetAggregator, boolean aggregate) {
+      JFreeChart chart = createChart(createDataset(dataSetAggregator, aggregate));
       return new ChartPanel(chart);
    }
 

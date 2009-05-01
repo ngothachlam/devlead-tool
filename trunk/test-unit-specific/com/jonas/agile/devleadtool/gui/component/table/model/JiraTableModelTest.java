@@ -78,8 +78,8 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldAddRowOk() {
-      JiraIssue jiraIssue = new JiraIssue("Jira-1", "Summary 1", "Open", "Resolved", "Type");
-      JiraIssue jiraIssue2 = new JiraIssue("Jira-2", "Summary 2", "Open", "Resolved", "Type");
+      JiraIssue jiraIssue = new JiraIssue("Jira-1", "Summary 1", "Open", "Resolved", "Type", "created");
+      JiraIssue jiraIssue2 = new JiraIssue("Jira-2", "Summary 2", "Open", "Resolved", "Type", "created");
       jiraModel.addJira("Jira-1");
    }
 

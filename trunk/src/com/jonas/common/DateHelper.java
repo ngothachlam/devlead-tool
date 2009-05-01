@@ -87,7 +87,7 @@ public class DateHelper {
       return fullWeeksBetween;
    }
 
-   static Calendar getDate(SimpleDateFormat format, String date) {
+   public static Calendar getDate(SimpleDateFormat format, String date) {
       try {
          Date d = format.parse(date);
          Calendar cal = Calendar.getInstance();

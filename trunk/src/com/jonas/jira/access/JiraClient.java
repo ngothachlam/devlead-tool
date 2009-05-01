@@ -26,8 +26,7 @@ public class JiraClient {
    private static final JonasXpathEvaluator JONAS_XPATH_EVALUATOR = new JonasXpathEvaluator("/rss/channel/item", new XMLOutputter());
 
    public static final JiraClient JiraClientAolBB = new JiraClient(JiraHttpClient.AOLBB, JiraSoapClient.AOLBB, JiraBuilder.getInstance());
-   public static final JiraClient JiraClientAtlassin = new JiraClient(JiraHttpClient.ATLASSIN, JiraSoapClient.ATLASSIN, JiraBuilder
-         .getInstance());
+   public static final JiraClient JiraClientAtlassin = new JiraClient(JiraHttpClient.ATLASSIN, JiraSoapClient.ATLASSIN, JiraBuilder.getInstance());
 
    private JiraHttpClient httpClient;
    private JiraBuilder jiraBuilder;
@@ -46,20 +45,17 @@ public class JiraClient {
       }
    }
 
-   public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean includeArchived) throws RemotePermissionException,
-         RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
+   public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean includeArchived) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
       return getFixVersionsFromProject(jiraProject, includeArchived, true);
-      
+
    }
 
-   public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean includeArchived, boolean includeNonArchived)
-         throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
+   public JiraVersion[] getFixVersionsFromProject(JiraProject jiraProject, boolean includeArchived, boolean includeNonArchived) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
       cacheJiraVersionsForProject(jiraProject);
       return jiraProject.getFixVersions(includeArchived, includeNonArchived);
    }
 
-   public void cacheJiraVersionsForProject(JiraProject jiraProject) throws RemotePermissionException, RemoteAuthenticationException,
-         RemoteException, java.rmi.RemoteException {
+   public void cacheJiraVersionsForProject(JiraProject jiraProject) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
       JiraListener.notifyListenersOfAccess(JiraListener.JiraAccessUpdate.GETTING_FIXVERSION);
       RemoteVersion[] fixVersions = jiraSoapClient.getFixVersions(jiraProject);
       cacheJiraVersions(fixVersions, jiraProject);
@@ -73,8 +69,14 @@ public class JiraClient {
       return jiraIssue;
    }
 
-   public JiraIssue[] getJirasFromFixVersion(JiraVersion version, String... criterias) throws HttpException, IOException, JDOMException,
-         JiraException {
+   public JiraIssue[] getJirasFromProject(JiraProject project, String... criterias) throws HttpException, IOException, JDOMException, JiraException {
+      loadResolutionsIfRequired();
+      loadJiraTypesIfRequired();
+      List<JiraIssue> jiras = httpClient.getJiras(project, JONAS_XPATH_EVALUATOR, jiraBuilder, criterias);
+      return jiras.toArray(new JiraIssue[jiras.size()]);
+   }
+
+   public JiraIssue[] getJirasFromFixVersion(JiraVersion version, String... criterias) throws HttpException, IOException, JDOMException, JiraException {
       loadResolutionsIfRequired();
       loadJiraTypesIfRequired();
       List<JiraIssue> jiras = httpClient.getJiras(version, JONAS_XPATH_EVALUATOR, jiraBuilder, criterias);
@@ -128,13 +130,11 @@ public class JiraClient {
       httpClient.loginToJira();
    }
 
-   public void updateSprint(String jiraKey, String sprint) throws RemotePermissionException, RemoteAuthenticationException, RemoteException,
-         java.rmi.RemoteException, ServiceException {
+   public void updateSprint(String jiraKey, String sprint) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException, ServiceException {
       jiraSoapClient.updateSprint(jiraKey, sprint);
    }
 
-   public String createMergeJira(String jira, String fixForMerge) throws RemotePermissionException, RemoteAuthenticationException,
-         RemoteException, java.rmi.RemoteException {
+   public String createMergeJira(String jira, String fixForMerge) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
       return jiraSoapClient.createMergeJira(jira, fixForMerge).getKey();
    }
 
