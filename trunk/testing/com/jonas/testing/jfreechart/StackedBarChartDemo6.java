@@ -47,16 +47,20 @@ public class StackedBarChartDemo6 extends ApplicationFrame {
     private static CategoryDataset createDataset() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         long day = 24 * 60 * 60 * 1000L;
-        dataset.addValue(3 * day, "Series 1", "Category 1");
-        dataset.addValue(1 * day, "Series 2", "Category 1");
-        dataset.addValue(2 * day, "Series 3", "Category 1");
-        dataset.addValue(4 * day, "Series 1", "Category 2");
-        dataset.addValue(5 * day, "Series 2", "Category 2");
-        dataset.addValue(1 * day, "Series 3", "Category 2");
+        dataset.addValue(3 * day, "Series 1", getString(3 * day));
+//        dataset.addValue(1 * day, "Series 2", "Category 1");
+//        dataset.addValue(2 * day, "Series 3", "Category 1");
+//        dataset.addValue(4 * day, "Series 1", "Category 2");
+//        dataset.addValue(5 * day, "Series 2", "Category 2");
+//        dataset.addValue(1 * day, "Series 3", "Category 2");
         return dataset;
     }
 
-    /**
+    private static Comparable getString(long l) {
+       return l+"";
+   }
+
+   /**
      * Creates a sample chart.
      *
      * @param dataset  the dataset for the chart.
@@ -70,7 +74,7 @@ public class StackedBarChartDemo6 extends ApplicationFrame {
             "Category",                  // domain axis label
             "Value",                     // range axis label
             dataset,                     // data
-            PlotOrientation.HORIZONTAL,  // the plot orientation
+            PlotOrientation.VERTICAL,  // the plot orientation
             true,                        // legend
             true,                        // tooltips
             false                        // urls
