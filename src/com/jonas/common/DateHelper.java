@@ -1,5 +1,6 @@
 package com.jonas.common;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -7,7 +8,7 @@ import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
 
 public class DateHelper {
-   private static final Logger log = MyLogger.getLogger(DateHelper.class); 
+   private static final Logger log = MyLogger.getLogger(DateHelper.class);
    private final static SimpleDateFormat simpleDateformatOrderable = new SimpleDateFormat("yyyy-MM-dd");
    private final static SimpleDateFormat simpleDateformat = new SimpleDateFormat("dd-MM-yyyy");
    private final static SimpleDateFormat advancDateformat = new SimpleDateFormat("EEE dd-MM-yyyy");
@@ -41,14 +42,13 @@ public class DateHelper {
    public static String getDateAsSimpleOrderableString(Date dateNow) {
       return simpleDateformatOrderable.format(dateNow);
    }
-   
 
    public static int getWorkingDaysBetween(Date startDate, Date endDate) {
-      if(startDate == null || endDate == null){
+      if (startDate == null || endDate == null) {
          log.warn("startDate or endDate are null!");
          return -1;
       }
-      
+
       Calendar startCalendar = getCalendar(startDate);
       Calendar endCalendar = getCalendar(endDate);
 
@@ -67,15 +67,17 @@ public class DateHelper {
 
       return fullWeeksBetween * 5 + additional;
    }
+
    static Calendar getCalendar(Date date) {
       Calendar startCalendar = Calendar.getInstance();
       startCalendar.setTime(date);
       return startCalendar;
    }
+
    static int endAdditional(int endDayOfWeek) {
       return (endDayOfWeek / 6 < 1) ? endDayOfWeek % 6 : 5;
    }
-   
+
    static int getFullWorkingWeeksBetween(Calendar startCalendar, Calendar endCalendar) {
       int firstWeek = startCalendar.get(Calendar.WEEK_OF_YEAR);
       int endWeek = endCalendar.get(Calendar.WEEK_OF_YEAR);
@@ -85,6 +87,17 @@ public class DateHelper {
       return fullWeeksBetween;
    }
 
+   static Calendar getDate(SimpleDateFormat format, String date) {
+      try {
+         Date d = format.parse(date);
+         Calendar cal = Calendar.getInstance();
+         cal.setTime(d);
+         return cal;
+      } catch (ParseException e) {
+         e.printStackTrace();
+      }
+      return null;
+   }
 
    static int startAdditional(int startDayOfWeek) {
       int i = 6 - startDayOfWeek;
@@ -94,14 +107,15 @@ public class DateHelper {
    public static boolean isFirstAfterSecond(Date first, Date second) {
       return second.compareTo(first) <= 0;
    }
-   public static boolean isFirstBeforeSecond(Date first, Date second){
+
+   public static boolean isFirstBeforeSecond(Date first, Date second) {
       return second.compareTo(first) >= 0;
    }
 
    public static boolean isSameDay(Date start, Date second) {
       Calendar cal1 = Calendar.getInstance();
       cal1.setTime(start);
-      
+
       Calendar cal2 = Calendar.getInstance();
       cal2.setTime(second);
 

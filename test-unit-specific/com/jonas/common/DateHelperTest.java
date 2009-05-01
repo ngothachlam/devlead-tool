@@ -1,23 +1,27 @@
 package com.jonas.common;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+
 import junit.framework.TestCase;
 
 public class DateHelperTest extends TestCase {
 
    DateHelper helper;
-   
+
+   public void testGetDate() {
+      SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+      Calendar calendar = DateHelper.getDate(format, "Mon, 2 Mar 2009 18:28:25 +0000 (GMT)");
+      System.out.println("Calendar: " + calendar.getTime());
+   }
+
    public void testSameDay() {
-      assertTrue(DateHelper.isSameDay(getCalendar(27, 4, 2009).getTime(), getToday()));
-      assertFalse(DateHelper.isSameDay(getCalendar(26, 4, 2009).getTime(), getToday()));
-      assertFalse(DateHelper.isSameDay(getCalendar(28, 4, 2009).getTime(), getToday()));
+      assertTrue(DateHelper.isSameDay(getCalendar(27, 4, 2009).getTime(), getCalendar(27, 4, 2009).getTime()));
+      assertFalse(DateHelper.isSameDay(getCalendar(26, 4, 2009).getTime(), getCalendar(27, 4, 2009).getTime()));
+      assertFalse(DateHelper.isSameDay(getCalendar(28, 4, 2009).getTime(), getCalendar(27, 4, 2009).getTime()));
    }
-   private Date getToday() {
-      Calendar calendar = Calendar.getInstance();
-      return calendar.getTime();
-   }
-   
+
+
    public void testStartAdditional() {
       assertEquals(5, DateHelper.startAdditional(1));
       assertEquals(4, DateHelper.startAdditional(2));
@@ -70,7 +74,6 @@ public class DateHelperTest extends TestCase {
 
       startCalendar = getCalendar(4, 4, 2009); // saturday
    }
-   
 
    public void testDayOfWeek() {
       assertEquals(4, DateHelper.getRealDayOfWeek(getCalendar(1, 1, 2009)));
@@ -107,6 +110,5 @@ public class DateHelperTest extends TestCase {
    protected void setUp() throws Exception {
       helper = new DateHelper();
    }
-   
 
 }
