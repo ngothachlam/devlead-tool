@@ -7,7 +7,7 @@ import org.jfree.data.time.Day;
 
 import com.jonas.jira.JiraStatus;
 
-public class DaysAgreggator {
+public class DaysAgreggator implements Comparable<DaysAgreggator> {
 
    private Day day;
 
@@ -28,10 +28,21 @@ public class DaysAgreggator {
       System.out.println("adding " + jiraStatus + " to " + day);
       this.day = day;
       Integer amount = amountMap.get(jiraStatus);
-      if(amount == null){
+      if (amount == null) {
          amount = new Integer(0);
       }
       amountMap.put(jiraStatus, ++amount);
    }
 
+   @Override
+   public int compareTo(DaysAgreggator o) {
+      Day day2 = o.getDay();
+      if (day.getYear() == day2.getYear()) {
+         if (day.getMonth() == day2.getMonth()) {
+            return day.getDayOfMonth() - day2.getDayOfMonth();
+         }
+         return day.getMonth() - day2.getMonth();
+      }
+      return day.getYear() - day2.getYear();
+   }
 }

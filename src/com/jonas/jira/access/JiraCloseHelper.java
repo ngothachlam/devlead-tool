@@ -77,7 +77,6 @@ public class JiraCloseHelper {
 
                JiraProject project = JiraProject.getProjectByJira(jira);
                String preJiraReopenState = "jira:\"" + jira + "\" id:\"" + id + "\" resolution:\"" + resoId + "\" project:\"" + project + "\"";
-               // jiraHttpClient.reOpenJira(id, resoId, project);
                bw.append(preJiraReopenState).append("\n");
                System.out.println("reopened " + preJiraReopenState);
             }

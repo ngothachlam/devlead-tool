@@ -59,7 +59,7 @@ public class BoardTableModelTest extends JonasTestCase {
    }
 
    public void testShouldGetAnyBoolColumnBackOk() {
-      model.addJira(new JiraIssue("LLU-1", "llu-1 summary", "llu-1 status", "llu-1 resolution", "llu-1 type"));
+      model.addJira(new JiraIssue("LLU-1", "llu-1 summary", "llu-1 status", "llu-1 resolution", "llu-1 type", "created"));
 
       assertEquals(1, model.getRowCount());
 

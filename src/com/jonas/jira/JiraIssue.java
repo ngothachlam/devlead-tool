@@ -1,8 +1,13 @@
 package com.jonas.jira;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.jfree.data.time.Day;
+
+import com.jonas.common.DateHelper;
 import com.jonas.common.logging.MyLogger;
 
 public class JiraIssue {
@@ -16,7 +21,7 @@ public class JiraIssue {
    }
 
    public static Logger log = MyLogger.getLogger(JiraIssue.class);
-   
+
    private String buildNo;
    private String deliveryDate;
    private String estimate;
@@ -29,20 +34,23 @@ public class JiraIssue {
    private String sprint;
    private String owner;
    private String environment;
-   
+
    private final String key;
    private final String summary;
    private final String status;
    private final String resolution;
    private final String type;
 
+   private String creationDate;
+
    public JiraIssue(String key, String release) {
-      this(key, "", "", "", "");
+      this(key, "", "", "", "", "");
       this.release = release;
       log.debug("Setting release to " + this.release + " = " + release);
    }
-   
-   public JiraIssue(String key, String summary, String status, String resolution, String type) {
+
+   public JiraIssue(String key, String summary, String status, String resolution, String type, String creationDate) {
+      this.creationDate = creationDate;
       this.key = key.toUpperCase();
       this.summary = summary;
       this.status = status;
@@ -50,10 +58,9 @@ public class JiraIssue {
       this.type = type;
    }
 
-   public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate, int listPrio,
-         String sprint, String project, String environment, String owner) {
-      this(key, summary, status, resolution, type);
-      setBuildNo( buildNo);
+   public JiraIssue(String key, String summary, String status, String resolution, String type, String buildNo, String estimate, int listPrio, String sprint, String project, String environment, String owner, String creationDate) {
+      this(key, summary, status, resolution, type, creationDate);
+      setBuildNo(buildNo);
       setEstimate(estimate);
       setSprint(sprint);
       setLLUListPriority(listPrio);
@@ -266,5 +273,17 @@ public class JiraIssue {
 
    public String getOwner() {
       return owner;
+   }
+
+   private SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+
+   protected Day getDay(String date){
+      Calendar calendar = DateHelper.getDate(format, date);
+      Day chartDay = new Day(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR));
+      return chartDay;
+   }
+   
+   public Day getCreationDay() {
+      return getDay(creationDate);
    }
 }
