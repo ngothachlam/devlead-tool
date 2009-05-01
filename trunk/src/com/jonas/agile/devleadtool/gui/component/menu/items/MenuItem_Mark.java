@@ -4,6 +4,7 @@
 package com.jonas.agile.devleadtool.gui.component.menu.items;
 
 import java.awt.Frame;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.KeyStroke;
@@ -18,8 +19,9 @@ public class MenuItem_Mark extends MenuItem_Marking_Abstract {
    }
 
    @Override
-   protected void doAction() {
+   protected void doAction(ActionEvent e) {
       source.markSelected();
+      ((KeyEvent) e.getSource()).consume();
    }
 
 }

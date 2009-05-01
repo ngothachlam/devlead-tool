@@ -4,6 +4,9 @@
 package com.jonas.agile.devleadtool.gui.component.menu.items;
 
 import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 
 public class MenuItem_UnMark extends MenuItem_Marking_Abstract {
@@ -12,7 +15,8 @@ public class MenuItem_UnMark extends MenuItem_Marking_Abstract {
    }
 
    @Override
-   protected void doAction() {
+   protected void doAction(ActionEvent e) {
       source.unMarkSelection();
+      ((KeyEvent) e.getSource()).consume();
    }
 }
