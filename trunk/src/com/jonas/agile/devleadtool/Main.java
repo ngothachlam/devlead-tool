@@ -23,17 +23,13 @@ public class Main {
       }
    }
 
-   // TODO change in-Dev Progress to "inProgress"
-   // TODO add qa remainder to board
-   // TODO add qa estimate to burndown
    // TODO add type of issue to board: story, test, dev, bug, merge.
-   // TODO add column setup to the toolbar menu - dynamically inputted using property files (an lludevsup.sprinterini creates a lludevsup
-   // menuitem that shows/hides and rearranges columns
+   // TODO using property files (an lludevsup.sprinterini for example creates a lludevsup menuitem) to dynamically add/remove rearrange columns menuitems
 
    // TODO add a status bar at the bottom showing the total of 1) selected, 2) table entries and 3) model entries for 4)each table
    // TODO drag'n'drop table rows = all tables!!
    // TODO handle 'issue not found' when syncing to jira and getting info (LLU-2)
-   // TODO handle issue moved to other project (LLU-6 that has become LLUOLD-1)
+   // TODO handle issue moved to other project (LLU-6 that has become LLUOLD-1 and LLU-4410 that has moved to TTGCONFIG)
 
    // TODO:
    //      
