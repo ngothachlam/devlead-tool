@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -19,12 +20,12 @@ import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
-import com.jonas.agile.devleadtool.gui.component.table.model.PlanTableModel;
 
 public class BasicDnD extends JPanel {
    private static JFrame frame;
@@ -63,17 +64,12 @@ public class BasicDnD extends JPanel {
       scrollPane1.setPreferredSize(new Dimension(580, 100));
       JPanel panel1 = getBorderPanel(scrollPane1, "Board");
       
-      MyTable planTable = getTable(getTestModelPlan());
-      JScrollPane scrollPane2 = new JScrollPane(planTable);
-      scrollPane2.setPreferredSize(new Dimension(580, 100));
-      JPanel panel2 = getBorderPanel(scrollPane2, "Plan");
-      
       MyTable jiraTable = getTable(getTestModelJira());
       JScrollPane scrollPane3 = new JScrollPane(jiraTable);
       scrollPane3.setPreferredSize(new Dimension(580, 100));
       JPanel panel3 = getBorderPanel(scrollPane3, "Jira");
       
-      Component tabPane = combineIntoSplitPane(panel1, panel2, panel3);
+      Component tabPane = combineIntoSplitPane(panel1, panel3);
 
       add(tabPane, BorderLayout.CENTER);
       add(addPanel(getTestModelBoard()), BorderLayout.SOUTH);
@@ -96,13 +92,10 @@ public class BasicDnD extends JPanel {
       return panel;
    }
 
-   private Component combineIntoSplitPane(JPanel panel1, JPanel panel2, JPanel panel3) {
+   private Component combineIntoSplitPane(JPanel panel1, JPanel panel2) {
       JSplitPane tabPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-      JSplitPane tabPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
       tabPane.add(panel1);
-      tabPane.add(tabPane2);
-      tabPane2.add(panel2);
-      tabPane2.add(panel3);
+      tabPane.add(panel2);
       return tabPane;
    }
 
@@ -151,14 +144,6 @@ public class BasicDnD extends JPanel {
       data.add(getTestRow("Jira-2"));
       Vector<Column> columns = getTestColumns();
       return new JiraTableModel(data, columns);
-   }
-
-   private PlanTableModel getTestModelPlan() {
-      Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-      data.add(getTestRow("Plan-1"));
-      data.add(getTestRow("Plan-2"));
-      Vector<Column> columns = getTestColumns();
-      return new PlanTableModel(data, columns);
    }
 
    private Vector<Object> getTestRow(String string) {

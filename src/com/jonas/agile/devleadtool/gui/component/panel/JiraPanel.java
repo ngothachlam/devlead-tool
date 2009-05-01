@@ -11,6 +11,7 @@ import com.jonas.common.logging.MyLogger;
 public class JiraPanel extends MyDataPanel {
 
    private Logger log = MyLogger.getLogger(JiraPanel.class);
+
    public JiraPanel(MyTableModel jiraModel) {
       super(new BorderLayout());
 
@@ -18,7 +19,7 @@ public class JiraPanel extends MyDataPanel {
       JScrollPane scrollpane = new JScrollPane(table);
       setBorder(BorderFactory.createTitledBorder("Jira"));
       addCenter(scrollpane);
-      
+
       addSouth(getFilterPanel());
    }
 

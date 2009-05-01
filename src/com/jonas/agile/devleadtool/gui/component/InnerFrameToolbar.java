@@ -2,13 +2,13 @@ package com.jonas.agile.devleadtool.gui.component;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.util.HashSet;
-import java.util.Set;
+
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
+
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.action.HighlightIssuesAction;
@@ -17,12 +17,10 @@ import com.jonas.agile.devleadtool.gui.component.dialog.AddBoardReconcileFrame;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddVersionDialog;
-import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.frame.BoardStatsFrame;
 import com.jonas.agile.devleadtool.gui.component.panel.DnDTreePanel;
 import com.jonas.agile.devleadtool.gui.component.panel.JiraPanel;
 import com.jonas.agile.devleadtool.gui.component.panel.MyDataPanel;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.EnabledQuery;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
@@ -30,16 +28,13 @@ import com.jonas.common.DateHelper;
 
 public class InnerFrameToolbar extends JToolBar {
 
-   public InnerFrameToolbar(final Frame parentFrame, MyDataPanel boardPanel, JiraPanel jiraPanel, DnDTreePanel sprintPanel, MyTable boardTable,
-         final MyTable jiraTable, PlannerHelper helper, ExcelSprintDao sprintDao) {
+   public InnerFrameToolbar(final Frame parentFrame, MyDataPanel boardPanel, JiraPanel jiraPanel, DnDTreePanel sprintPanel, MyTable boardTable, final MyTable jiraTable, PlannerHelper helper, ExcelSprintDao sprintDao) {
 
       final MyTable[] tables = { boardTable, jiraTable };
 
-      BasicAbstractGUIAction highlightAction = new HighlightIssuesAction("Higlight Discrepancies", helper.getParentFrame(), jiraPanel.getTable(),
-            boardPanel.getTable());
+      BasicAbstractGUIAction highlightAction = new HighlightIssuesAction("Higlight Discrepancies", helper.getParentFrame(), jiraPanel.getTable(), boardPanel.getTable());
       BasicAbstractGUIAction freezeAction = new FreezeManipulationAction(parentFrame, boardPanel, jiraPanel, sprintPanel);
-      BasicAbstractGUIAction dupeAction = new CheckForDuplicatesAction("Highlight Duplicates", "Higlight Duplicates in Board", parentFrame,
-            boardTable);
+      BasicAbstractGUIAction dupeAction = new CheckForDuplicatesAction("Highlight Duplicates", "Higlight Duplicates in Board", parentFrame, boardTable);
       BasicAbstractGUIAction reconcileAction = new ReconcileManuallyAction(parentFrame, boardTable);
       BasicAbstractGUIAction addManualAction = new AddManuallyAction(parentFrame, tables);
       BasicAbstractGUIAction addFilterAction = new AddFromJiraFilterAction(parentFrame, tables);
@@ -49,8 +44,7 @@ public class InnerFrameToolbar extends JToolBar {
       BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown", "Showing Board Statistics", parentFrame, boardTable, helper);
 
       JMenuBar comp = new JMenuBar();
-      comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null,
-            highlightAction, dupeAction, freezeAction));
+      comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null, highlightAction, dupeAction, freezeAction));
       comp.add(getDataModificationMenu("Sprint", sprintManager, boardStats));
       this.add(comp);
 
@@ -70,7 +64,6 @@ public class InnerFrameToolbar extends JToolBar {
       return menu;
    }
 }
-
 
 final class FreezeManipulationAction extends BasicAbstractGUIAction {
 
@@ -101,8 +94,7 @@ final class FreezeManipulationAction extends BasicAbstractGUIAction {
    }
 }
 
-
-final class CheckForDuplicatesAction extends BasicAbstractGUIAction implements EnabledQuery{
+final class CheckForDuplicatesAction extends BasicAbstractGUIAction implements EnabledQuery {
    @Override
    public boolean isCheckBoxAction() {
       return true;
@@ -119,7 +111,6 @@ final class CheckForDuplicatesAction extends BasicAbstractGUIAction implements E
    public void doActionPerformed(ActionEvent e) {
    }
 }
-
 
 final class BurndownAction extends BasicAbstractGUIAction {
    private final MyTable sourceTable;
@@ -139,7 +130,6 @@ final class BurndownAction extends BasicAbstractGUIAction {
 
 }
 
-
 final class ReconcileManuallyAction extends BasicAbstractGUIAction {
    private final MyTable boardTable;
 
@@ -153,7 +143,6 @@ final class ReconcileManuallyAction extends BasicAbstractGUIAction {
       new AddBoardReconcileFrame(getParentFrame(), boardTable);
    }
 }
-
 
 abstract class BasicAbstractGUIActionWithTables extends BasicAbstractGUIAction {
    private final MyTable[] tables;
@@ -169,7 +158,6 @@ abstract class BasicAbstractGUIActionWithTables extends BasicAbstractGUIAction {
 
 }
 
-
 final class AddManuallyAction extends BasicAbstractGUIActionWithTables {
 
    public AddManuallyAction(Frame parentFrame, MyTable... tables) {
@@ -183,7 +171,6 @@ final class AddManuallyAction extends BasicAbstractGUIActionWithTables {
 
 }
 
-
 final class AddFromJiraFilterAction extends BasicAbstractGUIActionWithTables {
    public AddFromJiraFilterAction(Frame parentFrame, MyTable... tables) {
       super("Add Filters", "Use predefined jira filters to add jiras to Sprinter", parentFrame, tables);
@@ -194,7 +181,6 @@ final class AddFromJiraFilterAction extends BasicAbstractGUIActionWithTables {
       new AddFilterDialog(getParentFrame(), getTables());
    }
 }
-
 
 final class AddFromJiraVersionAction extends BasicAbstractGUIActionWithTables {
    public AddFromJiraVersionAction(Frame parentFrame, MyTable[] tables) {

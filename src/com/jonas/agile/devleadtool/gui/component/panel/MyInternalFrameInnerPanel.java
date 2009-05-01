@@ -55,11 +55,11 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
 
    private ExcelSprintDao excelSprintDao;
 
-   public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel, SprintCache sprintCache,
-         ExcelSprintDao excelSprintDao) throws SAXException {
+   public MyInternalFrameInnerPanel(PlannerHelper helper, BoardTableModel boardModel, JiraTableModel jiraModel, SprintCache sprintCache, ExcelSprintDao excelSprintDao) throws SAXException {
       super(new BorderLayout());
       this.excelSprintDao = excelSprintDao;
-      // FIXME 1 - these null checks are not required I don't think? hence sprintCache need not be sent in as it is already in boardModel.
+      // FIXME 1 - these null checks are not required I don't think? hence
+      // sprintCache need not be sent in as it is already in boardModel.
       boardModel = (boardModel == null) ? new BoardTableModel(sprintCache) : boardModel;
       jiraModel = (jiraModel == null) ? new JiraTableModel() : jiraModel;
 
@@ -135,7 +135,8 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
    private void setBoardDataListeners(final MyTableModel boardModel, final MyTable boardTable, final MyTable jiraTable, SprintTree sprintTree) {
       boardTable.addKeyListener(new KeyListenerToHighlightSprintSelectionElsewhere(sprintTree, boardTable, jiraTable));
       boardTable.addListener(new MyBoardTableListener());
-      // boardTable.addCheckBoxEditorListener(new MyBoardTableCheckboxEditorListener());
+      // boardTable.addCheckBoxEditorListener(new
+      // MyBoardTableCheckboxEditorListener());
       boardModel.addTableModelListener(new FireUpdateOnOtherTableWhenUpdatedListener(jiraTable));
    }
 
@@ -185,7 +186,6 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
       }
    }
 
-   
    private final class MyBoardTableCheckboxEditorListener implements CellEditorListener {
       public void editingCanceled(ChangeEvent e) {
       }
@@ -194,8 +194,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
          MyEditor editor = (MyEditor) e.getSource();
          MyTable table = boardPanel.getTable();
          MyTableModel model = table.getMyModel();
-         model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor
-               .getColEdited()));
+         model.fireTableCellUpdatedExceptThisOne(table.convertRowIndexToModel(editor.getRowEdited()), table.convertColumnIndexToModel(editor.getColEdited()));
       }
    }
 
