@@ -226,7 +226,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
 
                Column column = model.getColumn(colCount);
-               valueAt = column.parseToPersistanceStore(valueAt);
+               
 
                if (valueAt == null)
                   cell.setCellValue(new HSSFRichTextString(""));
@@ -240,6 +240,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                   cell.setCellValue(new HSSFRichTextString(valueAt.toString()));
                }
                setCellStyle(wb, model, rowCount, colCount, valueAt, cell);
+               valueAt = column.parseToPersistanceStore(valueAt);
             }
          }
 

@@ -143,7 +143,7 @@ public class MyInternalFrame extends JInternalFrame {
          protected Object doInBackground() throws Exception {
             try {
                dao.saveAllData(file, getBoardModel(), getJiraModel(), getSprintCache());
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
                 AlertDialog.alertException(helper.getParentFrame(), e);
             }

@@ -11,11 +11,15 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.table.TableModel;
+
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.menu.ReconciliationTablePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.table.Column;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.ReconciliationTable;
+import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
+import com.jonas.agile.devleadtool.gui.component.table.model.ReconciliationTableModel;
 import com.jonas.agile.devleadtool.gui.listener.KeyListenerToHighlightSprintSelectionElsewhere;
 import com.jonas.common.swing.MyPanel;
 
@@ -90,35 +94,32 @@ class ClearFromReconciliationToBoardAction extends BasicAbstractGUIAction {
 }
 class AddFromReconciliationToBoardAction extends BasicAbstractGUIAction {
 
-   private final ReconciliationTable table;
-   private final MyTable boardTable;
+   private final ReconciliationTableModel reconModel;
+   private final MyTableModel boardModel;
 
    public AddFromReconciliationToBoardAction(Frame parentFrame, ReconciliationTable table, MyTable boardTable) {
       super("Add to Board", "Add to Board Panel", parentFrame);
-      this.table = table;
-      this.boardTable = boardTable;
+      this.reconModel = (ReconciliationTableModel) table.getMyModel();
+      this.boardModel = boardTable.getMyModel();
    }
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      for (int row = 0; row < table.getRowCount(); row++) {
-         String jira = (String) table.getValueAt(Column.Jira, row);
+      for (int row = 0; row < reconModel.getRowCount(); row++) {
+         String jira = (String) reconModel.getValueAt(Column.Jira, row);
 
-         boardTable.addJira(jira);
+         boardModel.addJira(jira);
 
-         for (int col = 0; col < table.getColumnCount(); col++) {
-            Column column = table.getColumnEnum(col);
+         for (int col = 0; col < reconModel.getColumnCount(); col++) {
+            Column column = reconModel.getColumn(col);
             if (column != Column.Jira) {
-               Object newValue = table.getValueAt(row, col);
-               if (table.isModified(row, col)) {
-                  boardTable.setValueAt(newValue, jira, column);
+               Object newValue = reconModel.getValueAt(row, col);
+               if (reconModel.isModified(row, col)) {
+                  boardModel.setValueAt(newValue, jira, column);
                }
             }
          }
-         
-         table.fireTableDataChanged();
       }
-
    }
 
 }
