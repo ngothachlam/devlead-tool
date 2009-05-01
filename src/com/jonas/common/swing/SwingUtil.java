@@ -10,11 +10,14 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+
 import org.apache.log4j.Logger;
+
 import com.jonas.common.ColorUtil;
 import com.jonas.common.logging.MyLogger;
 
@@ -27,6 +30,7 @@ public class SwingUtil {
    public static final Color cellLightBlue = new Color(51, 195, 255);
    public static final Color cellLightGreen = new Color(150, 250, 150);
    public static final Color cellLightYellow = new Color(255, 255, 150);
+   public static final Color cellWhite = new Color(255, 255, 255);
 
    public static final Border focusCellBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.yellow);
    public static final Border defaultCellBorder = UIManager.getBorder("Table.focusSelectedCellHighlightBorder");
