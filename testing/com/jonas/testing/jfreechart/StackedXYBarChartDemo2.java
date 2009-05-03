@@ -7,13 +7,7 @@
 
 package com.jonas.testing.jfreechart;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.RenderingHints;
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -24,28 +18,23 @@ import javax.swing.JPanel;
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickMarkPosition;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.block.BlockBorder;
-import org.jfree.chart.labels.ItemLabelAnchor;
-import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.StandardXYItemLabelGenerator;
-import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StackedXYBarRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeTableXYDataset;
 import org.jfree.data.xy.TableXYDataset;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RefineryUtilities;
-import org.jfree.ui.TextAnchor;
 
-import com.jonas.agile.devleadtool.gui.component.tree.xml.JiraDTO;
 import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
@@ -130,7 +119,7 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
     * 
     * @return a sample dataset.
     */
-   private TableXYDataset createDataset(DataSetAggregator dataSetAggregator, boolean aggregate) {
+   private XYDataset createDataset(DataSetAggregator dataSetAggregator, boolean aggregate) {
       TimeTableXYDataset dataset = new TimeTableXYDataset();
       // FIXME 1 - this is the stacked example to use!!
       List<DaysAgreggator> days = dataSetAggregator.getDays();
@@ -178,7 +167,7 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
     * 
     * @return a sample chart.
     */
-   private static JFreeChart createChart(TableXYDataset dataset) {
+   private static JFreeChart createChart(XYDataset dataset) {
       DateAxis domainAxis = new DateAxis("Date");
       domainAxis.setTickMarkPosition(DateTickMarkPosition.MIDDLE);
       domainAxis.setLowerMargin(0.01);
@@ -220,7 +209,8 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
     * @return A panel.
     */
    public JPanel createDemoPanel(DataSetAggregator dataSetAggregator, boolean aggregate) {
-      JFreeChart chart = createChart(createDataset(dataSetAggregator, aggregate));
+      XYDataset createDataset = createDataset(dataSetAggregator, aggregate);
+      JFreeChart chart = createChart(createDataset);
       return new ChartPanel(chart);
    }
 

@@ -26,7 +26,7 @@ public class JonasTestCase extends TestCase {
    protected JiraBuilder mockJiraBuilder = createClassMock(JiraBuilder.class);
    
    protected JonasTestCase(){
-      MyLogger.setup("properties/log4j.properties");
+//      MyLogger.setup("properties/log4j.properties");
    }
    
    protected void assertJiraDetails(JiraIssue jira, String expectedKey, String expectedSummary, String expectedStatus, String expectedResolution, String expectedType) {
