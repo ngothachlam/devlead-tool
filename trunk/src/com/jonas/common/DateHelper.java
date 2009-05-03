@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import com.jonas.common.logging.MyLogger;
 
 public class DateHelper {
-   private static final Logger log = MyLogger.getLogger(DateHelper.class);
    private final static SimpleDateFormat simpleDateformatOrderable = new SimpleDateFormat("yyyy-MM-dd");
    private final static SimpleDateFormat simpleDateformat = new SimpleDateFormat("dd-MM-yyyy");
    private final static SimpleDateFormat advancDateformat = new SimpleDateFormat("EEE dd-MM-yyyy");
@@ -45,7 +44,6 @@ public class DateHelper {
 
    public static int getWorkingDaysBetween(Date startDate, Date endDate) {
       if (startDate == null || endDate == null) {
-         log.warn("startDate or endDate are null!");
          return -1;
       }
 
