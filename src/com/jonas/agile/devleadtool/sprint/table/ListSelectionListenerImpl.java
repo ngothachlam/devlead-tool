@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.sprint.table;
 
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -27,6 +28,7 @@ public class ListSelectionListenerImpl implements ListSelectionListener {
    }
 
    private static final Logger log = MyLogger.getLogger(ListSelectionListenerImpl.class);
+   private JTextArea noteTextArea;
 
    @Override
    public void valueChanged(ListSelectionEvent e) {
@@ -46,6 +48,7 @@ public class ListSelectionListenerImpl implements ListSelectionListener {
          startDatePicker.setDate(oldSprint.getStartDate());
          endDatePicker.setDate(oldSprint.getEndDate());
          lengthTextField.setText(oldSprint.getLength().toString());
+         noteTextArea.setText(oldSprint.getNote());
       }
 
    }
@@ -55,11 +58,12 @@ public class ListSelectionListenerImpl implements ListSelectionListener {
 
    }
 
-   public void setTargets(JTextField nameTextField, JXDatePicker startDatePicker, JXDatePicker endDatePicker, JTextField lengthTextField) {
+   public void setTargets(JTextField nameTextField, JXDatePicker startDatePicker, JXDatePicker endDatePicker, JTextField lengthTextField, JTextArea noteTextArea) {
       this.nameTextField = nameTextField;
       this.startDatePicker = startDatePicker;
       this.endDatePicker = endDatePicker;
       this.lengthTextField = lengthTextField;
+      this.noteTextArea = noteTextArea;
    }
 
 }

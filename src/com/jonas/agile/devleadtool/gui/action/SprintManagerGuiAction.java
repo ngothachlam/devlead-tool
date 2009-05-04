@@ -15,7 +15,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.AbstractBorder;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXButton;
@@ -71,15 +73,16 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       SwingUtil.defaultGridBagConstraints(gbc);
 
       gbc.fill = gbc.BOTH;
+      gbc.gridx = 0;
       gbc.weightx = 1.0;
       gbc.weighty = 1.0;
-      viewSprint.setPreferredSize(new Dimension(300, 150));
+      viewSprint.setPreferredSize(new Dimension(300, 250));
       contentPanel.add(viewSprint, gbc);
-      
+
       gbc.fill = gbc.NONE;
       gbc.weightx = 0.0;
       gbc.weighty = 0.0;
-      gbc.gridy++;
+      gbc.gridx++;
       contentPanel.add(addSprint, gbc);
       return contentPanel;
    }
@@ -89,8 +92,10 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
 
       sprintsTableModel = new JXSprintTableModel();
       sprintsTable = new JXTable(sprintsTableModel);
+      sprintsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       sprintsTable.setColumnControlVisible(true);
       sprintsTable.packAll();
+      
       sprintsTableHighlighter = new SprintsTableHighlighter(sprintsTable);
       sprintsTable.addHighlighter(sprintsTableHighlighter);
       new SprintsTablePopupMenu(sprintsTable, frame, sprintDao, helper);
@@ -120,12 +125,13 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       // addButton(panel, "", gbc, calculateLengthAction);
       // JTextField lengthTextField = addTextField(panel, "Length:", gbc);
       JTextField lengthTextField = addPanel(panel, "Length:", gbc, calculateLengthAction);
+      JTextArea noteTextArea = addTextArea(panel, "Note:", gbc);
 
       tableSelectionListener.setSourceTable(sprintsTable);
-      tableSelectionListener.setTargets(nameTextField, startDatePicker, endDatePicker, lengthTextField);
+      tableSelectionListener.setTargets(nameTextField, startDatePicker, endDatePicker, lengthTextField, noteTextArea);
 
-      SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao, sprintsTableModel);
-      source = new SprintCreationSourceImpl(nameTextField, startDatePicker, endDatePicker, lengthTextField);
+      SprintCreationTarget target = new SprintCreationTargetImpl(helper, sprintDao, sprintsTableModel, sprintsTable);
+      source = new SprintCreationSourceImpl(nameTextField, startDatePicker, endDatePicker, lengthTextField, noteTextArea);
       AddSprintAction addSprintAction = new AddSprintAction(getParentFrame(), source, target);
       calculateLengthAction.setLengthSource(source);
       calculateLengthAction.setLengthTarget(new SprintLengthCalculationTargetImpl(lengthTextField));
@@ -142,7 +148,13 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       return panel;
    }
 
-   private JComponent add_Component(JPanel panel, String labelText, GridBagConstraints gbc, JComponent fieldield) {
+   private JTextArea addTextArea(JPanel panel, String string, GridBagConstraints gbc) {
+      JTextArea textArea = new JTextArea(3,13);
+      add_Component(panel, string, gbc, new JScrollPane(textArea));
+      return textArea;
+   }
+
+   private JComponent add_Component(JPanel panel, String labelText, GridBagConstraints gbc, JComponent jComponent) {
       gbc.gridx = 0;
       panel.add(new JXLabel(labelText), gbc);
       gbc.gridx++;
@@ -150,11 +162,11 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       int prefill = gbc.fill;
       gbc.fill = gbc.VERTICAL;
       gbc.weightx = 1;
-      panel.add(fieldield, gbc);
+      panel.add(jComponent, gbc);
       gbc.fill = prefill;
       gbc.weightx = preweight;
       gbc.gridy++;
-      return fieldield;
+      return jComponent;
    }
 
    private JXButton addButton(JPanel panel, String labelText, GridBagConstraints gbc, Action action) {
@@ -196,7 +208,6 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
    }
 }
 
-
 class SprintCacheListenerImpl implements SprintCacheListener {
 
    private ProgressDialog dialog;
@@ -210,26 +221,25 @@ class SprintCacheListenerImpl implements SprintCacheListener {
    @Override
    public void notify(SprintCacheNotification notification) {
       switch (notification) {
-      case REQUIREDFIELDMISSING:
-         dialog.setCompleteWithDelay(100);
-         AlertDialog.alertMessage(parent, "Required fields not filled out!");
-         break;
-      case ADDINGTOCACHE:
-         System.out.println("ADDINGTOCACHE creating dialog");
-         dialog = new ProgressDialog(parent, "running...", "note", 0, true);
-         System.out.println("done creating dialog");
-         break;
-      case ADDEDTOCACHE:
-         System.out.println("ADDEDTOCACHE is null?");
-         if (dialog != null) {
-            System.out.println("not null");
+         case REQUIREDFIELDMISSING:
             dialog.setCompleteWithDelay(100);
-         }
-         break;
+            AlertDialog.alertMessage(parent, "Required fields not filled out!");
+            break;
+         case ADDINGTOCACHE:
+            System.out.println("ADDINGTOCACHE creating dialog");
+            dialog = new ProgressDialog(parent, "running...", "note", 0, true);
+            System.out.println("done creating dialog");
+            break;
+         case ADDEDTOCACHE:
+            System.out.println("ADDEDTOCACHE is null?");
+            if (dialog != null) {
+               System.out.println("not null");
+               dialog.setCompleteWithDelay(100);
+            }
+            break;
       }
    }
 }
-
 
 class SprintCreationSourceImpl implements SprintCreationSource {
 
@@ -237,12 +247,14 @@ class SprintCreationSourceImpl implements SprintCreationSource {
    private final JTextField lengthTextField;
    private final JTextField nameTextField;
    private final JXDatePicker startDatePicker;
+   private final JTextArea noteTextArea;
 
-   public SprintCreationSourceImpl(JTextField nameTextField, JXDatePicker startDatePicker, JXDatePicker endDatePicker, JTextField lengthTextField) {
+   public SprintCreationSourceImpl(JTextField nameTextField, JXDatePicker startDatePicker, JXDatePicker endDatePicker, JTextField lengthTextField, JTextArea noteTextArea) {
       this.nameTextField = nameTextField;
       this.startDatePicker = startDatePicker;
       this.endDatePicker = endDatePicker;
       this.lengthTextField = lengthTextField;
+      this.noteTextArea = noteTextArea;
    }
 
    @Override
@@ -251,6 +263,7 @@ class SprintCreationSourceImpl implements SprintCreationSource {
       startDatePicker.setDate(null);
       endDatePicker.setDate(null);
       lengthTextField.setText("");
+      noteTextArea.setText("");
    }
 
    @Override
@@ -270,6 +283,11 @@ class SprintCreationSourceImpl implements SprintCreationSource {
    public String getName() {
       return nameTextField.getText();
    }
+   
+   @Override
+   public String getNote() {
+      return noteTextArea.getText();
+   }
 
    @Override
    public Date getStart() {
@@ -277,18 +295,19 @@ class SprintCreationSourceImpl implements SprintCreationSource {
    }
 }
 
-
 class SprintCreationTargetImpl implements SprintCreationTarget {
 
    private final ExcelSprintDao dao;
    private final PlannerHelper helper;
    private final JXSprintTableModel sprintTableModel;
    private static final Logger log = MyLogger.getLogger(SprintCreationTargetImpl.class);
+   private final JXTable sprintTable;
 
-   public SprintCreationTargetImpl(PlannerHelper helper, ExcelSprintDao dao, JXSprintTableModel sprintTableModel) {
+   public SprintCreationTargetImpl(PlannerHelper helper, ExcelSprintDao dao, JXSprintTableModel sprintTableModel, JXTable sprintTable) {
       this.helper = helper;
       this.dao = dao;
       this.sprintTableModel = sprintTableModel;
+      this.sprintTable = sprintTable;
    }
 
    @Override
@@ -302,6 +321,8 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
          oldSprint.setStartDate(sprint.getStartDate());
          oldSprint.setEndDate(sprint.getEndDate());
          oldSprint.setLength(sprint.getLength());
+         oldSprint.setNote(sprint.getNote());
+         sprintCache.sort();
          saveToDao = true;
       } else {
          saveToDao = sprintCache.cache(sprint, true);
@@ -317,10 +338,16 @@ class SprintCreationTargetImpl implements SprintCreationTarget {
          dao.save(excelFile, sprintCache);
       }
 
+      int[] selectedRows = sprintTable.getSelectedRows(); 
       sprintTableModel.fireTableDataChanged();
+      
+      for (int counter = 0; counter < selectedRows.length; counter++) {
+         int selectedRow = selectedRows[counter];
+         sprintTable.addRowSelectionInterval(selectedRow, selectedRow);
+         
+      }
    }
 }
-
 
 class SprintLengthCalculationTargetImpl implements SprintLengthCalculationTarget {
 

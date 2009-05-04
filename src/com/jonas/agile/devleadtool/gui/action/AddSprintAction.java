@@ -46,6 +46,7 @@ public class AddSprintAction extends BasicAbstractGUIAction {
          }
 
          Sprint sprint = new Sprint(name, startDate, endDate, length);
+         sprint.setNote(source.getNote());
          try {
             target.addOrSetSprint(sprint);
          } catch (IOException e1) {

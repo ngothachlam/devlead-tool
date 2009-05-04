@@ -85,6 +85,11 @@ public class CalculateSprintLengthActionTest extends TestCase {
             return getDate(startDay, startMonth, startYear);
          }
 
+         @Override
+         public String getNote() {
+            return null;
+         }
+
       };
    }
 
