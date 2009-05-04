@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.data;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,16 +12,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.swing.SwingUtilities;
+
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
 import com.google.inject.Inject;
 import com.jonas.agile.devleadtool.gui.component.dialog.CombinedModelDTO;
 import com.jonas.agile.devleadtool.gui.component.table.ColorDTO;
@@ -51,8 +54,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    private void addCellValue(Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount, Object cellContents) {
       ColumnWrapper column = columns.get(colCount);
-      log.debug("\tColumn " + column + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \""
-            + cellContents + "\"!");
+      log.debug("\tColumn " + column + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \"" + cellContents + "\"!");
       Object parsed = null;
       if (column.isToLoad()) {
          if (column.isUsingCache()) {
@@ -61,8 +63,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             parsed = column.parseFromPersistanceStore(cellContents);
          }
          if (parsed == null && log.isDebugEnabled()) {
-            log.warn("When trying to parse column " + column + " from store using value \"" + cellContents + "\" - we got null! (Cache was "
-                  + (column.isUsingCache() ? "" : "not") + " used)");
+            log.warn("When trying to parse column " + column + " from store using value \"" + cellContents + "\" - we got null! (Cache was " + (column.isUsingCache() ? "" : "not") + " used)");
          }
          rowData.add(parsed);
       }
@@ -116,19 +117,19 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + (++colCount));
                Object cellContents = null;
                switch (cellType) {
-               case HSSFCell.CELL_TYPE_BLANK:
-                  cellContents = "";
-               case HSSFCell.CELL_TYPE_BOOLEAN:
-                  cellContents = cell.getBooleanCellValue();
-                  break;
-               case HSSFCell.CELL_TYPE_NUMERIC:
-                  String valueOf = String.valueOf(cell.getNumericCellValue());
-                  cellContents = (valueOf == null ? "" : valueOf);
-                  break;
-               case HSSFCell.CELL_TYPE_STRING:
-                  HSSFRichTextString cellHeader = cell.getRichStringCellValue();
-                  cellContents = (cellHeader == null ? "" : cellHeader.getString());
-                  break;
+                  case HSSFCell.CELL_TYPE_BLANK:
+                     cellContents = "";
+                  case HSSFCell.CELL_TYPE_BOOLEAN:
+                     cellContents = cell.getBooleanCellValue();
+                     break;
+                  case HSSFCell.CELL_TYPE_NUMERIC:
+                     String valueOf = String.valueOf(cell.getNumericCellValue());
+                     cellContents = (valueOf == null ? "" : valueOf);
+                     break;
+                  case HSSFCell.CELL_TYPE_STRING:
+                     HSSFRichTextString cellHeader = cell.getRichStringCellValue();
+                     cellContents = (cellHeader == null ? "" : cellHeader.getString());
+                     break;
                }
                setValue(dataModelDTO, rowCount, columns, rowData, colCount, cellContents);
             }
@@ -225,9 +226,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                Object valueAt = model.getValueAt(rowCount, colCount);
                log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
 
-
                ColumnWrapper column = model.getColumnWrapper(colCount);
-               
 
                if (valueAt == null)
                   cell.setCellValue(new HSSFRichTextString(""));
@@ -256,7 +255,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          }
 
          fileOut = new FileOutputStream(xlsFile);
-         // FIXME if the excel sheet is already open - this throws FileNotFoundException and thus fails
+         // FIXME if the excel sheet is already open - this throws
+         // FileNotFoundException and thus fails
          // wb.pack();
          wb.write(fileOut);
       } finally {
@@ -266,14 +266,34 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    private void setCellStyle(HSSFWorkbook wb, MyTableModel model, short rowCount, int colCount, Object valueAt, HSSFCell cell) {
-      HSSFCellStyle cellStyle = wb.createCellStyle();
+      HSSFCellStyle style = wb.createCellStyle();
       ColorDTO modelColor = model.getColor(valueAt, rowCount, colCount, true);
-      HSSFColor color = modelColor.getHSSFColor();
-      if (color != null) {
-         log.debug("color index: " + color.getIndex());
-         cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-         cellStyle.setFillBackgroundColor(color.getIndex());
-         cell.setCellStyle(cellStyle);
+
+      Color acolor = modelColor.getColor();
+
+      if (acolor != null) {
+         HSSFPalette palette = wb.getCustomPalette();
+         byte red = (byte) acolor.getRed();
+         byte green = (byte) acolor.getGreen();
+         byte blue = (byte) acolor.getBlue();
+
+         log.debug("is getting from palette" + palette + " red: " + red + " green: " + green + " blue: " + blue);
+
+         HSSFColor color = palette.findColor(red, green, blue);
+         if (color == null) {
+
+            Short hssfColor = SwingUtil.getFreeHSSFColor();
+            
+            palette.setColorAtIndex(hssfColor, red, green, blue);
+            color = palette.getColor(hssfColor);
+
+            // color = palette.addColor(red, green, blue);
+            // color = palette.findSimilarColor(red, green, blue);
+         }
+
+         style.setFillForegroundColor(color.getIndex());
+         style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+         cell.setCellStyle(style);
       }
    }
 
@@ -295,15 +315,13 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       }
    }
 
-   private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount,
-         Object cellContents) throws PersistanceException {
+   private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount, Object cellContents) throws PersistanceException {
       if (rowCount == 0) {
          log.debug("\tHeader!");
          ColumnWrapper wrapper = ColumnWrapper.get(cellContents.toString());
          ColumnType columnType = wrapper.getType();
          if (columnType == null) {
-            throw new PersistanceException("Found column " + cellContents
-                  + " in file, but there is no such column representation. Update it to one of " + getStringOfColumns());
+            throw new PersistanceException("Found column " + cellContents + " in file, but there is no such column representation. Update it to one of " + getStringOfColumns());
          }
          columns.put(colCount, wrapper);
          if (wrapper.isToLoad())

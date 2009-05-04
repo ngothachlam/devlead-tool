@@ -10,6 +10,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Stack;
 
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
@@ -17,6 +18,7 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.util.HSSFColor;
 
 import com.jonas.common.ColorUtil;
 import com.jonas.common.logging.MyLogger;
@@ -41,6 +43,16 @@ public class SwingUtil {
    private static final Logger log = MyLogger.getLogger(SwingUtil.class);
 
    private static Color selectionBackground = null;
+   private static final Stack<Short> freeHssfColors = new Stack<Short>();
+   
+   static{
+      freeHssfColors.push(HSSFColor.LAVENDER.index);
+      freeHssfColors.push(HSSFColor.BROWN.index);
+      freeHssfColors.push(HSSFColor.DARK_TEAL.index);
+      freeHssfColors.push(HSSFColor.CORNFLOWER_BLUE.index);
+      freeHssfColors.push(HSSFColor.AQUA.index);
+      freeHssfColors.push(HSSFColor.GOLD.index);
+   }
 
    private static int atLeastZero(int no) {
       return no < 0 ? 0 : no;
@@ -137,6 +149,11 @@ public class SwingUtil {
       gbc.weightx = 0.5;
       gbc.weighty = 0;
       gbc.anchor = GridBagConstraints.WEST;
+   }
+
+   public static Short getFreeHSSFColor() {
+      log.debug("popping!!");
+      return freeHssfColors.pop();
    }
 
 }
