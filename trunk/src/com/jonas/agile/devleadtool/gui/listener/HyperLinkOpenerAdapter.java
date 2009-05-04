@@ -7,7 +7,7 @@ import java.net.URISyntaxException;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.common.HyperLinker;
 
@@ -20,10 +20,10 @@ import com.jonas.common.HyperLinker;
  */
 public class HyperLinkOpenerAdapter extends MouseAdapter {
    private final PlannerHelper helper;
-   private final Column hyperLinkColumn;
-   private final Column jiraColumn;
+   private final ColumnType hyperLinkColumn;
+   private final ColumnType jiraColumn;
 
-   public HyperLinkOpenerAdapter(PlannerHelper helper, Column hyperLinkColumn, Column jiraColumn) {
+   public HyperLinkOpenerAdapter(PlannerHelper helper, ColumnType hyperLinkColumn, ColumnType jiraColumn) {
       this.helper = helper;
       this.hyperLinkColumn = hyperLinkColumn;
       this.jiraColumn = jiraColumn;

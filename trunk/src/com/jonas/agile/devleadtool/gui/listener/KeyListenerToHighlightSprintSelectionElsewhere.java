@@ -8,7 +8,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.MyStatusBar;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.tree.SprintTree;
 import com.jonas.agile.devleadtool.gui.component.tree.nodes.JiraNode;
@@ -64,7 +64,7 @@ public final class KeyListenerToHighlightSprintSelectionElsewhere extends KeyAda
       if (!sourceTableSelectionModel.isSelectionEmpty()) {
          for (int i = sourceTableSelectionModel.getMinSelectionIndex(); i <= sourceTableSelectionModel.getMaxSelectionIndex(); i++) {
             if (sourceTableSelectionModel.isSelectedIndex(i)) {
-               String jira = (String) sourceTable.getValueAt(Column.Jira, i);
+               String jira = (String) sourceTable.getValueAt(ColumnType.Jira, i);
                log.debug("Jira: " + jira);
                for (MyTable tableToHighlight : tablesToHighlight) {
                   tableToHighlight.addSelection(jira);

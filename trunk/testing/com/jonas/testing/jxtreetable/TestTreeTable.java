@@ -52,16 +52,16 @@ public class TestTreeTable {
       Component treeTable = getTreeTable(treeTableModel);
       TryoutTester.showInFrame(new JScrollPane(treeTable));
 
-      TreeTableDaoImpl treeTableDao = new TreeTableDaoImpl();
-      DaoTreeBuilder treeBuilder = new DaoTreeBuilder();
-      treeTableDao.persist(new File("testTreeTableDao"), treeTableModel, treeBuilder);
-
-      DefaultMutableTreeTableNode root2 = treeTableDao.read(new File("testTreeTableDao"), treeBuilder);
-      JiraTreeTableModel model = new JiraTreeTableModel(root2, BoardColumnMapperImpl.boardColumnMapping);
-
-      Component treeTable2 = getTreeTable(model);
-
-      TryoutTester.showInFrame(new JScrollPane(treeTable2));
+//      TreeTableDaoImpl treeTableDao = new TreeTableDaoImpl();
+//      DaoTreeBuilder treeBuilder = new DaoTreeBuilder();
+//      treeTableDao.persist(new File("testTreeTableDao"), treeTableModel, treeBuilder);
+//
+//      DefaultMutableTreeTableNode root2 = treeTableDao.read(new File("testTreeTableDao"), treeBuilder);
+//      JiraTreeTableModel model = new JiraTreeTableModel(root2, BoardColumnMapperImpl.boardColumnMapping);
+//
+//      Component treeTable2 = getTreeTable(model);
+//
+//      TryoutTester.showInFrame(new JScrollPane(treeTable2));
       /*
        * TODO versioning: Allow the loader to 1) See what version of the loaded xml 2) Apply (in sequence) all rollforwards to get the file into
        * the latest state!

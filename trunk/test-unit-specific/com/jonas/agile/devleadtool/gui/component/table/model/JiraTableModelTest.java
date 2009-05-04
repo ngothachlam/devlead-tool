@@ -3,7 +3,7 @@ package com.jonas.agile.devleadtool.gui.component.table.model;
 import java.awt.Color;
 import java.util.Vector;
 import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
@@ -40,21 +40,21 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldBeConstructedFromDAOOk() {
-      Vector<Column> header = new Vector<Column>();
+      Vector<ColumnType> header = new Vector<ColumnType>();
 
-      header.add(Column.Jira);
-      header.add(Column.Description);
-      header.add(Column.Type);
-      header.add(Column.J_Sprint);
-      header.add(Column.Project);
-      header.add(Column.FixVersion);
-      header.add(Column.Owner);
-      header.add(Column.Environment);
-      header.add(Column.Delivery);
-      header.add(Column.Resolution);
-      header.add(Column.BuildNo);
-      header.add(Column.J_DevEst);
-      header.add(Column.J_DevAct);
+      header.add(ColumnType.Jira);
+      header.add(ColumnType.Description);
+      header.add(ColumnType.Type);
+      header.add(ColumnType.J_Sprint);
+      header.add(ColumnType.Project);
+      header.add(ColumnType.FixVersion);
+      header.add(ColumnType.Owner);
+      header.add(ColumnType.Environment);
+      header.add(ColumnType.Delivery);
+      header.add(ColumnType.Resolution);
+      header.add(ColumnType.BuildNo);
+      header.add(ColumnType.J_DevEst);
+      header.add(ColumnType.J_DevAct);
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
       String[] content = new String[] { "Jira", "Desc", "J_Type", "J_Sprint", "Proj", "Fix", "Own", "Env", "Del", "Res",
@@ -85,28 +85,28 @@ public class JiraTableModelTest extends JonasTestCase {
 
    public void testShouldGetColorOk() {
       jiraModel.setRenderColors(true);
-      assertEquals(null, jiraModel.getColor("llu-1", 0, Column.Jira));
+      assertEquals(null, jiraModel.getColor("llu-1", 0, ColumnType.Jira));
 
       // add llu-1 and llu-2 to jiraModel
       jiraModel.addJira("llu-1");
       jiraModel.addJira("llu-2");
 
-      assertEquals(null, jiraModel.getColor("llu-1", 0, Column.Jira));
-      assertEquals(null, jiraModel.getColor("llu-2", 0, Column.Jira));
+      assertEquals(null, jiraModel.getColor("llu-1", 0, ColumnType.Jira));
+      assertEquals(null, jiraModel.getColor("llu-2", 0, ColumnType.Jira));
 
       // add jira llu-2 and llu-3 to boardModel with llu-2 having board's dev_estimate set to '1'
       testBoardModel.addJira("llu-2");
       testBoardModel.addJira("llu-3");
-      testBoardModel.setValueAt("1", 0, Column.DEst);
+      testBoardModel.setValueAt("1", 0, ColumnType.DEst);
       jiraModel.setBoardModel(testBoardModel);
 
-      assertEquals(null, jiraModel.getColor("llu-1", 0, Column.Jira));
-      assertEquals(null, jiraModel.getColor("est1", 0, Column.J_DevEst));
-      assertEquals(null, jiraModel.getColor("est1", 0, Column.J_DevAct));
+      assertEquals(null, jiraModel.getColor("llu-1", 0, ColumnType.Jira));
+      assertEquals(null, jiraModel.getColor("est1", 0, ColumnType.J_DevEst));
+      assertEquals(null, jiraModel.getColor("est1", 0, ColumnType.J_DevAct));
 
-      assertEquals(SwingUtil.cellGreen, jiraModel.getColor("llu-2", 1, Column.Jira));
-      assertEquals(SwingUtil.cellRed, jiraModel.getColor("est2", 1, Column.J_DevEst));
-      assertEquals(null, jiraModel.getColor("est2", 1, Column.J_DevAct));
+      assertEquals(SwingUtil.cellGreen, jiraModel.getColor("llu-2", 1, ColumnType.Jira));
+      assertEquals(SwingUtil.cellRed, jiraModel.getColor("est2", 1, ColumnType.J_DevEst));
+      assertEquals(null, jiraModel.getColor("est2", 1, ColumnType.J_DevAct));
    }
 
    public void testShouldHiglightIncorrectSprints() {
@@ -187,17 +187,17 @@ public class JiraTableModelTest extends JonasTestCase {
       assertEquals(false, jiraModel.isJiraNumberOk("merge", "1.1"));
    }
 
-   private Column[] columns = { Column.Jira, Column.Description, Column.DAct, Column.DEst };
+   private ColumnType[] columns = { ColumnType.Jira, ColumnType.Description, ColumnType.DAct, ColumnType.DEst };
    public TestTableModelTemp testBoardModel = new TestTableModelTemp(columns);
 
    class TestTableModelTemp extends MyTableModel {
 
-      public TestTableModelTemp(Column[] columns) {
+      public TestTableModelTemp(ColumnType[] columns) {
          super(columns);
       }
 
       @Override
-      public Color getColor(Object value, int row, Column column) {
+      public Color getColor(Object value, int row, ColumnType column) {
          return null;
       }
 

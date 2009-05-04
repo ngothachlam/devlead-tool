@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.agile.devleadtool.data.JiraStatistic;
 import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.agile.devleadtool.sprint.SprintTime;
@@ -18,8 +18,8 @@ import com.jonas.common.swing.SwingUtil;
 
 public class BoardTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.Resolution, Column.Release, Column.Merge, Column.BoardStatus, Column.Old, Column.DEst, Column.QEst, Column.DRem, Column.QRem, Column.DAct, Column.prio,
-         Column.Note, Column.Sprint };
+   private static final ColumnType[] columns = { ColumnType.Jira, ColumnType.Description, ColumnType.Resolution, ColumnType.Release, ColumnType.Merge, ColumnType.BoardStatus, ColumnType.Old, ColumnType.DEst, ColumnType.QEst, ColumnType.DRem, ColumnType.QRem, ColumnType.DAct, ColumnType.prio,
+         ColumnType.Note, ColumnType.Sprint };
    private Logger log = MyLogger.getLogger(BoardTableModel.class);
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
    private MyTableModel jiraModel;
@@ -29,7 +29,7 @@ public class BoardTableModel extends MyTableModel {
       setSprintCache(sprintCache);
    }
 
-   public BoardTableModel(Vector<Vector<Object>> contents, Vector<Column> header, SprintCache sprintCache) {
+   public BoardTableModel(Vector<Vector<Object>> contents, Vector<ColumnType> header, SprintCache sprintCache) {
       super(columns, contents, header);
       setSprintCache(sprintCache);
    }
@@ -39,7 +39,7 @@ public class BoardTableModel extends MyTableModel {
    }
 
    @Override
-   public Color getColor(Object value, int row, Column column) {
+   public Color getColor(Object value, int row, ColumnType column) {
       if (log.isDebugEnabled())
          log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
       String stringValue;
@@ -68,7 +68,7 @@ public class BoardTableModel extends MyTableModel {
          case Resolution:
             stringValue = (String) value;
             if (!isEmptyString(stringValue)) {
-               BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(Column.BoardStatus, row);
+               BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(ColumnType.BoardStatus, row);
                if (!BoardStatusValueToJiraStatusMap.isMappedOk(boardStatus, stringValue)) {
                   setToolTipText(row, getColumnIndex(column), "Does not match with the BoardStatus value!");
                   return SwingUtil.cellRed;
@@ -147,7 +147,7 @@ public class BoardTableModel extends MyTableModel {
                if (!isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
                   setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value!");
                   return SwingUtil.cellRed;
-               } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(Column.DEst, row))) {
+               } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(ColumnType.DEst, row))) {
                   setToolTipText(row, getColumnIndex(column), "Cannot be numeric if the Dev Estimate is not!");
                   return SwingUtil.cellRed;
                }
@@ -164,7 +164,7 @@ public class BoardTableModel extends MyTableModel {
                if (!isBoardValueEither(row, cellColorHelper.getRequiredQARemains())) {
                   setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value!");
                   return SwingUtil.cellRed;
-               } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(Column.QEst, row))) {
+               } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(ColumnType.QEst, row))) {
                   setToolTipText(row, getColumnIndex(column), "Cannot be numeric if the QA Estimate is not!");
                   return SwingUtil.cellRed;
                }
@@ -211,7 +211,7 @@ public class BoardTableModel extends MyTableModel {
    }
 
    private JiraStatistic getJiraStat(int row) {
-      Object valueAt = this.getValueAt(Column.BoardStatus, row);
+      Object valueAt = this.getValueAt(ColumnType.BoardStatus, row);
       if (log.isDebugEnabled())
          log.debug("Getting BoardStatus value for row " + row + " is " + valueAt);
       if (valueAt == null)
@@ -225,7 +225,7 @@ public class BoardTableModel extends MyTableModel {
 
    public String getRelease(String jira) {
       if (isJiraPresent(jira))
-         return (String) getValueAt(Column.Release, jira);
+         return (String) getValueAt(ColumnType.Release, jira);
       return "";
    }
 
@@ -234,7 +234,7 @@ public class BoardTableModel extends MyTableModel {
       if (log.isDebugEnabled())
          log.debug("row: " + row + " for jira: " + jira);
       if (row >= 0) {
-         BoardStatusValue valueAt = (BoardStatusValue) getValueAt(Column.BoardStatus, jira);
+         BoardStatusValue valueAt = (BoardStatusValue) getValueAt(ColumnType.BoardStatus, jira);
          if (log.isDebugEnabled())
             log.debug("valueat: " + valueAt);
          return valueAt;
@@ -243,7 +243,7 @@ public class BoardTableModel extends MyTableModel {
    }
 
    public boolean isBoardValueEither(int row, Set<BoardStatusValue> set) {
-      Object value = getValueAt(Column.BoardStatus, row);
+      Object value = getValueAt(ColumnType.BoardStatus, row);
       boolean contains = set.contains(value);
       Iterator<BoardStatusValue> iter = set.iterator();
       while (iter.hasNext()) {

@@ -3,7 +3,7 @@ package com.jonas.common.swing;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.List;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 
 public class MyComponentPanel extends MyPanel {
@@ -25,9 +25,9 @@ public class MyComponentPanel extends MyPanel {
       panel.closeListeners.remove(this);
    }
 
-   int[] getArrayOfIndices(MyTable table, Column... columns) {
+   int[] getArrayOfIndices(MyTable table, ColumnType... columns) {
       List<Integer> array = new ArrayList<Integer>();
-      for (Column column : columns) {
+      for (ColumnType column : columns) {
          int columnIndex = table.getColumnIndex(column);
          if (columnIndex >= 0) {
             addToArrayIfPositive(columnIndex, array);

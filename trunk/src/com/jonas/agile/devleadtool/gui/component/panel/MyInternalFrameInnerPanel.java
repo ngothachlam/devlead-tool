@@ -17,7 +17,7 @@ import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.InnerFrameToolbar;
 import com.jonas.agile.devleadtool.gui.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.menu.SprintTreePopupMenu;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.editor.MyEditor;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
@@ -176,7 +176,7 @@ public class MyInternalFrameInnerPanel extends MyComponentPanel {
                public void run() {
                   for (int row = e.getFirstRow(); row <= e.getLastRow(); row++) {
                      final MyTableModel sourceAsModel = (MyTableModel) e.getSource();
-                     String jira = (String) sourceAsModel.getValueAt(Column.Jira, row);
+                     String jira = (String) sourceAsModel.getValueAt(ColumnType.Jira, row);
                      log.debug("updated jira: " + jira);
                      targetTable.fireTableDataChangedForJira(jira);
                   }

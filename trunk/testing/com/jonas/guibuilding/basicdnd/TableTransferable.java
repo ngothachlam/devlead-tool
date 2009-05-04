@@ -4,14 +4,14 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.util.Vector;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 
 public class TableTransferable implements Transferable {
    private DataFlavor[] flavors = new DataFlavor[] { TableTransferHandler.vectorFlavor };
    private Vector<Vector<Object>> data;
-   private final Vector<Column> columns;
+   private final Vector<ColumnType> columns;
 
-   public TableTransferable(Vector<Column> columns, Vector<Vector<Object>> data) {
+   public TableTransferable(Vector<ColumnType> columns, Vector<Vector<Object>> data) {
       super();
       this.columns = columns;
       this.data = data;
@@ -43,15 +43,15 @@ public class TableTransferable implements Transferable {
 
 class TableDTO{
 
-   private final Vector<Column> columns;
+   private final Vector<ColumnType> columns;
    private final Vector<Vector<Object>> data;
 
-   public TableDTO(Vector<Column> columns, Vector<Vector<Object>> data) {
+   public TableDTO(Vector<ColumnType> columns, Vector<Vector<Object>> data) {
       this.columns = columns;
       this.data = data;
    }
 
-   public Vector<Column> getColumns() {
+   public Vector<ColumnType> getColumns() {
       return columns;
    }
 

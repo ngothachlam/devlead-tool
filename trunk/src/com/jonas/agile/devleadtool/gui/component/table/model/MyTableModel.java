@@ -14,7 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.util.HSSFColor;
 import com.jonas.agile.devleadtool.gui.component.table.ColorDTO;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
@@ -36,7 +36,7 @@ class Counter {
 
 public abstract class MyTableModel extends DefaultTableModel {
 
-   protected Map<Column, Integer> columnNames = new LinkedHashMap<Column, Integer>();
+   protected Map<ColumnType, Integer> columnNames = new LinkedHashMap<ColumnType, Integer>();
 
    protected Counter counter = new Counter();
 
@@ -50,7 +50,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    private TableModelListenerAlerter tableModelListenerAlerter;
 
-   protected MyTableModel(Column[] columns) {
+   protected MyTableModel(ColumnType[] columns) {
       super(columns, 0);
       initiateColumns(columns);
 
@@ -58,7 +58,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       addTableModelListener(modelMarkerDelegator);
    }
 
-   MyTableModel(Column[] columns, Vector<Vector<Object>> contents, Vector<Column> header) {
+   MyTableModel(ColumnType[] columns, Vector<Vector<Object>> contents, Vector<ColumnType> header) {
       log.trace("MyTableModel");
       initiateColumns(columns);
       List<Integer> convertInputHeaderToOriginal = getConvertionNumbers(header, getColumnNames());
@@ -67,7 +67,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       for (Vector<Object> vector : contents) {
          newDataVector.add(sortVectorBasedOnList(convertInputHeaderToOriginal, vector));
       }
-      Vector<Column> newHeaderVector = sortHeaderBasedOnList(convertInputHeaderToOriginal, header, getColumnNames());
+      Vector<ColumnType> newHeaderVector = sortHeaderBasedOnList(convertInputHeaderToOriginal, header, getColumnNames());
       this.setDataVector(newDataVector, newHeaderVector);
       log.debug("Initiated from existing contents and header!");
 
@@ -87,9 +87,9 @@ public abstract class MyTableModel extends DefaultTableModel {
    public boolean addJira(JiraIssue jiraIssue) {
       boolean isJiraPresent = isJiraPresent(jiraIssue.getKey());
       if (!isJiraPresent) {
-         Set<Column> columnSet = columnNames.keySet();
+         Set<ColumnType> columnSet = columnNames.keySet();
          Vector<Object> contents = new Vector<Object>();
-         for (Column column : columnSet) {
+         for (ColumnType column : columnSet) {
             contents.add(getValueFromIssue(jiraIssue, column));
          }
          super.addRow(contents);
@@ -113,16 +113,16 @@ public abstract class MyTableModel extends DefaultTableModel {
       return !isJiraPresent;
    }
 
-   public boolean addJira(String jira, Map<Column, Object> map) {
+   public boolean addJira(String jira, Map<ColumnType, Object> map) {
       boolean isJiraPresent = addJira(jira);
       setValues(jira, map);
       return !isJiraPresent;
    }
 
-   public void addJira(String jira, Map<Column, Object> map, int row) {
+   public void addJira(String jira, Map<ColumnType, Object> map, int row) {
       // fixme - when not already in table model - raise a dialog and compare the results.
       addJira(jira);
-      for (Column column : map.keySet()) {
+      for (ColumnType column : map.keySet()) {
          Object value = map.get(column);
          int columnIndex = getColumnIndex(column);
          if (columnIndex != -1) {
@@ -136,11 +136,11 @@ public abstract class MyTableModel extends DefaultTableModel {
       getMarker().clearMarked();
    }
 
-   final Column findIndexThatDoesNotExist(Map<Column, Integer> columnNames, Vector<Column> realVector, int i) {
-      Set<Column> keySet = columnNames.keySet();
-      Column[] columns = keySet.toArray(new Column[columnNames.size()]);
+   final ColumnType findIndexThatDoesNotExist(Map<ColumnType, Integer> columnNames, Vector<ColumnType> realVector, int i) {
+      Set<ColumnType> keySet = columnNames.keySet();
+      ColumnType[] columns = keySet.toArray(new ColumnType[columnNames.size()]);
       for (int temp = 0; temp < columns.length; temp++) {
-         Column column = columns[temp];
+         ColumnType column = columns[temp];
          log.debug("Column: " + column + " temp: " + temp + " of " + i);
          if (!realVector.contains(column)) {
             log.debug("RealVector contains the column!");
@@ -165,7 +165,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       return getColumn(columnIndex).getDefaultClass();
    }
 
-   public abstract Color getColor(Object value, int row, Column column);
+   public abstract Color getColor(Object value, int row, ColumnType column);
 
    public ColorDTO getColor(Object value, int row, int column, boolean includeHSSFColor) {
       ColorDTO colorDto = getColor(value, row, column);
@@ -199,8 +199,8 @@ public abstract class MyTableModel extends DefaultTableModel {
       return new ColorDTO(color, isMarked(row));
    }
 
-   final public Column getColumn(int columnNo) {
-      return Column.getEnum(getColumnName(columnNo));
+   final public ColumnType getColumn(int columnNo) {
+      return ColumnType.getEnum(getColumnName(columnNo));
    }
 
    @Override
@@ -208,27 +208,27 @@ public abstract class MyTableModel extends DefaultTableModel {
       return getClassFromColumn(columnIndex);
    }
 
-   final public int getColumnIndex(Column column) {
+   final public int getColumnIndex(ColumnType column) {
       Integer index = columnNames.get(column);
       return index == null ? -1 : index;
    }
 
-   final public Map<Column, Integer> getColumnNames() {
+   final public Map<ColumnType, Integer> getColumnNames() {
       return columnNames;
    }
 
-   final List<Integer> getConvertionNumbers(Vector<Column> mixedUpVector, Map<Column, Integer> originalVector) {
+   final List<Integer> getConvertionNumbers(Vector<ColumnType> mixedUpVector, Map<ColumnType, Integer> originalVector) {
       List<Integer> list = new ArrayList();
       log.debug("mixedUpVectorSize: " + mixedUpVector.size());
       log.debug("originalVector: " + originalVector.size());
       if (mixedUpVector.size() == originalVector.size()) {
-         for (Column column : mixedUpVector) {
+         for (ColumnType column : mixedUpVector) {
             Integer integer = originalVector.get(column);
             log.debug("for " + column + " we are getting " + integer);
             list.add(integer);
          }
       } else {
-         for (Column originalColumn : originalVector.keySet()) {
+         for (ColumnType originalColumn : originalVector.keySet()) {
             Integer integer = -1;
             if (mixedUpVector.contains(originalColumn))
                integer = mixedUpVector.indexOf(originalColumn);
@@ -239,11 +239,11 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    final public Object[] getEmptyRow() {
-      Map<Column, Integer> colnams = getColumnNames();
+      Map<ColumnType, Integer> colnams = getColumnNames();
       Object[] objects = new Object[colnams.size()];
       int i = 0;
       log.debug("getting Empty Row");
-      for (Column column : colnams.keySet()) {
+      for (ColumnType column : colnams.keySet()) {
          objects[i++] = column.getDefaultValue();
          log.debug("column: " + column + " containing: " + objects[i - 1]);
       }
@@ -266,7 +266,7 @@ public abstract class MyTableModel extends DefaultTableModel {
     * @param column
     * @return
     */
-   final public int getRowOfSameValueInColumn(Object value, Column column) {
+   final public int getRowOfSameValueInColumn(Object value, ColumnType column) {
       int columnNo = getColumnIndex(column);
       for (int i = 0; i < this.getRowCount(); i++) {
          Object valueAt = this.getValueAt(i, columnNo);
@@ -285,7 +285,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final public int getRowWithJira(String name) {
       for (int row = 0; row < getRowCount(); row++) {
-         Object jira = getValueAt(Column.Jira, row);
+         Object jira = getValueAt(ColumnType.Jira, row);
          String jiraAsString = jira.toString();
          if (name.equalsIgnoreCase(jiraAsString)) {
             return row;
@@ -302,16 +302,16 @@ public abstract class MyTableModel extends DefaultTableModel {
       return tableModelListenerAlerter;
    }
 
-   final public Object getValueAt(Column column, int row) {
+   final public Object getValueAt(ColumnType column, int row) {
       int columnIndex = getColumnIndex(column);
       return row > -1 && row < getRowCount() ? getValueAt(row, columnIndex) : null;
    }
 
-   final public Object getValueAt(Column column, String jira) {
+   final public Object getValueAt(ColumnType column, String jira) {
       return getValueAt(column, getRowWithJira(jira));
    }
 
-   Object getValueFromIssue(JiraIssue jiraIssue, Column column) {
+   Object getValueFromIssue(JiraIssue jiraIssue, ColumnType column) {
       Object value;
       switch (column) {
       case Jira:
@@ -370,9 +370,9 @@ public abstract class MyTableModel extends DefaultTableModel {
       return value;
    }
 
-   final protected void initiateColumns(Column[] columns) {
+   final protected void initiateColumns(ColumnType[] columns) {
       counter.reset();
-      for (Column column : columns) {
+      for (ColumnType column : columns) {
          putIntoColumnNames(column);
       }
    }
@@ -406,7 +406,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       getMarker().mark(row);
    }
 
-   final protected void putIntoColumnNames(Column column) {
+   final protected void putIntoColumnNames(ColumnType column) {
       int valueAndIncrease = counter.getValueAndIncrease();
       log.debug("putIntoColumnNames: " + column + " of default type: " + column.getDefaultValue() + " in position " + valueAndIncrease);
       columnNames.put(column, valueAndIncrease);
@@ -426,8 +426,8 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    public void setJiraBasedOnJiraColumns(JiraIssue jiraIssue) {
       int row = getRowWithJira(jiraIssue.getKey());
-      Set<Column> columnSet = columnNames.keySet();
-      for (Column column : columnSet) {
+      Set<ColumnType> columnSet = columnNames.keySet();
+      for (ColumnType column : columnSet) {
          if (column.isJiraColumn())
             setValueAt(getValueFromIssue(jiraIssue, column), row, column);
       }
@@ -450,7 +450,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       extraToolTipText.put(row + "-" + col, string);
    }
 
-   final public void setValueAt(Object value, int rowIndex, Column column) {
+   final public void setValueAt(Object value, int rowIndex, ColumnType column) {
       setValueAt(value, rowIndex, getColumnIndex(column));
    }
 
@@ -459,7 +459,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       super.setValueAt(value, rowIndex, columnIndex);
    }
 
-   public void setValueAt(Object value, String jira, Column column) {
+   public void setValueAt(Object value, String jira, ColumnType column) {
       int row = getRowWithJira(jira.toUpperCase());
       if (row < 0) {
          log.warn("Jira " + jira + " isn't in model (" + this.getClass() + ") for setValue(" + value + "," + jira + "," + column + ")");
@@ -469,9 +469,9 @@ public abstract class MyTableModel extends DefaultTableModel {
       setValueAt(value, row, column);
    }
 
-   private void setValues(String jira, Map<Column, Object> map) {
+   private void setValues(String jira, Map<ColumnType, Object> map) {
       int row = getRowWithJira(jira);
-      for (Column column : map.keySet()) {
+      for (ColumnType column : map.keySet()) {
          Object value = map.get(column);
          int columnIndex = getColumnIndex(column);
          if (columnIndex != -1)
@@ -483,17 +483,17 @@ public abstract class MyTableModel extends DefaultTableModel {
       return renderColors != true;
    }
 
-   final Vector<Column> sortHeaderBasedOnList(List<Integer> convertedList, Vector<Column> realVector, Map<Column, Integer> columnNames) {
-      Vector<Column> result = sortVectorBasedOnList(convertedList, realVector);
+   final Vector<ColumnType> sortHeaderBasedOnList(List<Integer> convertedList, Vector<ColumnType> realVector, Map<ColumnType, Integer> columnNames) {
+      Vector<ColumnType> result = sortVectorBasedOnList(convertedList, realVector);
       int i = 0;
-      List<Column> newColumn = new ArrayList<Column>();
-      for (Column column : result) {
+      List<ColumnType> newColumn = new ArrayList<ColumnType>();
+      for (ColumnType column : result) {
          if (column == null) {
             newColumn.add(findIndexThatDoesNotExist(columnNames, realVector, i++));
             log.debug("newColumn: " + newColumn);
          }
       }
-      for (Column column : newColumn) {
+      for (ColumnType column : newColumn) {
          for (int j = 0; j < result.size(); j++) {
             if (result.get(j) == null) {
                result.remove(j);

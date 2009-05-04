@@ -16,7 +16,7 @@ import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.common.HyperLinker;
 import com.jonas.jira.JiraIssue;
@@ -48,7 +48,7 @@ public class MenuItem_CreateMerge extends MyMenuItem {
       List<String> originalJiras = new ArrayList<String>();
       StringBuffer sb = new StringBuffer("Do you want to create merge Jiras for the following?\n");
       for (int aSelectedRow : selectedRows) {
-         String aJiraToBeMerged = (String) source.getValueAt(Column.Jira, aSelectedRow);
+         String aJiraToBeMerged = (String) source.getValueAt(ColumnType.Jira, aSelectedRow);
          sb.append(aJiraToBeMerged).append(" ");
          originalJiras.add(aJiraToBeMerged);
       }
@@ -96,12 +96,12 @@ public class MenuItem_CreateMerge extends MyMenuItem {
    }
 
    private void setTableValuesForOriginal(String originalJira, String mergeJiraCreated) {
-      source.setValueAt("Has: " + mergeJiraCreated, originalJira, Column.Merge);
+      source.setValueAt("Has: " + mergeJiraCreated, originalJira, ColumnType.Merge);
    }
 
    private void setTableValuesForMerge(String originalJira, String fixVersionName, String mergeJiraCreated) {
       source.addJiraAndMarkIfNew(new JiraIssue(mergeJiraCreated, fixVersionName));
-      source.setValueAt("For: " + originalJira, mergeJiraCreated, Column.Merge);
-      source.setValueAt("merge", mergeJiraCreated, Column.DEst);
+      source.setValueAt("For: " + originalJira, mergeJiraCreated, ColumnType.Merge);
+      source.setValueAt("merge", mergeJiraCreated, ColumnType.DEst);
    }
 }

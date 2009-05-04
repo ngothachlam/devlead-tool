@@ -24,7 +24,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import com.google.inject.Inject;
 import com.jonas.agile.devleadtool.gui.component.dialog.CombinedModelDTO;
 import com.jonas.agile.devleadtool.gui.component.table.ColorDTO;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
@@ -48,8 +48,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       this.sprintDao = sprintDao;
    }
 
-   private void addCellValue(Map<Integer, Column> columns, Vector<Object> rowData, int colCount, Object cellContents) {
-      Column column = columns.get(colCount);
+   private void addCellValue(Map<Integer, ColumnType> columns, Vector<Object> rowData, int colCount, Object cellContents) {
+      ColumnType column = columns.get(colCount);
       log.debug("\tColumn " + column + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \""
             + cellContents + "\"!");
       Object parsed = null;
@@ -90,7 +90,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       InputStream inp = null;
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
-      Vector<Column> header = new Vector<Column>();
+      Vector<ColumnType> header = new Vector<ColumnType>();
       TableModelDTO dataModelDTO = new TableModelDTO(header, contents);
       try {
          int rowCount = -1;
@@ -100,7 +100,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
 
          HSSFSheet sheet = getSheet(sheetName, wb, false);
-         Map<Integer, Column> columns = new HashMap<Integer, Column>();
+         Map<Integer, ColumnType> columns = new HashMap<Integer, ColumnType>();
          // for each row in the sheet...
          for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {
             Vector<Object> rowData = new Vector<Object>();
@@ -225,7 +225,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
 
 
-               Column column = model.getColumn(colCount);
+               ColumnType column = model.getColumn(colCount);
                
 
                if (valueAt == null)
@@ -245,7 +245,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          }
 
          for (short colCount = 0; colCount < model.getColumnCount(); colCount++) {
-            Column column = model.getColumn(colCount);
+            ColumnType column = model.getColumn(colCount);
             log.debug("Column " + column + " is " + (!column.isToAutoResize() ? "not" : "") + " to be autoresized");
             if (column.isToAutoResize()) {
                if (log.isDebugEnabled()) {
@@ -294,11 +294,11 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       }
    }
 
-   private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, Column> columns, Vector<Object> rowData, int colCount,
+   private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, ColumnType> columns, Vector<Object> rowData, int colCount,
          Object cellContents) throws PersistanceException {
       if (rowCount == 0) {
          log.debug("\tHeader!");
-         Column column = Column.getEnum(cellContents);
+         ColumnType column = ColumnType.getEnum(cellContents);
          if (column == null) {
             throw new PersistanceException("Found column " + cellContents
                   + " in file, but there is no such column representation. Update it to one of " + getStringOfColumns());
@@ -312,13 +312,13 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    private String getStringOfColumns() {
-      Column[] values = Column.values();
+      ColumnType[] values = ColumnType.values();
       StringBuffer sb = new StringBuffer("(");
       if (values.length > 0) {
          sb.append(values[0]);
       }
       for (int i = 1; i < values.length; i++) {
-         Column column = values[i];
+         ColumnType column = values[i];
          sb.append(",").append(column);
       }
       sb.append(")");

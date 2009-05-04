@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.Vector;
 import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
@@ -47,10 +47,10 @@ public class BoardTableModelTest extends JonasTestCase {
       model.addJira("llu-1");
       assertEquals(BoardStatusValue.UnKnown, model.getStatus("llu-1"));
 
-      model.setValueAt(BoardStatusValue.Open, 0, Column.BoardStatus);
+      model.setValueAt(BoardStatusValue.Open, 0, ColumnType.BoardStatus);
       assertEquals(BoardStatusValue.Open, model.getStatus("llu-1"));
 
-      model.setValueAt(BoardStatusValue.Bug, 0, Column.BoardStatus);
+      model.setValueAt(BoardStatusValue.Bug, 0, ColumnType.BoardStatus);
       assertEquals(BoardStatusValue.Bug, model.getStatus("llu-1"));
    }
 
@@ -63,13 +63,13 @@ public class BoardTableModelTest extends JonasTestCase {
 
       assertEquals(1, model.getRowCount());
 
-      assertEquals(BoardStatusValue.UnKnown, model.getValueAt(Column.BoardStatus, "LLU-1"));
+      assertEquals(BoardStatusValue.UnKnown, model.getValueAt(ColumnType.BoardStatus, "LLU-1"));
       Set<BoardStatusValue> list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress);
       assertEquals(false, model.isBoardValueEither(0, list));
 
       // set To Open
-      model.setValueAt(BoardStatusValue.Open, 0, Column.BoardStatus);
-      assertEquals(BoardStatusValue.Open, model.getValueAt(Column.BoardStatus, "LLU-1"));
+      model.setValueAt(BoardStatusValue.Open, 0, ColumnType.BoardStatus);
+      assertEquals(BoardStatusValue.Open, model.getValueAt(ColumnType.BoardStatus, "LLU-1"));
       list = getSet(BoardStatusValue.Open);
       assertEquals(true, model.isBoardValueEither(0, list));
       list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved);
@@ -78,8 +78,8 @@ public class BoardTableModelTest extends JonasTestCase {
             BoardStatusValue.Open);
       assertEquals(true, model.isBoardValueEither(0, list));
       // set To Complete
-      model.setValueAt(BoardStatusValue.Complete, 0, Column.BoardStatus);
-      assertEquals(BoardStatusValue.Complete, model.getValueAt(Column.BoardStatus, "LLU-1"));
+      model.setValueAt(BoardStatusValue.Complete, 0, ColumnType.BoardStatus);
+      assertEquals(BoardStatusValue.Complete, model.getValueAt(ColumnType.BoardStatus, "LLU-1"));
       list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved,
             BoardStatusValue.Open);
       assertEquals(true, model.isBoardValueEither(0, list));
@@ -96,19 +96,19 @@ public class BoardTableModelTest extends JonasTestCase {
    public void testShouldCreateFromConstructorOk() {
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
 
-      Vector<Column> header = new Vector<Column>();
-      header.add(Column.Jira);
-      header.add(Column.Description);
-      header.add(Column.Resolution);
-      header.add(Column.Release);
-      header.add(Column.Merge);
-      header.add(Column.BoardStatus);
-      header.add(Column.Old);
-      header.add(Column.DEst);
-      header.add(Column.DAct);
-      header.add(Column.QEst);
-      header.add(Column.prio);
-      header.add(Column.Note);
+      Vector<ColumnType> header = new Vector<ColumnType>();
+      header.add(ColumnType.Jira);
+      header.add(ColumnType.Description);
+      header.add(ColumnType.Resolution);
+      header.add(ColumnType.Release);
+      header.add(ColumnType.Merge);
+      header.add(ColumnType.BoardStatus);
+      header.add(ColumnType.Old);
+      header.add(ColumnType.DEst);
+      header.add(ColumnType.DAct);
+      header.add(ColumnType.QEst);
+      header.add(ColumnType.prio);
+      header.add(ColumnType.Note);
       contents.add(getTestContentRow(header.size(), "0."));
       contents.add(getTestContentRow(header.size(), "1."));
 
@@ -157,6 +157,6 @@ public class BoardTableModelTest extends JonasTestCase {
    }
    
    public void testShouldGetColors(){
-      assertEquals(SwingUtil.cellLightRed, model.getColor(BoardStatusValue.Bug, 0, Column.BoardStatus));
+      assertEquals(SwingUtil.cellLightRed, model.getColor(BoardStatusValue.Bug, 0, ColumnType.BoardStatus));
    }
 }

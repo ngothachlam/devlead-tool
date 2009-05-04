@@ -1,6 +1,6 @@
 package com.jonas.agile.devleadtool.gui.component.table;
 
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.TestTableModel;
@@ -25,11 +25,11 @@ public class MyTableTest extends JonasTestCase {
       MyTableModel model = new TestTableModel();
       table.setModel(model);
 
-      assertEquals(Column.Jira, table.getColumnEnum(0));
-      assertEquals(Column.Description, table.getColumnEnum(1));
+      assertEquals(ColumnType.Jira, table.getColumnEnum(0));
+      assertEquals(ColumnType.Description, table.getColumnEnum(1));
       
-      assertEquals(0, table.getColumnIndex(Column.Jira));
-      assertEquals(1, table.getColumnIndex(Column.Description));
+      assertEquals(0, table.getColumnIndex(ColumnType.Jira));
+      assertEquals(1, table.getColumnIndex(ColumnType.Description));
    }
 
    public void testShouldIdentifyColumnInCorrectly() throws SecurityException, NoSuchMethodException {
@@ -38,16 +38,16 @@ public class MyTableTest extends JonasTestCase {
       
       assertEquals(null, table.getColumnEnum(-1));
       
-      assertEquals(-1, table.getColumnIndex(Column.Merge));
+      assertEquals(-1, table.getColumnIndex(ColumnType.Merge));
    }
    
    public void testShouldGetCorrectColumnIndex(){
       MyTableModel model = new TestTableModel();
       table.setModel(model);
       
-      assertEquals(0,table.getColumnIndex(Column.Jira));
-      assertEquals(1,table.getColumnIndex(Column.Description));
-      assertEquals(-1,table.getColumnIndex(Column.Resolved_Sprint));
+      assertEquals(0,table.getColumnIndex(ColumnType.Jira));
+      assertEquals(1,table.getColumnIndex(ColumnType.Description));
+      assertEquals(-1,table.getColumnIndex(ColumnType.Resolved_Sprint));
    }
    
    public void testShouldSetValueUsingColumnDataCorrectly(){
@@ -66,8 +66,8 @@ public class MyTableTest extends JonasTestCase {
       assertEquals("", table.getValueAt(0, 5));
       assertEquals("", table.getValueAt(0, 6));
       
-      table.setValueAt("newValue", 0, Column.Description);
-      table.setValueAt(1f, 0, Column.DEst);
+      table.setValueAt("newValue", 0, ColumnType.Description);
+      table.setValueAt(1f, 0, ColumnType.DEst);
       
       assertEquals(1, table.getRowCount());
       assertEquals(7, table.getColumnCount());

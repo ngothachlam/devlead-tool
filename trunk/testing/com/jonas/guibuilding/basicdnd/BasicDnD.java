@@ -21,7 +21,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
@@ -124,9 +124,9 @@ public class BasicDnD extends JPanel {
       return table;
    }
 
-   private Vector<Column> getTestColumns() {
-      Vector<Column> columns = new Vector<Column>();
-      columns.add(Column.Jira);
+   private Vector<ColumnType> getTestColumns() {
+      Vector<ColumnType> columns = new Vector<ColumnType>();
+      columns.add(ColumnType.Jira);
       return columns;
    }
 
@@ -134,7 +134,7 @@ public class BasicDnD extends JPanel {
       Vector<Vector<Object>> data = new Vector<Vector<Object>>();
       data.add(getTestRow("Board-1"));
       data.add(getTestRow("Board-2"));
-      Vector<Column> columns = getTestColumns();
+      Vector<ColumnType> columns = getTestColumns();
       return new BoardTableModel(data, columns, null);
    }
 
@@ -142,7 +142,7 @@ public class BasicDnD extends JPanel {
       Vector<Vector<Object>> data = new Vector<Vector<Object>>();
       data.add(getTestRow("Jira-1"));
       data.add(getTestRow("Jira-2"));
-      Vector<Column> columns = getTestColumns();
+      Vector<ColumnType> columns = getTestColumns();
       return new JiraTableModel(data, columns);
    }
 

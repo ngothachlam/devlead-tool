@@ -12,7 +12,7 @@ import org.apache.commons.httpclient.HttpException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.ProgressDialog;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.jira.access.ClientConstants;
 import com.jonas.jira.access.JiraException;
@@ -59,7 +59,7 @@ public class MenuItem_Rollforwards extends MyMenuItem {
             xmlHelper.loginToJira();
             dialog.setNote("Logging in to Jira...");
             for (int i : selectedRows) {
-               Jira jira = new Jira(((String) sourceTable.getValueAt(Column.Jira, i)));
+               Jira jira = new Jira(((String) sourceTable.getValueAt(ColumnType.Jira, i)));
                try {
 
                   dialog.increseProgress(jira + " - getting info from server...");

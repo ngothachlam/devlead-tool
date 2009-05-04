@@ -1,6 +1,6 @@
 package com.jonas.agile.devleadtool.gui.component.dialog;
 
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 
 public class NewOldValues {
 
@@ -8,16 +8,16 @@ public class NewOldValues {
       return oldValue;
    }
 
-   public Column getColumn() {
+   public ColumnType getColumn() {
       return column;
    }
 
-   private final Column column;
+   private final ColumnType column;
    private final String oldValue;
    private final Object newValue;
    private boolean isDifferent;
 
-   public NewOldValues(Column column, String oldValue, Object newValue) {
+   public NewOldValues(ColumnType column, String oldValue, Object newValue) {
       this.column = column;
       this.newValue = newValue;
       this.oldValue = oldValue;

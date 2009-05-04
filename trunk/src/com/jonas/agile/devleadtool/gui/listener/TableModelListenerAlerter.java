@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 
 public class TableModelListenerAlerter implements TableModelListener {
@@ -25,7 +25,7 @@ public class TableModelListenerAlerter implements TableModelListener {
       int row = e.getFirstRow();
       if (!rowsModified.containsKey(row)) {
          MyTableModel model = (MyTableModel) e.getSource();
-         String jira = (String) model.getValueAt(Column.Jira, row);
+         String jira = (String) model.getValueAt(ColumnType.Jira, row);
          sb.append(jira).append(" was ");
 
          switch (e.getType()) {

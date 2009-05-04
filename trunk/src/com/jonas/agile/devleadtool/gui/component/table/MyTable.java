@@ -58,7 +58,7 @@ public class MyTable extends JXTable {
 
    private MarkDelegator marker = new MarkDelegator();
    private MyTableModel model;
-   private Map<Column, TableColumn> tableColumns;
+   private Map<ColumnType, TableColumn> tableColumns;
    private String title;
 
    public MyTable(String title, MyTableModel model, final boolean allowMarking) {
@@ -66,7 +66,7 @@ public class MyTable extends JXTable {
       this.title = title;
       this.model = model;
 
-      tableColumns = new HashMap<Column, TableColumn>();
+      tableColumns = new HashMap<ColumnType, TableColumn>();
 
       marker.setAllowMarking(allowMarking);
       setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -101,7 +101,7 @@ public class MyTable extends JXTable {
       checkBoxEditor.addCellEditorListener(cellEditorListener);
    }
 
-   public void addColumn(Column column) {
+   public void addColumn(ColumnType column) {
       TableColumn tableColumn = tableColumns.get(column);
       if (tableColumn != null)
          addColumn(tableColumn);
@@ -127,7 +127,7 @@ public class MyTable extends JXTable {
          markJira(jira);
    }
 
-   private void addJira(String jira, Map<Column, Object> map, boolean isToMarkJiraIfNew) {
+   private void addJira(String jira, Map<ColumnType, Object> map, boolean isToMarkJiraIfNew) {
       boolean isNewJiraInTable = model.addJira(jira, map);
       if (isNewJiraInTable && isToMarkJiraIfNew)
          markJira(jira);
@@ -141,7 +141,7 @@ public class MyTable extends JXTable {
       addJira(key, true);
    }
 
-   public void addJiraAndMarkIfNew(String jiraString, Map<Column, Object> map) {
+   public void addJiraAndMarkIfNew(String jiraString, Map<ColumnType, Object> map) {
       addJira(jiraString, map, true);
    }
 
@@ -184,16 +184,16 @@ public class MyTable extends JXTable {
       model.fireTableRowsUpdated(convertRowIndexToModel(rowEdited), convertRowIndexToModel(rowEdited2));
    }
 
-   public Column[] getCols() {
-      Map<Column, Integer> columnNames = model.getColumnNames();
-      return columnNames.keySet().toArray(new Column[columnNames.size()]);
+   public ColumnType[] getCols() {
+      Map<ColumnType, Integer> columnNames = model.getColumnNames();
+      return columnNames.keySet().toArray(new ColumnType[columnNames.size()]);
    }
 
-   public Column getColumnEnum(int itsColumn) {
+   public ColumnType getColumnEnum(int itsColumn) {
       return model.getColumn(convertColumnIndexToModel(itsColumn));
    }
 
-   public int getColumnIndex(Column column) {
+   public int getColumnIndex(ColumnType column) {
       return convertColumnIndexToView(model.getColumnIndex(column));
    }
 
@@ -255,12 +255,12 @@ public class MyTable extends JXTable {
       return sb.toString();
    }
 
-   public Object getValueAt(Column column, int rowInView) {
+   public Object getValueAt(ColumnType column, int rowInView) {
       int colInView = getColumnIndex(column);
       return model.getValueAt(convertRowIndexToModel(rowInView), convertColumnIndexToModel(colInView));
    }
 
-   public Object getValueAt(Column release, String jira) {
+   public Object getValueAt(ColumnType release, String jira) {
       return model.getValueAt(release, jira);
    }
 
@@ -269,7 +269,7 @@ public class MyTable extends JXTable {
       model.insertRow(convertRowIndexToModel, rowData);
    }
 
-   public boolean isColumn(Column column, int colNoToCompare) {
+   public boolean isColumn(ColumnType column, int colNoToCompare) {
       return column.equals(getColumnEnum(colNoToCompare));
    }
 
@@ -281,7 +281,7 @@ public class MyTable extends JXTable {
       int rowCount = getRowCount();
       Set<String> jiras = new HashSet<String>();
       for (int row = 0; row < rowCount; row++) {
-         String testJira = (String) getValueAt(Column.Jira, row);
+         String testJira = (String) getValueAt(ColumnType.Jira, row);
          if (jiras.contains(testJira)) {
             return true;
          }
@@ -315,7 +315,7 @@ public class MyTable extends JXTable {
       }
    }
 
-   public void removeColumn(Column column) {
+   public void removeColumn(ColumnType column) {
       int colIndex = getColumnIndex(column);
       if (colIndex < 0)
          return;
@@ -330,7 +330,7 @@ public class MyTable extends JXTable {
       // to disappear!
       for (int count = selectedRows.length - 1; count > -1; count--) {
          int tableSelectedRow = selectedRows[count];
-         String jira = (String) getValueAt(Column.Jira, tableSelectedRow);
+         String jira = (String) getValueAt(ColumnType.Jira, tableSelectedRow);
          int convertRowIndexToModel = convertRowIndexToModel(tableSelectedRow);
          if (log.isDebugEnabled())
             log.debug("Removing selected row: " + convertRowIndexToModel);
@@ -379,11 +379,11 @@ public class MyTable extends JXTable {
       model.setTableModelListenerAlerter(listener);
    }
 
-   public void setValueAt(Object value, int row, Column column) {
+   public void setValueAt(Object value, int row, ColumnType column) {
       getMyModel().setValueAt(value, convertRowIndexToModel(row), column);
    }
 
-   public void setValueAt(Object value, String jira, Column column) {
+   public void setValueAt(Object value, String jira, ColumnType column) {
       getMyModel().setValueAt(value, jira, column);
    }
 
@@ -474,7 +474,7 @@ public class MyTable extends JXTable {
 
                if (adapter.column == 0) {
                   JComponent textField = (JComponent) cellComponent;
-                  String jira = (String) myTable.getValueAt(Column.Jira, adapter.row);
+                  String jira = (String) myTable.getValueAt(ColumnType.Jira, adapter.row);
                   if (myTable.isJiraPresentAsDupe(jira)) {
                      textField.setForeground(Color.RED);
                   }
