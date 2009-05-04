@@ -9,8 +9,7 @@ import com.jonas.agile.devleadtool.sprint.SprintCache;
 
 public class ColumnWrapper<T> {
 
-   private static Map<ColumnType, ColumnWrapper> mapOfTypes = new HashMap<ColumnType, ColumnWrapper>();
-   private static Map<String, ColumnWrapper> mapOfNames = new HashMap<String, ColumnWrapper>();
+   private static Map<String, ColumnWrapper> mapOfTypes = new HashMap<String, ColumnWrapper>();
 
    public static final ColumnWrapper<String> JIRA = new ColumnWrapper<String>(String.class, ColumnType.Jira, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No, CacheMode.noCache) {
       @Override
@@ -132,8 +131,7 @@ public class ColumnWrapper<T> {
       this.cacheMode = cacheMode;
       this.isToAutoResize = true;
 
-      mapOfTypes.put(type, this);
-      mapOfNames.put(type.toString(), this);
+      mapOfTypes.put(type.toString(), this);
    }
 
    public static ColumnType getEnum(Object columnName) {
@@ -209,11 +207,11 @@ public class ColumnWrapper<T> {
    }
 
    public static ColumnWrapper get(ColumnType column) {
-      return mapOfTypes.get(column);
+      return mapOfTypes.get(column.toString());
    }
 
    public static ColumnWrapper get(String columnName) {
-      return mapOfNames.get(columnName);
+      return mapOfTypes.get(columnName);
    }
 
    public ColumnType getType() {
