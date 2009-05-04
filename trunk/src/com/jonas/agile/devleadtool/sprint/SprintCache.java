@@ -38,14 +38,18 @@ public class SprintCache implements Cache {
       }
 
       if (result) {
-         Collections.sort(sprints);
+         sort();
       }
       return result;
 
    }
 
+   public void sort() {
+      Collections.sort(sprints);
+   }
+
    public int getColumnCount() {
-      return 4;
+      return 5;
    }
 
    public String getColumnName(int colCount) {
@@ -58,6 +62,8 @@ public class SprintCache implements Cache {
             return "End";
          case 3:
             return "Length";
+         case 4:
+            return "Note";
       }
       return null;
    }
@@ -84,6 +90,9 @@ public class SprintCache implements Cache {
          case 3:
             sprint.setLength(new Integer(value.toString()));
             break;
+         case 4:
+            sprint.setNote(value.toString());
+            break;
       }
 
    }
@@ -108,6 +117,8 @@ public class SprintCache implements Cache {
             return sprint.getEndDate();
          case 3:
             return sprint.getLength();
+         case 4:
+            return sprint.getNote();
       }
       return null;
    }

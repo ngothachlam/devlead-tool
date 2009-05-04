@@ -5,8 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
+
 import org.apache.log4j.Logger;
-import org.jfree.util.Log;
+
 import com.jonas.common.DateHelper;
 import com.jonas.common.logging.MyLogger;
 
@@ -45,6 +46,8 @@ public class Sprint implements Comparable<Sprint> {
    private String name;
    private Date startDate;
    private boolean isForCombobox;
+   private String note;
+   
    private static final Vector<Sprint> EXTRASPRINTS = new Vector<Sprint>();
 
    public Sprint(String name, Date startDate, Date endDate, int length) {
@@ -122,6 +125,14 @@ public class Sprint implements Comparable<Sprint> {
    @Override
    public int compareTo(Sprint o) {
       return -this.getStartDate().compareTo(o.getStartDate());
+   }
+
+   public String getNote() {
+      return note;
+   }
+
+   public void setNote(String note) {
+      this.note = note;
    }
 
 }
