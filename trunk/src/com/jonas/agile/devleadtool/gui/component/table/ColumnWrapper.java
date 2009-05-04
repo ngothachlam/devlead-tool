@@ -62,7 +62,7 @@ public class ColumnWrapper<T> {
 
       @Override
       public Sprint parseFromPersistanceStore(Object cellContents, Cache cache) {
-         if (cache instanceof SprintCache) {
+         if (cache instanceof SprintCache && cache != null) {
             SprintCache sCache = (SprintCache) cache;
             return sCache.getSprintWithName(cellContents.toString());
          }

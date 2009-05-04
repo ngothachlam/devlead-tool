@@ -211,7 +211,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    @Override
    final public Class<?> getColumnClass(int columnIndex) {
-      return getClassFromColumn(columnIndex);
+      return getColumnWrapper(columnIndex).getDefaultClass();
    }
 
    final public int getColumnIndex(ColumnType column) {
@@ -371,14 +371,10 @@ public abstract class MyTableModel extends DefaultTableModel {
          value = jiraIssue.getRelease();
          break;
       default:
-         value = getColumnWrapper(column).getDefaultValue();
+         value = ColumnWrapper.get(column).getDefaultValue();
          break;
       }
       return value;
-   }
-
-   private ColumnWrapper getColumnWrapper(ColumnType column) {
-      return ColumnWrapper.get(column);
    }
 
    final protected void initiateColumns(ColumnType[] columns) {
@@ -419,7 +415,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final protected void putIntoColumnNames(ColumnType column) {
       int valueAndIncrease = counter.getValueAndIncrease();
-      log.debug("putIntoColumnNames: " + column + " of default type: " + getColumnWrapper(column).getDefaultValue() + " in position " + valueAndIncrease);
+      log.debug("putIntoColumnNames: " + column + " of default type: " + ColumnWrapper.get(column).getDefaultValue() + " in position " + valueAndIncrease);
       columnNames.put(column, valueAndIncrease);
    }
 
@@ -439,7 +435,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       int row = getRowWithJira(jiraIssue.getKey());
       Set<ColumnType> columnSet = columnNames.keySet();
       for (ColumnType column : columnSet) {
-         if (getColumnWrapper(column).isJiraColumn())
+         if (ColumnWrapper.get(column).isJiraColumn())
             setValueAt(getValueFromIssue(jiraIssue, column), row, column);
       }
    }
