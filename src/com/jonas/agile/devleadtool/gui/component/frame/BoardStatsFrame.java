@@ -31,7 +31,7 @@ import com.jonas.agile.devleadtool.burndown.SprintBurndownGrapher;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
@@ -271,10 +271,10 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
 
       public JiraBurndownStat(String jira, MyTable boardTable, int row) {
          this.jira = jira;
-         this.devEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.DEst, row));
-         this.qaEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.QEst, row));
+         this.devEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(ColumnType.DEst, row));
+         this.qaEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(ColumnType.QEst, row));
 
-         BoardStatusValue boardStatus = (BoardStatusValue) boardTable.getValueAt(Column.BoardStatus, row);
+         BoardStatusValue boardStatus = (BoardStatusValue) boardTable.getValueAt(ColumnType.BoardStatus, row);
 
          switch (boardStatus) {
          case NA:
@@ -286,11 +286,11 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
             this.isPreQaProgress = true;
             break;
          case InProgress:
-            this.remainingDevEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.DRem, row));
+            this.remainingDevEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(ColumnType.DRem, row));
             this.isInDevProgress = true;
          case Resolved:
             this.isInQaProgress = true;
-            this.remainingQaEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(Column.QRem, row));
+            this.remainingQaEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(ColumnType.QRem, row));
             break;
          case Approved:
          case Complete:
@@ -298,7 +298,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
             break;
          }
 
-         Object isOld = boardTable.getMyModel().getValueAt(Column.Old, row);
+         Object isOld = boardTable.getMyModel().getValueAt(ColumnType.Old, row);
          if (isOld != null && Boolean.TRUE == isOld) {
             isToIncludeInTotals = false;
          }
@@ -362,7 +362,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
          duplicateJiras = new HashSet<String>();
          System.out.println("calculating Jira Stats");
          for (int row = 0; row < rows; row++) {
-            String jira = (String) sourceTable.getValueAt(Column.Jira, row);
+            String jira = (String) sourceTable.getValueAt(ColumnType.Jira, row);
             if (!jiras.containsKey(jira)) {
                JiraBurndownStat statRow = new JiraBurndownStat(jira, sourceTable, row);
                jiras.put(jira, statRow);

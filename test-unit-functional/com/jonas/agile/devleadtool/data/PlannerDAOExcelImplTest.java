@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.model.TableModelDTO;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
@@ -35,16 +35,16 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
       
       int i = 0;
       
-      assertEquals(Column.Jira, dtoLoaded.getHeader().get(i++));
-      assertEquals(Column.Description, dtoLoaded.getHeader().get(i++));
-      assertEquals(Column.Resolution, dtoLoaded.getHeader().get(i++));
-      assertEquals(Column.Release, dtoLoaded.getHeader().get(i++));
-      assertEquals(Column.Merge, dtoLoaded.getHeader().get(i++));
-      assertEquals(Column.BoardStatus, dtoLoaded.getHeader().get(i++));
-      assertEquals(Column.DEst, dtoLoaded.getHeader().get(i++));
-      assertEquals(Column.DAct, dtoLoaded.getHeader().get(i++));
-      assertEquals(Column.prio, dtoLoaded.getHeader().get(i++));
-      assertEquals(Column.Note, dtoLoaded.getHeader().get(i++));
+      assertEquals(ColumnType.Jira, dtoLoaded.getHeader().get(i++));
+      assertEquals(ColumnType.Description, dtoLoaded.getHeader().get(i++));
+      assertEquals(ColumnType.Resolution, dtoLoaded.getHeader().get(i++));
+      assertEquals(ColumnType.Release, dtoLoaded.getHeader().get(i++));
+      assertEquals(ColumnType.Merge, dtoLoaded.getHeader().get(i++));
+      assertEquals(ColumnType.BoardStatus, dtoLoaded.getHeader().get(i++));
+      assertEquals(ColumnType.DEst, dtoLoaded.getHeader().get(i++));
+      assertEquals(ColumnType.DAct, dtoLoaded.getHeader().get(i++));
+      assertEquals(ColumnType.prio, dtoLoaded.getHeader().get(i++));
+      assertEquals(ColumnType.Note, dtoLoaded.getHeader().get(i++));
       
       i = 0;
       assertEquals("LLU-4198", dtoLoaded.getContents().get(0).get(i++));

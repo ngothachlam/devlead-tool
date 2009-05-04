@@ -1,7 +1,7 @@
 package com.jonas.devleadtool.testing.ui;
 
 import javax.swing.event.ChangeEvent;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
@@ -36,7 +36,7 @@ public class BoardTableModelListenerTest extends JonasTestCase {
       super.tearDown();
    }
 
-   private void simulateEditToTable(MyTable table, String value, int row, Column column) {
+   private void simulateEditToTable(MyTable table, String value, int row, ColumnType column) {
       int columnIndex = table.getColumnIndex(column);
       JiraCellEditor editor = (JiraCellEditor) table.getCellEditor(row, columnIndex);
       boardTable.editCellAt(0, 0);

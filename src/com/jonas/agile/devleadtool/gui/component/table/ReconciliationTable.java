@@ -19,16 +19,16 @@ public class ReconciliationTable extends MyTable {
    public void addForReconciliation(String jira, String devEst, String devAct, String release, String remainder, String qaEst, BoardStatusValue status, String qaRem) {
       this.addJira(jira);
       int row = this.getRowWithJira(jira);
-      setValueInTableIfNotNull(release, row, Column.Release);
-      setValueInTableIfNotNull(status, row, Column.BoardStatus);
-      setValueInTableIfNotNull(devEst, row, Column.DEst);
-      setValueInTableIfNotNull(remainder, row, Column.DRem);
-      setValueInTableIfNotNull(devAct, row, Column.DAct);
-      setValueInTableIfNotNull(qaEst, row, Column.QEst);
-      setValueInTableIfNotNull(qaRem, row, Column.QRem);
+      setValueInTableIfNotNull(release, row, ColumnType.Release);
+      setValueInTableIfNotNull(status, row, ColumnType.BoardStatus);
+      setValueInTableIfNotNull(devEst, row, ColumnType.DEst);
+      setValueInTableIfNotNull(remainder, row, ColumnType.DRem);
+      setValueInTableIfNotNull(devAct, row, ColumnType.DAct);
+      setValueInTableIfNotNull(qaEst, row, ColumnType.QEst);
+      setValueInTableIfNotNull(qaRem, row, ColumnType.QRem);
    }
 
-   private void setValueInTableIfNotNull(Object value, int row, Column col) {
+   private void setValueInTableIfNotNull(Object value, int row, ColumnType col) {
       if (value != null)
          this.setValueAt(value, row, col);
    }

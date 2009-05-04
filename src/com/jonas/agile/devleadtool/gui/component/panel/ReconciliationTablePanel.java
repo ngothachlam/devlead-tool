@@ -15,7 +15,7 @@ import javax.swing.table.TableModel;
 
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.menu.ReconciliationTablePopupMenu;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.ReconciliationTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
@@ -106,13 +106,13 @@ class AddFromReconciliationToBoardAction extends BasicAbstractGUIAction {
    @Override
    public void doActionPerformed(ActionEvent e) {
       for (int row = 0; row < reconModel.getRowCount(); row++) {
-         String jira = (String) reconModel.getValueAt(Column.Jira, row);
+         String jira = (String) reconModel.getValueAt(ColumnType.Jira, row);
 
          boardModel.addJira(jira);
 
          for (int col = 0; col < reconModel.getColumnCount(); col++) {
-            Column column = reconModel.getColumn(col);
-            if (column != Column.Jira) {
+            ColumnType column = reconModel.getColumn(col);
+            if (column != ColumnType.Jira) {
                Object newValue = reconModel.getValueAt(row, col);
                if (reconModel.isModified(row, col)) {
                   boardModel.setValueAt(newValue, jira, column);

@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 import org.apache.log4j.Logger;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.common.CalculatorHelper;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;
@@ -17,8 +17,8 @@ public class JiraTableModel extends MyTableModel {
       nonAcceptedJiraFields.add("TBD");
    }
 
-   private static final Column[] columns = { Column.Jira, Column.Description, Column.Type, Column.J_Sprint, Column.Project, Column.FixVersion, Column.Owner, Column.Environment, Column.Delivery, Column.Resolution, Column.BuildNo,
-         Column.J_DevEst, Column.J_DevAct, Column.prio };
+   private static final ColumnType[] columns = { ColumnType.Jira, ColumnType.Description, ColumnType.Type, ColumnType.J_Sprint, ColumnType.Project, ColumnType.FixVersion, ColumnType.Owner, ColumnType.Environment, ColumnType.Delivery, ColumnType.Resolution, ColumnType.BuildNo,
+         ColumnType.J_DevEst, ColumnType.J_DevAct, ColumnType.prio };
 
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
@@ -28,7 +28,7 @@ public class JiraTableModel extends MyTableModel {
       super(columns);
    }
 
-   public JiraTableModel(Vector<Vector<Object>> contents, Vector<Column> header) {
+   public JiraTableModel(Vector<Vector<Object>> contents, Vector<ColumnType> header) {
       super(columns, contents, header);
    }
 
@@ -37,7 +37,7 @@ public class JiraTableModel extends MyTableModel {
    }
 
    @Override
-   public Color getColor(Object value, int row, Column column) {
+   public Color getColor(Object value, int row, ColumnType column) {
       if (shouldNotRenderColors()) {
          return null;
       }
@@ -49,7 +49,7 @@ public class JiraTableModel extends MyTableModel {
       if (log.isDebugEnabled())
          log.debug("The row getting color for is " + row + " (col: " + column + ") ");
       if (getColumnIndex(column) == 0) {
-         String jira = (String) getValueAt(Column.Jira, row);
+         String jira = (String) getValueAt(ColumnType.Jira, row);
          jiraRowInBoardModel = boardModel.getRowWithJira(jira);
          if (log.isDebugEnabled())
             log.debug("... so we are editing a new row! Lets get the jira, which is " + jira + " and the board row for this jira: " + jiraRowInBoardModel);
@@ -65,14 +65,14 @@ public class JiraTableModel extends MyTableModel {
             setToolTipText(row, getColumnIndex(column), "Exists in the board!");
             return SwingUtil.cellGreen;
          case FixVersion:
-            Object bRel = boardModel.getValueAt(Column.Release, jiraRowInBoardModel);
+            Object bRel = boardModel.getValueAt(ColumnType.Release, jiraRowInBoardModel);
             if (!isFixVersionOk(bRel, value)) {
                setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Release value (" + bRel + ")!");
                return SwingUtil.cellRed;
             }
             break;
          case J_Sprint:
-            Object bSprint = boardModel.getValueAt(Column.Sprint, jiraRowInBoardModel);
+            Object bSprint = boardModel.getValueAt(ColumnType.Sprint, jiraRowInBoardModel);
             if (!isSprintOk(bSprint, value)) {
                setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Sprint value (" + bSprint + ")!");
                return SwingUtil.cellRed;
@@ -85,14 +85,14 @@ public class JiraTableModel extends MyTableModel {
             }
             break;
          case J_DevEst:
-            Object dEst = boardModel.getValueAt(Column.DEst, jiraRowInBoardModel);
+            Object dEst = boardModel.getValueAt(ColumnType.DEst, jiraRowInBoardModel);
             if (!isJiraNumberOk(dEst, value)) {
                setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dEst + ")!");
                return SwingUtil.cellRed;
             }
             break;
          case J_DevAct:
-            Object dAct = boardModel.getValueAt(Column.DAct, jiraRowInBoardModel);
+            Object dAct = boardModel.getValueAt(ColumnType.DAct, jiraRowInBoardModel);
             if (!isJiraNumberOk(dAct, value)) {
                setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dAct + ")!");
                return SwingUtil.cellRed;

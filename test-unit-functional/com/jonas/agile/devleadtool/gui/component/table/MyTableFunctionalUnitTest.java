@@ -8,12 +8,12 @@ import javax.swing.SortOrder;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.table.TableModel;
 import junit.framework.TestCase;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 
 public class MyTableFunctionalUnitTest extends TestCase {
-   private Column[] columns = { Column.Jira };
+   private ColumnType[] columns = { ColumnType.Jira };
    private MyTable table;
 
    @Override
@@ -209,12 +209,12 @@ public class MyTableFunctionalUnitTest extends TestCase {
    }
 
    private class ATestTableModel extends MyTableModel {
-      private ATestTableModel(Column[] columns) {
+      private ATestTableModel(ColumnType[] columns) {
          super(columns);
       }
 
       @Override
-      public Color getColor(Object value, int row, Column column) {
+      public Color getColor(Object value, int row, ColumnType column) {
          return null;
       }
    }

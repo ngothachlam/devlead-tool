@@ -7,7 +7,7 @@ import com.jonas.agile.devleadtool.data.Cache;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 
-public enum Column {
+public enum ColumnType {
    
    // String Defaults
    Jira(String.class, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, false, CacheMode.noCache) {
@@ -112,12 +112,12 @@ public enum Column {
 
    // private static Map<String, Column> columns;
 
-   private <T> Column(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad,
+   private <T> ColumnType(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad,
          Boolean isNumeric, CacheMode cacheMode, boolean isToAutoResize) {
       this(defaultClass, defaultValue, isEditable, isJiraColumn, isToLoad, isNumeric, cacheMode);
       this.isToAutoResize = isToAutoResize;
    }
-   private <T> Column(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad,
+   private <T> ColumnType(Class<T> defaultClass, Object defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad,
          Boolean isNumeric, CacheMode cacheMode) {
       this.defaultClass = defaultClass;
       this.defaultValue = defaultValue;
@@ -130,8 +130,8 @@ public enum Column {
    }
    
 
-   public static Column getEnum(Object columnName) {
-      for (Column col : Column.values()) {
+   public static ColumnType getEnum(Object columnName) {
+      for (ColumnType col : ColumnType.values()) {
          if (col.toString().equals(columnName)) {
             return col;
          }

@@ -1,12 +1,12 @@
 package com.jonas.agile.devleadtool.gui.component.table.model;
 
 import java.util.Vector;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.model.TableModelDTO;
 
 public class TableModelDTOTestExtension extends TableModelDTO {
 
-   public TableModelDTOTestExtension(Vector<Column> header, Vector<Vector<Object>> contents) {
+   public TableModelDTOTestExtension(Vector<ColumnType> header, Vector<Vector<Object>> contents) {
       super(header, contents);
    }
 

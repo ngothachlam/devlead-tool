@@ -11,7 +11,7 @@ import java.net.URISyntaxException;
 import com.jonas.agile.devleadtool.NotJiraException;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.common.HyperLinker;
 
@@ -34,7 +34,7 @@ public class OpenJirasListener implements ActionListener {
          AlertDialog.alertMessage(parentFrame, "No rows selected!");
       StringBuffer sb = new StringBuffer();
       for (int j = 0; j < rows.length; j++) {
-         String jira = (String) table.getValueAt(Column.Jira, rows[j]);
+         String jira = (String) table.getValueAt(ColumnType.Jira, rows[j]);
          String jira_url = null;
          try {
             jira_url = PlannerHelper.getJiraUrl(jira);

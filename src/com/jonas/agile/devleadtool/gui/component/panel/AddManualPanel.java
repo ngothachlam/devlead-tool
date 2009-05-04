@@ -18,7 +18,7 @@ import com.jonas.agile.devleadtool.gui.component.TableRadioButton;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.NewOldValues;
 import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.gui.listener.AddNewRowAction;
@@ -87,13 +87,13 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
 
       List<NewOldValues> newOldValues = new ArrayList<NewOldValues>();
 
-      addNewOldValueIfColumnIsInTable(table, Column.BoardStatus, jira, status, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, Column.Release, jira, release, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, Column.DEst, jira, estimate, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, Column.DRem, jira, remainder, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, Column.DAct, jira, actual, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, Column.QEst, jira, qaEst, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, Column.QRem, jira, qaRem, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.BoardStatus, jira, status, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.Release, jira, release, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.DEst, jira, estimate, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.DRem, jira, remainder, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.DAct, jira, actual, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.QEst, jira, qaEst, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.QRem, jira, qaRem, newOldValues);
 
       for (NewOldValues newOldValue : newOldValues) {
          if (newOldValue.isValueNew())
@@ -101,21 +101,21 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
       }
    }
 
-   private void addNewOldValueIfColumnIsInTable(MyTable table, Column column, String jira, Object newValue, List<NewOldValues> newOldValues) {
+   private void addNewOldValueIfColumnIsInTable(MyTable table, ColumnType column, String jira, Object newValue, List<NewOldValues> newOldValues) {
       NewOldValues value = getNewOldValueIfColumnIsInModel(table.getMyModel(), column, jira, newValue);
       if (value != null) {
          newOldValues.add(value);
       }
    }
 
-   private NewOldValues getNewOldValueIfColumnIsInModel(MyTableModel model, Column column, String jira, Object newValue) {
+   private NewOldValues getNewOldValueIfColumnIsInModel(MyTableModel model, ColumnType column, String jira, Object newValue) {
       if (model.getColumnIndex(column) < 0 || newValue == null || newValue.toString().trim().length() == 0)
          return null;
 
       return new NewOldValues(column, getValue(jira, model, column), newValue);
    }
 
-   protected String getValue(String jira, MyTableModel model, Column column) {
+   protected String getValue(String jira, MyTableModel model, ColumnType column) {
       if (!model.isJiraPresent(jira))
          return null;
       Object valueAt = model.getValueAt(column, jira);

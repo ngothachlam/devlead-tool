@@ -7,7 +7,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 import com.jonas.agile.devleadtool.gui.component.dialog.ProgressDialog;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 
 public class MenuItem_Remove extends MyMenuItem {
@@ -27,7 +27,7 @@ public class MenuItem_Remove extends MyMenuItem {
       sb.append(sourceTable.getTitle()).append("?");
 
       for (int aSelectedRow : selectedRows) {
-         sb.append("\n").append(sourceTable.getValueAt(Column.Jira, aSelectedRow));
+         sb.append("\n").append(sourceTable.getValueAt(ColumnType.Jira, aSelectedRow));
       }
       int result = JOptionPane.showConfirmDialog(getParentFrame(), sb.toString(), "Remove jiras?", JOptionPane.YES_NO_OPTION);
       if (result == JOptionPane.YES_OPTION) {

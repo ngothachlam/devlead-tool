@@ -10,7 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 
 final class TableTransferHandler extends TransferHandler {
@@ -46,7 +46,7 @@ final class TableTransferHandler extends TransferHandler {
       int[] values = table.getSelectedRows();
       StringBuffer buff = new StringBuffer();
 
-      Vector<Column> columns = new Vector<Column>();
+      Vector<ColumnType> columns = new Vector<ColumnType>();
       for (int i = 0; i < table.getColumnCount(); i++) {
          columns.add(table.getColumnEnum(i));
       }

@@ -3,15 +3,15 @@ package com.jonas.agile.devleadtool.gui.component.table.model;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
-import com.jonas.agile.devleadtool.gui.component.table.Column;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.common.string.StringHelper;
 import com.jonas.common.swing.SwingUtil;
 
 public class ReconciliationTableModel extends MyTableModel {
 
-   private static final Column[] columns = { Column.Jira, Column.Release, Column.BoardStatus, Column.DEst, Column.QEst, Column.DRem,
-         Column.QRem,Column.DAct};
+   private static final ColumnType[] columns = { ColumnType.Jira, ColumnType.Release, ColumnType.BoardStatus, ColumnType.DEst, ColumnType.QEst, ColumnType.DRem,
+         ColumnType.QRem,ColumnType.DAct};
    private final MyTable boardTableModel;
    private Map<Integer, String> jiras = new HashMap<Integer, String>();
 
@@ -21,7 +21,7 @@ public class ReconciliationTableModel extends MyTableModel {
    }
 
    @Override
-   public Color getColor(Object value, int row, Column column) {
+   public Color getColor(Object value, int row, ColumnType column) {
       String jira;
       switch (column) {
       case Jira:
