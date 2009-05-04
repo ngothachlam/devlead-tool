@@ -10,7 +10,7 @@ import org.jfree.util.Log;
 import com.jonas.common.DateHelper;
 import com.jonas.common.logging.MyLogger;
 
-public class Sprint {
+public class Sprint implements Comparable<Sprint> {
 
    private static final Logger log = MyLogger.getLogger(Sprint.class);
    private static final DateFormat format = new SimpleDateFormat("EEE dd-MMM-yy");
@@ -101,8 +101,7 @@ public class Sprint {
       boolean startDateIsTodayOrBefore = DateHelper.isFirstBeforeSecond(startDate, today);
       boolean endDateIsTodayOrAfter = DateHelper.isSameDay(endDate, today) || DateHelper.isFirstAfterSecond(endDate, today);
 
-      log.debug("startDate: " + startDate + " endDate: " + endDate + " startDatePreToday: " + startDateIsTodayOrBefore + " endDatePostToday: "
-            + endDateIsTodayOrAfter);
+      log.debug("startDate: " + startDate + " endDate: " + endDate + " startDatePreToday: " + startDateIsTodayOrBefore + " endDatePostToday: " + endDateIsTodayOrAfter);
 
       if (startDateIsTodayOrBefore && endDateIsTodayOrAfter) {
          return SprintTime.currentSprint;
@@ -118,6 +117,11 @@ public class Sprint {
       Calendar calendar = Calendar.getInstance();
       Date today = calendar.getTime();
       return DateHelper.getWorkingDaysBetween(startDate, today) - 1;
+   }
+
+   @Override
+   public int compareTo(Sprint o) {
+      return -this.getStartDate().compareTo(o.getStartDate());
    }
 
 }

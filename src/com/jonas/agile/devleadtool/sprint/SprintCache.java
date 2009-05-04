@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.sprint;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +15,7 @@ import com.jonas.common.logging.MyLogger;
 public class SprintCache implements Cache {
 
    public static final Sprint EMPTYSPRINT = new Sprint("", null, null, 0).setForCombobox();
-   
+
    private final Vector<Sprint> sprints = new Vector<Sprint>();
    private final Set<String> sprintNames = new HashSet<String>();
    private static final Logger log = MyLogger.getLogger(SprintCache.class);
@@ -25,16 +26,21 @@ public class SprintCache implements Cache {
          return false;
       }
 
+      boolean result = false;
       if (!allowDupes && !sprintNames.contains(sprint.getName())) {
          sprints.add(sprint);
          sprintNames.add(sprint.getName());
-         return true;
+         result = true;
       } else if (allowDupes) {
          sprints.add(sprint);
          sprintNames.add(sprint.getName());
-         return true;
+         result = true;
       }
-      return false;
+
+      if (result) {
+         Collections.sort(sprints);
+      }
+      return result;
 
    }
 
@@ -44,14 +50,14 @@ public class SprintCache implements Cache {
 
    public String getColumnName(int colCount) {
       switch (colCount) {
-      case 0:
-         return "Name";
-      case 1:
-         return "Start";
-      case 2:
-         return "End";
-      case 3:
-         return "Length";
+         case 0:
+            return "Name";
+         case 1:
+            return "Start";
+         case 2:
+            return "End";
+         case 3:
+            return "Length";
       }
       return null;
    }
@@ -66,18 +72,18 @@ public class SprintCache implements Cache {
 
    public void setValueAt(Object value, Sprint sprint, short colCount) {
       switch (colCount) {
-      case 0:
-         sprint.setName(value.toString());
-         break;
-      case 1:
-         sprint.setStartDate(getDate(value));
-         break;
-      case 2:
-         sprint.setEndDate(getDate(value));
-         break;
-      case 3:
-         sprint.setLength(new Integer(value.toString()));
-         break;
+         case 0:
+            sprint.setName(value.toString());
+            break;
+         case 1:
+            sprint.setStartDate(getDate(value));
+            break;
+         case 2:
+            sprint.setEndDate(getDate(value));
+            break;
+         case 3:
+            sprint.setLength(new Integer(value.toString()));
+            break;
       }
 
    }
@@ -94,14 +100,14 @@ public class SprintCache implements Cache {
 
    public Object getValueAt(Sprint sprint, short colCount) {
       switch (colCount) {
-      case 0:
-         return sprint.getName();
-      case 1:
-         return sprint.getStartDate();
-      case 2:
-         return sprint.getEndDate();
-      case 3:
-         return sprint.getLength();
+         case 0:
+            return sprint.getName();
+         case 1:
+            return sprint.getStartDate();
+         case 2:
+            return sprint.getEndDate();
+         case 3:
+            return sprint.getLength();
       }
       return null;
    }
@@ -149,6 +155,15 @@ public class SprintCache implements Cache {
 
    public SprintTime calculateSprintTime(Sprint sprint) {
       return sprint.calculateTime();
+   }
+
+}
+
+class SprintComparator implements Comparable {
+
+   @Override
+   public int compareTo(Object o) {
+      return -1;
    }
 
 }

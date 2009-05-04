@@ -73,8 +73,9 @@ public class SprintManagerGuiAction extends BasicAbstractGUIAction {
       gbc.fill = gbc.BOTH;
       gbc.weightx = 1.0;
       gbc.weighty = 1.0;
-      viewSprint.setPreferredSize(new Dimension(300, 100));
+      viewSprint.setPreferredSize(new Dimension(300, 150));
       contentPanel.add(viewSprint, gbc);
+      
       gbc.fill = gbc.NONE;
       gbc.weightx = 0.0;
       gbc.weighty = 0.0;
