@@ -190,7 +190,7 @@ public class MyTable extends JXTable {
    }
 
    public ColumnType getColumnEnum(int itsColumn) {
-      return model.getColumn(convertColumnIndexToModel(itsColumn));
+      return model.getColumnType(convertColumnIndexToModel(itsColumn));
    }
 
    public int getColumnIndex(ColumnType column) {

@@ -252,7 +252,7 @@ public class MyTableModelTest extends JonasTestCase {
    }
 
    private void assertModelRow(Object string, ColumnType column, int col, int row) {
-      assertEquals("col " + col + " is " + model.getColumn(col) + " not " + column + "!", col, model.getColumnIndex(column));
+      assertEquals("col " + col + " is " + model.getColumnType(col) + " not " + column + "!", col, model.getColumnIndex(column));
       assertEquals(string, model.getValueAt(column, row));
       assertEquals(string, model.getValueAt(row, col));
    }

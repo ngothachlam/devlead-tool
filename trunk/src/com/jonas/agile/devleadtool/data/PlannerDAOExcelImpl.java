@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.jonas.agile.devleadtool.gui.component.dialog.CombinedModelDTO;
 import com.jonas.agile.devleadtool.gui.component.table.ColorDTO;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnWrapper;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
@@ -48,8 +49,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       this.sprintDao = sprintDao;
    }
 
-   private void addCellValue(Map<Integer, ColumnType> columns, Vector<Object> rowData, int colCount, Object cellContents) {
-      ColumnType column = columns.get(colCount);
+   private void addCellValue(Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount, Object cellContents) {
+      ColumnWrapper column = columns.get(colCount);
       log.debug("\tColumn " + column + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \""
             + cellContents + "\"!");
       Object parsed = null;
@@ -100,7 +101,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
 
          HSSFSheet sheet = getSheet(sheetName, wb, false);
-         Map<Integer, ColumnType> columns = new HashMap<Integer, ColumnType>();
+         Map<Integer, ColumnWrapper> columns = new HashMap<Integer, ColumnWrapper>();
          // for each row in the sheet...
          for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {
             Vector<Object> rowData = new Vector<Object>();
@@ -225,7 +226,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
 
 
-               ColumnType column = model.getColumn(colCount);
+               ColumnWrapper column = model.getColumnWrapper(colCount);
                
 
                if (valueAt == null)
@@ -245,9 +246,9 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          }
 
          for (short colCount = 0; colCount < model.getColumnCount(); colCount++) {
-            ColumnType column = model.getColumn(colCount);
-            log.debug("Column " + column + " is " + (!column.isToAutoResize() ? "not" : "") + " to be autoresized");
-            if (column.isToAutoResize()) {
+            ColumnWrapper wrapper = model.getColumnWrapper(colCount);
+            log.debug("Column " + wrapper + " is " + (!wrapper.isToAutoResize() ? "not" : "") + " to be autoresized");
+            if (wrapper.isToAutoResize()) {
                if (log.isDebugEnabled()) {
                }
                sheet.autoSizeColumn(colCount);
@@ -294,18 +295,19 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       }
    }
 
-   private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, ColumnType> columns, Vector<Object> rowData, int colCount,
+   private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount,
          Object cellContents) throws PersistanceException {
       if (rowCount == 0) {
          log.debug("\tHeader!");
-         ColumnType column = ColumnType.getEnum(cellContents);
-         if (column == null) {
+         ColumnWrapper wrapper = ColumnWrapper.get(cellContents.toString());
+         ColumnType columnType = wrapper.getType();
+         if (columnType == null) {
             throw new PersistanceException("Found column " + cellContents
                   + " in file, but there is no such column representation. Update it to one of " + getStringOfColumns());
          }
-         columns.put(colCount, column);
-         if (column.isToLoad())
-            dataModelDTO.getHeader().add(column);
+         columns.put(colCount, wrapper);
+         if (wrapper.isToLoad())
+            dataModelDTO.getHeader().add(columnType);
       } else {
          addCellValue(columns, rowData, colCount, cellContents);
       }
