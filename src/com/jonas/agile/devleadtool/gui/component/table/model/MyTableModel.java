@@ -20,7 +20,7 @@ import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
-
+import com.jonas.agile.devleadtool.gui.component.table.ColumnWrapper;
 class Counter {
    private int i = 0;
 
@@ -162,7 +162,7 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    final private Class<?> getClassFromColumn(int columnIndex) {
-      return getColumn(columnIndex).getDefaultClass();
+      return getColumnWrapper(columnIndex).getDefaultClass();
    }
 
    public abstract Color getColor(Object value, int row, ColumnType column);
@@ -195,12 +195,18 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    public ColorDTO getColor(Object value, int row, int column) {
-      Color color = getColor(value, row, getColumn(column));
+      Color color = getColor(value, row, getColumnType(column));
       return new ColorDTO(color, isMarked(row));
    }
 
-   final public ColumnType getColumn(int columnNo) {
-      return ColumnType.getEnum(getColumnName(columnNo));
+   final public ColumnWrapper getColumnWrapper(int columnNo) {
+      String columnName = getColumnName(columnNo);
+      return ColumnWrapper.get(columnName);
+   }
+   
+   final public ColumnType getColumnType(int columnNo) {
+      String columnName = getColumnName(columnNo);
+      return ColumnWrapper.getEnum(columnName);
    }
 
    @Override
@@ -244,7 +250,8 @@ public abstract class MyTableModel extends DefaultTableModel {
       int i = 0;
       log.debug("getting Empty Row");
       for (ColumnType column : colnams.keySet()) {
-         objects[i++] = column.getDefaultValue();
+         ColumnWrapper columnWrapper = ColumnWrapper.get(column);
+         objects[i++] = columnWrapper.getDefaultValue();
          log.debug("column: " + column + " containing: " + objects[i - 1]);
       }
       return objects;
@@ -364,10 +371,14 @@ public abstract class MyTableModel extends DefaultTableModel {
          value = jiraIssue.getRelease();
          break;
       default:
-         value = column.getDefaultValue();
+         value = getColumnWrapper(column).getDefaultValue();
          break;
       }
       return value;
+   }
+
+   private ColumnWrapper getColumnWrapper(ColumnType column) {
+      return ColumnWrapper.get(column);
    }
 
    final protected void initiateColumns(ColumnType[] columns) {
@@ -386,7 +397,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    @Override
    final public boolean isCellEditable(int row, int column) {
-      return isEditable() ? getColumn(column).isEditable() : false;
+      return isEditable() ? getColumnWrapper(column).isEditable() : false;
    }
 
    final public boolean isEditable() {
@@ -408,7 +419,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final protected void putIntoColumnNames(ColumnType column) {
       int valueAndIncrease = counter.getValueAndIncrease();
-      log.debug("putIntoColumnNames: " + column + " of default type: " + column.getDefaultValue() + " in position " + valueAndIncrease);
+      log.debug("putIntoColumnNames: " + column + " of default type: " + getColumnWrapper(column).getDefaultValue() + " in position " + valueAndIncrease);
       columnNames.put(column, valueAndIncrease);
    }
 
@@ -428,7 +439,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       int row = getRowWithJira(jiraIssue.getKey());
       Set<ColumnType> columnSet = columnNames.keySet();
       for (ColumnType column : columnSet) {
-         if (column.isJiraColumn())
+         if (getColumnWrapper(column).isJiraColumn())
             setValueAt(getValueFromIssue(jiraIssue, column), row, column);
       }
    }

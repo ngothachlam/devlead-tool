@@ -111,7 +111,7 @@ class AddFromReconciliationToBoardAction extends BasicAbstractGUIAction {
          boardModel.addJira(jira);
 
          for (int col = 0; col < reconModel.getColumnCount(); col++) {
-            ColumnType column = reconModel.getColumn(col);
+            ColumnType column = reconModel.getColumnType(col);
             if (column != ColumnType.Jira) {
                Object newValue = reconModel.getValueAt(row, col);
                if (reconModel.isModified(row, col)) {
