@@ -17,9 +17,9 @@ public class SprintTest extends TestCase {
 
    public void testShouldCalculateDayInSprintOk() {
       assertEquals(new Integer(0), getSprint(0, +1).calculateDayInSprint());
-      assertEquals(new Integer(0), getSprint(-1, +1).calculateDayInSprint());
-      assertEquals(new Integer(0), getSprint(-2, +1).calculateDayInSprint());
-      assertEquals(new Integer(1), getSprint(-3, +1).calculateDayInSprint());
+      assertEquals(new Integer(1), getSprint(-1, +1).calculateDayInSprint());
+      assertEquals(new Integer(2), getSprint(-2, +1).calculateDayInSprint());
+      assertEquals(new Integer(2), getSprint(-3, +1).calculateDayInSprint());
       assertEquals(new Integer(2), getSprint(-4, +1).calculateDayInSprint());
       assertEquals(new Integer(3), getSprint(-5, +1).calculateDayInSprint());
       assertEquals(new Integer(4), getSprint(-6, +1).calculateDayInSprint());

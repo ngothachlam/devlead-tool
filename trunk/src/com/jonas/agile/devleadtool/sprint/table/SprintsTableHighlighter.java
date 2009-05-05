@@ -23,6 +23,7 @@ public class SprintsTableHighlighter extends AbstractHighlighter {
    @Override
    protected Component doHighlight(Component component, ComponentAdapter adapter) {
       if (sprintCache == null) {
+         setColor(component, adapter, SwingUtil.cellWhite);
          return component;
       }
       int row = adapter.row;
@@ -30,23 +31,25 @@ public class SprintsTableHighlighter extends AbstractHighlighter {
       int modelRow = sprintsTable.convertRowIndexToModel(row);
       Sprint sprintFromRow = sprintCache.getSprintFromRow(modelRow);
       SprintTime calculateTime = sprintFromRow.calculateTime();
-      if (calculateTime == SprintTime.currentSprint) {
-         Color color = SwingUtil.cellLightBlue;
-         if(adapter.isSelected()){
-            color = ColorUtil.darkenColor(color, 25);
-         }
-         component.setBackground(color);
-      } else if (calculateTime == SprintTime.beforeCurrentSprint) {
-         Color color = SwingUtil.cellLightGreen;
-         if(adapter.isSelected()){
-            color = ColorUtil.darkenColor(color, -35);
-         }
-         component.setBackground(color);
+      switch (calculateTime) {
+         case currentSprint:
+            setColor(component, adapter, SwingUtil.cellLightBlue);
+            break;
+         case beforeCurrentSprint:
+            setColor(component, adapter, SwingUtil.cellLightGreen);
+            break;
+         case afterCurrentSprint:
+            setColor(component, adapter, SwingUtil.cellWhite);
+            break;
       }
-      
-      
-
       return component;
+   }
+
+   private void setColor(Component component, ComponentAdapter adapter, Color color) {
+      if(adapter.isSelected()){
+         color = ColorUtil.darkenColor(color, 25);
+      }
+      component.setBackground(color);
    }
 
    public void setSprintCache(SprintCache sprintCache) {

@@ -36,7 +36,8 @@ public class JXSprintTableModel extends DefaultTableModel {
    public Object getValueAt(int row, int column) {
       if (sprintCache == null)
          return null;
-      log.debug("getting row: " + row + " and col " + column + " size: " + sprintCache.getSprints().size());
+      if (log.isDebugEnabled())
+         log.debug("getting row: " + row + " and col " + column + " size: " + sprintCache.getSprints().size());
 
       Sprint sprint = sprintCache.getSprintFromRow(row);
       Object valueAt = sprintCache.getValueAt(sprint, (short) column);
@@ -44,7 +45,8 @@ public class JXSprintTableModel extends DefaultTableModel {
          valueAt = DateHelper.getDateAsSimpleOrderableString((Date) valueAt);
       }
 
-      log.debug("valueat: row: " + row + " col: " + column + " is " + valueAt);
+      if (log.isDebugEnabled())
+         log.debug("valueat: row: " + row + " col: " + column + " is " + valueAt);
       return valueAt;
    }
 

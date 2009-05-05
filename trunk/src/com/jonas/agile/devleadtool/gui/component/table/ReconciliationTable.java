@@ -8,7 +8,6 @@ public class ReconciliationTable extends MyTable {
 
    public ReconciliationTable(MyTable boardTableModel) {
       super("ReconcileTable", getModel(boardTableModel), false);
-
    }
 
    private static ReconciliationTableModel getModel(MyTable boardTableModel) {
