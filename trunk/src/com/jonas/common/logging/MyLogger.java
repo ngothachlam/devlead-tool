@@ -12,7 +12,6 @@ public class MyLogger {
    private static boolean setup = false;
 
    public static Logger getLogger(Class className) {
-      System.out.println("starting getLogger for " + className);
       if (!setup) {
          synchronized (MyLogger.class) {
             if (!setup) {
@@ -22,12 +21,10 @@ public class MyLogger {
          }
       }
       Logger logger = Logger.getLogger(className);
-      System.out.println("finishing getLogger for " + className);
       return logger;
    }
 
    public static void setup(String log4jPropertyLoc) {
-      System.out.println("start setup!");
       synchronized (MyLogger.class) {
          setup = true;
       }
@@ -36,6 +33,5 @@ public class MyLogger {
       System.out.println("Setting up log4j property location \"" + log4jPropertyLoc + "\" and it is " + (!exists ? "NOT " : "") + "a file!");
       BasicConfigurator.configure();
       PropertyConfigurator.configure(log4jPropertyLoc);
-      System.out.println("finished!");
    }
 }

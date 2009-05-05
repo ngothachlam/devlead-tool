@@ -279,16 +279,13 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
          log.debug("is getting from palette" + palette + " red: " + red + " green: " + green + " blue: " + blue);
 
-         HSSFColor color = palette.findColor(red, green, blue);
+         HSSFColor color = palette.findSimilarColor(red, green, blue);
          if (color == null) {
 
             Short hssfColor = SwingUtil.getFreeHSSFColor();
             
             palette.setColorAtIndex(hssfColor, red, green, blue);
             color = palette.getColor(hssfColor);
-
-            // color = palette.addColor(red, green, blue);
-            // color = palette.findSimilarColor(red, green, blue);
          }
 
          style.setFillForegroundColor(color.getIndex());

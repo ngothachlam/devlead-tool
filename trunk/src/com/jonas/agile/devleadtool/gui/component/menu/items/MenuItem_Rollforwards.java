@@ -103,12 +103,12 @@ public class MenuItem_Rollforwards extends MyMenuItem {
 
       public Object getOutput() {
          StringBuffer sb = new StringBuffer();
-         sb.append("  ").append(jiraStr).append("\n");
+         sb.append("  ").append(jiraStr);
          for (String rollforward : rollforwards) {
-            sb.append("     ").append(rollforward).append("\n");
+            sb.append("\n     ").append(rollforward).append("\n");
          }
          if(rollforwards.size() == 0){
-            sb.append("     None");
+            sb.append(": None\n");
          }
          return sb.toString();
       }
