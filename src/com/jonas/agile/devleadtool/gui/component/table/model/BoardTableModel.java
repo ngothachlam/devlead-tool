@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
+
 import org.apache.log4j.Logger;
+
 import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.agile.devleadtool.data.JiraStatistic;
 import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
@@ -13,7 +15,6 @@ import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.agile.devleadtool.sprint.SprintTime;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.common.logging.PerfTimer;
 import com.jonas.common.string.StringHelper;
 import com.jonas.common.swing.SwingUtil;
 
@@ -52,26 +53,21 @@ public class BoardTableModel extends MyTableModel {
       String stringValue;
       switch (column) {
          case Release:
-            PerfTimer.log("Release 1");
             stringValue = value.toString();
             if (isEmptyString(stringValue)) {
                setToolTipText(row, getColumnIndex(column), "Is empty!");
                return SwingUtil.cellRed;
             }
-            PerfTimer.log("Release 2");
             break;
          case Jira:
-            PerfTimer.log("Jira 1");
             if (shouldNotRenderColors() || jiraModel == null)
                return null;
             if (jiraModel.isJiraPresent(value.toString())) {
                setToolTipText(row, getColumnIndex(column), "Exists in the Jira Panel!");
                return SwingUtil.cellGreen;
             }
-            PerfTimer.log("Jira 2");
             break;
          case Resolution:
-            PerfTimer.log("Resolution 1");
             stringValue = value.toString();
             if (!isEmptyString(stringValue)) {
                BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(ColumnType.BoardStatus, row);
@@ -80,10 +76,8 @@ public class BoardTableModel extends MyTableModel {
                   return SwingUtil.cellRed;
                }
             }
-            PerfTimer.log("Resolution 2");
             break;
          case Sprint:
-            PerfTimer.log("Sprint 1");
             if (getSprintCache() == null) {
                String errorMessage = "Error! No sprint cache defined!!";
                setToolTipText(row, getColumnIndex(column), errorMessage);
@@ -126,10 +120,8 @@ public class BoardTableModel extends MyTableModel {
                   }
                   return null;
             }
-            PerfTimer.log("Sprint 2");
             break;
          case DEst:
-            PerfTimer.log("Dest 1");
             stringValue = value.toString();
             if (isEmptyString(stringValue)) {
                if (isBoardValueEither(row, cellColorHelper.getRequiredDevEstimates())) {
@@ -137,10 +129,8 @@ public class BoardTableModel extends MyTableModel {
                   return SwingUtil.cellRed;
                }
             }
-            PerfTimer.log("Dest 2");
             break;
          case QEst:
-            PerfTimer.log("QEst 1");
             stringValue = value.toString();
             if (isEmptyString(stringValue)) {
                if (isBoardValueEither(row, cellColorHelper.getRequiredQAEstimates())) {
@@ -148,10 +138,8 @@ public class BoardTableModel extends MyTableModel {
                   return SwingUtil.cellRed;
                }
             }
-            PerfTimer.log("QEst 2");
             break;
          case DRem:
-            PerfTimer.log("DRem 1");
             stringValue = value.toString();
             if (isEmptyString(stringValue)) {
                if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains())) {
@@ -167,10 +155,8 @@ public class BoardTableModel extends MyTableModel {
                   return SwingUtil.cellRed;
                }
             }
-            PerfTimer.log("DRem 2");
             break;
          case QRem:
-            PerfTimer.log("QRem 1");
             stringValue = value.toString();
             if (isEmptyString(stringValue)) {
                if (isBoardValueEither(row, cellColorHelper.getRequiredQARemains())) {
@@ -186,10 +172,8 @@ public class BoardTableModel extends MyTableModel {
                   return SwingUtil.cellRed;
                }
             }
-            PerfTimer.log("QRem 2");
             break;
          case DAct:
-            PerfTimer.log("DAct 1");
             stringValue = value.toString();
             if (isEmptyString(stringValue)) {
                if (isBoardValueEither(row, cellColorHelper.getRequiredDevActuals())) {
@@ -202,10 +186,8 @@ public class BoardTableModel extends MyTableModel {
                   return SwingUtil.cellRed;
                }
             }
-            PerfTimer.log("DAct 2");
             break;
          case BoardStatus:
-            PerfTimer.log("BoardStatus 1");
             BoardStatusValue newValue = (BoardStatusValue) value;
             if (log.isDebugEnabled()) {
                log.debug("boardStatus is " + newValue);
@@ -226,7 +208,6 @@ public class BoardTableModel extends MyTableModel {
                case ForShowCase:
                   return SwingUtil.cellLightGreen;
             }
-            PerfTimer.log("BoardStatus 2");
             break;
       }
       return null;
