@@ -134,15 +134,6 @@ public class ColumnWrapper<T> {
       mapOfTypes.put(type.toString(), this);
    }
 
-   public static ColumnType getEnum(Object columnName) {
-      for (ColumnType col : ColumnType.values()) {
-         if (col.toString().equals(columnName)) {
-            return col;
-         }
-      }
-      return null;
-   }
-
    public Object getDefaultValue() {
       return defaultValue;
    }
