@@ -46,6 +46,11 @@ public class SwingUtil {
    private static final Stack<Short> freeHssfColors = new Stack<Short>();
    
    static{
+      resetFreeHSSFColors();
+   }
+
+   public static void resetFreeHSSFColors() {
+      freeHssfColors.clear();
       freeHssfColors.push(HSSFColor.LAVENDER.index);
       freeHssfColors.push(HSSFColor.BROWN.index);
       freeHssfColors.push(HSSFColor.DARK_TEAL.index);

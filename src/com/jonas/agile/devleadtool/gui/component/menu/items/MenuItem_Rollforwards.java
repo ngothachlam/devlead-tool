@@ -59,7 +59,9 @@ public class MenuItem_Rollforwards extends MyMenuItem {
             xmlHelper.loginToJira();
             dialog.setNote("Logging in to Jira...");
             for (int i : selectedRows) {
-               Jira jira = new Jira(((String) sourceTable.getValueAt(ColumnType.Jira, i)));
+               String jiraKey = (String) sourceTable.getValueAt(ColumnType.Jira, i);
+               String jiraDesc = (String) sourceTable.getValueAt(ColumnType.Description, i);
+               JiraRollforwardDTO jira = new JiraRollforwardDTO(jiraKey, jiraDesc);
                try {
 
                   dialog.increseProgress(jira + " - getting info from server...");
@@ -93,22 +95,24 @@ public class MenuItem_Rollforwards extends MyMenuItem {
       }
    }
 
-   private final class Jira {
+   private final class JiraRollforwardDTO {
       private final String jiraStr;
       private List<String> rollforwards = new ArrayList<String>();
+      private final String description;
 
-      public Jira(String jiraStr) {
+      public JiraRollforwardDTO(String jiraStr, String description) {
          this.jiraStr = jiraStr;
+         this.description = description;
       }
 
       public Object getOutput() {
          StringBuffer sb = new StringBuffer();
-         sb.append("  ").append(jiraStr);
+         sb.append("  ").append(jiraStr).append(" (").append(description).append(")\n");
          for (String rollforward : rollforwards) {
-            sb.append("\n     ").append(rollforward).append("\n");
+            sb.append("     ").append(rollforward).append("\n");
          }
          if(rollforwards.size() == 0){
-            sb.append(": None\n");
+            sb.append("     None!\n");
          }
          return sb.toString();
       }
