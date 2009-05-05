@@ -42,13 +42,13 @@ public class BoardTableModel extends MyTableModel {
    public Color getColor(Object value, int row, ColumnType column) {
       if (log.isDebugEnabled())
          log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
-      String stringValue;
 
       if (value == null) {
          setToolTipText(row, getColumnIndex(column), "Should be filled out based!");
          return SwingUtil.cellRed;
       }
 
+      String stringValue;
       switch (column) {
          case Release:
             stringValue = (String) value;

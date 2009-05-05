@@ -165,10 +165,6 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
    }
 
-   final private Class<?> getClassFromColumn(int columnIndex) {
-      return getColumnWrapper(columnIndex).getDefaultClass();
-   }
-
    public abstract Color getColor(Object value, int row, ColumnType column);
 
    public ColorDTO getColor(Object value, int row, int column, boolean includeHSSFColor) {
@@ -203,14 +199,13 @@ public abstract class MyTableModel extends DefaultTableModel {
       return new ColorDTO(color, isMarked(row));
    }
 
-   final public ColumnWrapper getColumnWrapper(int columnNo) {
-      String columnName = getColumnName(columnNo);
+   final public ColumnWrapper<?> getColumnWrapper(int columnIndex) {
+      String columnName = getColumnName(columnIndex);
       return ColumnWrapper.get(columnName);
    }
 
-   final public ColumnType getColumnType(int columnNo) {
-      String columnName = getColumnName(columnNo);
-      return ColumnWrapper.getEnum(columnName);
+   final public ColumnType getColumnType(int columnIndex) {
+      return getColumnWrapper(columnIndex).getType();
    }
 
    @Override
