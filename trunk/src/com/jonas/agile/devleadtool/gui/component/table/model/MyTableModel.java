@@ -21,6 +21,7 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnWrapper;
+
 class Counter {
    private int i = 0;
 
@@ -32,7 +33,6 @@ class Counter {
       i = 0;
    }
 }
-
 
 public abstract class MyTableModel extends DefaultTableModel {
 
@@ -107,7 +107,8 @@ public abstract class MyTableModel extends DefaultTableModel {
       if (!isJiraPresent) {
          Object[] row = getEmptyRow();
          row[0] = jira;
-         log.debug("adding Jira " + jira + " of row size: " + row.length);
+         if (log.isDebugEnabled())
+            log.debug("adding Jira " + jira + " of row size: " + row.length);
          addRow(row);
       }
       return !isJiraPresent;
@@ -120,13 +121,15 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    public void addJira(String jira, Map<ColumnType, Object> map, int row) {
-      // fixme - when not already in table model - raise a dialog and compare the results.
+      // fixme - when not already in table model - raise a dialog and compare
+      // the results.
       addJira(jira);
       for (ColumnType column : map.keySet()) {
          Object value = map.get(column);
          int columnIndex = getColumnIndex(column);
          if (columnIndex != -1) {
-            log.debug("\tSetting value \"" + value + "\" to Column " + column + " (" + jira + ", at " + row + ", col " + columnIndex + ")");
+            if (log.isDebugEnabled())
+               log.debug("\tSetting value \"" + value + "\" to Column " + column + " (" + jira + ", at " + row + ", col " + columnIndex + ")");
             setValueAt(value, row, columnIndex);
          }
       }
@@ -141,7 +144,8 @@ public abstract class MyTableModel extends DefaultTableModel {
       ColumnType[] columns = keySet.toArray(new ColumnType[columnNames.size()]);
       for (int temp = 0; temp < columns.length; temp++) {
          ColumnType column = columns[temp];
-         log.debug("Column: " + column + " temp: " + temp + " of " + i);
+         if (log.isDebugEnabled())
+            log.debug("Column: " + column + " temp: " + temp + " of " + i);
          if (!realVector.contains(column)) {
             log.debug("RealVector contains the column!");
             if (temp == i) {
@@ -203,7 +207,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       String columnName = getColumnName(columnNo);
       return ColumnWrapper.get(columnName);
    }
-   
+
    final public ColumnType getColumnType(int columnNo) {
       String columnName = getColumnName(columnNo);
       return ColumnWrapper.getEnum(columnName);
@@ -225,8 +229,8 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final List<Integer> getConvertionNumbers(Vector<ColumnType> mixedUpVector, Map<ColumnType, Integer> originalVector) {
       List<Integer> list = new ArrayList();
-      log.debug("mixedUpVectorSize: " + mixedUpVector.size());
-      log.debug("originalVector: " + originalVector.size());
+      if (log.isDebugEnabled())
+         log.debug("mixedUpVector size: " + mixedUpVector.size() + " and originalVector size: " + originalVector.size());
       if (mixedUpVector.size() == originalVector.size()) {
          for (ColumnType column : mixedUpVector) {
             Integer integer = originalVector.get(column);
@@ -321,58 +325,58 @@ public abstract class MyTableModel extends DefaultTableModel {
    Object getValueFromIssue(JiraIssue jiraIssue, ColumnType column) {
       Object value;
       switch (column) {
-      case Jira:
-         value = jiraIssue.getKey();
-         break;
-      case Description:
-         value = jiraIssue.getSummary();
-         break;
-      case Type:
-         value = jiraIssue.getType();
-         break;
-      case FixVersion:
-         value = jiraIssue.getFixVersionsAsStrings();
-         break;
-      case Status:
-         value = jiraIssue.getStatus();
-         break;
-      case Resolution:
-         value = jiraIssue.getStatus() + " (" + jiraIssue.getResolution() + ")";
-         break;
-      case BuildNo:
-         value = jiraIssue.getBuildNo();
-         break;
-      case prio:
-         value = jiraIssue.getLLUListPriority();
-         break;
-      case J_DevEst:
-         value = jiraIssue.getEstimate();
-         break;
-      case J_Sprint:
-         value = jiraIssue.getSprint();
-         break;
-      case Project:
-         value = jiraIssue.getProjectAsString();
-         break;
-      case Environment:
-         value = jiraIssue.getEnvironment();
-         break;
-      case Owner:
-         value = jiraIssue.getOwner();
-         break;
-      case Delivery:
-         value = jiraIssue.getDeliveryDate();
-         break;
-      case J_DevAct:
-         value = jiraIssue.getSpent();
-         break;
-      case Release:
-         log.debug("Found Release!" + jiraIssue.getRelease());
-         value = jiraIssue.getRelease();
-         break;
-      default:
-         value = ColumnWrapper.get(column).getDefaultValue();
-         break;
+         case Jira:
+            value = jiraIssue.getKey();
+            break;
+         case Description:
+            value = jiraIssue.getSummary();
+            break;
+         case Type:
+            value = jiraIssue.getType();
+            break;
+         case FixVersion:
+            value = jiraIssue.getFixVersionsAsStrings();
+            break;
+         case Status:
+            value = jiraIssue.getStatus();
+            break;
+         case Resolution:
+            value = jiraIssue.getStatus() + " (" + jiraIssue.getResolution() + ")";
+            break;
+         case BuildNo:
+            value = jiraIssue.getBuildNo();
+            break;
+         case prio:
+            value = jiraIssue.getLLUListPriority();
+            break;
+         case J_DevEst:
+            value = jiraIssue.getEstimate();
+            break;
+         case J_Sprint:
+            value = jiraIssue.getSprint();
+            break;
+         case Project:
+            value = jiraIssue.getProjectAsString();
+            break;
+         case Environment:
+            value = jiraIssue.getEnvironment();
+            break;
+         case Owner:
+            value = jiraIssue.getOwner();
+            break;
+         case Delivery:
+            value = jiraIssue.getDeliveryDate();
+            break;
+         case J_DevAct:
+            value = jiraIssue.getSpent();
+            break;
+         case Release:
+            log.debug("Found Release!" + jiraIssue.getRelease());
+            value = jiraIssue.getRelease();
+            break;
+         default:
+            value = ColumnWrapper.get(column).getDefaultValue();
+            break;
       }
       return value;
    }
@@ -401,7 +405,8 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    final public boolean isJiraPresent(String name) {
-      log.debug("does " + name + " exist in " + getClass());
+      if (log.isDebugEnabled())
+         log.debug("does " + name + " exist in " + getClass());
       return getRowWithJira(name) == -1 ? false : true;
    }
 
@@ -415,7 +420,8 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    final protected void putIntoColumnNames(ColumnType column) {
       int valueAndIncrease = counter.getValueAndIncrease();
-      log.debug("putIntoColumnNames: " + column + " of default type: " + ColumnWrapper.get(column).getDefaultValue() + " in position " + valueAndIncrease);
+      if (log.isDebugEnabled())
+         log.debug("putIntoColumnNames: " + column + " of default type: " + ColumnWrapper.get(column).getDefaultValue() + " in position " + valueAndIncrease);
       columnNames.put(column, valueAndIncrease);
    }
 
@@ -469,10 +475,12 @@ public abstract class MyTableModel extends DefaultTableModel {
    public void setValueAt(Object value, String jira, ColumnType column) {
       int row = getRowWithJira(jira.toUpperCase());
       if (row < 0) {
-         log.warn("Jira " + jira + " isn't in model (" + this.getClass() + ") for setValue(" + value + "," + jira + "," + column + ")");
+         if (log.isDebugEnabled())
+            log.warn("Jira " + jira + " isn't in model (" + this.getClass() + ") for setValue(" + value + "," + jira + "," + column + ")");
          return;
       }
-      log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\" in model " + this.getClass());
+      if (log.isDebugEnabled())
+         log.debug("Updating " + jira + "'s " + column + " to \"" + value + "\" in model " + this.getClass());
       setValueAt(value, row, column);
    }
 
@@ -497,7 +505,8 @@ public abstract class MyTableModel extends DefaultTableModel {
       for (ColumnType column : result) {
          if (column == null) {
             newColumn.add(findIndexThatDoesNotExist(columnNames, realVector, i++));
-            log.debug("newColumn: " + newColumn);
+            if (log.isDebugEnabled())
+               log.debug("newColumn: " + newColumn);
          }
       }
       for (ColumnType column : newColumn) {
@@ -523,7 +532,8 @@ public abstract class MyTableModel extends DefaultTableModel {
          } catch (NullPointerException e) {
             log.warn("NullPointerException -> ");
          }
-         log.debug("adding " + t + " from " + integer);
+         if (log.isDebugEnabled())
+            log.debug("adding " + t + " from " + integer);
          result.add(t);
       }
       return result;
@@ -555,26 +565,29 @@ public abstract class MyTableModel extends DefaultTableModel {
          int firstRow = e.getFirstRow();
          int lastRow = e.getLastRow();
          switch (e.getType()) {
-         case TableModelEvent.INSERT:
-            log.debug("insert firstRow: " + firstRow + " lastRow: " + lastRow);
-            for (int row = firstRow; row <= lastRow; row++) {
-               jiras.add((String) getValueAt(row, 0));
-            }
-            break;
-         case TableModelEvent.DELETE:
-            log.debug("delete firstRow: " + firstRow + " lastRow: " + lastRow);
-            for (int row = firstRow; row <= lastRow; row++) {
-               jiras.remove(row);
-            }
-            break;
-         case TableModelEvent.UPDATE:
-            log.debug("update firstRow: " + firstRow + " lastRow: " + lastRow);
-            for (int row = firstRow; row <= lastRow; row++) {
-               if (e.getColumn() == TableModelEvent.ALL_COLUMNS || e.getColumn() == 0)
+            case TableModelEvent.INSERT:
+               if (log.isDebugEnabled())
+                  log.debug("insert firstRow: " + firstRow + " lastRow: " + lastRow);
+               for (int row = firstRow; row <= lastRow; row++) {
+                  jiras.add((String) getValueAt(row, 0));
+               }
+               break;
+            case TableModelEvent.DELETE:
+               if (log.isDebugEnabled())
+                  log.debug("delete firstRow: " + firstRow + " lastRow: " + lastRow);
+               for (int row = firstRow; row <= lastRow; row++) {
                   jiras.remove(row);
-               jiras.add(row, (String) getValueAt(row, 0));
-            }
-            break;
+               }
+               break;
+            case TableModelEvent.UPDATE:
+               if (log.isDebugEnabled())
+                  log.debug("update firstRow: " + firstRow + " lastRow: " + lastRow);
+               for (int row = firstRow; row <= lastRow; row++) {
+                  if (e.getColumn() == TableModelEvent.ALL_COLUMNS || e.getColumn() == 0)
+                     jiras.remove(row);
+                  jiras.add(row, (String) getValueAt(row, 0));
+               }
+               break;
          }
       }
 
@@ -612,29 +625,33 @@ public abstract class MyTableModel extends DefaultTableModel {
          int firstRow = e.getFirstRow();
          int lastRow = e.getLastRow();
          switch (e.getType()) {
-         case TableModelEvent.DELETE:
-            log.debug("table changed by deleting " + firstRow + " to " + lastRow);
-            for (int i = firstRow; i <= lastRow; i++) {
-               log.debug("\ti = " + i);
-               for (int j = i; j < getRowCount(); j++) {
-                  log.debug("\t\tj = " + j);
-                  int newKey = j;
-                  int oldKey = newKey + 1;
-                  Boolean valueToMoveUp = marked.get(oldKey);
-                  log.debug("\t\tnewKey = " + newKey + " oldKey = " + oldKey + " valueToMoveUp = " + valueToMoveUp);
-                  marked.put(newKey, valueToMoveUp);
+            case TableModelEvent.DELETE:
+               if (log.isDebugEnabled())
+                  log.debug("table changed by deleting " + firstRow + " to " + lastRow);
+               for (int i = firstRow; i <= lastRow; i++) {
+                  if (log.isDebugEnabled())
+                     log.debug("\ti = " + i);
+                  for (int j = i; j < getRowCount(); j++) {
+                     log.debug("\t\tj = " + j);
+                     int newKey = j;
+                     int oldKey = newKey + 1;
+                     Boolean valueToMoveUp = marked.get(oldKey);
+                     if (log.isDebugEnabled())
+                        log.debug("\t\tnewKey = " + newKey + " oldKey = " + oldKey + " valueToMoveUp = " + valueToMoveUp);
+                     marked.put(newKey, valueToMoveUp);
+                  }
+                  marked.remove((getRowCount() - 1) + 1);
                }
-               marked.remove((getRowCount() - 1) + 1);
-            }
-            break;
-         case TableModelEvent.INSERT:
-            log.debug("table changed by inserting " + firstRow + " to " + lastRow);
-            for (int i = firstRow; i <= lastRow; i++) {
-               marked.put(i, Boolean.FALSE);
-            }
-            break;
-         default:
-            break;
+               break;
+            case TableModelEvent.INSERT:
+               if (log.isDebugEnabled())
+                  log.debug("table changed by inserting " + firstRow + " to " + lastRow);
+               for (int i = firstRow; i <= lastRow; i++) {
+                  marked.put(i, Boolean.FALSE);
+               }
+               break;
+            default:
+               break;
          }
       }
 
