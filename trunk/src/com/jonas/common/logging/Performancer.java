@@ -1,6 +1,6 @@
 package com.jonas.common.logging;
 
-public class Peformancer {
+public class Performancer {
 
    private static long lastTimestamp = System.currentTimeMillis(); 
    
