@@ -1,11 +1,13 @@
 package com.jonas.agile.devleadtool.gui.component.dialog;
 
 import java.io.File;
-import java.io.IOException;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
+
 import org.apache.log4j.Logger;
+
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
@@ -63,6 +65,7 @@ public class SavePlannerDialog extends JFileChooser {
          file = addExtensionShouldNoneBeDefined(file, ".xls");
 
          internalFrame.saveModels(dao, file);
+         internalFrame.setSaveFile(file);
       }
    }
 

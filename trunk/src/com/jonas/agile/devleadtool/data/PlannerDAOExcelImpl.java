@@ -266,7 +266,6 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    private void setCellStyle(HSSFWorkbook wb, MyTableModel model, short rowCount, int colCount, Object valueAt, HSSFCell cell) {
-      HSSFCellStyle style = wb.createCellStyle();
       ColorDTO modelColor = model.getColor(valueAt, rowCount, colCount, true);
 
       Color acolor = modelColor.getColor();
@@ -279,13 +278,25 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
          log.debug("is getting from palette" + palette + " red: " + red + " green: " + green + " blue: " + blue);
 
-         HSSFColor color = palette.findSimilarColor(red, green, blue);
+         HSSFColor color = palette.findColor(red, green, blue);
          if (color == null) {
 
             Short hssfColor = SwingUtil.getFreeHSSFColor();
-            
+
             palette.setColorAtIndex(hssfColor, red, green, blue);
             color = palette.getColor(hssfColor);
+         }
+
+         HSSFCellStyle style = null;
+
+         for (short counter = 0; counter < wb.getNumCellStyles(); counter++) {
+            HSSFCellStyle tempStyle = wb.getCellStyleAt(counter);
+            if (tempStyle.getFillForegroundColor() == color.getIndex()) {
+               style = tempStyle;
+            }
+         }
+         if (style == null) {
+            style = wb.createCellStyle();
          }
 
          style.setFillForegroundColor(color.getIndex());
@@ -309,6 +320,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          notifyListeners(DaoListenerEvent.LoadingErrored);
          e.printStackTrace();
          throw e;
+      } finally{
+         SwingUtil.resetFreeHSSFColors();
       }
    }
 
