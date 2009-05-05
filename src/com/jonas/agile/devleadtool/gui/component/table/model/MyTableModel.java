@@ -277,8 +277,8 @@ public abstract class MyTableModel extends DefaultTableModel {
       for (int i = 0; i < this.getRowCount(); i++) {
          Object valueAt = this.getValueAt(i, columnNo);
          if (value instanceof String) {
-            String stringValue = (String) value;
-            String stringRowValue = (String) valueAt;
+            String stringValue = value.toString();
+            String stringRowValue = valueAt.toString();
             if ((stringValue).length() > 0 && stringValue.equalsIgnoreCase(stringRowValue)) {
                return i;
             }
@@ -385,7 +385,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    @Override
    public void insertRow(int row, Vector rowData) {
-      if (!isJiraPresent((String) rowData.get(0))) {
+      if (!isJiraPresent(rowData.get(0).toString())) {
          super.insertRow(row, rowData);
       }
    }
@@ -536,56 +536,6 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    public void unMark(int row) {
       getMarker().unMark(row);
-   }
-
-   private class JiraRowState implements TableModelListener {
-      List<String> jiras = new ArrayList<String>();;
-
-      private JiraRowState() {
-         for (int row = 0; row < getRowCount(); row++) {
-            jiras.add((String) getValueAt(row, 0));
-         }
-      }
-
-      public boolean contains(String name) {
-         return jiras.contains(name);
-      }
-
-      public int indexOf(String name) {
-         return jiras.indexOf(name);
-      }
-
-      @Override
-      public void tableChanged(TableModelEvent e) {
-         int firstRow = e.getFirstRow();
-         int lastRow = e.getLastRow();
-         switch (e.getType()) {
-            case TableModelEvent.INSERT:
-               if (log.isDebugEnabled())
-                  log.debug("insert firstRow: " + firstRow + " lastRow: " + lastRow);
-               for (int row = firstRow; row <= lastRow; row++) {
-                  jiras.add((String) getValueAt(row, 0));
-               }
-               break;
-            case TableModelEvent.DELETE:
-               if (log.isDebugEnabled())
-                  log.debug("delete firstRow: " + firstRow + " lastRow: " + lastRow);
-               for (int row = firstRow; row <= lastRow; row++) {
-                  jiras.remove(row);
-               }
-               break;
-            case TableModelEvent.UPDATE:
-               if (log.isDebugEnabled())
-                  log.debug("update firstRow: " + firstRow + " lastRow: " + lastRow);
-               for (int row = firstRow; row <= lastRow; row++) {
-                  if (e.getColumn() == TableModelEvent.ALL_COLUMNS || e.getColumn() == 0)
-                     jiras.remove(row);
-                  jiras.add(row, (String) getValueAt(row, 0));
-               }
-               break;
-         }
-      }
-
    }
 
    private class ModelMarker implements TableModelListener {

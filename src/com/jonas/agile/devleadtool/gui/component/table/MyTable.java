@@ -606,9 +606,6 @@ public class MyTable extends JXTable {
          int row = adapter2.row;
          int column = adapter2.column;
 
-         if (log.isDebugEnabled())
-            log.debug("doHighlight of row: " + row + " and col: " + column);
-
          boolean hasFocus = adapter.hasFocus();
          boolean isSelected = adapter.isSelected();
          boolean isEditable = adapter.isEditable();

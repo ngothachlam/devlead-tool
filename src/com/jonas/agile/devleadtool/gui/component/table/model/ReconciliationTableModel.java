@@ -21,6 +21,7 @@ public class ReconciliationTableModel extends MyTableModel {
    }
 
    @Override
+   //FIXME 1 - put this into a highlighter!
    public Color getColor(Object value, int row, ColumnType column) {
       String jira;
       switch (column) {
