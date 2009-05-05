@@ -107,6 +107,9 @@ public class MenuItem_Rollforwards extends MyMenuItem {
          for (String rollforward : rollforwards) {
             sb.append("     ").append(rollforward).append("\n");
          }
+         if(rollforwards.size() == 0){
+            sb.append("     None");
+         }
          return sb.toString();
       }
 
