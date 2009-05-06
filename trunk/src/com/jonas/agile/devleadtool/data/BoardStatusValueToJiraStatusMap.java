@@ -1,7 +1,8 @@
 package com.jonas.agile.devleadtool.data;
 
 import java.util.Set;
-import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
+
+import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.jira.JiraStatus;
 
 public class BoardStatusValueToJiraStatusMap {

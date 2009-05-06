@@ -15,8 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import com.jonas.agile.devleadtool.gui.component.TableRadioButton;
-import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
+import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.common.swing.MyPanel;
 
 public abstract class AbstractAddPanel extends MyPanel {

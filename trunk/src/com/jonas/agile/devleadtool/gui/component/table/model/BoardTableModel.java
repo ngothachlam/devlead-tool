@@ -10,8 +10,8 @@ import org.apache.log4j.Logger;
 
 import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.agile.devleadtool.data.JiraStatistic;
-import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
+import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.agile.devleadtool.sprint.SprintTime;
@@ -30,8 +30,8 @@ public class BoardTableModel extends MyTableModel {
    static {
       nonAcceptedJiraFields.add("TBD");
    }
-   private static final ColumnType[] columns = { ColumnType.Jira, ColumnType.Description, ColumnType.Resolution, ColumnType.Release, ColumnType.Merge, ColumnType.BoardStatus, ColumnType.Old, ColumnType.DEst, ColumnType.QEst,
-         ColumnType.DRem, ColumnType.QRem, ColumnType.DAct, ColumnType.prio, ColumnType.Note, ColumnType.Sprint };
+   private static final ColumnType[] columns = { ColumnType.Jira, ColumnType.Description, ColumnType.Type, ColumnType.Resolution, ColumnType.Release, ColumnType.Merge, ColumnType.BoardStatus, ColumnType.Old, ColumnType.DEst,
+         ColumnType.QEst, ColumnType.DRem, ColumnType.QRem, ColumnType.DAct, ColumnType.prio, ColumnType.Note, ColumnType.Sprint };
    // private static final ColumnType[] columns = ColumnType.values();
 
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
@@ -88,7 +88,7 @@ public class BoardTableModel extends MyTableModel {
             if (!isEmptyString(stringValue)) {
                BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(ColumnType.BoardStatus, row);
                if (!BoardStatusValueToJiraStatusMap.isMappedOk(boardStatus, stringValue)) {
-                  setToolTipText(row, getColumnIndex(column), "Does not match with the BoardStatus value (" + boardStatus.toString() + ")!");
+                  setToolTipText(row, getColumnIndex(column), "Does not match with the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
                   return SwingUtil.cellRed;
                }
             }
@@ -142,7 +142,7 @@ public class BoardTableModel extends MyTableModel {
             if (isEmptyString(stringValue)) {
                Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
                if (isBoardValueEither(row, cellColorHelper.getRequiredDevEstimates(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + boardStatus.toString() + ")!");
+                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
                   return SwingUtil.cellRed;
                }
             }
@@ -152,7 +152,7 @@ public class BoardTableModel extends MyTableModel {
             if (isEmptyString(stringValue)) {
                Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
                if (isBoardValueEither(row, cellColorHelper.getRequiredQAEstimates(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + boardStatus.toString() + ")!");
+                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
                   return SwingUtil.cellRed;
                }
             }
@@ -162,13 +162,13 @@ public class BoardTableModel extends MyTableModel {
             if (isEmptyString(stringValue)) {
                Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
                if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + boardStatus.toString() + ")!");
+                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
                   return SwingUtil.cellRed;
                }
             } else {
                Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
                if (!isBoardValueEither(row, cellColorHelper.getRequiredDevRemains(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + boardStatus.toString() + ")!");
+                  setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
                   return SwingUtil.cellRed;
                } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(ColumnType.DEst, row))) {
                   setToolTipText(row, getColumnIndex(column), "Cannot be numeric if the Dev Estimate is not!");
@@ -181,13 +181,13 @@ public class BoardTableModel extends MyTableModel {
             if (isEmptyString(stringValue)) {
                Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
                if (isBoardValueEither(row, cellColorHelper.getRequiredQARemains(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + boardStatus.toString() + ")!");
+                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
                   return SwingUtil.cellRed;
                }
             } else {
                Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
                if (!isBoardValueEither(row, cellColorHelper.getRequiredQARemains(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + boardStatus.toString() + ")!");
+                  setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
                   return SwingUtil.cellRed;
                } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(ColumnType.QEst, row))) {
                   setToolTipText(row, getColumnIndex(column), "Cannot be numeric if the QA Estimate is not!");
@@ -200,13 +200,13 @@ public class BoardTableModel extends MyTableModel {
             if (isEmptyString(stringValue)) {
                Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
                if (isBoardValueEither(row, cellColorHelper.getRequiredDevActuals(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + boardStatus.toString() + ")!");
+                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
                   return SwingUtil.cellRed;
                }
             } else {
                Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
                if (isBoardValueEither(row, cellColorHelper.getRequiredBlankDevActuals(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + boardStatus.toString() + ")!");
+                  setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
                   return SwingUtil.cellRed;
                }
             }
@@ -242,6 +242,10 @@ public class BoardTableModel extends MyTableModel {
             break;
       }
       return null;
+   }
+
+   private String getObjectAsNonNull(Object object) {
+      return object == null ? "<NULL>" : object.toString();
    }
 
    private ColorAndNullCheck preNullColor(Object value, int row, ColumnType column) {

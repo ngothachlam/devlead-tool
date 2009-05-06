@@ -22,7 +22,9 @@ import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
 
-import com.jonas.agile.devleadtool.gui.component.table.editor.BoardStatusCellEditor;
+import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
+import com.jonas.agile.devleadtool.gui.component.table.editor.ComboCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
@@ -345,14 +347,16 @@ public class MyTable extends JXTable {
 
    private void setDefaultEditors() {
       JComboBox combo = new JComboBox(BoardStatusValue.values());
-      setDefaultEditor(BoardStatusValue.class, new BoardStatusCellEditor(combo, this));
+      setDefaultEditor(BoardStatusValue.class, new ComboCellEditor(combo, this));
 
       SprintCache sprintCache = getMyModel().getSprintCache();
       if (sprintCache != null) {
          ComboBoxModel model = new SprintComboBoxModel(sprintCache);
          JComboBox sprintCombo = new JComboBox(model);
-         setDefaultEditor(Sprint.class, new BoardStatusCellEditor(sprintCombo, this));
+         setDefaultEditor(Sprint.class, new ComboCellEditor(sprintCombo, this));
       }
+      JComboBox issueTypeCombo = new JComboBox(IssueType.values());
+      setDefaultEditor(IssueType.class, new ComboCellEditor(issueTypeCombo, this));
    }
 
    public void setDupelicateHighlighterEnableQuery(EnabledQuery checkForDuplicatesEnabledQueryAction) {

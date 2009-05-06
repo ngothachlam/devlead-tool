@@ -1,7 +1,8 @@
-package com.jonas.agile.devleadtool.gui.component.table;
+package com.jonas.agile.devleadtool.gui.component.table.column;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import com.jonas.jira.JiraStatus;
 
 public enum BoardStatusValue {
@@ -21,8 +22,8 @@ public enum BoardStatusValue {
    private Set<JiraStatus> statuses = new HashSet<JiraStatus>();
 
    private BoardStatusValue(int number, JiraStatus... jiraStatuses) {
-      StringBuffer sb = new StringBuffer();
-      sb.append(number).append(". ").append(super.toString());
+      StringBuffer sb = new StringBuffer(number);
+      sb.append(". ").append(super.toString());
       toString = sb.toString();
       name = super.toString();
       for (JiraStatus jiraStatus : jiraStatuses) {

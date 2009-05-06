@@ -10,12 +10,12 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import com.jonas.common.swing.SwingUtil;
 
-public class BoardStatusCellEditor extends DefaultCellEditor implements MyEditor{
+public class ComboCellEditor extends DefaultCellEditor implements MyEditor{
 
    private int colEdited;
    private int rowEdited;
 
-   public BoardStatusCellEditor(final JComboBox combo, final JTable table) {
+   public ComboCellEditor(final JComboBox combo, final JTable table) {
       super(combo);
       if (getComponent() instanceof JComponent) {
          JComponent component = (JComponent) getComponent();
