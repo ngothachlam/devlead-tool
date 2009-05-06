@@ -41,48 +41,8 @@ public class BoardTableModelTest extends JonasTestCase {
       assertTrue(model.isCellEditable(0, 7));
    }
 
-   public void testShouldGetStatusOk() {
-      assertEquals(BoardStatusValue.NA, model.getStatus("llu-1"));
-
-      model.addJira("llu-1");
-      assertEquals(BoardStatusValue.UnKnown, model.getStatus("llu-1"));
-
-      model.setValueAt(BoardStatusValue.Open, 0, ColumnType.BoardStatus);
-      assertEquals(BoardStatusValue.Open, model.getStatus("llu-1"));
-
-      model.setValueAt(BoardStatusValue.Bug, 0, ColumnType.BoardStatus);
-      assertEquals(BoardStatusValue.Bug, model.getStatus("llu-1"));
-   }
-
    public void testShouldHaveEmptyRowAndColumnNamesOfSameSize() {
       assertEquals(model.getColumnNames().size(), model.getEmptyRow().length);
-   }
-
-   public void testShouldGetAnyBoolColumnBackOk() {
-      model.addJira(new JiraIssue("LLU-1", "llu-1 summary", "llu-1 status", "llu-1 resolution", "llu-1 type", "created"));
-
-      assertEquals(1, model.getRowCount());
-
-      assertEquals(BoardStatusValue.UnKnown, model.getValueAt(ColumnType.BoardStatus, "LLU-1"));
-      Set<BoardStatusValue> list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress);
-      assertEquals(false, model.isBoardValueEither(0, list));
-
-      // set To Open
-      model.setValueAt(BoardStatusValue.Open, 0, ColumnType.BoardStatus);
-      assertEquals(BoardStatusValue.Open, model.getValueAt(ColumnType.BoardStatus, "LLU-1"));
-      list = getSet(BoardStatusValue.Open);
-      assertEquals(true, model.isBoardValueEither(0, list));
-      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved);
-      assertEquals(false, model.isBoardValueEither(0, list));
-      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved,
-            BoardStatusValue.Open);
-      assertEquals(true, model.isBoardValueEither(0, list));
-      // set To Complete
-      model.setValueAt(BoardStatusValue.Complete, 0, ColumnType.BoardStatus);
-      assertEquals(BoardStatusValue.Complete, model.getValueAt(ColumnType.BoardStatus, "LLU-1"));
-      list = getSet(BoardStatusValue.Bug, BoardStatusValue.Complete, BoardStatusValue.InProgress, BoardStatusValue.Resolved,
-            BoardStatusValue.Open);
-      assertEquals(true, model.isBoardValueEither(0, list));
    }
 
    private Set<BoardStatusValue> getSet(BoardStatusValue... values) {
