@@ -30,7 +30,6 @@ public class PlannerHelper {
 
    private JFrame frame;
    private MyInternalFrame internalFrame;
-   private PlannerCommunicator plannerCommunicator = new PlannerCommunicator(this);
 
    private String title;
 
@@ -91,10 +90,6 @@ public class PlannerHelper {
 
    public JFrame getParentFrame() {
       return frame;
-   }
-
-   public PlannerCommunicator getPlannerCommunicator() {
-      return plannerCommunicator;
    }
 
    public String getTitle() {
