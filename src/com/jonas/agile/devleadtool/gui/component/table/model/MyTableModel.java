@@ -326,7 +326,7 @@ public abstract class MyTableModel extends DefaultTableModel {
          case Description:
             value = jiraIssue.getSummary();
             break;
-         case Type:
+         case J_Type:
             value = jiraIssue.getType();
             break;
          case FixVersion:
