@@ -19,7 +19,8 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.access.listener.JiraListener;
 
 /**
- * This class syncs for a given MyTable the selected rows and gets the relevant JiraIssues.
+ * This class syncs for a given MyTable the selected rows and gets the relevant
+ * JiraIssues.
  * 
  * use DownloadJirasListener
  * 
@@ -70,23 +71,23 @@ public class SyncWithJiraListener implements ActionListener {
       @Override
       public void notifyOfAccess(JiraAccessUpdate accessUpdate) {
          switch (accessUpdate) {
-         case LOGGING_IN:
-            String string = "Syncing " + jiraToGet + " - Logging in!";
-            log.debug(string);
-            dialog.setNote(string);
-            break;
-         case GETTING_FIXVERSION:
-            String string2 = "Syncing " + jiraToGet + " - Getting FixVersion!";
-            log.debug(string2);
-            dialog.setNote(string2);
-            break;
-         case GETTING_JIRA:
-            String string3 = "Syncing " + jiraToGet + " - Accessing Jira info!";
-            log.debug(string3);
-            dialog.setNote(string3);
-            break;
-         default:
-            break;
+            case LOGGING_IN:
+               String string = "Syncing " + jiraToGet + " - Logging in!";
+               log.debug(string);
+               dialog.setNote(string);
+               break;
+            case GETTING_FIXVERSION:
+               String string2 = "Syncing " + jiraToGet + " - Getting FixVersion!";
+               log.debug(string2);
+               dialog.setNote(string2);
+               break;
+            case GETTING_JIRA:
+               String string3 = "Syncing " + jiraToGet + " - Accessing Jira info!";
+               log.debug(string3);
+               dialog.setNote(string3);
+               break;
+            default:
+               break;
          }
       }
    }
@@ -108,11 +109,14 @@ public class SyncWithJiraListener implements ActionListener {
             for (int row : rows) {
                if (isCancelled())
                   break;
-               // int convertedTableRowToModel = table.convertRowIndexToModel(row);
-               // final String jiraToGet = (String) (table.getModel()).getValueAt(convertedTableRowToModel, 0);
+               // int convertedTableRowToModel =
+               // table.convertRowIndexToModel(row);
+               // final String jiraToGet = (String)
+               // (table.getModel()).getValueAt(convertedTableRowToModel, 0);
                final String jiraToGet = (String) table.getValueAt(ColumnType.Jira, row);
                dialog.increseProgress("Syncing " + jiraToGet);
-               log.debug("Syncing Jira" + jiraToGet + " on the selected row " + row + " out of " + rows.length);
+               if (log.isDebugEnabled())
+                  log.debug("Syncing Jira" + jiraToGet + " on the selected row " + row + " out of " + rows.length);
                JiraIssue jira;
                JiraListenerImpl jiraListener = null;
                try {
@@ -130,7 +134,8 @@ public class SyncWithJiraListener implements ActionListener {
                   if (jiraListener != null)
                      JiraListener.removeJiraListener(jiraListener);
                }
-               log.debug("jiraToGet: " + jiraToGet + " jira: " + jira.getKey() + " rowSelected: " + row);
+               if (log.isDebugEnabled())
+                  log.debug("jiraToGet: " + jiraToGet + " jira: " + jira.getKey() + " rowSelected: " + row);
                notifyThatJiraSynced(jira);
             }
          } catch (Exception e) {

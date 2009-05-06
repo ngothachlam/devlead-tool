@@ -13,6 +13,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -22,7 +23,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
+
 import org.apache.log4j.Logger;
+
 import com.jonas.agile.devleadtool.gui.component.TableRadioButton;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.listener.DownloadJiraListener;
@@ -45,7 +48,6 @@ public class AddVersionDialog extends JFrame {
       setVisible(true);
    }
 }
-
 
 class AddVersionPanel extends MyPanel {
    private final ButtonGroup group = new ButtonGroup();
@@ -75,7 +77,7 @@ class AddVersionPanel extends MyPanel {
       panel.add(getSubPanel("Source FixVersion", jiraProjectFixVersionCombo, getButton("Get Jiras", downloadJirasListener)));
 
       AlterProjectListener alteringProjectListener = new AlterProjectListener(jiraProjectFixVersionCombo, state);
-      SyncWithJiraActionListenerListener syncWithJiraListener = new SyncListener(group);
+      SyncWithJiraActionListenerListener syncWithJiraListener = new AddVersionSyncListener(group);
       downloadJirasListener.addListener(syncWithJiraListener);
       jiraProjectsCombo.addActionListener(alteringProjectListener);
 
@@ -141,8 +143,7 @@ class AddVersionPanel extends MyPanel {
       private final JComboBox projectCombo;
       private JCheckBox incudeArchivedCheckbox;
 
-      private RefreshVersionListener(JComboBox jiraProjectsCombo, JComboBox jiraFixVersionCombo, Map<JiraProject, JiraVersion[]> state,
-            JFrame parentFrame, JCheckBox incudeArchivedCheckbox) {
+      private RefreshVersionListener(JComboBox jiraProjectsCombo, JComboBox jiraFixVersionCombo, Map<JiraProject, JiraVersion[]> state, JFrame parentFrame, JCheckBox incudeArchivedCheckbox) {
          this.projectCombo = jiraProjectsCombo;
          this.fixVersionCombo = jiraFixVersionCombo;
          this.state = state;
@@ -155,8 +156,7 @@ class AddVersionPanel extends MyPanel {
 
          fixVersionCombo.removeAllItems();
          final Object[] selectedObjects = projectCombo.getSelectedObjects();
-         final ProgressDialog dialog = new ProgressDialog(parentFrame, "Refreshing Fix Versions...", "Refreshing Fix Versions...",
-               selectedObjects.length, true);
+         final ProgressDialog dialog = new ProgressDialog(parentFrame, "Refreshing Fix Versions...", "Refreshing Fix Versions...", selectedObjects.length, true);
          SwingWorker worker = new SwingWorker() {
             @Override
             public Object doInBackground() {
@@ -208,28 +208,30 @@ class AddVersionPanel extends MyPanel {
       }
    }
 
-   private final class SyncListener implements SyncWithJiraActionListenerListener {
-      private final Logger log = MyLogger.getLogger(SyncListener.class);
+   private final class AddVersionSyncListener implements SyncWithJiraActionListenerListener {
+      private final Logger log = MyLogger.getLogger(AddVersionSyncListener.class);
       private final ButtonGroup group;
 
-      public SyncListener(ButtonGroup group) {
+      public AddVersionSyncListener(ButtonGroup group) {
          super();
          this.group = group;
       }
 
       public void jiraAdded(JiraIssue jiraIssue) {
+         addJira(jiraIssue);
+      }
+
+      private void addJira(JiraIssue jiraIssue) {
          MyTable table = getSelectedTable();
-         log.debug("Adding jira to table " + jiraIssue.getKey());
+         if (log.isDebugEnabled())
+            log.debug("Adding jira to table " + jiraIssue.getKey());
          if (table != null) {
             table.addJiraAndMarkIfNew(jiraIssue);
          }
       }
 
       public void jiraSynced(JiraIssue jiraIssue) {
-         MyTable table = getSelectedTable();
-         log.debug("Syncing jira to table " + jiraIssue.getKey());
-         if (table != null)
-            table.addJiraAndMarkIfNew(jiraIssue);
+         addJira(jiraIssue);
       }
 
       private MyTable getSelectedTable() {
