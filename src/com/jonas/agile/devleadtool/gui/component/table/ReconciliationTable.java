@@ -1,5 +1,6 @@
 package com.jonas.agile.devleadtool.gui.component.table;
 
+import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.model.ReconciliationTableModel;
 
 public class ReconciliationTable extends MyTable {

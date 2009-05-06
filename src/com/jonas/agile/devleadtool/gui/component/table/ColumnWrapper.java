@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.jonas.agile.devleadtool.data.Cache;
+import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 
@@ -37,7 +39,6 @@ public class ColumnWrapper<T> {
    public static final ColumnWrapper<String> Resolution = new ColumnWrapper<String>(String.class, ColumnType.Resolution, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
    public static final ColumnWrapper<String> BuildNo = new ColumnWrapper<String>(String.class, ColumnType.BuildNo, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
    public static final ColumnWrapper<String> FixVersion = new ColumnWrapper<String>(String.class, ColumnType.FixVersion, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
-   public static final ColumnWrapper<String> Type = new ColumnWrapper<IssueType>(IssueType.class, ColumnType.Type, IssueType.DEFAULT, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No);
    public static final ColumnWrapper<String> J_Type = new ColumnWrapper<String>(String.class, ColumnType.J_Type, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
    public static final ColumnWrapper<String> J_DevEst = new ColumnWrapper<String>(String.class, ColumnType.J_DevEst, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.Yes);
    public static final ColumnWrapper<String> J_DevAct = new ColumnWrapper<String>(String.class, ColumnType.J_DevAct, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.Yes);
@@ -48,6 +49,12 @@ public class ColumnWrapper<T> {
    public static final ColumnWrapper<String> Environment = new ColumnWrapper<String>(String.class, ColumnType.Environment, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
 
    // Complex columns
+   public static final ColumnWrapper<IssueType> Type = new ColumnWrapper<IssueType>(IssueType.class, ColumnType.Type, IssueType.DEFAULT, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No){
+      @Override
+      public IssueType parseFromPersistanceStore(Object cellContents) {
+         return IssueType.get(cellContents.toString());
+      }
+   };
    public static final ColumnWrapper<BoardStatusValue> BoardStatus = new ColumnWrapper<BoardStatusValue>(BoardStatusValue.class, ColumnType.BoardStatus, BoardStatusValue.UnKnown, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes,
          IsNumberic.No) {
       @Override
@@ -191,7 +198,7 @@ public class ColumnWrapper<T> {
             return string;
          }
       }
-      return value;
+      return value.toString();
    }
 
    public boolean useCacheMethod() {

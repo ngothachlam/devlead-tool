@@ -2,7 +2,8 @@ package com.jonas.agile.devleadtool.data;
 
 import org.junit.Test;
 
-import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+
 import junit.framework.TestCase;
 
 public class BoardStatusValueToJiraStatusMapTest extends TestCase {

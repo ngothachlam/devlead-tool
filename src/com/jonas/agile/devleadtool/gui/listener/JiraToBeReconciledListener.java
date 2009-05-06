@@ -1,6 +1,6 @@
 package com.jonas.agile.devleadtool.gui.listener;
 
-import com.jonas.agile.devleadtool.gui.component.table.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 
 public interface JiraToBeReconciledListener {
 
