@@ -36,6 +36,7 @@ public enum ColumnType {
    Environment,
    prio,
    isParked,
+   J_Type,
    Old;
 
    private final Map<String, ColumnType> mapTypes = new HashMap<String, ColumnType>();

@@ -57,13 +57,13 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       log.debug("\tColumn " + column + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \"" + cellContents + "\"!");
       Object parsed = null;
       if (column.isToLoad()) {
-         if (column.isUsingCache()) {
+         if (column.useCacheMethod()) {
             parsed = column.parseFromPersistanceStore(cellContents, sprintCache);
          } else {
             parsed = column.parseFromPersistanceStore(cellContents);
          }
          if (parsed == null && log.isDebugEnabled()) {
-            log.warn("When trying to parse column " + column + " from store using value \"" + cellContents + "\" - we got null! (Cache was " + (column.isUsingCache() ? "" : "not") + " used)");
+            log.warn("When trying to parse column " + column + " from store using value \"" + cellContents + "\" - we got null! (Cache was " + (column.useCacheMethod() ? "" : "not") + " used)");
          }
          rowData.add(parsed);
       }
