@@ -4,9 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import org.junit.Test;
+
 import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 import com.jonas.common.swing.SwingUtil;
 
@@ -69,8 +72,21 @@ public class BoardTableModelTest extends JonasTestCase {
       assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Approved, "Closed (Fixed)"));
       assertFalse(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Bug, "Closed (Fixed)"));
    }
-   
-   public void testShouldGetColors(){
+
+   public void testShouldGetColors() {
       assertEquals(SwingUtil.cellLightRed, model.getColor(BoardStatusValue.Bug, 0, ColumnType.BoardStatus));
    }
+
+   @Test
+   public void shouldColorCodeDEst() {
+      assertEquals(0, model.getRowCount());
+      assertEquals(SwingUtil.cellLightRed, model.getColor(null, 0, ColumnType.DEst));
+      String jira = "llu-1";
+      model.addJira(jira);
+      model.setValueAt(null, jira, ColumnType.DEst);
+      model.setValueAt(IssueType.DEFAULT, jira, ColumnType.Type);
+      assertEquals(SwingUtil.cellLightRed, model.getColor(null, 0, ColumnType.DEst));
+      assertEquals(SwingUtil.cellLightRed, model.getColor("1.0", 0, ColumnType.DEst));
+   }
+
 }
