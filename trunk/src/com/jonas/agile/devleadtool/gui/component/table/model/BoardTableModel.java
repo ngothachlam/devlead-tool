@@ -140,6 +140,10 @@ public class BoardTableModel extends MyTableModel {
          case DEst:
             stringValue = value.toString();
             if (isEmptyString(stringValue)) {
+               Object type = getValueAt(ColumnType.Type, row);
+               if (isTypeValueEither(row, cellColorHelper.getRequiredDevEstimates(), type)) {
+                  
+               }
                Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
                if (isBoardValueEither(row, cellColorHelper.getRequiredDevEstimates(), boardStatus)) {
                   setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
@@ -242,6 +246,11 @@ public class BoardTableModel extends MyTableModel {
             break;
       }
       return null;
+   }
+
+   private boolean isTypeValueEither(int row, Set<BoardStatusValue> requiredDevEstimates, Object type) {
+      // TODO Auto-generated method stub
+      throw new RuntimeException("Method not implemented yet!");
    }
 
    private String getObjectAsNonNull(Object object) {
