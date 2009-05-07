@@ -5,7 +5,7 @@
  *
  */
 
-package com.jonas.testing.jfreechart;
+package com.jonas.testing.jfreechart.demos;
 
 import java.awt.Color;
 import java.awt.GradientPaint;

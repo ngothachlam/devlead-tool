@@ -51,4 +51,108 @@ public class Main {
    // Introduce tip of the day!
    // decorator with beige text
    // JXStatusbar
+   
+   
+   //FIXME 1- Add print to pdf function
+   
+//   package com.jrefinery.chart.demo;
+//   import java.awt.Graphics2D;
+//   import java.awt.geom.Rectangle2D;
+//   import java.io.File;
+//   import java.io.OutputStream;
+//   import java.io.BufferedOutputStream;
+//   import java.io.DataOutputStream;
+//   import java.io.FileOutputStream;
+//   import java.io.IOException;
+//   import com.lowagie.text.Document;
+//   import com.lowagie.text.Rectangle;
+//   import com.lowagie.text.DocumentException;
+//   import com.lowagie.text.pdf.PdfWriter;
+//   import com.lowagie.text.pdf.PdfContentByte;
+//   import com.lowagie.text.pdf.PdfTemplate;
+//   import com.lowagie.text.pdf.FontMapper;
+//   import com.lowagie.text.pdf.DefaultFontMapper;
+//   import com.lowagie.text.pdf.BaseFont;
+//   import com.jrefinery.data.XYDataset;
+//   5
+//   import com.jrefinery.chart.JFreeChart;
+//   import com.jrefinery.chart.ChartFactory;
+//   import com.jrefinery.chart.demo.DemoDatasetFactory;
+//   /**
+//   * A simple demonstration showing how to write a chart to PDF format using
+//   * JFreeChart and iText.
+//   * <P>
+//   * You can download iText from http://www.lowagie.com/iText.
+//   */
+//   public class ChartToPDFDemo1 {
+//   /**
+//   * Saves a chart to a PDF file.
+//   *
+//   * @param file The file.
+//   * @param chart The chart.
+//   * @param width The chart width.
+//   * @param height The chart height.
+//   */
+//   public static void saveChartAsPDF(File file,
+//   JFreeChart chart,
+//   int width, int height,
+//   FontMapper mapper) throws IOException {
+//   OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
+//   writeChartAsPDF(out, chart, width, height, mapper);
+//   out.close();
+//   }
+//   /**
+//   * Writes a chart to an output stream in PDF format.
+//   *
+//   * @param out The output stream.
+//   * @param chart The chart.
+//   * @param width The chart width.
+//   * @param height The chart height.
+//   */
+//   public static void writeChartAsPDF(OutputStream out,
+//   JFreeChart chart,
+//   int width, int height,
+//   FontMapper mapper) throws IOException {
+//   Rectangle pagesize = new Rectangle(width, height);
+//   Document document = new Document(pagesize, 50, 50, 50, 50);
+//   try {
+//   PdfWriter writer = PdfWriter.getInstance(document, out);
+//   document.addAuthor("JFreeChart");
+//   document.addSubject("Demonstration");
+//   document.open();
+//   PdfContentByte cb = writer.getDirectContent();
+//   PdfTemplate tp = cb.createTemplate(width, height);
+//   Graphics2D g2 = tp.createGraphics(width, height, mapper);
+//   Rectangle2D r2D = new Rectangle2D.Double(0, 0, width, height);
+//   chart.draw(g2, r2D, null);
+//   g2.dispose();
+//   cb.addTemplate(tp, 0, 0);
+//   }
+//   catch(DocumentException de) {
+//   System.err.println(de.getMessage());
+//   }
+//   document.close();
+//   }
+//   /**
+//   * Starting point for the demonstration application.
+//   */
+//   6
+//   public static void main(String[] args) {
+//   try {
+//   // create a chart...
+//   XYDataset data = DemoDatasetFactory.createSampleXYDataset();
+//   JFreeChart chart = ChartFactory.createXYChart("PDF Test Chart 1",
+//   "X", "Y",
+//   data, true);
+//   // write the chart to a PDF file...
+//   File fileName = new File("/home/dgilbert/jfreechart1.pdf");
+//   saveChartAsPDF(fileName, chart, 400, 300, new DefaultFontMapper());
+//   }
+//   catch (IOException e) {
+//   System.out.println(e.getMessage());
+//   }
+//   }
+//   }
+   
+   
 }

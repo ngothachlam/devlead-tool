@@ -5,7 +5,7 @@
  *
  */
 
-package com.jonas.testing.jfreechart;
+package com.jonas.testing.jfreechart.demos;
 
 import javax.swing.JPanel;
 
