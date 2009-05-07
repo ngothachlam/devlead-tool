@@ -11,7 +11,7 @@ public enum IssueType {
    DEV("Dev"),
    TEST("Test"),
    MERGE("Merge"),
-   Issue("Issue"),
+   PRODISSUE("Issue"),
    EXTERNAL("External");
 
    private Set<IssueType> statuses = new HashSet<IssueType>();

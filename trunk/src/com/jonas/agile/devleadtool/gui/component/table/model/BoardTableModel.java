@@ -12,6 +12,7 @@ import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.agile.devleadtool.data.JiraStatistic;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.agile.devleadtool.sprint.SprintTime;
@@ -140,7 +141,7 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
             break;
          case DEst:
             ValidatorResponse response = estimateValidator.getColor(value, row, column, this);
-            if (response == ValidatorResponse.FAILURE){
+            if (response == ValidatorResponse.FAIL){
                setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
             }
 
@@ -397,13 +398,13 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
    }
 
    @Override
-   public Object getBoardStatus(int row) {
-      return getValueAt(ColumnType.BoardStatus, row);
+   public BoardStatusValue getBoardStatus(int row) {
+      return (BoardStatusValue) getValueAt(ColumnType.BoardStatus, row);
    }
 
    @Override
-   public Object getType(int row) {
-      return getValueAt(ColumnType.Type, row);
+   public IssueType getType(int row) {
+      return (IssueType) getValueAt(ColumnType.Type, row);
    }
 }
 

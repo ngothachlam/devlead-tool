@@ -2,8 +2,11 @@ package com.jonas.agile.devleadtool.gui.component.table.model;
 
 import java.util.Set;
 
+import org.apache.derby.tools.sysinfo;
+
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
 
 public class EstimateValidator {
 
@@ -22,31 +25,40 @@ public class EstimateValidator {
    }
 
    ValidatorResponse validateDEst(Object value, int row, ValueGetter valueGetter) {
-      if (value == null){
-         Object type = valueGetter.getType(row);
-         return ValidatorResponse.FAILURE;
+      if (value == null) {
+         return validateOnEmptyOrNull(row, valueGetter);
       }
       String stringValue = value.toString();
       if (isEmptyString(stringValue)) {
-         Object type = valueGetter.getType(row);
-         if (isTypeValueEither(row, cellColorHelper.getRequiredDevEstimates(), type)) {
-
-         }
+         return validateOnEmptyOrNull(row, valueGetter);
+      } else {
          Object boardStatus = valueGetter.getBoardStatus(row);
          if (isBoardValueEither(row, cellColorHelper.getRequiredDevEstimates(), boardStatus)) {
-            return ValidatorResponse.FAILURE;
+            return ValidatorResponse.FAIL;
          }
+      }
+      return null;
+   }
+
+   private ValidatorResponse validateOnEmptyOrNull(int row, ValueGetter valueGetter) {
+      IssueType type = valueGetter.getType(row);
+      switch (type) {
+         case BUG:
+         case EXTERNAL:
+         case PRODISSUE:
+         case MERGE:
+         case TEST:
+            return ValidatorResponse.PASS;
+         case DEFAULT:
+         case DEV:
+         case STORY:
+            return ValidatorResponse.FAIL;
       }
       return null;
    }
 
    private boolean isEmptyString(String stringValue) {
       return stringValue == null || stringValue.trim().length() <= 0;
-   }
-
-   private boolean isTypeValueEither(int row, Set<BoardStatusValue> requiredDevEstimates, Object type) {
-      // TODO Auto-generated method stub
-      throw new RuntimeException("Method not implemented yet!");
    }
 
    boolean isBoardValueEither(int row, Set<BoardStatusValue> set, Object boardStatus) {
