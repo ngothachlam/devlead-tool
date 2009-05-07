@@ -51,7 +51,7 @@ public class Main {
    // Introduce tip of the day!
    // decorator with beige text
    // JXStatusbar
-   
+   // FIXME 1 - http://www.jfree.org/jfreechart/samples.html
    
    //FIXME 1- Add print to pdf function
    
