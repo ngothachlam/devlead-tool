@@ -20,7 +20,7 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.common.string.StringHelper;
 import com.jonas.common.swing.SwingUtil;
 
-public class BoardTableModel extends MyTableModel {
+public class BoardTableModel extends MyTableModel implements ValueGetter {
 
    private static final ColorAndNullCheck NOTCHECKED_THUSNOCOLOR = new ColorAndNullCheck(null, false);
    private static final ColorAndNullCheck CHECKED_NOCOLOR = new ColorAndNullCheck(null, true);
@@ -36,6 +36,7 @@ public class BoardTableModel extends MyTableModel {
 
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
    private MyTableModel jiraModel;
+   private EstimateValidator estimateValidator = new EstimateValidator(cellColorHelper);
 
    public BoardTableModel(SprintCache sprintCache) {
       super(columns);
@@ -138,19 +139,11 @@ public class BoardTableModel extends MyTableModel {
             }
             break;
          case DEst:
-            stringValue = value.toString();
-            if (isEmptyString(stringValue)) {
-               Object type = getValueAt(ColumnType.Type, row);
-               if (isTypeValueEither(row, cellColorHelper.getRequiredDevEstimates(), type)) {
-                  
-               }
-               Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-               if (isBoardValueEither(row, cellColorHelper.getRequiredDevEstimates(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-                  return SwingUtil.cellRed;
-               }
+            ValidatorResponse response = estimateValidator.getColor(value, row, column, this);
+            if (response == ValidatorResponse.FAILURE){
+               setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
             }
-            break;
+
          case QEst:
             stringValue = value.toString();
             if (isEmptyString(stringValue)) {
@@ -246,11 +239,6 @@ public class BoardTableModel extends MyTableModel {
             break;
       }
       return null;
-   }
-
-   private boolean isTypeValueEither(int row, Set<BoardStatusValue> requiredDevEstimates, Object type) {
-      // TODO Auto-generated method stub
-      throw new RuntimeException("Method not implemented yet!");
    }
 
    private String getObjectAsNonNull(Object object) {
@@ -406,6 +394,16 @@ public class BoardTableModel extends MyTableModel {
          return true;
       }
       return false;
+   }
+
+   @Override
+   public Object getBoardStatus(int row) {
+      return getValueAt(ColumnType.BoardStatus, row);
+   }
+
+   @Override
+   public Object getType(int row) {
+      return getValueAt(ColumnType.Type, row);
    }
 }
 
