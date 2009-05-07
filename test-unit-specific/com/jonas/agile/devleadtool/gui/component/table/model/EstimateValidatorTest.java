@@ -1,8 +1,9 @@
 package com.jonas.agile.devleadtool.gui.component.table.model;
 
+import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
-
 
 public class EstimateValidatorTest {
 
@@ -15,7 +16,11 @@ public class EstimateValidatorTest {
    
    @Test
    public void shouldCalculateDEstOk(){
-      validator.validateDEst(null, 0, new ValueGetterTestImpl(null, null));
+      assertIt(ValidatorResponse.FAIL, null, null, null);
+   }
+
+   private void assertIt(ValidatorResponse expectation, Object value, Object boardStatus, Object type) {
+      assertEquals(expectation, validator.validateDEst(value, 0, new ValueGetterTestImpl(type, boardStatus)));
    }
 
    private class ValueGetterTestImpl implements ValueGetter{
