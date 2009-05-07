@@ -1,11 +1,11 @@
+package com.jonas.testing.jfreechart.demos;
+
 /* -------------------------
- * StackedBarChartDemo7.java
+ * StackedBarChartDemo3.java
  * -------------------------
- * (C) Copyright 2006, by Object Refinery Limited.
+ * (C) Copyright 2003-2007, by Object Refinery Limited.
  *
  */
-
-package com.jonas.testing.jfreechart;
 
 import java.text.NumberFormat;
 
@@ -13,29 +13,33 @@ import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
+import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.StackedBarRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
+import com.jonas.testing.jfreechart.ExtendedStackedBarRenderer;
+
 /**
- * A stacked bar chart where the values are displayed as percentages adding
- * to 100%.
+ * A simple demonstration application showing how to create a stacked bar chart
+ * using data from a {@link CategoryDataset}.
  */
-public class StackedBarChartDemo7 extends ApplicationFrame {
+public class StackedBarChartDemo3n2 extends ApplicationFrame {
 
     /**
      * Creates a new demo.
      *
      * @param title  the frame title.
      */
-    public StackedBarChartDemo7(String title) {
+    public StackedBarChartDemo3n2(String title) {
         super(title);
         JPanel chartPanel = createDemoPanel();
         chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
@@ -49,20 +53,21 @@ public class StackedBarChartDemo7 extends ApplicationFrame {
      */
     private static CategoryDataset createDataset() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(32.4, "Series 1", "Category 1");
-        dataset.addValue(17.8, "Series 2", "Category 1");
-        dataset.addValue(27.7, "Series 3", "Category 1");
-        dataset.addValue(43.2, "Series 1", "Category 2");
-        dataset.addValue(15.6, "Series 2", "Category 2");
-        dataset.addValue(18.3, "Series 3", "Category 2");
-        dataset.addValue(23.0, "Series 1", "Category 3");
-        dataset.addValue(111.3, "Series 2", "Category 3");
-        dataset.addValue(25.5, "Series 3", "Category 3");
-        dataset.addValue(13.0, "Series 1", "Category 4");
-        dataset.addValue(11.8, "Series 2", "Category 4");
-        dataset.addValue(29.5, "Series 3", "Category 4");
+        dataset.addValue(10.0, "Series 1", "Jan");
+        dataset.addValue(12.0, "Series 1", "Feb");
+        dataset.addValue(13.0, "Series 1", "Mar");
+        dataset.addValue(4.0, "Series 2", "Jan");
+        dataset.addValue(3.0, "Series 2", "Feb");
+        dataset.addValue(2.0, "Series 2", "Mar");
+        dataset.addValue(2.0, "Series 3", "Jan");
+        dataset.addValue(3.0, "Series 3", "Feb");
+        dataset.addValue(2.0, "Series 3", "Mar");
+        dataset.addValue(2.0, "Series 4", "Jan");
+        dataset.addValue(3.0, "Series 4", "Feb");
+        dataset.addValue(4.0, "Series 4", "Mar");
         return dataset;
     }
+
 
     /**
      * Creates a sample chart.
@@ -74,26 +79,30 @@ public class StackedBarChartDemo7 extends ApplicationFrame {
     private static JFreeChart createChart(CategoryDataset dataset) {
 
         JFreeChart chart = ChartFactory.createStackedBarChart(
-            "Stacked Bar Chart Demo 7",  // chart title
+            "Stacked Bar Chart Demo 3",  // chart title
             "Category",                  // domain axis label
             "Value",                     // range axis label
             dataset,                     // data
             PlotOrientation.VERTICAL,    // the plot orientation
             true,                        // legend
-            true,                        // tooltips
+            false,                       // tooltips
             false                        // urls
         );
-
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
-
-        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setNumberFormatOverride(NumberFormat.getPercentInstance());
-        StackedBarRenderer renderer = (StackedBarRenderer) plot.getRenderer();
-        renderer.setRenderAsPercentages(true);
-        renderer.setDrawBarOutline(false);
+        CategoryItemRenderer renderer = new ExtendedStackedBarRenderer();
         renderer.setBaseItemLabelsVisible(true);
         renderer.setBaseItemLabelGenerator(
                 new StandardCategoryItemLabelGenerator());
+        renderer.setBaseToolTipGenerator(
+                new StandardCategoryToolTipGenerator());
+        plot.setRenderer(renderer);
+
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        rangeAxis.setLowerMargin(0.15);
+        rangeAxis.setUpperMargin(0.15);
+        rangeAxis.setNumberFormatOverride(NumberFormat.getPercentInstance());
+        ChartUtilities.applyCurrentTheme(chart);
         return chart;
 
     }
@@ -114,13 +123,11 @@ public class StackedBarChartDemo7 extends ApplicationFrame {
      * @param args  ignored.
      */
     public static void main(String[] args) {
-
-        StackedBarChartDemo7 demo = new StackedBarChartDemo7(
-                "Stacked Bar Chart Demo 7");
+        StackedBarChartDemo3 demo = new StackedBarChartDemo3(
+                "Stacked Bar Chart Demo 3");
         demo.pack();
         RefineryUtilities.centerFrameOnScreen(demo);
         demo.setVisible(true);
-
     }
 
 }

@@ -29,7 +29,6 @@ import org.jfree.chart.renderer.xy.StackedXYBarRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeTableXYDataset;
-import org.jfree.data.xy.TableXYDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RectangleEdge;
@@ -65,14 +64,17 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
          boolean isWeek = false;
          boolean aggregate = true;
 
-         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.BBMS, "&created%3Aprevious=-10w&created%3Anext=+1w");
-
+         // JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU,
+         // "&created%3Aprevious=-10w&created%3Anext=+1w");
+         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU, getCreatedBetweenCriteria("-5w", "+1w"));
+//         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU, getCreatedBetweenCriteria("-10w", "+1w")+"&type=45");
+         
          for (JiraIssue jiraIssue : jiras) {
             JiraStatus jiraStatus = JiraStatus.getJiraStatusByName(jiraIssue.getStatus());
             dataSetAggregator.add(jiraIssue.getCreationDay(), jiraStatus, isWeek);
          }
 
-//         setupTestData(dataSetAggregator, isWeek);
+         // setupTestData(dataSetAggregator, isWeek);
 
          JPanel chartPanel = createDemoPanel(dataSetAggregator, aggregate);
          chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
@@ -89,6 +91,10 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
          e.printStackTrace();
       }
 
+   }
+
+   private String getCreatedBetweenCriteria(String first, String later) {
+      return "&created%3Aprevious=" + first + "&created%3Anext=" + later;
    }
 
    private void setupTestData(DataSetAggregator dataSetAggregator, boolean isWeek) {

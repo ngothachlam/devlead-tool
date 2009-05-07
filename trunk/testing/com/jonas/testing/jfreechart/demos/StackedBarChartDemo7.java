@@ -1,19 +1,21 @@
 /* -------------------------
- * StackedBarChartDemo6.java
+ * StackedBarChartDemo7.java
  * -------------------------
- * (C) Copyright 2005, by Object Refinery Limited.
+ * (C) Copyright 2006, by Object Refinery Limited.
  *
  */
 
-package com.jonas.testing.jfreechart;
+package com.jonas.testing.jfreechart.demos;
+
+import java.text.NumberFormat;
 
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.StackedBarRenderer;
@@ -23,16 +25,17 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
 /**
- * A stacked bar chart that uses a {@link DateAxis} for the y-axis.
+ * A stacked bar chart where the values are displayed as percentages adding
+ * to 100%.
  */
-public class StackedBarChartDemo6 extends ApplicationFrame {
+public class StackedBarChartDemo7 extends ApplicationFrame {
 
     /**
      * Creates a new demo.
      *
      * @param title  the frame title.
      */
-    public StackedBarChartDemo6(String title) {
+    public StackedBarChartDemo7(String title) {
         super(title);
         JPanel chartPanel = createDemoPanel();
         chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
@@ -46,21 +49,22 @@ public class StackedBarChartDemo6 extends ApplicationFrame {
      */
     private static CategoryDataset createDataset() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        long day = 24 * 60 * 60 * 1000L;
-        dataset.addValue(3 * day, "Series 1", getString(3 * day));
-//        dataset.addValue(1 * day, "Series 2", "Category 1");
-//        dataset.addValue(2 * day, "Series 3", "Category 1");
-//        dataset.addValue(4 * day, "Series 1", "Category 2");
-//        dataset.addValue(5 * day, "Series 2", "Category 2");
-//        dataset.addValue(1 * day, "Series 3", "Category 2");
+        dataset.addValue(32.4, "Series 1", "Category 1");
+        dataset.addValue(17.8, "Series 2", "Category 1");
+        dataset.addValue(27.7, "Series 3", "Category 1");
+        dataset.addValue(43.2, "Series 1", "Category 2");
+        dataset.addValue(15.6, "Series 2", "Category 2");
+        dataset.addValue(18.3, "Series 3", "Category 2");
+        dataset.addValue(23.0, "Series 1", "Category 3");
+        dataset.addValue(111.3, "Series 2", "Category 3");
+        dataset.addValue(25.5, "Series 3", "Category 3");
+        dataset.addValue(13.0, "Series 1", "Category 4");
+        dataset.addValue(11.8, "Series 2", "Category 4");
+        dataset.addValue(29.5, "Series 3", "Category 4");
         return dataset;
     }
 
-    private static Comparable getString(long l) {
-       return l+"";
-   }
-
-   /**
+    /**
      * Creates a sample chart.
      *
      * @param dataset  the dataset for the chart.
@@ -70,27 +74,26 @@ public class StackedBarChartDemo6 extends ApplicationFrame {
     private static JFreeChart createChart(CategoryDataset dataset) {
 
         JFreeChart chart = ChartFactory.createStackedBarChart(
-            "Stacked Bar Chart Demo 6",  // chart title
+            "Stacked Bar Chart Demo 7",  // chart title
             "Category",                  // domain axis label
             "Value",                     // range axis label
             dataset,                     // data
-            PlotOrientation.VERTICAL,  // the plot orientation
+            PlotOrientation.VERTICAL,    // the plot orientation
             true,                        // legend
             true,                        // tooltips
             false                        // urls
         );
+
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
 
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setNumberFormatOverride(NumberFormat.getPercentInstance());
         StackedBarRenderer renderer = (StackedBarRenderer) plot.getRenderer();
+        renderer.setRenderAsPercentages(true);
         renderer.setDrawBarOutline(false);
-        long millis = System.currentTimeMillis();
-        renderer.setBase(millis);
-        DateAxis rangeAxis = new DateAxis("Date");
-        rangeAxis.setLowerMargin(0.0);
-        plot.setRangeAxis(rangeAxis);
-
-        ChartUtilities.applyCurrentTheme(chart);
-
+        renderer.setBaseItemLabelsVisible(true);
+        renderer.setBaseItemLabelGenerator(
+                new StandardCategoryItemLabelGenerator());
         return chart;
 
     }
@@ -112,8 +115,8 @@ public class StackedBarChartDemo6 extends ApplicationFrame {
      */
     public static void main(String[] args) {
 
-        StackedBarChartDemo6 demo = new StackedBarChartDemo6(
-                "Stacked Bar Chart Demo 6");
+        StackedBarChartDemo7 demo = new StackedBarChartDemo7(
+                "Stacked Bar Chart Demo 7");
         demo.pack();
         RefineryUtilities.centerFrameOnScreen(demo);
         demo.setVisible(true);
