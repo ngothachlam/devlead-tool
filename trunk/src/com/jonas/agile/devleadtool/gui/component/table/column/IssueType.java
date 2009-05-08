@@ -5,7 +5,7 @@ import java.util.Set;
 
 public enum IssueType {
 
-   DEFAULT("<TBD>"),
+   TBD("<TBD>"),
    BUG("Bug"),
    STORY("Story"),
    DEV("Dev"),
@@ -31,7 +31,7 @@ public enum IssueType {
          if (issueType.toString().equals(toString))
             return issueType;
       }
-      return DEFAULT;
+      return TBD;
    }
 
 }

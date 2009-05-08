@@ -21,8 +21,8 @@ public enum BoardStatusValue {
    private String name;
    private Set<JiraStatus> statuses = new HashSet<JiraStatus>();
 
-   private BoardStatusValue(int number, JiraStatus... jiraStatuses) {
-      StringBuffer sb = new StringBuffer(number);
+   private BoardStatusValue(Integer number, JiraStatus... jiraStatuses) {
+      StringBuffer sb = new StringBuffer(number.toString());
       sb.append(". ").append(super.toString());
       toString = sb.toString();
       name = super.toString();

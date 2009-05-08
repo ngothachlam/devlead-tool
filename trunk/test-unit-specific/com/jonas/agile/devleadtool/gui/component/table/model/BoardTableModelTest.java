@@ -84,7 +84,7 @@ public class BoardTableModelTest extends JonasTestCase {
       String jira = "llu-1";
       model.addJira(jira);
       model.setValueAt(null, jira, ColumnType.DEst);
-      model.setValueAt(IssueType.DEFAULT, jira, ColumnType.Type);
+      model.setValueAt(IssueType.TBD, jira, ColumnType.Type);
       assertEquals(SwingUtil.cellLightRed, model.getColor(null, 0, ColumnType.DEst));
       assertEquals(SwingUtil.cellLightRed, model.getColor("1.0", 0, ColumnType.DEst));
    }
