@@ -14,7 +14,7 @@ public class BoardCellColorHelper {
    private Set<BoardStatusValue> requiredBlankDevActuals = new HashSet<BoardStatusValue>();
    private Set<BoardStatusValue> requiredQARemains = new HashSet<BoardStatusValue>();
 
-   BoardCellColorHelper() {
+   public BoardCellColorHelper() {
       requiredDevEstimates.add(BoardStatusValue.Approved);
       requiredDevEstimates.add(BoardStatusValue.Bug);
       requiredDevEstimates.add(BoardStatusValue.Complete);

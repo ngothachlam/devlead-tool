@@ -13,6 +13,9 @@ import com.jonas.agile.devleadtool.data.JiraStatistic;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
+import com.jonas.agile.devleadtool.gui.component.table.model.color.EstimateValidator;
+import com.jonas.agile.devleadtool.gui.component.table.model.color.Validator;
+import com.jonas.agile.devleadtool.gui.component.table.model.color.ValidatorResponse;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.agile.devleadtool.sprint.SprintTime;
@@ -37,7 +40,8 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
 
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
    private MyTableModel jiraModel;
-   private EstimateValidator estimateValidator = new EstimateValidator(cellColorHelper);
+   private EstimateValidator estimateValidator = new EstimateValidator();
+   private ValidatorManager validatorManager = new ValidatorManager();
 
    public BoardTableModel(SprintCache sprintCache) {
       super(columns);
@@ -140,7 +144,8 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
             }
             break;
          case DEst:
-            ValidatorResponse response = estimateValidator.getColor(value, row, column, this);
+            Validator validator = estimateValidator.getValidator(column);
+            ValidatorResponse response = validatorManager.validate(validator, value, row, this);
             if (response == ValidatorResponse.FAIL){
                setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
             }

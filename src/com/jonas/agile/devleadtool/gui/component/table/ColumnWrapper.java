@@ -49,7 +49,7 @@ public class ColumnWrapper<T> {
    public static final ColumnWrapper<String> Environment = new ColumnWrapper<String>(String.class, ColumnType.Environment, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
 
    // Complex columns
-   public static final ColumnWrapper<IssueType> Type = new ColumnWrapper<IssueType>(IssueType.class, ColumnType.Type, IssueType.DEFAULT, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No){
+   public static final ColumnWrapper<IssueType> Type = new ColumnWrapper<IssueType>(IssueType.class, ColumnType.Type, IssueType.TBD, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No){
       @Override
       public IssueType parseFromPersistanceStore(Object cellContents) {
          return IssueType.get(cellContents.toString());
