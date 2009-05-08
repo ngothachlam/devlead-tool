@@ -66,8 +66,8 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
 
          // JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU,
          // "&created%3Aprevious=-10w&created%3Anext=+1w");
-         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU, getCreatedBetweenCriteria("-5w", "+1w"));
-//         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU, getCreatedBetweenCriteria("-10w", "+1w")+"&type=45");
+//         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU, getCreatedBetweenCriteria("-5w", "+1w"));
+         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU, getCreatedBetweenCriteria("-10w", "+1w"),"&type=45");
          
          for (JiraIssue jiraIssue : jiras) {
             JiraStatus jiraStatus = JiraStatus.getJiraStatusByName(jiraIssue.getStatus());

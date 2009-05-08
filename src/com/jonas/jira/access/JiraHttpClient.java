@@ -52,13 +52,14 @@ public class JiraHttpClient extends HttpClient {
    }
 
    public List<JiraIssue> getJiras(JiraProject fixProject, JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder, String... criterias) throws HttpException, IOException, JiraException, JDOMException {
-      String url = baseUrl + "/secure/IssueNavigator.jspa?view=rss&pid=" + fixProject.getId() + "&sorter/field=issuekey&sorter/order=DESC&sorter/field=created&sorter/order=DESC&reset=true&decorator=none&tempMax=" + MAX_RESULTS;
+      StringBuffer sb = new StringBuffer(baseUrl);
+      sb.append("/secure/IssueNavigator.jspa?view=rss&pid=").append(fixProject.getId()).append("&sorter/field=issuekey&sorter/order=DESC&sorter/field=created&sorter/order=DESC&reset=true&decorator=none&tempMax=").append(MAX_RESULTS);
       
       for (String string : criterias) {
-         url += string;
+         sb.append(string);
       }
 
-      List<JiraIssue> jiras = executeAndGetJiras(jonasXpathEvaluator, jiraBuilder, url);
+      List<JiraIssue> jiras = executeAndGetJiras(jonasXpathEvaluator, jiraBuilder, sb.toString());
       return jiras;
    }
 
