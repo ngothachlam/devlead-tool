@@ -64,7 +64,7 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
       assertEquals("", dtoLoaded.getContents().get(1).get(i++));
       assertEquals("", dtoLoaded.getContents().get(1).get(i++));
       assertEquals("", dtoLoaded.getContents().get(1).get(i++));
-      assertEquals(BoardStatusValue.Bug, dtoLoaded.getContents().get(1).get(i++));
+      assertEquals(BoardStatusValue.Failed, dtoLoaded.getContents().get(1).get(i++));
       assertEquals("merge", dtoLoaded.getContents().get(1).get(i++));
       assertEquals("merge", dtoLoaded.getContents().get(1).get(i++));
       assertEquals(10000, dtoLoaded.getContents().get(1).get(i++));

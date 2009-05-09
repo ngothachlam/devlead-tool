@@ -281,7 +281,7 @@ class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
          case UnKnown:
             this.isToIncludeInTotals = false;
          case Open:
-         case Bug:
+         case Failed:
             this.isPreDevProgress = true;
             this.isPreQaProgress = true;
             break;

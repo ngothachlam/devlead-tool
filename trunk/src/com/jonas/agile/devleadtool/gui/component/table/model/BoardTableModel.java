@@ -40,7 +40,7 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
 
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
    private MyTableModel jiraModel;
-   private EstimateValidator estimateValidator = new EstimateValidator();
+   private EstimateValidator estimateValidator = EstimateValidator.getInstance();
    private ValidatorManager validatorManager = new ValidatorManager();
 
    public BoardTableModel(SprintCache sprintCache) {
@@ -226,7 +226,7 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
                   }
                   setToolTipText(row, getColumnIndex(column), "This is in Progress!");
                   return SwingUtil.cellLightYellow;
-               case Bug:
+               case Failed:
                   setToolTipText(row, getColumnIndex(column), "This is a Bug!");
                   return SwingUtil.cellLightRed;
                case Resolved:
