@@ -70,11 +70,11 @@ public class BoardTableModelTest extends JonasTestCase {
    public void testGetEmptyRowFromBodard() {
       assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(null, null));
       assertTrue(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Approved, "Closed (Fixed)"));
-      assertFalse(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Bug, "Closed (Fixed)"));
+      assertFalse(BoardStatusValueToJiraStatusMap.isMappedOk(BoardStatusValue.Failed, "Closed (Fixed)"));
    }
 
    public void testShouldGetColors() {
-      assertEquals(SwingUtil.cellLightRed, model.getColor(BoardStatusValue.Bug, 0, ColumnType.BoardStatus));
+      assertEquals(SwingUtil.cellLightRed, model.getColor(BoardStatusValue.Failed, 0, ColumnType.BoardStatus));
    }
 
    @Test

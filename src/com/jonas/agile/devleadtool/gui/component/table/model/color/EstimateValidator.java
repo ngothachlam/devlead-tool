@@ -7,13 +7,20 @@ import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 
 public class EstimateValidator {
 
+   private static EstimateValidator instance = new EstimateValidator();
+
    private Map<ColumnType, Validator> map = new HashMap<ColumnType, Validator>();
 
-   public EstimateValidator() {
+   private EstimateValidator() {
+      map.put(ColumnType.DEst, new DEstValidator());
    }
 
    public Validator getValidator(ColumnType column) {
       return map.get(column);
+   }
+
+   public static EstimateValidator getInstance() {
+      return instance;
    }
 
 }

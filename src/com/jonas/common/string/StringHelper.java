@@ -88,7 +88,7 @@ public class StringHelper {
          return null;
       }
    }
-   
+
    public static double getDoubleOrZero(Object string) {
       if (string == null) {
          return 0d;
@@ -112,8 +112,14 @@ public class StringHelper {
       return sb.toString();
    }
 
+   public static boolean isEmpty(Object value) {
+      if (value == null)
+         return true;
+      if (value.toString().trim().length() == 0)
+         return true;
+      return false;
+   }
 }
-
 
 class ResultDTO {
 
@@ -193,7 +199,6 @@ class ResultDTO {
    }
 
 }
-
 
 class ParseException extends RuntimeException {
 

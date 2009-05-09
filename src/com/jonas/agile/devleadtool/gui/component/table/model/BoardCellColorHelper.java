@@ -16,7 +16,7 @@ public class BoardCellColorHelper {
 
    public BoardCellColorHelper() {
       requiredDevEstimates.add(BoardStatusValue.Approved);
-      requiredDevEstimates.add(BoardStatusValue.Bug);
+      requiredDevEstimates.add(BoardStatusValue.Failed);
       requiredDevEstimates.add(BoardStatusValue.Complete);
       requiredDevEstimates.add(BoardStatusValue.ForShowCase);
       requiredDevEstimates.add(BoardStatusValue.InProgress);
@@ -33,7 +33,7 @@ public class BoardCellColorHelper {
       requiredDevActuals.add(BoardStatusValue.ForShowCase);
       requiredDevActuals.add(BoardStatusValue.Resolved);
 
-      requiredBlankDevActuals.add(BoardStatusValue.Bug);
+      requiredBlankDevActuals.add(BoardStatusValue.Failed);
       requiredBlankDevActuals.add(BoardStatusValue.InProgress);
       requiredBlankDevActuals.add(BoardStatusValue.Open);
    }
