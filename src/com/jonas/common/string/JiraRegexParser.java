@@ -52,10 +52,13 @@ public class JiraRegexParser {
             jiraStringDTO.setDevEstimate(getStringAsNullIfEmpty(matcher));
             break;
          case 1:
-            jiraStringDTO.setDevActual(getStringAsNullIfEmpty(matcher));
+            jiraStringDTO.setQAEstimate(getStringAsNullIfEmpty(matcher));
             break;
          case 2:
-            jiraStringDTO.setQAEstimate(getStringAsNullIfEmpty(matcher));
+            jiraStringDTO.setDevActual(getStringAsNullIfEmpty(matcher));
+            break;
+         case 3:
+            jiraStringDTO.setQaActual(getStringAsNullIfEmpty(matcher));
             break;
          }
       }

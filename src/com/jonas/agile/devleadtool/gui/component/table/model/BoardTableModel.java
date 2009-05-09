@@ -15,7 +15,7 @@ import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
 import com.jonas.agile.devleadtool.gui.component.table.model.color.EstimateValidator;
 import com.jonas.agile.devleadtool.gui.component.table.model.color.Validator;
-import com.jonas.agile.devleadtool.gui.component.table.model.color.ValidatorResponse;
+import com.jonas.agile.devleadtool.gui.component.table.model.color.ValidatorResponseType;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.agile.devleadtool.sprint.SprintTime;
@@ -35,7 +35,7 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
       nonAcceptedJiraFields.add("TBD");
    }
    private static final ColumnType[] columns = { ColumnType.Jira, ColumnType.Description, ColumnType.Type, ColumnType.Resolution, ColumnType.Release, ColumnType.Merge, ColumnType.BoardStatus, ColumnType.Old, ColumnType.DEst,
-         ColumnType.QEst, ColumnType.DRem, ColumnType.QRem, ColumnType.DAct, ColumnType.prio, ColumnType.Note, ColumnType.Sprint };
+         ColumnType.QEst, ColumnType.DRem, ColumnType.QRem, ColumnType.DAct, ColumnType.QAct, ColumnType.prio, ColumnType.Note, ColumnType.Sprint };
    // private static final ColumnType[] columns = ColumnType.values();
 
    private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
@@ -144,76 +144,83 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
             }
             break;
          case DEst:
+         case QEst:
+         case DRem:
+         case QRem:
+         case DAct:
+         case QAct:
             Validator validator = estimateValidator.getValidator(column);
             ValidatorResponse response = validatorManager.validate(validator, value, row, this);
-            if (response == ValidatorResponse.FAIL){
-               setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value!");
+            if (response.getType() == ValidatorResponseType.FAIL) {
+               setToolTipText(row, getColumnIndex(column), response.getMessage());
+               return SwingUtil.cellRed;
             }
+            return null;
 
-         case QEst:
-            stringValue = value.toString();
-            if (isEmptyString(stringValue)) {
-               Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-               if (isBoardValueEither(row, cellColorHelper.getRequiredQAEstimates(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-                  return SwingUtil.cellRed;
-               }
-            }
-            break;
-         case DRem:
-            stringValue = value.toString();
-            if (isEmptyString(stringValue)) {
-               Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-               if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-                  return SwingUtil.cellRed;
-               }
-            } else {
-               Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-               if (!isBoardValueEither(row, cellColorHelper.getRequiredDevRemains(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-                  return SwingUtil.cellRed;
-               } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(ColumnType.DEst, row))) {
-                  setToolTipText(row, getColumnIndex(column), "Cannot be numeric if the Dev Estimate is not!");
-                  return SwingUtil.cellRed;
-               }
-            }
-            break;
-         case QRem:
-            stringValue = value.toString();
-            if (isEmptyString(stringValue)) {
-               Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-               if (isBoardValueEither(row, cellColorHelper.getRequiredQARemains(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-                  return SwingUtil.cellRed;
-               }
-            } else {
-               Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-               if (!isBoardValueEither(row, cellColorHelper.getRequiredQARemains(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-                  return SwingUtil.cellRed;
-               } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(ColumnType.QEst, row))) {
-                  setToolTipText(row, getColumnIndex(column), "Cannot be numeric if the QA Estimate is not!");
-                  return SwingUtil.cellRed;
-               }
-            }
-            break;
-         case DAct:
-            stringValue = value.toString();
-            if (isEmptyString(stringValue)) {
-               Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-               if (isBoardValueEither(row, cellColorHelper.getRequiredDevActuals(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-                  return SwingUtil.cellRed;
-               }
-            } else {
-               Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-               if (isBoardValueEither(row, cellColorHelper.getRequiredBlankDevActuals(), boardStatus)) {
-                  setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-                  return SwingUtil.cellRed;
-               }
-            }
-            break;
+            // case QEst:
+            // stringValue = value.toString();
+            // if (isEmptyString(stringValue)) {
+            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
+            // if (isBoardValueEither(row, cellColorHelper.getRequiredQAEstimates(), boardStatus)) {
+            // setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
+            // return SwingUtil.cellRed;
+            // }
+            // }
+            // break;
+            // case DRem:
+            // stringValue = value.toString();
+            // if (isEmptyString(stringValue)) {
+            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
+            // if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains(), boardStatus)) {
+            // setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
+            // return SwingUtil.cellRed;
+            // }
+            // } else {
+            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
+            // if (!isBoardValueEither(row, cellColorHelper.getRequiredDevRemains(), boardStatus)) {
+            // setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
+            // return SwingUtil.cellRed;
+            // } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(ColumnType.DEst, row))) {
+            // setToolTipText(row, getColumnIndex(column), "Cannot be numeric if the Dev Estimate is not!");
+            // return SwingUtil.cellRed;
+            // }
+            // }
+            // break;
+            // case QRem:
+            // stringValue = value.toString();
+            // if (isEmptyString(stringValue)) {
+            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
+            // if (isBoardValueEither(row, cellColorHelper.getRequiredQARemains(), boardStatus)) {
+            // setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
+            // return SwingUtil.cellRed;
+            // }
+            // } else {
+            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
+            // if (!isBoardValueEither(row, cellColorHelper.getRequiredQARemains(), boardStatus)) {
+            // setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
+            // return SwingUtil.cellRed;
+            // } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(ColumnType.QEst, row))) {
+            // setToolTipText(row, getColumnIndex(column), "Cannot be numeric if the QA Estimate is not!");
+            // return SwingUtil.cellRed;
+            // }
+            // }
+            // break;
+            // case DAct:
+            // stringValue = value.toString();
+            // if (isEmptyString(stringValue)) {
+            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
+            // if (isBoardValueEither(row, cellColorHelper.getRequiredDevActuals(), boardStatus)) {
+            // setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
+            // return SwingUtil.cellRed;
+            // }
+            // } else {
+            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
+            // if (isBoardValueEither(row, cellColorHelper.getRequiredBlankDevActuals(), boardStatus)) {
+            // setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
+            // return SwingUtil.cellRed;
+            // }
+            // }
+            // break;
          case BoardStatus:
             BoardStatusValue newValue = (BoardStatusValue) value;
             if (log.isDebugEnabled()) {

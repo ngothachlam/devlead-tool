@@ -4,7 +4,7 @@ import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
 import com.jonas.agile.devleadtool.gui.component.table.model.ValidatorResponse;
 
-public class DEstValidator extends AbstractValidator {
+public class QRemValidator extends AbstractValidator {
 
    @Override
    public ValidatorResponse validate(Object value, IssueType type, Object boardStatus) {
@@ -20,16 +20,16 @@ public class DEstValidator extends AbstractValidator {
          case STORY:
             BoardStatusValue boardStatusValue = (BoardStatusValue) boardStatus;
             switch (boardStatusValue) {
-               case Open:
-               case Failed:
                case InProgress:
                case Resolved:
-               case Complete:
-               case ForShowCase:
-               case Approved:
+               case Failed:
                   return passOnNumeric(value, type, boardStatusValue);
                case UnKnown:
                case NA:
+               case Open:
+               case Complete:
+               case ForShowCase:
+               case Approved:
                   return passOnEmpty(value, new MessageDTO(type, true), new MessageDTO(boardStatusValue, true));
             }
             throw new RuntimeException(getExceptionString(value, type, boardStatus));

@@ -16,7 +16,7 @@ public class DEstValidatorTest {
    public void setUp() throws Exception {
    }
 
-   @Test
+   @Test 
    public void testValidate() {
       assertException("If issueType and boardStatus is null - cannot calculate validity!", null, null, null);
       assertException("If issueType is null - cannot calculate validity!", null, null, BoardStatusValue.Failed);
@@ -28,21 +28,21 @@ public class DEstValidatorTest {
       assertException("If boardStatus is null - cannot calculate validity!", "", IssueType.BUG, null);
       assertException("If boardStatus is null - cannot calculate validity!", "", IssueType.DEV, null);
 
-      assertEquals("If issueType is bug - should not have a dEst value!", ValidatorResponse.PASS, validator.validate(null, IssueType.BUG, null));
-      assertEquals("If issueType is bug - should not have a dEst value!", ValidatorResponse.PASS, validator.validate("", IssueType.BUG, null));
-      assertEquals("If issueType is bug - should not have a dEst value!", ValidatorResponse.FAIL, validator.validate("blah", IssueType.BUG, null));
-      assertEquals("If issueType is bug - should not have a dEst value!", ValidatorResponse.FAIL, validator.validate("1.0", IssueType.BUG, null));
+      assertEquals("If issueType is bug - should not have a dEst value!", ValidatorResponseType.PASS, validator.validate(null, IssueType.BUG, null));
+      assertEquals("If issueType is bug - should not have a dEst value!", ValidatorResponseType.PASS, validator.validate("", IssueType.BUG, null));
+      assertEquals("If issueType is bug - should not have a dEst value!", ValidatorResponseType.FAIL, validator.validate("blah", IssueType.BUG, null));
+      assertEquals("If issueType is bug - should not have a dEst value!", ValidatorResponseType.FAIL, validator.validate("1.0", IssueType.BUG, null));
 
-      assertEquals(ValidatorResponse.PASS, validator.validate("", null, BoardStatusValue.Approved));
-      assertEquals(ValidatorResponse.PASS, validator.validate("", null, BoardStatusValue.Open));
+      assertEquals(ValidatorResponseType.PASS, validator.validate("", null, BoardStatusValue.Approved));
+      assertEquals(ValidatorResponseType.PASS, validator.validate("", null, BoardStatusValue.Open));
 
    }
 
    private void assertException(String string, Object status, IssueType type, Object value) {
       try {
-         assertEquals(ValidatorResponse.PASS, validator.validate(value, type, status));
+         assertEquals(ValidatorResponseType.PASS, validator.validate(value, type, status));
          assertTrue(string, false);
-      } catch (NullPointerException e) {
+      } catch (RuntimeException e) {
       }
    }
 

@@ -1,6 +1,6 @@
 package com.jonas.agile.devleadtool.gui.component.table.model.color;
 
-public enum ValidatorResponse {
+public enum ValidatorResponseType {
 
    FAIL, PASS;
 

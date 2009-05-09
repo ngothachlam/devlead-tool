@@ -13,6 +13,11 @@ public class EstimateValidator {
 
    private EstimateValidator() {
       map.put(ColumnType.DEst, new DEstValidator());
+      map.put(ColumnType.QEst, new QEstValidator());
+      map.put(ColumnType.DRem, new DRemValidator());
+      map.put(ColumnType.QRem, new QRemValidator());
+      map.put(ColumnType.DAct, new DActValidator());
+      map.put(ColumnType.QAct, new QActValidator());
    }
 
    public Validator getValidator(ColumnType column) {

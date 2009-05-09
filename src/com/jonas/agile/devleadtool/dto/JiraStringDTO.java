@@ -8,6 +8,7 @@ public class JiraStringDTO {
    private String jira;
    private String qAEstimate;
    private String qaReminder;
+   private String qaActual;
    
    public JiraStringDTO() {
       super();
@@ -59,6 +60,14 @@ public class JiraStringDTO {
 
    public void setQaRemainder(String qaReminder) {
       this.qaReminder = qaReminder;
+   }
+
+   public String getQaActual() {
+      return qaActual;
+   }
+
+   public void setQaActual(String qaActual) {
+      this.qaActual = qaActual;
    }
 
 }

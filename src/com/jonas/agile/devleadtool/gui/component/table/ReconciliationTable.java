@@ -16,7 +16,7 @@ public class ReconciliationTable extends MyTable {
       return reconciliationTableModel;
    }
 
-   public void addForReconciliation(String jira, String devEst, String devAct, String release, String remainder, String qaEst, BoardStatusValue status, String qaRem) {
+   public void addForReconciliation(String jira, String devEst, String devAct, String release, String remainder, String qaEst, BoardStatusValue status, String qaRem, String qAct) {
       this.addJira(jira);
       int row = this.getRowWithJira(jira);
       setValueInTableIfNotNull(release, row, ColumnType.Release);
@@ -26,6 +26,7 @@ public class ReconciliationTable extends MyTable {
       setValueInTableIfNotNull(devAct, row, ColumnType.DAct);
       setValueInTableIfNotNull(qaEst, row, ColumnType.QEst);
       setValueInTableIfNotNull(qaRem, row, ColumnType.QRem);
+      setValueInTableIfNotNull(qAct, row, ColumnType.QAct);
    }
 
    private void setValueInTableIfNotNull(Object value, int row, ColumnType col) {
