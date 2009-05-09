@@ -31,6 +31,7 @@ public class ColumnWrapper<T> {
    public static final ColumnWrapper<String> DRem = new ColumnWrapper<String>(String.class, ColumnType.DRem, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.Yes);
    public static final ColumnWrapper<String> QRem = new ColumnWrapper<String>(String.class, ColumnType.QRem, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.Yes);
    public static final ColumnWrapper<String> DAct = new ColumnWrapper<String>(String.class, ColumnType.DAct, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.Yes);
+   public static final ColumnWrapper<String> QAct = new ColumnWrapper<String>(String.class, ColumnType.QAct, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.Yes);
    public static final ColumnWrapper<String> Note = new ColumnWrapper<String>(String.class, ColumnType.Note, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No);
    public static final ColumnWrapper<String> Release = new ColumnWrapper<String>(String.class, ColumnType.Release, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No);
 

@@ -18,6 +18,7 @@ public enum ColumnType {
    DRem,
    QRem,
    DAct,
+   QAct,
    Note,
    Release,
    BoardStatus,

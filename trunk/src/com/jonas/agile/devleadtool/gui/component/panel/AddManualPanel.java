@@ -79,7 +79,7 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
    }
 
    @Override
-   public void jiraAdded(String jira, String estimate, String actual, String release, String remainder, String qaEst, BoardStatusValue status, String qaRem) {
+   public void jiraAdded(String jira, String dEst, String dAct, String release, String dRem, String qEst, BoardStatusValue status, String qRem, String qAct) {
       if (table == null) {
          AlertDialog.alertMessage(getParentFrame(), "No table Selected!!");
       }
@@ -89,11 +89,12 @@ class AddFromRadioButtons extends AddNewRowAction implements JiraToBeReconciledL
 
       addNewOldValueIfColumnIsInTable(table, ColumnType.BoardStatus, jira, status, newOldValues);
       addNewOldValueIfColumnIsInTable(table, ColumnType.Release, jira, release, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, ColumnType.DEst, jira, estimate, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, ColumnType.DRem, jira, remainder, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, ColumnType.DAct, jira, actual, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, ColumnType.QEst, jira, qaEst, newOldValues);
-      addNewOldValueIfColumnIsInTable(table, ColumnType.QRem, jira, qaRem, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.DEst, jira, dEst, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.QEst, jira, qEst, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.DRem, jira, dRem, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.QRem, jira, qRem, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.DAct, jira, dAct, newOldValues);
+      addNewOldValueIfColumnIsInTable(table, ColumnType.QAct, jira, qAct, newOldValues);
 
       for (NewOldValues newOldValue : newOldValues) {
          if (newOldValue.isValueNew())

@@ -50,9 +50,10 @@ public abstract class AddNewRowAction extends BasicAbstractGUIAction {
          String actual = dto.getDevActual();
          String qaEst = dto.getQAEstimate();
          String qaRem = dto.getQaRemainder();
+         String qAct = dto.getQaActual();
          log.debug("added jira " + jiraString);
          
-         notifyJirasAdded(table, jiraString, devEst, actual, release.getText(), remainder, qaEst, (BoardStatusValue) statusCombo.getSelectedItem(), qaRem);
+         notifyJirasAdded(table, jiraString, devEst, actual, release.getText(), remainder, qaEst, (BoardStatusValue) statusCombo.getSelectedItem(), qaRem, qAct);
       }
       table.getMyModel().fireTableDataChanged();
    }
@@ -90,9 +91,9 @@ public abstract class AddNewRowAction extends BasicAbstractGUIAction {
    
    public abstract MyTable getTargetTable();
 
-   private void notifyJirasAdded(MyTable table, String jira, String devEst, String actual, String release, String remainder, String qaEst, BoardStatusValue status, String qaRem) {
+   private void notifyJirasAdded(MyTable table, String jira, String dEst, String dAct, String release, String remainder, String qEst, BoardStatusValue status, String qRem, String qAct) {
       for (JiraToBeReconciledListener jiraToBeReconciledListener : listeners) {
-         jiraToBeReconciledListener.jiraAdded(jira, devEst, actual, release, remainder, qaEst, status, qaRem);
+         jiraToBeReconciledListener.jiraAdded(jira, dEst, dAct, release, remainder, qEst, status, qRem, qAct);
       }
    }
 
