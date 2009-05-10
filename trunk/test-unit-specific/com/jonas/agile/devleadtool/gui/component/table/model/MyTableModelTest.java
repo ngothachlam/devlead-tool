@@ -164,26 +164,6 @@ public class MyTableModelTest extends JonasTestCase {
 
    }
 
-   public void testShouldAddRowsWhilstEditingCorrectly() {
-      assertEquals(0, model.getRowCount());
-      model.addEmptyRow();
-      assertEquals(1, model.getRowCount());
-      assertTrue(model.getColumnCount() > 1);
-      model.setValueAt("123", 0, 0);
-      assertEquals(1, model.getRowCount());
-      assertEquals("123", model.getValueAt(0, 0));
-
-      model.setValueAt("1234", 0, 0);
-      assertEquals(1, model.getRowCount());
-      assertEquals("1234", model.getValueAt(0, 0));
-
-      model.addEmptyRow();
-      model.setValueAt("1235", 1, 0);
-      assertEquals(2, model.getRowCount());
-      assertEquals("1234", model.getValueAt(0, 0));
-      assertEquals("1235", model.getValueAt(1, 0));
-   }
-
    public void testShouldAddJiraOk() {
       model.addJira("llu-1");
 

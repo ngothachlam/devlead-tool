@@ -102,10 +102,6 @@ public class MyTable extends JXTable {
          addColumn(tableColumn);
    }
 
-   public void addEmptyRow() {
-      model.addEmptyRow();
-   }
-
    private void addJira(JiraIssue jiraIssue, boolean isToMarkJiraIfNew) {
       boolean isNewJiraInTable = model.addJira(jiraIssue);
       if (isToMarkJiraIfNew && isNewJiraInTable)
