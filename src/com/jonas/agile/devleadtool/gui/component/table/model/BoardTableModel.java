@@ -21,7 +21,6 @@ import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.agile.devleadtool.sprint.SprintTime;
 import com.jonas.common.CalculatorHelper;
 import com.jonas.common.logging.MyLogger;
-import com.jonas.common.string.StringHelper;
 import com.jonas.common.swing.SwingUtil;
 
 public class BoardTableModel extends MyTableModel implements ValueGetter {
@@ -36,9 +35,7 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
    }
    private static final ColumnType[] columns = { ColumnType.Jira, ColumnType.Description, ColumnType.Type, ColumnType.Resolution, ColumnType.Release, ColumnType.Merge, ColumnType.BoardStatus, ColumnType.Old, ColumnType.DEst,
          ColumnType.QEst, ColumnType.DRem, ColumnType.QRem, ColumnType.DAct, ColumnType.QAct, ColumnType.prio, ColumnType.Note, ColumnType.Sprint };
-   // private static final ColumnType[] columns = ColumnType.values();
 
-   private BoardCellColorHelper cellColorHelper = BoardCellColorHelper.getInstance();
    private MyTableModel jiraModel;
    private EstimateValidator estimateValidator = EstimateValidator.getInstance();
    private ValidatorManager validatorManager = new ValidatorManager();
