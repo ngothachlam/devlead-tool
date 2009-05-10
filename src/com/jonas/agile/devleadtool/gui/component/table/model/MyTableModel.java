@@ -8,19 +8,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.util.HSSFColor;
+
 import com.jonas.agile.devleadtool.gui.component.table.ColorDTO;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnWrapper;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
-import com.jonas.agile.devleadtool.gui.component.table.ColumnWrapper;
 
 class Counter {
    private int i = 0;
