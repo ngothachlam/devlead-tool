@@ -277,13 +277,18 @@ public class JiraIssue {
 
    private SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
 
-   protected Day getDay(String date){
+   protected Day getDay(String date) {
       Calendar calendar = DateHelper.getDate(format, date);
-      Day chartDay = new Day(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR));
+      Day chartDay = new Day(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR));
       return chartDay;
    }
-   
+
    public Day getCreationDay() {
       return getDay(creationDate);
+   }
+
+   public Day getResolutionDay() {
+      // return getDay(resolutionDate);
+      throw new RuntimeException("Not implemented yet!"); // FIXME 1- add resolution date!
    }
 }
