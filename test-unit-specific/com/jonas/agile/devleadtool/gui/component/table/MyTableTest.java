@@ -54,18 +54,7 @@ public class MyTableTest extends JonasTestCase {
       MyTableModel model = new TestTableModel();
       table.setModel(model);
       
-      table.addEmptyRow();
-      
-      assertEquals(1, table.getRowCount());
-      assertEquals(7, table.getColumnCount());
-      assertEquals("", table.getValueAt(0, 0));
-      assertEquals("", table.getValueAt(0, 1));
-      assertEquals(null, table.getValueAt(0, 2));
-      assertEquals("", table.getValueAt(0, 3));
-      assertEquals("", table.getValueAt(0, 4));
-      assertEquals("", table.getValueAt(0, 5));
-      assertEquals("", table.getValueAt(0, 6));
-      
+      table.addJira("llu-1");
       table.setValueAt("newValue", 0, ColumnType.Description);
       table.setValueAt(1f, 0, ColumnType.DEst);
       

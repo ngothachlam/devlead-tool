@@ -78,10 +78,6 @@ public abstract class MyTableModel extends DefaultTableModel {
       addTableModelListener(modelMarkerDelegator);
    }
 
-   final public void addEmptyRow() {
-      this.addRow(getEmptyRow());
-   }
-
    /**
     * 
     * @param jiraIssue
