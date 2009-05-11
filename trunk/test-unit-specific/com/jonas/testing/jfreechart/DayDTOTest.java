@@ -34,7 +34,7 @@ public class DayDTOTest extends TestCase{
    }
 
    private void assertDTODates(Day expectedCreationDto, Day dtoCreationDto, boolean isWeek) {
-      DayDTO dto = new DayDTO(dtoCreationDto, isWeek);
+      TimeDTO dto = new TimeDTO(dtoCreationDto, isWeek);
       assertEquals(expectedCreationDto, dto.getDate());
    }
    

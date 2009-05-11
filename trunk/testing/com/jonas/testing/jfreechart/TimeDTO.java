@@ -6,19 +6,15 @@ import org.jfree.data.time.Day;
 
 import com.jonas.common.DateHelper;
 
-public class DayDTO {
+public class TimeDTO {
 
    private int year;
    private int month;
    private int day;
 
-   public DayDTO(Day day, boolean isWeek) {
+   public TimeDTO(Day day, boolean isWeek) {
       if (isWeek) {
-         Calendar calendar = Calendar.getInstance();
-         calendar.set(day.getYear(), day.getMonth() - 1, day.getDayOfMonth());
-         int dayofweek = DateHelper.getRealDayOfWeek(calendar);
-         calendar.add(Calendar.DAY_OF_MONTH, -(dayofweek - 1));
-
+         Calendar calendar = setDayToFirstDayOfWeek(day);
          this.year = calendar.get(Calendar.YEAR);
          this.month = calendar.get(Calendar.MONTH) + 1;
          this.day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -27,6 +23,14 @@ public class DayDTO {
          this.month = day.getMonth();
          this.day = day.getDayOfMonth();
       }
+   }
+
+   private Calendar setDayToFirstDayOfWeek(Day day) {
+      Calendar calendar = Calendar.getInstance();
+      calendar.set(day.getYear(), day.getMonth() - 1, day.getDayOfMonth());
+      int dayofweek = DateHelper.getRealDayOfWeek(calendar);
+      calendar.add(Calendar.DAY_OF_MONTH, -(dayofweek - 1));
+      return calendar;
    }
 
    public Day getDate() {
@@ -51,7 +55,7 @@ public class DayDTO {
          return false;
       if (getClass() != obj.getClass())
          return false;
-      DayDTO other = (DayDTO) obj;
+      TimeDTO other = (TimeDTO) obj;
       if (day != other.day)
          return false;
       if (month != other.month)
