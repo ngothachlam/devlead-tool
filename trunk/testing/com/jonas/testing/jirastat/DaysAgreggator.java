@@ -1,4 +1,4 @@
-package com.jonas.testing.jfreechart;
+package com.jonas.testing.jirastat;
 
 import java.util.HashMap;
 import java.util.Map;

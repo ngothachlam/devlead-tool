@@ -26,7 +26,6 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
-import com.jonas.testing.jfreechart.ExtendedStackedBarRenderer;
 
 /**
  * A simple demonstration application showing how to create a stacked bar chart

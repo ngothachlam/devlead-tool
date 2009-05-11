@@ -49,7 +49,7 @@
  *
  */
 
-package com.jonas.testing.jfreechart;
+package com.jonas.testing.jfreechart.demos;
 
 import java.util.Date;
 import java.util.Random;

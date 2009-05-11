@@ -5,7 +5,7 @@
  *
  */
 
-package com.jonas.testing.jfreechart;
+package com.jonas.testing.jirastat;
 
 import java.io.IOException;
 import java.util.Collections;

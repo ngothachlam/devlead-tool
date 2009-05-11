@@ -10,7 +10,6 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
-import com.jonas.testing.jfreechart.DemoDatasetFactory;
 
 public class StackedBarChartDemo3 extends ApplicationFrame {
 

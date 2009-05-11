@@ -1,4 +1,4 @@
-package com.jonas.testing.jfreechart;
+package com.jonas.testing.jfreechart.demos;
 
 import java.awt.Container;
 import org.jfree.chart.ChartFactory;
