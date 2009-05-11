@@ -30,8 +30,8 @@ public class JiraStatPanelBuilder {
    private boolean aggregate;
 
    private Map<JiraStatus, Integer> aggregators = new HashMap<JiraStatus, Integer>();
-   private final DataTimeAggregator dataSetAggregator;
-   public JiraStatPanelBuilder(boolean aggregate, DataTimeAggregator dataSetAggregator) {
+   private final PointsInTimeFacade dataSetAggregator;
+   public JiraStatPanelBuilder(boolean aggregate, PointsInTimeFacade dataSetAggregator) {
       this.aggregate = aggregate;
       this.dataSetAggregator = dataSetAggregator;
    }
@@ -46,7 +46,7 @@ public class JiraStatPanelBuilder {
       return amount;
    }
 
-   private void addDataSet(TimeTableXYDataset dataset, JiraStatus jiraStatus, DataDayAgreggator daysAgreggator, Day day) {
+   private void addDataSet(TimeTableXYDataset dataset, JiraStatus jiraStatus, PointInTimeAgreggator daysAgreggator, Day day) {
       int amount = daysAgreggator.getAmount(jiraStatus);
       if (aggregate) {
          amount = addAggregatedAmountAndStoreItForNext(jiraStatus, amount);
@@ -95,9 +95,9 @@ public class JiraStatPanelBuilder {
 
    private XYDataset createDatasetFromTimeAggregator() {
       TimeTableXYDataset dataset = new TimeTableXYDataset();
-      List<DataDayAgreggator> days = dataSetAggregator.getDays();
+      List<PointInTimeAgreggator> days = dataSetAggregator.getPointInTimes();
       Collections.sort(days);
-      for (DataDayAgreggator dayAgreggator : days) {
+      for (PointInTimeAgreggator dayAgreggator : days) {
          Day day = dayAgreggator.getDay();
          addDataSet(dataset, JiraStatus.Open, dayAgreggator, day);
          addDataSet(dataset, JiraStatus.ReOpened, dayAgreggator, day);

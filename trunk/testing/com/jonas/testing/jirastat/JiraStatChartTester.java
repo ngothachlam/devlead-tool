@@ -68,7 +68,7 @@ public class JiraStatChartTester extends ApplicationFrame {
          JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLUDEVSUP, getDeliveryBetweenCriteria("-2w", "+1w"));
 
          DateRetriever dateRetriever = new DeliveryDateRetriever();
-         DataTimeAggregator data = getData(jiras, dateRetriever, isWeek);
+         PointsInTimeFacade data = getData(jiras, dateRetriever, isWeek);
 
          JPanel chartPanel = getChartPanel(data, aggregate);
          chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
@@ -87,11 +87,11 @@ public class JiraStatChartTester extends ApplicationFrame {
       }
    }
 
-   private DataTimeAggregator getData(JiraIssue[] jiras, DateRetriever dateRetriever, boolean isWeek) {
-      DataTimeAggregator dataSetAggregator = new DataTimeAggregator(isWeek);
+   private PointsInTimeFacade getData(JiraIssue[] jiras, DateRetriever dateRetriever, boolean isWeek) {
+      PointsInTimeFacade dataSetAggregator = new PointsInTimeFacade(isWeek);
       for (JiraIssue jiraIssue : jiras) {
          JiraStatus jiraStatus = JiraStatus.getJiraStatusByName(jiraIssue.getStatus());
-         dataSetAggregator.add(dateRetriever.retrieveTimeLineDateFromJira(jiraIssue), jiraStatus);
+         dataSetAggregator.addPointInTime(dateRetriever.retrieveTimeLineDateFromJira(jiraIssue), jiraStatus);
       }
       return dataSetAggregator;
    }
@@ -104,7 +104,7 @@ public class JiraStatChartTester extends ApplicationFrame {
       return "&created%3Aprevious=" + first + "&created%3Anext=" + later;
    }
 
-   public JPanel getChartPanel(DataTimeAggregator dataSetAggregator, boolean aggregate) {
+   public JPanel getChartPanel(PointsInTimeFacade dataSetAggregator, boolean aggregate) {
       JiraStatPanelBuilder panelBuilder = new JiraStatPanelBuilder(aggregate, dataSetAggregator);
       return panelBuilder.createDatasetAndChartFromTimeAggregator();
    }
