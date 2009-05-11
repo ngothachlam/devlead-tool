@@ -5,9 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import org.apache.log4j.Logger;
+import org.jfree.util.Log;
+
 import com.jonas.common.logging.MyLogger;
 
 public class DateHelper {
+   private final static Logger log = MyLogger.getLogger(DateHelper.class);
    private final static SimpleDateFormat simpleDateformatOrderable = new SimpleDateFormat("yyyy-MM-dd");
    private final static SimpleDateFormat simpleDateformat = new SimpleDateFormat("dd-MM-yyyy");
    private final static SimpleDateFormat advancDateformat = new SimpleDateFormat("EEE dd-MM-yyyy");
@@ -87,6 +90,8 @@ public class DateHelper {
 
    public static Calendar getDate(SimpleDateFormat format, String date) {
       try {
+         if (log.isDebugEnabled())
+            log.debug("trying to parse " + date);
          Date d = format.parse(date);
          Calendar cal = Calendar.getInstance();
          cal.setTime(d);

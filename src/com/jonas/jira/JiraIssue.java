@@ -142,6 +142,10 @@ public class JiraIssue {
       return buildNo;
    }
 
+   public Day getDeliveryDateAsDay() {
+      return getDay(deliveryDate, simpleFormat);
+   }
+   
    public String getDeliveryDate() {
       return deliveryDate;
    }
@@ -276,10 +280,18 @@ public class JiraIssue {
    }
 
    private SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+   private SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
 
    protected Day getDay(String date) {
-      Calendar calendar = DateHelper.getDate(format, date);
-      Day chartDay = new Day(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR));
+      return getDay(date, format);
+   }
+
+   protected Day getDay(String date, SimpleDateFormat format2) {
+      Calendar calendar = DateHelper.getDate(format2, date);
+      int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+      int month = calendar.get(Calendar.MONTH);
+      int yeat = calendar.get(Calendar.YEAR);
+      Day chartDay = new Day(dayOfMonth, month + 1, yeat);
       return chartDay;
    }
 

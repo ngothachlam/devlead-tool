@@ -64,14 +64,15 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
          boolean isWeek = false;
          boolean aggregate = true;
 
-         // JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU,
-         // "&created%3Aprevious=-10w&created%3Anext=+1w");
 //         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU, getCreatedBetweenCriteria("-5w", "+1w"));
-         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU, getCreatedBetweenCriteria("-10w", "+1w"),"&type=45");
+//         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU, getCreatedBetweenCriteria("-10w", "+1w"),"&type=45");
+         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLUDEVSUP, getDeliveryBetweenCriteria("-2w", "+1w"));
+         
          
          for (JiraIssue jiraIssue : jiras) {
             JiraStatus jiraStatus = JiraStatus.getJiraStatusByName(jiraIssue.getStatus());
-            dataSetAggregator.add(jiraIssue.getCreationDay(), jiraStatus, isWeek);
+//            dataSetAggregator.add(jiraIssue.getCreationDay(), jiraStatus, isWeek);
+            dataSetAggregator.add(jiraIssue.getDeliveryDateAsDay(), jiraStatus, isWeek);
          }
 
          // setupTestData(dataSetAggregator, isWeek);
@@ -91,6 +92,10 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
          e.printStackTrace();
       }
 
+   }
+
+   private String getDeliveryBetweenCriteria(String first, String later) {
+      return "&customfield_10188%3Aprevious=" + first + "&customfield_10188%3Anext=" + later;
    }
 
    private String getCreatedBetweenCriteria(String first, String later) {
