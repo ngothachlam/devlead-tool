@@ -57,11 +57,11 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
    public StackedXYBarChartDemo2(String title) {
       super(title);
 
-      DataSetAggregator dataSetAggregator = new DataSetAggregator();
+      boolean isWeek = false;
+      DataSetAggregator dataSetAggregator = new DataSetAggregator(isWeek);
       try {
          jiraClient.login();
 
-         boolean isWeek = false;
          boolean aggregate = true;
 
 //         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU, getCreatedBetweenCriteria("-5w", "+1w"));
@@ -69,18 +69,7 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
          JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLUDEVSUP, getDeliveryBetweenCriteria("-2w", "+1w"));
          
          
-         for (JiraIssue jiraIssue : jiras) {
-            JiraStatus jiraStatus = JiraStatus.getJiraStatusByName(jiraIssue.getStatus());
-//            dataSetAggregator.add(jiraIssue.getCreationDay(), jiraStatus, isWeek);
-            dataSetAggregator.add(jiraIssue.getDeliveryDateAsDay(), jiraStatus, isWeek);
-         }
-
-         // setupTestData(dataSetAggregator, isWeek);
-
-         JPanel chartPanel = createDemoPanel(dataSetAggregator, aggregate);
-         chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
-         System.out.println("creating chartPanel");
-         setContentPane(chartPanel);
+         setData(dataSetAggregator, aggregate, jiras);
 
       } catch (HttpException e) {
          e.printStackTrace();
@@ -94,35 +83,27 @@ public class StackedXYBarChartDemo2 extends ApplicationFrame {
 
    }
 
+   private void setData(DataSetAggregator dataSetAggregator, boolean aggregate, JiraIssue[] jiras) {
+      for (JiraIssue jiraIssue : jiras) {
+         JiraStatus jiraStatus = JiraStatus.getJiraStatusByName(jiraIssue.getStatus());
+//            dataSetAggregator.add(jiraIssue.getCreationDay(), jiraStatus, isWeek);
+         dataSetAggregator.add(jiraIssue.getDeliveryDateAsDay(), jiraStatus);
+      }
+
+      // setupTestData(dataSetAggregator, isWeek);
+
+      JPanel chartPanel = createDemoPanel(dataSetAggregator, aggregate);
+      chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+      System.out.println("creating chartPanel");
+      setContentPane(chartPanel);
+   }
+
    private String getDeliveryBetweenCriteria(String first, String later) {
       return "&customfield_10188%3Aprevious=" + first + "&customfield_10188%3Anext=" + later;
    }
 
    private String getCreatedBetweenCriteria(String first, String later) {
       return "&created%3Aprevious=" + first + "&created%3Anext=" + later;
-   }
-
-   private void setupTestData(DataSetAggregator dataSetAggregator, boolean isWeek) {
-      dataSetAggregator.add(getJiraIssue("Mon, 5 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Open, isWeek);
-
-      dataSetAggregator.add(getJiraIssue("Mon, 6 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Open, isWeek);
-      dataSetAggregator.add(getJiraIssue("Mon, 7 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Open, isWeek);
-      dataSetAggregator.add(getJiraIssue("Mon, 8 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.ReOpened, isWeek);
-      dataSetAggregator.add(getJiraIssue("Mon, 9 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.InProgress, isWeek);
-      dataSetAggregator.add(getJiraIssue("Mon, 10 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Closed, isWeek);
-      dataSetAggregator.add(getJiraIssue("Mon, 11 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.ReOpened, isWeek);
-      dataSetAggregator.add(getJiraIssue("Mon, 12 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Closed, isWeek);
-
-      dataSetAggregator.add(getJiraIssue("Mon, 13 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Open, isWeek);
-      dataSetAggregator.add(getJiraIssue("Mon, 14 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.ReOpened, isWeek);
-      dataSetAggregator.add(getJiraIssue("Mon, 15 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Resolved, isWeek);
-      dataSetAggregator.add(getJiraIssue("Mon, 16 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Closed, isWeek);
-
-      dataSetAggregator.add(getJiraIssue("Mon, 5 Apr 2009 18:28:25 +0000 (GMT)").getCreationDay(), JiraStatus.Closed, isWeek);
-   }
-
-   private JiraIssue getJiraIssue(String date) {
-      return new JiraIssue("", "", "", "", "", date);
    }
 
    /**
