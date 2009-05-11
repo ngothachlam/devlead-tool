@@ -27,33 +27,31 @@ import com.jonas.jira.JiraStatus;
 
 public class JiraStatPanelBuilder {
 
-   private static void addDataset(TimeTableXYDataset dataset, JiraStatus jiraStatus, Day day, int amount) {
-      dataset.add(day, amount, jiraStatus.toString());
-   }
-
    private boolean aggregate;
-   private final DataTimeAggregator dataSetAggregator;
-   private Map<JiraStatus, Integer> aggregators = new HashMap<JiraStatus, Integer>();
 
+   private Map<JiraStatus, Integer> aggregators = new HashMap<JiraStatus, Integer>();
+   private final DataTimeAggregator dataSetAggregator;
    public JiraStatPanelBuilder(boolean aggregate, DataTimeAggregator dataSetAggregator) {
       this.aggregate = aggregate;
       this.dataSetAggregator = dataSetAggregator;
    }
 
+   private int addAggregatedAmountAndStoreItForNext(JiraStatus jiraStatus, int amount) {
+      Integer aggregatedAmount = aggregators.get(jiraStatus);
+      if (aggregatedAmount == null) {
+         aggregatedAmount = 0;
+      }
+      amount = amount + aggregatedAmount;
+      aggregators.put(jiraStatus, amount);
+      return amount;
+   }
+
    private void addDataSet(TimeTableXYDataset dataset, JiraStatus jiraStatus, DataDayAgreggator daysAgreggator, Day day) {
       int amount = daysAgreggator.getAmount(jiraStatus);
       if (aggregate) {
-         Integer aggregator = aggregators.get(jiraStatus);
-         if (aggregator == null) {
-            aggregator = 0;
-         }
-         amount = amount + aggregator;
-         aggregators.put(jiraStatus, amount);
+         amount = addAggregatedAmountAndStoreItForNext(jiraStatus, amount);
       }
-
-      System.out.println("amount for " + jiraStatus + " (on " + day + ") is " + amount);
-
-      addDataset(dataset, jiraStatus, day, amount);
+      dataset.add(day, amount, jiraStatus.toString());
    }
 
    private JFreeChart createChart(XYDataset dataset) {
@@ -89,9 +87,14 @@ public class JiraStatPanelBuilder {
 
    }
 
+   public JPanel createDatasetAndChartFromTimeAggregator() {
+      XYDataset dataset = createDatasetFromTimeAggregator();
+      JFreeChart chart = createChart(dataset);
+      return new ChartPanel(chart);
+   }
+
    private XYDataset createDatasetFromTimeAggregator() {
       TimeTableXYDataset dataset = new TimeTableXYDataset();
-      // FIXME 1 - this is the stacked example to use!!
       List<DataDayAgreggator> days = dataSetAggregator.getDays();
       Collections.sort(days);
       for (DataDayAgreggator dayAgreggator : days) {
@@ -103,12 +106,6 @@ public class JiraStatPanelBuilder {
          addDataSet(dataset, JiraStatus.Closed, dayAgreggator, day);
       }
       return dataset;
-   }
-
-   public JPanel createDatasetAndChartFromTimeAggregator() {
-      XYDataset dataset = createDatasetFromTimeAggregator();
-      JFreeChart chart = createChart(dataset);
-      return new ChartPanel(chart);
    }
 
 }
