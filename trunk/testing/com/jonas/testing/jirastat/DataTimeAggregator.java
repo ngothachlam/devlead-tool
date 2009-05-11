@@ -9,18 +9,18 @@ import org.jfree.data.time.Day;
 
 import com.jonas.jira.JiraStatus;
 
-public class DataSetAggregator {
+public class DataTimeAggregator {
 
-   private Map<TimeDTO, DaysAgreggator> daysAgreggator = new HashMap<TimeDTO, DaysAgreggator>();
+   private Map<TimeDTO, DataDayAgreggator> dataDaysAgreggators = new HashMap<TimeDTO, DataDayAgreggator>();
    private final boolean isWeek;
 
-   public DataSetAggregator(boolean isWeek) {
+   public DataTimeAggregator(boolean isWeek) {
       this.isWeek = isWeek;
    }
 
-   public List<DaysAgreggator> getDays() {
-      List<DaysAgreggator> list = new ArrayList<DaysAgreggator>();
-      for(DaysAgreggator aggregator : daysAgreggator.values()){
+   public List<DataDayAgreggator> getDays() {
+      List<DataDayAgreggator> list = new ArrayList<DataDayAgreggator>();
+      for(DataDayAgreggator aggregator : dataDaysAgreggators.values()){
          list.add(aggregator);
       }
       return list;
@@ -28,10 +28,10 @@ public class DataSetAggregator {
 
    public void add(Day day, JiraStatus jiraStatus) {
       TimeDTO daydto = new TimeDTO(day, isWeek);
-      DaysAgreggator dayAgreggator = daysAgreggator.get(daydto);
+      DataDayAgreggator dayAgreggator = dataDaysAgreggators.get(daydto);
       if (dayAgreggator == null) {
-         dayAgreggator = new DaysAgreggator();
-         daysAgreggator.put(daydto, dayAgreggator);
+         dayAgreggator = new DataDayAgreggator();
+         dataDaysAgreggators.put(daydto, dayAgreggator);
          dayAgreggator.add(daydto.getDate(), jiraStatus);
       } else {
          dayAgreggator.add(daydto.getDate(), jiraStatus);
