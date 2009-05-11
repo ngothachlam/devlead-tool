@@ -7,7 +7,7 @@ import org.jfree.data.time.Day;
 
 import com.jonas.jira.JiraStatus;
 
-public class DaysAgreggator implements Comparable<DaysAgreggator> {
+public class DataDayAgreggator implements Comparable<DataDayAgreggator> {
 
    private Day day;
 
@@ -35,7 +35,7 @@ public class DaysAgreggator implements Comparable<DaysAgreggator> {
    }
 
    @Override
-   public int compareTo(DaysAgreggator o) {
+   public int compareTo(DataDayAgreggator o) {
       Day day2 = o.getDay();
       if (day.getYear() == day2.getYear()) {
          if (day.getMonth() == day2.getMonth()) {
