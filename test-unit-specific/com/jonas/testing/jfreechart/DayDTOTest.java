@@ -5,6 +5,8 @@ import junit.framework.TestCase;
 import org.jfree.data.time.Day;
 import org.junit.Test;
 
+import com.jonas.testing.jirastat.TimeDTO;
+
 public class DayDTOTest extends TestCase{
 
    @Test

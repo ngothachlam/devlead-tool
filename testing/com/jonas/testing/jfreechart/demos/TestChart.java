@@ -1,4 +1,4 @@
-package com.jonas.testing.jfreechart;
+package com.jonas.testing.jfreechart.demos;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
