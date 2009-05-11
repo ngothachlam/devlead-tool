@@ -71,24 +71,10 @@ public class JiraClient {
       return jiraIssue;
    }
 
-   public JiraIssue[] getJiras(JiraHttpCriteria... criterias) throws HttpException, IOException, JDOMException, JiraException {
+   public JiraIssue[] getJiras(JiraHttpCriteria criteria) throws HttpException, IOException, JDOMException, JiraException {
       loadResolutionsIfRequired();
       loadJiraTypesIfRequired();
-      List<JiraIssue> jiras = httpClient.getJiras(JONAS_XPATH_EVALUATOR, jiraBuilder, criterias);
-      return jiras.toArray(new JiraIssue[jiras.size()]);
-   }
-
-   public JiraIssue[] getJirasFromFixVersion(JiraVersion version, JiraHttpCriteria... criterias) throws HttpException, IOException, JDOMException, JiraException {
-      loadResolutionsIfRequired();
-      loadJiraTypesIfRequired();
-      List<JiraIssue> jiras = httpClient.getJiras(version, JONAS_XPATH_EVALUATOR, jiraBuilder, criterias);
-      return jiras.toArray(new JiraIssue[jiras.size()]);
-   }
-
-   public JiraIssue[] getJirasFromFilter(JiraFilter jiraFilter) throws HttpException, IOException, JiraException, JDOMException {
-      loadResolutionsIfRequired();
-      loadJiraTypesIfRequired();
-      List<JiraIssue> jiras = httpClient.getJirasFromFilter(jiraFilter, JONAS_XPATH_EVALUATOR, jiraBuilder);
+      List<JiraIssue> jiras = httpClient.getJiras(JONAS_XPATH_EVALUATOR, jiraBuilder, criteria);
       return jiras.toArray(new JiraIssue[jiras.size()]);
    }
 

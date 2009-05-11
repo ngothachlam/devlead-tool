@@ -10,6 +10,8 @@ import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.utils.JiraBuilder;
+import com.jonas.testing.jirastat.criterias.JiraCriteriaBuilder;
+import com.jonas.testing.jirastat.criterias.JiraHttpCriteria;
 
 public class JiraHttpClientFunctionalTest extends TestCase {
 
@@ -41,7 +43,8 @@ public class JiraHttpClientFunctionalTest extends TestCase {
    }
    
    public void testShouldGetFilter() throws HttpException, IOException, JiraException, JDOMException{
-      List<JiraIssue> jiras = client_Aol.getJirasFromFilter(JiraFilter.DevsupportPrioFilter_UnClosed, new JonasXpathEvaluator("/rss/channel/item", new XMLOutputter()), JiraBuilder.getInstance());
+      JiraHttpCriteria criteria = new JiraCriteriaBuilder().filter(JiraFilter.DevsupportPrioFilter_UnClosed).getCriteria();
+      List<JiraIssue> jiras = client_Aol.getJiras(new JonasXpathEvaluator("/rss/channel/item", new XMLOutputter()), JiraBuilder.getInstance(), criteria);
       
       for (JiraIssue jiraIssue : jiras) {
          System.out.println(jiraIssue.getKey());

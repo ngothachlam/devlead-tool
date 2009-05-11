@@ -26,6 +26,8 @@ import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.access.JiraClient;
+import com.jonas.testing.jirastat.criterias.JiraCriteriaBuilder;
+import com.jonas.testing.jirastat.criterias.JiraHttpCriteria;
 
 public class AddFilterDialog extends JFrame {
 
@@ -170,7 +172,8 @@ public class AddFilterDialog extends JFrame {
             client.login();
             publish("Logged in!");
             publish("Downloading Jiras!");
-            JiraIssue[] jirasFromFilter = client.getJirasFromFilter(filter);
+            JiraHttpCriteria criteria = new JiraCriteriaBuilder().filter(filter).getCriteria();
+            JiraIssue[] jirasFromFilter = client.getJiras(criteria);
             publish("Jiras downloaded!");
             return jirasFromFilter;
          } catch (Throwable e) {

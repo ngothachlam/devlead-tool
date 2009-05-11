@@ -8,6 +8,7 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.TestObjects;
+import com.jonas.testing.jirastat.criterias.JiraCriteriaBuilder;
 
 public class JiraClientTest extends JonasTestCase {
 
@@ -29,7 +30,9 @@ public class JiraClientTest extends JonasTestCase {
       jiraClient.login();
       JiraIssue[] jiras = null;
       try {
-         jiras = jiraClient.getJirasFromFixVersion(new JiraVersion("1", JiraProject.ATLASSIN_TST, "empty", false));
+         JiraVersion jiraVersion = new JiraVersion("1", JiraProject.ATLASSIN_TST, "empty", false);
+         JiraCriteriaBuilder builder = new JiraCriteriaBuilder().fixVersion(jiraVersion);
+         jiras = jiraClient.getJiras(builder.getCriteria());
          assertTrue(false);
       } catch (JiraException e) {
       }
@@ -38,7 +41,8 @@ public class JiraClientTest extends JonasTestCase {
 
    public void testShouldGetJirasForFixVersionOk() throws HttpException, IOException, JDOMException, JiraException {
       jiraClient.login();
-      JiraIssue[] jiras = jiraClient.getJirasFromFixVersion(TestObjects.Version_AtlassainTST);
+      JiraCriteriaBuilder builder = new JiraCriteriaBuilder().fixVersion(TestObjects.Version_AtlassainTST);
+      JiraIssue[] jiras = jiraClient.getJiras(builder.getCriteria());;
       assertTrue(jiras.length > 0);
    }
 
