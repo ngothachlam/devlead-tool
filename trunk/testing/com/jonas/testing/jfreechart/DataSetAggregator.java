@@ -12,6 +12,11 @@ import com.jonas.jira.JiraStatus;
 public class DataSetAggregator {
 
    private Map<TimeDTO, DaysAgreggator> daysAgreggator = new HashMap<TimeDTO, DaysAgreggator>();
+   private final boolean isWeek;
+
+   public DataSetAggregator(boolean isWeek) {
+      this.isWeek = isWeek;
+   }
 
    public List<DaysAgreggator> getDays() {
       List<DaysAgreggator> list = new ArrayList<DaysAgreggator>();
@@ -21,7 +26,7 @@ public class DataSetAggregator {
       return list;
    }
 
-   public void add(Day day, JiraStatus jiraStatus, boolean isWeek) {
+   public void add(Day day, JiraStatus jiraStatus) {
       TimeDTO daydto = new TimeDTO(day, isWeek);
       DaysAgreggator dayAgreggator = daysAgreggator.get(daydto);
       if (dayAgreggator == null) {
