@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethodBase;
@@ -14,12 +15,11 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
-import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
-import com.jonas.jira.JiraVersion;
 import com.jonas.jira.utils.JiraBuilder;
 import com.jonas.testing.jirastat.criterias.JiraHttpCriteria;
 
@@ -52,27 +52,11 @@ public class JiraHttpClient extends HttpClient {
       return jiras.get(0);
    }
 
-   public List<JiraIssue> getJiras(JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder, JiraHttpCriteria... criterias) throws HttpException, IOException, JiraException, JDOMException {
+   public List<JiraIssue> getJiras(JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder, JiraHttpCriteria criteria) throws HttpException, IOException, JiraException, JDOMException {
       StringBuffer sb = new StringBuffer(baseUrl);
       setStandardFindCriterias(sb);
 
-      for (JiraHttpCriteria criteria : criterias) {
-         sb.append(criteria.toString());
-      }
-
-      List<JiraIssue> jiras = executeAndGetJiras(jonasXpathEvaluator, jiraBuilder, sb.toString());
-      return jiras;
-   }
-
-   public List<JiraIssue> getJiras(JiraVersion fixVersion, JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder, JiraHttpCriteria... criterias) throws HttpException, IOException, JDOMException, JiraException {
-      StringBuffer sb = new StringBuffer(baseUrl);
-      setStandardFindCriterias(sb);
-      sb.append("&pid=").append(fixVersion.getProject().getId());
-      sb.append("&fixfor=").append(fixVersion.getId());
-
-      for (JiraHttpCriteria criteria : criterias) {
-         sb.append(criteria.toString());
-      }
+      sb.append(criteria.toString());
 
       List<JiraIssue> jiras = executeAndGetJiras(jonasXpathEvaluator, jiraBuilder, sb.toString());
       return jiras;
@@ -83,15 +67,6 @@ public class JiraHttpClient extends HttpClient {
       sb.append("decorator=none&view=rss&reset=true");
       sb.append("&tempMax=").append(MAX_RESULTS);
       sb.append("&sorter/field=issuekey&sorter/order=DESC");
-   }
-
-   public List<JiraIssue> getJirasFromFilter(JiraFilter devsupportPrioFilter, JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder) throws HttpException, IOException, JiraException, JDOMException {
-      StringBuffer sb = new StringBuffer(baseUrl);
-      setStandardFindCriterias(sb);
-      sb.append(devsupportPrioFilter.getUrl());
-      
-      List<JiraIssue> jiras = executeAndGetJiras(jonasXpathEvaluator, jiraBuilder, sb.toString());
-      return jiras;
    }
 
    public String getJiraUrl() {

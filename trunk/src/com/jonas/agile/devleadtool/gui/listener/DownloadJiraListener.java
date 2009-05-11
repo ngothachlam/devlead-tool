@@ -16,10 +16,13 @@ import org.jdom.JDOMException;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.ProgressDialog;
 import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraClient;
 import com.jonas.jira.access.JiraException;
+import com.jonas.testing.jirastat.criterias.JiraCriteriaBuilder;
+import com.jonas.testing.jirastat.criterias.JiraHttpCriteria;
 
 public class DownloadJiraListener implements ActionListener {
    private final JComboBox jiraProjectFixVersionCombo;
@@ -51,7 +54,9 @@ public class DownloadJiraListener implements ActionListener {
                   try {
                      client.login();
                      dialog.setNote("Getting Jiras From FixVersion \"" + version + "\".");
-                     jiras = client.getJirasFromFixVersion(version);
+
+                     JiraHttpCriteria criteria = new JiraCriteriaBuilder().project(version.getProject()).fixVersion(version).getCriteria();
+                     jiras = client.getJiras(criteria);
                   } catch (JiraException e) {
                      error = "Whilst " + dialog.getNote() + "\n" + e.getMessage();
                      return null;
