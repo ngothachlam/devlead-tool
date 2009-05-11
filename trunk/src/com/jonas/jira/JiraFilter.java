@@ -32,7 +32,7 @@ public class JiraFilter {
    public JiraFilter(JiraProject jiraProject, String name, String url) {
       this.jiraProject = jiraProject;
       this.name = name;
-      this.url = "/secure/IssueNavigator.jspa?view=rss&tempMax=10000&reset=true&decorator=none&" + url;
+      this.url = url;
 
       list.add(this);
    }

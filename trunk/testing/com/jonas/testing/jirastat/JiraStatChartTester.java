@@ -40,6 +40,8 @@ import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraStatus;
 import com.jonas.jira.access.JiraClient;
 import com.jonas.jira.access.JiraException;
+import com.jonas.testing.jirastat.criterias.JiraCriteriaBuilder;
+import com.jonas.testing.jirastat.criterias.JiraHttpCriteria;
 
 /**
  * A simple stacked bar chart using time series data.
@@ -47,6 +49,7 @@ import com.jonas.jira.access.JiraException;
 public class JiraStatChartTester extends ApplicationFrame {
 
    JiraClient jiraClient = JiraClient.JiraClientAolBB;
+   private JiraCriteriaBuilder criteriabuilder = new JiraCriteriaBuilder();
 
    /**
     * Creates a new demo.
@@ -63,9 +66,9 @@ public class JiraStatChartTester extends ApplicationFrame {
       try {
          jiraClient.login();
 
-         // JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU, getCreatedBetweenCriteria("-5w", "+1w"));
-         // JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLU, getCreatedBetweenCriteria("-10w", "+1w"),"&type=45");
-         JiraIssue[] jiras = jiraClient.getJirasFromProject(JiraProject.LLUDEVSUP, getDeliveryBetweenCriteria("-2w", "+1w"));
+         JiraHttpCriteria criteria = criteriabuilder.deliveryBetween("-2w", "+1w").project(JiraProject.LLUDEVSUP).getCriteria();
+         
+         JiraIssue[] jiras = jiraClient.getJiras(criteria);
 
          DateRetriever dateRetriever = new DeliveryDateRetriever();
          PointsInTimeFacade data = getData(jiras, dateRetriever, isWeek);
@@ -94,14 +97,6 @@ public class JiraStatChartTester extends ApplicationFrame {
          dataSetAggregator.addPointInTime(dateRetriever.retrieveTimeLineDateFromJira(jiraIssue), jiraStatus);
       }
       return dataSetAggregator;
-   }
-
-   private String getDeliveryBetweenCriteria(String first, String later) {
-      return "&customfield_10188%3Aprevious=" + first + "&customfield_10188%3Anext=" + later;
-   }
-
-   private String getCreatedBetweenCriteria(String first, String later) {
-      return "&created%3Aprevious=" + first + "&created%3Anext=" + later;
    }
 
    public JPanel getChartPanel(PointsInTimeFacade dataSetAggregator, boolean aggregate) {
