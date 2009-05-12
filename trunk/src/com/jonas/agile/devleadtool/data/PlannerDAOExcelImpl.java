@@ -117,11 +117,16 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                HSSFCell cell = cit.next();
                int cellType = cell.getCellType();
                if (log.isDebugEnabled())
-                  log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + cell.getCellNum());
+                  log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + cell.getColumnIndex());
                Object cellContents = null;
                switch (cellType) {
                   case HSSFCell.CELL_TYPE_BLANK:
-                     cellContents = "";
+                     ColumnWrapper wrapper = columns.get(cell.getColumnIndex());
+                     cellContents = wrapper.getDefaultValue();
+                     if (log.isDebugEnabled()) {
+                        log.debug("cell is blank! I would like to read in " + wrapper.getType() + "'s default value (\"" + cellContents + "\")!");
+                     }
+                     break;
                   case HSSFCell.CELL_TYPE_BOOLEAN:
                      cellContents = cell.getBooleanCellValue();
                      break;
@@ -134,7 +139,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                      cellContents = cellHeader == null ? "" : cellHeader.getString();
                      break;
                }
-               setValue(dataModelDTO, rowCount, columns, rowData, cell.getCellNum(), cellContents);
+               setValue(dataModelDTO, rowCount, columns, rowData, cell.getColumnIndex(), cellContents);
             }
             if (rowCount != 0)
                addRowData(dataModelDTO, rowData);
@@ -352,9 +357,21 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             throw new PersistanceException(cellContents.toString() + " has a wrapper, but the wrapper does not have a columnType relating to it!");
          }
          columns.put(colCount, wrapper);
-         if (wrapper.isToLoad())
-            dataModelDTO.getHeader().add(columnType);
+         if (wrapper.isToLoad()) {
+            Vector<ColumnType> header = dataModelDTO.getHeader();
+            header.add(columnType);
+         }
       } else {
+         if (log.isDebugEnabled())
+            log.debug("size of rowData is " + rowData.size() + " and the current colCount is " + colCount);
+         for (int missingCol = rowData.size(); missingCol < colCount; missingCol++) {
+            Vector<ColumnType> header = dataModelDTO.getHeader();
+            ColumnType column = header.get(missingCol);
+            Object defaultValue = ColumnWrapper.get(column).getDefaultValue();
+            addCellValue(columns, rowData, missingCol, defaultValue);
+            if (log.isDebugEnabled())
+               log.debug("adding columnType as we've seem to have had a null column inbetween " + column + " with default value \"" + defaultValue + "\"");
+         }
          addCellValue(columns, rowData, colCount, cellContents);
       }
    }
