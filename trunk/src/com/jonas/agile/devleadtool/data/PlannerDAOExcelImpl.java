@@ -148,6 +148,15 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    private void addRowData(TableModelDTO dataModelDTO, Vector<Object> rowData) {
       Vector<Vector<Object>> contents = dataModelDTO.getContents();
+
+      for (int remainingCol = rowData.size(); remainingCol < dataModelDTO.getHeader().size(); remainingCol++) {
+         ColumnType header = dataModelDTO.getHeader().get(remainingCol);
+         Object defaultValue = ColumnWrapper.get(header).getDefaultValue();
+         if (log.isDebugEnabled())
+            log.debug(" header " + header + " at position " + remainingCol + " was found emtpy in rowdata so we need to add default value of \"" + defaultValue + "\"");
+         rowData.add(defaultValue);
+      }
+
       contents.add(rowData);
    }
 
