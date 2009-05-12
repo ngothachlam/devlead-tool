@@ -11,7 +11,7 @@ import com.jonas.common.logging.MyLogger;
 public class JiraVersion {
 
    private static Logger log = MyLogger.getLogger(JiraVersion.class);
-   private static Map<String, JiraVersion> versions = new HashMap<String, JiraVersion>();
+   private static Map<String, JiraVersion> versionsById = new HashMap<String, JiraVersion>();
 
    private boolean archived;
    private String id;
@@ -31,25 +31,25 @@ public class JiraVersion {
    }
 
    private static void addVersion(JiraVersion version) {
-      JiraVersion jiraVersion = versions.get(version.getId());
+      JiraVersion jiraVersion = versionsById.get(version.getId());
       if (jiraVersion != null) {
          log.warn("version " + version + "(with id=" + version.getId() + ") already exists - not adding it, but overwriting values!");
          jiraVersion.setArchived(version.isArchived());
          jiraVersion.setName(version.getName());
       } else
-         versions.put(version.getId(), version);
+         versionsById.put(version.getId(), version);
    }
 
    public static void clearVersions() {
-      versions.clear();
+      versionsById.clear();
    }
 
    public static JiraVersion getVersionById(String id) {
-      return versions.get(id);
+      return versionsById.get(id);
    }
 
    public static JiraVersion getVersionByName(String name) {
-      for (JiraVersion version : versions.values()) {
+      for (JiraVersion version : versionsById.values()) {
          if (version.getName().equals(name)) {
             return version;
          }
@@ -60,7 +60,7 @@ public class JiraVersion {
 
    public static JiraVersion[] getVersionByProject(JiraProject lluSystemsProvisioning) {
       List<JiraVersion> tempVersions = new ArrayList<JiraVersion>();
-      for (Iterator<JiraVersion> iterator = versions.values().iterator(); iterator.hasNext();) {
+      for (Iterator<JiraVersion> iterator = versionsById.values().iterator(); iterator.hasNext();) {
          JiraVersion version = iterator.next();
          if (version.getProject().equals(lluSystemsProvisioning)) {
             tempVersions.add(version);
@@ -70,7 +70,7 @@ public class JiraVersion {
    }
 
    public static void removeVersion(String id) {
-      versions.remove(id);
+      versionsById.remove(id);
    }
 
    @Override

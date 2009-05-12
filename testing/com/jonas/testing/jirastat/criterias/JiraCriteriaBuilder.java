@@ -44,6 +44,10 @@ public class JiraCriteriaBuilder {
       return this;
    }
 
+   public JiraCriteriaBuilder fixVersion(JiraProject project,JiraVersion version) {
+      return this.project(project).fixVersion(version);
+   }
+   
    public JiraCriteriaBuilder fixVersion(JiraVersion version) {
       criteria.append("&fixfor=").append(version.getId());
       return this;

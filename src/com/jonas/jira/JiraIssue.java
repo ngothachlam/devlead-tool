@@ -286,8 +286,8 @@ public class JiraIssue {
       return getDay(date, format);
    }
 
-   protected Day getDay(String date, SimpleDateFormat format2) {
-      Calendar calendar = DateHelper.getDate(format2, date);
+   protected Day getDay(String date, SimpleDateFormat format) {
+      Calendar calendar = DateHelper.getDate(format, date);
       int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
       int month = calendar.get(Calendar.MONTH);
       int yeat = calendar.get(Calendar.YEAR);

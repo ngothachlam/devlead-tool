@@ -16,7 +16,6 @@ public class JiraProject {
       int result = 1;
       result = prime * result + ((client == null) ? 0 : client.hashCode());
       result = prime * result + ((closeAction == null) ? 0 : closeAction.hashCode());
-      result = prime * result + ((fixVersions == null) ? 0 : fixVersions.hashCode());
       result = prime * result + ((id == null) ? 0 : id.hashCode());
       result = prime * result + ((jiraKey == null) ? 0 : jiraKey.hashCode());
       result = prime * result + ((reOpenAction == null) ? 0 : reOpenAction.hashCode());
@@ -41,11 +40,6 @@ public class JiraProject {
          if (other.closeAction != null)
             return false;
       } else if (!closeAction.equals(other.closeAction))
-         return false;
-      if (fixVersions == null) {
-         if (other.fixVersions != null)
-            return false;
-      } else if (!fixVersions.equals(other.fixVersions))
          return false;
       if (id == null) {
          if (other.id != null)
@@ -74,7 +68,6 @@ public class JiraProject {
    public static final JiraProject ATLASSIN_TST = new JiraProject(JiraClient.JiraClientAtlassin, "TST", "10420", null);
 
    private JiraClient client;
-   private final Map<String, JiraVersion> fixVersions = new HashMap<String, JiraVersion>();
    private final String id;
    private final String jiraKey;
    private String closeAction = null;
@@ -104,10 +97,6 @@ public class JiraProject {
 
    public static Vector<JiraProject> getProjects() {
       return projects;
-   }
-
-   public void clearFixVersions() {
-      fixVersions.clear();
    }
 
    public JiraVersion[] getFixVersions(boolean includeArchived) {
@@ -160,6 +149,16 @@ public class JiraProject {
 
    public String getReOpenAction() {
       return reOpenAction;
+   }
+
+   public JiraVersion getFixVersion(String string) {
+      JiraVersion[] versionByProject = JiraVersion.getVersionByProject(this);
+      for (JiraVersion jiraVersion : versionByProject) {
+         if(jiraVersion.getName().equals(string)){
+            return jiraVersion;
+         }
+      }
+      return null;
    }
 
 }
