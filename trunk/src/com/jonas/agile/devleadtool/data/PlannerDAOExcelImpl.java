@@ -112,13 +112,12 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             HSSFRow row = rit.next();
             if (log.isDebugEnabled())
                log.debug("Loading row " + rowCount);
-            int colCount = -1;
             // for each column in the row...
             for (Iterator<HSSFCell> cit = row.cellIterator(); cit.hasNext();) {
                HSSFCell cell = cit.next();
                int cellType = cell.getCellType();
                if (log.isDebugEnabled())
-                  log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + (++colCount));
+                  log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + cell.getCellNum());
                Object cellContents = null;
                switch (cellType) {
                   case HSSFCell.CELL_TYPE_BLANK:
@@ -128,14 +127,14 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                      break;
                   case HSSFCell.CELL_TYPE_NUMERIC:
                      String valueOf = String.valueOf(cell.getNumericCellValue());
-                     cellContents = (valueOf == null ? "" : valueOf);
+                     cellContents = valueOf == null ? "" : valueOf;
                      break;
                   case HSSFCell.CELL_TYPE_STRING:
                      HSSFRichTextString cellHeader = cell.getRichStringCellValue();
-                     cellContents = (cellHeader == null ? "" : cellHeader.getString());
+                     cellContents = cellHeader == null ? "" : cellHeader.getString();
                      break;
                }
-               setValue(dataModelDTO, rowCount, columns, rowData, colCount, cellContents);
+               setValue(dataModelDTO, rowCount, columns, rowData, cell.getCellNum(), cellContents);
             }
             if (rowCount != 0)
                addRowData(dataModelDTO, rowData);
