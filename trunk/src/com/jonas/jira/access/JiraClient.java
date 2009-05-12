@@ -2,10 +2,13 @@ package com.jonas.jira.access;
 
 import java.io.IOException;
 import java.util.List;
+
 import javax.xml.rpc.ServiceException;
+
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
 import org.jdom.output.XMLOutputter;
+
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
@@ -13,14 +16,12 @@ import com.atlassian.jira.rpc.soap.beans.RemoteIssueType;
 import com.atlassian.jira.rpc.soap.beans.RemoteResolution;
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.common.xml.JonasXpathEvaluator;
-import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraResolution;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.listener.JiraListener;
 import com.jonas.jira.utils.JiraBuilder;
-import com.jonas.testing.jirastat.criterias.JiraCriteriaBuilder;
 import com.jonas.testing.jirastat.criterias.JiraHttpCriteria;
 
 public class JiraClient {
@@ -41,9 +42,8 @@ public class JiraClient {
    }
 
    private void cacheJiraVersions(RemoteVersion[] fixVersions, JiraProject jiraProject) {
-      jiraProject.clearFixVersions();
-      for (int i = 0; i < fixVersions.length; i++) {
-         jiraBuilder.cachedJiraVersion(fixVersions[i], jiraProject);
+      for (RemoteVersion remoteVersion : fixVersions) {
+         jiraBuilder.cachedJiraVersion(remoteVersion, jiraProject);
       }
    }
 

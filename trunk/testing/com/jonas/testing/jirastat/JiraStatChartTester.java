@@ -8,36 +8,19 @@
 package com.jonas.testing.jirastat;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.swing.JPanel;
 
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.DateAxis;
-import org.jfree.chart.axis.DateTickMarkPosition;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.block.BlockBorder;
-import org.jfree.chart.labels.StandardXYItemLabelGenerator;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.StackedXYBarRenderer;
-import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.time.Day;
-import org.jfree.data.time.TimeTableXYDataset;
-import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RefineryUtilities;
 
-import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraStatus;
+import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraClient;
 import com.jonas.jira.access.JiraException;
 import com.jonas.testing.jirastat.criterias.JiraCriteriaBuilder;
@@ -66,11 +49,14 @@ public class JiraStatChartTester extends ApplicationFrame {
       try {
          jiraClient.login();
 
-         JiraHttpCriteria criteria = criteriabuilder.deliveryBetween("-2w", "+1w").project(JiraProject.LLUDEVSUP).getCriteria();
+         jiraClient.cacheJiraVersionsForProject(JiraProject.TALK);
+         JiraVersion fixVersion = JiraProject.TALK.getFixVersion("Talk v26.0");
+         JiraHttpCriteria criteria = criteriabuilder.fixVersion(JiraProject.TALK, fixVersion).getCriteria();
+//         JiraHttpCriteria criteria = criteriabuilder.deliveryBetween("-2w", "+1w").project(JiraProject.LLUDEVSUP).getCriteria();
          
          JiraIssue[] jiras = jiraClient.getJiras(criteria);
 
-         DateRetriever dateRetriever = new DeliveryDateRetriever();
+         DateRetriever dateRetriever = new CreationDateRetriever();
          PointsInTimeFacade data = getData(jiras, dateRetriever, isWeek);
 
          JPanel chartPanel = getChartPanel(data, aggregate);
@@ -127,6 +113,7 @@ class CreationDateRetriever implements DateRetriever {
 class DeliveryDateRetriever implements DateRetriever {
    @Override
    public Day retrieveTimeLineDateFromJira(JiraIssue jiraIssue) {
-      return jiraIssue.getDeliveryDateAsDay();
+      Day deliveryDateAsDay = jiraIssue.getDeliveryDateAsDay();
+      return deliveryDateAsDay;
    }
 }

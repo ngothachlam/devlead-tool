@@ -156,14 +156,13 @@ public class JiraCloseHelper {
    }
 
    private void closeAllResolvedJirasInFixVersions(List<JiraVersion> relevantFixVersions) throws HttpException, IOException, JDOMException, JiraException {
-      JiraCriteriaBuilder criteriaBuilder = new JiraCriteriaBuilder();
-      JiraCriteriaBuilder builder = criteriaBuilder.notClosed();
-      builder.save();
+      JiraCriteriaBuilder criteriaBuilder = new JiraCriteriaBuilder().notClosed();
+      criteriaBuilder.save();
       for (JiraVersion version : relevantFixVersions) {
-         builder.reset();
-         builder.project(version.getProject()).fixVersion(version);
+         criteriaBuilder.reset();
+         criteriaBuilder.fixVersion(version.getProject(), version);
          
-         JiraIssue[] jirasToClose = jiraClient.getJiras( builder.getCriteria());
+         JiraIssue[] jirasToClose = jiraClient.getJiras( criteriaBuilder.getCriteria());
          for (JiraIssue jiraToClose : jirasToClose) {
             boolean httpClose = false;
             try {
