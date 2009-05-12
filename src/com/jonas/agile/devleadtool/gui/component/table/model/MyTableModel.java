@@ -522,9 +522,9 @@ public abstract class MyTableModel extends DefaultTableModel {
          try {
             t = realVector.get(integer);
          } catch (ArrayIndexOutOfBoundsException e) {
-            log.warn("ArrayIndexOutOfBoundsException -> ");
+            log.warn("ArrayIndexOutOfBoundsException -> ", e);
          } catch (NullPointerException e) {
-            log.warn("NullPointerException -> ");
+            log.warn("NullPointerException -> ", e);
          }
          if (log.isDebugEnabled())
             log.debug("adding " + t + " from " + integer);
