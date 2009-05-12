@@ -26,12 +26,15 @@ public class LoadingPlannerFunctionalTest extends JonasTestCase {
    public void testShouldLoadModelOk() throws IOException, PersistanceException{
       TableModelDTO dtoLoaded = dao.loadModel(new File("test-data\\shouldLoadFineIntoPlanner.xls"), "board");
 
+      System.out.println("1");
       assertEquals(10, dtoLoaded.getHeader().size());
       
+      System.out.println("2");
       assertEquals(4, dtoLoaded.getContents().size());
       
       int i = 0;
       
+      System.out.println("3");
       assertEquals(ColumnType.Jira, dtoLoaded.getHeader().get(i++));
       assertEquals(ColumnType.Description, dtoLoaded.getHeader().get(i++));
       assertEquals(ColumnType.Resolution, dtoLoaded.getHeader().get(i++));
@@ -43,6 +46,7 @@ public class LoadingPlannerFunctionalTest extends JonasTestCase {
       assertEquals(ColumnType.prio, dtoLoaded.getHeader().get(i++));
       assertEquals(ColumnType.Note, dtoLoaded.getHeader().get(i++));
       
+      System.out.println("4");
       i = 0;
       assertEquals("LLU-4198", dtoLoaded.getContents().get(0).get(i++));
       assertEquals("summary LLU-4198", dtoLoaded.getContents().get(0).get(i++));
@@ -55,6 +59,7 @@ public class LoadingPlannerFunctionalTest extends JonasTestCase {
       assertEquals(-1, dtoLoaded.getContents().get(0).get(i++));
       assertEquals("not 4198", dtoLoaded.getContents().get(0).get(i++));
       
+      System.out.println("5");
       i = 0;
       assertEquals("LLU-4211", dtoLoaded.getContents().get(1).get(i++));
       assertEquals("", dtoLoaded.getContents().get(1).get(i++));
@@ -66,5 +71,6 @@ public class LoadingPlannerFunctionalTest extends JonasTestCase {
       assertEquals("merge", dtoLoaded.getContents().get(1).get(i++));
       assertEquals(10000, dtoLoaded.getContents().get(1).get(i++));
       assertEquals("", dtoLoaded.getContents().get(1).get(i++));
+      System.out.println("6");
    }
 }

@@ -54,7 +54,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    private void addCellValue(Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount, Object cellContents) {
       ColumnWrapper column = columns.get(colCount);
-      log.debug("\tColumn " + column.getType() + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \"" + cellContents + "\"!");
+      if (log.isDebugEnabled())
+         log.debug("\tColumn " + column.getType() + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \"" + cellContents + "\"!");
       Object parsed = null;
       if (column.isToLoad()) {
          if (column.useCacheMethod()) {
@@ -88,7 +89,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    }
 
    public TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException, PersistanceException {
-      log.debug("Loading Model from " + xlsFile.getAbsolutePath() + " and sheet: " + sheetName);
+      if (log.isDebugEnabled())
+         log.debug("Loading Model from " + xlsFile.getAbsolutePath() + " and sheet: " + sheetName);
       InputStream inp = null;
 
       Vector<Vector<Object>> contents = new Vector<Vector<Object>>();
@@ -108,13 +110,15 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             Vector<Object> rowData = new Vector<Object>();
             rowCount++;
             HSSFRow row = rit.next();
-            log.debug("Loading row " + rowCount);
+            if (log.isDebugEnabled())
+               log.debug("Loading row " + rowCount);
             int colCount = -1;
             // for each column in the row...
             for (Iterator<HSSFCell> cit = row.cellIterator(); cit.hasNext();) {
                HSSFCell cell = cit.next();
                int cellType = cell.getCellType();
-               log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + (++colCount));
+               if (log.isDebugEnabled())
+                  log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + (++colCount));
                Object cellContents = null;
                switch (cellType) {
                   case HSSFCell.CELL_TYPE_BLANK:
@@ -192,7 +196,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       FileOutputStream fileOut = null;
       FileInputStream fileIn = null;
       try {
-         log.debug("Saving to " + xlsFile.getAbsolutePath());
+         if (log.isDebugEnabled())
+            log.debug("Saving to " + xlsFile.getAbsolutePath());
          HSSFWorkbook wb = null;
          if (xlsFile.exists()) {
             fileIn = new FileInputStream(xlsFile);
@@ -224,7 +229,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
                HSSFCell cell = row.createCell((short) colCount);
                Object valueAt = model.getValueAt(rowCount, colCount);
-               log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
+               if (log.isDebugEnabled())
+                  log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
 
                ColumnWrapper column = model.getColumnWrapper(colCount);
 
@@ -246,10 +252,9 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
          for (short colCount = 0; colCount < model.getColumnCount(); colCount++) {
             ColumnWrapper wrapper = model.getColumnWrapper(colCount);
-            log.debug("Column " + wrapper + " is " + (!wrapper.isToAutoResize() ? "not" : "") + " to be autoresized");
+            if (log.isDebugEnabled())
+               log.debug("Column " + wrapper + " is " + (!wrapper.isToAutoResize() ? "not" : "") + " to be autoresized");
             if (wrapper.isToAutoResize()) {
-               if (log.isDebugEnabled()) {
-               }
                sheet.autoSizeColumn(colCount);
             }
          }
@@ -276,7 +281,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          byte green = (byte) acolor.getGreen();
          byte blue = (byte) acolor.getBlue();
 
-         log.debug("is getting from palette" + palette + " red: " + red + " green: " + green + " blue: " + blue);
+         if (log.isDebugEnabled())
+            log.debug("is getting from palette" + palette + " red: " + red + " green: " + green + " blue: " + blue);
 
          HSSFColor color = palette.findColor(red, green, blue);
          if (color == null) {
