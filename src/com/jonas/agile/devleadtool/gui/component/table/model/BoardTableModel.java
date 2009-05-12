@@ -408,11 +408,17 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
 
    @Override
    public BoardStatusValue getBoardStatus(int row) {
+      if (log.isDebugEnabled()) {
+         log.debug("finding boardStatus for row " + row);
+      }
       return (BoardStatusValue) getValueAt(ColumnType.BoardStatus, row);
    }
 
    @Override
    public IssueType getType(int row) {
+      if (log.isDebugEnabled()) {
+         log.debug("finding type for row " + row);
+      }
       return (IssueType) getValueAt(ColumnType.Type, row);
    }
 }
