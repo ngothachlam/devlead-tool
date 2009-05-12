@@ -55,7 +55,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    private void addCellValue(Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount, Object cellContents) {
       ColumnWrapper column = columns.get(colCount);
       if (log.isDebugEnabled())
-         log.debug("\tColumn " + column.getType() + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \"" + cellContents + "\"!");
+         log.debug("\t\tColumn " + column.getType() + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \"" + cellContents + "\"!");
       Object parsed = null;
       if (column.isToLoad()) {
          if (column.useCacheMethod()) {
@@ -64,9 +64,11 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             parsed = column.parseFromPersistanceStore(cellContents);
          }
          if (parsed == null && log.isDebugEnabled()) {
-            log.warn("When trying to parse column " + column + " from store using value \"" + cellContents + "\" - we got null! (Cache was " + (column.useCacheMethod() ? "" : "not") + " used)");
+            log.warn("\tWhen trying to parse column " + column + " from store using value \"" + cellContents + "\" - we got null! (Cache was " + (column.useCacheMethod() ? "" : "not") + " used)");
          }
          rowData.add(parsed);
+      } else {
+         rowData.add(column.getDefaultValue());
       }
    }
 
@@ -124,7 +126,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
                      ColumnWrapper wrapper = columns.get(cell.getColumnIndex());
                      cellContents = wrapper.getDefaultValue();
                      if (log.isDebugEnabled()) {
-                        log.debug("cell is blank! I would like to read in " + wrapper.getType() + "'s default value (\"" + cellContents + "\")!");
+                        log.debug("\tcell is blank! I would like to read in " + wrapper.getType() + "'s default value (\"" + cellContents + "\")!");
                      }
                      break;
                   case HSSFCell.CELL_TYPE_BOOLEAN:
@@ -231,16 +233,16 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          // save column Headers
          HSSFRow row = sheet.createRow((short) 0);
          for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
-            HSSFCell cell = row.createCell((short) colCount);
+            HSSFCell cell = row.createCell(colCount);
             Object valueAt = model.getColumnName(colCount);
             cell.setCellValue(new HSSFRichTextString((String) valueAt));
          }
 
          // save all data rows...
-         for (short rowCount = 0; rowCount < model.getRowCount(); rowCount++) {
+         for (int rowCount = 0; rowCount < model.getRowCount(); rowCount++) {
             row = sheet.createRow(rowCount + 1);
             for (int colCount = 0; colCount < model.getColumnCount(); colCount++) {
-               HSSFCell cell = row.createCell((short) colCount);
+               HSSFCell cell = row.createCell(colCount);
                Object valueAt = model.getValueAt(rowCount, colCount);
                if (log.isDebugEnabled())
                   log.debug(" saving value \"" + valueAt + "\" at row " + rowCount + " and column " + colCount);
@@ -283,7 +285,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       }
    }
 
-   private void setCellStyle(HSSFWorkbook wb, MyTableModel model, short rowCount, int colCount, Object valueAt, HSSFCell cell) {
+   private void setCellStyle(HSSFWorkbook wb, MyTableModel model, int rowCount, int colCount, Object valueAt, HSSFCell cell) {
       ColorDTO modelColor = model.getColor(valueAt, rowCount, colCount, true);
 
       Color acolor = modelColor.getColor();
@@ -347,7 +349,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
    private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount, Object cellContents) throws PersistanceException {
       if (rowCount == 0) {
          if (log.isDebugEnabled())
-            log.debug("Header! Trying to find the header for " + cellContents.toString());
+            log.debug("\tHeader! Trying to find the header for " + cellContents.toString());
          ColumnWrapper wrapper = ColumnWrapper.get(cellContents.toString());
          if (wrapper == null) {
             throw new PersistanceException("Found column " + cellContents + " in file, but there is no such columnWrapper representation. Update it to one of " + getStringOfColumns());
@@ -357,20 +359,23 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             throw new PersistanceException(cellContents.toString() + " has a wrapper, but the wrapper does not have a columnType relating to it!");
          }
          columns.put(colCount, wrapper);
-         if (wrapper.isToLoad()) {
+//         if (wrapper.isToLoad()) {
             Vector<ColumnType> header = dataModelDTO.getHeader();
             header.add(columnType);
-         }
+//         } else {
+//            if (log.isDebugEnabled())
+//               log.debug("\tHeader " + columnType + " is not to be loaded!");
+//         }
       } else {
          if (log.isDebugEnabled())
-            log.debug("size of rowData is " + rowData.size() + " and the current colCount is " + colCount);
+            log.debug("\tsize of rowData is " + rowData.size() + " and the current colCount is " + colCount);
          for (int missingCol = rowData.size(); missingCol < colCount; missingCol++) {
             Vector<ColumnType> header = dataModelDTO.getHeader();
             ColumnType column = header.get(missingCol);
             Object defaultValue = ColumnWrapper.get(column).getDefaultValue();
             addCellValue(columns, rowData, missingCol, defaultValue);
             if (log.isDebugEnabled())
-               log.debug("adding columnType as we've seem to have had a null column inbetween " + column + " with default value \"" + defaultValue + "\"");
+               log.debug("\tadding " + column + " with default value \"" + defaultValue + "\"");
          }
          addCellValue(columns, rowData, colCount, cellContents);
       }

@@ -72,6 +72,43 @@ public class LoadingPlannerFunctionalTest extends JonasTestCase {
       assertEquals("", dtoLoaded.getContents().get(1).get(i++));
    }
 
+   public void testShouldLoadJiraModelWithBuildNumbersOk() throws IOException, PersistanceException {
+      TableModelDTO dtoLoaded = dao.loadModel(new File("test-data\\Copy of Copy of Sprint Tracker - llu.xls"), "jira");
+
+//      assertEquals(14, dtoLoaded.getHeader().size());
+      assertEquals(1, dtoLoaded.getContents().size());
+
+      assertEquals(ColumnType.Jira, dtoLoaded.getHeader().get(0));
+      assertEquals(ColumnType.Description, dtoLoaded.getHeader().get(1));
+      assertEquals(ColumnType.Type, dtoLoaded.getHeader().get(2));
+      assertEquals(ColumnType.J_Sprint, dtoLoaded.getHeader().get(3));
+      assertEquals(ColumnType.Project, dtoLoaded.getHeader().get(4));
+      assertEquals(ColumnType.FixVersion, dtoLoaded.getHeader().get(5));
+      assertEquals(ColumnType.Owner, dtoLoaded.getHeader().get(6));
+      assertEquals(ColumnType.Environment, dtoLoaded.getHeader().get(7));
+      assertEquals(ColumnType.Delivery, dtoLoaded.getHeader().get(8));
+      assertEquals(ColumnType.Resolution, dtoLoaded.getHeader().get(9));
+      assertEquals(ColumnType.BuildNo, dtoLoaded.getHeader().get(10));
+      assertEquals(ColumnType.J_DevEst, dtoLoaded.getHeader().get(11));
+      assertEquals(ColumnType.J_DevAct, dtoLoaded.getHeader().get(12));
+      assertEquals(ColumnType.prio, dtoLoaded.getHeader().get(13));
+      
+      assertEquals("LLU-4626", dtoLoaded.getContents().get(0).get(0));
+      assertEquals("Handle EMP code 1526", dtoLoaded.getContents().get(0).get(1));
+      assertEquals(IssueType.TBD, dtoLoaded.getContents().get(0).get(2));
+      assertEquals("15-3", dtoLoaded.getContents().get(0).get(3));
+      assertEquals("Small Business Change", dtoLoaded.getContents().get(0).get(4));
+      assertEquals("LLU 15", dtoLoaded.getContents().get(0).get(5));
+      assertEquals("Business", dtoLoaded.getContents().get(0).get(6));
+      assertEquals("Production", dtoLoaded.getContents().get(0).get(7));
+      assertEquals("", dtoLoaded.getContents().get(0).get(8));
+      assertEquals("Resolved (DEV Complete)", dtoLoaded.getContents().get(0).get(9));
+      assertEquals("llu-service-management-build-3075, llu-master-build-4406", dtoLoaded.getContents().get(0).get(10));
+      assertEquals("1.0", dtoLoaded.getContents().get(0).get(11));
+      assertEquals("0.5", dtoLoaded.getContents().get(0).get(12));
+      assertEquals(-1d, dtoLoaded.getContents().get(0).get(13));
+   }
+
    public void testShouldLoadModelOk() throws IOException, PersistanceException {
       TableModelDTO dtoLoaded = dao.loadModel(new File("test-data\\shouldLoadFineIntoPlanner.xls"), "board");
 
