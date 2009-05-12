@@ -11,11 +11,7 @@ import com.jonas.agile.devleadtool.gui.component.table.model.TableModelDTO;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
 public class PlannerDAOExcelImplTest extends JonasTestCase {
-   File xlsFile = new File("bin\\test.xls");
-   
    PlannerDAOExcelImpl dao = new PlannerDAOExcelImpl(null);
-
-   // TODO assert on saving cell background colors.
 
    @Override
    protected void setUp() throws Exception {
@@ -28,7 +24,7 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
    }
 
    public void testShouldLoadModelOk() throws IOException, PersistanceException{
-      TableModelDTO dtoLoaded = dao.loadModel(new File("test-data\\test.xls"), "board");
+      TableModelDTO dtoLoaded = dao.loadModel(new File("test-data\\shouldLoadFineIntoPlanner.xls"), "board");
 
       assertEquals(10, dtoLoaded.getHeader().size());
       
