@@ -11,8 +11,8 @@ public class PointInTimeAgreggator<T> implements Comparable<PointInTimeAgreggato
 
    private Map<T, Integer> amountMap = new HashMap<T, Integer>();
 
-   public int getAmount(T object) {
-      Integer integer = amountMap.get(object);
+   public int getAmount(T groupObject) {
+      Integer integer = amountMap.get(groupObject);
       if (integer == null)
          return 0;
       return integer;
@@ -22,13 +22,13 @@ public class PointInTimeAgreggator<T> implements Comparable<PointInTimeAgreggato
       return day;
    }
 
-   public void add(Day day, T object) {
+   public void add(Day day, T groupObject) {
       this.day = day;
-      Integer amount = amountMap.get(object);
+      Integer amount = amountMap.get(groupObject);
       if (amount == null) {
          amount = new Integer(0);
       }
-      amountMap.put(object, ++amount);
+      amountMap.put(groupObject, ++amount);
    }
 
    @Override
