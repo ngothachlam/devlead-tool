@@ -10,7 +10,7 @@ import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.model.TableModelDTO;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
-public class PlannerDAOExcelImplTest extends JonasTestCase {
+public class LoadingPlannerFunctionalTest extends JonasTestCase {
    PlannerDAOExcelImpl dao = new PlannerDAOExcelImpl(null);
 
    @Override
