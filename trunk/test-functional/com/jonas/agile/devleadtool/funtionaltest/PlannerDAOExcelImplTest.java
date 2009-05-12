@@ -2,8 +2,6 @@ package com.jonas.agile.devleadtool.funtionaltest;
 
 import java.io.File;
 import java.io.IOException;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import com.jonas.agile.devleadtool.data.PersistanceException;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
@@ -29,7 +27,7 @@ public class PlannerDAOExcelImplTest extends JonasTestCase {
       super.tearDown();
    }
 
-   public void testShouldBlah() throws IOException, PersistanceException{
+   public void testShouldLoadModelOk() throws IOException, PersistanceException{
       TableModelDTO dtoLoaded = dao.loadModel(new File("test-data\\test.xls"), "board");
 
       assertEquals(10, dtoLoaded.getHeader().size());
