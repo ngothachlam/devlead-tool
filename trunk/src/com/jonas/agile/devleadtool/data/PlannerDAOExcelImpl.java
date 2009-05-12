@@ -87,7 +87,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       return sheet == null ? wb.createSheet(sheetName) : sheet;
    }
 
-   TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException, PersistanceException {
+   public TableModelDTO loadModel(File xlsFile, String sheetName) throws IOException, PersistanceException {
       log.debug("Loading Model from " + xlsFile.getAbsolutePath() + " and sheet: " + sheetName);
       InputStream inp = null;
 
