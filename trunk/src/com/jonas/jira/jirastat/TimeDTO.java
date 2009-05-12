@@ -1,4 +1,4 @@
-package com.jonas.testing.jirastat;
+package com.jonas.jira.jirastat;
 
 import java.util.Calendar;
 

@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jonas.jira.jirastat.criteria.JiraHttpCriteria;
+
 public class JiraHttpCriteriaTest {
 
    private JiraHttpCriteria criteria;

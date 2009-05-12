@@ -20,8 +20,8 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
+import com.jonas.jira.jirastat.criteria.JiraHttpCriteria;
 import com.jonas.jira.utils.JiraBuilder;
-import com.jonas.testing.jirastat.criterias.JiraHttpCriteria;
 
 public class JiraHttpClient extends HttpClient {
    public static final JiraHttpClient AOLBB = new JiraHttpClient(ClientConstants.JIRA_URL_AOLBB);

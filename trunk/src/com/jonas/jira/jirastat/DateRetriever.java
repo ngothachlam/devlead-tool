@@ -1,4 +1,4 @@
-package com.jonas.testing.jirastat;
+package com.jonas.jira.jirastat;
 
 import org.jfree.data.time.Day;
 

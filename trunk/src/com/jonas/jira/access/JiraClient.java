@@ -21,8 +21,8 @@ import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraResolution;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.listener.JiraListener;
+import com.jonas.jira.jirastat.criteria.JiraHttpCriteria;
 import com.jonas.jira.utils.JiraBuilder;
-import com.jonas.testing.jirastat.criterias.JiraHttpCriteria;
 
 public class JiraClient {
 

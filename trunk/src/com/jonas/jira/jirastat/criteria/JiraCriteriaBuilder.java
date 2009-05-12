@@ -1,4 +1,4 @@
-package com.jonas.testing.jirastat.criterias;
+package com.jonas.jira.jirastat.criteria;
 
 import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraProject;
