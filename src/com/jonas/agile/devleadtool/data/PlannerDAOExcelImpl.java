@@ -54,7 +54,7 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    private void addCellValue(Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount, Object cellContents) {
       ColumnWrapper column = columns.get(colCount);
-      log.debug("\tColumn " + column + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \"" + cellContents + "\"!");
+      log.debug("\tColumn " + column.getType() + " (from col " + colCount + ") should" + (!column.isToLoad() ? " not " : " ") + "be loaded with \"" + cellContents + "\"!");
       Object parsed = null;
       if (column.isToLoad()) {
          if (column.useCacheMethod()) {
