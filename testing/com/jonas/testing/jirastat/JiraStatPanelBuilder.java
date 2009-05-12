@@ -30,8 +30,9 @@ public class JiraStatPanelBuilder {
    private boolean aggregate;
 
    private Map<JiraStatus, Integer> aggregators = new HashMap<JiraStatus, Integer>();
-   private final PointsInTimeFacade dataSetAggregator;
-   public JiraStatPanelBuilder(boolean aggregate, PointsInTimeFacade dataSetAggregator) {
+   
+   private final PointsInTimeFacadeAbstract dataSetAggregator;
+   public JiraStatPanelBuilder(boolean aggregate, PointsInTimeFacadeAbstract dataSetAggregator) {
       this.aggregate = aggregate;
       this.dataSetAggregator = dataSetAggregator;
    }
@@ -65,13 +66,13 @@ public class JiraStatPanelBuilder {
       StackedXYBarRenderer renderer = new StackedXYBarRenderer(0.15);
       renderer.setDrawBarOutline(true);
       renderer.setBaseItemLabelsVisible(true);
+      renderer.setShadowVisible(false);
       renderer.setBaseItemLabelGenerator(new StandardXYItemLabelGenerator());
 
       renderer.setSeriesPaint(0, SwingUtil.cellWhite);
       renderer.setSeriesPaint(1, SwingUtil.cellRed);
       renderer.setSeriesPaint(2, SwingUtil.cellLightYellow);
       renderer.setSeriesPaint(3, SwingUtil.cellBlue);
-      renderer.setSeriesPaint(4, SwingUtil.cellGreen);
       renderer.setSeriesPaint(4, SwingUtil.cellGreen);
 
       XYPlot plot = new XYPlot(dataset, domainAxis, rangeAxis, renderer);

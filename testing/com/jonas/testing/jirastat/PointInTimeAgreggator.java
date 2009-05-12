@@ -5,16 +5,14 @@ import java.util.Map;
 
 import org.jfree.data.time.Day;
 
-import com.jonas.jira.JiraStatus;
-
-public class PointInTimeAgreggator implements Comparable<PointInTimeAgreggator> {
+public class PointInTimeAgreggator<T> implements Comparable<PointInTimeAgreggator> {
 
    private Day day;
 
-   private Map<JiraStatus, Integer> amountMap = new HashMap<JiraStatus, Integer>();
+   private Map<T, Integer> amountMap = new HashMap<T, Integer>();
 
-   public int getAmount(JiraStatus jiraStatus) {
-      Integer integer = amountMap.get(jiraStatus);
+   public int getAmount(T object) {
+      Integer integer = amountMap.get(object);
       if (integer == null)
          return 0;
       return integer;
@@ -24,13 +22,13 @@ public class PointInTimeAgreggator implements Comparable<PointInTimeAgreggator> 
       return day;
    }
 
-   public void add(Day day, JiraStatus jiraStatus) {
+   public void add(Day day, T object) {
       this.day = day;
-      Integer amount = amountMap.get(jiraStatus);
+      Integer amount = amountMap.get(object);
       if (amount == null) {
          amount = new Integer(0);
       }
-      amountMap.put(jiraStatus, ++amount);
+      amountMap.put(object, ++amount);
    }
 
    @Override

@@ -45,21 +45,23 @@ public class JiraStatChartTester extends ApplicationFrame {
 
       boolean isWeek = false;
       boolean aggregate = true;
-      
+
       try {
          jiraClient.login();
 
-         jiraClient.cacheJiraVersionsForProject(JiraProject.TALK);
-         JiraVersion fixVersion = JiraProject.TALK.getFixVersion("Talk v26.0");
-         JiraHttpCriteria criteria = criteriabuilder.fixVersion(JiraProject.TALK, fixVersion).getCriteria();
-//         JiraHttpCriteria criteria = criteriabuilder.deliveryBetween("-2w", "+1w").project(JiraProject.LLUDEVSUP).getCriteria();
-         
+         JiraProject project = JiraProject.LLU;
+         jiraClient.cacheJiraVersionsForProject(project);
+         JiraVersion fixVersion = project.getFixVersion("LLU 14");
+
+         JiraHttpCriteria criteria = criteriabuilder.fixVersion(project, fixVersion).getCriteria();
+         // JiraHttpCriteria criteria = criteriabuilder.deliveryBetween("-2w", "+1w").project(JiraProject.LLUDEVSUP).getCriteria();
+
          JiraIssue[] jiras = jiraClient.getJiras(criteria);
 
          DateRetriever dateRetriever = new CreationDateRetriever();
-         PointsInTimeFacade data = getData(jiras, dateRetriever, isWeek);
+         PointsInTimeFacadeAbstract<JiraStatus> data = getData(jiras, dateRetriever, isWeek);
 
-         JPanel chartPanel = getChartPanel(data, aggregate);
+         JPanel chartPanel = createChartPanel(data, aggregate);
          chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 
          setContentPane(chartPanel);
@@ -76,8 +78,8 @@ public class JiraStatChartTester extends ApplicationFrame {
       }
    }
 
-   private PointsInTimeFacade getData(JiraIssue[] jiras, DateRetriever dateRetriever, boolean isWeek) {
-      PointsInTimeFacade dataSetAggregator = new PointsInTimeFacade(isWeek);
+   private PointsInTimeFacadeAbstract<JiraStatus> getData(JiraIssue[] jiras, DateRetriever dateRetriever, boolean isWeek) {
+      PointsInTimeFacade<JiraStatus> dataSetAggregator = new PointsInTimeFacade<JiraStatus>(isWeek);
       for (JiraIssue jiraIssue : jiras) {
          JiraStatus jiraStatus = JiraStatus.getJiraStatusByName(jiraIssue.getStatus());
          dataSetAggregator.addPointInTime(dateRetriever.retrieveTimeLineDateFromJira(jiraIssue), jiraStatus);
@@ -85,7 +87,7 @@ public class JiraStatChartTester extends ApplicationFrame {
       return dataSetAggregator;
    }
 
-   public JPanel getChartPanel(PointsInTimeFacade dataSetAggregator, boolean aggregate) {
+   public JPanel createChartPanel(PointsInTimeFacadeAbstract<JiraStatus> dataSetAggregator, boolean aggregate) {
       JiraStatPanelBuilder panelBuilder = new JiraStatPanelBuilder(aggregate, dataSetAggregator);
       return panelBuilder.createDatasetAndChartFromTimeAggregator();
    }
