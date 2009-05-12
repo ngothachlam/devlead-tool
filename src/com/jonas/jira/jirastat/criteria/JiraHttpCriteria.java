@@ -1,4 +1,4 @@
-package com.jonas.testing.jirastat.criterias;
+package com.jonas.jira.jirastat.criteria;
 
 public class JiraHttpCriteria {
 

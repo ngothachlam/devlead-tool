@@ -21,8 +21,8 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraClient;
 import com.jonas.jira.access.JiraException;
-import com.jonas.testing.jirastat.criterias.JiraCriteriaBuilder;
-import com.jonas.testing.jirastat.criterias.JiraHttpCriteria;
+import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
+import com.jonas.jira.jirastat.criteria.JiraHttpCriteria;
 
 public class DownloadJiraListener implements ActionListener {
    private final JComboBox jiraProjectFixVersionCombo;

@@ -5,7 +5,7 @@
  *
  */
 
-package com.jonas.testing.jirastat;
+package com.jonas.jira.jirastat;
 
 import java.io.IOException;
 
@@ -23,8 +23,8 @@ import com.jonas.jira.JiraStatus;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraClient;
 import com.jonas.jira.access.JiraException;
-import com.jonas.testing.jirastat.criterias.JiraCriteriaBuilder;
-import com.jonas.testing.jirastat.criterias.JiraHttpCriteria;
+import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
+import com.jonas.jira.jirastat.criteria.JiraHttpCriteria;
 
 /**
  * A simple stacked bar chart using time series data.

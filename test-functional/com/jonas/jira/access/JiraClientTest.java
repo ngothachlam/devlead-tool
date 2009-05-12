@@ -8,7 +8,7 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.TestObjects;
-import com.jonas.testing.jirastat.criterias.JiraCriteriaBuilder;
+import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
 
 public class JiraClientTest extends JonasTestCase {
 

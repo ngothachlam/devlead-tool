@@ -26,8 +26,8 @@ import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.access.JiraClient;
-import com.jonas.testing.jirastat.criterias.JiraCriteriaBuilder;
-import com.jonas.testing.jirastat.criterias.JiraHttpCriteria;
+import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
+import com.jonas.jira.jirastat.criteria.JiraHttpCriteria;
 
 public class AddFilterDialog extends JFrame {
 
