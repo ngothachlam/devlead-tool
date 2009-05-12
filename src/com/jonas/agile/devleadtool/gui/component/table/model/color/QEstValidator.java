@@ -11,12 +11,12 @@ public class QEstValidator extends AbstractValidator {
       switch (type) {
          case TBD:
          case BUG:
+         case DEV:
          case EXTERNAL:
          case PRODISSUE:
          case MERGE:
             return passOnEmpty(value, new MessageDTO(type, true), new MessageDTO(false));
          case TEST:
-         case DEV:
          case STORY:
             BoardStatusValue boardStatusValue = (BoardStatusValue) boardStatus;
             switch (boardStatusValue) {
