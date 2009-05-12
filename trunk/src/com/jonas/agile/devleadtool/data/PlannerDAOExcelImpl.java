@@ -320,19 +320,22 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
          notifyListeners(DaoListenerEvent.LoadingErrored);
          e.printStackTrace();
          throw e;
-      } finally{
+      } finally {
          SwingUtil.resetFreeHSSFColors();
       }
    }
 
    private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount, Object cellContents) throws PersistanceException {
       if (rowCount == 0) {
-         if(log.isDebugEnabled())
-         log.debug("Header! Trying to find the header for " + cellContents.toString());
+         if (log.isDebugEnabled())
+            log.debug("Header! Trying to find the header for " + cellContents.toString());
          ColumnWrapper wrapper = ColumnWrapper.get(cellContents.toString());
+         if (wrapper == null) {
+            throw new PersistanceException("Found column " + cellContents + " in file, but there is no such columnWrapper representation. Update it to one of " + getStringOfColumns());
+         }
          ColumnType columnType = wrapper.getType();
          if (columnType == null) {
-            throw new PersistanceException("Found column " + cellContents + " in file, but there is no such column representation. Update it to one of " + getStringOfColumns());
+            throw new PersistanceException(cellContents.toString() + " has a wrapper, but the wrapper does not have a columnType relating to it!");
          }
          columns.put(colCount, wrapper);
          if (wrapper.isToLoad())
