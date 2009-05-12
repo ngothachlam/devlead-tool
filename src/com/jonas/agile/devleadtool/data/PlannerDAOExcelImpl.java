@@ -327,7 +327,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount, Object cellContents) throws PersistanceException {
       if (rowCount == 0) {
-         log.debug("\tHeader!");
+         if(log.isDebugEnabled())
+         log.debug("Header! Trying to find the header for " + cellContents.toString());
          ColumnWrapper wrapper = ColumnWrapper.get(cellContents.toString());
          ColumnType columnType = wrapper.getType();
          if (columnType == null) {
