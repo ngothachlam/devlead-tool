@@ -7,6 +7,7 @@ import com.jonas.agile.devleadtool.data.PersistanceException;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
 import com.jonas.agile.devleadtool.gui.component.table.model.TableModelDTO;
 import com.jonas.agile.devleadtool.junitutils.JonasTestCase;
 
@@ -26,7 +27,7 @@ public class LoadingPlannerFunctionalTest extends JonasTestCase {
    public void testShouldLoadModelOkWithNullType() throws IOException, PersistanceException {
       TableModelDTO dtoLoaded = dao.loadModel(new File("test-data\\shouldLoadFineIntoPlannerWithEmptyType.xls"), "board");
 
-      assertEquals(10, dtoLoaded.getHeader().size());
+      assertEquals(11, dtoLoaded.getHeader().size());
 
       assertEquals(4, dtoLoaded.getContents().size());
 
@@ -34,8 +35,8 @@ public class LoadingPlannerFunctionalTest extends JonasTestCase {
 
       assertEquals(ColumnType.Jira, dtoLoaded.getHeader().get(i++));
       assertEquals(ColumnType.Description, dtoLoaded.getHeader().get(i++));
-      assertEquals(ColumnType.Type, dtoLoaded.getHeader().get(i++));
       assertEquals(ColumnType.Resolution, dtoLoaded.getHeader().get(i++));
+      assertEquals(ColumnType.Type, dtoLoaded.getHeader().get(i++));
       assertEquals(ColumnType.Release, dtoLoaded.getHeader().get(i++));
       assertEquals(ColumnType.Merge, dtoLoaded.getHeader().get(i++));
       assertEquals(ColumnType.BoardStatus, dtoLoaded.getHeader().get(i++));
@@ -47,8 +48,8 @@ public class LoadingPlannerFunctionalTest extends JonasTestCase {
       i = 0;
       assertEquals("LLU-4198", dtoLoaded.getContents().get(0).get(i++));
       assertEquals("summary LLU-4198", dtoLoaded.getContents().get(0).get(i++));
-      assertEquals("", dtoLoaded.getContents().get(0).get(i++));
       assertEquals("res 4198", dtoLoaded.getContents().get(0).get(i++));
+      assertEquals(IssueType.TBD, dtoLoaded.getContents().get(0).get(i++));
       assertEquals("rel 4198", dtoLoaded.getContents().get(0).get(i++));
       assertEquals("mer 4198", dtoLoaded.getContents().get(0).get(i++));
       assertEquals(BoardStatusValue.Open, dtoLoaded.getContents().get(0).get(i++));
@@ -61,7 +62,7 @@ public class LoadingPlannerFunctionalTest extends JonasTestCase {
       assertEquals("LLU-4211", dtoLoaded.getContents().get(1).get(i++));
       assertEquals("", dtoLoaded.getContents().get(1).get(i++));
       assertEquals("", dtoLoaded.getContents().get(1).get(i++));
-      assertEquals("", dtoLoaded.getContents().get(1).get(i++));
+      assertEquals(IssueType.TBD, dtoLoaded.getContents().get(1).get(i++));
       assertEquals("", dtoLoaded.getContents().get(1).get(i++));
       assertEquals("", dtoLoaded.getContents().get(1).get(i++));
       assertEquals(BoardStatusValue.Failed, dtoLoaded.getContents().get(1).get(i++));

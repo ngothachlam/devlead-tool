@@ -80,7 +80,7 @@ public class ColumnWrapper<T> {
       }
    }.toUseCacheMethod();
    // Integer
-   public static final ColumnWrapper<Integer> prio = new ColumnWrapper<Integer>(Integer.class, ColumnType.prio, null, IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.Yes) {
+   public static final ColumnWrapper<Integer> prio = new ColumnWrapper<Integer>(Integer.class, ColumnType.prio, -1, IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.Yes) {
       @Override
       public Integer parseFromPersistanceStore(Object cellContents) {
          String cellContentsString = cellContents.toString();
