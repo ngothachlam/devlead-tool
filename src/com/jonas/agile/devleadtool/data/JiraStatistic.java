@@ -8,23 +8,21 @@ public class JiraStatistic {
 
    public JiraStatistic(BoardStatusValue object) {
       switch (object) {
-      case UnKnown:
-      case NA:
-         devStatus = DevStatus.preDevelopment;
-         break;
-      case Open:
-      case Failed:
-      case InProgress:
-         devStatus = DevStatus.inDevelopment;
-         break;
-      case Resolved:
-         devStatus = DevStatus.inTesting;
-         break;
-      case Complete:
-      case Approved:
-      case ForShowCase:
-         devStatus = DevStatus.closed;
-         break;
+         case UnKnown:
+         case NA:
+            devStatus = DevStatus.preDevelopment;
+            break;
+         case Open:
+         case Failed:
+         case InProgress:
+         case Resolved:
+            devStatus = DevStatus.inDevelopment;
+            break;
+         case Complete:
+         case Approved:
+         case ForShowCase:
+            devStatus = DevStatus.closed;
+            break;
       }
    }
 

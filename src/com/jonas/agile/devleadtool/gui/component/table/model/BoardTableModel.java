@@ -116,17 +116,16 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
                case preDevelopment:
                   switch (sprintTime) {
                      case beforeCurrentSprint:
-                        setToolTipText(row, getColumnIndex(column), "The jira is in pre-development (" + jiraStat.devStatus() + ") and this sprint is not in the past (" + sprintTime + ")!");
+                        setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is in pre-development (" + jiraStat.devStatus() + ") and this sprint is not in the past (" + sprintTime + ")!");
                         return SwingUtil.cellRed;
                   }
                   return null;
                case inDevelopment:
-               case inTesting:
                   switch (sprintTime) {
                      case unKnown:
                      case afterCurrentSprint:
                      case beforeCurrentSprint:
-                        setToolTipText(row, getColumnIndex(column), "The jira is in-progress (" + jiraStat.devStatus() + ") and this sprint is not current (" + sprintTime + ")!");
+                        setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress (" + jiraStat.devStatus() + ") and this sprint is not current (" + sprintTime + ")!");
                         return SwingUtil.cellRed;
                   }
                   return null;
@@ -134,7 +133,7 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
                   switch (sprintTime) {
                      case unKnown:
                      case afterCurrentSprint:
-                        setToolTipText(row, getColumnIndex(column), "The jira is closed (" + jiraStat.devStatus() + ") and this sprint is not current nor in the past (" + sprintTime + ")!");
+                        setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is closed (" + jiraStat.devStatus() + ") and this sprint is not current nor in the past (" + sprintTime + ")!");
                         return SwingUtil.cellRed;
                   }
                   return null;
