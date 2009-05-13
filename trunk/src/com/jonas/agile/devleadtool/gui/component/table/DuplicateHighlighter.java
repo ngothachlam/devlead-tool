@@ -14,11 +14,9 @@ public class DuplicateHighlighter extends AbstractHighlighter {
 
    private EnabledQuery enabledQuery;
 
-   MyTableModel model;
-   private final MyTable myTable;
+   private MyTableModel model;
 
    public DuplicateHighlighter(MyTable myTable) {
-      this.myTable = myTable;
       this.model = myTable.getMyModel();
    }
 
@@ -29,8 +27,8 @@ public class DuplicateHighlighter extends AbstractHighlighter {
 
             if (componentAdapter.column == 0) {
                JComponent textField = (JComponent) cellComponent;
-               String jira = (String) myTable.getValueAt(ColumnType.Jira, componentAdapter.row);
-               if (myTable.isJiraPresentAsDupe(jira)) {
+               String jira = (String) model.getValueAt(ColumnType.Jira, componentAdapter.row);
+               if (model.isJiraPresentAsDupe(jira)) {
                   textField.setForeground(Color.RED);
                }
             }

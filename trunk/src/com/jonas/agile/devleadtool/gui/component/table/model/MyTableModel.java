@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.gui.component.table.model;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -603,5 +604,20 @@ public abstract class MyTableModel extends DefaultTableModel {
          marked.put(row, Boolean.FALSE);
          fireTableRowsUpdated(row, row);
       }
+   }
+
+   public boolean isJiraPresentAsDupe(String jira) {
+      int rowCount = getRowCount();
+      Set<String> jiras = new HashSet<String>();
+      for (int row = 0; row < rowCount; row++) {
+         String testJira = (String) getValueAt(ColumnType.Jira, row);
+         if (jiras.contains(testJira)) {
+            return true;
+         }
+         if (jira.equalsIgnoreCase(testJira)) {
+            jiras.add(testJira);
+         }
+      }
+      return false;
    }
 }
