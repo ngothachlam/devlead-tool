@@ -106,7 +106,7 @@ public class LoadingPlannerFunctionalTest extends JonasTestCase {
       assertEquals("llu-service-management-build-3075, llu-master-build-4406", dtoLoaded.getContents().get(0).get(10));
       assertEquals("1.0", dtoLoaded.getContents().get(0).get(11));
       assertEquals("0.5", dtoLoaded.getContents().get(0).get(12));
-      assertEquals(-1d, dtoLoaded.getContents().get(0).get(13));
+      assertEquals(-1, dtoLoaded.getContents().get(0).get(13));
    }
 
    public void testShouldLoadModelOk() throws IOException, PersistanceException {

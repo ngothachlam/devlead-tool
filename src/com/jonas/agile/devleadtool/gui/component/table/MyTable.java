@@ -4,10 +4,8 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.ComboBoxModel;
@@ -24,8 +22,8 @@ import org.jdesktop.swingx.JXTable;
 
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
-import com.jonas.agile.devleadtool.gui.component.table.editor.ComboCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.CheckBoxTableCellEditor;
+import com.jonas.agile.devleadtool.gui.component.table.editor.ComboCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.JiraCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.renderer.MyTableHighlighter;
@@ -266,21 +264,6 @@ public class MyTable extends JXTable {
 
    public boolean isJiraPresent(String jira) {
       return model.isJiraPresent(jira);
-   }
-
-   public boolean isJiraPresentAsDupe(String jira) {
-      int rowCount = getRowCount();
-      Set<String> jiras = new HashSet<String>();
-      for (int row = 0; row < rowCount; row++) {
-         String testJira = (String) getValueAt(ColumnType.Jira, row);
-         if (jiras.contains(testJira)) {
-            return true;
-         }
-         if (jira.equalsIgnoreCase(testJira)) {
-            jiras.add(testJira);
-         }
-      }
-      return false;
    }
 
    public boolean isMarked(int row) {

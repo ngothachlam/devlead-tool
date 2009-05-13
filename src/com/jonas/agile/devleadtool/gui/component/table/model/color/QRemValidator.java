@@ -14,9 +14,9 @@ public class QRemValidator extends AbstractValidator {
          case EXTERNAL:
          case PRODISSUE:
          case MERGE:
+         case DEV:
             return passOnEmpty(value, new MessageDTO(type, true), new MessageDTO(false));
          case TEST:
-         case DEV:
          case STORY:
             BoardStatusValue boardStatusValue = (BoardStatusValue) boardStatus;
             switch (boardStatusValue) {
