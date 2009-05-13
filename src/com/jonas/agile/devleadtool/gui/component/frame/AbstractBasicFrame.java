@@ -7,14 +7,18 @@ import com.jonas.common.swing.SwingUtil;
 
 public abstract class AbstractBasicFrame extends JFrame {
 
-   private final Component parent;
-   private final int width;
-   private final int height;
+   private Component parent;
+   private int width;
+   private int height;
 
-   public AbstractBasicFrame(Component parent, int width, int height) {
-      this.parent = parent;
+   public AbstractBasicFrame(int width, int height) {
       this.width = width;
       this.height = height;
+   }
+
+   public AbstractBasicFrame(Component parent, int width, int height) {
+      this(width, height);
+      this.parent = parent;
    }
 
    @Override
