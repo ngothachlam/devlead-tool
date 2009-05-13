@@ -47,7 +47,7 @@ public class Sprint implements Comparable<Sprint> {
    private Date startDate;
    private boolean isForCombobox;
    private String note;
-   
+
    private static final Vector<Sprint> EXTRASPRINTS = new Vector<Sprint>();
 
    public Sprint(String name, Date startDate, Date endDate, int length) {
@@ -104,7 +104,9 @@ public class Sprint implements Comparable<Sprint> {
       boolean startDateIsTodayOrBefore = DateHelper.isFirstBeforeSecond(startDate, today);
       boolean endDateIsTodayOrAfter = DateHelper.isSameDay(endDate, today) || DateHelper.isFirstAfterSecond(endDate, today);
 
-      log.debug("startDate: " + startDate + " endDate: " + endDate + " startDatePreToday: " + startDateIsTodayOrBefore + " endDatePostToday: " + endDateIsTodayOrAfter);
+      if (log.isDebugEnabled()) {
+         // log.debug("startDate: " + startDate + " endDate: " + endDate + " startDatePreToday: " + startDateIsTodayOrBefore + " endDatePostToday: " + endDateIsTodayOrAfter);
+      }
 
       if (startDateIsTodayOrBefore && endDateIsTodayOrAfter) {
          return SprintTime.currentSprint;
