@@ -53,10 +53,16 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
    public static void main(String[] args) {
       ManualBurnDownFrame frame = new ManualBurnDownFrame(null, new DateHelper(), new BurnDownDataRetriever() {
 
+         BurnDownData data;
+
          @Override
          public BurnDownData getBurnDownData() {
-            BurnDownData data = new BurnDownData();
+            return data;
+         }
 
+         @Override
+         public void calculateBurndownData() {
+            data = new BurnDownData();
             data.add("Real Progression", 0d, 15d + 7d);
             data.add("Real Progression", 1d, 16d + 7d);
             data.add("Real Progression", 2d, 16d + 5d);
@@ -70,8 +76,6 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
             data.add("Real Progression", 10d, 1.75d + 2d);
             data.add("Critical Path", 1d, 22d);
             data.add("Critical Path", 4d, 3d);
-
-            return data;
          }
 
       });
@@ -96,7 +100,7 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
 
       double lengthOfSprint = 0d;
       Double totalEstimate = 0d;
-      
+
       seriesCollection.removeAllSeries();
       seriesCollection.addSeries(idealProgression);
 
@@ -147,7 +151,7 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
 
    private JPanel getSubButtonPanel() {
       JPanel panel = new JPanel(new GridLayout(1, 1, 3, 3));
-      panel.add(new JButton(new UpdateAction(this, this)));
+      panel.add(new JButton(new UpdateAction(this, this, retriever)));
       return panel;
    }
 
@@ -204,14 +208,17 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
    private class UpdateAction extends BasicAbstractGUIAction {
 
       private final ManualBurnDownFrame frame;
+      private final BurnDownDataRetriever retriever;
 
-      public UpdateAction(Frame parentFrame, ManualBurnDownFrame frame) {
+      public UpdateAction(Frame parentFrame, ManualBurnDownFrame frame, BurnDownDataRetriever retriever) {
          super("Update", "Update graph!", parentFrame);
          this.frame = frame;
+         this.retriever = retriever;
       }
 
       @Override
       public void doActionPerformed(ActionEvent e) {
+         retriever.calculateBurndownData();
          frame.updateBurndown();
       }
 

@@ -39,13 +39,15 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
    private XYSeries estimateProgression;
 
    private JTextField dayInSprintTextField;
-   private ValueAxis xAxis;
    private JTextField lengthOfSprintTextField;
+
+   private ValueAxis xAxis;
+   private NumberAxis yAxis;
+   
    private ChartPanel panel;
    private final MyTable sourceTable;
    private DateHelper dateHelper;
    private TextTitle source;
-   private NumberAxis yAxis;
    private final SprintCache sprintCache;
 
    public BoardStatsFrame(Component parent, int width, int height, MyTable sourceTable, DateHelper dateHelper, SprintCache sprintCache) {
