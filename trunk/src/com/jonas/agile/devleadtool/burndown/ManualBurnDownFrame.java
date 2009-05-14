@@ -54,7 +54,7 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
    }
 
    public ManualBurnDownFrame(Component parent, DateHelper dateHelper) {
-      super(parent, null, null);
+      super(parent, null, null, true);
       this.dateHelper = dateHelper;
       this.prepareBurndown();
    }
