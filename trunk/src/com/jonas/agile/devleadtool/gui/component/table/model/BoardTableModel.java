@@ -71,6 +71,12 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
 
       String stringValue;
       switch (column) {
+         case Type:
+            if (value.equals(IssueType.TBD)) {
+               setToolTipText(row, getColumnIndex(column), "Cannot be TBD - define it!");
+               return SwingUtil.cellRed;
+            }
+            break;
          case Release:
             stringValue = value.toString();
             if (isEmptyString(stringValue)) {

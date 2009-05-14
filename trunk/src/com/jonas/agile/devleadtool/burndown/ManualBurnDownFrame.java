@@ -1,9 +1,16 @@
-package com.jonas.agile.devleadtool.gui.component.frame;
+package com.jonas.agile.devleadtool.burndown;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Frame;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -23,9 +30,11 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.RefineryUtilities;
 
-import com.jonas.agile.devleadtool.burndown.SprintBurndownGrapher;
+import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.burndown.CalculateSprintBurndownAction;
+import com.jonas.agile.devleadtool.gui.component.frame.AbstractBasicFrame;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
@@ -33,52 +42,69 @@ import com.jonas.common.DateHelper;
 import com.jonas.common.string.StringHelper;
 import com.jonas.common.swing.SwingUtil;
 
-public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndownGrapher {
+public class ManualBurnDownFrame extends AbstractBasicFrame  {
 
    private XYSeries idealProgression;
    private XYSeries estimateProgression;
 
-   private JTextField dayInSprintTextField;
    private ValueAxis xAxis;
-   private JTextField lengthOfSprintTextField;
+   
    private ChartPanel panel;
-   private final MyTable sourceTable;
    private DateHelper dateHelper;
    private TextTitle source;
    private NumberAxis yAxis;
-   private final SprintCache sprintCache;
+   private JTextField name;
 
-   public BoardStatsFrame(Component parent, int width, int height, MyTable sourceTable, DateHelper dateHelper, SprintCache sprintCache) {
-      super(parent, width, height);
-      this.sourceTable = sourceTable;
+   public static void main(String[] args){
+      ManualBurnDownFrame frame = new ManualBurnDownFrame(null, new DateHelper());
+      frame.setVisible(true);
+   }
+   private List<BurnDownDay> getBurndowns() {
+      List<BurnDownDay> burndownDays = new ArrayList<BurnDownDay>();
+      burndownDays.add(new BurnDownDay(0d,15d+7d));
+      burndownDays.add(new BurnDownDay(1d,16d+7d));
+      burndownDays.add(new BurnDownDay(2d,16d+5d));
+      burndownDays.add(new BurnDownDay(3d,13d+3d));
+      burndownDays.add(new BurnDownDay(4d,13d+1.5d));
+      burndownDays.add(new BurnDownDay(5d,13d+0d));
+      burndownDays.add(new BurnDownDay(6d,4d+7d));
+      burndownDays.add(new BurnDownDay(7d,2d+2d));
+      burndownDays.add(new BurnDownDay(8d,2d+4d));
+      burndownDays.add(new BurnDownDay(9d,1.75d+3d));
+      burndownDays.add(new BurnDownDay(10d,1.75d+2d));
+      return burndownDays;
+   }
+   
+   public ManualBurnDownFrame(Component parent, DateHelper dateHelper) {
+      super(parent, null, null);
       this.dateHelper = dateHelper;
-      this.sprintCache = sprintCache;
       this.prepareBurndown();
    }
 
-   public void calculateAndPrintBurndown(double totalEstimates, double remainingEstimates, Set<String> projects, Comparable estimateKey) {
-      source.setText(StringHelper.getNiceString(projects));
+   public void updateBurndown() {
+      source.setText(name.getText());
       idealProgression.clear();
       estimateProgression.clear();
       
-      estimateProgression.setKey(estimateKey);
+      List<BurnDownDay> burndownDays = getBurndowns();
+      Collections.sort(burndownDays);
+      for (BurnDownDay burnDownDay : burndownDays) {
+         estimateProgression.add(burnDownDay.getX(), burnDownDay.getY());
+      }
 
-      double dayInSprint = StringHelper.getDoubleOrZero(dayInSprintTextField.getText());
-      double lengthOfSprint = StringHelper.getDoubleOrZero(lengthOfSprintTextField.getText());
-
-      idealProgression.add(0, totalEstimates);
+      double lengthOfSprint = StringHelper.getDoubleOrZero(burndownDays.size()-1);
+      
+      idealProgression.add(0, burndownDays.get(0).getY());
       idealProgression.add(lengthOfSprint, 0);
-
-      estimateProgression.add(0d, totalEstimates);
-      estimateProgression.add(dayInSprint, remainingEstimates);
-
+      
       xAxis.setLowerBound(0d);
-      xAxis.setUpperBound(Math.max(lengthOfSprint, dayInSprint) + 0.2d);
+      xAxis.setUpperBound(Math.max(lengthOfSprint, 5) + 0.2d);
 
       yAxis.setAutoRange(true);
       yAxis.setLowerBound(0d);
 
    }
+
 
    @Override
    public Container getMyPanel() {
@@ -89,7 +115,7 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
    }
 
    private Component getTopPanel() {
-      JPanel panel = new JPanel(new GridLayout(1, 2, 5, 5));
+      JPanel panel = new JPanel(new GridBagLayout());
       JPanel inputPanel = getSubInputPanel();
       JPanel buttonPanel = getSubButtonPanel();
       panel.setBorder(BorderFactory.createTitledBorder("Sprint Info"));
@@ -100,36 +126,22 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
 
    private JPanel getSubButtonPanel() {
       JPanel panel = new JPanel(new GridLayout(1, 1, 3, 3));
-      panel.add(new JButton(new CalculateSprintBurndownAction("Calculate Burndown", "Calculate Burndown", this, sourceTable, this)));
+      panel.add(new JButton(new UpdateAction(this, this)));
       return panel;
    }
 
    private JPanel getSubInputPanel() {
       JPanel panel = new JPanel(new GridLayout(3, 2, 3, 3));
+
       panel.add(new JLabel("Sprint Name:"));
-      JTextField sprintName = new JTextField(5);
-      sprintName.setEditable(false);
-      sprintName.setToolTipText("To edit - 'Manage Sprints'!");
-      panel.add(sprintName);
-
-      panel.add(new JLabel("Day in Sprint:"));
-      dayInSprintTextField = new JTextField(5);
-      panel.add(dayInSprintTextField);
-
-      panel.add(new JLabel("Length of Sprint:"));
-      lengthOfSprintTextField = new JTextField(5);
-      panel.add(lengthOfSprintTextField);
-
-      Sprint currentSprint = sprintCache.getCurrentSprint();
-      sprintName.setText(currentSprint == null ? "<NONE DEFINED>" : currentSprint.getName());
-      dayInSprintTextField.setText(currentSprint != null ? currentSprint.calculateDayInSprint().toString() : "");
-      lengthOfSprintTextField.setText(currentSprint != null ? currentSprint.getLength().toString() : "");
+      name = new JTextField(5);
+      panel.add(name);
 
       return panel;
    }
 
    public void prepareBurndown() {
-      estimateProgression = new XYSeries("Current Progression");
+      estimateProgression = new XYSeries("Real Progression");
       idealProgression = new XYSeries("Ideal Progression");
 
       XYSeriesCollection dataset = new XYSeriesCollection();
@@ -154,8 +166,8 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
       renderer.setSeriesPaint(0, SwingUtil.cellRed);
-      renderer.setSeriesPaint(1, SwingUtil.cellLightRed);
-      renderer.setSeriesPaint(2, SwingUtil.cellBlue);
+      renderer.setSeriesPaint(1, SwingUtil.cellBlue);
+      renderer.setSeriesPaint(2, SwingUtil.cellLightRed);
       renderer.setSeriesPaint(3, SwingUtil.cellLightBlue);
 
       renderer.setShapesVisible(true);
@@ -169,6 +181,49 @@ public class BoardStatsFrame extends AbstractBasicFrame implements SprintBurndow
       yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
       panel = new ChartPanel(chart);
+   }
+   
+   private class UpdateAction extends BasicAbstractGUIAction{
+
+      private final ManualBurnDownFrame frame;
+
+      public UpdateAction(Frame parentFrame, ManualBurnDownFrame frame) {
+         super("Update", "Update graph!", parentFrame);
+         this.frame = frame;
+      }
+
+      @Override
+      public void doActionPerformed(ActionEvent e) {
+         frame.updateBurndown();
+      }
+      
+   }
+   
+   private class BurnDownDay implements Comparable<BurnDownDay>{
+
+      private Double x, y;
+      
+
+      public BurnDownDay(Double x, Double y) {
+         this.x = x;
+         this.y = y;
+      }
+
+      public Double getY() {
+         return y;
+      }
+
+      public Double getX() {
+         return x;
+      }
+
+      @Override
+      public int compareTo(BurnDownDay o) {
+         Double y2 = o.getX();
+         Double y3 = getX();
+         return (int) (y3.doubleValue()-y2.doubleValue());
+      }
+      
    }
 }
 

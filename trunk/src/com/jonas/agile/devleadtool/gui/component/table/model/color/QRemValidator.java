@@ -21,8 +21,8 @@ public class QRemValidator extends AbstractValidator {
             BoardStatusValue boardStatusValue = (BoardStatusValue) boardStatus;
             switch (boardStatusValue) {
                case InProgress:
-               case Resolved:
                case Failed:
+               case Resolved:
                   return passOnNumeric(value, type, boardStatusValue);
                case UnKnown:
                case NA:

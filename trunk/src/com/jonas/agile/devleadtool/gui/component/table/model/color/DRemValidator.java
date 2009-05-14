@@ -21,11 +21,11 @@ public class DRemValidator extends AbstractValidator {
             BoardStatusValue boardStatusValue = (BoardStatusValue) boardStatus;
             switch (boardStatusValue) {
                case InProgress:
+               case Failed:
                   return passOnNumeric(value, type, boardStatusValue);
                case UnKnown:
                case NA:
                case Open:
-               case Failed:
                case Resolved:
                case Complete:
                case ForShowCase:
