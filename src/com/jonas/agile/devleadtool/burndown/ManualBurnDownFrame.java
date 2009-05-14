@@ -40,13 +40,13 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
    private XYSeries idealProgression;
 
    private ValueAxis xAxis;
+   private NumberAxis yAxis;
 
    private ChartPanel panel;
    private DateHelper dateHelper;
    private TextTitle source;
-   private NumberAxis yAxis;
    private JTextField name;
-   private XYSeriesCollection dataset;
+   private XYSeriesCollection seriesCollection;
 
    public static void main(String[] args) {
       ManualBurnDownFrame frame = new ManualBurnDownFrame(null, new DateHelper());
@@ -71,19 +71,19 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
       double lengthOfSprint = 0d;
       Double totalEstimate = 0d;
       for (String categoryName : categoryNames) {
-         XYSeries estimateProgression = new XYSeries(categoryName);
+         XYSeries newSeries = new XYSeries(categoryName);
+         newSeries.setKey(categoryName);
+         seriesCollection.addSeries(newSeries);
+         
          burndownDays = data.getDataForCategory(categoryName);
-         estimateProgression.setKey(categoryName);
 
          Collections.sort(burndownDays);
          for (BurnDownDay burnDownDay : burndownDays) {
-            estimateProgression.add(burnDownDay.getX(), burnDownDay.getY());
+            newSeries.add(burnDownDay.getX(), burnDownDay.getY());
          }
 
          lengthOfSprint = Math.max(lengthOfSprint, StringHelper.getDoubleOrZero(burndownDays.get(burndownDays.size() - 1).getX()));
          totalEstimate = Math.max(totalEstimate, burndownDays.get(0).getY());
-
-         dataset.addSeries(estimateProgression);
       }
 
       idealProgression.add(0, totalEstimate);
@@ -154,14 +154,14 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
    public void prepareBurndown() {
       idealProgression = new XYSeries("Ideal Progression");
 
-      dataset = new XYSeriesCollection();
-      dataset.addSeries(idealProgression);
+      seriesCollection = new XYSeriesCollection();
+      seriesCollection.addSeries(idealProgression);
 
       // create the chart...
       JFreeChart chart = ChartFactory.createXYLineChart("Sprint Burndown - " + dateHelper.getTodaysDateAsString(), // chart title
             "Day in Sprint", // x axis label
             "Outstanding Points", // y axis label
-            dataset, // data
+            seriesCollection, // data
             PlotOrientation.VERTICAL, true, // include legend
             true, // tooltips
             false // urls
