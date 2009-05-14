@@ -92,7 +92,7 @@ public class ManualBurnDownFrame extends AbstractBasicFrame  {
          estimateProgression.add(burnDownDay.getX(), burnDownDay.getY());
       }
 
-      double lengthOfSprint = StringHelper.getDoubleOrZero(burndownDays.size()-1);
+      double lengthOfSprint = StringHelper.getDoubleOrZero(burndownDays.get(burndownDays.size()-1).getY());
       
       idealProgression.add(0, burndownDays.get(0).getY());
       idealProgression.add(lengthOfSprint, 0);
