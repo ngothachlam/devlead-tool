@@ -48,14 +48,40 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
    private JTextField name;
    private XYSeriesCollection seriesCollection;
 
+   private final BurnDownDataRetriever retriever;
+
    public static void main(String[] args) {
-      ManualBurnDownFrame frame = new ManualBurnDownFrame(null, new DateHelper());
+      ManualBurnDownFrame frame = new ManualBurnDownFrame(null, new DateHelper(), new BurnDownDataRetriever() {
+
+         @Override
+         public BurnDownData getBurnDownData() {
+            BurnDownData data = new BurnDownData();
+
+            data.add("Real Progression", 0d, 15d + 7d);
+            data.add("Real Progression", 1d, 16d + 7d);
+            data.add("Real Progression", 2d, 16d + 5d);
+            data.add("Real Progression", 3d, 13d + 3d);
+            data.add("Real Progression", 4d, 13d + 1.5d);
+            data.add("Real Progression", 5d, 13d + 0d);
+            data.add("Real Progression", 6d, 4d + 7d);
+            data.add("Real Progression", 7d, 2d + 2d);
+            data.add("Real Progression", 8d, 2d + 4d);
+            data.add("Real Progression", 9d, 1.75d + 3d);
+            data.add("Real Progression", 10d, 1.75d + 2d);
+            data.add("Critical Path", 1d, 22d);
+            data.add("Critical Path", 4d, 3d);
+
+            return data;
+         }
+
+      });
       frame.setVisible(true);
    }
 
-   public ManualBurnDownFrame(Component parent, DateHelper dateHelper) {
+   public ManualBurnDownFrame(Component parent, DateHelper dateHelper, BurnDownDataRetriever retriever) {
       super(parent, null, null, true);
       this.dateHelper = dateHelper;
+      this.retriever = retriever;
       this.prepareBurndown();
    }
 
@@ -63,18 +89,22 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
       source.setText(name.getText());
       idealProgression.clear();
 
-      BurnDownData data = getBurnDownData();
+      BurnDownData data = retriever.getBurnDownData();
 
       Set<String> categoryNames = data.getCategoryNames();
       List<BurnDownDay> burndownDays = null;
 
       double lengthOfSprint = 0d;
       Double totalEstimate = 0d;
+      
+      seriesCollection.removeAllSeries();
+      seriesCollection.addSeries(idealProgression);
+
       for (String categoryName : categoryNames) {
          XYSeries newSeries = new XYSeries(categoryName);
          newSeries.setKey(categoryName);
          seriesCollection.addSeries(newSeries);
-         
+
          burndownDays = data.getDataForCategory(categoryName);
 
          Collections.sort(burndownDays);
@@ -95,26 +125,6 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
       yAxis.setAutoRange(true);
       yAxis.setLowerBound(0d);
 
-   }
-
-   private BurnDownData getBurnDownData() {
-      BurnDownData data = new BurnDownData();
-
-      data.add("Real Progression", 0d, 15d + 7d);
-      data.add("Real Progression", 1d, 16d + 7d);
-      data.add("Real Progression", 2d, 16d + 5d);
-      data.add("Real Progression", 3d, 13d + 3d);
-      data.add("Real Progression", 4d, 13d + 1.5d);
-      data.add("Real Progression", 5d, 13d + 0d);
-      data.add("Real Progression", 6d, 4d + 7d);
-      data.add("Real Progression", 7d, 2d + 2d);
-      data.add("Real Progression", 8d, 2d + 4d);
-      data.add("Real Progression", 9d, 1.75d + 3d);
-      data.add("Real Progression", 10d, 1.75d + 2d);
-      data.add("Critical Path", 1d, 22d);
-      data.add("Critical Path", 4d, 3d);
-
-      return data;
    }
 
    @Override
@@ -155,7 +165,6 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
       idealProgression = new XYSeries("Ideal Progression");
 
       seriesCollection = new XYSeriesCollection();
-      seriesCollection.addSeries(idealProgression);
 
       // create the chart...
       JFreeChart chart = ChartFactory.createXYLineChart("Sprint Burndown - " + dateHelper.getTodaysDateAsString(), // chart title
