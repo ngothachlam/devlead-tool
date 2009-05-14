@@ -8,15 +8,15 @@ import com.jonas.common.swing.SwingUtil;
 public abstract class AbstractBasicFrame extends JFrame {
 
    private Component parent;
-   private int width;
-   private int height;
+   private Integer width;
+   private Integer height;
 
-   public AbstractBasicFrame(int width, int height) {
+   public AbstractBasicFrame(Integer width, Integer height) {
       this.width = width;
       this.height = height;
    }
 
-   public AbstractBasicFrame(Component parent, int width, int height) {
+   public AbstractBasicFrame(Component parent, Integer width, Integer height) {
       this(width, height);
       this.parent = parent;
    }
@@ -26,7 +26,8 @@ public abstract class AbstractBasicFrame extends JFrame {
       if (isVisible) {
          this.setContentPane(getMyPanel());
          this.pack();
-         this.setSize(width, height);
+         if (width != null && height != null)
+            this.setSize(width, height);
 
          if (parent != null)
             SwingUtil.centreWindowWithinWindow(this, parent);
