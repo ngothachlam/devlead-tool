@@ -111,6 +111,8 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
       data.add("Real Progression", 8d, 2d + 4d);
       data.add("Real Progression", 9d, 1.75d + 3d);
       data.add("Real Progression", 10d, 1.75d + 2d);
+      data.add("Critical Path", 1d, 22d);
+      data.add("Critical Path", 4d, 3d);
 
       return data;
    }
