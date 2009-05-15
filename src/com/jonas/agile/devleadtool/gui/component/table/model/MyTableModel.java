@@ -411,7 +411,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    public void mark(String jira) {
       int row = getRowWithJira(jira);
-      if (row > -1) {
+      if (row >= 0) {
          mark(row);
       }
    }
