@@ -118,33 +118,45 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
                return SwingUtil.cellRed;
             }
             SprintTime sprintTime = sprint.calculateTime();
-            switch (jiraStat.devStatus()) {
-               case preDevelopment:
-                  switch (sprintTime) {
-                     case beforeCurrentSprint:
-                        setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is in pre-development (" + jiraStat.devStatus() + ") and this sprint is not in the past (" + sprintTime + ")!");
+            
+            switch (sprintTime) {
+               case sprintIsInThePast:
+                  switch (jiraStat.devStatus()) {
+                     case jiraIsInPreDevelopmentState:
+                        setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is in pre-development (" + jiraStat.devStatus() + ") and the sprint is not in the future nor current (" + sprintTime + ")!");
+                        return SwingUtil.cellRed;
+                     case jiraIsInDevelopmentState:
+                        setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress (" + jiraStat.devStatus() + ") and the sprint is not current (" + sprintTime + ")!");
                         return SwingUtil.cellRed;
                   }
-                  return null;
-               case inDevelopment:
-                  switch (sprintTime) {
-                     case unKnown:
-                     case afterCurrentSprint:
-                     case beforeCurrentSprint:
+                  setToolTipText(row, getColumnIndex(column), "Is before current sprint!");
+                  return SwingUtil.cellLightGreen;
+               case currentSprint:
+                  switch (jiraStat.devStatus()) {
+                     case jiraIsInPreDevelopmentState:
+                        break;
+                     case jiraIsInDevelopmentState:
+                        break;
+                     case jiraIsInPostDevelopmentState:
+                        break;
+                  }
+                  setToolTipText(row, getColumnIndex(column), "Is current sprint!");
+                  return SwingUtil.cellLightYellow;
+               case sprintIsInTheFuture:
+                  switch (jiraStat.devStatus()) {
+                     case jiraIsInPreDevelopmentState:
+                        break;
+                     case jiraIsInDevelopmentState:
                         setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress (" + jiraStat.devStatus() + ") and this sprint is not current (" + sprintTime + ")!");
                         return SwingUtil.cellRed;
-                  }
-                  return null;
-               case closed:
-                  switch (sprintTime) {
-                     case unKnown:
-                     case afterCurrentSprint:
+                     case jiraIsInPostDevelopmentState:
                         setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is closed (" + jiraStat.devStatus() + ") and this sprint is not current nor in the past (" + sprintTime + ")!");
                         return SwingUtil.cellRed;
                   }
-                  return null;
+                  setToolTipText(row, getColumnIndex(column), "Is after current sprint!");
+                  return SwingUtil.cellLightRed;
             }
-            break;
+            return null;
          case DEst:
          case QEst:
          case DRem:
@@ -158,71 +170,6 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
                return SwingUtil.cellRed;
             }
             return null;
-
-            // case QEst:
-            // stringValue = value.toString();
-            // if (isEmptyString(stringValue)) {
-            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-            // if (isBoardValueEither(row, cellColorHelper.getRequiredQAEstimates(), boardStatus)) {
-            // setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-            // return SwingUtil.cellRed;
-            // }
-            // }
-            // break;
-            // case DRem:
-            // stringValue = value.toString();
-            // if (isEmptyString(stringValue)) {
-            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-            // if (isBoardValueEither(row, cellColorHelper.getRequiredDevRemains(), boardStatus)) {
-            // setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-            // return SwingUtil.cellRed;
-            // }
-            // } else {
-            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-            // if (!isBoardValueEither(row, cellColorHelper.getRequiredDevRemains(), boardStatus)) {
-            // setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-            // return SwingUtil.cellRed;
-            // } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(ColumnType.DEst, row))) {
-            // setToolTipText(row, getColumnIndex(column), "Cannot be numeric if the Dev Estimate is not!");
-            // return SwingUtil.cellRed;
-            // }
-            // }
-            // break;
-            // case QRem:
-            // stringValue = value.toString();
-            // if (isEmptyString(stringValue)) {
-            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-            // if (isBoardValueEither(row, cellColorHelper.getRequiredQARemains(), boardStatus)) {
-            // setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-            // return SwingUtil.cellRed;
-            // }
-            // } else {
-            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-            // if (!isBoardValueEither(row, cellColorHelper.getRequiredQARemains(), boardStatus)) {
-            // setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-            // return SwingUtil.cellRed;
-            // } else if (StringHelper.isDouble(value) && !StringHelper.isDouble(getValueAt(ColumnType.QEst, row))) {
-            // setToolTipText(row, getColumnIndex(column), "Cannot be numeric if the QA Estimate is not!");
-            // return SwingUtil.cellRed;
-            // }
-            // }
-            // break;
-            // case DAct:
-            // stringValue = value.toString();
-            // if (isEmptyString(stringValue)) {
-            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-            // if (isBoardValueEither(row, cellColorHelper.getRequiredDevActuals(), boardStatus)) {
-            // setToolTipText(row, getColumnIndex(column), "Should be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-            // return SwingUtil.cellRed;
-            // }
-            // } else {
-            // Object boardStatus = getValueAt(ColumnType.BoardStatus, row);
-            // if (isBoardValueEither(row, cellColorHelper.getRequiredBlankDevActuals(), boardStatus)) {
-            // setToolTipText(row, getColumnIndex(column), "Should not be filled out based on the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-            // return SwingUtil.cellRed;
-            // }
-            // }
-            // break;
          case BoardStatus:
             BoardStatusValue newValue = (BoardStatusValue) value;
             if (log.isDebugEnabled()) {

@@ -111,9 +111,9 @@ public class Sprint implements Comparable<Sprint> {
       if (startDateIsTodayOrBefore && endDateIsTodayOrAfter) {
          return SprintTime.currentSprint;
       } else if (startDateIsTodayOrBefore && !endDateIsTodayOrAfter) {
-         return SprintTime.beforeCurrentSprint;
+         return SprintTime.sprintIsInThePast;
       } else if (!startDateIsTodayOrBefore && endDateIsTodayOrAfter) {
-         return SprintTime.afterCurrentSprint;
+         return SprintTime.sprintIsInTheFuture;
       }
       return null;
    }
