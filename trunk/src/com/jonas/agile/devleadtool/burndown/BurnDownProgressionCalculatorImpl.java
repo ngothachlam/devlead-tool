@@ -9,19 +9,19 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.logging.MyLogger;
 
-public class BurnDownDataDTO {
-      private final Map<String, JiraBurndownStat> jiras;
+public class BurnDownProgressionCalculatorImpl implements BurnDownCalculator {
+      final Map<String, JiraBurndownProgressionStatImpl> jiras;
       double remainingEstimates = 0d;
       double totalEstimates = 0d;
-      private Set<String> jiraProjects = new HashSet<String>();
-      private Logger log = MyLogger.getLogger(BurnDownDataDTO.class);
+      Set<String> jiraProjects = new HashSet<String>();
+      Logger log = MyLogger.getLogger(BurnDownProgressionCalculatorImpl.class);
 
-      public BurnDownDataDTO(Map<String, JiraBurndownStat> jiras) {
+      public BurnDownProgressionCalculatorImpl(Map<String, JiraBurndownProgressionStatImpl> jiras) {
          this.jiras = jiras;
       }
 
       public void calculateBurndownData() {
-         for (JiraBurndownStat jiraStat : jiras.values()) {
+         for (JiraBurndownProgressionStatImpl jiraStat : jiras.values()) {
 
             totalEstimates += jiraStat.getTotalEstimate();
 

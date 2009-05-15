@@ -11,7 +11,7 @@ import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 public  class JiraStatsDataDTO {
 
       private Set<String> duplicateJiras;
-      private Map<String, JiraBurndownStat> jiras;
+      private Map<String, JiraBurndownProgressionStatImpl> jiras;
       private final MyTable sourceTable;
 
       public JiraStatsDataDTO(MyTable sourceTable) {
@@ -19,12 +19,12 @@ public  class JiraStatsDataDTO {
       }
 
       public void calculateJiraStats() {
-         jiras = new HashMap<String, JiraBurndownStat>();
+         jiras = new HashMap<String, JiraBurndownProgressionStatImpl>();
          duplicateJiras = new HashSet<String>();
          for (int row = 0; row < sourceTable.getRowCount(); row++) {
             String jira = (String) sourceTable.getValueAt(ColumnType.Jira, row);
             if (!jiras.containsKey(jira)) {
-               JiraBurndownStat statRow = new JiraBurndownStat(jira, sourceTable, row);
+               JiraBurndownProgressionStatImpl statRow = new JiraBurndownProgressionStatImpl(jira, sourceTable, row);
                jiras.put(jira, statRow);
             } else {
                duplicateJiras.add(jira);
@@ -36,7 +36,7 @@ public  class JiraStatsDataDTO {
          return duplicateJiras;
       }
 
-      public Map<String, JiraBurndownStat> getJiras() {
+      public Map<String, JiraBurndownProgressionStatImpl> getJiras() {
          return jiras;
       }
 

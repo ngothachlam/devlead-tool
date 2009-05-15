@@ -11,13 +11,13 @@ import com.jonas.agile.devleadtool.sprint.SprintTime;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.string.StringHelper;
 
-public class JiraBurndownStat {
+public class JiraBurndownProgressionStatImpl implements JiraBurnDownStat {
    private String jira;
    private double totalEstimate = 0d;
    private double remainingEstimate = 0d;
    private Logger log = MyLogger.getLogger(BoardStatsFrame.class);
 
-   public JiraBurndownStat(String jira, MyTable boardTable, int row) {
+   public JiraBurndownProgressionStatImpl(String jira, MyTable boardTable, int row) {
       this.jira = jira;
 
       Sprint sprint = (Sprint) boardTable.getValueAt(ColumnType.Sprint, row);
@@ -39,7 +39,9 @@ public class JiraBurndownStat {
                case Resolved:
                   this.remainingEstimate += StringHelper.getDoubleOrZero(boardTable.getValueAt(ColumnType.QRem, row));
                   break;
-               default:
+               case NA:
+               case Open:
+               case UnKnown:
                   this.remainingEstimate = StringHelper.getDoubleOrZero(boardTable.getValueAt(ColumnType.DEst, row));
                   this.remainingEstimate += StringHelper.getDoubleOrZero(boardTable.getValueAt(ColumnType.QEst, row));
                   break;

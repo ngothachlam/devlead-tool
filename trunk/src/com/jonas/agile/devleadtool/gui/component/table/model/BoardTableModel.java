@@ -229,6 +229,9 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
                log.debug("boardStatus is " + newValue);
             }
             switch (newValue) {
+               case UnKnown:
+                  setToolTipText(row, getColumnIndex(column), "This is set to unKnown!");
+                  return SwingUtil.cellRed;
                case InProgress:
                   if (log.isDebugEnabled()) {
                      log.debug("in progress");

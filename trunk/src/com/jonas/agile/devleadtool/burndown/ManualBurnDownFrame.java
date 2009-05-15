@@ -76,12 +76,16 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
             data.add("Critical Path", 4d, 3d);
          }
 
-      });
+      }, true);
       frame.setVisible(true);
    }
 
    public ManualBurnDownFrame(Component parent, DateHelper dateHelper, BurnDownDataRetriever retriever) {
-      super(parent, null, null, true);
+      this(parent, dateHelper, retriever, false);
+   }
+
+   public ManualBurnDownFrame(Component parent, DateHelper dateHelper, BurnDownDataRetriever retriever, boolean closeOnExit) {
+      super(parent, null, null, closeOnExit);
       this.dateHelper = dateHelper;
       this.retriever = retriever;
       this.prepareBurndown();
@@ -178,10 +182,12 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
 
       XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
-      renderer.setSeriesPaint(0, SwingUtil.cellRed);
-      renderer.setSeriesPaint(1, SwingUtil.cellBlue);
-      renderer.setSeriesPaint(2, SwingUtil.cellLightRed);
+      renderer.setSeriesPaint(0, SwingUtil.cellGreen);
+      renderer.setSeriesPaint(1, SwingUtil.cellLightGreen);
+      renderer.setSeriesPaint(2, SwingUtil.cellBlue);
       renderer.setSeriesPaint(3, SwingUtil.cellLightBlue);
+      renderer.setSeriesPaint(4, SwingUtil.cellRed);
+      renderer.setSeriesPaint(5, SwingUtil.cellLightRed);
 
       renderer.setShapesVisible(true);
       renderer.setShapesFilled(true);
