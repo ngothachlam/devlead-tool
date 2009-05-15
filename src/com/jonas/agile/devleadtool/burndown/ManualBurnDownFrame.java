@@ -49,7 +49,7 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
    private final BurnDownDataRetriever retriever;
 
    public static void main(String[] args) {
-      ManualBurnDownFrame frame = new ManualBurnDownFrame(null, new DateHelper(), new BurnDownDataRetriever() {
+      ManualBurnDownFrame frame = new ManualBurnDownFrame(null, null, new BurnDownDataRetriever() {
 
          BurnDownData data;
 
@@ -72,8 +72,15 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
             data.add("Real Progression", 8d, 2d + 4d);
             data.add("Real Progression", 9d, 1.75d + 3d);
             data.add("Real Progression", 10d, 1.75d + 2d);
-            data.add("Critical Path", 1d, 22d);
-            data.add("Critical Path", 4d, 3d);
+            data.add("Ideal Progression", 0d, 15d + 7d);
+            data.add("Ideal Progression", 10d, 0d);
+
+            double dataFixes = 0d;
+            data.add("Datafixes completed", 0d, dataFixes += 2d);
+            data.add("Datafixes completed", 2d, dataFixes += 1d);
+            data.add("Datafixes completed", 5d, dataFixes += 2d);
+            data.add("Datafixes completed", 7d, dataFixes += 2d);
+            data.add("Datafixes completed", 10d, dataFixes);
          }
 
       }, true);
@@ -166,7 +173,7 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
       seriesCollection = new XYSeriesCollection();
 
       // create the chart...
-      JFreeChart chart = ChartFactory.createXYLineChart("Sprint Burndown - " + dateHelper.getTodaysDateAsString(), // chart title
+      JFreeChart chart = ChartFactory.createXYLineChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
             "Day in Sprint", // x axis label
             "Outstanding Points", // y axis label
             seriesCollection, // data
@@ -182,12 +189,14 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
 
       XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
-      renderer.setSeriesPaint(0, SwingUtil.cellGreen);
-      renderer.setSeriesPaint(1, SwingUtil.cellLightGreen);
-      renderer.setSeriesPaint(2, SwingUtil.cellBlue);
-      renderer.setSeriesPaint(3, SwingUtil.cellLightBlue);
-      renderer.setSeriesPaint(4, SwingUtil.cellRed);
-      renderer.setSeriesPaint(5, SwingUtil.cellLightRed);
+      int row = 0;
+      renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
+      renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightBlue);
+      renderer.setSeriesPaint(row++, SwingUtil.cellRed);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightRed);
 
       renderer.setShapesVisible(true);
       renderer.setShapesFilled(true);

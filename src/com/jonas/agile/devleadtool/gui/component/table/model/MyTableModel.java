@@ -409,6 +409,13 @@ public abstract class MyTableModel extends DefaultTableModel {
       return getMarker().isMarked(row);
    }
 
+   public void mark(String jira) {
+      int row = getRowWithJira(jira);
+      if (row > -1) {
+         mark(row);
+      }
+   }
+
    public void mark(int row) {
       getMarker().mark(row);
    }

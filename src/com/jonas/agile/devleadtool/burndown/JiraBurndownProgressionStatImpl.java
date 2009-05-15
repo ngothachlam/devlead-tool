@@ -11,7 +11,7 @@ import com.jonas.agile.devleadtool.sprint.SprintTime;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.string.StringHelper;
 
-public class JiraBurndownProgressionStatImpl implements JiraBurnDownStat {
+public class JiraBurndownProgressionStatImpl {
    private String jira;
    private double totalEstimate = 0d;
    private double remainingEstimate = 0d;
