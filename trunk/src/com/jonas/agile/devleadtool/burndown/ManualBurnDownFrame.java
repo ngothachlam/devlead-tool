@@ -191,13 +191,13 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
       XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
       int row = 0;
-      renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
-      renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
       renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
       renderer.setSeriesPaint(row++, SwingUtil.cellLightBlue);
-      renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
       renderer.setSeriesPaint(row++, SwingUtil.cellRed);
       renderer.setSeriesPaint(row++, SwingUtil.cellLightRed);
+      renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
 
       renderer.setShapesVisible(true);
       renderer.setShapesFilled(true);
