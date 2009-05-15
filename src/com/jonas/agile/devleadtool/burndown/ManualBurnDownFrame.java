@@ -37,8 +37,6 @@ import com.jonas.common.swing.SwingUtil;
 
 public class ManualBurnDownFrame extends AbstractBasicFrame {
 
-   private XYSeries idealProgression;
-
    private ValueAxis xAxis;
    private NumberAxis yAxis;
 
@@ -91,7 +89,6 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
 
    public void updateBurndown() {
       source.setText(name.getText());
-      idealProgression.clear();
 
       BurnDownData data = retriever.getBurnDownData();
 
@@ -102,7 +99,6 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
       Double totalEstimate = 0d;
 
       seriesCollection.removeAllSeries();
-      seriesCollection.addSeries(idealProgression);
 
       for (String categoryName : categoryNames) {
          XYSeries newSeries = new XYSeries(categoryName);
@@ -119,9 +115,6 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
          lengthOfSprint = Math.max(lengthOfSprint, StringHelper.getDoubleOrZero(burndownDays.get(burndownDays.size() - 1).getX()));
          totalEstimate = Math.max(totalEstimate, burndownDays.get(0).getY());
       }
-
-      idealProgression.add(0, totalEstimate);
-      idealProgression.add(lengthOfSprint, 0);
 
       xAxis.setAutoRange(true);
       xAxis.setLowerBound(0d);
@@ -166,8 +159,6 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
    }
 
    public void prepareBurndown() {
-      idealProgression = new XYSeries("Ideal Progression");
-
       seriesCollection = new XYSeriesCollection();
 
       // create the chart...
