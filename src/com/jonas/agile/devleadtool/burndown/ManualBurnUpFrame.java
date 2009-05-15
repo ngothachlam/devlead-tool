@@ -21,10 +21,9 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.renderer.category.StackedAreaRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
@@ -61,16 +60,30 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
          @Override
          public void calculateBurndownData() {
             data = new BurnDownData();
-            data.add("Real Progression", 0d, 3d);
-            data.add("Real Progression", 1d, 2d);
-            data.add("Real Progression", 2d, 5d);
+            data.add("Closed", 0d, 0d);
+            data.add("Closed", 1d, 1d);
+            data.add("Closed", 2d, 2d);
+
+            data.add("Resolved", 0d, 0d);
+            data.add("Resolved", 1d, 1d);
+            data.add("Resolved", 2d, 1d);
+
+            data.add("In-Progress", 0d, 0d);
+            data.add("In-Progress", 1d, 1d);
+            data.add("In-Progress", 2d, 1d);
+
+            data.add("Failed", 0d, 0d);
+            data.add("Failed", 1d, 1d);
+            data.add("Failed", 2d, 0d);
+
+            data.add("Open", 0d, 3d);
+            data.add("Open", 1d, 2d);
+            data.add("Open", 2d, 1d);
 
             double dataFixes = 0d;
             data.add("Datafixes completed", 0d, dataFixes += 2d);
-            data.add("Datafixes completed", 2d, dataFixes += 1d);
-            data.add("Datafixes completed", 5d, dataFixes += 2d);
-            data.add("Datafixes completed", 7d, dataFixes += 2d);
-            data.add("Datafixes completed", 10d, dataFixes);
+            data.add("Datafixes completed", 1d, dataFixes += 1d);
+            data.add("Datafixes completed", 2d, dataFixes += 2d);
          }
 
       }, true);
@@ -100,7 +113,11 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
       Double totalEstimate = 0d;
 
       for (int colCount = 0; colCount < seriesCollection.getColumnCount(); colCount++) {
-         seriesCollection.removeColumn(colCount);
+         for (int rowCount = 0; rowCount < seriesCollection.getRowCount(); rowCount++) {
+            Comparable rowKey = seriesCollection.getRowKey(rowCount);
+            Comparable columnKey = seriesCollection.getColumnKey(colCount);
+            seriesCollection.removeValue(rowKey, columnKey);
+         }
       }
 
       for (String categoryName : categoryNames) {
@@ -168,29 +185,30 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
 
       CategoryPlot plot = chart.getCategoryPlot();
       xAxis = plot.getDomainAxis();
-//      xAxis.setMinorTickMarkInsideLength(0);
-//      xAxis.setUpperMargin(10);
+      // xAxis.setMinorTickMarkInsideLength(0);
+      // xAxis.setUpperMargin(10);
 
-//      XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
-//
-//      int row = 0;
-//      renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
-//      renderer.setSeriesPaint(row++, SwingUtil.cellLightBlue);
-//      renderer.setSeriesPaint(row++, SwingUtil.cellRed);
-//      renderer.setSeriesPaint(row++, SwingUtil.cellLightRed);
-//      renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
-//      renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
-//      renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
-//
-//      renderer.setShapesVisible(true);
-//      renderer.setShapesFilled(true);
+      StackedAreaRenderer renderer = (StackedAreaRenderer) plot.getRenderer();
+      //
+      int row = 0;
+      renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
+      renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightBlue);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightRed);
+      renderer.setSeriesPaint(row++, SwingUtil.cellWhite);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
+      //
+      // renderer.setShapesVisible(true);
+      // renderer.setShapesFilled(true);
 
       source = new TextTitle();
       chart.addSubtitle(source);
 
-//      yAxis = (NumberAxis) plot.getRangeAxis();
-//      xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-//      yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+      // yAxis = (NumberAxis) plot.getRangeAxis();
+      // xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+      // yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
       panel = new ChartPanel(chart);
    }
