@@ -145,7 +145,7 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
    }
 
    private Component getTopPanel() {
-      JPanel panel = new JPanel(new GridBagLayout());
+      JPanel panel = new JPanel(new GridLayout(1, 2, 3, 3));
       JPanel inputPanel = getSubInputPanel();
       JPanel buttonPanel = getSubButtonPanel();
       panel.setBorder(BorderFactory.createTitledBorder("Sprint Info"));
@@ -161,7 +161,7 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
    }
 
    private JPanel getSubInputPanel() {
-      JPanel panel = new JPanel(new GridLayout(3, 2, 3, 3));
+      JPanel panel = new JPanel(new GridLayout(1, 2, 3, 3));
 
       panel.add(new JLabel("Sprint Name:"));
       name = new JTextField(5);

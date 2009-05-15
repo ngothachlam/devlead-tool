@@ -35,10 +35,10 @@ public class SprintsTableHighlighter extends AbstractHighlighter {
          case currentSprint:
             setColor(component, adapter, SwingUtil.cellLightBlue);
             break;
-         case beforeCurrentSprint:
+         case sprintIsInThePast:
             setColor(component, adapter, SwingUtil.cellLightGreen);
             break;
-         case afterCurrentSprint:
+         case sprintIsInTheFuture:
             setColor(component, adapter, SwingUtil.cellWhite);
             break;
       }

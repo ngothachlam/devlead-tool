@@ -34,12 +34,12 @@ public class SprintTest extends TestCase {
       assertEquals(SprintTime.currentSprint, getSprint(-1, +1).calculateTime());
       assertEquals(SprintTime.currentSprint, getSprint(0, 1).calculateTime());
       assertEquals(SprintTime.currentSprint, getSprint(-1, 0).calculateTime());
-      assertEquals(SprintTime.afterCurrentSprint, getSprint(1, 1).calculateTime());
-      assertEquals(SprintTime.afterCurrentSprint, getSprint(1, 2).calculateTime());
-      assertEquals(SprintTime.afterCurrentSprint, getSprint(2, 2).calculateTime());
-      assertEquals(SprintTime.beforeCurrentSprint, getSprint(-1, -1).calculateTime());
-      assertEquals(SprintTime.beforeCurrentSprint, getSprint(-2, -1).calculateTime());
-      assertEquals(SprintTime.beforeCurrentSprint, getSprint(-2, -2).calculateTime());
+      assertEquals(SprintTime.sprintIsInTheFuture, getSprint(1, 1).calculateTime());
+      assertEquals(SprintTime.sprintIsInTheFuture, getSprint(1, 2).calculateTime());
+      assertEquals(SprintTime.sprintIsInTheFuture, getSprint(2, 2).calculateTime());
+      assertEquals(SprintTime.sprintIsInThePast, getSprint(-1, -1).calculateTime());
+      assertEquals(SprintTime.sprintIsInThePast, getSprint(-2, -1).calculateTime());
+      assertEquals(SprintTime.sprintIsInThePast, getSprint(-2, -2).calculateTime());
    }
 
    private Sprint getSprint(int startOffsetFromToday, int endOffsetFromToday) {
