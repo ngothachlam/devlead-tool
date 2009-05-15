@@ -52,6 +52,7 @@ public class InnerFrameToolbar extends JToolBar {
       BasicAbstractGUIAction sprintManager = new SprintManagerGuiAction(parentFrame, helper, sprintDao);
       BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown", "Showing Board Statistics", parentFrame, boardTable, helper);
       BasicAbstractGUIAction newBurndown = new NewBurnDownAction("Calculate Burndown (new)", "Showing Board Statistics", parentFrame, boardTable, helper);
+      BasicAbstractGUIAction newBurnup = new NewBurnUpAction("Calculate BurnUp", "BurnUp Statistics", parentFrame, boardTable, helper);
 
       JMenuBar comp = new JMenuBar();
       comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null, highlightAction, dupeAction, freezeAction));
@@ -139,6 +140,54 @@ final class BurndownAction extends BasicAbstractGUIAction {
    }
 }
 
+
+final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDownDataRetriever {
+   private final MyTable sourceTable;
+   private BurnDownData data;
+   private final PlannerHelper helper;
+   
+   NewBurnUpAction(String name, String description, Frame parentFrame, MyTable sourceTable, PlannerHelper helper) {
+      super(name, description, parentFrame);
+      this.sourceTable = sourceTable;
+      this.helper = helper;
+   }
+   
+   @Override
+   public void doActionPerformed(ActionEvent e) {
+      ManualBurnDownFrame boardStatsFrame = new ManualBurnDownFrame(getParentFrame(), new DateHelper(), this);
+      boardStatsFrame.setVisible(true);
+   }
+   
+   @Override
+   public BurnDownData getBurnDownData() {
+      return data;
+   }
+   
+   @Override
+   public void calculateBurndownData() {
+      JiraStatsDataDTO jiraStatsDataDTO = new JiraStatsDataDTO(sourceTable);
+      jiraStatsDataDTO.calculateJiraStats();
+      
+      BurnDownCalculator progressionCalculator = new BurnDownProgressionCalculatorImpl(jiraStatsDataDTO.getJiras());
+      progressionCalculator.calculateBurndownData();
+      
+      BurnDownCalculator criticalPathCalculator = new BurnDownCriticalPathCalculatorImpl(sourceTable);
+      criticalPathCalculator.calculateBurndownData();
+      
+      SprintCache sprintCache = helper.getSprintCache();
+      Sprint currentSprint = sprintCache.getCurrentSprint();
+      
+      data = new BurnDownData();
+      data.add("Progression", 0d, progressionCalculator.getTotalEstimates());
+      data.add("Progression", currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
+      data.add("Ideal Progression", 0d, progressionCalculator.getTotalEstimates());
+      data.add("Ideal Progression", currentSprint.getLength(), 0d);
+      data.add("Critical Path", 0d, criticalPathCalculator.getTotalEstimates());
+      data.add("Critical Path", currentSprint.calculateDayInSprint(), criticalPathCalculator.getRemainingEstimates());
+      data.add("Ideal Critical Path", 0d, criticalPathCalculator.getTotalEstimates());
+      data.add("Ideal Critical Path", currentSprint.getLength(), 0d);
+   }
+}
 final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDownDataRetriever {
    private final MyTable sourceTable;
    private BurnDownData data;
@@ -184,19 +233,6 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDown
       data.add("Critical Path", currentSprint.calculateDayInSprint(), criticalPathCalculator.getRemainingEstimates());
       data.add("Ideal Critical Path", 0d, criticalPathCalculator.getTotalEstimates());
       data.add("Ideal Critical Path", currentSprint.getLength(), 0d);
-      // data.add("Real Progression", 0d, 15d + 7d);
-      // data.add("Real Progression", 1d, 16d + 7d);
-      // data.add("Real Progression", 2d, 16d + 5d);
-      // data.add("Real Progression", 3d, 13d + 3d);
-      // data.add("Real Progression", 4d, 13d + 1.5d);
-      // data.add("Real Progression", 5d, 13d + 0d);
-      // data.add("Real Progression", 6d, 4d + 7d);
-      // data.add("Real Progression", 7d, 2d + 2d);
-      // data.add("Real Progression", 8d, 2d + 4d);
-      // data.add("Real Progression", 9d, 1.75d + 3d);
-      // data.add("Real Progression", 10d, 1.75d + 2d);
-      // data.add("Critical Path", 1d, 22d);
-      // data.add("Critical Path", 4d, 3d);
    }
 }
 
