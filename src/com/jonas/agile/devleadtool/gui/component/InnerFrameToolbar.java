@@ -10,9 +10,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.burndown.BurnDownCalculator;
+import com.jonas.agile.devleadtool.burndown.BurnDownCriticalPathCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.BurnDownData;
-import com.jonas.agile.devleadtool.burndown.BurnDownDataDTO;
 import com.jonas.agile.devleadtool.burndown.BurnDownDataRetriever;
+import com.jonas.agile.devleadtool.burndown.BurnDownProgressionCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.JiraStatsDataDTO;
 import com.jonas.agile.devleadtool.burndown.ManualBurnDownFrame;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
@@ -164,17 +166,24 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDown
       JiraStatsDataDTO jiraStatsDataDTO = new JiraStatsDataDTO(sourceTable);
       jiraStatsDataDTO.calculateJiraStats();
 
-      BurnDownDataDTO burnDownDataDTO = new BurnDownDataDTO(jiraStatsDataDTO.getJiras());
-      burnDownDataDTO.calculateBurndownData();
+      BurnDownCalculator progressionCalculator = new BurnDownProgressionCalculatorImpl(jiraStatsDataDTO.getJiras());
+      progressionCalculator.calculateBurndownData();
+      
+      BurnDownCalculator criticalPathCalculator = new BurnDownCriticalPathCalculatorImpl(sourceTable);
+      criticalPathCalculator.calculateBurndownData();
 
       SprintCache sprintCache = helper.getSprintCache();
       Sprint currentSprint = sprintCache.getCurrentSprint();
 
       data = new BurnDownData();
-      data.add("Progression", 0d, burnDownDataDTO.getTotalEstimates());
-      data.add("Progression", currentSprint.calculateDayInSprint(), burnDownDataDTO.getRemainingEstimates());
-      data.add("Ideal Progression", 0d, burnDownDataDTO.getTotalEstimates());
+      data.add("Progression", 0d, progressionCalculator.getTotalEstimates());
+      data.add("Progression", currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
+      data.add("Ideal Progression", 0d, progressionCalculator.getTotalEstimates());
       data.add("Ideal Progression", currentSprint.getLength(), 0d);
+      data.add("Critical Path", 0d, criticalPathCalculator.getTotalEstimates());
+      data.add("Critical Path", currentSprint.calculateDayInSprint(), criticalPathCalculator.getRemainingEstimates());
+      data.add("Ideal Critical Path", 0d, criticalPathCalculator.getTotalEstimates());
+      data.add("Ideal Critical Path", currentSprint.getLength(), 0d);
       // data.add("Real Progression", 0d, 15d + 7d);
       // data.add("Real Progression", 1d, 16d + 7d);
       // data.add("Real Progression", 2d, 16d + 5d);

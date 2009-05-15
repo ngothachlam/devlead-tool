@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.jonas.agile.devleadtool.burndown.BurnDownDataDTO;
+import com.jonas.agile.devleadtool.burndown.BurnDownProgressionCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.JiraStatsDataDTO;
 import com.jonas.agile.devleadtool.burndown.SprintBurndownGrapher;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
@@ -57,7 +57,7 @@ public class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
       JiraStatsDataDTO jiraStatsDataDTO = new JiraStatsDataDTO(sourceTable);
       jiraStatsDataDTO.calculateJiraStats();
 
-      BurnDownDataDTO burnDownDataDTO = new BurnDownDataDTO(jiraStatsDataDTO.getJiras());
+      BurnDownProgressionCalculatorImpl burnDownDataDTO = new BurnDownProgressionCalculatorImpl(jiraStatsDataDTO.getJiras());
       burnDownDataDTO.calculateBurndownData();
 
       alertOnDuplicateJirasIfTheraAreAny(jiraStatsDataDTO.getDuplicateJiras());

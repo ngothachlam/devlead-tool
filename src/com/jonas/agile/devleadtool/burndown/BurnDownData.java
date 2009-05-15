@@ -2,6 +2,7 @@ package com.jonas.agile.devleadtool.burndown;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +17,7 @@ public class BurnDownData {
    }
 
    public BurnDownData() {
-      this.burnDownDataPerCategory = new HashMap<String, BurnDownData>();
+      this.burnDownDataPerCategory = new LinkedHashMap<String, BurnDownData>();
    }
 
    public void add(String category, double x, double value) {
