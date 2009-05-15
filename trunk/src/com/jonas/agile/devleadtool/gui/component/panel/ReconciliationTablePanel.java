@@ -116,6 +116,7 @@ class AddFromReconciliationToBoardAction extends BasicAbstractGUIAction {
                Object newValue = reconModel.getValueAt(row, col);
                if (reconModel.isModified(row, col)) {
                   boardModel.setValueAt(newValue, jira, column);
+                  boardModel.mark(row);
                }
             }
          }
