@@ -10,6 +10,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.burndown.BurnDownData;
+import com.jonas.agile.devleadtool.burndown.BurnDownDataDTO;
+import com.jonas.agile.devleadtool.burndown.BurnDownDataRetriever;
+import com.jonas.agile.devleadtool.burndown.JiraStatsDataDTO;
+import com.jonas.agile.devleadtool.burndown.ManualBurnDownFrame;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.action.HighlightIssuesAction;
 import com.jonas.agile.devleadtool.gui.action.SprintManagerGuiAction;
@@ -24,6 +29,8 @@ import com.jonas.agile.devleadtool.gui.component.panel.MyDataPanel;
 import com.jonas.agile.devleadtool.gui.component.table.EnabledQuery;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
+import com.jonas.agile.devleadtool.sprint.Sprint;
+import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.DateHelper;
 
 public class InnerFrameToolbar extends JToolBar {
@@ -42,10 +49,11 @@ public class InnerFrameToolbar extends JToolBar {
 
       BasicAbstractGUIAction sprintManager = new SprintManagerGuiAction(parentFrame, helper, sprintDao);
       BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown", "Showing Board Statistics", parentFrame, boardTable, helper);
+      BasicAbstractGUIAction newBurndown = new NewBurnDownAction("Calculate Burndown (new)", "Showing Board Statistics", parentFrame, boardTable, helper);
 
       JMenuBar comp = new JMenuBar();
       comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null, highlightAction, dupeAction, freezeAction));
-      comp.add(getDataModificationMenu("Sprint", sprintManager, boardStats));
+      comp.add(getDataModificationMenu("Sprint", sprintManager, boardStats, newBurndown));
       this.add(comp);
 
    }
@@ -127,7 +135,60 @@ final class BurndownAction extends BasicAbstractGUIAction {
       BoardStatsFrame boardStatsFrame = new BoardStatsFrame(getParentFrame(), 600, 500, sourceTable, new DateHelper(), helper.getSprintCache());
       boardStatsFrame.setVisible(true);
    }
+}
 
+final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDownDataRetriever {
+   private final MyTable sourceTable;
+   private BurnDownData data;
+   private final PlannerHelper helper;
+
+   NewBurnDownAction(String name, String description, Frame parentFrame, MyTable sourceTable, PlannerHelper helper) {
+      super(name, description, parentFrame);
+      this.sourceTable = sourceTable;
+      this.helper = helper;
+   }
+
+   @Override
+   public void doActionPerformed(ActionEvent e) {
+      ManualBurnDownFrame boardStatsFrame = new ManualBurnDownFrame(getParentFrame(), new DateHelper(), this);
+      boardStatsFrame.setVisible(true);
+   }
+
+   @Override
+   public BurnDownData getBurnDownData() {
+      return data;
+   }
+
+   @Override
+   public void calculateBurndownData() {
+      JiraStatsDataDTO jiraStatsDataDTO = new JiraStatsDataDTO(sourceTable);
+      jiraStatsDataDTO.calculateJiraStats();
+
+      BurnDownDataDTO burnDownDataDTO = new BurnDownDataDTO(jiraStatsDataDTO.getJiras());
+      burnDownDataDTO.calculateBurndownData();
+
+      SprintCache sprintCache = helper.getSprintCache();
+      Sprint currentSprint = sprintCache.getCurrentSprint();
+
+      data = new BurnDownData();
+      data.add("Progression", 0d, burnDownDataDTO.getTotalEstimates());
+      data.add("Progression", currentSprint.calculateDayInSprint(), burnDownDataDTO.getRemainingEstimates());
+      data.add("Ideal Progression", 0d, burnDownDataDTO.getTotalEstimates());
+      data.add("Ideal Progression", currentSprint.getLength(), 0d);
+      // data.add("Real Progression", 0d, 15d + 7d);
+      // data.add("Real Progression", 1d, 16d + 7d);
+      // data.add("Real Progression", 2d, 16d + 5d);
+      // data.add("Real Progression", 3d, 13d + 3d);
+      // data.add("Real Progression", 4d, 13d + 1.5d);
+      // data.add("Real Progression", 5d, 13d + 0d);
+      // data.add("Real Progression", 6d, 4d + 7d);
+      // data.add("Real Progression", 7d, 2d + 2d);
+      // data.add("Real Progression", 8d, 2d + 4d);
+      // data.add("Real Progression", 9d, 1.75d + 3d);
+      // data.add("Real Progression", 10d, 1.75d + 2d);
+      // data.add("Critical Path", 1d, 22d);
+      // data.add("Critical Path", 4d, 3d);
+   }
 }
 
 final class ReconcileManuallyAction extends BasicAbstractGUIAction {
