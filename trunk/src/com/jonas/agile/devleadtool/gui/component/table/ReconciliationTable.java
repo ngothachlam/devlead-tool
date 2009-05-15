@@ -16,16 +16,16 @@ public class ReconciliationTable extends MyTable {
       return reconciliationTableModel;
    }
 
-   public void addForReconciliation(String jira, String devEst, String devAct, String release, String remainder, String qaEst, BoardStatusValue status, String qaRem, String qAct) {
+   public void addForReconciliation(String jira, String dEst, String dAct, String release, String dRem, String qEst, BoardStatusValue status, String qRem, String qAct) {
       this.addJira(jira);
       int row = this.getRowWithJira(jira);
       setValueInTableIfNotNull(release, row, ColumnType.Release);
       setValueInTableIfNotNull(status, row, ColumnType.BoardStatus);
-      setValueInTableIfNotNull(devEst, row, ColumnType.DEst);
-      setValueInTableIfNotNull(remainder, row, ColumnType.DRem);
-      setValueInTableIfNotNull(devAct, row, ColumnType.DAct);
-      setValueInTableIfNotNull(qaEst, row, ColumnType.QEst);
-      setValueInTableIfNotNull(qaRem, row, ColumnType.QRem);
+      setValueInTableIfNotNull(dEst, row, ColumnType.DEst);
+      setValueInTableIfNotNull(dRem, row, ColumnType.DRem);
+      setValueInTableIfNotNull(dAct, row, ColumnType.DAct);
+      setValueInTableIfNotNull(qEst, row, ColumnType.QEst);
+      setValueInTableIfNotNull(qRem, row, ColumnType.QRem);
       setValueInTableIfNotNull(qAct, row, ColumnType.QAct);
    }
 

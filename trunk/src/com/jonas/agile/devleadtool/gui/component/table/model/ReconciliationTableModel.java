@@ -37,6 +37,8 @@ public class ReconciliationTableModel extends MyTableModel {
          case DRem:
          case DAct:
          case QEst:
+         case QRem:
+         case QAct:
             jira = jiras.get(row);
             if (!boardTableModel.isJiraPresent(jira)) {
                return null;
