@@ -17,6 +17,7 @@ import com.jonas.agile.devleadtool.burndown.BurnDownDataRetriever;
 import com.jonas.agile.devleadtool.burndown.BurnDownProgressionCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.JiraStatsDataDTO;
 import com.jonas.agile.devleadtool.burndown.ManualBurnDownFrame;
+import com.jonas.agile.devleadtool.burndown.ManualBurnUpFrame;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.action.HighlightIssuesAction;
 import com.jonas.agile.devleadtool.gui.action.SprintManagerGuiAction;
@@ -154,7 +155,7 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDownDa
    
    @Override
    public void doActionPerformed(ActionEvent e) {
-      ManualBurnDownFrame boardStatsFrame = new ManualBurnDownFrame(getParentFrame(), new DateHelper(), this);
+      ManualBurnUpFrame boardStatsFrame = new ManualBurnUpFrame(getParentFrame(), new DateHelper(), this);
       boardStatsFrame.setVisible(true);
    }
    
@@ -178,14 +179,8 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDownDa
       Sprint currentSprint = sprintCache.getCurrentSprint();
       
       data = new BurnDownData();
-      data.add("Progression", 0d, progressionCalculator.getTotalEstimates());
-      data.add("Progression", currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
-      data.add("Ideal Progression", 0d, progressionCalculator.getTotalEstimates());
-      data.add("Ideal Progression", currentSprint.getLength(), 0d);
-      data.add("Critical Path", 0d, criticalPathCalculator.getTotalEstimates());
-      data.add("Critical Path", currentSprint.calculateDayInSprint(), criticalPathCalculator.getRemainingEstimates());
-      data.add("Ideal Critical Path", 0d, criticalPathCalculator.getTotalEstimates());
-      data.add("Ideal Critical Path", currentSprint.getLength(), 0d);
+      data.add("Open", 0d, progressionCalculator.getTotalEstimates());
+      data.add("Open", currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
    }
 }
 final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDownDataRetriever {
