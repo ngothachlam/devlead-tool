@@ -19,13 +19,13 @@ public class BurnDownData {
       this.burnDownDataPerCategory = new LinkedHashMap<String, BurnDownData>();
    }
 
-   public void add(String category, double x, double value) {
+   public void add(String category, double x, double y) {
       BurnDownData data = getCategory(category);
       if (data == null) {
          data = new BurnDownData(burnDownDataPerCategory);
          burnDownDataPerCategory.put(category, data);
       }
-      data.add(new BurnDownDay(x, value));
+      data.add(new BurnDownDay(x, y));
    }
 
    private void add(BurnDownDay burnDownDay) {
