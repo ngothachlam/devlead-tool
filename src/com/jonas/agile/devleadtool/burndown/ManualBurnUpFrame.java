@@ -168,7 +168,6 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
    public void prepareBurndown() {
       seriesCollection = new DefaultTableXYDataset();
 
-      // create the chart...
       JFreeChart chart = ChartFactory.createStackedXYAreaChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
             "Day in Sprint", // x axis label
             "Outstanding Points", // y axis label
@@ -184,7 +183,7 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
       xAxis.setLowerMargin(0);
 
       StackedXYAreaRenderer2 renderer = (StackedXYAreaRenderer2) plot.getRenderer();
-      //
+
       int row = 0;
       renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
       renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
@@ -194,9 +193,6 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
       renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
       renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
       renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
-      //
-      // renderer.setShapesVisible(true);
-      // renderer.setShapesFilled(true);
 
       source = new TextTitle();
       chart.addSubtitle(source);
