@@ -19,13 +19,13 @@ import javax.swing.JTextField;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.StackedAreaRenderer;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYSeries;
 
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
@@ -36,14 +36,14 @@ import com.jonas.common.swing.SwingUtil;
 
 public class ManualBurnUpFrame extends AbstractBasicFrame {
 
-   private CategoryAxis xAxis;
+   private ValueAxis xAxis;
    private NumberAxis yAxis;
 
    private ChartPanel panel;
    private DateHelper dateHelper;
    private TextTitle source;
    private JTextField name;
-   private DefaultCategoryDataset seriesCollection;
+   private DefaultTableXYDataset seriesCollection;
 
    private final BurnDownDataRetriever retriever;
 
@@ -66,7 +66,7 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
 
             data.add("Resolved", 0d, 0d);
             data.add("Resolved", 1d, 1d);
-            data.add("Resolved", 2d, 1d);
+            data.add("Resolved", 2d, 2d);
 
             data.add("In-Progress", 0d, 0d);
             data.add("In-Progress", 1d, 1d);
@@ -112,24 +112,19 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
       double lengthOfSprint = 0d;
       Double totalEstimate = 0d;
 
-      for (int colCount = 0; colCount < seriesCollection.getColumnCount(); colCount++) {
-         for (int rowCount = 0; rowCount < seriesCollection.getRowCount(); rowCount++) {
-            Comparable rowKey = seriesCollection.getRowKey(rowCount);
-            Comparable columnKey = seriesCollection.getColumnKey(colCount);
-            seriesCollection.removeValue(rowKey, columnKey);
-         }
-      }
-
+      seriesCollection.removeAllSeries();
       for (String categoryName : categoryNames) {
-         XYSeries newSeries = new XYSeries(categoryName);
-         newSeries.setKey(categoryName);
+         System.out.println("Category: " + categoryName);
+         XYSeries newSeries = new XYSeries(categoryName, true, false);
 
          burndownDays = data.getDataForCategory(categoryName);
 
          Collections.sort(burndownDays);
          for (BurnDownDay burnDownDay : burndownDays) {
-            seriesCollection.addValue(burnDownDay.getY(), categoryName, burnDownDay.getX());
+            System.out.println(" x: " + burnDownDay.getX() + " y: " + burnDownDay.getY());
+            newSeries.add(burnDownDay.getX(), burnDownDay.getY());
          }
+         seriesCollection.addSeries(newSeries);
 
          lengthOfSprint = Math.max(lengthOfSprint, StringHelper.getDoubleOrZero(burndownDays.get(burndownDays.size() - 1).getX()));
          totalEstimate = Math.max(totalEstimate, burndownDays.get(0).getY());
@@ -171,10 +166,10 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
    }
 
    public void prepareBurndown() {
-      seriesCollection = new DefaultCategoryDataset();
+      seriesCollection = new DefaultTableXYDataset();
 
       // create the chart...
-      JFreeChart chart = ChartFactory.createStackedAreaChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
+      JFreeChart chart = ChartFactory.createStackedXYAreaChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
             "Day in Sprint", // x axis label
             "Outstanding Points", // y axis label
             seriesCollection, // data
@@ -183,12 +178,12 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
             false // urls
             );
 
-      CategoryPlot plot = chart.getCategoryPlot();
+      XYPlot plot = chart.getXYPlot();
       xAxis = plot.getDomainAxis();
-      // xAxis.setMinorTickMarkInsideLength(0);
-      // xAxis.setUpperMargin(10);
+      xAxis.setUpperMargin(0);
+      xAxis.setLowerMargin(0);
 
-      StackedAreaRenderer renderer = (StackedAreaRenderer) plot.getRenderer();
+      StackedXYAreaRenderer2 renderer = (StackedXYAreaRenderer2) plot.getRenderer();
       //
       int row = 0;
       renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
@@ -206,9 +201,9 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
       source = new TextTitle();
       chart.addSubtitle(source);
 
-      // yAxis = (NumberAxis) plot.getRangeAxis();
-      // xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-      // yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+      yAxis = (NumberAxis) plot.getRangeAxis();
+      xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+      yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
       panel = new ChartPanel(chart);
    }
