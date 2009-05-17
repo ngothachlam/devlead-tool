@@ -58,7 +58,7 @@ public class CalculateSprintBurndownAction extends BasicAbstractGUIAction {
       jiraStatsDataDTO.calculateJiraStats();
 
       BurnDownProgressionCalculatorImpl burnDownDataDTO = new BurnDownProgressionCalculatorImpl(jiraStatsDataDTO.getJiras());
-      burnDownDataDTO.calculateBurndownData();
+      burnDownDataDTO.calculateBurnData();
 
       alertOnDuplicateJirasIfTheraAreAny(jiraStatsDataDTO.getDuplicateJiras());
       grapher.calculateAndPrintBurndown(burnDownDataDTO.getTotalEstimates(), burnDownDataDTO.getRemainingEstimates(), burnDownDataDTO.getJiraProjects(), burnDownDataDTO.getKey());

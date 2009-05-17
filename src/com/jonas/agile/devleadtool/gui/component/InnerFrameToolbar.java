@@ -10,10 +10,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.burndown.BurnDownCalculator;
+import com.jonas.agile.devleadtool.burndown.BurnCalculator;
 import com.jonas.agile.devleadtool.burndown.BurnDownCriticalPathCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.BurnData;
-import com.jonas.agile.devleadtool.burndown.BurnDownDataRetriever;
+import com.jonas.agile.devleadtool.burndown.BurnDataRetriever;
 import com.jonas.agile.devleadtool.burndown.BurnDownProgressionCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.JiraStatsDataDTO;
 import com.jonas.agile.devleadtool.burndown.ManualBurnDownFrame;
@@ -142,7 +142,7 @@ final class BurndownAction extends BasicAbstractGUIAction {
 }
 
 
-final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDownDataRetriever {
+final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRetriever {
    private final MyTable sourceTable;
    private BurnData data;
    private final PlannerHelper helper;
@@ -160,7 +160,7 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDownDa
    }
    
    @Override
-   public BurnData getBurnDownData() {
+   public BurnData getBurnData() {
       return data;
    }
    
@@ -169,11 +169,11 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDownDa
       JiraStatsDataDTO jiraStatsDataDTO = new JiraStatsDataDTO(sourceTable);
       jiraStatsDataDTO.calculateJiraStats();
       
-      BurnDownCalculator progressionCalculator = new BurnDownProgressionCalculatorImpl(jiraStatsDataDTO.getJiras());
-      progressionCalculator.calculateBurndownData();
+      BurnCalculator progressionCalculator = new BurnDownProgressionCalculatorImpl(jiraStatsDataDTO.getJiras());
+      progressionCalculator.calculateBurnData();
       
-      BurnDownCalculator criticalPathCalculator = new BurnDownCriticalPathCalculatorImpl(sourceTable);
-      criticalPathCalculator.calculateBurndownData();
+      BurnCalculator criticalPathCalculator = new BurnDownCriticalPathCalculatorImpl(sourceTable);
+      criticalPathCalculator.calculateBurnData();
       
       SprintCache sprintCache = helper.getSprintCache();
       Sprint currentSprint = sprintCache.getCurrentSprint();
@@ -183,7 +183,7 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDownDa
       data.add("Open", currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
    }
 }
-final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDownDataRetriever {
+final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDataRetriever {
    private final MyTable sourceTable;
    private BurnData data;
    private final PlannerHelper helper;
@@ -201,7 +201,7 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDown
    }
 
    @Override
-   public BurnData getBurnDownData() {
+   public BurnData getBurnData() {
       return data;
    }
 
@@ -210,11 +210,11 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDown
       JiraStatsDataDTO jiraStatsDataDTO = new JiraStatsDataDTO(sourceTable);
       jiraStatsDataDTO.calculateJiraStats();
 
-      BurnDownCalculator progressionCalculator = new BurnDownProgressionCalculatorImpl(jiraStatsDataDTO.getJiras());
-      progressionCalculator.calculateBurndownData();
+      BurnCalculator progressionCalculator = new BurnDownProgressionCalculatorImpl(jiraStatsDataDTO.getJiras());
+      progressionCalculator.calculateBurnData();
       
-      BurnDownCalculator criticalPathCalculator = new BurnDownCriticalPathCalculatorImpl(sourceTable);
-      criticalPathCalculator.calculateBurndownData();
+      BurnCalculator criticalPathCalculator = new BurnDownCriticalPathCalculatorImpl(sourceTable);
+      criticalPathCalculator.calculateBurnData();
 
       SprintCache sprintCache = helper.getSprintCache();
       Sprint currentSprint = sprintCache.getCurrentSprint();

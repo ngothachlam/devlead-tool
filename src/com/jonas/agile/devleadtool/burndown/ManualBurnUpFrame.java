@@ -1,26 +1,12 @@
 package com.jonas.agile.devleadtool.burndown;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Frame;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
@@ -28,32 +14,20 @@ import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYSeries;
 
-import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
-import com.jonas.agile.devleadtool.gui.component.frame.AbstractBasicFrame;
 import com.jonas.common.DateHelper;
-import com.jonas.common.string.StringHelper;
 import com.jonas.common.swing.SwingUtil;
 
-public class ManualBurnUpFrame extends AbstractBasicFrame {
+public class ManualBurnUpFrame extends AbstractManualBurnFrame {
 
-   private ValueAxis xAxis;
-   private NumberAxis yAxis;
-
-   private ChartPanel panel;
-   private DateHelper dateHelper;
-   private TextTitle source;
-   private JTextField name;
    private DefaultTableXYDataset seriesCollection;
 
-   private final BurnDownDataRetriever retriever;
-
    public static void main(String[] args) {
-      ManualBurnUpFrame frame = new ManualBurnUpFrame(null, null, new BurnDownDataRetriever() {
+      ManualBurnUpFrame frame = new ManualBurnUpFrame(null, null, new BurnDataRetriever() {
 
          BurnData data;
 
          @Override
-         public BurnData getBurnDownData() {
+         public BurnData getBurnData() {
             return data;
          }
 
@@ -90,81 +64,28 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
       frame.setVisible(true);
    }
 
-   public ManualBurnUpFrame(Component parent, DateHelper dateHelper, BurnDownDataRetriever retriever) {
+   public ManualBurnUpFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever) {
       this(parent, dateHelper, retriever, false);
    }
 
-   public ManualBurnUpFrame(Component parent, DateHelper dateHelper, BurnDownDataRetriever retriever, boolean closeOnExit) {
-      super(parent, null, null, closeOnExit);
-      this.dateHelper = dateHelper;
-      this.retriever = retriever;
-      this.prepareBurndown();
+   public ManualBurnUpFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever, boolean closeOnExit) {
+      super(parent, dateHelper, retriever, closeOnExit);
    }
 
-   public void updateBurndown() {
-      source.setText(name.getText());
-
-      BurnData data = retriever.getBurnDownData();
-
-      Set<String> categoryNames = data.getCategoryNames();
-      List<BurnDataColumn> burndownDays = null;
-
-      double lengthOfSprint = 0d;
-      Double totalEstimate = 0d;
-
-      seriesCollection.removeAllSeries();
-      for (String categoryName : categoryNames) {
-         System.out.println("Category: " + categoryName);
-         XYSeries newSeries = new XYSeries(categoryName, true, false);
-
-         burndownDays = data.getDataForCategory(categoryName);
-
-         Collections.sort(burndownDays);
-         for (BurnDataColumn burnDownDay : burndownDays) {
-            System.out.println(" x: " + burnDownDay.getX() + " y: " + burnDownDay.getY());
-            newSeries.add(burnDownDay.getX(), burnDownDay.getY());
-         }
-         seriesCollection.addSeries(newSeries);
-
-         lengthOfSprint = Math.max(lengthOfSprint, StringHelper.getDoubleOrZero(burndownDays.get(burndownDays.size() - 1).getX()));
-         totalEstimate = Math.max(totalEstimate, burndownDays.get(0).getY());
+   public void forEachSeriesIdentified(String categoryName, List<BurnDataColumn> burndownDays) {
+      XYSeries newSeries = new XYSeries(categoryName, true, false);
+   
+      for (BurnDataColumn burnDownDay : burndownDays) {
+         newSeries.add(burnDownDay.getX(), burnDownDay.getY());
       }
+   
+      seriesCollection.addSeries(newSeries);
    }
 
-   @Override
-   public Container getMyPanel() {
-      JPanel mainPanel = new JPanel(new BorderLayout());
-      mainPanel.add(getTopPanel(), BorderLayout.NORTH);
-      mainPanel.add(panel, BorderLayout.CENTER);
-      return mainPanel;
+   public void prepareSeries() {
+      seriesCollection.removeAllSeries();
    }
-
-   private Component getTopPanel() {
-      JPanel panel = new JPanel(new GridLayout(1, 2, 3, 3));
-      JPanel inputPanel = getSubInputPanel();
-      JPanel buttonPanel = getSubButtonPanel();
-      panel.setBorder(BorderFactory.createTitledBorder("Sprint Info"));
-      panel.add(inputPanel);
-      panel.add(buttonPanel);
-      return panel;
-   }
-
-   private JPanel getSubButtonPanel() {
-      JPanel panel = new JPanel(new GridLayout(1, 1, 3, 3));
-      panel.add(new JButton(new UpdateAction(this, this, retriever)));
-      return panel;
-   }
-
-   private JPanel getSubInputPanel() {
-      JPanel panel = new JPanel(new GridLayout(1, 2, 3, 3));
-
-      panel.add(new JLabel("Sprint Name:"));
-      name = new JTextField(5);
-      panel.add(name);
-
-      return panel;
-   }
-
+   
    public void prepareBurndown() {
       seriesCollection = new DefaultTableXYDataset();
 
@@ -203,24 +124,4 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
 
       panel = new ChartPanel(chart);
    }
-
-   private class UpdateAction extends BasicAbstractGUIAction {
-
-      private final ManualBurnUpFrame frame;
-      private final BurnDownDataRetriever retriever;
-
-      public UpdateAction(Frame parentFrame, ManualBurnUpFrame frame, BurnDownDataRetriever retriever) {
-         super("Update", "Update graph!", parentFrame);
-         this.frame = frame;
-         this.retriever = retriever;
-      }
-
-      @Override
-      public void doActionPerformed(ActionEvent e) {
-         retriever.calculateBurndownData();
-         frame.updateBurndown();
-      }
-
-   }
-
 }
