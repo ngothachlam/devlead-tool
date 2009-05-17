@@ -13,34 +13,34 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
 
          @Override
          public void calculateBurndownData() {
-            data = new BurnDataCategory(BurnType.BurnUp);
+            data = new BurnDataCategory();
             
-            Category category = new Category("Closed");
+            Category category = new Category("Closed", BurnType.BurnUp);
             data.add(category, 0d, 0d);
             data.add(category, 1d, 1d);
             data.add(category, 2d, 2d);
 
-            Category category2 = new Category("Resolved");
+            Category category2 = new Category("Resolved", BurnType.BurnUp);
             data.add(category2, 0d, 0d);
             data.add(category2, 1d, 1d);
             data.add(category2, 2d, 2d);
 
-            Category category3 = new Category("In-Progress");
+            Category category3 = new Category("In-Progress", BurnType.BurnUp);
             data.add(category3, 0d, 0d);
             data.add(category3, 1d, 1d);
             data.add(category3, 2d, 1d);
 
-            Category category4 = new Category("Failed");
+            Category category4 = new Category("Failed", BurnType.BurnUp);
             data.add(category4, 0d, 0d);
             data.add(category4, 1d, 1d);
             data.add(category4, 2d, 0d);
 
-            Category category5 = new Category("Open");
+            Category category5 = new Category("Open", BurnType.BurnUp);
             data.add(category5, 0d, 3d);
             data.add(category5, 1d, 2d);
             data.add(category5, 2d, 1d);
 
-            Category category6 = new Category("Datafixes completed");
+            Category category6 = new Category("Datafixes completed", BurnType.BurnUp);
             double dataFixes = 0d;
             data.add(category6, 0d, dataFixes += 2d);
             data.add(category6, 1d, dataFixes += 1d);

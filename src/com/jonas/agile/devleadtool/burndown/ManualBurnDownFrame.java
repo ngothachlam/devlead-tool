@@ -13,12 +13,19 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
 
          @Override
          public void calculateBurndownData() {
-            data = new BurnDataCategory(BurnType.BurnDown);
+            data = new BurnDataCategory();
             
-            Category category1 = new Category("Real Progression");
-            double total = 15d + 7d;
+            Category category2 = new Category("Ideal Progression", BurnType.BurnDown);
+            double yValue = 15d + 7d;
             double length = 10d;
-            data.add(category1, 0d, total);
+            double decrease = yValue/length;
+            for (int xValue = 0; xValue <= length; xValue++) {
+               data.add(category2, xValue, yValue);
+               yValue -= decrease;
+            }
+            
+            Category category1 = new Category("Real Progression", BurnType.BurnDown);
+            data.add(category1, 0d, 15d + 7d);
             data.add(category1, 1d, 16d + 7d);
             data.add(category1, 2d, 16d + 5d);
             data.add(category1, 3d, 13d + 3d);
@@ -28,14 +35,8 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
             data.add(category1, 7d, 2d + 2d);
             data.add(category1, 8d, 2d + 4d);
             data.add(category1, 9d, 1.75d + 3d);
-            data.add(category1, length, 1.75d + 2d);
+            data.add(category1, 10d, 1.75d + 2d);
 
-            Category category2 = new Category("Ideal Progression");
-            double decrease = total/length;
-            for (int xValue = 0; xValue <= length; xValue++) {
-               data.add(category2, xValue, total);
-               total -= decrease;
-            }
          }
 
          @Override
