@@ -3,18 +3,9 @@ package com.jonas.agile.devleadtool.burndown;
 import java.awt.Component;
 import java.util.List;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.labels.StandardXYToolTipGenerator;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.AbstractRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.title.TextTitle;
-import org.jfree.chart.urls.StandardXYURLGenerator;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -24,17 +15,10 @@ import com.jonas.common.swing.SwingUtil;
 
 public class ManualBurnDownFrame extends AbstractManualBurnFrame {
 
-   private XYSeriesCollection seriesCollectionForBurnDown;
-
    public static void main(String[] args) {
       ManualBurnDownFrame frame = new ManualBurnDownFrame(null, null, new BurnDataRetriever() {
 
          BurnData data;
-
-         @Override
-         public BurnData getBurnData() {
-            return data;
-         }
 
          @Override
          public void calculateBurndownData() {
@@ -54,9 +38,16 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
             data.add("Ideal Progression", 0d, 15d + 7d);
             data.add("Ideal Progression", 10d, 0d);
          }
+
+         @Override
+         public BurnData getBurnData() {
+            return data;
+         }
       }, true);
       frame.setVisible(true);
    }
+
+   private XYSeriesCollection seriesCollectionForBurnDown;
 
    public ManualBurnDownFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever) {
       this(parent, dateHelper, retriever, false);
@@ -66,51 +57,9 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
       super(parent, dateHelper, retriever, closeOnExit);
    }
 
-   public void prepareBurndown() {
-      JFreeChart chart = getChart();
-
-      XYPlot plot = chart.getXYPlot();
-      xAxis = plot.getDomainAxis();
-      xAxis.setLowerBound(0);
-      xAxis.setUpperBound(10);
-
-      setRendererPaints((XYLineAndShapeRenderer) plot.getRenderer());
-
-      source = new TextTitle();
-      chart.addSubtitle(source);
-
-      yAxis = (NumberAxis) plot.getRangeAxis();
-      xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-      yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-      panel = new ChartPanel(chart);
-   }
-
    @Override
-   public JFreeChart getChart() {
-      seriesCollectionForBurnDown = new XYSeriesCollection();
-      return createChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
-            "Day in Sprint", // x axis label
-            "Outstanding Points", // y axis label
-            seriesCollectionForBurnDown, // data
-            PlotOrientation.VERTICAL, true, // include legend
-            true, // tooltips
-            false // urls
-            );
-   }
-
-   @Override
-   public void setRendererPaints(AbstractRenderer renderer) {
-      int row = 0;
-      renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
-      renderer.setSeriesPaint(row++, SwingUtil.cellLightBlue);
-      renderer.setSeriesPaint(row++, SwingUtil.cellRed);
-      renderer.setSeriesPaint(row++, SwingUtil.cellLightRed);
-      renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
-      renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
-      renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
-      ((XYLineAndShapeRenderer) renderer).setShapesVisible(true);
-      ((XYLineAndShapeRenderer) renderer).setShapesFilled(true);
+   public void clearAllSeries() {
+      seriesCollectionForBurnDown.removeAllSeries();
    }
 
    @Override
@@ -125,12 +74,27 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
    }
 
    @Override
-   public void clearAllSeries() {
-      seriesCollectionForBurnDown.removeAllSeries();
+   public XYItemRenderer getRenderer() {
+      return new XYLineAndShapeRenderer(true, false);
    }
 
    @Override
-   public XYItemRenderer getRenderer() {
-      return new XYLineAndShapeRenderer(true, false);
+   public XYDataset getXyDataset() {
+      seriesCollectionForBurnDown = new XYSeriesCollection();
+      return seriesCollectionForBurnDown;
+   }
+
+   @Override
+   public void setRendererPaints(AbstractRenderer renderer) {
+      int row = 0;
+      renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightBlue);
+      renderer.setSeriesPaint(row++, SwingUtil.cellRed);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightRed);
+      renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
+      ((XYLineAndShapeRenderer) renderer).setShapesVisible(true);
+      ((XYLineAndShapeRenderer) renderer).setShapesFilled(true);
    }
 }

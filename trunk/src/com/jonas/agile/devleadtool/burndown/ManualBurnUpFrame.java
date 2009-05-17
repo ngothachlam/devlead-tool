@@ -3,12 +3,11 @@ package com.jonas.agile.devleadtool.burndown;
 import java.awt.Component;
 import java.util.List;
 
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.AbstractRenderer;
 import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.DefaultTableXYDataset;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 
 import com.jonas.common.DateHelper;
@@ -16,17 +15,10 @@ import com.jonas.common.swing.SwingUtil;
 
 public class ManualBurnUpFrame extends AbstractManualBurnFrame {
 
-   private DefaultTableXYDataset seriesCollectionForBurnUp;
-
    public static void main(String[] args) {
       AbstractManualBurnFrame frame = new ManualBurnUpFrame(null, null, new BurnDataRetriever() {
 
          BurnData data;
-
-         @Override
-         public BurnData getBurnData() {
-            return data;
-         }
 
          @Override
          public void calculateBurndownData() {
@@ -56,9 +48,16 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
             data.add("Datafixes completed", 1d, dataFixes += 1d);
             data.add("Datafixes completed", 2d, dataFixes += 2d);
          }
+
+         @Override
+         public BurnData getBurnData() {
+            return data;
+         }
       }, true);
       frame.setVisible(true);
    }
+
+   private DefaultTableXYDataset seriesCollectionForBurnUp;
 
    public ManualBurnUpFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever) {
       this(parent, dateHelper, retriever, false);
@@ -66,6 +65,11 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
 
    public ManualBurnUpFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever, boolean closeOnExit) {
       super(parent, dateHelper, retriever, closeOnExit);
+   }
+
+   public void clearAllSeries() {
+      System.out.println(" clearing series!");
+      seriesCollectionForBurnUp.removeAllSeries();
    }
 
    public void createNewSeriesAndAddToCollection(String categoryName, List<BurnDataColumn> burndownDays) {
@@ -79,11 +83,18 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
       seriesCollectionForBurnUp.addSeries(newSeries);
    }
 
-   public void clearAllSeries() {
-      System.out.println(" clearing series!");
-      seriesCollectionForBurnUp.removeAllSeries();
+   @Override
+   public XYItemRenderer getRenderer() {
+      return new StackedXYAreaRenderer2();
    }
 
+   @Override
+   public XYDataset getXyDataset() {
+      seriesCollectionForBurnUp = new DefaultTableXYDataset();
+      return seriesCollectionForBurnUp;
+   }
+
+   @Override
    public void setRendererPaints(AbstractRenderer renderer) {
       int row = 0;
       renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
@@ -94,23 +105,5 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
       renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
       renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
       renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
-   }
-
-   @Override
-   public JFreeChart getChart() {
-      seriesCollectionForBurnUp = new DefaultTableXYDataset();
-      return createChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
-            "Day in Sprint", // x axis label
-            "Completed Points", // y axis label
-            seriesCollectionForBurnUp, // data
-            PlotOrientation.VERTICAL, true, // include legend
-            true, // tooltips
-            false // urls
-            );
-   }
-
-   @Override
-   public XYItemRenderer getRenderer() {
-      return new StackedXYAreaRenderer2();
    }
 }
