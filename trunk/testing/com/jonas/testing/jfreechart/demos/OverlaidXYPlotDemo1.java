@@ -37,6 +37,9 @@ public class OverlaidXYPlotDemo1 extends ApplicationFrame {
       XYPlot xyplot = new XYPlot(null, dateaxis, numberaxis, null);
       xyplot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
       
+      JFreeChart freeChart = new JFreeChart("Overlaid XYPlot Demo 1", JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
+      
+      //Do the rest...
       List<XYDataset> xyDatasets = new ArrayList<XYDataset>();
       xyDatasets.add(createDataset1());
       xyDatasets.add(createDataset2());
@@ -54,7 +57,6 @@ public class OverlaidXYPlotDemo1 extends ApplicationFrame {
          xyplot.setRenderer(counter, itemRenderer);
       }
       
-      JFreeChart freeChart = new JFreeChart("Overlaid XYPlot Demo 1", JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
       return freeChart;
    }
 

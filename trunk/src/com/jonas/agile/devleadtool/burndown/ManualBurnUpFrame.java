@@ -1,14 +1,12 @@
 package com.jonas.agile.devleadtool.burndown;
 
 import java.awt.Component;
-import java.util.List;
 
 import org.jfree.chart.renderer.AbstractRenderer;
 import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
 
 import com.jonas.common.DateHelper;
 import com.jonas.common.swing.SwingUtil;
@@ -23,30 +21,36 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
          @Override
          public void calculateBurndownData() {
             data = new BurnDataCategory();
-            data.add("Closed", 0d, 0d);
-            data.add("Closed", 1d, 1d);
-            data.add("Closed", 2d, 2d);
+            CategoryType category = new CategoryType("Closed",BurnType.BurnUp);
+            data.add(category, 0d, 0d);
+            data.add(category, 1d, 1d);
+            data.add(category, 2d, 2d);
 
-            data.add("Resolved", 0d, 0d);
-            data.add("Resolved", 1d, 1d);
-            data.add("Resolved", 2d, 2d);
+            CategoryType category2 = new CategoryType("Resolved",BurnType.BurnUp);
+            data.add(category2, 0d, 0d);
+            data.add(category2, 1d, 1d);
+            data.add(category2, 2d, 2d);
 
-            data.add("In-Progress", 0d, 0d);
-            data.add("In-Progress", 1d, 1d);
-            data.add("In-Progress", 2d, 1d);
+            CategoryType category3 = new CategoryType("In-Progress",BurnType.BurnUp);
+            data.add(category3, 0d, 0d);
+            data.add(category3, 1d, 1d);
+            data.add(category3, 2d, 1d);
 
-            data.add("Failed", 0d, 0d);
-            data.add("Failed", 1d, 1d);
-            data.add("Failed", 2d, 0d);
+            CategoryType category4 = new CategoryType("Failed",BurnType.BurnUp);
+            data.add(category4, 0d, 0d);
+            data.add(category4, 1d, 1d);
+            data.add(category4, 2d, 0d);
 
-            data.add("Open", 0d, 3d);
-            data.add("Open", 1d, 2d);
-            data.add("Open", 2d, 1d);
+            CategoryType category5 = new CategoryType("Open",BurnType.BurnUp);
+            data.add(category5, 0d, 3d);
+            data.add(category5, 1d, 2d);
+            data.add(category5, 2d, 1d);
 
+            CategoryType category6 = new CategoryType("Datafixes completed",BurnType.BurnUp);
             double dataFixes = 0d;
-            data.add("Datafixes completed", 0d, dataFixes += 2d);
-            data.add("Datafixes completed", 1d, dataFixes += 1d);
-            data.add("Datafixes completed", 2d, dataFixes += 2d);
+            data.add(category6, 0d, dataFixes += 2d);
+            data.add(category6, 1d, dataFixes += 1d);
+            data.add(category6, 2d, dataFixes += 2d);
          }
 
          @Override
@@ -57,8 +61,6 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
       frame.setVisible(true);
    }
 
-   private DefaultTableXYDataset seriesCollectionForBurnUp;
-
    public ManualBurnUpFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever) {
       this(parent, dateHelper, retriever, false);
    }
@@ -67,20 +69,10 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
       super(parent, dateHelper, retriever, closeOnExit);
    }
 
-   public void clearAllSeries() {
-      System.out.println(" clearing series!");
-      seriesCollectionForBurnUp.removeAllSeries();
-   }
 
    @Override
    public XYItemRenderer getRenderer() {
       return new StackedXYAreaRenderer2();
-   }
-
-   @Override
-   public XYDataset getXyDataset() {
-      seriesCollectionForBurnUp = seriesCollectionForBurnUp == null ? new DefaultTableXYDataset() : seriesCollectionForBurnUp;
-      return seriesCollectionForBurnUp;
    }
 
    @Override
