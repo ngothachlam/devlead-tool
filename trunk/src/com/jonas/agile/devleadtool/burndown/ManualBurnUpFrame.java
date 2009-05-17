@@ -50,16 +50,16 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
    public static void main(String[] args) {
       ManualBurnUpFrame frame = new ManualBurnUpFrame(null, null, new BurnDownDataRetriever() {
 
-         BurnDownData data;
+         BurnData data;
 
          @Override
-         public BurnDownData getBurnDownData() {
+         public BurnData getBurnDownData() {
             return data;
          }
 
          @Override
          public void calculateBurndownData() {
-            data = new BurnDownData();
+            data = new BurnData();
             data.add("Closed", 0d, 0d);
             data.add("Closed", 1d, 1d);
             data.add("Closed", 2d, 2d);
@@ -104,10 +104,10 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
    public void updateBurndown() {
       source.setText(name.getText());
 
-      BurnDownData data = retriever.getBurnDownData();
+      BurnData data = retriever.getBurnDownData();
 
       Set<String> categoryNames = data.getCategoryNames();
-      List<BurnDownDay> burndownDays = null;
+      List<BurnDataColumn> burndownDays = null;
 
       double lengthOfSprint = 0d;
       Double totalEstimate = 0d;
@@ -120,7 +120,7 @@ public class ManualBurnUpFrame extends AbstractBasicFrame {
          burndownDays = data.getDataForCategory(categoryName);
 
          Collections.sort(burndownDays);
-         for (BurnDownDay burnDownDay : burndownDays) {
+         for (BurnDataColumn burnDownDay : burndownDays) {
             System.out.println(" x: " + burnDownDay.getX() + " y: " + burnDownDay.getY());
             newSeries.add(burnDownDay.getX(), burnDownDay.getY());
          }

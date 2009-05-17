@@ -24,7 +24,7 @@ public class LoadingPlannerFunctionalTest extends JonasTestCase {
       super.tearDown();
    }
 
-   public void testShouldLoadModelOkWithNullType() throws IOException, PersistanceException {
+   public void testShouldLoadTableModelDTOOkWithNullType() throws IOException, PersistanceException {
       TableModelDTO dtoLoaded = dao.loadModel(new File("test-data\\shouldLoadFineIntoPlannerWithEmptyType.xls"), "board");
 
       assertEquals(11, dtoLoaded.getHeader().size());
