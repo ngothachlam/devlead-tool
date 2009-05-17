@@ -20,15 +20,12 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.AbstractRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.chart.urls.StandardXYURLGenerator;
 import org.jfree.data.xy.DefaultTableXYDataset;
-import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -44,9 +41,10 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame {
    protected ChartPanel panel;
    private final BurnDataRetriever retriever;
    protected TextTitle source;
-   protected ValueAxis xAxis;
 
-   protected NumberAxis yAxis;
+   private DefaultTableXYDataset seriesCollectionForBurnUp;
+   private XYSeriesCollection seriesCollectionForBurnDown;
+   private XYPlot xyPlot;
 
    public AbstractManualBurnFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever, boolean closeOnExit) {
       super(parent, null, null, closeOnExit);
@@ -55,54 +53,61 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame {
       this.prepareBurndown();
    }
 
-   public abstract void clearAllSeries();
-
-   public JFreeChart createChart(String title, String xAxisLabel, String yAxisLabel, XYDataset dataset, PlotOrientation orientation, boolean legend, boolean tooltips, boolean urls) {
-
+   public JFreeChart createChart(String title, String xAxisLabel, String yAxisLabel, PlotOrientation orientation, boolean legend, boolean tooltips, boolean urls) {
       NumberAxis xAxis = new NumberAxis(xAxisLabel);
       NumberAxis yAxis = new NumberAxis(yAxisLabel);
 
-      XYItemRenderer renderer = getRenderer();
-      if (tooltips) {
-         renderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator());
-      }
-      if (urls) {
-         renderer.setURLGenerator(new StandardXYURLGenerator());
-      }
+      xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+      yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
-      XYPlot plot = new XYPlot(dataset, xAxis, yAxis, renderer);
-      plot.setOrientation(orientation);
+      xyPlot = new XYPlot(null, xAxis, yAxis, null);
+      xyPlot.setOrientation(orientation);
 
-      JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
-      return chart;
+      return new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, xyPlot, legend);
    }
 
-   public final void createNewSeriesAndAddToCollection(String categoryName, List<BurnDataColumn> burndownDays) {
+   public final void createNewSeriesAndAddToCollection(BurnType burnType, String categoryName, List<BurnDataColumn> burndownDays) {
       XYSeries newSeries = new XYSeries(categoryName, true, false);
 
       for (BurnDataColumn burnDownDay : burndownDays) {
          newSeries.add(burnDownDay.getX(), burnDownDay.getY());
       }
 
-      XYDataset xyDataset = getXyDataset();
-      if (xyDataset instanceof XYSeriesCollection) {
-         XYSeriesCollection xsySC = (XYSeriesCollection) xyDataset;
-         xsySC.addSeries(newSeries);
-      } else if (xyDataset instanceof DefaultTableXYDataset) {
-         DefaultTableXYDataset xsySC = (DefaultTableXYDataset) xyDataset;
-         xsySC.addSeries(newSeries);
+      switch (burnType) {
+         case BurnDown:
+            seriesCollectionForBurnDown = getBurnDownAndinitialiseIfRequired();
+            seriesCollectionForBurnDown.addSeries(newSeries);
+            break;
+         case BurnUp:
+            seriesCollectionForBurnUp = getBurnUpAndInitialiseIfRequired();
+            seriesCollectionForBurnUp.addSeries(newSeries);
+            break;
       }
    }
 
-   public JFreeChart getChart() {
-      return createChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
-            "Day in Sprint", // x axis label
-            "Completed Points", // y axis label
-            getXyDataset(), // data
-            PlotOrientation.VERTICAL, true, // include legend
-            true, // tooltips
-            false // urls
-      );
+   private DefaultTableXYDataset getBurnUpAndInitialiseIfRequired() {
+      if (seriesCollectionForBurnUp == null) {
+         seriesCollectionForBurnUp = new DefaultTableXYDataset();
+      }
+
+      xyPlot.setDataset(1, seriesCollectionForBurnUp);
+      XYItemRenderer renderer = getRenderer();
+      xyPlot.setRenderer(1, renderer);
+      setRendererPaints((AbstractRenderer) renderer);
+
+      return seriesCollectionForBurnUp;
+   }
+
+   private XYSeriesCollection getBurnDownAndinitialiseIfRequired() {
+      if (seriesCollectionForBurnDown == null) {
+         seriesCollectionForBurnDown = new XYSeriesCollection();
+      }
+
+      xyPlot.setDataset(0, seriesCollectionForBurnDown);
+      XYItemRenderer renderer = getRenderer();
+      xyPlot.setRenderer(0, renderer);
+      setRendererPaints((AbstractRenderer) renderer);
+      return seriesCollectionForBurnDown;
    }
 
    @Override
@@ -141,24 +146,26 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame {
       return panel;
    }
 
-   public abstract XYDataset getXyDataset();
-
    public void prepareBurndown() {
-      JFreeChart chart = getChart();
+      JFreeChart chart = createChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
+            "Day in Sprint", // x axis label
+            "Completed Points", // y axis label
+            PlotOrientation.VERTICAL, // data
+            true, true, // include legend
+            false // urls
+      );
 
-      XYPlot plot = chart.getXYPlot();
-      xAxis = plot.getDomainAxis();
-      xAxis.setLowerBound(0);
-      xAxis.setUpperBound(10);
-
-      setRendererPaints((AbstractRenderer) plot.getRenderer());
-
+      // XYPlot plot = chart.getXYPlot();
+      // xAxis = plot.getDomainAxis();
+      // xAxis.setLowerBound(0);
+      // xAxis.setUpperBound(10);
+      //
       source = new TextTitle();
       chart.addSubtitle(source);
-
-      yAxis = (NumberAxis) plot.getRangeAxis();
-      xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-      yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+      //
+      // yAxis = (NumberAxis) plot.getRangeAxis();
+      // xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+      // yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
       panel = new ChartPanel(chart);
    }
@@ -170,25 +177,35 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame {
 
       BurnDataCategory data = retriever.getBurnData();
 
-      Set<String> categoryNames = data.getCategoryNames();
+      Set<CategoryType> categoryNames = data.getCategoryNames();
       List<BurnDataColumn> burndownDays = null;
 
       clearAllSeries();
 
-      for (String categoryName : categoryNames) {
+      for (CategoryType categoryName : categoryNames) {
          burndownDays = data.getDataForCategory(categoryName);
          Collections.sort(burndownDays);
 
-         createNewSeriesAndAddToCollection(categoryName, burndownDays);
-
+         createNewSeriesAndAddToCollection(categoryName.getType(), categoryName.getName(), burndownDays);
       }
 
+      ValueAxis xAxis = xyPlot.getDomainAxis();
       xAxis.setAutoRange(true);
       xAxis.setLowerBound(0d);
 
+      ValueAxis yAxis = xyPlot.getRangeAxis();
       yAxis.setAutoRange(true);
       yAxis.setLowerBound(0d);
 
+   }
+
+   private void clearAllSeries() {
+      if (seriesCollectionForBurnDown != null) {
+         seriesCollectionForBurnDown.removeAllSeries();
+      }
+      if (seriesCollectionForBurnUp != null) {
+         seriesCollectionForBurnUp.removeAllSeries();
+      }
    }
 
    private class UpdateAction extends BasicAbstractGUIAction {

@@ -1,13 +1,11 @@
 package com.jonas.agile.devleadtool.burndown;
 
 import java.awt.Component;
-import java.util.List;
 
 import org.jfree.chart.renderer.AbstractRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import com.jonas.common.DateHelper;
@@ -23,20 +21,22 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
          @Override
          public void calculateBurndownData() {
             data = new BurnDataCategory();
-            data.add("Real Progression", 0d, 15d + 7d);
-            data.add("Real Progression", 1d, 16d + 7d);
-            data.add("Real Progression", 2d, 16d + 5d);
-            data.add("Real Progression", 3d, 13d + 3d);
-            data.add("Real Progression", 4d, 13d + 1.5d);
-            data.add("Real Progression", 5d, 13d + 0d);
-            data.add("Real Progression", 6d, 4d + 7d);
-            data.add("Real Progression", 7d, 2d + 2d);
-            data.add("Real Progression", 8d, 2d + 4d);
-            data.add("Real Progression", 9d, 1.75d + 3d);
-            data.add("Real Progression", 10d, 1.75d + 2d);
+            CategoryType string = new CategoryType("Real Progression",BurnType.BurnDown);
+            data.add(string, 0d, 15d + 7d);
+            data.add(string, 1d, 16d + 7d);
+            data.add(string, 2d, 16d + 5d);
+            data.add(string, 3d, 13d + 3d);
+            data.add(string, 4d, 13d + 1.5d);
+            data.add(string, 5d, 13d + 0d);
+            data.add(string, 6d, 4d + 7d);
+            data.add(string, 7d, 2d + 2d);
+            data.add(string, 8d, 2d + 4d);
+            data.add(string, 9d, 1.75d + 3d);
+            data.add(string, 10d, 1.75d + 2d);
 
-            data.add("Ideal Progression", 0d, 15d + 7d);
-            data.add("Ideal Progression", 10d, 0d);
+            CategoryType string2 = new CategoryType("Ideal Progression",BurnType.BurnDown);
+            data.add(string2, 0d, 15d + 7d);
+            data.add(string2, 10d, 0d);
          }
 
          @Override
@@ -47,8 +47,6 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
       frame.setVisible(true);
    }
 
-   private XYSeriesCollection seriesCollectionForBurnDown;
-
    public ManualBurnDownFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever) {
       this(parent, dateHelper, retriever, false);
    }
@@ -58,19 +56,8 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
    }
 
    @Override
-   public void clearAllSeries() {
-      seriesCollectionForBurnDown.removeAllSeries();
-   }
-
-   @Override
    public XYItemRenderer getRenderer() {
       return new XYLineAndShapeRenderer(true, false);
-   }
-
-   @Override
-   public XYDataset getXyDataset() {
-      seriesCollectionForBurnDown = seriesCollectionForBurnDown == null ? new XYSeriesCollection() : seriesCollectionForBurnDown;
-      return seriesCollectionForBurnDown;
    }
 
    @Override
