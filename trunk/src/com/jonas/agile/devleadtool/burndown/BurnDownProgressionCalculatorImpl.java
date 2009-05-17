@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.logging.MyLogger;
 
-public class BurnDownProgressionCalculatorImpl implements BurnDownCalculator {
+public class BurnDownProgressionCalculatorImpl implements BurnCalculator {
       final Map<String, JiraBurndownProgressionStatImpl> jiras;
       double remainingEstimates = 0d;
       double totalEstimates = 0d;
@@ -20,7 +20,7 @@ public class BurnDownProgressionCalculatorImpl implements BurnDownCalculator {
          this.jiras = jiras;
       }
 
-      public void calculateBurndownData() {
+      public void calculateBurnData() {
          for (JiraBurndownProgressionStatImpl jiraStat : jiras.values()) {
 
             totalEstimates += jiraStat.getTotalEstimate();

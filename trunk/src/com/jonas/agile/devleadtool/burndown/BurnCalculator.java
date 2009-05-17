@@ -1,9 +1,9 @@
 package com.jonas.agile.devleadtool.burndown;
 
 
-public interface BurnDownCalculator {
+public interface BurnCalculator {
 
-   public void calculateBurndownData();
+   public void calculateBurnData();
 
    public double getRemainingEstimates();
 

@@ -13,7 +13,7 @@ import com.jonas.agile.devleadtool.sprint.SprintTime;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.string.StringHelper;
 
-public class BurnDownCriticalPathCalculatorImpl implements BurnDownCalculator {
+public class BurnDownCriticalPathCalculatorImpl implements BurnCalculator {
    double remainingEstimates = 0d;
    double totalEstimates = 0d;
    Logger log = MyLogger.getLogger(BurnDownCriticalPathCalculatorImpl.class);
@@ -23,7 +23,7 @@ public class BurnDownCriticalPathCalculatorImpl implements BurnDownCalculator {
       this.sourceTable = sourceTable;
    }
 
-   public void calculateBurndownData() {
+   public void calculateBurnData() {
       sourceTable.getRowCount();
       MyTable boardTable = sourceTable;
       for (int row = 0; row < sourceTable.getRowCount(); row++) {
