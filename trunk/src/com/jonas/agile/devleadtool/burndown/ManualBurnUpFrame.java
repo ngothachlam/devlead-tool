@@ -3,10 +3,11 @@ package com.jonas.agile.devleadtool.burndown;
 import java.awt.Component;
 import java.util.List;
 
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.AbstractRenderer;
+import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYSeries;
 
@@ -18,7 +19,7 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
    private DefaultTableXYDataset seriesCollectionForBurnUp;
 
    public static void main(String[] args) {
-      ManualBurnUpFrame frame = new ManualBurnUpFrame(null, null, new BurnDataRetriever() {
+      AbstractManualBurnFrame frame = new ManualBurnUpFrame(null, null, new BurnDataRetriever() {
 
          BurnData data;
 
@@ -98,7 +99,7 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
    @Override
    public JFreeChart getChart() {
       seriesCollectionForBurnUp = new DefaultTableXYDataset();
-      return ChartFactory.createStackedXYAreaChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
+      return createChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
             "Day in Sprint", // x axis label
             "Completed Points", // y axis label
             seriesCollectionForBurnUp, // data
@@ -106,5 +107,10 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
             true, // tooltips
             false // urls
             );
+   }
+
+   @Override
+   public XYItemRenderer getRenderer() {
+      return new StackedXYAreaRenderer2();
    }
 }
