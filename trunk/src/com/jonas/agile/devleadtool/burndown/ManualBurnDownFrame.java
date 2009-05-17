@@ -9,6 +9,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.AbstractRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.XYSeries;
@@ -48,7 +49,7 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
 
             data.add("Ideal Progression", 0d, 15d + 7d);
             data.add("Ideal Progression", 10d, 0d);
-        }
+         }
 
       }, true);
       frame.setVisible(true);
@@ -62,38 +63,15 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
       super(parent, dateHelper, retriever, closeOnExit);
    }
 
-   @Override
    public void prepareBurndown() {
-      seriesCollection = new XYSeriesCollection();
-
-      // create the chart...
-      JFreeChart chart = ChartFactory.createXYLineChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
-            "Day in Sprint", // x axis label
-            "Outstanding Points", // y axis label
-            seriesCollection, // data
-            PlotOrientation.VERTICAL, true, // include legend
-            true, // tooltips
-            false // urls
-            );
+      JFreeChart chart = getChart();
 
       XYPlot plot = chart.getXYPlot();
       xAxis = plot.getDomainAxis();
       xAxis.setLowerBound(0);
       xAxis.setUpperBound(10);
 
-      XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
-
-      int row = 0;
-      renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
-      renderer.setSeriesPaint(row++, SwingUtil.cellLightBlue);
-      renderer.setSeriesPaint(row++, SwingUtil.cellRed);
-      renderer.setSeriesPaint(row++, SwingUtil.cellLightRed);
-      renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
-      renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
-      renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
-
-      renderer.setShapesVisible(true);
-      renderer.setShapesFilled(true);
+      setRendererPaints((XYLineAndShapeRenderer) plot.getRenderer());
 
       source = new TextTitle();
       chart.addSubtitle(source);
@@ -105,17 +83,46 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
       panel = new ChartPanel(chart);
    }
 
+   @Override
+   public JFreeChart getChart() {
+      seriesCollection = new XYSeriesCollection();
+      return ChartFactory.createXYLineChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
+            "Day in Sprint", // x axis label
+            "Outstanding Points", // y axis label
+            seriesCollection, // data
+            PlotOrientation.VERTICAL, true, // include legend
+            true, // tooltips
+            false // urls
+            );
+   }
+
+   @Override
+   public void setRendererPaints(AbstractRenderer renderer) {
+      int row = 0;
+      renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightBlue);
+      renderer.setSeriesPaint(row++, SwingUtil.cellRed);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightRed);
+      renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
+      renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
+      ((XYLineAndShapeRenderer) renderer).setShapesVisible(true);
+      ((XYLineAndShapeRenderer) renderer).setShapesFilled(true);
+   }
+
+   @Override
    public void createNewSeriesAndAddToCollection(String categoryName, List<BurnDataColumn> burndownDays) {
       XYSeries newSeries = new XYSeries(categoryName);
       newSeries.setKey(categoryName);
-   
+
       for (BurnDataColumn burnDownDay : burndownDays) {
          newSeries.add(burnDownDay.getX(), burnDownDay.getY());
       }
-   
+
       seriesCollection.addSeries(newSeries);
    }
 
+   @Override
    public void clearAllSeries() {
       seriesCollection.removeAllSeries();
    }

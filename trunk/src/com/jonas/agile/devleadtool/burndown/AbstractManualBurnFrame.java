@@ -17,10 +17,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.AbstractRenderer;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.data.xy.XYSeriesCollection;
 
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.frame.AbstractBasicFrame;
@@ -115,7 +117,25 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
       return panel;
    }
 
-   public abstract void prepareBurndown();
+   public void prepareBurndown() {
+      JFreeChart chart = getChart();
+
+      XYPlot plot = chart.getXYPlot();
+      xAxis = plot.getDomainAxis();
+      xAxis.setLowerBound(0);
+      xAxis.setUpperBound(10);
+
+      setRendererPaints((AbstractRenderer)plot.getRenderer());
+
+      source = new TextTitle();
+      chart.addSubtitle(source);
+
+      yAxis = (NumberAxis) plot.getRangeAxis();
+      xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+      yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+      panel = new ChartPanel(chart);
+   }
 
    private class UpdateAction extends BasicAbstractGUIAction {
 
@@ -135,4 +155,9 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
       }
 
    }
+
+   public abstract void setRendererPaints(AbstractRenderer renderer);
+
+   public abstract JFreeChart getChart();
+
 }
