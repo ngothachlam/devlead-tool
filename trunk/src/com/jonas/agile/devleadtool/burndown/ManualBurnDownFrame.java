@@ -20,7 +20,7 @@ import com.jonas.common.swing.SwingUtil;
 
 public class ManualBurnDownFrame extends AbstractManualBurnFrame {
 
-   private XYSeriesCollection seriesCollection;
+   private XYSeriesCollection seriesCollectionForBurnDown;
 
    public static void main(String[] args) {
       ManualBurnDownFrame frame = new ManualBurnDownFrame(null, null, new BurnDataRetriever() {
@@ -84,11 +84,11 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
 
    @Override
    public JFreeChart getChart() {
-      seriesCollection = new XYSeriesCollection();
+      seriesCollectionForBurnDown = new XYSeriesCollection();
       return ChartFactory.createXYLineChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
             "Day in Sprint", // x axis label
             "Outstanding Points", // y axis label
-            seriesCollection, // data
+            seriesCollectionForBurnDown, // data
             PlotOrientation.VERTICAL, true, // include legend
             true, // tooltips
             false // urls
@@ -113,17 +113,16 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
    public void createNewSeriesAndAddToCollection(String categoryName, List<BurnDataColumn> burndownDays) {
       XYSeries newSeries = new XYSeries(categoryName);
       newSeries.setKey(categoryName);
+      seriesCollectionForBurnDown.addSeries(newSeries);
 
       for (BurnDataColumn burnDownDay : burndownDays) {
          newSeries.add(burnDownDay.getX(), burnDownDay.getY());
       }
-
-      seriesCollection.addSeries(newSeries);
    }
 
    @Override
    public void clearAllSeries() {
-      seriesCollection.removeAllSeries();
+      seriesCollectionForBurnDown.removeAllSeries();
    }
 
 }

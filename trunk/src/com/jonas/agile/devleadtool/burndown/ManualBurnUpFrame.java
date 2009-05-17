@@ -15,7 +15,7 @@ import com.jonas.common.swing.SwingUtil;
 
 public class ManualBurnUpFrame extends AbstractManualBurnFrame {
 
-   private DefaultTableXYDataset seriesCollection;
+   private DefaultTableXYDataset seriesCollectionForBurnUp;
 
    public static void main(String[] args) {
       ManualBurnUpFrame frame = new ManualBurnUpFrame(null, null, new BurnDataRetriever() {
@@ -75,12 +75,12 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
          newSeries.add(burnDownDay.getX(), burnDownDay.getY());
       }
 
-      seriesCollection.addSeries(newSeries);
+      seriesCollectionForBurnUp.addSeries(newSeries);
    }
 
    public void clearAllSeries() {
       System.out.println(" clearing series!");
-      seriesCollection.removeAllSeries();
+      seriesCollectionForBurnUp.removeAllSeries();
    }
 
    public void setRendererPaints(AbstractRenderer renderer) {
@@ -97,11 +97,11 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
 
    @Override
    public JFreeChart getChart() {
-      seriesCollection = new DefaultTableXYDataset();
+      seriesCollectionForBurnUp = new DefaultTableXYDataset();
       return ChartFactory.createStackedXYAreaChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
             "Day in Sprint", // x axis label
             "Completed Points", // y axis label
-            seriesCollection, // data
+            seriesCollectionForBurnUp, // data
             PlotOrientation.VERTICAL, true, // include legend
             true, // tooltips
             false // urls
