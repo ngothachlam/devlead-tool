@@ -10,12 +10,14 @@ public class BurnDataCategory {
 
    private Map<Category, BurnDataCategory> burnDataPerCategory;
    private List<BurnDataColumn> burnDays = new ArrayList<BurnDataColumn>();
+   private BurnType burnType;
 
    public BurnDataCategory(Map<Category, BurnDataCategory> burnDownDataPerCategory) {
       this.burnDataPerCategory = burnDownDataPerCategory;
    }
 
-   public BurnDataCategory() {
+   public BurnDataCategory(BurnType burnType) {
+      this.burnType = burnType;
       this.burnDataPerCategory = new LinkedHashMap<Category, BurnDataCategory>();
    }
 
@@ -47,5 +49,9 @@ public class BurnDataCategory {
    public Set<Category> getCategoryNames() {
       Set<Category> keySet = burnDataPerCategory.keySet();
       return keySet;
+   }
+
+   public BurnType getBurnType() {
+      return burnType;
    }
 }

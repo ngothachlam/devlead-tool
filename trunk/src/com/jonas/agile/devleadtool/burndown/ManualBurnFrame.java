@@ -29,13 +29,14 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.frame.AbstractBasicFrame;
 import com.jonas.common.DateHelper;
 import com.jonas.common.swing.SwingUtil;
 
-public abstract class AbstractManualBurnFrame extends AbstractBasicFrame {
+public class ManualBurnFrame extends AbstractBasicFrame {
 
    protected DateHelper dateHelper;
    protected JTextField name;
@@ -45,11 +46,15 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame {
    protected TextTitle source;
 
    private DefaultTableXYDataset seriesCollectionForBurnUp;
-   private DefaultTableXYDataset seriesCollectionForBurnDown;
+   private XYSeriesCollection seriesCollectionForBurnDown;
    private XYPlot xyPlot;
    private int dataSetCount = 0;
 
-   public AbstractManualBurnFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever, boolean closeOnExit) {
+   public ManualBurnFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever) {
+      this(parent, dateHelper, retriever, false);
+   }
+   
+   ManualBurnFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever, boolean closeOnExit) {
       super(parent, null, null, closeOnExit);
       this.dateHelper = dateHelper;
       this.retriever = retriever;
@@ -111,9 +116,9 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame {
       return seriesCollectionForBurnUp;
    }
 
-   private DefaultTableXYDataset getBurnDownAndinitialiseIfRequired() {
+   private XYSeriesCollection getBurnDownAndinitialiseIfRequired() {
       if (seriesCollectionForBurnDown == null) {
-         seriesCollectionForBurnDown = new DefaultTableXYDataset();
+         seriesCollectionForBurnDown = new XYSeriesCollection();
          xyPlot.setDataset(dataSetCount, seriesCollectionForBurnDown);
          XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true, false);
 
@@ -197,7 +202,7 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame {
          burndownDays = data.getDataForCategory(categoryName);
          Collections.sort(burndownDays);
 
-         createNewSeriesAndAddToCollection(categoryName.getBurnType(), categoryName.getName(), burndownDays);
+         createNewSeriesAndAddToCollection(data.getBurnType(), categoryName.getName(), burndownDays);
       }
 
       ValueAxis xAxis = xyPlot.getDomainAxis();
@@ -221,10 +226,10 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame {
 
    private class UpdateAction extends BasicAbstractGUIAction {
 
-      private final AbstractManualBurnFrame frame;
+      private final ManualBurnFrame frame;
       private final BurnDataRetriever retriever;
 
-      public UpdateAction(Frame parentFrame, AbstractManualBurnFrame frame, BurnDataRetriever retriever) {
+      public UpdateAction(Frame parentFrame, ManualBurnFrame frame, BurnDataRetriever retriever) {
          super("Update", "Update graph!", parentFrame);
          this.frame = frame;
          this.retriever = retriever;
@@ -236,6 +241,10 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame {
          frame.updateBurndown();
       }
 
+   }
+
+   public void setChartText(String string) {
+      name.setText(string);
    }
 
 }

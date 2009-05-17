@@ -20,6 +20,7 @@ import org.apache.poi.hssf.util.HSSFColor;
 import com.jonas.agile.devleadtool.gui.component.table.ColorDTO;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnWrapper;
+import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;

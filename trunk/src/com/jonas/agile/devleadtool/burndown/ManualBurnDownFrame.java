@@ -4,7 +4,7 @@ import java.awt.Component;
 
 import com.jonas.common.DateHelper;
 
-public class ManualBurnDownFrame extends AbstractManualBurnFrame {
+public class ManualBurnDownFrame extends ManualBurnFrame {
 
    public static void main(String[] args) {
       ManualBurnDownFrame frame = new ManualBurnDownFrame(null, null, new BurnDataRetriever() {
@@ -13,18 +13,10 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
 
          @Override
          public void calculateBurndownData() {
-            data = new BurnDataCategory();
-            
-            Category category2 = new Category("Ideal Progression", BurnType.BurnDown);
-            double yValue = 15d + 7d;
-            double length = 10d;
-            double decrease = yValue/length;
-            for (int xValue = 0; xValue <= length; xValue++) {
-               data.add(category2, xValue, yValue);
-               yValue -= decrease;
-            }
-            
-            Category category1 = new Category("Real Progression", BurnType.BurnDown);
+            data = new BurnDataCategory(BurnType.BurnDown);
+
+
+            Category category1 = new Category("Real Progression");
             data.add(category1, 0d, 15d + 7d);
             data.add(category1, 1d, 16d + 7d);
             data.add(category1, 2d, 16d + 5d);
@@ -37,22 +29,21 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
             data.add(category1, 9d, 1.75d + 3d);
             data.add(category1, 10d, 1.75d + 2d);
 
+            Category category2 = new Category("Ideal Progression");
+            data.add(category2, 0, 15d + 7d);
+            data.add(category2, 10d, 0d);
          }
 
          @Override
          public BurnDataCategory getBurnData() {
             return data;
          }
-      }, true);
+      });
       frame.setVisible(true);
    }
 
-   public ManualBurnDownFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever) {
-      this(parent, dateHelper, retriever, false);
-   }
-
-   public ManualBurnDownFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever, boolean closeOnExit) {
-      super(parent, dateHelper, retriever, closeOnExit);
+   private ManualBurnDownFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever) {
+      super(parent, dateHelper, retriever, true);
    }
 
 }
