@@ -4,13 +4,9 @@ import java.awt.Component;
 import java.util.List;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
-import org.jfree.chart.title.TextTitle;
+import org.jfree.chart.renderer.AbstractRenderer;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYSeries;
 
@@ -74,37 +70,21 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
 
    public void createNewSeriesAndAddToCollection(String categoryName, List<BurnDataColumn> burndownDays) {
       XYSeries newSeries = new XYSeries(categoryName, true, false);
-   
+      System.out.println(" new Series " + categoryName);
       for (BurnDataColumn burnDownDay : burndownDays) {
+         System.out.println(" new value: " + burnDownDay.getX());
          newSeries.add(burnDownDay.getX(), burnDownDay.getY());
       }
-   
+
       seriesCollection.addSeries(newSeries);
    }
 
    public void clearAllSeries() {
+      System.out.println(" clearing series!");
       seriesCollection.removeAllSeries();
    }
-   
-   public void prepareBurndown() {
-      seriesCollection = new DefaultTableXYDataset();
 
-      JFreeChart chart = ChartFactory.createStackedXYAreaChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
-            "Day in Sprint", // x axis label
-            "Outstanding Points", // y axis label
-            seriesCollection, // data
-            PlotOrientation.VERTICAL, true, // include legend
-            true, // tooltips
-            false // urls
-            );
-
-      XYPlot plot = chart.getXYPlot();
-      xAxis = plot.getDomainAxis();
-      xAxis.setUpperMargin(0);
-      xAxis.setLowerMargin(0);
-
-      StackedXYAreaRenderer2 renderer = (StackedXYAreaRenderer2) plot.getRenderer();
-
+   public void setRendererPaints(AbstractRenderer renderer) {
       int row = 0;
       renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
       renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
@@ -114,14 +94,18 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
       renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
       renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
       renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
+   }
 
-      source = new TextTitle();
-      chart.addSubtitle(source);
-
-      yAxis = (NumberAxis) plot.getRangeAxis();
-      xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-      yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-      panel = new ChartPanel(chart);
+   @Override
+   public JFreeChart getChart() {
+      seriesCollection = new DefaultTableXYDataset();
+      return ChartFactory.createStackedXYAreaChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
+            "Day in Sprint", // x axis label
+            "Completed Points", // y axis label
+            seriesCollection, // data
+            PlotOrientation.VERTICAL, true, // include legend
+            true, // tooltips
+            false // urls
+            );
    }
 }
