@@ -12,10 +12,12 @@ import javax.swing.JToolBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.burndown.AbstractManualBurnFrame;
 import com.jonas.agile.devleadtool.burndown.BurnCalculator;
-import com.jonas.agile.devleadtool.burndown.BurnDownCriticalPathCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.BurnDataCategory;
 import com.jonas.agile.devleadtool.burndown.BurnDataRetriever;
+import com.jonas.agile.devleadtool.burndown.BurnDownCriticalPathCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.BurnDownProgressionCalculatorImpl;
+import com.jonas.agile.devleadtool.burndown.BurnType;
+import com.jonas.agile.devleadtool.burndown.Category;
 import com.jonas.agile.devleadtool.burndown.JiraStatsDataDTO;
 import com.jonas.agile.devleadtool.burndown.ManualBurnDownFrame;
 import com.jonas.agile.devleadtool.burndown.ManualBurnUpFrame;
@@ -180,8 +182,9 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRe
       Sprint currentSprint = sprintCache.getCurrentSprint();
       
       data = new BurnDataCategory();
-      data.add("Open", 0d, progressionCalculator.getTotalEstimates());
-      data.add("Open", currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
+      Category category = new Category("Open", BurnType.BurnDown);
+      data.add(category, 0d, progressionCalculator.getTotalEstimates());
+      data.add(category, currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
    }
 }
 final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDataRetriever {
@@ -221,14 +224,18 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnData
       Sprint currentSprint = sprintCache.getCurrentSprint();
 
       data = new BurnDataCategory();
-      data.add("Progression", 0d, progressionCalculator.getTotalEstimates());
-      data.add("Progression", currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
-      data.add("Ideal Progression", 0d, progressionCalculator.getTotalEstimates());
-      data.add("Ideal Progression", currentSprint.getLength(), 0d);
-      data.add("Critical Path", 0d, criticalPathCalculator.getTotalEstimates());
-      data.add("Critical Path", currentSprint.calculateDayInSprint(), criticalPathCalculator.getRemainingEstimates());
-      data.add("Ideal Critical Path", 0d, criticalPathCalculator.getTotalEstimates());
-      data.add("Ideal Critical Path", currentSprint.getLength(), 0d);
+      Category category = new Category("Progression", BurnType.BurnDown);
+      data.add(category, 0d, progressionCalculator.getTotalEstimates());
+      data.add(category, currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
+      Category category2 = new Category("Ideal Progression", BurnType.BurnDown);
+      data.add(category2, 0d, progressionCalculator.getTotalEstimates());
+      data.add(category2, currentSprint.getLength(), 0d);
+      Category category3 = new Category("Critical Path", BurnType.BurnDown);
+      data.add(category3, 0d, criticalPathCalculator.getTotalEstimates());
+      data.add(category3, currentSprint.calculateDayInSprint(), criticalPathCalculator.getRemainingEstimates());
+      Category category4 = new Category("Ideal Critical Path", BurnType.BurnDown);
+      data.add(category4, 0d, criticalPathCalculator.getTotalEstimates());
+      data.add(category4, currentSprint.getLength(), 0d);
    }
 }
 

@@ -29,7 +29,6 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.frame.AbstractBasicFrame;
@@ -189,16 +188,16 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame {
 
       BurnDataCategory data = retriever.getBurnData();
 
-      Set<String> categoryNames = data.getCategoryNames();
+      Set<Category> categoryNames = data.getCategoryNames();
       List<BurnDataColumn> burndownDays = null;
 
       clearAllSeries();
 
-      for (String categoryName : categoryNames) {
+      for (Category categoryName : categoryNames) {
          burndownDays = data.getDataForCategory(categoryName);
          Collections.sort(burndownDays);
 
-         createNewSeriesAndAddToCollection(data.getType(), categoryName, burndownDays);
+         createNewSeriesAndAddToCollection(categoryName.getBurnType(), categoryName.getName(), burndownDays);
       }
 
       ValueAxis xAxis = xyPlot.getDomainAxis();

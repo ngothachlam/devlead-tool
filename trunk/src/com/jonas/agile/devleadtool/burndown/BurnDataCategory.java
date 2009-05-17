@@ -8,24 +8,22 @@ import java.util.Set;
 
 public class BurnDataCategory {
 
-   private Map<String, BurnDataCategory> burnDataPerCategory;
+   private Map<Category, BurnDataCategory> burnDataPerCategory;
    private List<BurnDataColumn> burnDays = new ArrayList<BurnDataColumn>();
-   private BurnType burnType;
 
-   public BurnDataCategory(Map<String, BurnDataCategory> burnDownDataPerCategory) {
+   public BurnDataCategory(Map<Category, BurnDataCategory> burnDownDataPerCategory) {
       this.burnDataPerCategory = burnDownDataPerCategory;
    }
 
-   public BurnDataCategory(BurnType burnType) {
-      this.burnType = burnType;
-      this.burnDataPerCategory = new LinkedHashMap<String, BurnDataCategory>();
+   public BurnDataCategory() {
+      this.burnDataPerCategory = new LinkedHashMap<Category, BurnDataCategory>();
    }
 
    public void add(Category string, double x, double y) {
-      BurnDataCategory data = getCategory(string.getName());
+      BurnDataCategory data = getCategory(string);
       if (data == null) {
          data = new BurnDataCategory(burnDataPerCategory);
-         burnDataPerCategory.put(string.getName(), data);
+         burnDataPerCategory.put(string, data);
       }
       data.add(new BurnDataColumn(x, y));
    }
@@ -34,11 +32,11 @@ public class BurnDataCategory {
       burnDays.add(burnDownDay);
    }
 
-   private BurnDataCategory getCategory(String string) {
+   private BurnDataCategory getCategory(Category string) {
       return burnDataPerCategory.get(string);
    }
 
-   public List<BurnDataColumn> getDataForCategory(String string) {
+   public List<BurnDataColumn> getDataForCategory(Category string) {
       return getCategory(string).getData();
    }
 
@@ -46,12 +44,8 @@ public class BurnDataCategory {
       return burnDays;
    }
 
-   public Set<String> getCategoryNames() {
-      return burnDataPerCategory.keySet();
+   public Set<Category> getCategoryNames() {
+      Set<Category> keySet = burnDataPerCategory.keySet();
+      return keySet;
    }
-
-   public BurnType getType() {
-      return burnType;
-   }
-
 }
