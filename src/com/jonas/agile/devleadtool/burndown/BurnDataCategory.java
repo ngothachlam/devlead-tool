@@ -8,22 +8,24 @@ import java.util.Set;
 
 public class BurnDataCategory {
 
-   private Map<CategoryType, BurnDataCategory> burnDataPerCategory;
+   private Map<String, BurnDataCategory> burnDataPerCategory;
    private List<BurnDataColumn> burnDays = new ArrayList<BurnDataColumn>();
+   private BurnType burnType;
 
-   public BurnDataCategory(Map<CategoryType, BurnDataCategory> burnDownDataPerCategory) {
+   public BurnDataCategory(Map<String, BurnDataCategory> burnDownDataPerCategory) {
       this.burnDataPerCategory = burnDownDataPerCategory;
    }
 
-   public BurnDataCategory() {
-      this.burnDataPerCategory = new LinkedHashMap<CategoryType, BurnDataCategory>();
+   public BurnDataCategory(BurnType burnType) {
+      this.burnType = burnType;
+      this.burnDataPerCategory = new LinkedHashMap<String, BurnDataCategory>();
    }
 
-   public void add(CategoryType string, double x, double y) {
-      BurnDataCategory data = getCategory(string);
+   public void add(Category string, double x, double y) {
+      BurnDataCategory data = getCategory(string.getName());
       if (data == null) {
          data = new BurnDataCategory(burnDataPerCategory);
-         burnDataPerCategory.put(string, data);
+         burnDataPerCategory.put(string.getName(), data);
       }
       data.add(new BurnDataColumn(x, y));
    }
@@ -32,11 +34,11 @@ public class BurnDataCategory {
       burnDays.add(burnDownDay);
    }
 
-   private BurnDataCategory getCategory(CategoryType string) {
+   private BurnDataCategory getCategory(String string) {
       return burnDataPerCategory.get(string);
    }
 
-   public List<BurnDataColumn> getDataForCategory(CategoryType string) {
+   public List<BurnDataColumn> getDataForCategory(String string) {
       return getCategory(string).getData();
    }
 
@@ -44,13 +46,12 @@ public class BurnDataCategory {
       return burnDays;
    }
 
-   public Set<CategoryType> getCategoryNames() {
+   public Set<String> getCategoryNames() {
       return burnDataPerCategory.keySet();
    }
 
-   public String getTypeOfBurn(String categoryName) {
-      // TODO Auto-generated method stub
-      throw new RuntimeException("Method not implemented yet!");
+   public BurnType getType() {
+      return burnType;
    }
 
 }

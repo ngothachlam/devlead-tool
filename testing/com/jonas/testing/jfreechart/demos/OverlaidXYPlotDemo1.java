@@ -1,21 +1,24 @@
 package com.jonas.testing.jfreechart.demos;
 
 import java.awt.Dimension;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.*;
-import org.jfree.chart.labels.StandardXYToolTipGenerator;
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.DateTickMarkPosition;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.*;
-import org.jfree.data.time.*;
-import org.jfree.data.xy.IntervalXYDataset;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.time.Day;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
@@ -60,7 +63,7 @@ public class OverlaidXYPlotDemo1 extends ApplicationFrame {
       return freeChart;
    }
 
-   private static IntervalXYDataset createDataset1() {
+   private static XYDataset createDataset1() {
       TimeSeries timeseries = new TimeSeries("Series 1", org.jfree.data.time.Day.class);
       timeseries.add(new Day(1, 3, 2002), 12353.299999999999D);
       timeseries.add(new Day(2, 3, 2002), 13734.4D);
@@ -96,8 +99,7 @@ public class OverlaidXYPlotDemo1 extends ApplicationFrame {
       timeseries.add(new Day(14, 3, 2002), 17943.599999999999D);
       timeseries.add(new Day(15, 3, 2002), 18500.700000000001D);
       timeseries.add(new Day(16, 3, 2002), 19595.900000000001D);
-      TimeSeriesCollection timeseriescollection = new TimeSeriesCollection(timeseries);
-      return timeseriescollection;
+      return new TimeSeriesCollection(timeseries);
    }
 
    public static JPanel createDemoPanel() {
