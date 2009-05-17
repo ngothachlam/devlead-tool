@@ -18,11 +18,11 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
    public static void main(String[] args) {
       ManualBurnDownFrame frame = new ManualBurnDownFrame(null, null, new BurnDataRetriever() {
 
-         BurnData data;
+         BurnDataCategory data;
 
          @Override
          public void calculateBurndownData() {
-            data = new BurnData();
+            data = new BurnDataCategory();
             data.add("Real Progression", 0d, 15d + 7d);
             data.add("Real Progression", 1d, 16d + 7d);
             data.add("Real Progression", 2d, 16d + 5d);
@@ -40,7 +40,7 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
          }
 
          @Override
-         public BurnData getBurnData() {
+         public BurnDataCategory getBurnData() {
             return data;
          }
       }, true);
@@ -63,24 +63,13 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
    }
 
    @Override
-   public void createNewSeriesAndAddToCollection(String categoryName, List<BurnDataColumn> burndownDays) {
-      XYSeries newSeries = new XYSeries(categoryName);
-      newSeries.setKey(categoryName);
-      seriesCollectionForBurnDown.addSeries(newSeries);
-
-      for (BurnDataColumn burnDownDay : burndownDays) {
-         newSeries.add(burnDownDay.getX(), burnDownDay.getY());
-      }
-   }
-
-   @Override
    public XYItemRenderer getRenderer() {
       return new XYLineAndShapeRenderer(true, false);
    }
 
    @Override
    public XYDataset getXyDataset() {
-      seriesCollectionForBurnDown = new XYSeriesCollection();
+      seriesCollectionForBurnDown = seriesCollectionForBurnDown == null ? new XYSeriesCollection() : seriesCollectionForBurnDown;
       return seriesCollectionForBurnDown;
    }
 

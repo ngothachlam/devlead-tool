@@ -27,13 +27,16 @@ import org.jfree.chart.renderer.AbstractRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.urls.StandardXYURLGenerator;
+import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.frame.AbstractBasicFrame;
 import com.jonas.common.DateHelper;
 
-public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
+public abstract class AbstractManualBurnFrame extends AbstractBasicFrame {
 
    protected DateHelper dateHelper;
    protected JTextField name;
@@ -52,13 +55,13 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
       this.prepareBurndown();
    }
 
-   public abstract void clearAllSeries() ;
+   public abstract void clearAllSeries();
 
    public JFreeChart createChart(String title, String xAxisLabel, String yAxisLabel, XYDataset dataset, PlotOrientation orientation, boolean legend, boolean tooltips, boolean urls) {
-   
+
       NumberAxis xAxis = new NumberAxis(xAxisLabel);
       NumberAxis yAxis = new NumberAxis(yAxisLabel);
-      
+
       XYItemRenderer renderer = getRenderer();
       if (tooltips) {
          renderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator());
@@ -66,15 +69,30 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
       if (urls) {
          renderer.setURLGenerator(new StandardXYURLGenerator());
       }
-      
+
       XYPlot plot = new XYPlot(dataset, xAxis, yAxis, renderer);
       plot.setOrientation(orientation);
-   
+
       JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
       return chart;
    }
 
-   public abstract void createNewSeriesAndAddToCollection(String categoryName, List<BurnDataColumn> burndownDays);
+   public final void createNewSeriesAndAddToCollection(String categoryName, List<BurnDataColumn> burndownDays) {
+      XYSeries newSeries = new XYSeries(categoryName, true, false);
+
+      for (BurnDataColumn burnDownDay : burndownDays) {
+         newSeries.add(burnDownDay.getX(), burnDownDay.getY());
+      }
+
+      XYDataset xyDataset = getXyDataset();
+      if (xyDataset instanceof XYSeriesCollection) {
+         XYSeriesCollection xsySC = (XYSeriesCollection) xyDataset;
+         xsySC.addSeries(newSeries);
+      } else if (xyDataset instanceof DefaultTableXYDataset) {
+         DefaultTableXYDataset xsySC = (DefaultTableXYDataset) xyDataset;
+         xsySC.addSeries(newSeries);
+      }
+   }
 
    public JFreeChart getChart() {
       return createChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
@@ -84,7 +102,7 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
             PlotOrientation.VERTICAL, true, // include legend
             true, // tooltips
             false // urls
-            );
+      );
    }
 
    @Override
@@ -133,7 +151,7 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
       xAxis.setLowerBound(0);
       xAxis.setUpperBound(10);
 
-      setRendererPaints((AbstractRenderer)plot.getRenderer());
+      setRendererPaints((AbstractRenderer) plot.getRenderer());
 
       source = new TextTitle();
       chart.addSubtitle(source);
@@ -150,7 +168,7 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
    public void updateBurndown() {
       source.setText(name.getText());
 
-      BurnData data = retriever.getBurnData();
+      BurnDataCategory data = retriever.getBurnData();
 
       Set<String> categoryNames = data.getCategoryNames();
       List<BurnDataColumn> burndownDays = null;
@@ -160,7 +178,7 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
       for (String categoryName : categoryNames) {
          burndownDays = data.getDataForCategory(categoryName);
          Collections.sort(burndownDays);
-         
+
          createNewSeriesAndAddToCollection(categoryName, burndownDays);
 
       }
