@@ -35,7 +35,7 @@
 	<classpathentry kind="lib" path="lib/jdom-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jfreechart-1.0.12.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="http://www.jfree.org/jfreechart/api/gjdoc/"/>
+			<attribute name="javadoc_location" value="file:C:/Documents and Settings/jonasjolofsson/Desktop/jfreechart-1.0.13-javadocs/jfreechart-1.0.13-javadocs"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jwebunit-core-2.0.jar"/>
