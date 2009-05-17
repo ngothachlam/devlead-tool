@@ -105,7 +105,7 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
       panel = new ChartPanel(chart);
    }
 
-   public void forEachSeriesIdentified(String categoryName, List<BurnDataColumn> burndownDays) {
+   public void createNewSeriesAndAddToCollection(String categoryName, List<BurnDataColumn> burndownDays) {
       XYSeries newSeries = new XYSeries(categoryName);
       newSeries.setKey(categoryName);
    
@@ -116,7 +116,7 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
       seriesCollection.addSeries(newSeries);
    }
 
-   public void prepareSeries() {
+   public void clearAllSeries() {
       seriesCollection.removeAllSeries();
    }
 
