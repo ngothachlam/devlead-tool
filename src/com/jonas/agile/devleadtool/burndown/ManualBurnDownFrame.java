@@ -7,11 +7,15 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.AbstractRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.chart.urls.StandardXYURLGenerator;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -85,7 +89,7 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
    @Override
    public JFreeChart getChart() {
       seriesCollectionForBurnDown = new XYSeriesCollection();
-      return ChartFactory.createXYLineChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
+      return createChart("Sprint Burndown" + (dateHelper != null ? " - " + dateHelper.getTodaysDateAsString() : ""), // chart title
             "Day in Sprint", // x axis label
             "Outstanding Points", // y axis label
             seriesCollectionForBurnDown, // data
@@ -125,4 +129,8 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
       seriesCollectionForBurnDown.removeAllSeries();
    }
 
+   @Override
+   public XYItemRenderer getRenderer() {
+      return new XYLineAndShapeRenderer(true, false);
+   }
 }

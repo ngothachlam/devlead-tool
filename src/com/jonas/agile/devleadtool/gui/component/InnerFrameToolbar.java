@@ -10,6 +10,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.burndown.AbstractManualBurnFrame;
 import com.jonas.agile.devleadtool.burndown.BurnCalculator;
 import com.jonas.agile.devleadtool.burndown.BurnDownCriticalPathCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.BurnData;
@@ -155,7 +156,7 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRe
    
    @Override
    public void doActionPerformed(ActionEvent e) {
-      ManualBurnUpFrame boardStatsFrame = new ManualBurnUpFrame(getParentFrame(), new DateHelper(), this);
+      AbstractManualBurnFrame boardStatsFrame = new ManualBurnUpFrame(getParentFrame(), new DateHelper(), this);
       boardStatsFrame.setVisible(true);
    }
    
