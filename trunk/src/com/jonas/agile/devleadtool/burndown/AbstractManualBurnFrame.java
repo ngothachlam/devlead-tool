@@ -56,9 +56,6 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
       Set<String> categoryNames = data.getCategoryNames();
       List<BurnDataColumn> burndownDays = null;
 
-      double lengthOfSprint = 0d;
-      Double totalEstimate = 0d;
-
       clearAllSeries();
 
       for (String categoryName : categoryNames) {
@@ -67,8 +64,6 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
          
          createNewSeriesAndAddToCollection(categoryName, burndownDays);
 
-         lengthOfSprint = Math.max(lengthOfSprint, StringHelper.getDoubleOrZero(burndownDays.get(burndownDays.size() - 1).getX()));
-         totalEstimate = Math.max(totalEstimate, burndownDays.get(0).getY());
       }
 
       xAxis.setAutoRange(true);

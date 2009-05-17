@@ -55,7 +55,6 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
             data.add("Datafixes completed", 1d, dataFixes += 1d);
             data.add("Datafixes completed", 2d, dataFixes += 2d);
          }
-
       }, true);
       frame.setVisible(true);
    }

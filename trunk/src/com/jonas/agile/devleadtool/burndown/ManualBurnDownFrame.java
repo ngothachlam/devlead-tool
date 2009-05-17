@@ -50,7 +50,6 @@ public class ManualBurnDownFrame extends AbstractManualBurnFrame {
             data.add("Ideal Progression", 0d, 15d + 7d);
             data.add("Ideal Progression", 10d, 0d);
          }
-
       }, true);
       frame.setVisible(true);
    }
