@@ -1,12 +1,12 @@
 package com.jonas.agile.devleadtool.burndown;
 
 
-public class BurnDownDay implements Comparable<BurnDownDay>{
+public class BurnDataColumn implements Comparable<BurnDataColumn>{
 
    private Double x, y;
    
 
-   public BurnDownDay(Double x, Double y) {
+   public BurnDataColumn(Double x, Double y) {
       this.x = x;
       this.y = y;
    }
@@ -20,7 +20,7 @@ public class BurnDownDay implements Comparable<BurnDownDay>{
    }
 
    @Override
-   public int compareTo(BurnDownDay o) {
+   public int compareTo(BurnDataColumn o) {
       Double y2 = o.getX();
       Double y3 = getX();
       return (int) (y3.doubleValue()-y2.doubleValue());

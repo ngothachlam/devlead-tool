@@ -12,7 +12,7 @@ import javax.swing.JToolBar;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.burndown.BurnDownCalculator;
 import com.jonas.agile.devleadtool.burndown.BurnDownCriticalPathCalculatorImpl;
-import com.jonas.agile.devleadtool.burndown.BurnDownData;
+import com.jonas.agile.devleadtool.burndown.BurnData;
 import com.jonas.agile.devleadtool.burndown.BurnDownDataRetriever;
 import com.jonas.agile.devleadtool.burndown.BurnDownProgressionCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.JiraStatsDataDTO;
@@ -144,7 +144,7 @@ final class BurndownAction extends BasicAbstractGUIAction {
 
 final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDownDataRetriever {
    private final MyTable sourceTable;
-   private BurnDownData data;
+   private BurnData data;
    private final PlannerHelper helper;
    
    NewBurnUpAction(String name, String description, Frame parentFrame, MyTable sourceTable, PlannerHelper helper) {
@@ -160,7 +160,7 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDownDa
    }
    
    @Override
-   public BurnDownData getBurnDownData() {
+   public BurnData getBurnDownData() {
       return data;
    }
    
@@ -178,14 +178,14 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDownDa
       SprintCache sprintCache = helper.getSprintCache();
       Sprint currentSprint = sprintCache.getCurrentSprint();
       
-      data = new BurnDownData();
+      data = new BurnData();
       data.add("Open", 0d, progressionCalculator.getTotalEstimates());
       data.add("Open", currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
    }
 }
 final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDownDataRetriever {
    private final MyTable sourceTable;
-   private BurnDownData data;
+   private BurnData data;
    private final PlannerHelper helper;
 
    NewBurnDownAction(String name, String description, Frame parentFrame, MyTable sourceTable, PlannerHelper helper) {
@@ -201,7 +201,7 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDown
    }
 
    @Override
-   public BurnDownData getBurnDownData() {
+   public BurnData getBurnDownData() {
       return data;
    }
 
@@ -219,7 +219,7 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDown
       SprintCache sprintCache = helper.getSprintCache();
       Sprint currentSprint = sprintCache.getCurrentSprint();
 
-      data = new BurnDownData();
+      data = new BurnData();
       data.add("Progression", 0d, progressionCalculator.getTotalEstimates());
       data.add("Progression", currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
       data.add("Ideal Progression", 0d, progressionCalculator.getTotalEstimates());

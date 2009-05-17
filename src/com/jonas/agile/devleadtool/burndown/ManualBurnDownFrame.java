@@ -50,16 +50,16 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
    public static void main(String[] args) {
       ManualBurnDownFrame frame = new ManualBurnDownFrame(null, null, new BurnDownDataRetriever() {
 
-         BurnDownData data;
+         BurnData data;
 
          @Override
-         public BurnDownData getBurnDownData() {
+         public BurnData getBurnDownData() {
             return data;
          }
 
          @Override
          public void calculateBurndownData() {
-            data = new BurnDownData();
+            data = new BurnData();
             data.add("Real Progression", 0d, 15d + 7d);
             data.add("Real Progression", 1d, 16d + 7d);
             data.add("Real Progression", 2d, 16d + 5d);
@@ -101,10 +101,10 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
    public void updateBurndown() {
       source.setText(name.getText());
 
-      BurnDownData data = retriever.getBurnDownData();
+      BurnData data = retriever.getBurnDownData();
 
       Set<String> categoryNames = data.getCategoryNames();
-      List<BurnDownDay> burndownDays = null;
+      List<BurnDataColumn> burndownDays = null;
 
       double lengthOfSprint = 0d;
       Double totalEstimate = 0d;
@@ -119,7 +119,7 @@ public class ManualBurnDownFrame extends AbstractBasicFrame {
          burndownDays = data.getDataForCategory(categoryName);
 
          Collections.sort(burndownDays);
-         for (BurnDownDay burnDownDay : burndownDays) {
+         for (BurnDataColumn burnDownDay : burndownDays) {
             newSeries.add(burnDownDay.getX(), burnDownDay.getY());
          }
 
