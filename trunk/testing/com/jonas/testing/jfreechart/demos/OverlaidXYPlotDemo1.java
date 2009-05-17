@@ -3,6 +3,9 @@ package com.jonas.testing.jfreechart.demos;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JPanel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -27,22 +30,31 @@ public class OverlaidXYPlotDemo1 extends ApplicationFrame {
    }
 
    private static JFreeChart createChart() {
-      XYDataset xydataset = createDataset1();
-      XYItemRenderer xyItemRenderer = new XYBarRenderer();
-      xyItemRenderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator("{0}: ({1}, {2})", new SimpleDateFormat("d-MMM-yyyy"), new DecimalFormat("0.00")));
       DateAxis dateaxis = new DateAxis("Date");
       dateaxis.setTickMarkPosition(DateTickMarkPosition.MIDDLE);
       NumberAxis numberaxis = new NumberAxis("Value");
-      XYPlot xyplot = new XYPlot(xydataset, dateaxis, numberaxis, xyItemRenderer);
+      
+      XYPlot xyplot = new XYPlot(null, dateaxis, numberaxis, null);
+      xyplot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
+      
+      List<XYDataset> xyDatasets = new ArrayList<XYDataset>();
+      xyDatasets.add(createDataset1());
+      xyDatasets.add(createDataset2());
+      
+      for (int counter = 0; counter < xyDatasets.size(); counter++) {
+         xyplot.setDataset(counter, xyDatasets.get(counter));
+      }
+      
+      List<XYItemRenderer> xyItemRenderers = new ArrayList<XYItemRenderer>();
+      xyItemRenderers.add(new XYBarRenderer());
+      xyItemRenderers.add(new StandardXYItemRenderer());
+      
+      for (int counter = 0; counter < xyItemRenderers.size(); counter++) {
+         XYItemRenderer itemRenderer = xyItemRenderers.get(counter);
+         xyplot.setRenderer(counter, itemRenderer);
+      }
       
       JFreeChart freeChart = new JFreeChart("Overlaid XYPlot Demo 1", JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
-      
-      xydataset = createDataset2();
-      xyItemRenderer = new StandardXYItemRenderer();
-      xyItemRenderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator("{0}: ({1}, {2})", new SimpleDateFormat("d-MMM-yyyy"), new DecimalFormat("0.00")));
-      xyplot.setDataset(1, xydataset);
-      xyplot.setRenderer(1, xyItemRenderer);
-      xyplot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
       return freeChart;
    }
 
