@@ -72,7 +72,7 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
       super(parent, dateHelper, retriever, closeOnExit);
    }
 
-   public void forEachSeriesIdentified(String categoryName, List<BurnDataColumn> burndownDays) {
+   public void createNewSeriesAndAddToCollection(String categoryName, List<BurnDataColumn> burndownDays) {
       XYSeries newSeries = new XYSeries(categoryName, true, false);
    
       for (BurnDataColumn burnDownDay : burndownDays) {
@@ -82,7 +82,7 @@ public class ManualBurnUpFrame extends AbstractManualBurnFrame {
       seriesCollection.addSeries(newSeries);
    }
 
-   public void prepareSeries() {
+   public void clearAllSeries() {
       seriesCollection.removeAllSeries();
    }
    

@@ -39,10 +39,6 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
 
    private final BurnDataRetriever retriever;
 
-   public AbstractManualBurnFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever) {
-      this(parent, dateHelper, retriever, false);
-   }
-
    public AbstractManualBurnFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever, boolean closeOnExit) {
       super(parent, null, null, closeOnExit);
       this.dateHelper = dateHelper;
@@ -61,13 +57,13 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
       double lengthOfSprint = 0d;
       Double totalEstimate = 0d;
 
-      prepareSeries();
+      clearAllSeries();
 
       for (String categoryName : categoryNames) {
          burndownDays = data.getDataForCategory(categoryName);
          Collections.sort(burndownDays);
          
-         forEachSeriesIdentified(categoryName, burndownDays);
+         createNewSeriesAndAddToCollection(categoryName, burndownDays);
 
          lengthOfSprint = Math.max(lengthOfSprint, StringHelper.getDoubleOrZero(burndownDays.get(burndownDays.size() - 1).getX()));
          totalEstimate = Math.max(totalEstimate, burndownDays.get(0).getY());
@@ -81,9 +77,9 @@ public abstract class AbstractManualBurnFrame extends AbstractBasicFrame{
 
    }
 
-   public abstract void prepareSeries() ;
+   public abstract void clearAllSeries() ;
 
-   public abstract void forEachSeriesIdentified(String categoryName, List<BurnDataColumn> burndownDays);
+   public abstract void createNewSeriesAndAddToCollection(String categoryName, List<BurnDataColumn> burndownDays);
 
    @Override
    public Container getMyPanel() {
