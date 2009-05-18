@@ -1,8 +1,10 @@
 package com.jonas.agile.devleadtool.funtionaltest;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 import org.junit.Before;
@@ -20,24 +22,40 @@ public class LoadingBurnUpDataFunctionalTest {
 
    HistoricalBoardDao dao;
    DateHelper dateHelper = new DateHelper();
-   
+
    @Before
-   public void setUp(){
+   public void setUp() {
       dao = new HistoricalBoardDao(dateHelper);
    }
-   
+
    @Test
-   public void shouldLoadModelOk() throws IOException, PersistanceException{
-      File sprintTrackerFile = new File("test-data//Sprint Tracker - llu.xls");
-      HistoricalBoardDao dao = new HistoricalBoardDao(new DateHelper());
-      
-      assertTrue(sprintTrackerFile.exists());
-      
+   public void shouldLoadModelOk() throws IOException, PersistanceException {
       ExcelSprintDao excelSprintDao = new ExcelSprintDao();
       PlannerDAOExcelImpl plannerDao = new PlannerDAOExcelImpl(excelSprintDao);
+
+      File sprintTrackerFile = new File("test-data//Sprint Tracker - llu.xls");
+      assertTrue(sprintTrackerFile.exists());
       CombinedModelDTO loadedData = plannerDao.loadAllData(sprintTrackerFile);
-      
+
       BoardTableModel boardModel = loadedData.getBoardModel();
-      dao.save(new File("bin//Sprint Tracker - llu_historical.csv"),boardModel);
+
+      File file = new File("bin//Sprint Tracker - llu_historical.csv");
+      if (file.exists())
+         file.delete();
+      assertFalse("File cannot exist as we are trying to save to it from afresh!", file.exists());
+      dao.save(file, boardModel);
+      assertNoOflines("The file should contain 18 lines", 18, file);
+      dao.save(file, boardModel);
+      assertNoOflines("The file should contain 18 lines", 18, file);
+   }
+
+   private void assertNoOflines(String string, int i, File file) throws IOException {
+      FileReader reader = new FileReader(file);
+      BufferedReader br = new BufferedReader(reader);
+      int rows = 0;
+      while (br.readLine() != null) {
+         rows++;
+      }
+      assertEquals(string, i, rows);
    }
 }
