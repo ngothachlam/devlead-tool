@@ -20,29 +20,24 @@ public class BurnUpCalculator {
    }
 
    public void calculateBurnData() {
-      System.out.println("calculateBurnData");
       BoardStatusValue[] boardStatuses = BoardStatusValue.values();
       for (BoardStatusValue boardStatus : boardStatuses) {
          MyTableModel myModel = sourceTable.getMyModel();
-         System.out.println(" Trying to find " + boardStatus);
          for (int row = 0; row < myModel.getRowCount(); row++) {
             Sprint sprint = (Sprint) myModel.getValueAt(ColumnType.Sprint, row);
-            System.out.println("  sprint " + sprint);
             if (sprint.calculateTime() != SprintTime.currentSprint) {
                continue;
             }
             BoardStatusValue theBoardStatus = (BoardStatusValue) myModel.getValueAt(ColumnType.BoardStatus, row);
-            System.out.println("  theBoardStatus " + theBoardStatus);
             if (theBoardStatus != boardStatus) {
                continue;
             }
+            
             Double adouble = getValue(theBoardStatus);
             Double thisValueIncrement = getThisValueIncrement(theBoardStatus, row, myModel);
-            System.out.println("  thisvalue increment is " + thisValueIncrement);
             if (thisValueIncrement != null) {
                adouble += thisValueIncrement;
                saveValue(theBoardStatus, adouble);
-               System.out.println("   *** saving " + theBoardStatus + " and its new value " + adouble);
             }
          }
 
