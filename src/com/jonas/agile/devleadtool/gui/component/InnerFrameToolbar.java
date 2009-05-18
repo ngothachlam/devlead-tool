@@ -2,7 +2,10 @@ package com.jonas.agile.devleadtool.gui.component;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
 
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -10,7 +13,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
-import com.jonas.agile.devleadtool.burndown.ManualBurnFrame;
 import com.jonas.agile.devleadtool.burndown.BurnCalculator;
 import com.jonas.agile.devleadtool.burndown.BurnDataCategory;
 import com.jonas.agile.devleadtool.burndown.BurnDataRetriever;
@@ -19,11 +21,12 @@ import com.jonas.agile.devleadtool.burndown.BurnDownProgressionCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.BurnType;
 import com.jonas.agile.devleadtool.burndown.BurnUpCalculator;
 import com.jonas.agile.devleadtool.burndown.Category;
+import com.jonas.agile.devleadtool.burndown.HistoricalBoardDao;
 import com.jonas.agile.devleadtool.burndown.JiraStatsDataDTO;
-import com.jonas.agile.devleadtool.burndown.ManualBurnDownFrame;
-import com.jonas.agile.devleadtool.burndown.ManualBurnUpFrame;
+import com.jonas.agile.devleadtool.burndown.ManualBurnFrame;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.action.HighlightIssuesAction;
+import com.jonas.agile.devleadtool.gui.action.SaveDataAction;
 import com.jonas.agile.devleadtool.gui.action.SprintManagerGuiAction;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddBoardReconcileFrame;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddFilterDialog;
@@ -56,13 +59,15 @@ public class InnerFrameToolbar extends JToolBar {
       BasicAbstractGUIAction addVersionAction = new AddFromJiraVersionAction(parentFrame, tables);
 
       BasicAbstractGUIAction sprintManager = new SprintManagerGuiAction(parentFrame, helper, sprintDao);
-//      BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown (old)", "Showing Board Statistics", parentFrame, boardTable, helper);
+      // BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown (old)", "Showing Board Statistics", parentFrame, boardTable, helper);
       BasicAbstractGUIAction newBurndown = new NewBurnDownAction("Graph Burn-down", "Showing Board Statistics", parentFrame, boardTable, helper);
       BasicAbstractGUIAction newBurnup = new NewBurnUpAction("Graph Burn-Up", "BurnUp Statistics", parentFrame, boardTable, helper);
 
       JMenuBar comp = new JMenuBar();
       comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null, highlightAction, dupeAction, freezeAction));
       comp.add(getDataModificationMenu("Sprint", sprintManager, newBurndown, newBurnup));
+      HistoricalBoardDao dao = new HistoricalBoardDao(new DateHelper());
+      comp.add(new JButton(new SaveDataAction("Save", "Save historical view for the future (BurnDowns, BurnUps, etc)", parentFrame, boardTable.getMyModel(), dao)));
       this.add(comp);
 
    }
@@ -150,18 +155,20 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRe
    private final MyTable sourceTable;
    private BurnDataCategory data;
    private final PlannerHelper helper;
+   private ManualBurnFrame boardStatsFrame;
+   private DateHelper dateHelper;
 
    NewBurnUpAction(String name, String description, Frame parentFrame, MyTable sourceTable, PlannerHelper helper) {
       super(name, description, parentFrame);
       this.sourceTable = sourceTable;
       this.helper = helper;
+      this.dateHelper = new DateHelper();
    }
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      ManualBurnFrame boardStatsFrame = new ManualBurnFrame(getParentFrame(), new DateHelper(), this);
+      boardStatsFrame = new ManualBurnFrame(getParentFrame(), new DateHelper(), this);
       boardStatsFrame.setVisible(true);
-      boardStatsFrame.setChartText("Test");
    }
 
    @Override
@@ -177,7 +184,8 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRe
       SprintCache sprintCache = helper.getSprintCache();
       Sprint currentSprint = sprintCache.getCurrentSprint();
 
-      data = new BurnDataCategory(BurnType.BurnUp);
+      data = new BurnDataCategory(BurnType.BurnUp, currentSprint.getLength());
+      boardStatsFrame.setChartText(currentSprint.getName() + " (" + dateHelper.getDateAsString(currentSprint.getStartDate()) + " to " + dateHelper.getDateAsString(currentSprint.getEndDate()) + ")");
 
       Integer dayInSprint = currentSprint.calculateDayInSprint();
       Category category = new Category("Complete");
@@ -211,18 +219,20 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnData
    private final MyTable sourceTable;
    private BurnDataCategory data;
    private final PlannerHelper helper;
+   private ManualBurnFrame boardStatsFrame;
+   private DateHelper dateHelper;
 
    NewBurnDownAction(String name, String description, Frame parentFrame, MyTable sourceTable, PlannerHelper helper) {
       super(name, description, parentFrame);
       this.sourceTable = sourceTable;
       this.helper = helper;
+      this.dateHelper = new DateHelper();
    }
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      ManualBurnFrame boardStatsFrame = new ManualBurnFrame(getParentFrame(), new DateHelper(), this);
+      boardStatsFrame = new ManualBurnFrame(getParentFrame(), new DateHelper(), this);
       boardStatsFrame.setVisible(true);
-      boardStatsFrame.setChartText("Test");
    }
 
    @Override
@@ -232,7 +242,7 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnData
 
    @Override
    public void calculateBurndownData() {
-      
+
       JiraStatsDataDTO jiraStatsDataDTO = new JiraStatsDataDTO(sourceTable);
       jiraStatsDataDTO.calculateJiraStats();
 
@@ -244,6 +254,7 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnData
 
       SprintCache sprintCache = helper.getSprintCache();
       Sprint currentSprint = sprintCache.getCurrentSprint();
+      boardStatsFrame.setChartText(currentSprint.getName() + " (" + dateHelper.getDateAsString(currentSprint.getStartDate()) + " to " + dateHelper.getDateAsString(currentSprint.getEndDate()) + ")");
 
       data = new BurnDataCategory(BurnType.BurnDown);
       Category category = new Category("Progression");

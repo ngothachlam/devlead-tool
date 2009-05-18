@@ -11,9 +11,15 @@ public class BurnDataCategory {
    private Map<Category, BurnDataCategory> burnDataPerCategory;
    private List<BurnDataColumn> burnDays = new ArrayList<BurnDataColumn>();
    private BurnType burnType;
+   private Integer timeLength;
 
    public BurnDataCategory(Map<Category, BurnDataCategory> burnDownDataPerCategory) {
       this.burnDataPerCategory = burnDownDataPerCategory;
+   }
+
+   public BurnDataCategory(BurnType burnType, Integer length) {
+      this(burnType);
+      this.timeLength = length;
    }
 
    public BurnDataCategory(BurnType burnType) {
@@ -53,5 +59,9 @@ public class BurnDataCategory {
 
    public BurnType getBurnType() {
       return burnType;
+   }
+
+   public Integer getLength() {
+      return timeLength;
    }
 }

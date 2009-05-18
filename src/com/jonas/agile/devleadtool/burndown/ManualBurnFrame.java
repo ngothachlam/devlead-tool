@@ -53,7 +53,7 @@ public class ManualBurnFrame extends AbstractBasicFrame {
    public ManualBurnFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever) {
       this(parent, dateHelper, retriever, false);
    }
-   
+
    ManualBurnFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever, boolean closeOnExit) {
       super(parent, null, null, closeOnExit);
       this.dateHelper = dateHelper;
@@ -99,7 +99,7 @@ public class ManualBurnFrame extends AbstractBasicFrame {
          seriesCollectionForBurnUp = new DefaultTableXYDataset();
          xyPlot.setDataset(dataSetCount, seriesCollectionForBurnUp);
          XYItemRenderer renderer = new StackedXYAreaRenderer2();
-         
+
          int row = 0;
          renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
          renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
@@ -109,7 +109,7 @@ public class ManualBurnFrame extends AbstractBasicFrame {
          renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
          renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
          renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
-         
+
          xyPlot.setRenderer(dataSetCount++, renderer);
       }
 
@@ -206,7 +206,11 @@ public class ManualBurnFrame extends AbstractBasicFrame {
       }
 
       ValueAxis xAxis = xyPlot.getDomainAxis();
-      xAxis.setAutoRange(true);
+      Integer length = data.getLength();
+      if (length != null)
+         xAxis.setUpperBound(length.doubleValue());
+      else
+         xAxis.setAutoRange(true);
       xAxis.setLowerBound(0d);
 
       ValueAxis yAxis = xyPlot.getRangeAxis();
