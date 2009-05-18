@@ -67,7 +67,7 @@ public class InnerFrameToolbar extends JToolBar {
       comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null, highlightAction, dupeAction, freezeAction));
       comp.add(getDataModificationMenu("Sprint", sprintManager, newBurndown, newBurnup));
       HistoricalBoardDao dao = new HistoricalBoardDao(new DateHelper());
-      comp.add(new JButton(new SaveDataAction("Save", "Save historical view for the future (BurnDowns, BurnUps, etc)", parentFrame, boardTable.getMyModel(), dao)));
+      comp.add(new JButton(new SaveDataAction("Save", "Save historical view for the future (BurnDowns, BurnUps, etc)", parentFrame, boardTable.getMyModel(), dao, helper)));
       this.add(comp);
 
    }

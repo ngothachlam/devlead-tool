@@ -32,6 +32,10 @@ public class DateHelper {
       Date dateNow = new Date();
       return getDateAsString(dateNow);
    }
+   public static String getTodaysDateAsSimpleOrderableString() {
+      Date dateNow = new Date();
+      return getDateAsSimpleOrderableString(dateNow);
+   }
 
    public static String getDateAsString(Date dateNow) {
       return advancDateformat.format(dateNow);
