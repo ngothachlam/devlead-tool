@@ -38,6 +38,6 @@ public class LoadingBurnUpDataFunctionalTest {
       CombinedModelDTO loadedData = plannerDao.loadAllData(sprintTrackerFile);
       
       BoardTableModel boardModel = loadedData.getBoardModel();
-      dao.save(boardModel);
+      dao.save(new File("bin//Sprint Tracker - llu_historical.csv"),boardModel);
    }
 }
