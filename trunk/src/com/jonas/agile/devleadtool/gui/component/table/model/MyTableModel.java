@@ -535,8 +535,9 @@ public abstract class MyTableModel extends DefaultTableModel {
          } catch (NullPointerException e) {
             log.warn("NullPointerException -> ", e);
          }
-         if (log.isDebugEnabled())
-            log.debug("adding " + t + " from " + integer);
+         if (log.isDebugEnabled()) {
+            // log.debug("adding " + t + " from " + integer);
+         }
          result.add(t);
       }
       return result;

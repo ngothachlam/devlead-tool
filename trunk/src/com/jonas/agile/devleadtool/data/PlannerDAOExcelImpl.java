@@ -112,14 +112,16 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
             Vector<Object> rowData = new Vector<Object>();
             rowCount++;
             HSSFRow row = rit.next();
-            if (log.isDebugEnabled())
-               log.debug("Loading row " + rowCount);
+//            if (log.isDebugEnabled()){
+//               log.debug("Loading row " + rowCount);
+//            }
             // for each column in the row...
             for (Iterator<HSSFCell> cit = row.cellIterator(); cit.hasNext();) {
                HSSFCell cell = cit.next();
                int cellType = cell.getCellType();
-               if (log.isDebugEnabled())
-                  log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + cell.getColumnIndex());
+//               if (log.isDebugEnabled()) {
+                  // log.debug("Read cell value \"" + cell + "\" of type " + cellType + " at row " + rowCount + ", column " + cell.getColumnIndex());
+//               }
                Object cellContents = null;
                switch (cellType) {
                   case HSSFCell.CELL_TYPE_BLANK:
@@ -159,8 +161,8 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
       for (int remainingCol = rowData.size(); remainingCol < dataModelDTO.getHeader().size(); remainingCol++) {
          ColumnType header = dataModelDTO.getHeader().get(remainingCol);
          Object defaultValue = ColumnWrapper.get(header).getDefaultValue();
-         if (log.isDebugEnabled())
-            log.debug(" header " + header + " at position " + remainingCol + " was found emtpy in rowdata so we need to add default value of \"" + defaultValue + "\"");
+         // if (log.isDebugEnabled())
+         // log.debug(" header " + header + " at position " + remainingCol + " was found emtpy in rowdata so we need to add default value of \"" + defaultValue + "\"");
          rowData.add(defaultValue);
       }
 
