@@ -191,7 +191,7 @@ public class ManualBurnFrame extends AbstractBasicFrame {
    public void updateBurndown() {
       source.setText(name.getText());
 
-      BurnDataCategory data = retriever.getBurnData();
+      BurnData data = retriever.getBurnData();
 
       Set<Category> categoryNames = data.getCategoryNames();
       List<BurnDataColumn> burndownDays = null;

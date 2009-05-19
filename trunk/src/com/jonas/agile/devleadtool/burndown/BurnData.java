@@ -6,31 +6,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class BurnDataCategory {
+public class BurnData {
 
-   private Map<Category, BurnDataCategory> burnDataPerCategory;
+   private Map<Category, BurnData> burnDataPerCategory;
    private List<BurnDataColumn> burnDays = new ArrayList<BurnDataColumn>();
    private BurnType burnType;
    private Integer timeLength;
 
-   public BurnDataCategory(Map<Category, BurnDataCategory> burnDownDataPerCategory) {
+   public BurnData(Map<Category, BurnData> burnDownDataPerCategory) {
       this.burnDataPerCategory = burnDownDataPerCategory;
    }
 
-   public BurnDataCategory(BurnType burnType, Integer length) {
+   public BurnData(BurnType burnType, Integer length) {
       this(burnType);
       this.timeLength = length;
    }
 
-   public BurnDataCategory(BurnType burnType) {
+   public BurnData(BurnType burnType) {
       this.burnType = burnType;
-      this.burnDataPerCategory = new LinkedHashMap<Category, BurnDataCategory>();
+      this.burnDataPerCategory = new LinkedHashMap<Category, BurnData>();
    }
 
    public void add(Category string, double x, double y) {
-      BurnDataCategory data = getCategory(string);
+      BurnData data = getCategory(string);
       if (data == null) {
-         data = new BurnDataCategory(burnDataPerCategory);
+         data = new BurnData(burnDataPerCategory);
          burnDataPerCategory.put(string, data);
       }
       data.add(new BurnDataColumn(x, y));
@@ -40,7 +40,7 @@ public class BurnDataCategory {
       burnDays.add(burnDownDay);
    }
 
-   private BurnDataCategory getCategory(Category string) {
+   private BurnData getCategory(Category string) {
       return burnDataPerCategory.get(string);
    }
 

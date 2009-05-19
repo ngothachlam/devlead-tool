@@ -14,7 +14,7 @@ import javax.swing.JToolBar;
 
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.burndown.BurnCalculator;
-import com.jonas.agile.devleadtool.burndown.BurnDataCategory;
+import com.jonas.agile.devleadtool.burndown.BurnData;
 import com.jonas.agile.devleadtool.burndown.BurnDataRetriever;
 import com.jonas.agile.devleadtool.burndown.BurnDownCriticalPathCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.BurnDownProgressionCalculatorImpl;
@@ -153,7 +153,7 @@ final class BurndownAction extends BasicAbstractGUIAction {
 
 final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRetriever {
    private final MyTable sourceTable;
-   private BurnDataCategory data;
+   private BurnData data;
    private final PlannerHelper helper;
    private ManualBurnFrame boardStatsFrame;
    private DateHelper dateHelper;
@@ -172,7 +172,7 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRe
    }
 
    @Override
-   public BurnDataCategory getBurnData() {
+   public BurnData getBurnData() {
       return data;
    }
 
@@ -184,7 +184,7 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRe
       SprintCache sprintCache = helper.getSprintCache();
       Sprint currentSprint = sprintCache.getCurrentSprint();
 
-      data = new BurnDataCategory(BurnType.BurnUp, currentSprint.getLength());
+      data = new BurnData(BurnType.BurnUp, currentSprint.getLength());
       boardStatsFrame.setChartText(currentSprint.getName() + " (" + dateHelper.getDateAsString(currentSprint.getStartDate()) + " to " + dateHelper.getDateAsString(currentSprint.getEndDate()) + ")");
 
       Integer dayInSprint = currentSprint.calculateDayInSprint();
@@ -217,7 +217,7 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRe
 
 final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnDataRetriever {
    private final MyTable sourceTable;
-   private BurnDataCategory data;
+   private BurnData data;
    private final PlannerHelper helper;
    private ManualBurnFrame boardStatsFrame;
    private DateHelper dateHelper;
@@ -236,7 +236,7 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnData
    }
 
    @Override
-   public BurnDataCategory getBurnData() {
+   public BurnData getBurnData() {
       return data;
    }
 
@@ -256,7 +256,7 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnData
       Sprint currentSprint = sprintCache.getCurrentSprint();
       boardStatsFrame.setChartText(currentSprint.getName() + " (" + dateHelper.getDateAsString(currentSprint.getStartDate()) + " to " + dateHelper.getDateAsString(currentSprint.getEndDate()) + ")");
 
-      data = new BurnDataCategory(BurnType.BurnDown);
+      data = new BurnData(BurnType.BurnDown);
       Category category = new Category("Progression");
       data.add(category, 0d, progressionCalculator.getTotalEstimates());
       data.add(category, currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
