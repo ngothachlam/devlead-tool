@@ -2,7 +2,7 @@ package com.jonas.agile.devleadtool.burndown;
 
 public interface BurnDataRetriever {
 
-   public BurnDataCategory getBurnData();
+   public BurnData getBurnData();
 
    public void calculateBurndownData();
 

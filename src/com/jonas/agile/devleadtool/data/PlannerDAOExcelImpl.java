@@ -348,37 +348,40 @@ public class PlannerDAOExcelImpl implements PlannerDAO {
 
    private void setValue(TableModelDTO dataModelDTO, int rowCount, Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount, Object cellContents) throws PersistanceException {
       if (rowCount == 0) {
-         if (log.isDebugEnabled())
-            log.debug("\tHeader! Trying to find the header for " + cellContents.toString());
-         ColumnWrapper wrapper = ColumnWrapper.get(cellContents.toString());
-         if (wrapper == null) {
-            throw new PersistanceException("Found column " + cellContents + " in file, but there is no such columnWrapper representation. Update it to one of " + getStringOfColumns());
-         }
-         ColumnType columnType = wrapper.getType();
-         if (columnType == null) {
-            throw new PersistanceException(cellContents.toString() + " has a wrapper, but the wrapper does not have a columnType relating to it!");
-         }
-         columns.put(colCount, wrapper);
-//         if (wrapper.isToLoad()) {
-            Vector<ColumnType> header = dataModelDTO.getHeader();
-            header.add(columnType);
-//         } else {
-//            if (log.isDebugEnabled())
-//               log.debug("\tHeader " + columnType + " is not to be loaded!");
-//         }
+         setValueOnHeader(dataModelDTO, columns, colCount, cellContents);
       } else {
-         if (log.isDebugEnabled())
-            log.debug("\tsize of rowData is " + rowData.size() + " and the current colCount is " + colCount);
-         for (int missingCol = rowData.size(); missingCol < colCount; missingCol++) {
-            Vector<ColumnType> header = dataModelDTO.getHeader();
-            ColumnType column = header.get(missingCol);
-            Object defaultValue = ColumnWrapper.get(column).getDefaultValue();
-            addCellValue(columns, rowData, missingCol, defaultValue);
-            if (log.isDebugEnabled())
-               log.debug("\tadding " + column + " with default value \"" + defaultValue + "\"");
-         }
-         addCellValue(columns, rowData, colCount, cellContents);
+         setValueOnBody(dataModelDTO, columns, rowData, colCount, cellContents);
       }
+   }
+
+   private void setValueOnBody(TableModelDTO dataModelDTO, Map<Integer, ColumnWrapper> columns, Vector<Object> rowData, int colCount, Object cellContents) {
+      if (log.isDebugEnabled())
+         log.debug("\tsize of rowData is " + rowData.size() + " and the current colCount is " + colCount);
+      for (int missingCol = rowData.size(); missingCol < colCount; missingCol++) {
+         Vector<ColumnType> header = dataModelDTO.getHeader();
+         ColumnType column = header.get(missingCol);
+         Object defaultValue = ColumnWrapper.get(column).getDefaultValue();
+         addCellValue(columns, rowData, missingCol, defaultValue);
+         if (log.isDebugEnabled())
+            log.debug("\tadding " + column + " with default value \"" + defaultValue + "\"");
+      }
+      addCellValue(columns, rowData, colCount, cellContents);
+   }
+
+   private void setValueOnHeader(TableModelDTO dataModelDTO, Map<Integer, ColumnWrapper> columns, int colCount, Object cellContents) throws PersistanceException {
+      if (log.isDebugEnabled())
+         log.debug("\tHeader! Trying to find the header for " + cellContents.toString());
+      ColumnWrapper wrapper = ColumnWrapper.get(cellContents.toString());
+      if (wrapper == null) {
+         throw new PersistanceException("Found column " + cellContents + " in file, but there is no such columnWrapper representation. Update it to one of " + getStringOfColumns());
+      }
+      ColumnType columnType = wrapper.getType();
+      if (columnType == null) {
+         throw new PersistanceException(cellContents.toString() + " has a wrapper, but the wrapper does not have a columnType relating to it!");
+      }
+      columns.put(colCount, wrapper);
+      Vector<ColumnType> header = dataModelDTO.getHeader();
+      header.add(columnType);
    }
 
    private String getStringOfColumns() {

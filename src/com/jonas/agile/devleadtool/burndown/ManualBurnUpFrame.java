@@ -9,11 +9,11 @@ public class ManualBurnUpFrame extends ManualBurnFrame {
    public static void main(String[] args) {
       ManualBurnFrame frame = new ManualBurnUpFrame(null, null, new BurnDataRetriever() {
 
-         BurnDataCategory data;
+         BurnData data;
 
          @Override
          public void calculateBurndownData() {
-            data = new BurnDataCategory(BurnType.BurnUp);
+            data = new BurnData(BurnType.BurnUp);
             
             Category category = new Category("Closed");
             data.add(category, 0d, 0d);
@@ -48,7 +48,7 @@ public class ManualBurnUpFrame extends ManualBurnFrame {
          }
 
          @Override
-         public BurnDataCategory getBurnData() {
+         public BurnData getBurnData() {
             return data;
          }
       });
