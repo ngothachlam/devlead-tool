@@ -16,13 +16,15 @@ import com.jonas.common.DateHelper;
 import com.jonas.common.logging.MyLogger;
 
 public class HistoricalBoardDao {
+   public static final String DAY_IN_SPRINT = "DayInSprint";
+   private static final String HISTORICAL_DATE = "HistoricalDate";
    private static final String DELIMITER = "¬";
 
    private static final Vector<String> HISTORICALPRECOLUMNS = new Vector<String>();
 
    static {
-      HISTORICALPRECOLUMNS.add("HistoricalDate");
-      HISTORICALPRECOLUMNS.add("DayInSprint");
+      HISTORICALPRECOLUMNS.add(HISTORICAL_DATE);
+      HISTORICALPRECOLUMNS.add(DAY_IN_SPRINT);
    }
 
    private Logger log = MyLogger.getLogger(HistoricalBoardDao.class);
@@ -86,11 +88,13 @@ public class HistoricalBoardDao {
    private void writeBody(MyTableModel boardModel, HistoricalData data, BufferedWriter bw, int dayOfSprint, Sprint sprint) throws IOException {
       if (data != null) {
          Vector<Vector<Object>> oldDataToCopy = data.getBodyLinesThatAreNotForThisDayInSprint(sprint, dayOfSprint);
+         System.out.println(sprint.toString());
          for (Vector<Object> oldRow : oldDataToCopy) {
             StringBuffer sb = new StringBuffer(oldRow.get(0).toString());
             for (int counter = 1; counter < oldRow.size(); counter++) {
                sb.append(DELIMITER).append(oldRow.get(counter).toString());
             }
+            System.out.println("Old data to copy: " + sb.toString());
             bw.append(sb.append("\n").toString());
          }
       }
@@ -108,10 +112,18 @@ public class HistoricalBoardDao {
          Object value = boardModel.getValueAt(row, column);
          sb.append(DELIMITER).append(value.toString());
       }
+      System.out.println("New data to add: " + sb.toString());
       return sb.append("\n").toString();
    }
 
    public HistoricalData load(File file) throws IOException {
+      
+      if(!file.exists()){
+         throw new RuntimeException("File " + file + " doesn't exist!");
+      }
+      
+      log.debug("Trying to load " + file.getAbsolutePath());
+      
       FileReader reader = null;
       BufferedReader br = null;
       try {
@@ -174,6 +186,12 @@ public class HistoricalBoardDao {
 
    public void setDateHelper(DateHelper dateHelper) {
       this.dateHelper = dateHelper;
+   }
+
+   public File getFileForHistoricalSave(File saveDirectory, File originalFile) {
+         String orignalFileName = originalFile.getName();
+         orignalFileName = orignalFileName.substring(0, orignalFileName.indexOf("."));
+         return new File(saveDirectory, "HISTORICAL - " + orignalFileName + ".csv");
    }
 
 }

@@ -17,7 +17,8 @@ public class ManualBurnDownFrame extends ManualBurnFrame {
 
 
             Category category1 = new Category("Real Progression");
-            data.add(category1, 0d, 15d + 7d);
+            data.add(category1, 0d, 15d);
+            data.add(category1, 0d, 7d);
             data.add(category1, 1d, 16d + 7d);
             data.add(category1, 2d, 16d + 5d);
             data.add(category1, 3d, 13d + 3d);

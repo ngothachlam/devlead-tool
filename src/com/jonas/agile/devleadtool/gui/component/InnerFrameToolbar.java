@@ -3,6 +3,8 @@ package com.jonas.agile.devleadtool.gui.component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -22,6 +24,8 @@ import com.jonas.agile.devleadtool.burndown.BurnType;
 import com.jonas.agile.devleadtool.burndown.BurnUpCalculator;
 import com.jonas.agile.devleadtool.burndown.Category;
 import com.jonas.agile.devleadtool.burndown.HistoricalBoardDao;
+import com.jonas.agile.devleadtool.burndown.HistoricalData;
+import com.jonas.agile.devleadtool.burndown.HistoricalDataCriteria;
 import com.jonas.agile.devleadtool.burndown.JiraStatsDataDTO;
 import com.jonas.agile.devleadtool.burndown.ManualBurnFrame;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
@@ -43,6 +47,7 @@ import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.DateHelper;
+import com.jonas.jira.TestObjects;
 
 public class InnerFrameToolbar extends JToolBar {
 
@@ -178,35 +183,45 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRe
 
    @Override
    public void calculateBurndownData() {
-      BurnUpCalculator burnUpCalculator = new BurnUpCalculator(sourceTable);
-      burnUpCalculator.calculateBurnData();
+      try {
+         BurnUpCalculator burnUpCalculator = new BurnUpCalculator();
+         SprintCache sprintCache = helper.getSprintCache();
+         Sprint currentSprint = sprintCache.getCurrentSprint();
+         boardStatsFrame.setChartText(currentSprint.getName() + " (" + dateHelper.getDateAsString(currentSprint.getStartDate()) + " to " + dateHelper.getDateAsString(currentSprint.getEndDate()) + ")");
 
-      SprintCache sprintCache = helper.getSprintCache();
-      Sprint currentSprint = sprintCache.getCurrentSprint();
+         HistoricalBoardDao dao = new HistoricalBoardDao(dateHelper);
+         
+         File historicalDataFile = dao.getFileForHistoricalSave(helper.getSaveDirectory(), helper.getExcelFile());
+         HistoricalData historicalData = dao.load(historicalDataFile);
 
-      data = new BurnData(BurnType.BurnUp, currentSprint.getLength());
-      boardStatsFrame.setChartText(currentSprint.getName() + " (" + dateHelper.getDateAsString(currentSprint.getStartDate()) + " to " + dateHelper.getDateAsString(currentSprint.getEndDate()) + ")");
+         HistoricalDataCriteria criteria = new HistoricalDataCriteria("Sprint", currentSprint.toString());
+         data = burnUpCalculator.getSortedDataUsingCriteria(historicalData, criteria);
 
-      Integer dayInSprint = currentSprint.calculateDayInSprint();
-      Category category = new Category("Complete");
-      data.add(category, 0d, 0d);
-      data.add(category, dayInSprint, burnUpCalculator.getCurrent(BoardStatusValue.Complete));
+         // data = new BurnData(BurnType.BurnUp, currentSprint.getLength());
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
 
-      Category category2 = new Category("Resolved");
-      data.add(category2, 0d, 0d);
-      data.add(category2, dayInSprint, burnUpCalculator.getCurrent("Resolved"));
-
-      Category category3 = new Category("InProgress");
-      data.add(category3, 0d, 0d);
-      data.add(category3, dayInSprint, burnUpCalculator.getCurrent("InProgress"));
-
-      Category category4 = new Category("Failed");
-      data.add(category4, 0d, 0d);
-      data.add(category4, dayInSprint, burnUpCalculator.getCurrent("Failed"));
-
-      Category category5 = new Category("Open");
-      data.add(category5, 0d, 0d);
-      data.add(category5, dayInSprint, burnUpCalculator.getCurrent("Open"));
+      // Integer dayInSprint = currentSprint.calculateDayInSprint();
+      // Category category = new Category("Complete");
+      // data.add(category, 0d, 0d);
+      // data.add(category, dayInSprint, burnUpCalculator.getCurrent(BoardStatusValue.Complete));
+      //
+      // Category category2 = new Category("Resolved");
+      // data.add(category2, 0d, 0d);
+      // data.add(category2, dayInSprint, burnUpCalculator.getCurrent("Resolved"));
+      //
+      // Category category3 = new Category("InProgress");
+      // data.add(category3, 0d, 0d);
+      // data.add(category3, dayInSprint, burnUpCalculator.getCurrent("InProgress"));
+      //
+      // Category category4 = new Category("Failed");
+      // data.add(category4, 0d, 0d);
+      // data.add(category4, dayInSprint, burnUpCalculator.getCurrent("Failed"));
+      //
+      // Category category5 = new Category("Open");
+      // data.add(category5, 0d, 0d);
+      // data.add(category5, dayInSprint, burnUpCalculator.getCurrent("Open"));
 
       // FIXME 1 - add the datafixes to burnup!!
       // Category category6 = new Category("Datafixes completed");

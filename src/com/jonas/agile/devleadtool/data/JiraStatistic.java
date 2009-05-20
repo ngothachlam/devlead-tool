@@ -15,10 +15,14 @@ public class JiraStatistic {
             devStatus = DevStatus.jiraIsInPreDevelopmentState;
             break;
          case Open:
+            devStatus = DevStatus.jiraIsInDevelopmentOpenState;
+            break;
          case Failed:
          case InProgress:
+            devStatus = DevStatus.jiraIsInDevelopmentProgressState;
+            break;
          case Resolved:
-            devStatus = DevStatus.jiraIsInDevelopmentState;
+            devStatus = DevStatus.jiraIsInDevelopmentResolvedState;
             break;
          case Complete:
          case Approved:
