@@ -75,12 +75,7 @@ class SaveDataFrame extends AbstractBasicFrame {
 
       return panel;
    }
-
-   public File getFileForHistoricalSave(File file, File file2) {
-      return SaveDataPerformAction.getFileForHistoricalSave(file, file2);
-   }
 }
-
 class SaveDataPerformAction extends BasicAbstractGUIAction {
    private final MyTableModel boardModel;
    private final HistoricalBoardDao historicalBoardDao;
@@ -89,7 +84,7 @@ class SaveDataPerformAction extends BasicAbstractGUIAction {
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      File file = getFileForHistoricalSave(helper.getSaveDirectory(), helper.getExcelFile());
+      File file = historicalBoardDao.getFileForHistoricalSave(helper.getSaveDirectory(), helper.getExcelFile());
       try {
          // FIXME - add a method that can check and warn if the data already exists. 
          historicalBoardDao.save(file, boardModel, Integer.parseInt(dayInSprintTextField.getText()), helper.getSprintCache().getCurrentSprint());
@@ -97,12 +92,6 @@ class SaveDataPerformAction extends BasicAbstractGUIAction {
          e1.printStackTrace();
          throw new RuntimeException(e1);
       }
-   }
-
-   protected static File getFileForHistoricalSave(File saveDirectory, File originalFile) {
-      String orignalFileName = originalFile.getName();
-      orignalFileName = orignalFileName.substring(0, orignalFileName.indexOf("."));
-      return new File(saveDirectory, "HISTORICAL - " + orignalFileName + ".csv");
    }
 
    public SaveDataPerformAction(String name, String description, Frame parentFrame, MyTableModel boardModel, HistoricalBoardDao historicalBoardDao, PlannerHelper helper, JTextField dayInSprintTextField) {

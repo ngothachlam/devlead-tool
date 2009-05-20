@@ -20,8 +20,10 @@ public enum BoardStatusValue {
    private String toString;
    private String name;
    private Set<JiraStatus> statuses = new HashSet<JiraStatus>();
+   private final Integer number;
 
    private BoardStatusValue(Integer number, JiraStatus... jiraStatuses) {
+      this.number = number;
       StringBuffer sb = new StringBuffer(number.toString());
       sb.append(". ").append(super.toString());
       toString = sb.toString();
@@ -54,6 +56,10 @@ public enum BoardStatusValue {
 
    public Set<JiraStatus> getJiraStatuses() {
       return statuses;
+   }
+
+   public Integer getLocation() {
+      return number;
    }
 
 }

@@ -1,7 +1,8 @@
 package com.jonas.agile.devleadtool.burndown;
 
+import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 
-public class Category {
+public class Category implements Comparable {
 
    private final String name;
 
@@ -12,7 +13,6 @@ public class Category {
    public String getName() {
       return name;
    }
-
 
    @Override
    public int hashCode() {
@@ -39,4 +39,22 @@ public class Category {
       return true;
    }
 
+   @Override
+   public int compareTo(Object that) {
+      BoardStatusValue thisBoardStatus = BoardStatusValue.get(getName());
+      Category thatCategory = (Category) that;
+      BoardStatusValue thatBoardStatus = BoardStatusValue.get(thatCategory.getName());
+
+      System.out.println("this board status: " + thisBoardStatus + " and that board status: " + thatBoardStatus);
+
+      if (thisBoardStatus != null && thatBoardStatus != null) {
+         return thatBoardStatus.getLocation() - thisBoardStatus.getLocation();
+      }
+      if (thisBoardStatus != null)
+         return -1;
+      if (thatBoardStatus != null)
+         return 1;
+
+      return 0;
+   }
 }

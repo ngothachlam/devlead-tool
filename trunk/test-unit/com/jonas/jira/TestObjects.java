@@ -7,7 +7,8 @@ import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.common.DateHelper;
 
 public class TestObjects {
-   public static final Sprint TEST_CURRENT_SPRINT = new Sprint("testCurrentSprint", DateHelper.getTodaysDateWithOffset(-7), DateHelper.getTodaysDateWithOffset(7), 10);
+   public static final Sprint TEST_SPRINT_CURRENT = new Sprint("testCurrentSprint", DateHelper.getTodaysDateWithOffset(-6), DateHelper.getTodaysDateWithOffset(7), 10);
+   public static final Sprint TEST_SPRINT_LAST = new Sprint("testLastSprint", DateHelper.getTodaysDateWithOffset(-21), DateHelper.getTodaysDateWithOffset(-7), 10);
    public static File fileWithoutBuildNo = new File("test-functional/jiraXML.xml");
    public static File fileWithBuildNo = new File("test-functional/jiraXMLwBuildNo.xml");
    public static File fileSimple = new File("test-functional/jiraXMLSimple.xml");

@@ -2,6 +2,6 @@ package com.jonas.agile.devleadtool.data;
 
 public enum DevStatus {
 
-   jiraIsInPreDevelopmentState, jiraIsInDevelopmentState, jiraIsInPostDevelopmentState, jiraIsInUnKnownState;
+   jiraIsInPreDevelopmentState, jiraIsInPostDevelopmentState, jiraIsInUnKnownState, jiraIsInDevelopmentProgressState, jiraIsInDevelopmentOpenState, jiraIsInDevelopmentResolvedState;
 
 }

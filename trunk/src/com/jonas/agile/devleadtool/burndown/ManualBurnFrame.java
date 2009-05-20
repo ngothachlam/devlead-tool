@@ -6,6 +6,7 @@ import java.awt.Container;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -101,12 +102,12 @@ public class ManualBurnFrame extends AbstractBasicFrame {
          XYItemRenderer renderer = new StackedXYAreaRenderer2();
 
          int row = 0;
-         renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
-         renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
-         renderer.setSeriesPaint(row++, SwingUtil.cellLightBlue);
-         renderer.setSeriesPaint(row++, SwingUtil.cellLightRed);
-         renderer.setSeriesPaint(row++, SwingUtil.cellWhite);
-         renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
+         renderer.setSeriesPaint(row++, SwingUtil.cellGreen);// closed
+         renderer.setSeriesPaint(row++, SwingUtil.cellBlue);// resolved
+         renderer.setSeriesPaint(row++, SwingUtil.cellLightBlue);// in-progress
+         renderer.setSeriesPaint(row++, SwingUtil.cellLightRed);// failed
+         renderer.setSeriesPaint(row++, SwingUtil.cellWhite);// open
+         renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);// datafixes
          renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
          renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
 
@@ -201,6 +202,13 @@ public class ManualBurnFrame extends AbstractBasicFrame {
       for (Category categoryName : categoryNames) {
          burndownDays = data.getDataForCategory(categoryName);
          Collections.sort(burndownDays);
+         
+         
+         aaasss!!
+//         Integer preSkip = data.getSkipCountBefore(categoryName);
+//         while(preSkip-- > 0){
+//            createNewSeriesAndAddToCollection(data.getBurnType(), categoryName.getName(), new ArrayList<BurnDataColumn>());
+//         }
 
          createNewSeriesAndAddToCollection(data.getBurnType(), categoryName.getName(), burndownDays);
       }

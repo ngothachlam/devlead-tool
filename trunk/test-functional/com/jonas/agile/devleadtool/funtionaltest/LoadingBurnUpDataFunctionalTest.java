@@ -9,13 +9,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Set;
 import java.util.Vector;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jonas.agile.devleadtool.burndown.BurnData;
+import com.jonas.agile.devleadtool.burndown.BurnType;
+import com.jonas.agile.devleadtool.burndown.BurnUpCalculator;
+import com.jonas.agile.devleadtool.burndown.Category;
 import com.jonas.agile.devleadtool.burndown.HistoricalBoardDao;
 import com.jonas.agile.devleadtool.burndown.HistoricalData;
+import com.jonas.agile.devleadtool.burndown.HistoricalDataCriteria;
 import com.jonas.agile.devleadtool.data.PersistanceException;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.agile.devleadtool.gui.component.dialog.CombinedModelDTO;
@@ -29,6 +35,7 @@ public class LoadingBurnUpDataFunctionalTest {
    private HistoricalBoardDao dao;
    private DateHelper dateHelper = new DateHelper();
    private File sprintTrackerHistorical_TestFile = new File("bin//Sprint Tracker - llu_historical.csv");
+   private File sprintTrackerHistoricalWithTwoDays_TestFile = new File("test-data//Sprint Tracker - llu_historicalWithTwoDays.csv");
    private File sprintTrackerHistorical_STATIC_TestFile = new File("bin//Sprint Tracker - llu_historical_static.csv");
    private String today = dateHelper.getTodaysDateAsString();
 
@@ -194,7 +201,7 @@ public class LoadingBurnUpDataFunctionalTest {
 
       // Assert historical data saving
       assertFalse("File cannot exist as we are trying to save to it from afresh!", sprintTrackerHistorical_TestFile.exists());
-      dao.save(sprintTrackerHistorical_TestFile, boardModel, 1, TestObjects.TEST_CURRENT_SPRINT);
+      dao.save(sprintTrackerHistorical_TestFile, boardModel, 1, TestObjects.TEST_SPRINT_CURRENT);
       assertTrue("File exist as we are trying to save to it from when already exists!", sprintTrackerHistorical_TestFile.exists());
       assertNoOflines("The file should contain 18 lines (includes the header)", 18, sprintTrackerHistorical_TestFile);
    }
@@ -208,13 +215,13 @@ public class LoadingBurnUpDataFunctionalTest {
          sprintTrackerHistorical_STATIC_TestFile.delete();
          assertFalse("File cannot exist as we are setting it up now!", sprintTrackerHistorical_STATIC_TestFile.exists());
          dao.setDateHelper(new DateHelperForTesting());
-         dao.save(sprintTrackerHistorical_STATIC_TestFile, boardModel, 1, TestObjects.TEST_CURRENT_SPRINT);
-         assertNoOflines("The file should contain 18 lines (includes the header) as we are adding day 2 data", 18, sprintTrackerHistorical_STATIC_TestFile);
+         dao.save(sprintTrackerHistorical_STATIC_TestFile, boardModel, 1, TestObjects.TEST_SPRINT_CURRENT);
          assertTrue("File need to exist as we have just tried to set it up with test data", sprintTrackerHistorical_STATIC_TestFile.exists());
+         assertNoOflines("The file should contain 18 lines (includes the header) as we are adding day 2 data", 18, sprintTrackerHistorical_STATIC_TestFile);
       }
 
       dao.setDateHelper(new DateHelper());
-      dao.save(sprintTrackerHistorical_STATIC_TestFile, boardModel, 2, TestObjects.TEST_CURRENT_SPRINT);
+      dao.save(sprintTrackerHistorical_STATIC_TestFile, boardModel, 2, TestObjects.TEST_SPRINT_CURRENT);
       assertNoOflines("The file should contain 35 lines (includes the header) as we are adding day 2 data", 35, sprintTrackerHistorical_STATIC_TestFile);
 
       HistoricalData historicalData = dao.load(sprintTrackerHistorical_STATIC_TestFile);
@@ -232,15 +239,15 @@ public class LoadingBurnUpDataFunctionalTest {
 
       // Assert historical data saving
       assertFalse("File cannot exist as we are trying to save to it from afresh!", sprintTrackerHistorical_TestFile.exists());
-      dao.save(sprintTrackerHistorical_TestFile, boardModel, 1, TestObjects.TEST_CURRENT_SPRINT);
+      dao.save(sprintTrackerHistorical_TestFile, boardModel, 1, TestObjects.TEST_SPRINT_CURRENT);
       assertNoOflines("The file should contain 18 lines (includes the header) as we are adding day 2 data", 18, sprintTrackerHistorical_TestFile);
 
       assertTrue("File need to exist as we are trying to save to it by copying historical data!", sprintTrackerHistorical_TestFile.exists());
 
-      dao.save(sprintTrackerHistorical_TestFile, boardModel, 1, TestObjects.TEST_CURRENT_SPRINT);
+      dao.save(sprintTrackerHistorical_TestFile, boardModel, 1, TestObjects.TEST_SPRINT_CURRENT);
       assertNoOflines("The file should contain 18 lines (includes the header) as we are overwriting day 1 data", 18, sprintTrackerHistorical_TestFile);
 
-      dao.save(sprintTrackerHistorical_TestFile, boardModel, 2, TestObjects.TEST_CURRENT_SPRINT);
+      dao.save(sprintTrackerHistorical_TestFile, boardModel, 2, TestObjects.TEST_SPRINT_CURRENT);
       assertNoOflines("The file should contain 35 lines (includes the header) as we are adding day 2 data", 35, sprintTrackerHistorical_TestFile);
 
       HistoricalData historicalData = dao.load(sprintTrackerHistorical_TestFile);
@@ -263,6 +270,56 @@ public class LoadingBurnUpDataFunctionalTest {
       BoardTableModel boardModel = loadedData.getBoardModel();
       assertEquals("We expect to have loaded 17 rows", 17, boardModel.getRowCount());
       return boardModel;
+   }
+
+   @Test
+   public void shouldLoadHistoricalDataAndCalculateBurnUpdata() throws IOException, PersistanceException {
+      // setup test histocial data
+//      BoardTableModel boardModel = null;
+//      {
+//         boardModel = loadBoardModel(new File("test-data//Sprint Tracker WithLastSprints- llu.xls"));
+//         dao.save(sprintTrackerHistorical_TestFile, boardModel, 1, TestObjects.TEST_SPRINT_CURRENT);
+//         assertTrue("File need to exist as we have just tried to set it up with test data", sprintTrackerHistorical_TestFile.exists());
+//         assertNoOflines("The file should contain 18 lines (includes the header) as we are adding 2 sprints data", 18, sprintTrackerHistorical_TestFile);
+//
+//         dao.save(sprintTrackerHistorical_TestFile, boardModel, 2, TestObjects.TEST_SPRINT_CURRENT);
+//         assertTrue("File need to exist as we have just tried to set it up with test data", sprintTrackerHistorical_TestFile.exists());
+//         assertNoOflines("The file should contain 35 lines (includes the header) as we are adding 2 sprints data", 35, sprintTrackerHistorical_TestFile);
+//      }
+
+      HistoricalData historicalData = dao.load(sprintTrackerHistoricalWithTwoDays_TestFile);
+
+      HistoricalDataCriteria criteria = new HistoricalDataCriteria("Sprint", TestObjects.TEST_SPRINT_CURRENT.toString());
+
+      BurnUpCalculator calculator = new BurnUpCalculator();
+      BurnData data = calculator.getSortedDataUsingCriteria(historicalData, criteria);
+
+      Set<Category> categories = data.getCategoryNames();
+      Category[] categoriesAsArray = categories.toArray(new Category[3]);
+      assertEquals("The amount of categories we expect!", 3, categoriesAsArray.length);
+      
+      assertEquals("4. Resolved", categoriesAsArray[0].getName());
+      assertEquals("3. InProgress", categoriesAsArray[1].getName());
+      assertEquals("1. Open", categoriesAsArray[2].getName());
+      
+      assertEquals(2, data.getDataForCategory(categoriesAsArray[0]).size());
+      assertEquals(2, data.getDataForCategory(categoriesAsArray[1]).size());
+      assertEquals(2, data.getDataForCategory(categoriesAsArray[2]).size());
+
+      int category = 0;
+      int i = 0;
+//      assertEquals(new Double(1d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+//      assertEquals(new Double(0d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+//      assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+//      assertEquals(new Double(0d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+//      
+//      i = 0;
+//      category+=1;
+//      assertEquals(new Double(1d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+//      assertEquals(new Double(0.4d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+//      assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+//      assertEquals(new Double(0.4d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+      
    }
 
    private void assertNoOflines(String string, int i, File file) throws IOException {

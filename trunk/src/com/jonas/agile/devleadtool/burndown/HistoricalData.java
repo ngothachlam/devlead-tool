@@ -2,14 +2,18 @@ package com.jonas.agile.devleadtool.burndown;
 
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.sprint.Sprint;
+import com.jonas.common.logging.MyLogger;
 
 public class HistoricalData {
 
    private final Vector<String> cols;
    private final Vector<Vector<Object>> data;
    private Integer sprintLocation = null;
+   private static final Logger log = MyLogger.getLogger(HistoricalData.class);
 
    private Vector<Integer> daysInSprint = new Vector<Integer>();
 
@@ -17,9 +21,12 @@ public class HistoricalData {
       this.cols = cols;
       this.data = data;
 
+      log.debug("HistoricalData ");
       for (int counter = 0; counter < cols.size(); counter++) {
+         log.debug("\t" + counter);
          if (cols.get(counter).equals(ColumnType.Sprint.toString())) {
             sprintLocation = counter;
+            log.debug("\tSprint location is " + counter);
             break;
          }
       }
@@ -78,5 +85,4 @@ public class HistoricalData {
       }
       return false;
    }
-
 }
