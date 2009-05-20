@@ -28,10 +28,11 @@ public class DateHelper {
       return true;
    }
 
-   public static String getTodaysDateAsString() {
+   public String getTodaysDateAsString() {
       Date dateNow = new Date();
       return getDateAsString(dateNow);
    }
+
    public static String getTodaysDateAsSimpleOrderableString() {
       Date dateNow = new Date();
       return getDateAsSimpleOrderableString(dateNow);
@@ -127,5 +128,11 @@ public class DateHelper {
       cal2.setTime(second);
 
       return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+   }
+
+   public static Date getTodaysDateWithOffset(int offset) {
+      Calendar calendar = Calendar.getInstance();
+      calendar.add(Calendar.DATE, offset);
+      return calendar.getTime();
    }
 }

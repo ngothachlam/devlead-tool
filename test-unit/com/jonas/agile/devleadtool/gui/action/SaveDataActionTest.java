@@ -12,7 +12,7 @@ public class SaveDataActionTest {
    public void shouldCalculateRightSaveFile() {
       SaveDataAction action = new SaveDataAction("", "", null, null, null, null);
       File file = action.getFileForHistoricalSave(new File("bin"), new File("bin//this is an originalfile.xls"));
-      assertEquals("2009-05-18 - this is an originalfile.csv", file.getName());
+      assertEquals("HISTORICAL - this is an originalfile.csv", file.getName());
       assertEquals("bin", file.getParentFile().getName());
    }
 

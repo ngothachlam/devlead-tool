@@ -2,10 +2,14 @@ package com.jonas.agile.devleadtool.burndown;
 
 import java.util.Vector;
 
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
+import com.jonas.agile.devleadtool.sprint.Sprint;
+
 public class HistoricalData {
 
    private final Vector<String> cols;
    private final Vector<Vector<Object>> data;
+   private Integer sprintLocation = null;
 
    private Vector<Integer> daysInSprint = new Vector<Integer>();
 
@@ -13,9 +17,17 @@ public class HistoricalData {
       this.cols = cols;
       this.data = data;
 
+      for (int counter = 0; counter < cols.size(); counter++) {
+         if (cols.get(counter).equals(ColumnType.Sprint.toString())) {
+            sprintLocation = counter;
+            break;
+         }
+      }
+
       for (Vector<Object> vector : data) {
          // we know the dayinsprint is 2nd column
          Integer dayInSprint = Integer.parseInt(vector.get(1).toString());
+
          if (!daysInSprint.contains(dayInSprint)) {
             System.out.println("Day in Sprint: " + dayInSprint);
             daysInSprint.add(dayInSprint);
@@ -29,6 +41,48 @@ public class HistoricalData {
 
    public Vector<Vector<Object>> getBody() {
       return data;
+   }
+
+   public boolean hasHeader() {
+      return cols != null && cols.size() > 2;
+   }
+
+   public String getHeaderAsCSV(String delimiter) {
+      StringBuffer sb = new StringBuffer();
+      for (String column : cols) {
+         sb.append(column).append(delimiter);
+      }
+      return deleteLastCharAndReplaceWithNewline(sb).toString();
+   }
+
+   private StringBuffer deleteLastCharAndReplaceWithNewline(StringBuffer sb) {
+      return sb.deleteCharAt(sb.length() - 1).append("\n");
+   }
+
+   public Vector<Vector<Object>> getBodyLinesThatAreNotForThisDayInSprint(Sprint sprint, int dayOfSprint) {
+      Vector<Vector<Object>> newVector = new Vector<Vector<Object>>();
+      for (Vector<Object> oldVector : data) {
+         if (!isVectorForThisSprintAndDayInSprint(oldVector, sprint, dayOfSprint)) {
+            System.out.println("Vector is historical and should be copied " + oldVector.get(2));
+            newVector.add(oldVector);
+         } else {
+            System.out.println("Vector is using the same sprint and dayOfSprint and should be deleted " + oldVector.get(2));
+         }
+      }
+      return newVector;
+   }
+
+   private boolean isVectorForThisSprintAndDayInSprint(Vector<Object> oldVector, Sprint sprint, Integer dayOfSprint) {
+      String vectorDayOfSprint = oldVector.get(1).toString();
+      Object object = oldVector.get(sprintLocation);
+      String vectorSprint = object.toString();
+
+      System.out.println("old vector sprint " + vectorSprint + " = " + sprint.toString() + " and its day " + vectorDayOfSprint + " = " + dayOfSprint.toString());
+
+      if (vectorDayOfSprint.equals(dayOfSprint.toString()) && vectorSprint.equals(sprint.toString())) {
+         return true;
+      }
+      return false;
    }
 
 }
