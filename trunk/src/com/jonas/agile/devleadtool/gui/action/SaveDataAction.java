@@ -27,7 +27,8 @@ public class SaveDataAction extends BasicAbstractGUIAction {
    public void doActionPerformed(ActionEvent e) {
       File file = getFileForHistoricalSave(helper.getSaveDirectory(), helper.getExcelFile());
       try {
-         historicalBoardDao.save(file, boardModel);
+         // FIXME 1- copy from BoardStatsFrame
+         historicalBoardDao.save(file, boardModel, dayOfSprint, sprint);
       } catch (IOException e1) {
          e1.printStackTrace();
          throw new RuntimeException(e1);
@@ -37,6 +38,6 @@ public class SaveDataAction extends BasicAbstractGUIAction {
    protected File getFileForHistoricalSave(File saveDirectory, File originalFile) {
       String orignalFileName = originalFile.getName();
       orignalFileName = orignalFileName.substring(0, orignalFileName.indexOf("."));
-      return new File(saveDirectory, DateHelper.getTodaysDateAsSimpleOrderableString() + " - " + orignalFileName + ".csv");
+      return new File(saveDirectory, "HISTORICAL - " + orignalFileName + ".csv");
    }
 }

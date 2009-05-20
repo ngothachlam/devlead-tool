@@ -50,7 +50,7 @@ public class ColumnWrapper<T> {
    public static final ColumnWrapper<String> Environment = new ColumnWrapper<String>(String.class, ColumnType.Environment, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
 
    // Complex columns
-   public static final ColumnWrapper<IssueType> Type = new ColumnWrapper<IssueType>(IssueType.class, ColumnType.Type, IssueType.TBD, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No){
+   public static final ColumnWrapper<IssueType> Type = new ColumnWrapper<IssueType>(IssueType.class, ColumnType.Type, IssueType.TBD, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No) {
       @Override
       public IssueType parseFromPersistanceStore(Object cellContents) {
          return IssueType.get(cellContents.toString());
@@ -69,7 +69,10 @@ public class ColumnWrapper<T> {
          return value == null ? "" : value.toString();
       }
 
-
+      // @Override
+      // public Sprint parseFromPersistanceStore(Object cellContents) {
+      // throw new RuntimeException("use parseFromPersistanceStore(Object cellContents, Cache cache)");
+      // }
       @Override
       public Sprint parseFromPersistanceStore(Object cellContents, Cache cache) {
          if (cache instanceof SprintCache && cache != null) {
@@ -176,9 +179,8 @@ public class ColumnWrapper<T> {
    }
 
    /**
-    * The idea is that anything that can be interpreted to a double should be
-    * converted to a double when saving the data So that SUM(A:A) can be done
-    * for instance. Loading it back again needs to display it as a string.
+    * The idea is that anything that can be interpreted to a double should be converted to a double when saving the data So that SUM(A:A) can be done for instance. Loading it back again needs to
+    * display it as a string.
     * 
     * @param value
     * @return
