@@ -85,10 +85,8 @@ public class HistoricalBoardDao {
 
    private void writeBody(MyTableModel boardModel, HistoricalData data, BufferedWriter bw, int dayOfSprint, Sprint sprint) throws IOException {
       if (data != null) {
-         System.out.println("date != null");
          Vector<Vector<Object>> oldDataToCopy = data.getBodyLinesThatAreNotForThisDayInSprint(sprint, dayOfSprint);
          for (Vector<Object> oldRow : oldDataToCopy) {
-            System.out.println("oldRow: " + oldRow + " oldDataToCopy.size(): " + oldRow.size());
             StringBuffer sb = new StringBuffer(oldRow.get(0).toString());
             for (int counter = 1; counter < oldRow.size(); counter++) {
                sb.append(DELIMITER).append(oldRow.get(counter).toString());
@@ -159,7 +157,6 @@ public class HistoricalBoardDao {
          for (int counter = 0; counter < split.length; counter++) {
             String columnTypeName = cols.get(counter);
             String bodyValue = split[counter];
-            System.out.println("ColumnType name " + columnTypeName + " has value " + bodyValue);
 
             if (HISTORICALPRECOLUMNS.contains(columnTypeName)) {
                dataRow.add(bodyValue);
