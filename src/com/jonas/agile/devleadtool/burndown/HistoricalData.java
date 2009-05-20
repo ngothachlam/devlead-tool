@@ -29,7 +29,6 @@ public class HistoricalData {
          Integer dayInSprint = Integer.parseInt(vector.get(1).toString());
 
          if (!daysInSprint.contains(dayInSprint)) {
-            System.out.println("Day in Sprint: " + dayInSprint);
             daysInSprint.add(dayInSprint);
          }
       }
@@ -63,10 +62,7 @@ public class HistoricalData {
       Vector<Vector<Object>> newVector = new Vector<Vector<Object>>();
       for (Vector<Object> oldVector : data) {
          if (!isVectorForThisSprintAndDayInSprint(oldVector, sprint, dayOfSprint)) {
-            System.out.println("Vector is historical and should be copied " + oldVector.get(2));
             newVector.add(oldVector);
-         } else {
-            System.out.println("Vector is using the same sprint and dayOfSprint and should be deleted " + oldVector.get(2));
          }
       }
       return newVector;
@@ -76,8 +72,6 @@ public class HistoricalData {
       String vectorDayOfSprint = oldVector.get(1).toString();
       Object object = oldVector.get(sprintLocation);
       String vectorSprint = object.toString();
-
-      System.out.println("old vector sprint " + vectorSprint + " = " + sprint.toString() + " and its day " + vectorDayOfSprint + " = " + dayOfSprint.toString());
 
       if (vectorDayOfSprint.equals(dayOfSprint.toString()) && vectorSprint.equals(sprint.toString())) {
          return true;
