@@ -1,13 +1,25 @@
 package com.jonas.agile.devleadtool.burndown;
 
-import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import java.awt.Color;
 
-public class Category implements Comparable {
+public class Category {
 
    private final String name;
+   private final Color color;
+   private final int drawPrio;
 
-   public Category(String name) {
+   public Category(String name, Color color, int drawPrio) {
       this.name = name;
+      this.color = color;
+      this.drawPrio = drawPrio;
+   }
+
+   public int getDrawPrio() {
+      return drawPrio;
+   }
+
+   public Color getColor() {
+      return color;
    }
 
    public String getName() {
@@ -30,7 +42,7 @@ public class Category implements Comparable {
          return false;
       if (getClass() != obj.getClass())
          return false;
-      final Category other = (Category) obj;
+      Category other = (Category) obj;
       if (name == null) {
          if (other.name != null)
             return false;
@@ -39,22 +51,5 @@ public class Category implements Comparable {
       return true;
    }
 
-   @Override
-   public int compareTo(Object that) {
-      BoardStatusValue thisBoardStatus = BoardStatusValue.get(getName());
-      Category thatCategory = (Category) that;
-      BoardStatusValue thatBoardStatus = BoardStatusValue.get(thatCategory.getName());
-
-      System.out.println("this board status: " + thisBoardStatus + " and that board status: " + thatBoardStatus);
-
-      if (thisBoardStatus != null && thatBoardStatus != null) {
-         return thatBoardStatus.getLocation() - thisBoardStatus.getLocation();
-      }
-      if (thisBoardStatus != null)
-         return -1;
-      if (thatBoardStatus != null)
-         return 1;
-
-      return 0;
-   }
+   
 }

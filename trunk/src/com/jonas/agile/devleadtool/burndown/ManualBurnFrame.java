@@ -1,12 +1,12 @@
 package com.jonas.agile.devleadtool.burndown;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -17,10 +17,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.apache.log4j.Logger;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -35,7 +37,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.frame.AbstractBasicFrame;
 import com.jonas.common.DateHelper;
-import com.jonas.common.swing.SwingUtil;
+import com.jonas.common.logging.MyLogger;
 
 public class ManualBurnFrame extends AbstractBasicFrame {
 
@@ -50,6 +52,8 @@ public class ManualBurnFrame extends AbstractBasicFrame {
    private XYSeriesCollection seriesCollectionForBurnDown;
    private XYPlot xyPlot;
    private int dataSetCount = 0;
+   private int row;
+   private Logger log = MyLogger.getLogger(ManualBurnFrame.class);
 
    public ManualBurnFrame(Component parent, DateHelper dateHelper, BurnDataRetriever retriever) {
       this(parent, dateHelper, retriever, false);
@@ -73,71 +77,105 @@ public class ManualBurnFrame extends AbstractBasicFrame {
       xyPlot.setOrientation(orientation);
       xyPlot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
 
-      return new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, xyPlot, legend);
+      JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, xyPlot, legend);
+
+      xyPlot.setForegroundAlpha(0.9f);
+      return chart;
+
    }
 
-   public final void createNewSeriesAndAddToCollection(BurnType burnType, String categoryName, List<BurnDataColumn> burndownDays) {
+   public void updateBurndown() {
+      source.setText(name.getText());
+
+      BurnData data = retriever.getBurnData();
+
+      Set<Category> categoryNames = data.getCategoryNames();
+      List<BurnDataColumn> burndownDays = null;
+
+      clearAllSeries();
+
+      for (Category categoryName : categoryNames) {
+         burndownDays = data.getDataForCategory(categoryName);
+         Collections.sort(burndownDays);
+
+         createNewSeriesAndAddToCollection(data.getBurnType(), categoryName.getName(), burndownDays, categoryName.getColor());
+      }
+
+      ValueAxis xAxis = xyPlot.getDomainAxis();
+      Integer length = data.getLength();
+      if (length != null) {
+         xAxis.setUpperBound(length.doubleValue());
+      } else {
+         xAxis.setAutoRange(true);
+      }
+      xAxis.setLowerBound(0d);
+
+      ValueAxis yAxis = xyPlot.getRangeAxis();
+      yAxis.setAutoRange(true);
+      yAxis.setLowerBound(0d);
+
+   }
+
+   public final void createNewSeriesAndAddToCollection(BurnType burnType, String categoryName, List<BurnDataColumn> burndownDays, Color color) {
       XYSeries newSeries = new XYSeries(categoryName, true, false);
 
       for (BurnDataColumn burnDownDay : burndownDays) {
          newSeries.add(burnDownDay.getX(), burnDownDay.getY());
+
+         log.debug("adding to the new series for " + categoryName + " x,y: " + burnDownDay.getX() + "," + burnDownDay.getY());
       }
 
       switch (burnType) {
          case BurnDown:
-            seriesCollectionForBurnDown = getBurnDownAndinitialiseIfRequired();
+            seriesCollectionForBurnDown = getBurnDownAndinitialiseIfRequired(color);
             seriesCollectionForBurnDown.addSeries(newSeries);
             break;
          case BurnUp:
-            seriesCollectionForBurnUp = getBurnUpAndInitialiseIfRequired();
+            seriesCollectionForBurnUp = getBurnUpAndInitialiseIfRequired(color);
             seriesCollectionForBurnUp.addSeries(newSeries);
             break;
       }
    }
 
-   private DefaultTableXYDataset getBurnUpAndInitialiseIfRequired() {
+   private DefaultTableXYDataset getBurnUpAndInitialiseIfRequired(Color color) {
+      XYItemRenderer renderer = null;
       if (seriesCollectionForBurnUp == null) {
          seriesCollectionForBurnUp = new DefaultTableXYDataset();
          xyPlot.setDataset(dataSetCount, seriesCollectionForBurnUp);
-         XYItemRenderer renderer = new StackedXYAreaRenderer2();
-
-         int row = 0;
-         renderer.setSeriesPaint(row++, SwingUtil.cellGreen);// closed
-         renderer.setSeriesPaint(row++, SwingUtil.cellBlue);// resolved
-         renderer.setSeriesPaint(row++, SwingUtil.cellLightBlue);// in-progress
-         renderer.setSeriesPaint(row++, SwingUtil.cellLightRed);// failed
-         renderer.setSeriesPaint(row++, SwingUtil.cellWhite);// open
-         renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);// datafixes
-         renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
-         renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
-
+         row = 0;
+         renderer = new StackedXYAreaRenderer2();
          xyPlot.setRenderer(dataSetCount++, renderer);
       }
 
+      setColor(color);
       return seriesCollectionForBurnUp;
    }
 
-   private XYSeriesCollection getBurnDownAndinitialiseIfRequired() {
+   private XYSeriesCollection getBurnDownAndinitialiseIfRequired(Color color) {
+      XYLineAndShapeRenderer renderer = null;
       if (seriesCollectionForBurnDown == null) {
          seriesCollectionForBurnDown = new XYSeriesCollection();
          xyPlot.setDataset(dataSetCount, seriesCollectionForBurnDown);
-         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true, false);
-
-         int row = 0;
-         renderer.setSeriesPaint(row++, SwingUtil.cellBlue);
-         renderer.setSeriesPaint(row++, SwingUtil.cellLightBlue);
-         renderer.setSeriesPaint(row++, SwingUtil.cellRed);
-         renderer.setSeriesPaint(row++, SwingUtil.cellLightRed);
-         renderer.setSeriesPaint(row++, SwingUtil.cellGreen);
-         renderer.setSeriesPaint(row++, SwingUtil.cellLightGreen);
-         renderer.setSeriesPaint(row++, SwingUtil.cellLightYellow);
+         row = 0;
+         renderer = new XYLineAndShapeRenderer(true, false);
          renderer.setShapesVisible(true);
          renderer.setShapesFilled(true);
-
          xyPlot.setRenderer(dataSetCount++, renderer);
       }
 
+      setColor(color);
       return seriesCollectionForBurnDown;
+   }
+
+   private void setColor(Color color) {
+      XYItemRenderer renderer = xyPlot.getRenderer();
+      if (color != null) {
+         renderer.setSeriesPaint(row, color);
+      } else {
+         log.warn("Color is null!");
+      }
+
+      row += 1;
    }
 
    @Override
@@ -187,44 +225,6 @@ public class ManualBurnFrame extends AbstractBasicFrame {
       chart.addSubtitle(source);
 
       panel = new ChartPanel(chart);
-   }
-
-   public void updateBurndown() {
-      source.setText(name.getText());
-
-      BurnData data = retriever.getBurnData();
-
-      Set<Category> categoryNames = data.getCategoryNames();
-      List<BurnDataColumn> burndownDays = null;
-
-      clearAllSeries();
-
-      for (Category categoryName : categoryNames) {
-         burndownDays = data.getDataForCategory(categoryName);
-         Collections.sort(burndownDays);
-         
-         
-         aaasss!!
-//         Integer preSkip = data.getSkipCountBefore(categoryName);
-//         while(preSkip-- > 0){
-//            createNewSeriesAndAddToCollection(data.getBurnType(), categoryName.getName(), new ArrayList<BurnDataColumn>());
-//         }
-
-         createNewSeriesAndAddToCollection(data.getBurnType(), categoryName.getName(), burndownDays);
-      }
-
-      ValueAxis xAxis = xyPlot.getDomainAxis();
-      Integer length = data.getLength();
-      if (length != null)
-         xAxis.setUpperBound(length.doubleValue());
-      else
-         xAxis.setAutoRange(true);
-      xAxis.setLowerBound(0d);
-
-      ValueAxis yAxis = xyPlot.getRangeAxis();
-      yAxis.setAutoRange(true);
-      yAxis.setLowerBound(0d);
-
    }
 
    private void clearAllSeries() {
