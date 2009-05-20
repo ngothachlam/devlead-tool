@@ -1,7 +1,6 @@
 package com.jonas.agile.devleadtool.burndown;
 
-import java.util.Collections;
-import java.util.HashMap;
+import java.awt.Color;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -10,7 +9,7 @@ import java.util.Vector;
 import com.jonas.agile.devleadtool.data.JiraStatistic;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
-import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
+import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.TestObjects;
 
 public class BurnUpCalculator {
@@ -47,23 +46,18 @@ public class BurnUpCalculator {
       Vector<Integer> criteriaCols = new Vector<Integer>();
       for (int counter = 0; counter < historicalHeader.size(); counter++) {
          String header = historicalHeader.get(counter);
-         System.out.println("**\"" + header + "\" and counter: " + counter);
          if (header.equals(criteria.getHeader())) {
-            System.out.println("*****Criteria found!" + counter);
             criteriaCols.add(counter);
          }
          if (dataColumns.indexOf(header) >= 0) {
-            System.out.println("*****dataColumn found!" + counter);
             dataColumnsMap.put(header, counter);
          }
       }
 
       for (Vector<Object> bodyRow : historicalBody) {
-         System.out.println("bodyRow: " + bodyRow + " (" + criteriaCols.get(0) + ")");
          Object bodyRowCriteriaValue = bodyRow.get(criteriaCols.get(0));
-         System.out.println("\tcriteria value: " + criteria.getValue() + " and is bodyRow value: " + bodyRowCriteriaValue);
-         if (criteria.getValue().equals(bodyRowCriteriaValue)) {
 
+         if (criteria.getValue().equals(bodyRowCriteriaValue)) {
             Integer categoryCol = dataColumnsMap.get(ColumnType.BoardStatus.toString());
             Integer dayInSprintCol = dataColumnsMap.get(HistoricalBoardDao.DAY_IN_SPRINT);
             Integer dEstCol = dataColumnsMap.get(ColumnType.DEst.toString());
@@ -71,12 +65,7 @@ public class BurnUpCalculator {
             Integer dRemCol = dataColumnsMap.get(ColumnType.DRem.toString());
             Integer qRemCol = dataColumnsMap.get(ColumnType.QRem.toString());
 
-            System.out.println("\tdRemCol: " + dRemCol);
-
             String boardstatus = bodyRow.get(categoryCol).toString();
-            Category category = new Category(boardstatus);
-            Object boryRowDayInSprint = bodyRow.get(dayInSprintCol);
-            double dayInSprint = Double.parseDouble(boryRowDayInSprint.toString());
             double value = 0d;
 
             JiraStatistic jiraStat = new JiraStatistic(BoardStatusValue.get(boardstatus));
@@ -97,30 +86,57 @@ public class BurnUpCalculator {
                   break;
             }
 
+            Category category = new Category(boardstatus, getColor(boardstatus), getPrintPrio(boardstatus));
+            Object bodyRowDayInSprint = bodyRow.get(dayInSprintCol);
+            double dayInSprint = Double.parseDouble(bodyRowDayInSprint.toString());
             burnData.add(category, dayInSprint, value);
          }
       }
 
-      burnData.sort();
-
-      Set<Category> categoryNames = burnData.getCategoryNames();
-
-      BoardStatusValue preValue = null;
-      for (Category category : categoryNames) {
-         BoardStatusValue bValue = BoardStatusValue.get(category.getName());
-
-         if (preValue == null) {
-            burnData.setPreValue(category, 5 - bValue.getLocation());
-         } else if (preValue.getLocation() - bValue.getLocation() > 1) {
-            burnData.setPreValue(category, preValue.getLocation() - bValue.getLocation() + 1);
-         }
-
-         System.out.println("bValue: " + bValue + " preValue: " + preValue);
-
-         preValue = bValue;
-      }
-
       return burnData;
+   }
+
+   private Color getColor(String boardstatus) {
+      BoardStatusValue value = BoardStatusValue.get(boardstatus);
+      switch (value) {
+         case Complete:
+            return SwingUtil.cellLightGreen;
+         case Failed:
+            return SwingUtil.cellRed;
+         case InProgress:
+            return SwingUtil.cellLightYellow;
+         case Open:
+            return SwingUtil.cellLightGrey;
+         case Resolved:
+            return SwingUtil.cellBlue;
+         case Approved:
+            return SwingUtil.cellLightBlue;
+         case ForShowCase:
+            return SwingUtil.cellGreen;
+      }
+      return null;
+   }
+
+   private int getPrintPrio(String boardstatus) {
+      BoardStatusValue value = BoardStatusValue.get(boardstatus);
+      switch (value) {
+         case Complete:
+            return 0;
+         case Resolved:
+            return 1;
+         case InProgress:
+            return 2;
+         case Failed:
+            return 3;
+         case Open:
+            return 4;
+         case Approved:
+            return 5;
+         case ForShowCase:
+            return 6;
+         default:
+            return 7;
+      }
    }
 
 }

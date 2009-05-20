@@ -2,11 +2,14 @@ package com.jonas.agile.devleadtool.burndown;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 
 public class BurnData {
 
@@ -83,13 +86,18 @@ public class BurnData {
          burnDataColumList.add(e);
          return e;
       }
-
    }
 
-   public void sort() {
+   private void sort() {
       Map<Category, BurnDataColumns> map = burnDataPerCategory;
       ArrayList<Category> mapValues = new ArrayList<Category>(map.keySet());
-      Collections.sort(mapValues);
+      Comparator<Category> comparable = new Comparator<Category>() {
+         @Override
+         public int compare(Category thisC, Category thatC) {
+            return thisC.getDrawPrio() - thatC.getDrawPrio();
+         }
+      };
+      Collections.sort(mapValues, comparable);
 
       Map<Category, BurnDataColumns> burnDataPerCategoryV2 = new LinkedHashMap<Category, BurnDataColumns>();
       for (Category category : mapValues) {
@@ -100,12 +108,4 @@ public class BurnData {
       burnDataPerCategory = burnDataPerCategoryV2;
    }
 
-   public void setPreValue(Category category, int i) {
-      preValues.put(category, i);
-   }
-
-   public Integer getSkipCountBefore(Category categoryName) {
-      Integer integer = preValues.get(categoryName);
-      return integer == null ? 0 : integer;
-   }
 }
