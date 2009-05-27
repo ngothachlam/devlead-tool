@@ -3,6 +3,7 @@ package com.jonas.agile.devleadtool.sprint;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.Set;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.data.Cache;
+import com.jonas.common.DateHelper;
 import com.jonas.common.logging.MyLogger;
 
 public class SprintCache implements Cache {
@@ -156,10 +158,31 @@ public class SprintCache implements Cache {
       sprintNames.remove(sprint.getName());
    }
 
-   public Sprint getCurrentSprint() {
+   Calendar lastCheckForCurrentSprint = null;
+   private Sprint currentSprint = null;
+
+   public synchronized Sprint getCurrentSprint() {
+      Calendar thisCheckForCurrentSprint = Calendar.getInstance();
+      if (lastCheckForCurrentSprint == null || currentSprint == null) {
+         lastCheckForCurrentSprint = thisCheckForCurrentSprint;
+         currentSprint = calculateAndGetCurrentSprint();
+         return currentSprint;
+      }
+
+      if (DateHelper.isSameDay(lastCheckForCurrentSprint, thisCheckForCurrentSprint)) {
+         return currentSprint;
+      }
+
+      lastCheckForCurrentSprint = thisCheckForCurrentSprint;
+      currentSprint = calculateAndGetCurrentSprint();
+      return currentSprint;
+   }
+
+   private Sprint calculateAndGetCurrentSprint() {
       for (Sprint sprint : sprints) {
-         if (sprint.calculateTime() == SprintTime.currentSprint)
+         if (sprint.calculateTime() == SprintTime.currentSprint) {
             return sprint;
+         }
       }
       return null;
    }

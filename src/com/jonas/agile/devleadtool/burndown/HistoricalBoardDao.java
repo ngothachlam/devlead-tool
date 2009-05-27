@@ -28,7 +28,6 @@ public class HistoricalBoardDao {
    }
 
    private Logger log = MyLogger.getLogger(HistoricalBoardDao.class);
-
    private DateHelper dateHelper;
 
    public HistoricalBoardDao(DateHelper dateHelper) {
@@ -100,6 +99,7 @@ public class HistoricalBoardDao {
       }
 
       String today = dateHelper.getTodaysDateAsString();
+         
       for (int row = 0; row < boardModel.getRowCount(); row++) {
          String bodyLineCSV = getCSVBodyLineString(boardModel, dayOfSprint, today, row);
          bw.append(bodyLineCSV);
@@ -117,13 +117,13 @@ public class HistoricalBoardDao {
    }
 
    public HistoricalData load(File file) throws IOException {
-      
-      if(!file.exists()){
+
+      if (!file.exists()) {
          throw new RuntimeException("File " + file + " doesn't exist!");
       }
-      
+
       log.debug("Trying to load " + file.getAbsolutePath());
-      
+
       FileReader reader = null;
       BufferedReader br = null;
       try {
@@ -189,9 +189,9 @@ public class HistoricalBoardDao {
    }
 
    public File getFileForHistoricalSave(File saveDirectory, File originalFile) {
-         String orignalFileName = originalFile.getName();
-         orignalFileName = orignalFileName.substring(0, orignalFileName.indexOf("."));
-         return new File(saveDirectory, "HISTORICAL - " + orignalFileName + ".csv");
+      String orignalFileName = originalFile.getName();
+      orignalFileName = orignalFileName.substring(0, orignalFileName.indexOf("."));
+      return new File(saveDirectory, "HISTORICAL - " + orignalFileName + ".csv");
    }
 
 }
