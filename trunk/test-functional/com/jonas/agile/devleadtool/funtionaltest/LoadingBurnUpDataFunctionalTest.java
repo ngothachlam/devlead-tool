@@ -292,7 +292,7 @@ public class LoadingBurnUpDataFunctionalTest {
       HistoricalDataCriteria criteria = new HistoricalDataCriteria("Sprint", TestObjects.TEST_SPRINT_CURRENT.toString());
 
       BurnUpCalculator calculator = new BurnUpCalculator();
-      BurnData data = calculator.getSortedDataUsingCriteria(historicalData, criteria);
+      BurnData data = calculator.getSortedDataUsingCriteria(historicalData, criteria, TestObjects.TEST_SPRINT_CURRENT);
 
       Set<Category> categories = data.getCategoryNames();
       Category[] categoriesAsArray = categories.toArray(new Category[3]);

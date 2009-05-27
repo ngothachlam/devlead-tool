@@ -127,7 +127,13 @@ public class DateHelper {
       Calendar cal2 = Calendar.getInstance();
       cal2.setTime(second);
 
-      return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+      return isSameDay(cal1, cal2);
+   }
+
+   public static boolean isSameDay(Calendar cal1, Calendar cal2) {
+      int cal1DayOfYear = cal1.get(Calendar.DAY_OF_YEAR);
+      int cal2DayOfYear = cal2.get(Calendar.DAY_OF_YEAR);
+      return cal1DayOfYear == cal2DayOfYear && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
    }
 
    public static Date getTodaysDateWithOffset(int offset) {

@@ -2,11 +2,9 @@ package com.jonas.agile.devleadtool.gui.component;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -36,19 +34,18 @@ import com.jonas.agile.devleadtool.gui.component.dialog.AddBoardReconcileFrame;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddFilterDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddManualDialog;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddVersionDialog;
+import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
 import com.jonas.agile.devleadtool.gui.component.frame.BoardStatsFrame;
 import com.jonas.agile.devleadtool.gui.component.panel.DnDTreePanel;
 import com.jonas.agile.devleadtool.gui.component.panel.JiraPanel;
 import com.jonas.agile.devleadtool.gui.component.panel.MyDataPanel;
 import com.jonas.agile.devleadtool.gui.component.table.EnabledQuery;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
-import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.DateHelper;
 import com.jonas.common.swing.SwingUtil;
-import com.jonas.jira.TestObjects;
 
 public class InnerFrameToolbar extends JToolBar {
 
@@ -67,7 +64,7 @@ public class InnerFrameToolbar extends JToolBar {
       BasicAbstractGUIAction sprintManager = new SprintManagerGuiAction(parentFrame, helper, sprintDao);
       // BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown (old)", "Showing Board Statistics", parentFrame, boardTable, helper);
       BasicAbstractGUIAction newBurndown = new NewBurnDownAction("Graph Burn-down", "Showing Board Statistics", parentFrame, boardTable, helper);
-      BasicAbstractGUIAction newBurnup = new NewBurnUpAction("Graph Burn-Up", "BurnUp Statistics", parentFrame, boardTable, helper);
+      BasicAbstractGUIAction newBurnup = new NewBurnUpAction("Graph Burn-Up", "BurnUp Statistics", parentFrame, helper);
 
       JMenuBar comp = new JMenuBar();
       comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null, highlightAction, dupeAction, freezeAction));
@@ -158,17 +155,13 @@ final class BurndownAction extends BasicAbstractGUIAction {
 }
 
 final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRetriever {
-   private final MyTable sourceTable;
    private BurnData data;
    private final PlannerHelper helper;
    private ManualBurnFrame boardStatsFrame;
-   private DateHelper dateHelper;
 
-   NewBurnUpAction(String name, String description, Frame parentFrame, MyTable sourceTable, PlannerHelper helper) {
+   NewBurnUpAction(String name, String description, Frame parentFrame, PlannerHelper helper) {
       super(name, description, parentFrame);
-      this.sourceTable = sourceTable;
       this.helper = helper;
-      this.dateHelper = new DateHelper();
    }
 
    @Override
@@ -185,18 +178,26 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRe
    @Override
    public void calculateBurndownData() {
       try {
-         BurnUpCalculator burnUpCalculator = new BurnUpCalculator();
          SprintCache sprintCache = helper.getSprintCache();
+         BurnUpCalculator burnUpCalculator = new BurnUpCalculator();
          Sprint currentSprint = sprintCache.getCurrentSprint();
-         boardStatsFrame.setChartText(currentSprint.getName() + " (" + dateHelper.getDateAsString(currentSprint.getStartDate()) + " to " + dateHelper.getDateAsString(currentSprint.getEndDate()) + ")");
 
-         HistoricalBoardDao dao = new HistoricalBoardDao(dateHelper);
-         
+         if (currentSprint == null) {
+            AlertDialog.alertMessage(helper.getParentFrame(), "Could not find a current sprint!");
+            return;
+         }
+         String currentSprintName = currentSprint.getName();
+         String currentSprintStart = DateHelper.getDateAsString(currentSprint.getStartDate());
+         String currentSprintEnd = DateHelper.getDateAsString(currentSprint.getEndDate());
+         boardStatsFrame.setChartText(currentSprintName + " (" + currentSprintStart + " to " + currentSprintEnd + ")");
+
+         HistoricalBoardDao dao = new HistoricalBoardDao(new DateHelper());
+
          File historicalDataFile = dao.getFileForHistoricalSave(helper.getSaveDirectory(), helper.getExcelFile());
          HistoricalData historicalData = dao.load(historicalDataFile);
 
          HistoricalDataCriteria criteria = new HistoricalDataCriteria("Sprint", currentSprint.toString());
-         data = burnUpCalculator.getSortedDataUsingCriteria(historicalData, criteria);
+         data = burnUpCalculator.getSortedDataUsingCriteria(historicalData, criteria, sprintCache.getCurrentSprint());
       } catch (IOException e) {
          e.printStackTrace();
       }
@@ -242,7 +243,14 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnData
 
       SprintCache sprintCache = helper.getSprintCache();
       Sprint currentSprint = sprintCache.getCurrentSprint();
-      boardStatsFrame.setChartText(currentSprint.getName() + " (" + dateHelper.getDateAsString(currentSprint.getStartDate()) + " to " + dateHelper.getDateAsString(currentSprint.getEndDate()) + ")");
+      if (currentSprint == null) {
+         AlertDialog.alertMessage(helper.getParentFrame(), "Could not find a current sprint!");
+         return;
+      }
+      String currentSprintName = currentSprint.getName();
+      String currentSprintStart = DateHelper.getDateAsString(currentSprint.getStartDate());
+      String currentSprintEnd = DateHelper.getDateAsString(currentSprint.getEndDate());
+      boardStatsFrame.setChartText(currentSprintName + " (" + currentSprintStart + " to " + currentSprintEnd + ")");
 
       data = new BurnData(BurnType.BurnDown);
       Category category = new Category("Progression", SwingUtil.cellGreen, 0);

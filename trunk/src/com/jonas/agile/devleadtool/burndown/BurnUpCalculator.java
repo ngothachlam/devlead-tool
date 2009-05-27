@@ -3,14 +3,14 @@ package com.jonas.agile.devleadtool.burndown;
 import java.awt.Color;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
+import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.data.JiraStatistic;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.common.swing.SwingUtil;
-import com.jonas.jira.TestObjects;
 
 public class BurnUpCalculator {
 
@@ -30,7 +30,7 @@ public class BurnUpCalculator {
    Vector<String> dataColumns = new Vector();
    Map<String, Integer> dataColumnsMap = new LinkedHashMap<String, Integer>();
 
-   public BurnData getSortedDataUsingCriteria(HistoricalData historicalData, HistoricalDataCriteria criteria) {
+   public BurnData getSortedDataUsingCriteria(HistoricalData historicalData, HistoricalDataCriteria criteria, Sprint currentSprint) {
       Vector<String> historicalHeader = historicalData.getHeaders();
       Vector<Vector<Object>> historicalBody = historicalData.getBody();
 
@@ -41,7 +41,8 @@ public class BurnUpCalculator {
       dataColumns.add(ColumnType.DRem.toString());
       dataColumns.add(ColumnType.QRem.toString());
 
-      BurnData burnData = new BurnData(BurnType.BurnUp, TestObjects.TEST_SPRINT_CURRENT.getLength());
+      Integer currentSprintLength = currentSprint.getLength();
+      BurnData burnData = new BurnData(BurnType.BurnUp, currentSprintLength);
 
       Vector<Integer> criteriaCols = new Vector<Integer>();
       for (int counter = 0; counter < historicalHeader.size(); counter++) {
