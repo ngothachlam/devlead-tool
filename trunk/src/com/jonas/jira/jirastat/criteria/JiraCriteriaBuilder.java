@@ -1,5 +1,6 @@
 package com.jonas.jira.jirastat.criteria;
 
+import com.jonas.jira.JiraCustomFields;
 import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
@@ -8,13 +9,13 @@ public class JiraCriteriaBuilder {
 
    JiraHttpCriteria criteria = new JiraHttpCriteria();
 
-   public JiraHttpCriteria getCriteria() {
-      return criteria;
+   public String getCriteriaAsString() {
+      return criteria.toString();
    }
-   
+
    public JiraCriteriaBuilder deliveryBetween(String first, String later) {
-      criteria.append("&customfield_10188%3Aprevious=").append(first);
-      criteria.append("&customfield_10188%3Anext=").append(later);
+      criteria.append("&" + JiraCustomFields.LLUDeliveryDate + "%3Aprevious=").append(first);
+      criteria.append("&" + JiraCustomFields.LLUDeliveryDate + "%3Anext=").append(later);
       return this;
    }
 
@@ -24,7 +25,7 @@ public class JiraCriteriaBuilder {
       return this;
    }
 
-   public JiraCriteriaBuilder notClosed() {
+   public JiraCriteriaBuilder nonClosed() {
       criteria.append("&status=1&status=3&status=4&status=5");
       return this;
    }
@@ -44,10 +45,10 @@ public class JiraCriteriaBuilder {
       return this;
    }
 
-   public JiraCriteriaBuilder fixVersion(JiraProject project,JiraVersion version) {
+   public JiraCriteriaBuilder fixVersion(JiraProject project, JiraVersion version) {
       return this.project(project).fixVersion(version);
    }
-   
+
    public JiraCriteriaBuilder fixVersion(JiraVersion version) {
       criteria.append("&fixfor=").append(version.getId());
       return this;
@@ -57,8 +58,21 @@ public class JiraCriteriaBuilder {
       criteria.save();
    }
 
-   public void reset() {
-      criteria.reset();
+   public void reset(boolean isToRemove) {
+      criteria.reset(isToRemove);
+   }
+   
+   public JiraCriteriaBuilder setStandardFindCriterias(String maxResults) {
+      criteria.setSubBaseUrl("/secure/IssueNavigator.jspa?");
+      criteria.append("&sorter/field=issuekey&sorter/order=DESC");
+      criteria.append("&tempMax=").append(maxResults);
+      criteria.append("decorator=none&view=rss&reset=true");
+      return this;
+   }
+
+   public JiraCriteriaBuilder setBaseUrl(String baseUrl) {
+      criteria.setBaseUrl(baseUrl);
+      return this;
    }
 
 }

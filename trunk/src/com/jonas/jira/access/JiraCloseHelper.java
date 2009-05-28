@@ -156,13 +156,13 @@ public class JiraCloseHelper {
    }
 
    private void closeAllResolvedJirasInFixVersions(List<JiraVersion> relevantFixVersions) throws HttpException, IOException, JDOMException, JiraException {
-      JiraCriteriaBuilder criteriaBuilder = new JiraCriteriaBuilder().notClosed();
+      JiraCriteriaBuilder criteriaBuilder = new JiraCriteriaBuilder().nonClosed();
       criteriaBuilder.save();
       for (JiraVersion version : relevantFixVersions) {
-         criteriaBuilder.reset();
+         criteriaBuilder.reset(false);
          criteriaBuilder.fixVersion(version.getProject(), version);
          
-         JiraIssue[] jirasToClose = jiraClient.getJiras( criteriaBuilder.getCriteria());
+         JiraIssue[] jirasToClose = jiraClient.getJiras( criteriaBuilder);
          for (JiraIssue jiraToClose : jirasToClose) {
             boolean httpClose = false;
             try {
@@ -183,7 +183,7 @@ public class JiraCloseHelper {
 
    private String performPreanalysisPreReopening(JiraFilter filter) throws HttpException, IOException, JiraException, JDOMException {
       jiraClient.login();
-      JiraHttpCriteria criteria = new JiraCriteriaBuilder().filter(filter).getCriteria();
+      JiraCriteriaBuilder criteria = new JiraCriteriaBuilder().filter(filter);
       JiraIssue[] jiras = jiraClient.getJiras(criteria);
       StringBuffer sb = new StringBuffer();
       for (JiraIssue jira : jiras) {

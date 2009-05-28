@@ -20,6 +20,7 @@ import com.jonas.common.logging.MyLogger;
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
+import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
 import com.jonas.jira.jirastat.criteria.JiraHttpCriteria;
 import com.jonas.jira.utils.JiraBuilder;
 
@@ -52,22 +53,14 @@ public class JiraHttpClient extends HttpClient {
       return jiras.get(0);
    }
 
-   public List<JiraIssue> getJiras(JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder, JiraHttpCriteria criteria) throws HttpException, IOException, JiraException, JDOMException {
-      StringBuffer sb = new StringBuffer(baseUrl);
-      setStandardFindCriterias(sb);
-
-      sb.append(criteria.toString());
-
-      List<JiraIssue> jiras = executeAndGetJiras(jonasXpathEvaluator, jiraBuilder, sb.toString());
+   public List<JiraIssue> getJiras(JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder, JiraCriteriaBuilder criteriaBuilder) throws HttpException, IOException, JiraException, JDOMException {
+      criteriaBuilder.setStandardFindCriterias(MAX_RESULTS).setBaseUrl(baseUrl);
+      
+      List<JiraIssue> jiras = executeAndGetJiras(jonasXpathEvaluator, jiraBuilder, criteriaBuilder.toString());
       return jiras;
    }
 
-   private void setStandardFindCriterias(StringBuffer sb) {
-      sb.append("/secure/IssueNavigator.jspa?");
-      sb.append("decorator=none&view=rss&reset=true");
-      sb.append("&tempMax=").append(MAX_RESULTS);
-      sb.append("&sorter/field=issuekey&sorter/order=DESC");
-   }
+
 
    public String getJiraUrl() {
       if (log.isDebugEnabled())
