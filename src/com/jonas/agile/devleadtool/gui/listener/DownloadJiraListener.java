@@ -55,7 +55,7 @@ public class DownloadJiraListener implements ActionListener {
                      client.login();
                      dialog.setNote("Getting Jiras From FixVersion \"" + version + "\".");
 
-                     JiraHttpCriteria criteria = new JiraCriteriaBuilder().fixVersion(version.getProject(),version).getCriteria();
+                     JiraCriteriaBuilder criteria = new JiraCriteriaBuilder().fixVersion(version.getProject(),version);
                      jiras = client.getJiras(criteria);
                   } catch (JiraException e) {
                      error = "Whilst " + dialog.getNote() + "\n" + e.getMessage();

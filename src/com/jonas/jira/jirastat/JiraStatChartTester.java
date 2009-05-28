@@ -53,7 +53,7 @@ public class JiraStatChartTester extends ApplicationFrame {
          jiraClient.cacheJiraVersionsForProject(project);
          JiraVersion fixVersion = project.getFixVersion("Talk v26.0");
 
-         JiraHttpCriteria criteria = criteriabuilder.fixVersion(project, fixVersion).getCriteria();
+         JiraCriteriaBuilder criteria = criteriabuilder.fixVersion(project, fixVersion);
          // JiraHttpCriteria criteria = criteriabuilder.deliveryBetween("-2w", "+1w").project(JiraProject.LLUDEVSUP).getCriteria();
 
          JiraIssue[] jiras = jiraClient.getJiras(criteria);

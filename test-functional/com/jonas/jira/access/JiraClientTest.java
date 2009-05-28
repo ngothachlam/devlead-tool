@@ -32,7 +32,7 @@ public class JiraClientTest extends JonasTestCase {
       try {
          JiraVersion jiraVersion = new JiraVersion("1", JiraProject.ATLASSIN_TST, "empty", false);
          JiraCriteriaBuilder builder = new JiraCriteriaBuilder().fixVersion(jiraVersion);
-         jiras = jiraClient.getJiras(builder.getCriteria());
+         jiras = jiraClient.getJiras(builder);
          assertTrue(false);
       } catch (JiraException e) {
       }
@@ -42,7 +42,7 @@ public class JiraClientTest extends JonasTestCase {
    public void testShouldGetJirasForFixVersionOk() throws HttpException, IOException, JDOMException, JiraException {
       jiraClient.login();
       JiraCriteriaBuilder builder = new JiraCriteriaBuilder().fixVersion(TestObjects.Version_AtlassainTST);
-      JiraIssue[] jiras = jiraClient.getJiras(builder.getCriteria());;
+      JiraIssue[] jiras = jiraClient.getJiras(builder);;
       assertTrue(jiras.length > 0);
    }
 
