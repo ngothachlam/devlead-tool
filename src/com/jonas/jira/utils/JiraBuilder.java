@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
-import com.atlassian.jira.rpc.soap.beans.RemoteCustomFieldValue;
+
 import com.atlassian.jira.rpc.soap.beans.RemoteVersion;
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.common.CalculatorHelper;
@@ -33,12 +34,11 @@ public class JiraBuilder {
             jira.setBuildNo(xpathValue);
          }
       });
-      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUListPrio + "']/customfieldvalues/customfieldvalue",
-            new XpathAction() {
-               public void XPathValueFound(String xpathValue, JiraIssue jira) {
-                  jira.setLLUListPriority(getStringAsIntIfNumeric(xpathValue));
-               }
-            });
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUListPrio + "']/customfieldvalues/customfieldvalue", new XpathAction() {
+         public void XPathValueFound(String xpathValue, JiraIssue jira) {
+            jira.setLLUListPriority(getStringAsIntIfNumeric(xpathValue));
+         }
+      });
       addXpathAction("/item/timeoriginalestimate/@seconds", new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             if (xpathValue != null && xpathValue.trim().length() > 0) {
@@ -53,36 +53,31 @@ public class JiraBuilder {
             }
          }
       });
-      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUSprint + "']/customfieldvalues/customfieldvalue",
-            new XpathAction() {
-               public void XPathValueFound(String xpathValue, JiraIssue jira) {
-                  jira.setSprint(xpathValue);
-               }
-            });
-      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUProject + "']/customfieldvalues/customfieldvalue",
-            new XpathAction() {
-               public void XPathValueFound(String xpathValue, JiraIssue jira) {
-                  jira.setProject(xpathValue);
-               }
-            });
-      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUDeliveryDate + "']/customfieldvalues/customfieldvalue",
-            new XpathAction() {
-               public void XPathValueFound(String xpathValue, JiraIssue jira) {
-                  try {
-                     jira.setDeliveryDate(formatToDate(xpathValue));
-                  } catch (ParseException e) {
-                     e.printStackTrace();
-                  }
-               }
-            });
-      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUEnvironment+ "']/customfieldvalues/customfieldvalue",
-            new XpathAction() {
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUSprint + "']/customfieldvalues/customfieldvalue", new XpathAction() {
+         public void XPathValueFound(String xpathValue, JiraIssue jira) {
+            jira.setSprint(xpathValue);
+         }
+      });
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUProject + "']/customfieldvalues/customfieldvalue", new XpathAction() {
+         public void XPathValueFound(String xpathValue, JiraIssue jira) {
+            jira.setProject(xpathValue);
+         }
+      });
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUDeliveryDate + "']/customfieldvalues/customfieldvalue", new XpathAction() {
+         public void XPathValueFound(String xpathValue, JiraIssue jira) {
+            try {
+               jira.setDeliveryDate(formatToDate(xpathValue));
+            } catch (ParseException e) {
+               e.printStackTrace();
+            }
+         }
+      });
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUEnvironment + "']/customfieldvalues/customfieldvalue", new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             jira.setEnvironment(xpathValue);
          }
       });
-      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUOwner+ "']/customfieldvalues/customfieldvalue",
-            new XpathAction() {
+      addXpathAction("/item/customfields/customfield[@id='" + JiraCustomFields.LLUOwner + "']/customfieldvalues/customfieldvalue", new XpathAction() {
          public void XPathValueFound(String xpathValue, JiraIssue jira) {
             jira.setOwner(xpathValue);
          }
@@ -113,7 +108,8 @@ public class JiraBuilder {
    JiraIssue buildJira(Element e) {
       JiraIssue jiraIssue = new JiraIssue(get(e, "key"), get(e, "summary"), get(e, "status"), get(e, "resolution"), get(e, "type"), get(e, "created"));
       for (XPathImplementor xPathImplementor : jiraXpathActions) {
-         log.debug("executing xpathImplementor on Jira " + jiraIssue.getKey());
+         if (log.isDebugEnabled())
+            log.debug("executing xpathImplementor on Jira " + jiraIssue.getKey());
          xPathImplementor.execute(e, jiraIssue);
       }
       return jiraIssue;
@@ -121,15 +117,11 @@ public class JiraBuilder {
 
    public JiraIssue buildJira(Element e, List<JiraVersion> fixVersions) {
       JiraIssue jira = buildJira(e);
-      log.debug("building jira " + jira.getKey());
-      // if (fixVersions.size() == 1) {
+      if (log.isDebugEnabled())
+         log.debug("building jira " + jira.getKey());
       for (JiraVersion jiraVersion : fixVersions) {
          jira.addFixVersions(jiraVersion);
       }
-      // } else if (fixVersions.size() > 1) {
-      // jira.addFixVersions(fixVersions.get(0));
-      // log.warn("Cannot handle more than one fix version at the moment for " + jira.getKey());
-      // }
       return jira;
    }
 
@@ -139,36 +131,22 @@ public class JiraBuilder {
          try {
             intValue = (int) Float.parseFloat(string);
          } catch (NumberFormatException e) {
-            log.debug("String \"" + string + "\" cannot be transformed to an int!");
+            if (log.isDebugEnabled())
+               log.debug("String \"" + string + "\" cannot be transformed to an int!");
          }
       return intValue;
    }
 
-   private String getCustomFieldValue(RemoteCustomFieldValue[] customFieldValues, String anObject) {
-      log.debug("Trying to find custom field value: " + anObject);
-      for (RemoteCustomFieldValue remoteCustomFieldValue : customFieldValues) {
-         String customfieldId = remoteCustomFieldValue.getCustomfieldId();
-         if (log.isDebugEnabled()) {
-            log.debug("\tfound: " + customfieldId);
-            String[] values = remoteCustomFieldValue.getValues();
-            for (int i = 0; i < values.length; i++) {
-               log.debug("\t\tvalue[" + i + "]: " + values[i]);
-            }
-         }
-         if (customfieldId.equals(anObject))
-            return remoteCustomFieldValue.getValues()[0];
-      }
-      return "";
-   }
-
    public List<JiraIssue> buildJiras(List<Element> list) {
       List<JiraIssue> jiras = new ArrayList<JiraIssue>();
-      log.debug("got " + list.size() + " jiras");
+      if (log.isDebugEnabled())
+         log.debug("got " + list.size() + " jiras");
       for (Iterator<Element> iterator = list.iterator(); iterator.hasNext();) {
          Element e = iterator.next();
          List<JiraVersion> versions = buildJiraVersion(e);
          JiraIssue jiraIssue = buildJira(e, versions);
-         log.debug("built jira " + jiraIssue.getKey());
+         if (log.isDebugEnabled())
+            log.debug("built jira " + jiraIssue.getKey());
          jiras.add(jiraIssue);
 
       }
@@ -200,18 +178,17 @@ public class JiraBuilder {
             }
          }
          versionByName = JiraVersion.getVersionByName(element.getText());
-         JiraIssue.log.debug("Getting version byName: \"" + element.getText() + "\" is \"" + versionByName + "\"");
+         if (log.isDebugEnabled())
+            log.debug("Getting version byName: \"" + element.getText() + "\" is \"" + versionByName + "\"");
          versions.add(versionByName);
       }
       return versions;
    }
 }
 
-
 interface XpathAction {
    public void XPathValueFound(String xpathValue, JiraIssue jira);
 }
-
 
 class XPathImplementor {
 

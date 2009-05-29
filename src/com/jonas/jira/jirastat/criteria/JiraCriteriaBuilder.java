@@ -12,7 +12,7 @@ public class JiraCriteriaBuilder {
    public String toString() {
       return getCriteriaAsString();
    }
-   
+
    private String getCriteriaAsString() {
       return criteria.toString();
    }
@@ -65,12 +65,16 @@ public class JiraCriteriaBuilder {
    public void reset(boolean isToRemove) {
       criteria.reset(isToRemove);
    }
-   
-   public JiraCriteriaBuilder setStandardFindCriterias(String maxResults) {
+
+   public JiraCriteriaBuilder standardSearch(String maxResults) {
       criteria.setBaseUrl("/secure/IssueNavigator.jspa?");
-      criteria.append("sorter/field=issuekey&sorter/order=DESC");
       criteria.append("&tempMax=").append(maxResults);
       criteria.append("&decorator=none&view=rss&reset=true");
+      return this;
+   }
+
+   public JiraCriteriaBuilder sortByIssueKeyDesc() {
+      criteria.append("$sorter/field=issuekey&sorter/order=DESC");
       return this;
    }
 
