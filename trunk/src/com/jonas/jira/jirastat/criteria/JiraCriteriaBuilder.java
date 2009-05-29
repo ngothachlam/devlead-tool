@@ -64,9 +64,9 @@ public class JiraCriteriaBuilder {
    
    public JiraCriteriaBuilder setStandardFindCriterias(String maxResults) {
       criteria.setBaseUrl("/secure/IssueNavigator.jspa?");
-      criteria.append("&sorter/field=issuekey&sorter/order=DESC");
+      criteria.append("sorter/field=issuekey&sorter/order=DESC");
       criteria.append("&tempMax=").append(maxResults);
-      criteria.append("decorator=none&view=rss&reset=true");
+      criteria.append("&decorator=none&view=rss&reset=true");
       return this;
    }
 
