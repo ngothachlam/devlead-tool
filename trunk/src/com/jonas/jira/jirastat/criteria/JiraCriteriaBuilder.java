@@ -63,7 +63,7 @@ public class JiraCriteriaBuilder {
    }
    
    public JiraCriteriaBuilder setStandardFindCriterias(String maxResults) {
-      criteria.setSubBaseUrl("/secure/IssueNavigator.jspa?");
+      criteria.setBaseUrl("/secure/IssueNavigator.jspa?");
       criteria.append("&sorter/field=issuekey&sorter/order=DESC");
       criteria.append("&tempMax=").append(maxResults);
       criteria.append("decorator=none&view=rss&reset=true");
@@ -71,7 +71,7 @@ public class JiraCriteriaBuilder {
    }
 
    public JiraCriteriaBuilder setBaseUrl(String baseUrl) {
-      criteria.setBaseUrl(baseUrl);
+      criteria.setHostUrl(baseUrl);
       return this;
    }
 

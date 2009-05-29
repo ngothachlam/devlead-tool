@@ -70,13 +70,13 @@ public class JiraHttpCriteriaTest {
    public void testShouldAppendBaseUrlOk(){
       assertEquals("", criteria.toString());
 
-      criteria.setBaseUrl("a");
+      criteria.setHostUrl("a");
       assertEquals("a", criteria.toString());
       
-      criteria.setBaseUrl("b");
-      assertEquals("a", criteria.toString());
+      criteria.setHostUrl("b");
+      assertEquals("b", criteria.toString());
       
-      criteria.setSubBaseUrl("c");
+      criteria.setBaseUrl("c");
       assertEquals("bc", criteria.toString());
    }
    
@@ -84,13 +84,13 @@ public class JiraHttpCriteriaTest {
    public void testShoulAppendSubBaseUrlOk(){
       assertEquals("", criteria.toString());
       
-      criteria.setSubBaseUrl("a");
+      criteria.setBaseUrl("a");
       assertEquals("a", criteria.toString());
       
-      criteria.setSubBaseUrl("b");
+      criteria.setBaseUrl("b");
       assertEquals("b", criteria.toString());
       
-      criteria.setBaseUrl("c");
+      criteria.setHostUrl("c");
       assertEquals("cb", criteria.toString());
    }
 

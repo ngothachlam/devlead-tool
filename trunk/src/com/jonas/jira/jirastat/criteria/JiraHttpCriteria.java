@@ -6,7 +6,8 @@ public class JiraHttpCriteria {
 
    private StringBuffer sb = new StringBuffer();
    private Stack<String> save = new Stack<String>();
-   private int baseUrlLength = 0;
+   private String baseUrl = null;
+   private String subBaseUrl = null;
 
    protected JiraHttpCriteria append(String string) {
       sb.append(string);
@@ -15,7 +16,16 @@ public class JiraHttpCriteria {
 
    @Override
    public String toString() {
-      return sb.toString();
+      System.out.println(sb.toString() + " baseUrl: " + baseUrl + " subBaseUrl: " + subBaseUrl);
+//      int baseUrlLength = 0;
+//      if (baseUrl != null) {
+//         baseUrlLength = baseUrl.length();
+////         sb.insert(0, baseUrl);
+//      }
+//      if (subBaseUrl != null) {
+//         sb.insert(baseUrlLength, subBaseUrl);
+//      }
+      return (baseUrl != null ? baseUrl : "") + (subBaseUrl != null ? subBaseUrl : "")  + sb.toString();
    }
 
    public void save() {
@@ -32,14 +42,13 @@ public class JiraHttpCriteria {
          sb = new StringBuffer("");
    }
 
-   public JiraHttpCriteria setBaseUrl(String baseUrl) {
-      sb.insert(0, baseUrl);
-      baseUrlLength = baseUrl.length();
+   public JiraHttpCriteria setHostUrl(String baseUrl) {
+      this.baseUrl = baseUrl;
       return this;
    }
 
-   public JiraHttpCriteria setSubBaseUrl(String subBaseUrl) {
-      sb.insert(baseUrlLength, subBaseUrl);
+   public JiraHttpCriteria setBaseUrl(String subBaseUrl) {
+      this.subBaseUrl = subBaseUrl;
       return this;
    }
 }
