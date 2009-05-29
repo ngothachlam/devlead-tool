@@ -53,7 +53,7 @@ public class JiraHttpClient extends HttpClient {
    }
 
    public List<JiraIssue> getJiras(JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder, JiraCriteriaBuilder criteriaBuilder) throws HttpException, IOException, JiraException, JDOMException {
-      criteriaBuilder.setStandardFindCriterias(MAX_RESULTS).setHostUrl(baseUrl);
+      criteriaBuilder.standardSearch(MAX_RESULTS).setHostUrl(baseUrl);
       
       List<JiraIssue> jiras = executeAndGetJiras(jonasXpathEvaluator, jiraBuilder, criteriaBuilder.toString());
       return jiras;

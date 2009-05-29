@@ -3,6 +3,7 @@ package com.jonas.jira;
 import java.util.ArrayList;
 import java.util.List;
 import com.jonas.jira.JiraProject;
+import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
 
 public class JiraFilter {
 
@@ -25,10 +26,19 @@ public class JiraFilter {
 
    public static final JiraFilter LLU_10_CLOSED = new JiraFilter(JiraProject.LLU, "LLU 10 Closed", "fixfor=11382&pid=10070&status=6");
 
-   private final String url;
    private final String name;
    private final JiraProject jiraProject;
+   private String url;
+   private JiraCriteriaBuilder curl;
 
+   public JiraFilter(JiraProject jiraProject, String name, JiraCriteriaBuilder url) {
+      this.jiraProject = jiraProject;
+      this.name = name;
+      this.curl = url;
+      
+      list.add(this);
+   }
+   
    public JiraFilter(JiraProject jiraProject, String name, String url) {
       this.jiraProject = jiraProject;
       this.name = name;
@@ -46,7 +56,7 @@ public class JiraFilter {
    }
 
    public String getUrl() {
-      return url;
+      return url != null ? url : curl.toString();
    }
 
    @Override
