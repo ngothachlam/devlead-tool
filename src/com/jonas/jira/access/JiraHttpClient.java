@@ -21,7 +21,6 @@ import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
-import com.jonas.jira.jirastat.criteria.JiraHttpCriteria;
 import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraHttpClient extends HttpClient {
@@ -54,7 +53,7 @@ public class JiraHttpClient extends HttpClient {
    }
 
    public List<JiraIssue> getJiras(JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder, JiraCriteriaBuilder criteriaBuilder) throws HttpException, IOException, JiraException, JDOMException {
-      criteriaBuilder.setStandardFindCriterias(MAX_RESULTS).setBaseUrl(baseUrl);
+      criteriaBuilder.setStandardFindCriterias(MAX_RESULTS).setHostUrl(baseUrl);
       
       List<JiraIssue> jiras = executeAndGetJiras(jonasXpathEvaluator, jiraBuilder, criteriaBuilder.toString());
       return jiras;

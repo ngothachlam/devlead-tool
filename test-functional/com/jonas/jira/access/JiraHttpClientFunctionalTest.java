@@ -2,15 +2,17 @@ package com.jonas.jira.access;
 
 import java.io.IOException;
 import java.util.List;
+
 import junit.framework.TestCase;
+
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
 import org.jdom.output.XMLOutputter;
+
 import com.jonas.common.xml.JonasXpathEvaluator;
 import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
-import com.jonas.jira.jirastat.criteria.JiraHttpCriteria;
 import com.jonas.jira.utils.JiraBuilder;
 
 public class JiraHttpClientFunctionalTest extends TestCase {
