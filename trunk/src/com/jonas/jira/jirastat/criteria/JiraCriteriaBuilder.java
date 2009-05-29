@@ -7,9 +7,13 @@ import com.jonas.jira.JiraVersion;
 
 public class JiraCriteriaBuilder {
 
-   JiraHttpCriteria criteria = new JiraHttpCriteria();
+   private JiraHttpCriteria criteria = new JiraHttpCriteria();
 
-   public String getCriteriaAsString() {
+   public String toString() {
+      return getCriteriaAsString();
+   }
+   
+   private String getCriteriaAsString() {
       return criteria.toString();
    }
 
@@ -70,7 +74,7 @@ public class JiraCriteriaBuilder {
       return this;
    }
 
-   public JiraCriteriaBuilder setBaseUrl(String baseUrl) {
+   public JiraCriteriaBuilder setHostUrl(String baseUrl) {
       criteria.setHostUrl(baseUrl);
       return this;
    }
