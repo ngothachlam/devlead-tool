@@ -16,16 +16,11 @@ public class JiraHttpCriteria {
 
    @Override
    public String toString() {
-      System.out.println(sb.toString() + " baseUrl: " + baseUrl + " subBaseUrl: " + subBaseUrl);
-//      int baseUrlLength = 0;
-//      if (baseUrl != null) {
-//         baseUrlLength = baseUrl.length();
-////         sb.insert(0, baseUrl);
-//      }
-//      if (subBaseUrl != null) {
-//         sb.insert(baseUrlLength, subBaseUrl);
-//      }
-      return (baseUrl != null ? baseUrl : "") + (subBaseUrl != null ? subBaseUrl : "")  + sb.toString();
+      return getIfNotNull(baseUrl) + getIfNotNull(subBaseUrl) + sb.toString();
+   }
+
+   private String getIfNotNull(String string) {
+      return string != null ? string : "";
    }
 
    public void save() {
