@@ -48,6 +48,10 @@ public class ColumnWrapper<T> {
    public static final ColumnWrapper<String> Delivery = new ColumnWrapper<String>(String.class, ColumnType.Delivery, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.No, IsNumberic.No);
    public static final ColumnWrapper<String> Owner = new ColumnWrapper<String>(String.class, ColumnType.Owner, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
    public static final ColumnWrapper<String> Environment = new ColumnWrapper<String>(String.class, ColumnType.Environment, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
+   
+   public static final ColumnWrapper<String> Environment_M = new ColumnWrapper<String>(String.class, ColumnType.Environment_M, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No);
+   public static final ColumnWrapper<String> Project_M = new ColumnWrapper<String>(String.class, ColumnType.Project_M, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No);
+   public static final ColumnWrapper<String> Owner_M = new ColumnWrapper<String>(String.class, ColumnType.Owner_M, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No);
 
    // Complex columns
    public static final ColumnWrapper<IssueType> Type = new ColumnWrapper<IssueType>(IssueType.class, ColumnType.Type, IssueType.TBD, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No) {
