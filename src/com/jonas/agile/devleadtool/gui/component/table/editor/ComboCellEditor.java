@@ -1,16 +1,15 @@
 package com.jonas.agile.devleadtool.gui.component.table.editor;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
+
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.KeyStroke;
+
 import com.jonas.common.swing.SwingUtil;
 
-public class ComboCellEditor extends DefaultCellEditor implements MyEditor{
+public class ComboCellEditor extends DefaultCellEditor implements MyEditor {
 
    private int colEdited;
    private int rowEdited;
@@ -20,21 +19,23 @@ public class ComboCellEditor extends DefaultCellEditor implements MyEditor{
       if (getComponent() instanceof JComponent) {
          JComponent component = (JComponent) getComponent();
          component.setBorder(SwingUtil.focusCellBorder);
-         component.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "pressed");
-         component.getActionMap().put("pressed", new AbstractAction() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-               boolean ok = table.editCellAt(table.getSelectedRow(), table.getSelectedColumn());
-               Component comp = table.getEditorComponent();
-               if (ok && comp instanceof JComboBox) {
-                  JComboBox comboBox = (JComboBox) comp;
-                  comboBox.requestFocusInWindow();
-                  comboBox.setPopupVisible(true);
-               }
-            }
-
-         });
+         
+         //FIXME 1 - Fix this combo box in the table!!
+         // component.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "pressed");
+         // component.getActionMap().put("pressed", new AbstractAction() {
+         //
+         // @Override
+         // public void actionPerformed(ActionEvent e) {
+         // boolean ok = table.editCellAt(table.getSelectedRow(), table.getSelectedColumn());
+         // Component comp = table.getEditorComponent();
+         // if (ok && comp instanceof JComboBox) {
+         // JComboBox comboBox = (JComboBox) comp;
+         // comboBox.requestFocusInWindow();
+         // comboBox.setPopupVisible(true);
+         // }
+         // }
+         //
+         // });
 
       }
    }
@@ -58,6 +59,6 @@ public class ComboCellEditor extends DefaultCellEditor implements MyEditor{
 
    @Override
    public Object getValue() {
-      return ((JComboBox)getComponent()).getSelectedItem();
+      return ((JComboBox) getComponent()).getSelectedItem();
    }
 }

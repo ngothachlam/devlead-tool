@@ -21,7 +21,9 @@ import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
 
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.column.Environment;
 import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
+import com.jonas.agile.devleadtool.gui.component.table.column.Project;
 import com.jonas.agile.devleadtool.gui.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.ComboCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.JiraCellEditor;
@@ -83,7 +85,7 @@ public class MyTable extends JXTable {
       // getTableHeader().setToolTipText("blah");
       this.setColumnControlVisible(true);
       columnRearranger = new ColumnRearranger(this);
-//      this.addKeyListener(new MarkKeyListener(allowMarking));
+      // this.addKeyListener(new MarkKeyListener(allowMarking));
       addHighlighter(new MyTableHighlighter(this));
       duplicateHighlighter = new DuplicateHighlighter(this);
       addHighlighter(duplicateHighlighter);
@@ -246,7 +248,9 @@ public class MyTable extends JXTable {
 
    public Object getValueAt(ColumnType column, int rowInView) {
       int colInView = getColumnIndex(column);
-      return model.getValueAt(convertRowIndexToModel(rowInView), convertColumnIndexToModel(colInView));
+      int convertRowIndexToModel = convertRowIndexToModel(rowInView);
+      int convertColumnIndexToModel = convertColumnIndexToModel(colInView);
+      return model.getValueAt(convertRowIndexToModel, convertColumnIndexToModel);
    }
 
    public Object getValueAt(ColumnType release, String jira) {
@@ -325,17 +329,26 @@ public class MyTable extends JXTable {
    }
 
    private void setDefaultEditors() {
-      JComboBox combo = new JComboBox(BoardStatusValue.values());
-      setDefaultEditor(BoardStatusValue.class, new ComboCellEditor(combo, this));
-
       SprintCache sprintCache = getMyModel().getSprintCache();
       if (sprintCache != null) {
          ComboBoxModel model = new SprintComboBoxModel(sprintCache);
          JComboBox sprintCombo = new JComboBox(model);
          setDefaultEditor(Sprint.class, new ComboCellEditor(sprintCombo, this));
       }
-      JComboBox issueTypeCombo = new JComboBox(IssueType.values());
-      setDefaultEditor(IssueType.class, new ComboCellEditor(issueTypeCombo, this));
+
+      setDefaultEditorsForEnums();
+   }
+
+   private void setDefaultEditorsForEnums() {
+      ColumnType[] colTypes = ColumnType.values();
+      for (ColumnType columnType : colTypes) {
+         ColumnWrapper<?> wrapper = ColumnWrapper.get(columnType);
+         Class<?> wrappersDefaultClass = wrapper.getDefaultClass();
+         if(wrappersDefaultClass.isEnum()){
+            JComboBox editorCombo = new JComboBox(wrappersDefaultClass.getEnumConstants());
+            setDefaultEditor(wrappersDefaultClass, new ComboCellEditor(editorCombo, this));
+         }
+      }
    }
 
    public void setDupelicateHighlighterEnableQuery(EnabledQuery checkForDuplicatesEnabledQueryAction) {
@@ -453,29 +466,29 @@ public class MyTable extends JXTable {
 
    }
 
-//   private final class MarkKeyListener extends KeyAdapter {
-//      private final boolean allowMarking;
-//
-//      private MarkKeyListener(boolean allowMarking) {
-//         this.allowMarking = allowMarking;
-//      }
-//
-//      @Override
-//      public void keyPressed(KeyEvent e) {
-//         switch (e.getKeyCode()) {
-//            case KeyEvent.VK_M:
-//               if (allowMarking && e.getModifiersEx() == InputEvent.CTRL_DOWN_MASK) {
-//                  log.debug("backspace and mark");
-//                  changeMarkOfSelected();
-//               }
-//               break;
-//            case KeyEvent.VK_ESCAPE:
-//               clearSelection();
-//               break;
-//         }
-//         e.consume();
-//      }
-//   }
+   // private final class MarkKeyListener extends KeyAdapter {
+   // private final boolean allowMarking;
+   //
+   // private MarkKeyListener(boolean allowMarking) {
+   // this.allowMarking = allowMarking;
+   // }
+   //
+   // @Override
+   // public void keyPressed(KeyEvent e) {
+   // switch (e.getKeyCode()) {
+   // case KeyEvent.VK_M:
+   // if (allowMarking && e.getModifiersEx() == InputEvent.CTRL_DOWN_MASK) {
+   // log.debug("backspace and mark");
+   // changeMarkOfSelected();
+   // }
+   // break;
+   // case KeyEvent.VK_ESCAPE:
+   // clearSelection();
+   // break;
+   // }
+   // e.consume();
+   // }
+   // }
 
    public void resetColumns() {
       columnRearranger.resetColumns();

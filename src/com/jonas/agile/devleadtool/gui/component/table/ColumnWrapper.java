@@ -5,7 +5,9 @@ import java.util.Map;
 
 import com.jonas.agile.devleadtool.data.Cache;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.column.Environment;
 import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
+import com.jonas.agile.devleadtool.gui.component.table.column.Project;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 
@@ -47,13 +49,24 @@ public class ColumnWrapper<T> {
    public static final ColumnWrapper<String> Project = new ColumnWrapper<String>(String.class, ColumnType.Project, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
    public static final ColumnWrapper<String> Delivery = new ColumnWrapper<String>(String.class, ColumnType.Delivery, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.No, IsNumberic.No);
    public static final ColumnWrapper<String> Owner = new ColumnWrapper<String>(String.class, ColumnType.Owner, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
-   public static final ColumnWrapper<String> Environment = new ColumnWrapper<String>(String.class, ColumnType.Environment, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
-   
-   public static final ColumnWrapper<String> Environment_M = new ColumnWrapper<String>(String.class, ColumnType.Environment_M, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No);
-   public static final ColumnWrapper<String> Project_M = new ColumnWrapper<String>(String.class, ColumnType.Project_M, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No);
    public static final ColumnWrapper<String> Owner_M = new ColumnWrapper<String>(String.class, ColumnType.Owner_M, "", IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No);
+   public static final ColumnWrapper<String> Environment = new ColumnWrapper<String>(String.class, ColumnType.Environment, "", IsEditableColumn.No, IsJiraColumn.Yes, ToLoadColumn.Yes, IsNumberic.No);
 
    // Complex columns
+   public static final ColumnWrapper<Environment> Environment_M = new ColumnWrapper<Environment>(Environment.class, ColumnType.Environment_M, com.jonas.agile.devleadtool.gui.component.table.column.Environment.TBD, IsEditableColumn.Yes,
+         IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No) {
+      @Override
+      public Environment parseFromPersistanceStore(Object cellContents) {
+         return com.jonas.agile.devleadtool.gui.component.table.column.Environment.get(cellContents.toString());
+      }
+   };
+   public static final ColumnWrapper<Project> Project_M = new ColumnWrapper<Project>(Project.class, ColumnType.Project_M, com.jonas.agile.devleadtool.gui.component.table.column.Project.TBD, IsEditableColumn.Yes, IsJiraColumn.No,
+         ToLoadColumn.Yes, IsNumberic.No) {
+      @Override
+      public Project parseFromPersistanceStore(Object cellContents) {
+         return com.jonas.agile.devleadtool.gui.component.table.column.Project.get(cellContents.toString());
+      }
+   };
    public static final ColumnWrapper<IssueType> Type = new ColumnWrapper<IssueType>(IssueType.class, ColumnType.Type, IssueType.TBD, IsEditableColumn.Yes, IsJiraColumn.No, ToLoadColumn.Yes, IsNumberic.No) {
       @Override
       public IssueType parseFromPersistanceStore(Object cellContents) {
@@ -73,10 +86,6 @@ public class ColumnWrapper<T> {
          return value == null ? "" : value.toString();
       }
 
-      // @Override
-      // public Sprint parseFromPersistanceStore(Object cellContents) {
-      // throw new RuntimeException("use parseFromPersistanceStore(Object cellContents, Cache cache)");
-      // }
       @Override
       public Sprint parseFromPersistanceStore(Object cellContents, Cache cache) {
          if (cache instanceof SprintCache && cache != null) {
@@ -120,7 +129,7 @@ public class ColumnWrapper<T> {
       }
    };
 
-   private final Object defaultValue;
+   private final T defaultValue;
    private final IsJiraColumn jiraColumn;
    private final IsEditableColumn isEditable;
    private final ToLoadColumn isToLoad;
@@ -154,7 +163,7 @@ public class ColumnWrapper<T> {
       mapOfTypes.put(type.toString(), this);
    }
 
-   public Object getDefaultValue() {
+   public T getDefaultValue() {
       return defaultValue;
    }
 
