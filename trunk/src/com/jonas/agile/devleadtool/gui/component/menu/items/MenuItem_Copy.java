@@ -21,11 +21,13 @@ public class MenuItem_Copy extends MyMenuItem {
     */
    private final MyTable destinationTable;
    private MyTable sourceTable;
+   private MyTableModel sourceModel;
    private ProgressDialog dialog;
 
    public MenuItem_Copy(MyTablePopupMenu myTablePopupMenu, JFrame frame, String string, MyTable source, MyTable table) {
       super(frame, string);
       this.sourceTable = source;
+      this.sourceModel = source.getMyModel();
       this.destinationTable = table;
    }
 
@@ -38,7 +40,7 @@ public class MenuItem_Copy extends MyMenuItem {
       dialog = new ProgressDialog(getParentFrame(), "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length,
             true);
       for (int i = 0; i < selectedRows.length; i++) {
-         String jiraString = (String) sourceTable.getValueAt(ColumnType.Jira, selectedRows[i]);
+         String jiraString = (String) sourceModel.getValueAt(ColumnType.Jira, selectedRows[i]);
          addJira(jiraString, destinationTable);
          dialog.increseProgress();
       }
