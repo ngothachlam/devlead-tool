@@ -329,6 +329,17 @@ public class MyTable extends JXTable {
    }
 
    private void setDefaultEditors() {
+      ColumnType[] colTypes = ColumnType.values();
+      for (ColumnType columnType : colTypes) {
+         ColumnWrapper<?> wrapper = ColumnWrapper.get(columnType);
+         ComboRetriever comboRetriever = wrapper.getComboRetriever();
+         if(comboRetriever != null){
+            comboRetriever.getComboData();
+            JComboBox editorCombo = new JComboBox(wrappersDefaultClass.getEnumConstants());
+            setDefaultEditor(wrappersDefaultClass, new ComboCellEditor(editorCombo, this));
+         }
+      }
+      
       SprintCache sprintCache = getMyModel().getSprintCache();
       if (sprintCache != null) {
          ComboBoxModel model = new SprintComboBoxModel(sprintCache);

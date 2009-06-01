@@ -139,6 +139,8 @@ public class ColumnWrapper<T> {
    private CacheMode cacheMode;
    private Class<T> defaultClass;
 
+   private ComboRetriever comboRetriever = null;
+
    ColumnWrapper<T> toUseCacheMethod() {
       cacheMode = CacheMode.useCacheMethod;
       return this;
@@ -147,6 +149,11 @@ public class ColumnWrapper<T> {
    private ColumnWrapper<T> autoResize() {
       isToAutoResize = true;
       return this;
+   }
+
+   private ColumnWrapper(Class<T> defaultClass, ColumnType type, T defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad, IsNumberic isNumeric, ComboRetriever comboRetriever) {
+      this(defaultClass, type, defaultValue, isEditable, isJiraColumn, isToLoad, isNumeric);
+      this.comboRetriever = comboRetriever;
    }
 
    private ColumnWrapper(Class<T> defaultClass, ColumnType type, T defaultValue, IsEditableColumn isEditable, IsJiraColumn isJiraColumn, ToLoadColumn isToLoad, IsNumberic isNumeric) {
@@ -235,6 +242,10 @@ public class ColumnWrapper<T> {
 
    public ColumnType getType() {
       return type;
+   }
+
+   public ComboRetriever getComboRetriever() {
+      return comboRetriever;
    }
 
 }
