@@ -34,7 +34,7 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
       nonAcceptedJiraFields.add("TBD");
    }
    private static final ColumnType[] columns = { ColumnType.Jira, ColumnType.Description, ColumnType.Type, ColumnType.Resolution, ColumnType.Release, ColumnType.Merge, ColumnType.BoardStatus, ColumnType.Old, ColumnType.DEst,
-         ColumnType.QEst, ColumnType.DRem, ColumnType.QRem, ColumnType.DAct, ColumnType.QAct, ColumnType.prio, ColumnType.Note, ColumnType.Sprint };
+         ColumnType.QEst, ColumnType.DRem, ColumnType.QRem, ColumnType.DAct, ColumnType.QAct, ColumnType.prio, ColumnType.Note, ColumnType.Sprint, ColumnType.Owner_M, ColumnType.Project_M, ColumnType.Environment_M};
 
    private MyTableModel jiraModel;
    private EstimateValidator estimateValidator = EstimateValidator.getInstance();
@@ -58,11 +58,6 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
    public Color getColor(Object value, int row, ColumnType column) {
       if (log.isDebugEnabled())
          log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
-
-      // ColorAndNullCheck preNullColor = preNullColor(value, row, column);
-      // if (preNullColor.isAlreadyChecked()) {
-      // return preNullColor.getColor();
-      // }
 
       if (value == null) {
          setToolTipText(row, getColumnIndex(column), "Is null!");

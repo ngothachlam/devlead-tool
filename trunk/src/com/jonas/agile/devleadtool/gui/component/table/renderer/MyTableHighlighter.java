@@ -33,12 +33,12 @@ public class MyTableHighlighter extends AbstractHighlighter {
       boolean hasFocus = adapter.hasFocus();
       boolean isSelected = adapter.isSelected();
       boolean isEditable = adapter.isEditable();
-
+      
       JComponent jComponent = null;
       if (component instanceof JComponent) {
          jComponent = (JComponent) component;
       }
-
+      
       if (hasFocus) {
          component.setBackground(SwingUtil.getTableCellFocusBackground());
          if (jComponent != null) {
@@ -55,14 +55,16 @@ public class MyTableHighlighter extends AbstractHighlighter {
             jComponent.setBorder(SwingUtil.defaultCellBorder);
          }
       }
-      if (!isEditable && !hasFocus) {
-         component.setBackground(ColorUtil.darkenColor(component.getBackground(), -75));
-      }
+
 
       if (model != null) {
          setColor(table, isSelected, hasFocus, row, column, component, model, adapter.getValue(), table);
       }
-
+      
+      if (!isEditable && !hasFocus) {
+         component.setBackground(ColorUtil.darkenColor(component.getBackground(), -65));
+      }
+      
       return component;
    }
 

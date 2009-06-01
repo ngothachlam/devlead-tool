@@ -17,8 +17,8 @@ public class JiraTableModel extends MyTableModel {
       nonAcceptedJiraFields.add("TBD");
    }
 
-   private static final ColumnType[] columns = { ColumnType.Jira, ColumnType.Description, ColumnType.Type, ColumnType.J_Sprint, ColumnType.Project, ColumnType.FixVersion, ColumnType.Owner, ColumnType.Environment, ColumnType.Delivery, ColumnType.Resolution, ColumnType.BuildNo,
-         ColumnType.J_DevEst, ColumnType.J_DevAct, ColumnType.prio };
+   private static final ColumnType[] columns = { ColumnType.Jira, ColumnType.Description, ColumnType.J_Type, ColumnType.J_Sprint, ColumnType.Project, ColumnType.FixVersion, ColumnType.Owner, ColumnType.Environment, ColumnType.Delivery,
+         ColumnType.Resolution, ColumnType.BuildNo, ColumnType.J_DevEst, ColumnType.J_DevAct, ColumnType.prio };
 
    private Logger log = MyLogger.getLogger(JiraTableModel.class);
    private MyTableModel boardModel;
@@ -64,6 +64,12 @@ public class JiraTableModel extends MyTableModel {
          case Jira:
             setToolTipText(row, getColumnIndex(column), "Exists in the board!");
             return SwingUtil.cellGreen;
+         case J_Type:
+            Object type = boardModel.getValueAt(ColumnType.Type, jiraRowInBoardModel);
+            if (!isTypeOk(type, value)) {
+               return SwingUtil.cellRed;
+            }
+            break;
          case FixVersion:
             Object bRel = boardModel.getValueAt(ColumnType.Release, jiraRowInBoardModel);
             if (!isFixVersionOk(bRel, value)) {
@@ -133,11 +139,22 @@ public class JiraTableModel extends MyTableModel {
    }
 
    boolean isFixVersionOk(Object boardValue, Object jiraValue) {
+      return areValuesTheSame(boardValue, jiraValue);
+   }
+
+   private boolean isTypeOk(Object boardValue, Object jiraValue) {
+      return areValuesTheSame(boardValue, jiraValue);
+   }
+   
+   private boolean areValuesTheSame(Object boardValue, Object jiraValue) {
       if (log.isDebugEnabled())
-         log.debug("boardValue: \"" + boardValue + "\" jiraValue: " + jiraValue);
-      if (jiraValue == null) {
+         log.debug("Fix Version boardValue: \"" + boardValue + "\" jiraValue: " + jiraValue);
+      if (jiraValue == null || jiraValue.toString().trim().length() == 0) {
          if (boardValue == null || boardValue.toString().trim().length() == 0)
             return true;
+         return false;
+      }
+      if (boardValue == null) {
          return false;
       }
 

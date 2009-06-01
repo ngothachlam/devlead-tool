@@ -38,7 +38,10 @@ public enum ColumnType {
    prio,
    isParked,
    J_Type,
-   Old;
+   Old,
+   Owner_M,
+   Project_M,
+   Environment_M;
 
    private final Map<String, ColumnType> mapTypes = new HashMap<String, ColumnType>();
 

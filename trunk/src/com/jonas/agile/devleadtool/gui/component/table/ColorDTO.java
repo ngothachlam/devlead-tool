@@ -8,10 +8,12 @@ public class ColorDTO {
    private final Color color;
    private final boolean marked;
    private HSSFColor hssfColor;
+   private final boolean greyed;
 
-   public ColorDTO(Color color, boolean marked) {
+   public ColorDTO(Color color, boolean marked, boolean greyed) {
       this.color = color;
       this.marked = marked;
+      this.greyed = greyed;
    }
 
    public Color getColor() {
@@ -22,6 +24,10 @@ public class ColorDTO {
       return marked;
    }
 
+   public boolean isGreyed(){
+      return greyed;
+   }
+   
    public HSSFColor getHSSFColor() {
       return hssfColor;
    }

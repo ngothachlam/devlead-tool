@@ -20,7 +20,6 @@ import org.apache.poi.hssf.util.HSSFColor;
 import com.jonas.agile.devleadtool.gui.component.table.ColorDTO;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnWrapper;
-import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
 import com.jonas.agile.devleadtool.gui.listener.TableModelListenerAlerter;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
 import com.jonas.common.logging.MyLogger;
@@ -196,8 +195,14 @@ public abstract class MyTableModel extends DefaultTableModel {
    }
 
    public ColorDTO getColor(Object value, int row, int column) {
-      Color color = getColor(value, row, getColumnType(column));
-      return new ColorDTO(color, isMarked(row));
+      ColumnType columnType = getColumnType(column);
+      Color color = getColor(value, row, columnType);
+      return new ColorDTO(color, isMarked(row), isGreyed(columnType));
+   }
+
+   private boolean isGreyed(ColumnType columnType) {
+      ColumnWrapper wrapper = ColumnWrapper.get(columnType);
+      return wrapper != null ? wrapper.isEditable() : false;
    }
 
    final public ColumnWrapper<?> getColumnWrapper(int columnIndex) {
