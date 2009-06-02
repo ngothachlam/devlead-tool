@@ -40,21 +40,21 @@ public class MenuItem_Copy extends MyMenuItem {
       dialog = new ProgressDialog(getParentFrame(), "Copying...", "Copying selected messages from Board to Plan...", selectedRows.length,
             true);
       for (int i = 0; i < selectedRows.length; i++) {
-         String jiraString = (String) sourceModel.getValueAt(ColumnType.Jira, selectedRows[i]);
-         addJira(jiraString, destinationTable);
+         int modelRow = sourceTable.convertRowIndexToModel(selectedRows[i]);
+         String jiraString = (String) sourceModel.getValueAt(ColumnType.Jira, modelRow);
+         addJira(jiraString);
          dialog.increseProgress();
       }
    }
 
-   void addJira(String jiraString, MyTable table) {
+   void addJira(String jiraString) {
       Map<ColumnType, Object> map = new HashMap<ColumnType, Object>();
-      ColumnType[] columns = sourceTable.getCols();
+      ColumnType[] columns = sourceModel.getCols();
       for (ColumnType column : columns) {
-         MyTableModel model = sourceTable.getMyModel();
-         int row = model.getRowWithJira(jiraString);
-         map.put(column, model.getValueAt(column, row));
+         int row = sourceModel.getRowWithJira(jiraString);
+         map.put(column, sourceModel.getValueAt(column, row));
       }
-      table.addJiraAndMarkIfNew(jiraString, map);
+      destinationTable.addJiraAndMarkIfNew(jiraString, map);
    }
 
    @Override
