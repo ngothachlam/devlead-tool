@@ -66,10 +66,10 @@ public class JiraCriteriaBuilder {
       criteria.reset(isToRemove);
    }
 
-   public JiraCriteriaBuilder standardSearch(String maxResults) {
+   public JiraCriteriaBuilder search(String maxResults) {
       criteria.setBaseUrl("/secure/IssueNavigator.jspa?");
       criteria.append("&tempMax=").append(maxResults);
-      criteria.append("&decorator=none&view=rss&reset=true");
+      criteria.append("&decorator=none&view=rss").append("&reset=true");
       return this;
    }
 
@@ -80,6 +80,13 @@ public class JiraCriteriaBuilder {
 
    public JiraCriteriaBuilder setHostUrl(String baseUrl) {
       criteria.setHostUrl(baseUrl);
+      return this;
+   }
+
+   public JiraCriteriaBuilder jiraBrowse(String jira) {
+      criteria.setBaseUrl("/browse/");
+      criteria.append(jira);
+      criteria.append("&decorator=none&view=rss");
       return this;
    }
 

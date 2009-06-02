@@ -10,11 +10,11 @@ import com.jonas.testing.jxtreetable.column.Column;
 import com.jonas.testing.jxtreetable.column.ColumnMapper;
 import com.jonas.testing.jxtreetable.userobject.DefaultUserObject;
 
-public class JiraTreeTableModel extends DefaultTreeTableModel implements Serializable{
+public class TestTreeTableModel extends DefaultTreeTableModel implements Serializable{
    private final ColumnMapper colIndexMapper;
-   private final static Logger log = MyLogger.getLogger(JiraTreeTableModel.class);
+   private final static Logger log = MyLogger.getLogger(TestTreeTableModel.class);
 
-   public JiraTreeTableModel(TreeTableNode root, ColumnMapper colIndexMapper) {
+   public TestTreeTableModel(TreeTableNode root, ColumnMapper colIndexMapper) {
       super(root);
       this.colIndexMapper = colIndexMapper;
    }
