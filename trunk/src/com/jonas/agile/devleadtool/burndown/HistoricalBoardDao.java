@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.common.DateHelper;
@@ -29,6 +30,9 @@ public class HistoricalBoardDao {
 
    private Logger log = MyLogger.getLogger(HistoricalBoardDao.class);
    private DateHelper dateHelper;
+   private Integer colForJira;
+   private Integer colForSprint;
+   private Integer colForDayInSprint;
 
    public HistoricalBoardDao(DateHelper dateHelper) {
       super();
@@ -39,6 +43,9 @@ public class HistoricalBoardDao {
       FileWriter writer = null;
       BufferedWriter bw = null;
       try {
+         colForJira = 0;
+         colForSprint = 0;
+         colForDayInSprint = 1;
 
          boolean fileExists = file.exists();
 
@@ -51,6 +58,8 @@ public class HistoricalBoardDao {
          bw = new BufferedWriter(writer);
 
          writeHeaderIfRequired(boardModel, data, bw);
+
+         
          writeBody(boardModel, data, bw, dayOfSprint, sprint);
 
       } finally {
@@ -79,14 +88,24 @@ public class HistoricalBoardDao {
          sb.append(preColumn).append(DELIMITER);
       }
       for (int column = 0; column < boardModel.getColumnCount(); column++) {
-         sb.append(column != 0 ? DELIMITER : "").append(boardModel.getColumnName(column));
+         String columnName = boardModel.getColumnName(column);
+         sb.append(column != 0 ? DELIMITER : "").append(columnName);
+         if(columnName.equals(ColumnType.Jira.toString())){
+            colForJira = column ;
+         }
+         if(columnName.equals(ColumnType.Sprint.toString())){
+            colForSprint = column ;
+         }
       }
       return sb.append("\n").toString();
    }
 
    private void writeBody(MyTableModel boardModel, HistoricalData data, BufferedWriter bw, int dayOfSprint, Sprint sprint) throws IOException {
+      BodyLineStatDTO dto = null;
       if (data != null) {
-         Vector<Vector<Object>> oldDataToCopy = data.getBodyLinesThatAreNotForThisDayInSprint(sprint, dayOfSprint);
+         dto = data.getBodyLinesThatAreNotForThisDayInSprint(sprint, dayOfSprint, colForJira, colForSprint, colForDayInSprint);
+         Vector<Vector<Object>> oldDataToCopy = dto.getNewVector();
+         // Vector<Vector<Object>> oldDataToCopy = data.getBodyLinesThatAreNotForThisDayInSprint(sprint, dayOfSprint);
          System.out.println(sprint.toString());
          for (Vector<Object> oldRow : oldDataToCopy) {
             StringBuffer sb = new StringBuffer(oldRow.get(0).toString());
@@ -99,20 +118,29 @@ public class HistoricalBoardDao {
       }
 
       String today = dateHelper.getTodaysDateAsString();
-         
+
       for (int row = 0; row < boardModel.getRowCount(); row++) {
-         String bodyLineCSV = getCSVBodyLineString(boardModel, dayOfSprint, today, row);
-         bw.append(bodyLineCSV);
+         String bodyLineCSV = getCSVBodyLineString(boardModel, dayOfSprint, today, row, dto, sprint);
+         if (bodyLineCSV != null)
+            bw.append(bodyLineCSV);
       }
    }
 
-   private String getCSVBodyLineString(MyTableModel boardModel, int dayOfSprint, String today, int row) {
+   private String getCSVBodyLineString(MyTableModel boardModel, int dayOfSprint, String today, int row, BodyLineStatDTO dto, Sprint sprint) {
+      if (dto != null) {
+         if (dto.alreadyExists(boardModel.getValueAt(ColumnType.Jira, row).toString(), dayOfSprint, (Sprint) boardModel.getValueAt(ColumnType.Sprint, row))) {
+            return null;
+         }
+      }
       StringBuffer sb = new StringBuffer(today).append(DELIMITER).append(dayOfSprint);
       for (int column = 0; column < boardModel.getColumnCount(); column++) {
          Object value = boardModel.getValueAt(row, column);
-         sb.append(DELIMITER).append(value.toString());
+         if (log.isDebugEnabled())
+            log.debug("got " + value + " from boardModel at row " + row + " column " + column);
+         sb.append(DELIMITER).append(value != null ? value.toString() : "");
       }
-      System.out.println("New data to add: " + sb.toString());
+      if (log.isDebugEnabled())
+         log.debug("New data to add: " + sb.toString());
       return sb.append("\n").toString();
    }
 
@@ -150,12 +178,23 @@ public class HistoricalBoardDao {
       Vector<String> cols = new Vector<String>();
       for (int counter = 0; counter < split.length; counter++) {
          String headerValue = split[counter];
+         if (log.isDebugEnabled()) {
+            log.debug("read in headerValue " + headerValue + " at position " + counter);
+         }
          if (HISTORICALPRECOLUMNS.contains(headerValue)) {
             cols.add(headerValue);
          } else {
             // ColumnWrapper e = ColumnWrapper.get(headerValue);
             cols.add(headerValue);
          }
+         
+         if(headerValue.equals(ColumnType.Jira.toString())){
+            colForJira = counter;
+         }
+         if(headerValue.equals(ColumnType.Sprint.toString())){
+            colForSprint = counter;
+         }
+         
       }
       return cols;
    }
@@ -164,11 +203,19 @@ public class HistoricalBoardDao {
       String body = br.readLine();
       Vector<Vector<Object>> data = new Vector<Vector<Object>>();
       while (body != null) {
+         if (log.isDebugEnabled()) {
+            log.debug("read in bodyLine " + body);
+         }
          String[] split = body.split(DELIMITER);
          Vector<Object> dataRow = new Vector<Object>();
-         for (int counter = 0; counter < split.length; counter++) {
+         int counter = 0;
+         for (; counter < split.length; counter++) {
             String columnTypeName = cols.get(counter);
             String bodyValue = split[counter];
+
+            if (log.isDebugEnabled()) {
+               log.debug("read in bodyValue " + bodyValue + " at position " + counter);
+            }
 
             if (HISTORICALPRECOLUMNS.contains(columnTypeName)) {
                dataRow.add(bodyValue);
@@ -178,6 +225,15 @@ public class HistoricalBoardDao {
                dataRow.add(bodyValue);
             }
          }
+
+         for (; counter < cols.size(); counter++) {
+            dataRow.add("");
+
+         }
+         if (log.isDebugEnabled()) {
+            log.debug("counter is " + counter);
+         }
+
          data.add(dataRow);
          body = br.readLine();
       }

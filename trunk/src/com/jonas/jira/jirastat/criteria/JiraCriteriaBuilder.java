@@ -86,7 +86,7 @@ public class JiraCriteriaBuilder {
    public JiraCriteriaBuilder jiraBrowse(String jira) {
       criteria.setBaseUrl("/browse/");
       criteria.append(jira);
-      criteria.append("&decorator=none&view=rss");
+      criteria.append("?decorator=none&view=rss");
       return this;
    }
 

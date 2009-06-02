@@ -65,14 +65,14 @@ public class HistoricalData {
       return sb.deleteCharAt(sb.length() - 1).append("\n");
    }
 
-   public Vector<Vector<Object>> getBodyLinesThatAreNotForThisDayInSprint(Sprint sprint, int dayOfSprint) {
+   public BodyLineStatDTO getBodyLinesThatAreNotForThisDayInSprint(Sprint sprint, int dayOfSprint, Integer colForJira, Integer colForSprint, Integer colForDayInSprint) {
       Vector<Vector<Object>> newVector = new Vector<Vector<Object>>();
       for (Vector<Object> oldVector : data) {
          if (!isVectorForThisSprintAndDayInSprint(oldVector, sprint, dayOfSprint)) {
             newVector.add(oldVector);
          }
       }
-      return newVector;
+      return new BodyLineStatDTO(newVector, colForJira, colForSprint, colForDayInSprint);
    }
 
    private boolean isVectorForThisSprintAndDayInSprint(Vector<Object> oldVector, Sprint sprint, Integer dayOfSprint) {
@@ -80,9 +80,14 @@ public class HistoricalData {
       Object object = oldVector.get(sprintLocation);
       String vectorSprint = object.toString();
 
+      if (log.isDebugEnabled()) {
+         log.debug("vectorDayOfSprint: " + vectorDayOfSprint + " dayOfSprint.toString(): " + dayOfSprint.toString() + " vectorSprint: " + vectorSprint + " sprint.toString(): " + sprint.toString());
+      }
       if (vectorDayOfSprint.equals(dayOfSprint.toString()) && vectorSprint.equals(sprint.toString())) {
+         log.debug("...true");
          return true;
       }
+      log.debug("...false");
       return false;
    }
 }

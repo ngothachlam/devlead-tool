@@ -63,8 +63,8 @@ public class JiraFilter {
    }
 
    public boolean isExtraInfoRequired() {
-      // TODO Auto-generated method stub
-      throw new RuntimeException("Method not implemented yet!");
+      // FIXME 1 should be dynamic!
+      return false;
    }
 
    public Object getExtraInfoRequired() {

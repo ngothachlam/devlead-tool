@@ -325,15 +325,16 @@ public class MyTable extends JXTable {
 
    private void setDefaultEditors() {
       ColumnType[] colTypes = ColumnType.values();
-      for (ColumnType columnType : colTypes) {
-         ColumnWrapper<?> wrapper = ColumnWrapper.get(columnType);
-         ComboRetriever comboRetriever = wrapper.getComboRetriever();
-         if(comboRetriever != null){
-            comboRetriever.getComboData();
-            JComboBox editorCombo = new JComboBox(wrappersDefaultClass.getEnumConstants());
-            setDefaultEditor(wrappers DefaultClass, new ComboCellEditor(editorCombo, this));
-         }
-      }
+      //FIXME 1 - add dynamically from all column wrappers with a defined list of 'values' a combobox and link to the class.  
+//      for (ColumnType columnType : colTypes) {
+//         ColumnWrapper<?> wrapper = ColumnWrapper.get(columnType);
+//         ComboRetriever comboRetriever = wrapper.getComboRetriever();
+//         if(comboRetriever != null){
+//            comboRetriever.getComboData();
+//            JComboBox editorCombo = new JComboBox(wrappersDefaultClass.getEnumConstants());
+//            setDefaultEditor(wrappers DefaultClass, new ComboCellEditor(editorCombo, this));
+//         }
+//      }
       
       SprintCache sprintCache = getMyModel().getSprintCache();
       if (sprintCache != null) {

@@ -175,7 +175,7 @@ public class AddFilterDialog extends JFrame {
             JiraCriteriaBuilder criteria = new JiraCriteriaBuilder().filter(filter);
             if (filter.isExtraInfoRequired()) {
                Object extraInfoRequired = filter.getExtraInfoRequired();
-               for
+               // FIXME - 1 popup here for additional information as the filter requires (sprint text field for instance)
             }
             JiraIssue[] jirasFromFilter = client.getJiras(criteria);
             publish("Jiras downloaded!");

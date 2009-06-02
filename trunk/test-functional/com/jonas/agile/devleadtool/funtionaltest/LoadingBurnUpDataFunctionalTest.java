@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jonas.agile.devleadtool.burndown.BurnData;
-import com.jonas.agile.devleadtool.burndown.BurnType;
 import com.jonas.agile.devleadtool.burndown.BurnUpCalculator;
 import com.jonas.agile.devleadtool.burndown.Category;
 import com.jonas.agile.devleadtool.burndown.HistoricalBoardDao;
@@ -25,6 +24,7 @@ import com.jonas.agile.devleadtool.burndown.HistoricalDataCriteria;
 import com.jonas.agile.devleadtool.data.PersistanceException;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.agile.devleadtool.gui.component.dialog.CombinedModelDTO;
+import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 import com.jonas.common.DateHelper;
@@ -40,97 +40,102 @@ public class LoadingBurnUpDataFunctionalTest {
    private String today = dateHelper.getTodaysDateAsString();
 
    private Object[][] sprintTrackerHistorical_Expectation = {
-         { "HistoricalDate", "DayInSprint", "Jira", "Description", "Type", "Resolution", "Release", "Merge", "BoardStatus", "Old", "DEst", "QEst", "DRem", "QRem", "DAct", "QAct", "prio", "Note", "Sprint" },
-         { "Tue 19-05-2009", "1", "LLU-4520", "Update the MLC and TPDS Certificates", "Story", "Open (Unresolved)", "LLU 15", "", "1. Open", "false", "0", "1", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4613", "Handle EMP code 7007", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4626", "Handle EMP code 1526", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4648", "Remove R500 templates from EMP simulator", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "0.5", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4674", "Remove R500 templates from all projects", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "3", "", "", "", "0.5", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4675", "Improve inventory sonic build times", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4697", "Remove template duplication for IMS tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4691", "Standardise Health Check Scripts", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4696", "Technical approach on how this audit should be done", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
+         { "HistoricalDate", "DayInSprint", "Jira", "Description", "Type", "Resolution", "Release", "Merge", "BoardStatus", "Old", "DEst", "QEst", "DRem", "QRem", "DAct", "QAct", "prio", "Note", "Sprint", "Owner_M", "Project_M",
+               "Environment_M" },
+         { "Tue 19-05-2009", "1", "LLU-4520", "Update the MLC and TPDS Certificates", "Story", "Open (Unresolved)", "LLU 15", "", "1. Open", "false", "0", "1", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4613", "Handle EMP code 7007", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4626", "Handle EMP code 1526", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4648", "Remove R500 templates from EMP simulator", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4674", "Remove R500 templates from all projects", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "3", "", "", "", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4675", "Improve inventory sonic build times", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4697", "Remove template duplication for IMS tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4691", "Standardise Health Check Scripts", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4696", "Technical approach on how this audit should be done", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
          { "Tue 19-05-2009", "1", "LLU-4695", "Add logging around the port state validation for deallocation requests", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0.5", "", "", "", "", "", "-1", "",
-               "testCurrentSprint" }, { "Tue 19-05-2009", "1", "LLU-4698", "Remove template duplication for SM tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4692", "Improve service sonic build times", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4699", "Design an approach on how this can be accomplished", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "1", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4685", "JMS Message sender should load production vm templates", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "2", "", "1", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4690", "Build stats need to parse multiple fitnesse files", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4677", "IMS Sonic RME logging", "Dev", "Resolved (Fixed)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4732", "Implement build statistics for service sonic", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "1.5", "", "1", "", "", "", "-1", "", "testCurrentSprint" } };
+               "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4698", "Remove template duplication for SM tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4692", "Improve service sonic build times", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4699", "Design an approach on how this can be accomplished", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "1", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4685", "JMS Message sender should load production vm templates", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "2", "", "1", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4690", "Build stats need to parse multiple fitnesse files", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4677", "IMS Sonic RME logging", "Dev", "Resolved (Fixed)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4732", "Implement build statistics for service sonic", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "1.5", "", "1", "", "", "", "-1", "", "testCurrentSprint", "", "", "2" } };
    private Object[][] sprintTrackerHistorical_ExpectationWithModification = {
-         { "HistoricalDate", "DayInSprint", "Jira", "Description", "Type", "Resolution", "Release", "Merge", "BoardStatus", "Old", "DEst", "QEst", "DRem", "QRem", "DAct", "QAct", "prio", "Note", "Sprint" },
-         { "Tue 19-05-2009", "1", "LLU-4520", "Update the MLC and TPDS Certificates", "Story", "Open (Unresolved)", "LLU 15", "", "1. Open", "false", "0", "1", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4613", "Handle EMP code 7007", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4626", "Handle EMP code 1526", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4648", "Remove R500 templates from EMP simulator", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "0.5", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4674", "Remove R500 templates from all projects", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "3", "", "", "", "0.5", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4675", "Improve inventory sonic build times", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4697", "Remove template duplication for IMS tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4691", "Standardise Health Check Scripts", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4696", "Technical approach on how this audit should be done", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
+         { "HistoricalDate", "DayInSprint", "Jira", "Description", "Type", "Resolution", "Release", "Merge", "BoardStatus", "Old", "DEst", "QEst", "DRem", "QRem", "DAct", "QAct", "prio", "Note", "Sprint", "Owner_M", "Project_M",
+               "Environment_M" },
+         { "Tue 19-05-2009", "1", "LLU-4520", "Update the MLC and TPDS Certificates", "Story", "Open (Unresolved)", "LLU 15", "", "1. Open", "false", "0", "1", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4613", "Handle EMP code 7007", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4626", "Handle EMP code 1526", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4648", "Remove R500 templates from EMP simulator", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4674", "Remove R500 templates from all projects", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "3", "", "", "", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4675", "Improve inventory sonic build times", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4697", "Remove template duplication for IMS tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4691", "Standardise Health Check Scripts", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4696", "Technical approach on how this audit should be done", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
          { "Tue 19-05-2009", "1", "LLU-4695", "Add logging around the port state validation for deallocation requests", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0.5", "", "", "", "", "", "-1", "",
-               "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4698", "Remove template duplication for SM tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4692", "Improve service sonic build times", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4699", "Design an approach on how this can be accomplished", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "1", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4685", "JMS Message sender should load production vm templates", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "2", "", "1", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4690", "Build stats need to parse multiple fitnesse files", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4677", "IMS Sonic RME logging", "Dev", "Resolved (Fixed)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { "Tue 19-05-2009", "1", "LLU-4732", "Implement build statistics for service sonic", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "1.5", "", "1", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4520", "Update the MLC and TPDS Certificates", "Story", "Open (Unresolved)", "LLU 15", "", "1. Open", "false", "0", "1", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4613", "Handle EMP code 7007", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4626", "Handle EMP code 1526", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4648", "Remove R500 templates from EMP simulator", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "0.5", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4674", "Remove R500 templates from all projects", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "3", "", "", "", "0.5", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4675", "Improve inventory sonic build times", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4697", "Remove template duplication for IMS tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4691", "Standardise Health Check Scripts", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4696", "Technical approach on how this audit should be done", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4695", "Add logging around the port state validation for deallocation requests", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0.5", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4698", "Remove template duplication for SM tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4692", "Improve service sonic build times", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4699", "Design an approach on how this can be accomplished", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "1", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4685", "JMS Message sender should load production vm templates", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "2", "", "1", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4690", "Build stats need to parse multiple fitnesse files", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4677", "IMS Sonic RME logging", "Dev", "Resolved (Fixed)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4732", "Implement build statistics for service sonic", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "1.5", "", "1", "", "", "", "-1", "", "testCurrentSprint" } };
+               "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4698", "Remove template duplication for SM tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4692", "Improve service sonic build times", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4699", "Design an approach on how this can be accomplished", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "1", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4685", "JMS Message sender should load production vm templates", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "2", "", "1", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4690", "Build stats need to parse multiple fitnesse files", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4677", "IMS Sonic RME logging", "Dev", "Resolved (Fixed)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { "Tue 19-05-2009", "1", "LLU-4732", "Implement build statistics for service sonic", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "1.5", "", "1", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4520", "Update the MLC and TPDS Certificates", "Story", "Open (Unresolved)", "LLU 15", "", "1. Open", "false", "0", "1", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4613", "Handle EMP code 7007", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4626", "Handle EMP code 1526", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4648", "Remove R500 templates from EMP simulator", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4674", "Remove R500 templates from all projects", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "3", "", "", "", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4675", "Improve inventory sonic build times", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4697", "Remove template duplication for IMS tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4691", "Standardise Health Check Scripts", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4696", "Technical approach on how this audit should be done", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4695", "Add logging around the port state validation for deallocation requests", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0.5", "", "", "", "", "", "-1", "", "testCurrentSprint",
+               "", "", "" }, { today, "2", "LLU-4698", "Remove template duplication for SM tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4692", "Improve service sonic build times", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4699", "Design an approach on how this can be accomplished", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "1", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4685", "JMS Message sender should load production vm templates", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "2", "", "1", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4690", "Build stats need to parse multiple fitnesse files", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4677", "IMS Sonic RME logging", "Dev", "Resolved (Fixed)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4732", "Implement build statistics for service sonic", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "1.5", "", "1", "", "", "", "-1", "", "testCurrentSprint", "", "", "" } };
    private Object[][] sprintTrackerHistorical_ExpectationWithDualSaves = {
-         { "HistoricalDate", "DayInSprint", "Jira", "Description", "Type", "Resolution", "Release", "Merge", "BoardStatus", "Old", "DEst", "QEst", "DRem", "QRem", "DAct", "QAct", "prio", "Note", "Sprint" },
-         { today, "1", "LLU-4520", "Update the MLC and TPDS Certificates", "Story", "Open (Unresolved)", "LLU 15", "", "1. Open", "false", "0", "1", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4613", "Handle EMP code 7007", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4626", "Handle EMP code 1526", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4648", "Remove R500 templates from EMP simulator", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "0.5", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4674", "Remove R500 templates from all projects", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "3", "", "", "", "0.5", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4675", "Improve inventory sonic build times", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4697", "Remove template duplication for IMS tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4691", "Standardise Health Check Scripts", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4696", "Technical approach on how this audit should be done", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4695", "Add logging around the port state validation for deallocation requests", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0.5", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4698", "Remove template duplication for SM tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4692", "Improve service sonic build times", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4699", "Design an approach on how this can be accomplished", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "1", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4685", "JMS Message sender should load production vm templates", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "2", "", "1", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4690", "Build stats need to parse multiple fitnesse files", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4677", "IMS Sonic RME logging", "Dev", "Resolved (Fixed)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "1", "LLU-4732", "Implement build statistics for service sonic", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "1.5", "", "1", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4520", "Update the MLC and TPDS Certificates", "Story", "Open (Unresolved)", "LLU 15", "", "1. Open", "false", "0", "1", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4613", "Handle EMP code 7007", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4626", "Handle EMP code 1526", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4648", "Remove R500 templates from EMP simulator", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "0.5", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4674", "Remove R500 templates from all projects", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "3", "", "", "", "0.5", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4675", "Improve inventory sonic build times", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4697", "Remove template duplication for IMS tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4691", "Standardise Health Check Scripts", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4696", "Technical approach on how this audit should be done", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4695", "Add logging around the port state validation for deallocation requests", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0.5", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4698", "Remove template duplication for SM tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4692", "Improve service sonic build times", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4699", "Design an approach on how this can be accomplished", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "1", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4685", "JMS Message sender should load production vm templates", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "2", "", "1", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4690", "Build stats need to parse multiple fitnesse files", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4677", "IMS Sonic RME logging", "Dev", "Resolved (Fixed)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint" },
-         { today, "2", "LLU-4732", "Implement build statistics for service sonic", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "1.5", "", "1", "", "", "", "-1", "", "testCurrentSprint" } };
+         { "HistoricalDate", "DayInSprint", "Jira", "Description", "Type", "Resolution", "Release", "Merge", "BoardStatus", "Old", "DEst", "QEst", "DRem", "QRem", "DAct", "QAct", "prio", "Note", "Sprint", "Owner_M", "Project_M",
+               "Environment_M" },
+         { today, "1", "LLU-4520", "Update the MLC and TPDS Certificates", "Story", "Open (Unresolved)", "LLU 15", "", "1. Open", "false", "0", "1", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4613", "Handle EMP code 7007", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4626", "Handle EMP code 1526", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4648", "Remove R500 templates from EMP simulator", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4674", "Remove R500 templates from all projects", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "3", "", "", "", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4675", "Improve inventory sonic build times", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4697", "Remove template duplication for IMS tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4691", "Standardise Health Check Scripts", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4696", "Technical approach on how this audit should be done", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4695", "Add logging around the port state validation for deallocation requests", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0.5", "", "", "", "", "", "-1", "", "testCurrentSprint",
+               "", "", "" },
+         { today, "1", "LLU-4698", "Remove template duplication for SM tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4692", "Improve service sonic build times", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4699", "Design an approach on how this can be accomplished", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "1", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4685", "JMS Message sender should load production vm templates", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "2", "", "1", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4690", "Build stats need to parse multiple fitnesse files", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4677", "IMS Sonic RME logging", "Dev", "Resolved (Fixed)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "1", "LLU-4732", "Implement build statistics for service sonic", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "1.5", "", "1", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4520", "Update the MLC and TPDS Certificates", "Story", "Open (Unresolved)", "LLU 15", "", "1. Open", "false", "0", "1", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4613", "Handle EMP code 7007", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4626", "Handle EMP code 1526", "Story", "Resolved (Fixed)", "LLU 15", "", "4. Resolved", "false", "1.0", "1.0", "", "0.2", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4648", "Remove R500 templates from EMP simulator", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4674", "Remove R500 templates from all projects", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "3", "", "", "", "0.5", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4675", "Improve inventory sonic build times", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4697", "Remove template duplication for IMS tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4691", "Standardise Health Check Scripts", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4696", "Technical approach on how this audit should be done", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4695", "Add logging around the port state validation for deallocation requests", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0.5", "", "", "", "", "", "-1", "", "testCurrentSprint",
+               "", "", "" }, { today, "2", "LLU-4698", "Remove template duplication for SM tests", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4692", "Improve service sonic build times", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "2", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4699", "Design an approach on how this can be accomplished", "Dev", "Open (Unresolved)", "LLU 16", "", "1. Open", "false", "1", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4685", "JMS Message sender should load production vm templates", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "2", "", "1", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4690", "Build stats need to parse multiple fitnesse files", "Dev", "Resolved (DEV Complete)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4677", "IMS Sonic RME logging", "Dev", "Resolved (Fixed)", "LLU 16", "", "4. Resolved", "false", "0", "", "", "", "", "", "-1", "", "testCurrentSprint", "", "", "" },
+         { today, "2", "LLU-4732", "Implement build statistics for service sonic", "Dev", "Open (Unresolved)", "LLU 16", "", "3. InProgress", "false", "1.5", "", "1", "", "", "", "-1", "", "testCurrentSprint", "", "", "" } };
 
    @Before
    public void setUp() {
@@ -175,7 +180,9 @@ public class LoadingBurnUpDataFunctionalTest {
    private void assertHistoricalData(Vector<Vector<Object>> expectation, HistoricalData historicalData) {
       Vector<String> header = historicalData.getHeaders();
       for (int counter = 0; counter < header.size(); counter++) {
-         assertEquals("The header on col " + counter + " is not what is expected!", expectation.get(0).get(counter), header.get(counter));
+         Object eString = expectation.get(0).get(counter);
+         String hString = header.get(counter);
+         assertEquals("The header on col " + counter + " is not what is expected!", eString, hString);
       }
       assertEquals("Header column count is incorrect", expectation.get(0).size(), header.size());
 
@@ -240,7 +247,7 @@ public class LoadingBurnUpDataFunctionalTest {
       // Assert historical data saving
       assertFalse("File cannot exist as we are trying to save to it from afresh!", sprintTrackerHistorical_TestFile.exists());
       dao.save(sprintTrackerHistorical_TestFile, boardModel, 1, TestObjects.TEST_SPRINT_CURRENT);
-      assertNoOflines("The file should contain 18 lines (includes the header) as we are adding day 2 data", 18, sprintTrackerHistorical_TestFile);
+      assertNoOflines("The file should contain 18 lines (includes the header) as we are adding day 1 data", 18, sprintTrackerHistorical_TestFile);
 
       assertTrue("File need to exist as we are trying to save to it by copying historical data!", sprintTrackerHistorical_TestFile.exists());
 
@@ -275,17 +282,17 @@ public class LoadingBurnUpDataFunctionalTest {
    @Test
    public void shouldLoadHistoricalDataAndCalculateBurnUpdata() throws IOException, PersistanceException {
       // setup test histocial data
-//      BoardTableModel boardModel = null;
-//      {
-//         boardModel = loadBoardModel(new File("test-data//Sprint Tracker WithLastSprints- llu.xls"));
-//         dao.save(sprintTrackerHistorical_TestFile, boardModel, 1, TestObjects.TEST_SPRINT_CURRENT);
-//         assertTrue("File need to exist as we have just tried to set it up with test data", sprintTrackerHistorical_TestFile.exists());
-//         assertNoOflines("The file should contain 18 lines (includes the header) as we are adding 2 sprints data", 18, sprintTrackerHistorical_TestFile);
-//
-//         dao.save(sprintTrackerHistorical_TestFile, boardModel, 2, TestObjects.TEST_SPRINT_CURRENT);
-//         assertTrue("File need to exist as we have just tried to set it up with test data", sprintTrackerHistorical_TestFile.exists());
-//         assertNoOflines("The file should contain 35 lines (includes the header) as we are adding 2 sprints data", 35, sprintTrackerHistorical_TestFile);
-//      }
+      // BoardTableModel boardModel = null;
+      // {
+      // boardModel = loadBoardModel(new File("test-data//Sprint Tracker WithLastSprints- llu.xls"));
+      // dao.save(sprintTrackerHistorical_TestFile, boardModel, 1, TestObjects.TEST_SPRINT_CURRENT);
+      // assertTrue("File need to exist as we have just tried to set it up with test data", sprintTrackerHistorical_TestFile.exists());
+      // assertNoOflines("The file should contain 18 lines (includes the header) as we are adding 2 sprints data", 18, sprintTrackerHistorical_TestFile);
+      //
+      // dao.save(sprintTrackerHistorical_TestFile, boardModel, 2, TestObjects.TEST_SPRINT_CURRENT);
+      // assertTrue("File need to exist as we have just tried to set it up with test data", sprintTrackerHistorical_TestFile.exists());
+      // assertNoOflines("The file should contain 35 lines (includes the header) as we are adding 2 sprints data", 35, sprintTrackerHistorical_TestFile);
+      // }
 
       HistoricalData historicalData = dao.load(sprintTrackerHistoricalWithTwoDays_TestFile);
 
@@ -297,29 +304,29 @@ public class LoadingBurnUpDataFunctionalTest {
       Set<Category> categories = data.getCategoryNames();
       Category[] categoriesAsArray = categories.toArray(new Category[3]);
       assertEquals("The amount of categories we expect!", 3, categoriesAsArray.length);
-      
+
       assertEquals("4. Resolved", categoriesAsArray[0].getName());
       assertEquals("3. InProgress", categoriesAsArray[1].getName());
       assertEquals("1. Open", categoriesAsArray[2].getName());
-      
+
       assertEquals(2, data.getDataForCategory(categoriesAsArray[0]).size());
       assertEquals(2, data.getDataForCategory(categoriesAsArray[1]).size());
       assertEquals(2, data.getDataForCategory(categoriesAsArray[2]).size());
 
       int category = 0;
       int i = 0;
-//      assertEquals(new Double(1d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
-//      assertEquals(new Double(0d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
-//      assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
-//      assertEquals(new Double(0d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
-//      
-//      i = 0;
-//      category+=1;
-//      assertEquals(new Double(1d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
-//      assertEquals(new Double(0.4d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
-//      assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
-//      assertEquals(new Double(0.4d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
-      
+      // assertEquals(new Double(1d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+      // assertEquals(new Double(0d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+      // assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+      // assertEquals(new Double(0d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+      //      
+      // i = 0;
+      // category+=1;
+      // assertEquals(new Double(1d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+      // assertEquals(new Double(0.4d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+      // assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+      // assertEquals(new Double(0.4d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+
    }
 
    private void assertNoOflines(String string, int i, File file) throws IOException {
