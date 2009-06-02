@@ -227,6 +227,12 @@ public abstract class MyTableModel extends DefaultTableModel {
    final public Map<ColumnType, Integer> getColumnNames() {
       return columnNames;
    }
+   
+   final public ColumnType[] getCols() {
+      Map<ColumnType, Integer> columnNames = getColumnNames();
+      return columnNames.keySet().toArray(new ColumnType[columnNames.size()]);
+   }
+   
 
    final List<Integer> getConvertionNumbers(Vector<ColumnType> mixedUpVector, Map<ColumnType, Integer> originalVector) {
       List<Integer> list = new ArrayList();

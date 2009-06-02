@@ -175,11 +175,6 @@ public class MyTable extends JXTable {
       model.fireTableRowsUpdated(convertRowIndexToModel(rowEdited), convertRowIndexToModel(rowEdited2));
    }
 
-   public ColumnType[] getCols() {
-      Map<ColumnType, Integer> columnNames = model.getColumnNames();
-      return columnNames.keySet().toArray(new ColumnType[columnNames.size()]);
-   }
-
    public ColumnType getColumnEnum(int itsColumn) {
       return model.getColumnType(convertColumnIndexToModel(itsColumn));
    }
@@ -336,7 +331,7 @@ public class MyTable extends JXTable {
          if(comboRetriever != null){
             comboRetriever.getComboData();
             JComboBox editorCombo = new JComboBox(wrappersDefaultClass.getEnumConstants());
-            setDefaultEditor(wrappersDefaultClass, new ComboCellEditor(editorCombo, this));
+            setDefaultEditor(wrappers DefaultClass, new ComboCellEditor(editorCombo, this));
          }
       }
       
