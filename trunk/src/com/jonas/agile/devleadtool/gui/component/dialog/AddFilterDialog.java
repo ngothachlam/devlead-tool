@@ -173,6 +173,10 @@ public class AddFilterDialog extends JFrame {
             publish("Logged in!");
             publish("Downloading Jiras!");
             JiraCriteriaBuilder criteria = new JiraCriteriaBuilder().filter(filter);
+            if (filter.isExtraInfoRequired()) {
+               Object extraInfoRequired = filter.getExtraInfoRequired();
+               for
+            }
             JiraIssue[] jirasFromFilter = client.getJiras(criteria);
             publish("Jiras downloaded!");
             return jirasFromFilter;

@@ -48,7 +48,7 @@ public class TestTreeTable {
    public void create() throws IOException {
       DefaultMutableTreeTableNode root = createTestRoot();
 
-      DefaultTreeTableModel treeTableModel = new JiraTreeTableModel(root, BoardColumnMapperImpl.boardColumnMapping);
+      DefaultTreeTableModel treeTableModel = new TestTreeTableModel(root, BoardColumnMapperImpl.boardColumnMapping);
       Component treeTable = getTreeTable(treeTableModel);
       TryoutTester.showInFrame(new JScrollPane(treeTable));
 

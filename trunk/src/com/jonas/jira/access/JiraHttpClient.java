@@ -46,14 +46,15 @@ public class JiraHttpClient extends HttpClient {
    }
 
    public JiraIssue getJira(String jira, JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder) throws HttpException, IOException, JDOMException, JiraException {
-      String url = baseUrl + "/browse/" + jira + "?decorator=none&view=rss";
+      JiraCriteriaBuilder criteriaBuilder = new JiraCriteriaBuilder();
+      criteriaBuilder.setHostUrl(baseUrl).jiraBrowse(jira);
 
-      List<JiraIssue> jiras = executeAndGetJiras(jonasXpathEvaluator, jiraBuilder, url);
+      List<JiraIssue> jiras = executeAndGetJiras(jonasXpathEvaluator, jiraBuilder, criteriaBuilder.toString());
       return jiras.get(0);
    }
 
    public List<JiraIssue> getJiras(JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder, JiraCriteriaBuilder criteriaBuilder) throws HttpException, IOException, JiraException, JDOMException {
-      criteriaBuilder.standardSearch(MAX_RESULTS).setHostUrl(baseUrl);
+      criteriaBuilder.setHostUrl(baseUrl).search(MAX_RESULTS);
       
       List<JiraIssue> jiras = executeAndGetJiras(jonasXpathEvaluator, jiraBuilder, criteriaBuilder.toString());
       return jiras;
@@ -148,17 +149,8 @@ public class JiraHttpClient extends HttpClient {
 
    private PostMethod getPostMethod(Map<String, String> parameters) {
       PostMethod method = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa"); // form
-      // action
-      // //
-      // see
-      // form
-      // method
-      // here
-      // as
-      // well!!
       for (String parameter : parameters.keySet()) {
          method.addParameter(parameter, parameters.get(parameter)); // name of
-         // input
       }
       return method;
    }
