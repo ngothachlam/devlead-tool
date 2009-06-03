@@ -3,33 +3,44 @@ package com.jonas.agile.devleadtool.burndown;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import org.apache.log4j.Logger;
+
+import com.jonas.common.logging.MyLogger;
 
 public class BurnData {
+
+   public String getYAxisName() {
+      return yAxisName;
+   }
 
    private Map<Category, BurnDataColumns> burnDataPerCategory;
    private BurnType burnType;
    private Integer timeLength;
-   private Map<Category, Integer> preValues = new HashMap<Category, Integer>();
+   private static final Logger log = MyLogger.getLogger(BurnData.class);
+   private final String yAxisName;
 
-   public BurnData(BurnType burnType, Integer length) {
-      this(burnType);
+   public BurnData(BurnType burnType, Integer length, String yAxisName) {
+      this(burnType, yAxisName);
       this.timeLength = length;
    }
 
-   public BurnData(BurnType burnType) {
+   public BurnData(BurnType burnType, String yAxisName) {
       this.burnType = burnType;
+      this.yAxisName = yAxisName;
       this.burnDataPerCategory = new LinkedHashMap<Category, BurnDataColumns>();
    }
 
-   public void add(Category string, double x, double y) {
-      BurnDataColumns dataForCategory = getColumnCollectionForCategory(string);
+   public void add(Category category, double x, double y) {
+      if (log.isDebugEnabled()) {
+         log.debug("adding value " + y + " to axis location " + x + " for category \"" + category.getName() + "\"");
+      }
+
+      BurnDataColumns dataForCategory = getColumnCollectionForCategory(category);
       dataForCategory.add(x, y);
    }
 

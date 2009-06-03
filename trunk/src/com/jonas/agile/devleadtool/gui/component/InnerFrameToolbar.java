@@ -252,7 +252,7 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnData
       String currentSprintEnd = DateHelper.getDateAsString(currentSprint.getEndDate());
       boardStatsFrame.setChartText(currentSprintName + " (" + currentSprintStart + " to " + currentSprintEnd + ")");
 
-      data = new BurnData(BurnType.BurnDown);
+      data = new BurnData(BurnType.BurnDown, "Remaining Estimated Points");
       Category category = new Category("Progression", SwingUtil.cellGreen, 0);
       data.add(category, 0d, progressionCalculator.getTotalEstimates());
       data.add(category, currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());

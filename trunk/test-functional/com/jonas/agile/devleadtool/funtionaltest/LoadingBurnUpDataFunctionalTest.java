@@ -281,19 +281,6 @@ public class LoadingBurnUpDataFunctionalTest {
 
    @Test
    public void shouldLoadHistoricalDataAndCalculateBurnUpdata() throws IOException, PersistanceException {
-      // setup test histocial data
-      // BoardTableModel boardModel = null;
-      // {
-      // boardModel = loadBoardModel(new File("test-data//Sprint Tracker WithLastSprints- llu.xls"));
-      // dao.save(sprintTrackerHistorical_TestFile, boardModel, 1, TestObjects.TEST_SPRINT_CURRENT);
-      // assertTrue("File need to exist as we have just tried to set it up with test data", sprintTrackerHistorical_TestFile.exists());
-      // assertNoOflines("The file should contain 18 lines (includes the header) as we are adding 2 sprints data", 18, sprintTrackerHistorical_TestFile);
-      //
-      // dao.save(sprintTrackerHistorical_TestFile, boardModel, 2, TestObjects.TEST_SPRINT_CURRENT);
-      // assertTrue("File need to exist as we have just tried to set it up with test data", sprintTrackerHistorical_TestFile.exists());
-      // assertNoOflines("The file should contain 35 lines (includes the header) as we are adding 2 sprints data", 35, sprintTrackerHistorical_TestFile);
-      // }
-
       HistoricalData historicalData = dao.load(sprintTrackerHistoricalWithTwoDays_TestFile);
 
       HistoricalDataCriteria criteria = new HistoricalDataCriteria("Sprint", TestObjects.TEST_SPRINT_CURRENT.toString());
@@ -305,28 +292,35 @@ public class LoadingBurnUpDataFunctionalTest {
       Category[] categoriesAsArray = categories.toArray(new Category[3]);
       assertEquals("The amount of categories we expect!", 3, categoriesAsArray.length);
 
-      assertEquals("4. Resolved", categoriesAsArray[0].getName());
-      assertEquals("3. InProgress", categoriesAsArray[1].getName());
-      assertEquals("1. Open", categoriesAsArray[2].getName());
-
-      assertEquals(2, data.getDataForCategory(categoriesAsArray[0]).size());
-      assertEquals(2, data.getDataForCategory(categoriesAsArray[1]).size());
-      assertEquals(2, data.getDataForCategory(categoriesAsArray[2]).size());
-
       int category = 0;
       int i = 0;
-      // assertEquals(new Double(1d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
-      // assertEquals(new Double(0d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
-      // assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
-      // assertEquals(new Double(0d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
-      //      
-      // i = 0;
-      // category+=1;
-      // assertEquals(new Double(1d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
-      // assertEquals(new Double(0.4d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
-      // assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
-      // assertEquals(new Double(0.4d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+      assertEquals("4. Resolved", categoriesAsArray[category].getName());
+      assertEquals(2, data.getDataForCategory(categoriesAsArray[category]).size());
+      assertEquals(new Double(1d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+      assertEquals(new Double(11.5d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
 
+      assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+      assertEquals(new Double(11.5d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+
+      i = 0;
+      category += 1;
+      assertEquals("3. InProgress", categoriesAsArray[category].getName());
+      assertEquals(2, data.getDataForCategory(categoriesAsArray[category]).size());
+      assertEquals(new Double(1d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+      assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+
+      assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+      assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+      
+      i = 0;
+      category += 1;
+      assertEquals("1. Open", categoriesAsArray[category].getName());
+      assertEquals(2, data.getDataForCategory(categoriesAsArray[category]).size());
+      assertEquals(new Double(1d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+      assertEquals(new Double(11d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
+      
+      assertEquals(new Double(2d), data.getDataForCategory(categoriesAsArray[category]).get(i).getX());
+      assertEquals(new Double(11d), data.getDataForCategory(categoriesAsArray[category]).get(i++).getY());
    }
 
    private void assertNoOflines(String string, int i, File file) throws IOException {

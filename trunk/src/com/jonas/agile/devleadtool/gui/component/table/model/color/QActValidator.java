@@ -14,9 +14,9 @@ public class QActValidator extends AbstractValidator {
          case EXTERNAL:
          case PRODISSUE:
          case MERGE:
-         case TEST:
-            return passOnEmpty(value, new MessageDTO(type, true), new MessageDTO(false));
          case DEV:
+            return passOnEmpty(value, new MessageDTO(type, true), new MessageDTO(false));
+         case TEST:
          case STORY:
             BoardStatusValue boardStatusValue = (BoardStatusValue) boardStatus;
             switch (boardStatusValue) {
