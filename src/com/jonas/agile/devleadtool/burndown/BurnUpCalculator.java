@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.data.JiraStatistic;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
@@ -27,13 +26,11 @@ public class BurnUpCalculator {
       return parseDouble;
    }
 
-   Vector<String> dataColumns = new Vector();
-   Map<String, Integer> dataColumnsMap = new LinkedHashMap<String, Integer>();
-
    public BurnData getSortedDataUsingCriteria(HistoricalData historicalData, HistoricalDataCriteria criteria, Sprint currentSprint) {
       Vector<String> historicalHeader = historicalData.getHeaders();
       Vector<Vector<Object>> historicalBody = historicalData.getBody();
 
+      Vector<String> dataColumns = new Vector();
       dataColumns.add(HistoricalBoardDao.DAY_IN_SPRINT);
       dataColumns.add(ColumnType.BoardStatus.toString());
       dataColumns.add(ColumnType.DEst.toString());
@@ -42,46 +39,28 @@ public class BurnUpCalculator {
       dataColumns.add(ColumnType.QRem.toString());
 
       Integer currentSprintLength = currentSprint.getLength();
-      BurnData burnData = new BurnData(BurnType.BurnUp, currentSprintLength);
+      BurnData burnData = new BurnData(BurnType.BurnUp, currentSprintLength, "Estimated Points");
 
-      Vector<Integer> criteriaCols = new Vector<Integer>();
-      for (int counter = 0; counter < historicalHeader.size(); counter++) {
-         String header = historicalHeader.get(counter);
-         if (header.equals(criteria.getHeader())) {
-            criteriaCols.add(counter);
-         }
-         if (dataColumns.indexOf(header) >= 0) {
-            dataColumnsMap.put(header, counter);
-         }
-      }
+      MapDTO mapDto = findTheColumnNamesAndTheirLocations(criteria, historicalHeader, dataColumns);
+      Map<String, Integer> columnNameAndItsLocationMap = mapDto.getColumnNameAndItsLocationMap();
+      Vector<Integer> criteriaCols = mapDto.getCriteriaCols();
 
       for (Vector<Object> bodyRow : historicalBody) {
+         // FIXME 1 - Criteria cols should be dynamic (in case more criterias are added).
          Object bodyRowCriteriaValue = bodyRow.get(criteriaCols.get(0));
 
          if (criteria.getValue().equals(bodyRowCriteriaValue)) {
-            Integer categoryCol = dataColumnsMap.get(ColumnType.BoardStatus.toString());
-            Integer dayInSprintCol = dataColumnsMap.get(HistoricalBoardDao.DAY_IN_SPRINT);
-            Integer dEstCol = dataColumnsMap.get(ColumnType.DEst.toString());
-            Integer qEstCol = dataColumnsMap.get(ColumnType.QEst.toString());
-            Integer dRemCol = dataColumnsMap.get(ColumnType.DRem.toString());
-            Integer qRemCol = dataColumnsMap.get(ColumnType.QRem.toString());
+            Integer categoryCol = columnNameAndItsLocationMap.get(ColumnType.BoardStatus.toString());
+            Integer dayInSprintCol = columnNameAndItsLocationMap.get(HistoricalBoardDao.DAY_IN_SPRINT);
+            Integer dEstCol = columnNameAndItsLocationMap.get(ColumnType.DEst.toString());
+            Integer qEstCol = columnNameAndItsLocationMap.get(ColumnType.QEst.toString());
 
             String boardstatus = bodyRow.get(categoryCol).toString();
-            double value = 0d;
 
             JiraStatistic jiraStat = new JiraStatistic(BoardStatusValue.get(boardstatus));
+            double value = 0d;
             switch (jiraStat.devStatus()) {
-               case jiraIsInDevelopmentProgressState:
-                  value += getDouble(bodyRow.get(dRemCol.intValue()));
-                  value += getDouble(bodyRow.get(qRemCol.intValue()));
-                  break;
-               case jiraIsInDevelopmentResolvedState:
-                  value += getDouble(bodyRow.get(dEstCol.intValue()));
-                  value += getDouble(bodyRow.get(qRemCol.intValue()));
-                  break;
-               case jiraIsInDevelopmentOpenState:
-               case jiraIsInPreDevelopmentState:
-               case jiraIsInPostDevelopmentState:
+               default:
                   value += getDouble(bodyRow.get(dEstCol.intValue()));
                   value += getDouble(bodyRow.get(qEstCol.intValue()));
                   break;
@@ -95,6 +74,23 @@ public class BurnUpCalculator {
       }
 
       return burnData;
+   }
+
+   private MapDTO findTheColumnNamesAndTheirLocations(HistoricalDataCriteria criteria, Vector<String> historicalHeader, Vector<String> dataColumns) {
+      Map<String, Integer> columnNameAndItsLocationMap = new LinkedHashMap<String, Integer>();
+      Vector<Integer> criteriaCols = new Vector<Integer>();
+
+      for (int counter = 0; counter < historicalHeader.size(); counter++) {
+         String header = historicalHeader.get(counter);
+         if (header.equals(criteria.getHeader())) {
+            criteriaCols.add(counter);
+         }
+         if (dataColumns.indexOf(header) >= 0) {
+            columnNameAndItsLocationMap.put(header, counter);
+         }
+      }
+
+      return new MapDTO(columnNameAndItsLocationMap, criteriaCols);
    }
 
    private Color getColor(String boardstatus) {

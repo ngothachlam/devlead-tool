@@ -14,7 +14,7 @@ public class ManualBurnDownFrame extends ManualBurnFrame {
 
          @Override
          public void calculateBurndownData() {
-            data = new BurnData(BurnType.BurnDown);
+            data = new BurnData(BurnType.BurnDown, "Remaining Estimated Points");
 
             Category category1 = new Category("Real Progression", SwingUtil.cellBlue, 0);
             data.add(category1, 0d, 15d);

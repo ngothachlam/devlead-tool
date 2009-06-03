@@ -12,22 +12,22 @@ public class JiraStatistic {
             devStatus = DevStatus.jiraIsInUnKnownState;
             break;
          case NA:
-            devStatus = DevStatus.jiraIsInPreDevelopmentState;
+            devStatus = DevStatus.jiraIsInPreDevelopment;
             break;
          case Open:
-            devStatus = DevStatus.jiraIsInDevelopmentOpenState;
+            devStatus = DevStatus.jiraIsInDevelopmentAndOpen;
             break;
          case Failed:
          case InProgress:
-            devStatus = DevStatus.jiraIsInDevelopmentProgressState;
+            devStatus = DevStatus.jiraIsInDevelopmentAndInProgress;
             break;
          case Resolved:
-            devStatus = DevStatus.jiraIsInDevelopmentResolvedState;
+            devStatus = DevStatus.jiraIsInDevelopmentAndResolved;
             break;
          case Complete:
          case Approved:
          case ForShowCase:
-            devStatus = DevStatus.jiraIsInPostDevelopmentState;
+            devStatus = DevStatus.jiraIsInPostDevelopment;
             break;
       }
    }

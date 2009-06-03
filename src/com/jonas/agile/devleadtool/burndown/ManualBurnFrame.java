@@ -113,7 +113,7 @@ public class ManualBurnFrame extends AbstractBasicFrame {
       ValueAxis yAxis = xyPlot.getRangeAxis();
       yAxis.setAutoRange(true);
       yAxis.setLowerBound(0d);
-
+      yAxis.setLabel(data.getYAxisName());
    }
 
    public final void createNewSeriesAndAddToCollection(BurnType burnType, String categoryName, List<BurnDataColumn> burndownDays, Color color) {

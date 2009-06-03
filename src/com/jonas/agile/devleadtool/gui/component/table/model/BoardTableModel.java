@@ -116,12 +116,12 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
 
             if (sprint == SprintCache.EMPTYSPRINT) {
                switch (jiraStat.devStatus()) {
-                  case jiraIsInDevelopmentOpenState:
-                  case jiraIsInDevelopmentProgressState:
-                  case jiraIsInDevelopmentResolvedState:
+                  case jiraIsInDevelopmentAndOpen:
+                  case jiraIsInDevelopmentAndInProgress:
+                  case jiraIsInDevelopmentAndResolved:
                      setToolTipText(row, getColumnIndex(column), "Sprint cannot be empty if jira is in Development!");
                      return SwingUtil.cellRed;
-                  case jiraIsInPostDevelopmentState:
+                  case jiraIsInPostDevelopment:
                      setToolTipText(row, getColumnIndex(column), "Sprint cannot be empty if jira has been completed!");
                      return SwingUtil.cellRed;
                }
@@ -130,12 +130,12 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
             switch (sprintTime) {
                case sprintIsInThePast:
                   switch (jiraStat.devStatus()) {
-                     case jiraIsInPreDevelopmentState:
+                     case jiraIsInPreDevelopment:
                         setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is in pre-development (" + jiraStat.devStatus() + ") and the sprint is not in the future nor current (" + sprintTime
                               + ")!");
                         return SwingUtil.cellRed;
-                     case jiraIsInDevelopmentOpenState:
-                     case jiraIsInDevelopmentProgressState:
+                     case jiraIsInDevelopmentAndOpen:
+                     case jiraIsInDevelopmentAndInProgress:
                         setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress (" + jiraStat.devStatus() + ") and the sprint is not current (" + sprintTime + ")!");
                         return SwingUtil.cellRed;
                   }
@@ -143,25 +143,25 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
                   return SwingUtil.cellLightGreen;
                case currentSprint:
                   switch (jiraStat.devStatus()) {
-                     case jiraIsInPreDevelopmentState:
+                     case jiraIsInPreDevelopment:
                         break;
-                     case jiraIsInDevelopmentOpenState:
-                     case jiraIsInDevelopmentProgressState:
+                     case jiraIsInDevelopmentAndOpen:
+                     case jiraIsInDevelopmentAndInProgress:
                         break;
-                     case jiraIsInPostDevelopmentState:
+                     case jiraIsInPostDevelopment:
                         break;
                   }
                   setToolTipText(row, getColumnIndex(column), "Is current sprint!");
                   return SwingUtil.cellLightYellow;
                case sprintIsInTheFuture:
                   switch (jiraStat.devStatus()) {
-                     case jiraIsInPreDevelopmentState:
+                     case jiraIsInPreDevelopment:
                         break;
-                     case jiraIsInDevelopmentOpenState:
-                     case jiraIsInDevelopmentProgressState:
+                     case jiraIsInDevelopmentAndOpen:
+                     case jiraIsInDevelopmentAndInProgress:
                         setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress (" + jiraStat.devStatus() + ") and this sprint is not current (" + sprintTime + ")!");
                         return SwingUtil.cellRed;
-                     case jiraIsInPostDevelopmentState:
+                     case jiraIsInPostDevelopment:
                         setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is closed (" + jiraStat.devStatus() + ") and this sprint is not current nor in the past (" + sprintTime + ")!");
                         return SwingUtil.cellRed;
                   }
