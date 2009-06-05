@@ -2,14 +2,7 @@ package com.jonas.stats.charts.excel;
 
 public class StatChartCategory {
 
-   @Override
-   public String toString() {
-      return name;
-   }
-
-   public String getName() {
-      return name;
-   }
+   public final static StatChartCategory REQUESTS = new StatChartCategory("Requests");
 
    private final String name;
 
@@ -17,6 +10,13 @@ public class StatChartCategory {
       this.name = name;
    }
 
-   public final static StatChartCategory REQUESTS = new StatChartCategory("Requests"); 
+   public String getName() {
+      return name;
+   }
+
+   @Override
+   public String toString() {
+      return name;
+   } 
    
 }
