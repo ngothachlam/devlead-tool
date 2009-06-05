@@ -9,6 +9,7 @@ public enum IssueType {
    BUG("Bug"),
    STORY("Story"),
    DEV("Dev"),
+   DATAFIX("Datafix"),
    TEST("Test"),
    MERGE("Merge"),
    PRODISSUE("Issue"),

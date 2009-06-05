@@ -32,8 +32,11 @@ public class SwingUtil {
    public static final Color cellLightBlue = new Color(51, 195, 255);
    public static final Color cellLightGreen = new Color(150, 250, 150);
    public static final Color cellLightYellow = new Color(255, 255, 150);
+   public static final Color cellLightLightRed = new Color(255, 125, 125);
+   public static final Color cellYellow = new Color(255, 255, 50);
    public static final Color cellWhite = new Color(255, 255, 255);
    public static final Color cellLightGrey = new Color(225, 225, 225);
+   public static final Color cellGrey = new Color(200, 200, 200);
    public static final Color cellBlack = new Color(0, 0, 0);
 
    public static final Border focusCellBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.yellow);

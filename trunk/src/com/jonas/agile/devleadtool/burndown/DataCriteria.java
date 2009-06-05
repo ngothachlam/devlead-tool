@@ -1,6 +1,6 @@
 package com.jonas.agile.devleadtool.burndown;
 
-public class HistoricalDataCriteria {
+public class DataCriteria {
 
    public String getValue() {
       return value;
@@ -9,7 +9,7 @@ public class HistoricalDataCriteria {
    private final String header;
    private final String value;
 
-   public HistoricalDataCriteria(String header, String value) {
+   public DataCriteria(String header, String value) {
       this.header = header;
       this.value = value;
    }

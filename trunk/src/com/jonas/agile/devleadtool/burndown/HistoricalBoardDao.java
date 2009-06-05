@@ -51,7 +51,7 @@ public class HistoricalBoardDao {
 
          HistoricalData data = null;
          if (fileExists) {
-            data = load(file);
+            data = loadHistoricalData(file);
          }
 
          writer = new FileWriter(file);
@@ -59,7 +59,6 @@ public class HistoricalBoardDao {
 
          writeHeaderIfRequired(boardModel, data, bw);
 
-         
          writeBody(boardModel, data, bw, dayOfSprint, sprint);
 
       } finally {
@@ -90,11 +89,11 @@ public class HistoricalBoardDao {
       for (int column = 0; column < boardModel.getColumnCount(); column++) {
          String columnName = boardModel.getColumnName(column);
          sb.append(column != 0 ? DELIMITER : "").append(columnName);
-         if(columnName.equals(ColumnType.Jira.toString())){
-            colForJira = column ;
+         if (columnName.equals(ColumnType.Jira.toString())) {
+            colForJira = column;
          }
-         if(columnName.equals(ColumnType.Sprint.toString())){
-            colForSprint = column ;
+         if (columnName.equals(ColumnType.Sprint.toString())) {
+            colForSprint = column;
          }
       }
       return sb.append("\n").toString();
@@ -144,7 +143,10 @@ public class HistoricalBoardDao {
       return sb.append("\n").toString();
    }
 
-   public HistoricalData load(File file) throws IOException {
+   Vector<String> header = null;
+
+   public ContentsDto loadContents(File file) throws IOException {
+      Vector<Vector<Object>> body = null;
 
       if (!file.exists()) {
          throw new RuntimeException("File " + file + " doesn't exist!");
@@ -158,10 +160,9 @@ public class HistoricalBoardDao {
          reader = new FileReader(file);
          br = new BufferedReader(reader);
 
-         Vector<String> header = readHeader(br);
-         Vector<Vector<Object>> body = readBody(br, header);
+         header = readHeader(br);
+         body = readBody(br, header);
 
-         return new HistoricalData(header, body);
       } finally {
          if (br != null) {
             br.close();
@@ -170,6 +171,17 @@ public class HistoricalBoardDao {
             reader.close();
          }
       }
+
+      if (header == null || body == null) {
+         return null;
+      }
+
+      return new ContentsDto(header, body);
+   }
+
+   public HistoricalData loadHistoricalData(File file) throws IOException {
+      ContentsDto dto = loadContents(file);
+      return new HistoricalData(dto.getHeader(), dto.getBody());
    }
 
    private Vector<String> readHeader(BufferedReader br) throws IOException {
@@ -187,14 +199,14 @@ public class HistoricalBoardDao {
             // ColumnWrapper e = ColumnWrapper.get(headerValue);
             cols.add(headerValue);
          }
-         
-         if(headerValue.equals(ColumnType.Jira.toString())){
+
+         if (headerValue.equals(ColumnType.Jira.toString())) {
             colForJira = counter;
          }
-         if(headerValue.equals(ColumnType.Sprint.toString())){
+         if (headerValue.equals(ColumnType.Sprint.toString())) {
             colForSprint = counter;
          }
-         
+
       }
       return cols;
    }

@@ -7,11 +7,13 @@ public class Category {
    private final String name;
    private final Color color;
    private final int drawPrio;
+   private boolean isToClearZeroSteps;
 
-   public Category(String name, Color color, int drawPrio) {
+   public Category(String name, Color color, int drawPrio, boolean isToClearZeroSteps) {
       this.name = name;
       this.color = color;
       this.drawPrio = drawPrio;
+      this.isToClearZeroSteps = isToClearZeroSteps;
    }
 
    public int getDrawPrio() {
@@ -49,6 +51,10 @@ public class Category {
       } else if (!name.equals(other.name))
          return false;
       return true;
+   }
+
+   public boolean isToClearZeroSteps() {
+      return isToClearZeroSteps;
    }
 
    

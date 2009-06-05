@@ -13,6 +13,7 @@ public class DEstValidator extends AbstractValidator {
          case BUG:
          case EXTERNAL:
          case PRODISSUE:
+         case DATAFIX:
          case MERGE:
          case TEST:
             return passOnEmpty(value, new MessageDTO(type, true), new MessageDTO(false));

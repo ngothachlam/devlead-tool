@@ -8,30 +8,27 @@ import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.common.logging.MyLogger;
 
-public class HistoricalData {
+public class HistoricalData extends ContentsDto {
 
-   private final Vector<String> cols;
-   private final Vector<Vector<Object>> data;
    private Integer sprintLocation = null;
    private static final Logger log = MyLogger.getLogger(HistoricalData.class);
 
    private Vector<Integer> daysInSprint = new Vector<Integer>();
 
-   public HistoricalData(Vector<String> cols, Vector<Vector<Object>> data) {
-      this.cols = cols;
-      this.data = data;
+   public HistoricalData(Vector<String> header, Vector<Vector<Object>> body) {
+      super(header, body);
 
       log.debug("HistoricalData ");
-      for (int counter = 0; counter < cols.size(); counter++) {
+      for (int counter = 0; counter < header.size(); counter++) {
          log.debug("\t" + counter);
-         if (cols.get(counter).equals(ColumnType.Sprint.toString())) {
+         if (header.get(counter).equals(ColumnType.Sprint.toString())) {
             sprintLocation = counter;
             log.debug("\tSprint location is " + counter);
             break;
          }
       }
 
-      for (Vector<Object> vector : data) {
+      for (Vector<Object> vector : body) {
          // we know the dayinsprint is 2nd column
          Integer dayInSprint = Integer.parseInt(vector.get(1).toString());
 
@@ -41,21 +38,13 @@ public class HistoricalData {
       }
    }
 
-   public Vector<String> getHeaders() {
-      return cols;
-   }
-
-   public Vector<Vector<Object>> getBody() {
-      return data;
-   }
-
    public boolean hasHeader() {
-      return cols != null && cols.size() > 2;
+      return getHeader() != null && getHeader().size() > 2;
    }
 
    public String getHeaderAsCSV(String delimiter) {
       StringBuffer sb = new StringBuffer();
-      for (String column : cols) {
+      for (String column : getHeader()) {
          sb.append(column).append(delimiter);
       }
       return deleteLastCharAndReplaceWithNewline(sb).toString();
@@ -67,7 +56,7 @@ public class HistoricalData {
 
    public BodyLineStatDTO getBodyLinesThatAreNotForThisDayInSprint(Sprint sprint, int dayOfSprint, Integer colForJira, Integer colForSprint, Integer colForDayInSprint) {
       Vector<Vector<Object>> newVector = new Vector<Vector<Object>>();
-      for (Vector<Object> oldVector : data) {
+      for (Vector<Object> oldVector : getBody()) {
          if (!isVectorForThisSprintAndDayInSprint(oldVector, sprint, dayOfSprint)) {
             newVector.add(oldVector);
          }

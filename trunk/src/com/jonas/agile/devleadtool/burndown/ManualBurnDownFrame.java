@@ -16,7 +16,7 @@ public class ManualBurnDownFrame extends ManualBurnFrame {
          public void calculateBurndownData() {
             data = new BurnData(BurnType.BurnDown, "Remaining Estimated Points");
 
-            Category category1 = new Category("Real Progression", SwingUtil.cellBlue, 0);
+            Category category1 = new Category("Real Progression", SwingUtil.cellBlue, 0, false);
             data.add(category1, 0d, 15d);
             data.add(category1, 0d, 7d);
             data.add(category1, 1d, 16d);
@@ -40,7 +40,7 @@ public class ManualBurnDownFrame extends ManualBurnFrame {
             data.add(category1, 10d, 1.75d);
             data.add(category1, 10d, 2d);
 
-            Category category2 = new Category("Ideal Progression", SwingUtil.cellLightBlue, 0);
+            Category category2 = new Category("Ideal Progression", SwingUtil.cellLightBlue, 0, false);
             data.add(category2, 0, 15d );
             data.add(category2, 0, 7d);
             data.add(category2, 10d, 0d);

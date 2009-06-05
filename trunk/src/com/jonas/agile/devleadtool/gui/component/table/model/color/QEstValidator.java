@@ -14,6 +14,7 @@ public class QEstValidator extends AbstractValidator {
          case DEV:
          case EXTERNAL:
          case PRODISSUE:
+         case DATAFIX:
          case MERGE:
             return passOnEmpty(value, new MessageDTO(type, true), new MessageDTO(false));
          case TEST:

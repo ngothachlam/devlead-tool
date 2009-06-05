@@ -6,8 +6,8 @@ public class JiraStatistic {
 
    private DevStatus devStatus;
 
-   public JiraStatistic(BoardStatusValue object) {
-      switch (object) {
+   public JiraStatistic(BoardStatusValue boardStatus) {
+      switch (boardStatus) {
          case UnKnown:
             devStatus = DevStatus.jiraIsInUnKnownState;
             break;
