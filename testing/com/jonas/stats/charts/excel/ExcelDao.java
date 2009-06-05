@@ -92,7 +92,6 @@ public class ExcelDao {
             default:
                throw new RuntimeException("This is not handled! it is of type: " + cellType);
          }
-         System.out.print("\""+cellContents+"\" ");
          readInRow.add(cellContents);
       }
       System.out.println();

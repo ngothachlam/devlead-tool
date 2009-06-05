@@ -100,7 +100,7 @@ public class JiraStatChartTester extends ApplicationFrame {
       PointsInTimeFacade<JiraStatus, RegularTimePeriod> dataSetAggregator = new PointsInTimeFacade<JiraStatus, RegularTimePeriod>();
       for (JiraIssue jiraIssue : jiras) {
          JiraStatus jiraStatus = JiraStatus.getJiraStatusByName(jiraIssue.getStatus());
-         RegularTimePeriod timeRetriever = dateRetriever.retrieveTimeLineDateFromJira(jiraIssue);
+         RegularTimePeriod timeRetriever = dateRetriever.retrieveTimeLinePointFromObject(jiraIssue);
          LowestCommonDenominatorRegularTime denominator = new LowestCommonDenominatorRegularTime(timeRetriever, style);
          dataSetAggregator.addPointInTime(jiraStatus, denominator);
       }
@@ -127,28 +127,28 @@ public class JiraStatChartTester extends ApplicationFrame {
 
 class CreationHourRetriever implements DateRetriever<JiraIssue>{
    @Override
-   public Hour retrieveTimeLineDateFromJira(JiraIssue jiraIssue) {
+   public Hour retrieveTimeLinePointFromObject(JiraIssue jiraIssue) {
       return jiraIssue.getCreationHour();
    }
 }
 
 class DeliveryHourRetriever implements DateRetriever<JiraIssue> {
    @Override
-   public Hour retrieveTimeLineDateFromJira(JiraIssue jiraIssue) {
+   public Hour retrieveTimeLinePointFromObject(JiraIssue jiraIssue) {
       Hour deliveryDateAsDay = jiraIssue.getDeliveryHour();
       return deliveryDateAsDay;
    }
 }
 class CreationDayRetriever implements DateRetriever<JiraIssue>{
    @Override
-   public Day retrieveTimeLineDateFromJira(JiraIssue jiraIssue) {
+   public Day retrieveTimeLinePointFromObject(JiraIssue jiraIssue) {
       return jiraIssue.getCreationDay();
    }
 }
 
 class DeliveryDateRetriever implements DateRetriever<JiraIssue> {
    @Override
-   public Day retrieveTimeLineDateFromJira(JiraIssue jiraIssue) {
+   public Day retrieveTimeLinePointFromObject(JiraIssue jiraIssue) {
       Day deliveryDateAsDay = jiraIssue.getDeliveryDay();
       return deliveryDateAsDay;
    }
