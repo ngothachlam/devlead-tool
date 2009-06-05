@@ -1,79 +1,82 @@
 package com.jonas.stats.charts.excel;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 
-import com.jonas.agile.devleadtool.burndown.BurnData;
-import com.jonas.agile.devleadtool.burndown.BurnDataRetriever;
-import com.jonas.agile.devleadtool.burndown.BurnType;
-import com.jonas.agile.devleadtool.burndown.Category;
-import com.jonas.agile.devleadtool.burndown.ContentsDto;
-import com.jonas.agile.devleadtool.burndown.ManualBurnFrame;
-import com.jonas.common.DateHelper;
+import javax.swing.JPanel;
 
-public class TimeLineGraphBarChartBasedOnExcel implements BurnDataRetriever {
-//   DateHelper dateHelper = new DateHelper();
+import org.apache.commons.httpclient.HttpException;
+import org.jfree.data.time.Hour;
+import org.jfree.data.time.RegularTimePeriod;
+import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RefineryUtilities;
+
+import com.jonas.agile.devleadtool.burndown.ContentsDto;
+import com.jonas.stats.charts.common.DateRetriever;
+import com.jonas.stats.charts.common.PointsInTimeFacade;
+import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
+
+public class TimeLineGraphBarChartBasedOnExcel extends ApplicationFrame {
    ExcelDao dao = new ExcelDao();
-   private BurnData data;
    private final File file;
 
    public static void main(String[] args) throws IOException {
-      File file = new File("test-data\\aqua 2.xls");
-      TimeLineGraphBarChartBasedOnExcel excel = new TimeLineGraphBarChartBasedOnExcel(file);
-      ManualBurnFrame boardStatsFrame = new ManualBurnFrame(null, new DateHelper(), excel);
-      excel.calculateBurndownData();
-      boardStatsFrame.updateBurndown();
-      boardStatsFrame.setVisible(true);
+      File nfile = new File("test-data\\aqua 2.xls");
+      String sheetName = "Results 1";
+      
+      TimeLineGraphBarChartBasedOnExcel demo = new TimeLineGraphBarChartBasedOnExcel("ExcelFile stat Tester", nfile, sheetName);
+      demo.setVisible(true);
    }
 
-   public TimeLineGraphBarChartBasedOnExcel(File file) {
-      this.file = file;
-   }
+   public TimeLineGraphBarChartBasedOnExcel(String title, File xlsFile, String sheetName) {
+      super(title);
+      this.file = xlsFile;
 
-   private double getDouble(Object string) {
-      double parseDouble;
+      boolean aggregate = false;
+
       try {
-         parseDouble = Double.parseDouble(string.toString());
-      } catch (NumberFormatException e) {
-         return 0d;
-      }
-      return parseDouble;
-   }
+         DateRetriever<Object> dateRetriever = new DateFromExcelDataRetriever();
+         ContentsDto data = dao.loadContents(xlsFile, sheetName);
+         PointsInTimeFacadeAbstract<String, Hour> datas = getData(data, dateRetriever);
 
-   public BurnData getSortedDataUsingCriteria(ContentsDto data) {
-      Vector<Vector<Object>> dataBody = data.getBody();
+         JPanel chartPanel = createChartPanel(datas, aggregate);
+         chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 
-      Integer length = 10;
-      BurnData burnData = new BurnData(BurnType.BurnUp, length, "Estimated Points");
-
-      for (Vector<Object> bodyRow : dataBody) {
-
-         Category category = new Category(bodyRow.get(2).toString(), Color.black, 0, true);
-         double dayInSprint = 1d;
-         double value = 1d;
-         
-         burnData.add(category, dayInSprint, value);
-      }
-
-      return burnData;
-   }
-
-   @Override
-   public void calculateBurndownData() {
-      ContentsDto contents;
-      try {
-         contents = dao.loadContents(file, "Results 1");
-         data = getSortedDataUsingCriteria(contents);
+         setContentPane(chartPanel);
+         pack();
+         RefineryUtilities.centerFrameOnScreen(this);
+      } catch (HttpException e) {
+         e.printStackTrace();
       } catch (IOException e) {
          e.printStackTrace();
       }
    }
 
-   @Override
-   public BurnData getBurnData() {
-      return data;
+   private PointsInTimeFacadeAbstract<String, Hour> getData(ContentsDto jiras, DateRetriever<Object> dateRetriever) {
+      PointsInTimeFacade<String, Hour> dataSetAggregator = new PointsInTimeFacade<String, Hour>();
+      for (Vector<Object> row : jiras.getBody()) {
+         RegularTimePeriod retrievedTime = dateRetriever.retrieveTimeLineDateFromJira(row.get(2));
+         dataSetAggregator.addPointInTime("Requests", new TimeWithHourAsLeastLowestCommonDenominatorDTO(retrievedTime));
+      }
+      return dataSetAggregator;
    }
-
+   
+   public JPanel createChartPanel(PointsInTimeFacadeAbstract<?, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate) {
+      ExcelStatPanelBuilder panelBuilder = new ExcelStatPanelBuilder(false, dataSetAggregator);
+      return panelBuilder.createDatasetAndChartFromTimeAggregator();
+   }
 }
+
+class DateFromExcelDataRetriever implements DateRetriever<Object> {
+   @Override
+   public Hour retrieveTimeLineDateFromJira(Object cell) {
+      String string = cell.toString();
+      
+      Hour hour = Hour.parseHour(string);
+      System.out.println("parsing to jfreechart day: " + string + " which became " + hour);
+      return hour;
+   }
+}
+
+

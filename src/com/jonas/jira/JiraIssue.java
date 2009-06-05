@@ -4,8 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.jfree.data.time.Day;
+import org.jfree.data.time.Hour;
 
 import com.jonas.common.DateHelper;
 import com.jonas.common.logging.MyLogger;
@@ -51,6 +53,8 @@ public class JiraIssue {
 
    public JiraIssue(String key, String summary, String status, String resolution, String type, String creationDate) {
       this.creationDate = creationDate;
+      System.out.println("Creation Date: " + creationDate);
+      
       this.key = key.toUpperCase();
       this.summary = summary;
       this.status = status;
@@ -142,10 +146,10 @@ public class JiraIssue {
       return buildNo;
    }
 
-   public Day getDeliveryDateAsDay() {
+   public Day getDeliveryDay() {
       return getDay(deliveryDate, simpleFormat);
    }
-   
+
    public String getDeliveryDate() {
       return deliveryDate;
    }
@@ -286,6 +290,10 @@ public class JiraIssue {
       return getDay(date, format);
    }
 
+   protected Hour getHour(String date) {
+      return getHour(date, format);
+   }
+
    protected Day getDay(String date, SimpleDateFormat format) {
       Calendar calendar = DateHelper.getDate(format, date);
       int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
@@ -295,12 +303,31 @@ public class JiraIssue {
       return chartDay;
    }
 
+   protected Hour getHour(String date, SimpleDateFormat format) {
+      Calendar calendar = DateHelper.getDate(format, date);
+      int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+      int month = calendar.get(Calendar.MONTH);
+      int year = calendar.get(Calendar.YEAR);
+      int hour = calendar.get(Calendar.HOUR_OF_DAY);
+      Hour chartDay = new Hour(hour, dayOfMonth, month + 1, year);
+      System.out.println("Read in hour " + chartDay);
+      return chartDay;
+   }
+
    public Day getCreationDay() {
       return getDay(creationDate);
+   }
+
+   public Hour getCreationHour() {
+      return getHour(creationDate);
    }
 
    public Day getResolutionDay() {
       // return getDay(resolutionDate);
       throw new RuntimeException("Not implemented yet!"); // FIXME 1- add resolution date!
+   }
+
+   public Hour getDeliveryHour() {
+      return getHour(deliveryDate);
    }
 }

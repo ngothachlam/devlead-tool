@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.jfree.data.time.Day;
 import org.junit.Test;
 
-import com.jonas.jira.jirastat.TimeDTO;
+import com.jonas.stats.charts.common.LowestCommonDenominatorRegularTime;
 
 public class DayDTOTest extends TestCase{
 
@@ -36,7 +36,7 @@ public class DayDTOTest extends TestCase{
    }
 
    private void assertDTODates(Day expectedCreationDto, Day dtoCreationDto, boolean isWeek) {
-      TimeDTO dto = new TimeDTO(dtoCreationDto, isWeek);
+      LowestCommonDenominatorRegularTime dto = new LowestCommonDenominatorRegularTime(dtoCreationDto, isWeek);
       assertEquals(expectedCreationDto, dto.getDate());
    }
    
