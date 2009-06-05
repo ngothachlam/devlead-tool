@@ -1,8 +1,6 @@
-package com.jonas.jira.jirastat;
+package com.jonas.stats.charts.common;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.JPanel;
@@ -17,27 +15,26 @@ import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StackedXYBarRenderer;
 import org.jfree.chart.title.LegendTitle;
-import org.jfree.data.time.Day;
+import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeTableXYDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.RectangleEdge;
 
 import com.jonas.common.swing.SwingUtil;
-import com.jonas.jira.JiraStatus;
 
-public class JiraStatPanelBuilder {
+public abstract class ChartStatPanelBuilder<A> {
 
    private boolean aggregate;
 
-   private Map<JiraStatus, Integer> aggregators = new HashMap<JiraStatus, Integer>();
+   private Map<A, Integer> aggregators = new HashMap<A, Integer>();
    
    private final PointsInTimeFacadeAbstract dataSetAggregator;
-   public JiraStatPanelBuilder(boolean aggregate, PointsInTimeFacadeAbstract dataSetAggregator) {
+   public ChartStatPanelBuilder(boolean aggregate, PointsInTimeFacadeAbstract<?, ? extends RegularTimePeriod> dataSetAggregator) {
       this.aggregate = aggregate;
       this.dataSetAggregator = dataSetAggregator;
    }
 
-   private int addAggregatedAmountAndStoreItForNext(JiraStatus jiraStatus, int amount) {
+   private int addAggregatedAmountAndStoreItForNext(A jiraStatus, int amount) {
       Integer aggregatedAmount = aggregators.get(jiraStatus);
       if (aggregatedAmount == null) {
          aggregatedAmount = 0;
@@ -47,7 +44,7 @@ public class JiraStatPanelBuilder {
       return amount;
    }
 
-   private void addDataSet(TimeTableXYDataset dataset, JiraStatus jiraStatus, PointInTimeAgreggator daysAgreggator, Day day) {
+   protected void addDataSet(TimeTableXYDataset dataset, A jiraStatus, PointInTimeAgreggator daysAgreggator, RegularTimePeriod day) {
       int amount = daysAgreggator.getAmount(jiraStatus);
       if (aggregate) {
          amount = addAggregatedAmountAndStoreItForNext(jiraStatus, amount);
@@ -69,7 +66,7 @@ public class JiraStatPanelBuilder {
       renderer.setShadowVisible(false);
       renderer.setBaseItemLabelGenerator(new StandardXYItemLabelGenerator());
 
-      renderer.setSeriesPaint(0, SwingUtil.cellWhite);
+      renderer.setSeriesPaint(0, SwingUtil.cellLightGrey);
       renderer.setSeriesPaint(1, SwingUtil.cellRed);
       renderer.setSeriesPaint(2, SwingUtil.cellLightYellow);
       renderer.setSeriesPaint(3, SwingUtil.cellBlue);
@@ -89,24 +86,11 @@ public class JiraStatPanelBuilder {
    }
 
    public JPanel createDatasetAndChartFromTimeAggregator() {
-      XYDataset dataset = createDatasetFromTimeAggregator();
+      XYDataset dataset = createDatasetFromTimeAggregator(dataSetAggregator);
       JFreeChart chart = createChart(dataset);
       return new ChartPanel(chart);
    }
 
-   private XYDataset createDatasetFromTimeAggregator() {
-      TimeTableXYDataset dataset = new TimeTableXYDataset();
-      List<PointInTimeAgreggator> days = dataSetAggregator.getPointInTimes();
-      Collections.sort(days);
-      for (PointInTimeAgreggator dayAgreggator : days) {
-         Day day = dayAgreggator.getDay();
-         addDataSet(dataset, JiraStatus.Open, dayAgreggator, day);
-         addDataSet(dataset, JiraStatus.ReOpened, dayAgreggator, day);
-         addDataSet(dataset, JiraStatus.InProgress, dayAgreggator, day);
-         addDataSet(dataset, JiraStatus.Resolved, dayAgreggator, day);
-         addDataSet(dataset, JiraStatus.Closed, dayAgreggator, day);
-      }
-      return dataset;
-   }
+   public abstract XYDataset createDatasetFromTimeAggregator(PointsInTimeFacadeAbstract dataSetAggregator);
 
 }
