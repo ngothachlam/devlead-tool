@@ -22,7 +22,7 @@ import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
 
 public class ExcelStatChartTester extends ApplicationFrame {
 
-   //excel formula = TEXT(B3,"yyyy-MM-dd hh")
+   //excel formula = TEXT(A2,"yyyy-MM-dd hh")
    public ExcelStatChartTester(String title) {
       super(title);
 
