@@ -20,7 +20,7 @@ import com.jonas.agile.devleadtool.burndown.BurnUpCalculator;
 import com.jonas.agile.devleadtool.burndown.Category;
 import com.jonas.agile.devleadtool.burndown.HistoricalBoardDao;
 import com.jonas.agile.devleadtool.burndown.HistoricalData;
-import com.jonas.agile.devleadtool.burndown.HistoricalDataCriteria;
+import com.jonas.agile.devleadtool.burndown.DataCriteria;
 import com.jonas.agile.devleadtool.data.PersistanceException;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.agile.devleadtool.gui.component.dialog.CombinedModelDTO;
@@ -155,9 +155,9 @@ public class LoadingBurnUpDataFunctionalTest {
    @Test
    public void shouldLoadHistoricalDataOk() throws IOException, PersistanceException {
       File file = new File("test-data//Sprint Tracker - llu_historical.csv");
-      HistoricalData historicalData = dao.load(file);
+      HistoricalData historicalData = dao.loadHistoricalData(file);
 
-      assertTrue("Should load at least more than two headers (Date and DayInSprint)", historicalData.getHeaders().size() > 2);
+      assertTrue("Should load at least more than two headers (Date and DayInSprint)", historicalData.getHeader().size() > 2);
       assertEquals("Should load 17 rows of historical data", 17, historicalData.getBody().size());
 
       Vector<Vector<Object>> expectation = createExpectation(sprintTrackerHistorical_Expectation);
@@ -178,7 +178,7 @@ public class LoadingBurnUpDataFunctionalTest {
    }
 
    private void assertHistoricalData(Vector<Vector<Object>> expectation, HistoricalData historicalData) {
-      Vector<String> header = historicalData.getHeaders();
+      Vector<String> header = historicalData.getHeader();
       for (int counter = 0; counter < header.size(); counter++) {
          Object eString = expectation.get(0).get(counter);
          String hString = header.get(counter);
@@ -231,9 +231,9 @@ public class LoadingBurnUpDataFunctionalTest {
       dao.save(sprintTrackerHistorical_STATIC_TestFile, boardModel, 2, TestObjects.TEST_SPRINT_CURRENT);
       assertNoOflines("The file should contain 35 lines (includes the header) as we are adding day 2 data", 35, sprintTrackerHistorical_STATIC_TestFile);
 
-      HistoricalData historicalData = dao.load(sprintTrackerHistorical_STATIC_TestFile);
+      HistoricalData historicalData = dao.loadHistoricalData(sprintTrackerHistorical_STATIC_TestFile);
 
-      assertTrue("Should load at least more than two headers (Date and DayInSprint)", historicalData.getHeaders().size() > 2);
+      assertTrue("Should load at least more than two headers (Date and DayInSprint)", historicalData.getHeader().size() > 2);
       assertEquals("Should load 34 rows of historical data", 34, historicalData.getBody().size());
 
       Vector<Vector<Object>> expectation = createExpectation(sprintTrackerHistorical_ExpectationWithModification);
@@ -257,9 +257,9 @@ public class LoadingBurnUpDataFunctionalTest {
       dao.save(sprintTrackerHistorical_TestFile, boardModel, 2, TestObjects.TEST_SPRINT_CURRENT);
       assertNoOflines("The file should contain 35 lines (includes the header) as we are adding day 2 data", 35, sprintTrackerHistorical_TestFile);
 
-      HistoricalData historicalData = dao.load(sprintTrackerHistorical_TestFile);
+      HistoricalData historicalData = dao.loadHistoricalData(sprintTrackerHistorical_TestFile);
 
-      assertTrue("Should load at least more than two headers (Date and DayInSprint)", historicalData.getHeaders().size() > 2);
+      assertTrue("Should load at least more than two headers (Date and DayInSprint)", historicalData.getHeader().size() > 2);
       assertEquals("Should load 34 rows of historical data", 34, historicalData.getBody().size());
 
       Vector<Vector<Object>> expectation = createExpectation(sprintTrackerHistorical_ExpectationWithDualSaves);
@@ -281,9 +281,9 @@ public class LoadingBurnUpDataFunctionalTest {
 
    @Test
    public void shouldLoadHistoricalDataAndCalculateBurnUpdata() throws IOException, PersistanceException {
-      HistoricalData historicalData = dao.load(sprintTrackerHistoricalWithTwoDays_TestFile);
+      HistoricalData historicalData = dao.loadHistoricalData(sprintTrackerHistoricalWithTwoDays_TestFile);
 
-      HistoricalDataCriteria criteria = new HistoricalDataCriteria("Sprint", TestObjects.TEST_SPRINT_CURRENT.toString());
+      DataCriteria criteria = new DataCriteria("Sprint", TestObjects.TEST_SPRINT_CURRENT.toString());
 
       BurnUpCalculator calculator = new BurnUpCalculator();
       BurnData data = calculator.getSortedDataUsingCriteria(historicalData, criteria, TestObjects.TEST_SPRINT_CURRENT);

@@ -5,7 +5,7 @@
  *
  */
 
-package com.jonas.jira.jirastat;
+package com.jonas.stats.charts.jira;
 
 import java.io.IOException;
 
@@ -23,6 +23,10 @@ import com.jonas.jira.JiraStatus;
 import com.jonas.jira.JiraVersion;
 import com.jonas.jira.access.JiraClient;
 import com.jonas.jira.access.JiraException;
+import com.jonas.jira.jirastat.DateRetriever;
+import com.jonas.jira.jirastat.JiraStatPanelBuilder;
+import com.jonas.jira.jirastat.PointsInTimeFacade;
+import com.jonas.jira.jirastat.PointsInTimeFacadeAbstract;
 import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
 import com.jonas.jira.jirastat.criteria.JiraHttpCriteria;
 

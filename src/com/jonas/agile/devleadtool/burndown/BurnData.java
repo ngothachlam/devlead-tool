@@ -119,4 +119,5 @@ public class BurnData {
       burnDataPerCategory = burnDataPerCategoryV2;
    }
 
+
 }

@@ -22,7 +22,6 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -85,7 +84,9 @@ public class ManualBurnFrame extends AbstractBasicFrame {
    }
 
    public void updateBurndown() {
-      source.setText(name.getText());
+      if (name != null) {
+         source.setText(name.getText());
+      }
 
       BurnData data = retriever.getBurnData();
 
@@ -98,7 +99,7 @@ public class ManualBurnFrame extends AbstractBasicFrame {
          burndownDays = data.getDataForCategory(categoryName);
          Collections.sort(burndownDays);
 
-         createNewSeriesAndAddToCollection(data.getBurnType(), categoryName.getName(), burndownDays, categoryName.getColor());
+         createNewSeriesAndAddToCollection(data.getBurnType(), categoryName.getName(), burndownDays, categoryName.getColor(), categoryName.isToClearZeroSteps());
       }
 
       ValueAxis xAxis = xyPlot.getDomainAxis();
@@ -116,13 +117,28 @@ public class ManualBurnFrame extends AbstractBasicFrame {
       yAxis.setLabel(data.getYAxisName());
    }
 
-   public final void createNewSeriesAndAddToCollection(BurnType burnType, String categoryName, List<BurnDataColumn> burndownDays, Color color) {
+   public final void createNewSeriesAndAddToCollection(BurnType burnType, String categoryName, List<BurnDataColumn> burndownDays, Color color, boolean clearZeroSteps) {
       XYSeries newSeries = new XYSeries(categoryName, true, false);
 
       for (BurnDataColumn burnDownDay : burndownDays) {
-         newSeries.add(burnDownDay.getX(), burnDownDay.getY());
+         Double x = burnDownDay.getX();
+         newSeries.add(x, burnDownDay.getY());
 
-         log.debug("adding to the new series for " + categoryName + " x,y: " + burnDownDay.getX() + "," + burnDownDay.getY());
+         if (clearZeroSteps) {
+            int xIndex = newSeries.indexOf(x - 1);
+            System.out.println("x: " + x + " x-1: " + (x - 1));
+
+            if (x > 0) {
+               try {
+                  newSeries.getY(xIndex);
+               } catch (ArrayIndexOutOfBoundsException e) {
+                  newSeries.add(x - 1, 0);
+               }
+
+            }
+         }
+
+         log.debug("adding to the new series for " + categoryName + " x, y: " + x + "," + burnDownDay.getY());
       }
 
       switch (burnType) {

@@ -23,18 +23,13 @@ public class ExcelSprintDao {
 
    public SprintCache load(File xlsFile) throws IOException {
       SprintCache sprintCache = new SprintCache();
-      load(sprintCache, xlsFile);
-      return sprintCache;
-   }
-
-   public void load(SprintCache sprintCache, File xlsFile) throws IOException {
       InputStream inp = null;
       try {
          inp = new FileInputStream(xlsFile);
          POIFSFileSystem fileSystem = new POIFSFileSystem(inp);
          HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
          HSSFSheet sheet = PlannerDAOExcelImpl.getSheet(SPRINT_SHEETNAME, wb, false);
-
+      
          // for each row in the sheet...
          int rowCount = 0;
          for (Iterator<HSSFRow> rit = sheet.rowIterator(); rit.hasNext();) {
@@ -70,6 +65,7 @@ public class ExcelSprintDao {
             inp.close();
          }
       }
+      return sprintCache;
    }
 
    public void save(File xlsFile, SprintCache sprintCache) throws IOException {

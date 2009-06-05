@@ -23,7 +23,7 @@ import com.jonas.agile.devleadtool.burndown.BurnUpCalculator;
 import com.jonas.agile.devleadtool.burndown.Category;
 import com.jonas.agile.devleadtool.burndown.HistoricalBoardDao;
 import com.jonas.agile.devleadtool.burndown.HistoricalData;
-import com.jonas.agile.devleadtool.burndown.HistoricalDataCriteria;
+import com.jonas.agile.devleadtool.burndown.DataCriteria;
 import com.jonas.agile.devleadtool.burndown.JiraStatsDataDTO;
 import com.jonas.agile.devleadtool.burndown.ManualBurnFrame;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
@@ -194,9 +194,9 @@ final class NewBurnUpAction extends BasicAbstractGUIAction implements BurnDataRe
          HistoricalBoardDao dao = new HistoricalBoardDao(new DateHelper());
 
          File historicalDataFile = dao.getFileForHistoricalSave(helper.getSaveDirectory(), helper.getExcelFile());
-         HistoricalData historicalData = dao.load(historicalDataFile);
+         HistoricalData historicalData = dao.loadHistoricalData(historicalDataFile);
 
-         HistoricalDataCriteria criteria = new HistoricalDataCriteria("Sprint", currentSprint.toString());
+         DataCriteria criteria = new DataCriteria("Sprint", currentSprint.toString());
          data = burnUpCalculator.getSortedDataUsingCriteria(historicalData, criteria, sprintCache.getCurrentSprint());
       } catch (IOException e) {
          e.printStackTrace();
@@ -253,16 +253,16 @@ final class NewBurnDownAction extends BasicAbstractGUIAction implements BurnData
       boardStatsFrame.setChartText(currentSprintName + " (" + currentSprintStart + " to " + currentSprintEnd + ")");
 
       data = new BurnData(BurnType.BurnDown, "Remaining Estimated Points");
-      Category category = new Category("Progression", SwingUtil.cellGreen, 0);
+      Category category = new Category("Progression", SwingUtil.cellGreen, 0, false);
       data.add(category, 0d, progressionCalculator.getTotalEstimates());
       data.add(category, currentSprint.calculateDayInSprint(), progressionCalculator.getRemainingEstimates());
-      Category category2 = new Category("Ideal Progression", SwingUtil.cellLightGreen, 1);
+      Category category2 = new Category("Ideal Progression", SwingUtil.cellLightGreen, 1, false);
       data.add(category2, 0d, progressionCalculator.getTotalEstimates());
       data.add(category2, currentSprint.getLength(), 0d);
-      Category category3 = new Category("Critical Path", SwingUtil.cellRed, 2);
+      Category category3 = new Category("Critical Path", SwingUtil.cellRed, 2, false);
       data.add(category3, 0d, criticalPathCalculator.getTotalEstimates());
       data.add(category3, currentSprint.calculateDayInSprint(), criticalPathCalculator.getRemainingEstimates());
-      Category category4 = new Category("Ideal Critical Path", SwingUtil.cellLightRed, 3);
+      Category category4 = new Category("Ideal Critical Path", SwingUtil.cellLightRed, 3, false);
       data.add(category4, 0d, criticalPathCalculator.getTotalEstimates());
       data.add(category4, currentSprint.getLength(), 0d);
    }
