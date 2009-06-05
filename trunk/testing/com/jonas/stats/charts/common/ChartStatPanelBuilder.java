@@ -66,11 +66,7 @@ public abstract class ChartStatPanelBuilder<A> {
       renderer.setShadowVisible(false);
       renderer.setBaseItemLabelGenerator(new StandardXYItemLabelGenerator());
 
-      renderer.setSeriesPaint(0, SwingUtil.cellLightGrey);
-      renderer.setSeriesPaint(1, SwingUtil.cellRed);
-      renderer.setSeriesPaint(2, SwingUtil.cellLightYellow);
-      renderer.setSeriesPaint(3, SwingUtil.cellBlue);
-      renderer.setSeriesPaint(4, SwingUtil.cellGreen);
+      setColors(renderer);
 
       XYPlot plot = new XYPlot(dataset, domainAxis, rangeAxis, renderer);
       JFreeChart chart = new JFreeChart("Jira States compared against their Creation Date", plot);
@@ -84,6 +80,8 @@ public abstract class ChartStatPanelBuilder<A> {
       return chart;
 
    }
+
+   public abstract void setColors(StackedXYBarRenderer renderer);
 
    public JPanel createDatasetAndChartFromTimeAggregator() {
       XYDataset dataset = createDatasetFromTimeAggregator(dataSetAggregator);

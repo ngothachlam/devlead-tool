@@ -1,24 +1,18 @@
 package com.jonas.stats.charts.excel;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Vector;
 
 import javax.swing.JPanel;
 
 import org.apache.commons.httpclient.HttpException;
-import org.jdom.JDOMException;
-import org.jfree.data.time.Day;
 import org.jfree.data.time.Hour;
 import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
-import com.jonas.jira.JiraIssue;
-import com.jonas.jira.JiraProject;
-import com.jonas.jira.JiraStatus;
-import com.jonas.jira.JiraVersion;
-import com.jonas.jira.access.JiraClient;
-import com.jonas.jira.access.JiraException;
-import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
+import com.jonas.agile.devleadtool.burndown.ContentsDto;
 import com.jonas.stats.charts.common.ChartStatPanelBuilder;
 import com.jonas.stats.charts.common.CommonTimeDenominatorStyle;
 import com.jonas.stats.charts.common.DateRetriever;
@@ -28,42 +22,31 @@ import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
 
 public class ExcelStatChartTester extends ApplicationFrame {
 
-   JiraClient jiraClient = JiraClient.JiraClientAolBB;
-   private JiraCriteriaBuilder criteriabuilder = new JiraCriteriaBuilder();
-
+   //excel formula = TEXT(B3,"yyyy-MM-dd hh")
    public ExcelStatChartTester(String title) {
       super(title);
 
       CommonTimeDenominatorStyle style = CommonTimeDenominatorStyle.hour;
-      boolean aggregate = true;
+      boolean aggregate = false;
+      File excelFile = new File("C:\\Documents and Settings\\jonasjolofsson\\My Documents\\avail_mlc_requests.xls");
+      String sheetName = "Results 1";
+      int columnInExcelFile = 1;
 
       try {
-         jiraClient.login();
+         ExcelDao dao = new ExcelDao();
 
-         JiraProject project = JiraProject.TALK;
-         jiraClient.cacheJiraVersionsForProject(project);
-         JiraVersion fixVersion = project.getFixVersion("Talk v26.0");
-
-//         JiraCriteriaBuilder criteria = criteriabuilder.fixVersion(project, fixVersion);
-         JiraCriteriaBuilder criteria = criteriabuilder.deliveryBetween("-2w", "+1w").project(JiraProject.LLUDEVSUP);
-
-         JiraIssue[] jiras = jiraClient.getJiras(criteria);
+         ContentsDto fileContentsDto = dao.loadContents(excelFile, sheetName);
 
          DateRetriever timeRetriever = null;
          switch (style) {
-            case day:
-               timeRetriever = new CreationDayRetriever();
-               break;
-            case week:
-               timeRetriever = new CreationDayRetriever();
-               break;
             case hour:
-               timeRetriever = new CreationHourRetriever();
+               timeRetriever = new DateFromExcelDataRetriever();
                break;
+            default:
+               throw new RuntimeException("Need to implement another DateRetriever");
          }
 
-         
-         PointsInTimeFacadeAbstract<JiraStatus, RegularTimePeriod> data = getData(jiras, timeRetriever, style);
+         PointsInTimeFacadeAbstract<StatChartCategory, RegularTimePeriod> data = getData(fileContentsDto.getBody(), timeRetriever, style, columnInExcelFile);
 
          JPanel chartPanel = createChartPanel(data, aggregate);
          chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
@@ -75,26 +58,22 @@ public class ExcelStatChartTester extends ApplicationFrame {
          e.printStackTrace();
       } catch (IOException e) {
          e.printStackTrace();
-      } catch (JiraException e) {
-         e.printStackTrace();
-      } catch (JDOMException e) {
-         e.printStackTrace();
       }
    }
 
-   private PointsInTimeFacadeAbstract<JiraStatus, RegularTimePeriod> getData(JiraIssue[] jiras, DateRetriever dateRetriever, CommonTimeDenominatorStyle style) {
-      PointsInTimeFacade<JiraStatus, RegularTimePeriod> dataSetAggregator = new PointsInTimeFacade<JiraStatus, RegularTimePeriod>();
-      for (JiraIssue jiraIssue : jiras) {
-         JiraStatus jiraStatus = JiraStatus.getJiraStatusByName(jiraIssue.getStatus());
-         RegularTimePeriod timeRetriever = dateRetriever.retrieveTimeLineDateFromJira(jiraIssue);
+   private PointsInTimeFacadeAbstract<StatChartCategory, RegularTimePeriod> getData(Vector<Vector<Object>> data, DateRetriever dateRetriever, CommonTimeDenominatorStyle style, int columnInExcelFile) {
+      PointsInTimeFacade<StatChartCategory, RegularTimePeriod> dataSetAggregator = new PointsInTimeFacade<StatChartCategory, RegularTimePeriod>();
+      for (Vector<Object> rowOfData : data) {
+         Object object = rowOfData.get(columnInExcelFile);
+         RegularTimePeriod timeRetriever = dateRetriever.retrieveTimeLinePointFromObject(object);
          LowestCommonDenominatorRegularTime denominator = new LowestCommonDenominatorRegularTime(timeRetriever, style);
-         dataSetAggregator.addPointInTime(jiraStatus, denominator);
+         dataSetAggregator.addPointInTime(StatChartCategory.REQUESTS, denominator);
       }
       return dataSetAggregator;
    }
 
-   public JPanel createChartPanel(PointsInTimeFacadeAbstract<JiraStatus, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate) {
-      ChartStatPanelBuilder panelBuilder = new ChartStatPanelBuilder(aggregate, dataSetAggregator);
+   public JPanel createChartPanel(PointsInTimeFacadeAbstract<StatChartCategory, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate) {
+      ChartStatPanelBuilder panelBuilder = new ExcelStatPanelBuilder(aggregate, dataSetAggregator);
       return panelBuilder.createDatasetAndChartFromTimeAggregator();
    }
 
@@ -105,37 +84,19 @@ public class ExcelStatChartTester extends ApplicationFrame {
     *           ignored.
     */
    public static void main(String[] args) {
-      ExcelStatChartTester demo = new ExcelStatChartTester("JiraStat Chart Tester");
+      ExcelStatChartTester demo = new ExcelStatChartTester("ExcelStat Chart Tester");
       demo.setVisible(true);
    }
 
 }
 
-class CreationHourRetriever implements DateRetriever<JiraIssue>{
+class DateFromExcelDataRetriever implements DateRetriever<Object> {
    @Override
-   public Hour retrieveTimeLineDateFromJira(JiraIssue jiraIssue) {
-      return jiraIssue.getCreationHour();
-   }
-}
+   public Hour retrieveTimeLinePointFromObject(Object cell) {
+      String string = cell.toString();
 
-class DeliveryHourRetriever implements DateRetriever<JiraIssue> {
-   @Override
-   public Hour retrieveTimeLineDateFromJira(JiraIssue jiraIssue) {
-      Hour deliveryDateAsDay = jiraIssue.getDeliveryHour();
-      return deliveryDateAsDay;
-   }
-}
-class CreationDayRetriever implements DateRetriever<JiraIssue>{
-   @Override
-   public Day retrieveTimeLineDateFromJira(JiraIssue jiraIssue) {
-      return jiraIssue.getCreationDay();
-   }
-}
-
-class DeliveryDateRetriever implements DateRetriever<JiraIssue> {
-   @Override
-   public Day retrieveTimeLineDateFromJira(JiraIssue jiraIssue) {
-      Day deliveryDateAsDay = jiraIssue.getDeliveryDay();
-      return deliveryDateAsDay;
+      Hour hour = Hour.parseHour(string);
+      System.out.println("parsing to jfreechart day: " + string + " which became " + hour);
+      return hour;
    }
 }

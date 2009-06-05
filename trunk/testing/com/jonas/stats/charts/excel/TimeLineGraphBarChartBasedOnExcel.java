@@ -56,7 +56,7 @@ public class TimeLineGraphBarChartBasedOnExcel extends ApplicationFrame {
    private PointsInTimeFacadeAbstract<String, Hour> getData(ContentsDto jiras, DateRetriever<Object> dateRetriever) {
       PointsInTimeFacade<String, Hour> dataSetAggregator = new PointsInTimeFacade<String, Hour>();
       for (Vector<Object> row : jiras.getBody()) {
-         RegularTimePeriod retrievedTime = dateRetriever.retrieveTimeLineDateFromJira(row.get(2));
+         RegularTimePeriod retrievedTime = dateRetriever.retrieveTimeLinePointFromObject(row.get(2));
          dataSetAggregator.addPointInTime("Requests", new TimeWithHourAsLeastLowestCommonDenominatorDTO(retrievedTime));
       }
       return dataSetAggregator;
@@ -65,17 +65,6 @@ public class TimeLineGraphBarChartBasedOnExcel extends ApplicationFrame {
    public JPanel createChartPanel(PointsInTimeFacadeAbstract<?, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate) {
       ExcelStatPanelBuilder panelBuilder = new ExcelStatPanelBuilder(false, dataSetAggregator);
       return panelBuilder.createDatasetAndChartFromTimeAggregator();
-   }
-}
-
-class DateFromExcelDataRetriever implements DateRetriever<Object> {
-   @Override
-   public Hour retrieveTimeLineDateFromJira(Object cell) {
-      String string = cell.toString();
-      
-      Hour hour = Hour.parseHour(string);
-      System.out.println("parsing to jfreechart day: " + string + " which became " + hour);
-      return hour;
    }
 }
 
