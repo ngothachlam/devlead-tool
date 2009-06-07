@@ -24,13 +24,13 @@ public class PointInTimeAgreggator<T, A extends RegularTimePeriod> implements Co
       return day;
    }
 
-   public void add(A day, T groupObject) {
+   public void add(A day, T groupObject, int value) {
       this.day = day;
       Integer amount = amountMap.get(groupObject);
       if (amount == null) {
          amount = new Integer(0);
       }
-      amountMap.put(groupObject, ++amount);
+      amountMap.put(groupObject, amount + value);
    }
 
    public int test() {
