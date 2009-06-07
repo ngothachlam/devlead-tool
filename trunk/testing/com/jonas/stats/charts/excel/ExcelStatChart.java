@@ -20,10 +20,10 @@ import com.jonas.stats.charts.common.LowestCommonDenominatorRegularTime;
 import com.jonas.stats.charts.common.PointsInTimeFacade;
 import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
 
-public class ExcelStatChartTester extends ApplicationFrame {
+public class ExcelStatChart extends ApplicationFrame {
 
    //excel formula = TEXT(A2,"yyyy-MM-dd hh")
-   public ExcelStatChartTester(String title) {
+   public ExcelStatChart(String title) {
       super(title);
 
       CommonTimeDenominatorStyle style = CommonTimeDenominatorStyle.hour;
@@ -37,7 +37,7 @@ public class ExcelStatChartTester extends ApplicationFrame {
 
          ContentsDto fileContentsDto = dao.loadContents(excelFile, sheetName);
 
-         DateRetriever timeRetriever = null;
+         DateRetriever<String> timeRetriever = null;
          switch (style) {
             case hour:
                timeRetriever = new DateFromExcelDataRetriever();
@@ -61,10 +61,10 @@ public class ExcelStatChartTester extends ApplicationFrame {
       }
    }
 
-   private PointsInTimeFacadeAbstract<StatChartCategory, RegularTimePeriod> getData(Vector<Vector<Object>> data, DateRetriever dateRetriever, CommonTimeDenominatorStyle style, int columnInExcelFile) {
+   private PointsInTimeFacadeAbstract<StatChartCategory, RegularTimePeriod> getData(Vector<Vector<Object>> data, DateRetriever<String> dateRetriever, CommonTimeDenominatorStyle style, int columnInExcelFile) {
       PointsInTimeFacade<StatChartCategory, RegularTimePeriod> dataSetAggregator = new PointsInTimeFacade<StatChartCategory, RegularTimePeriod>();
       for (Vector<Object> rowOfData : data) {
-         Object object = rowOfData.get(columnInExcelFile);
+         String object = rowOfData.get(columnInExcelFile).toString();
          RegularTimePeriod timeRetriever = dateRetriever.retrieveTimeLinePointFromObject(object);
          LowestCommonDenominatorRegularTime denominator = new LowestCommonDenominatorRegularTime(timeRetriever, style);
          dataSetAggregator.addPointInTime(StatChartCategory.REQUESTS, denominator);
@@ -84,15 +84,15 @@ public class ExcelStatChartTester extends ApplicationFrame {
     *           ignored.
     */
    public static void main(String[] args) {
-      ExcelStatChartTester demo = new ExcelStatChartTester("ExcelStat Chart Tester");
+      ExcelStatChart demo = new ExcelStatChart("ExcelStat Chart Tester");
       demo.setVisible(true);
    }
 
 }
 
-class DateFromExcelDataRetriever implements DateRetriever<Object> {
+class DateFromExcelDataRetriever implements DateRetriever<String> {
    @Override
-   public Hour retrieveTimeLinePointFromObject(Object cell) {
+   public Hour retrieveTimeLinePointFromObject(String cell) {
       String string = cell.toString();
 
       Hour hour = Hour.parseHour(string);
