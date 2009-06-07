@@ -8,8 +8,7 @@ public class PointsInTimeFacade<T, A extends RegularTimePeriod> extends PointsIn
    public PointsInTimeFacade() {
    }
 
-   public void addPointInTime(T barSeparator, RegularTimeDenominator<A> timeDenominator) {
-
+   public void addPointInTimeWithValue(T barSeparator, RegularTimeDenominator<A> timeDenominator, int value) {
       RegularTimeDenominator<A> daydto = timeDenominator;
       PointInTimeAgreggator<T, A> pointInTimeAgreggator = dataDaysAgreggators.get(daydto);
       A date = daydto.getDate();
@@ -20,6 +19,6 @@ public class PointsInTimeFacade<T, A extends RegularTimePeriod> extends PointsIn
       }
 
       System.out.println("Adding point in time for " + barSeparator + " on " + date + " using timeDenominator " + timeDenominator.getClass());
-      pointInTimeAgreggator.add(date, barSeparator);
+      pointInTimeAgreggator.add(date, barSeparator, value);
    }
 }

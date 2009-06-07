@@ -102,7 +102,7 @@ public class JiraStatChartTester extends ApplicationFrame {
          JiraStatus jiraStatus = JiraStatus.getJiraStatusByName(jiraIssue.getStatus());
          RegularTimePeriod timeRetriever = dateRetriever.retrieveTimeLinePointFromObject(jiraIssue);
          LowestCommonDenominatorRegularTime denominator = new LowestCommonDenominatorRegularTime(timeRetriever, style);
-         dataSetAggregator.addPointInTime(jiraStatus, denominator);
+         dataSetAggregator.addPointInTimeWithValue(jiraStatus, denominator, 1);
       }
       return dataSetAggregator;
    }

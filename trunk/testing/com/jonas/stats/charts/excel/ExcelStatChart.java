@@ -67,7 +67,7 @@ public class ExcelStatChart extends ApplicationFrame {
          String object = rowOfData.get(columnInExcelFile).toString();
          RegularTimePeriod timeRetriever = dateRetriever.retrieveTimeLinePointFromObject(object);
          LowestCommonDenominatorRegularTime denominator = new LowestCommonDenominatorRegularTime(timeRetriever, style);
-         dataSetAggregator.addPointInTime(StatChartCategory.REQUESTS, denominator);
+         dataSetAggregator.addPointInTimeWithValue(StatChartCategory.REQUESTS, denominator, 1);
       }
       return dataSetAggregator;
    }
