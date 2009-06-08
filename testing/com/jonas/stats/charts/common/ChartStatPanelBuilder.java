@@ -29,6 +29,8 @@ public abstract class ChartStatPanelBuilder<A> {
    private Map<A, Integer> aggregators = new HashMap<A, Integer>();
    
    private final PointsInTimeFacadeAbstract dataSetAggregator;
+
+   private JFreeChart chart;
    public ChartStatPanelBuilder(boolean aggregate, PointsInTimeFacadeAbstract<?, ? extends RegularTimePeriod> dataSetAggregator) {
       this.aggregate = aggregate;
       this.dataSetAggregator = dataSetAggregator;
@@ -52,12 +54,12 @@ public abstract class ChartStatPanelBuilder<A> {
       dataset.add(day, amount, jiraStatus.toString());
    }
 
-   private JFreeChart createChart(XYDataset dataset) {
+   private JFreeChart createChart(XYDataset dataset, String title, String yTitle) {
       DateAxis domainAxis = new DateAxis("Date");
       domainAxis.setTickMarkPosition(DateTickMarkPosition.MIDDLE);
       domainAxis.setLowerMargin(0.01);
       domainAxis.setUpperMargin(0.01);
-      NumberAxis rangeAxis = new NumberAxis("Number of Jiras");
+      NumberAxis rangeAxis = new NumberAxis(yTitle);
       rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
       rangeAxis.setUpperMargin(0.10); // leave some space for item labels
       StackedXYBarRenderer renderer = new StackedXYBarRenderer(0.15);
@@ -69,7 +71,7 @@ public abstract class ChartStatPanelBuilder<A> {
       setColors(renderer);
 
       XYPlot plot = new XYPlot(dataset, domainAxis, rangeAxis, renderer);
-      JFreeChart chart = new JFreeChart("Jira States compared against their Creation Date", plot);
+      chart = new JFreeChart(title, plot);
       chart.removeLegend();
       // chart.addSubtitle(new TextTitle("PGA Tour, 1983 to 2003"));
       LegendTitle legend = new LegendTitle(plot);
@@ -83,9 +85,9 @@ public abstract class ChartStatPanelBuilder<A> {
 
    public abstract void setColors(StackedXYBarRenderer renderer);
 
-   public JPanel createDatasetAndChartFromTimeAggregator() {
+   public JPanel createDatasetAndChartFromTimeAggregator(String chartTitle, String yTitle) {
       XYDataset dataset = createDatasetFromTimeAggregator(dataSetAggregator);
-      JFreeChart chart = createChart(dataset);
+      JFreeChart chart = createChart(dataset, chartTitle, yTitle);
       return new ChartPanel(chart);
    }
 
