@@ -19,27 +19,22 @@ import com.jonas.stats.charts.common.PointsInTimeFacade;
 import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
 import com.jonas.stats.charts.common.dao.DBDao;
 import com.jonas.stats.charts.common.dao.Dao;
-import com.jonas.stats.charts.common.dao.ResultSetInterpreter;
 
 public class RequestDBStatChart extends ApplicationFrame {
 
-   private static final String LiveServicesInInventory = "Live Services (IMS)";
-   private static final String Builds = "FENS Builds";
-   private static final String Deletes = "FENS Deletes";
-   private int dateCol = 1;
-   private int startRowToParse = 3;
+   private int dateCol = 0;
 
    // excel formula = TEXT(A2,"yyyy-MM-dd hh")
    public RequestDBStatChart(String title) {
       super(title);
 
-      CommonTimeDenominatorStyle style = CommonTimeDenominatorStyle.day;
+      CommonTimeDenominatorStyle style = CommonTimeDenominatorStyle.hour;
       boolean aggregate = false;
       String chartTitle = "LLU SMPF Inventory Stats";
       String yTitle = "Services/Requests";
 
       try {
-         Dao dao = new DBDao(interpreter);
+         Dao dao = new DBDao("SELECT TOP 10 created, * FROM copy_inventory..mlc_response_audit ORDER BY id DESC");
          ContentsDto fileContentsDto = dao.loadContents();
 
          DateRetriever<String> timeRetriever = null;
@@ -72,25 +67,11 @@ public class RequestDBStatChart extends ApplicationFrame {
    private PointsInTimeFacadeAbstract<String, RegularTimePeriod> getData(Vector<Vector<Object>> data, DateRetriever<String> dateRetriever,
          CommonTimeDenominatorStyle style) {
       PointsInTimeFacade<String, RegularTimePeriod> dataSetAggregator = new PointsInTimeFacade<String, RegularTimePeriod>();
-      startRowToParse = startRowToParse - 2;
       for (Vector<Object> rowOfData : data) {
-         if (startRowToParse-- > 0) {
-            continue;
-         }
-         if (rowOfData.get(0).toString() == "") {
-            continue;
-         }
          String aRequest = rowOfData.get(dateCol).toString();
          RegularTimePeriod retrievedTime = dateRetriever.retrieveTimeLinePointFromObject(aRequest);
          LowestCommonDenominatorRegularTime denominator = new LowestCommonDenominatorRegularTime(retrievedTime, style);
-
-         String services = rowOfData.get(2).toString();
-         String builds = rowOfData.get(4).toString();
-         String deletes = rowOfData.get(5).toString();
-
-         dataSetAggregator.addPointInTimeWithValue(LiveServicesInInventory, denominator, Double.parseDouble(services));
-         dataSetAggregator.addPointInTimeWithValue(Builds, denominator, Double.parseDouble(builds));
-         dataSetAggregator.addPointInTimeWithValue(Deletes, denominator, Double.parseDouble(deletes));
+         dataSetAggregator.addPointInTimeWithValue("Request", denominator, 1);
       }
       return dataSetAggregator;
    }
@@ -98,9 +79,7 @@ public class RequestDBStatChart extends ApplicationFrame {
    public JPanel createChartPanel(PointsInTimeFacadeAbstract<String, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate,
          String chartTitle, String yTitle) {
       GroupingDTO<String>[] groupings = new GroupingDTO[] {
-            new GroupingDTO<String>(LiveServicesInInventory, SwingUtil.cellBlue),
-            new GroupingDTO<String>(Builds, SwingUtil.cellGreen),
-            new GroupingDTO<String>(Deletes, SwingUtil.cellRed) };
+            new GroupingDTO<String>("Request", SwingUtil.cellBlue)};
       GraphPanelBuilder<String> panelBuilder = new GraphPanelBuilder<String>(aggregate, dataSetAggregator, groupings);
       return panelBuilder.createDatasetAndChartFromTimeAggregator(chartTitle, yTitle);
    }
@@ -116,16 +95,4 @@ public class RequestDBStatChart extends ApplicationFrame {
       demo.setVisible(true);
    }
 
-}
-
-
-class DayFromExcelDataRetriever implements DateRetriever<String> {
-   @Override
-   public Day retrieveTimeLinePointFromObject(String cell) {
-      System.out.println("Trying to parse to day: " + cell);
-      String string = cell.toString();
-      Day day = Day.parseDay(string);
-      System.out.println(" ... and it became " + day);
-      return day;
-   }
 }
