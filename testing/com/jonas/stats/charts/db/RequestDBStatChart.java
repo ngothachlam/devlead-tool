@@ -10,7 +10,6 @@ import org.jfree.ui.RefineryUtilities;
 import com.jonas.agile.devleadtool.burndown.ContentsDto;
 import com.jonas.common.swing.SwingUtil;
 import com.jonas.stats.charts.common.CommonTimeDenominatorStyle;
-import com.jonas.stats.charts.common.DateRetriever;
 import com.jonas.stats.charts.common.GraphPanelBuilder;
 import com.jonas.stats.charts.common.GroupingDTO;
 import com.jonas.stats.charts.common.LowestCommonDenominatorRegularTime;
@@ -22,12 +21,15 @@ import com.jonas.stats.charts.common.dao.Dao;
 public class RequestDBStatChart extends ApplicationFrame {
 
    private int dateCol = 0;
+   private CommonTimeDenominatorStyle style;
+   private HourFromDBDataRetriever timeRetriever;
 
    // excel formula = TEXT(A2,"yyyy-MM-dd hh")
    public RequestDBStatChart(String title) {
       super(title);
 
-      CommonTimeDenominatorStyle style = CommonTimeDenominatorStyle.hour;
+      style = CommonTimeDenominatorStyle.hour;
+      timeRetriever = new HourFromDBDataRetriever();
       boolean aggregate = false;
       String chartTitle = "LLU SMPF Inventory Stats";
       String yTitle = "Services/Requests";
@@ -46,19 +48,7 @@ public class RequestDBStatChart extends ApplicationFrame {
 
          ContentsDto fileContentsDto = dao.loadContents();
 
-         DateRetriever<String> timeRetriever = null;
-         switch (style) {
-         case day:
-            timeRetriever = new DayFromDBDataRetriever();
-            break;
-         case hour:
-            timeRetriever = new HourFromDBDataRetriever();
-            break;
-         default:
-            throw new RuntimeException("Need to implement another DateRetriever");
-         }
-
-         PointsInTimeFacadeAbstract<String, RegularTimePeriod> data = getData(fileContentsDto.getBody(), timeRetriever, style);
+         PointsInTimeFacadeAbstract<String, RegularTimePeriod> data = getData(fileContentsDto.getBody());
 
          JPanel chartPanel = createChartPanel(data, aggregate, chartTitle, yTitle);
          chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
@@ -73,12 +63,11 @@ public class RequestDBStatChart extends ApplicationFrame {
       }
    }
 
-   private PointsInTimeFacadeAbstract<String, RegularTimePeriod> getData(Vector<Vector<Object>> data, DateRetriever<String> dateRetriever,
-         CommonTimeDenominatorStyle style) {
+   private PointsInTimeFacadeAbstract<String, RegularTimePeriod> getData(Vector<Vector<Object>> data) {
       PointsInTimeFacade<String, RegularTimePeriod> dataSetAggregator = new PointsInTimeFacade<String, RegularTimePeriod>();
       for (Vector<Object> rowOfData : data) {
          String aRequest = rowOfData.get(dateCol).toString();
-         RegularTimePeriod retrievedTime = dateRetriever.retrieveTimeLinePointFromObject(aRequest);
+         RegularTimePeriod retrievedTime = timeRetriever.retrieveTimeLinePointFromObject(aRequest);
          LowestCommonDenominatorRegularTime denominator = new LowestCommonDenominatorRegularTime(retrievedTime, style);
          dataSetAggregator.addPointInTimeWithValue("Request", denominator, 1);
       }
