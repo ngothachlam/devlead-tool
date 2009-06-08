@@ -12,34 +12,43 @@ import com.jonas.agile.devleadtool.burndown.ContentsDto;
 
 public class DBDao implements Dao {
 
-   public DBDao() {
+   private String sql;
+   private String host;
+   private String port;
+   private String user;
+   private String password;
+
+   public DBDao(String sql) {
+      this.sql = sql;
+      host = "10.155.57.51";
+      port = "3106";
+      user = "llusa";
+      password = "password";
    }
 
    @Override
    public ContentsDto loadContents() throws IOException {
       try {
          Class.forName("com.sybase.jdbc2.jdbc.SybDriver");
-         String url = "jdbc:sybase:Tds:10.155.57.51:3106";
-         String user = "llusa";
-         String password = "password";
+         String url = "jdbc:sybase:Tds:" + host + ":" + port;
          Connection con = DriverManager.getConnection(url, user, password);
 
          Statement stmt = con.createStatement();
-         ResultSet rs = stmt.executeQuery("SELECT TOP 1 * FROM copy_inventory..mlc_response_audit ORDER BY id DESC");
+         ResultSet rs = stmt.executeQuery(sql);
          ResultSetMetaData md = rs.getMetaData();
          md.getColumnCount();
 
-         int rowCounter = 0;
-         Vector<Object> header = null;
+         Vector<Object> header = new Vector<Object>(md.getColumnCount());;
          Vector<Vector<Object>> body = new Vector<Vector<Object>>();
 
+         for (int colCounter = 1; colCounter <= md.getColumnCount(); colCounter++) {
+            String colName = md.getColumnName(colCounter);
+            header.add(colName);
+         }
+         
          while (rs.next()) {
             Vector<Object> row = createRow(rs, md.getColumnCount());
-            if (rowCounter++ == 0) {
-               header = row;
-            } else {
-               body.add(row);
-            }
+            body.add(row);
          }
          return new ContentsDto(header, body);
       } catch (SQLException e) {
@@ -52,13 +61,15 @@ public class DBDao implements Dao {
    }
 
    public Vector<Object> createRow(ResultSet rs, int colCount) throws SQLException {
-      Vector<Object> result = new Vector(colCount);
+      Vector<Object> result = new Vector<Object>(colCount);
 
+      System.out.print("Read in [");
       for (int col = 1; col <= colCount; col++) {
          Object object = rs.getObject(col);
          result.add(object);
-         System.out.println("Read in " + object + " from database");
+         System.out.print("[" + object + "]");
       }
+      System.out.println("]");
 
       return result;
    }
