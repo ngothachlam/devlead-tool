@@ -6,6 +6,6 @@ import com.jonas.agile.devleadtool.burndown.ContentsDto;
 
 public interface Dao {
 
-   public ContentsDto loadContents(File xlsFile, String excelSheet) throws IOException;
+   public ContentsDto loadContents() throws IOException;
 
 }
