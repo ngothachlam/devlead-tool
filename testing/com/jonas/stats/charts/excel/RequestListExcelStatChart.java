@@ -21,12 +21,12 @@ import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
 import com.jonas.stats.charts.common.dao.Dao;
 import com.jonas.stats.charts.common.dao.ExcelDao;
 
-public class ExcelStatChart extends ApplicationFrame {
+public class RequestListExcelStatChart extends ApplicationFrame {
 
    private static final String REQUESTS = "Requests";
 
    // excel formula = TEXT(A2,"yyyy-MM-dd hh")
-   public ExcelStatChart(String title) {
+   public RequestListExcelStatChart(String title) {
       super(title);
 
       CommonTimeDenominatorStyle style = CommonTimeDenominatorStyle.hour;
@@ -92,7 +92,7 @@ public class ExcelStatChart extends ApplicationFrame {
     *           ignored.
     */
    public static void main(String[] args) {
-      ExcelStatChart demo = new ExcelStatChart("ExcelStat Chart Tester");
+      RequestListExcelStatChart demo = new RequestListExcelStatChart("ExcelStat Chart Tester");
       demo.setVisible(true);
    }
 

@@ -35,7 +35,7 @@ import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
 /**
  * A simple stacked bar chart using time series data.
  */
-public class JiraStatChartTester extends ApplicationFrame {
+public class JiraStatChart extends ApplicationFrame {
 
    JiraClient jiraClient = JiraClient.JiraClientAolBB;
    private JiraCriteriaBuilder criteriabuilder = new JiraCriteriaBuilder();
@@ -46,7 +46,7 @@ public class JiraStatChartTester extends ApplicationFrame {
     * @param title
     *           the frame title.
     */
-   public JiraStatChartTester(String title) {
+   public JiraStatChart(String title) {
       super(title);
 
       CommonTimeDenominatorStyle style = CommonTimeDenominatorStyle.hour;
@@ -137,7 +137,7 @@ public class JiraStatChartTester extends ApplicationFrame {
     *           ignored.
     */
    public static void main(String[] args) {
-      JiraStatChartTester demo = new JiraStatChartTester("JiraStat Chart Tester");
+      JiraStatChart demo = new JiraStatChart("JiraStat Chart Tester");
       demo.setVisible(true);
    }
 
