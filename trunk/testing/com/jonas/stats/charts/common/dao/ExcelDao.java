@@ -1,4 +1,4 @@
-package com.jonas.stats.charts.excel;
+package com.jonas.stats.charts.common.dao;
 
 import java.io.File;
 import java.io.FileInputStream;
