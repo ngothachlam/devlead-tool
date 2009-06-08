@@ -16,9 +16,9 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import com.jonas.agile.devleadtool.burndown.ContentsDto;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 
-public class ExcelDao {
+public class ExcelDao implements Dao {
 
-   private HSSFFormulaEvaluator formulaEvaluator;
+   HSSFFormulaEvaluator formulaEvaluator;
 
    public ContentsDto loadContents(File xlsFile, String excelSheet) throws IOException {
       InputStream inp = null;
@@ -55,7 +55,7 @@ public class ExcelDao {
       }
    }
 
-   private Vector<String> getHeaderRow(HSSFRow row) {
+   Vector<String> getHeaderRow(HSSFRow row) {
       String cellContents = null;
       Vector<String> readInRow = new Vector<String>();
       for (Iterator<HSSFCell> cellIterator = row.cellIterator(); cellIterator.hasNext();) {
@@ -77,7 +77,7 @@ public class ExcelDao {
       return readInRow;
    }
 
-   private Vector<Object> getRow(HSSFRow row) {
+   Vector<Object> getRow(HSSFRow row) {
       Object cellContents = null;
       Vector<Object> readInRow = new Vector<Object>();
       for (Iterator<HSSFCell> cellIterator = row.cellIterator(); cellIterator.hasNext();) {
@@ -109,7 +109,7 @@ public class ExcelDao {
       return readInRow;
    }
 
-   private boolean isHeaderRow(int rowCount) {
+   boolean isHeaderRow(int rowCount) {
       return rowCount == 0;
    }
 
