@@ -1,5 +1,6 @@
 package com.jonas.stats.charts.jira;
 
+import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,16 +9,17 @@ import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeTableXYDataset;
 import org.jfree.data.xy.XYDataset;
 
-import com.jonas.common.swing.SwingUtil;
-import com.jonas.jira.JiraStatus;
 import com.jonas.stats.charts.common.ChartStatPanelBuilder;
 import com.jonas.stats.charts.common.PointInTimeAgreggator;
 import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
 
-public class JiraStatPanelBuilder extends ChartStatPanelBuilder<JiraStatus>{
-   
-   public JiraStatPanelBuilder(boolean aggregate, PointsInTimeFacadeAbstract<?, ? extends RegularTimePeriod> dataSetAggregator) {
+public class GraphPanelBuilder<A> extends ChartStatPanelBuilder<A> {
+
+   private GroupingDTO<A>[] groupingDTOs;
+
+   public GraphPanelBuilder(boolean aggregate, PointsInTimeFacadeAbstract<?, ? extends RegularTimePeriod> dataSetAggregator, GroupingDTO<A>... groupingDTOs) {
       super(aggregate, dataSetAggregator);
+      this.groupingDTOs = groupingDTOs;
    }
 
    public XYDataset createDatasetFromTimeAggregator(PointsInTimeFacadeAbstract dataSetAggregator) {
@@ -26,21 +28,19 @@ public class JiraStatPanelBuilder extends ChartStatPanelBuilder<JiraStatus>{
       Collections.sort(days);
       for (PointInTimeAgreggator dayAgreggator : days) {
          RegularTimePeriod day = dayAgreggator.getDay();
-         addDataSet(dataset, JiraStatus.Open, dayAgreggator, day);
-         addDataSet(dataset, JiraStatus.ReOpened, dayAgreggator, day);
-         addDataSet(dataset, JiraStatus.InProgress, dayAgreggator, day);
-         addDataSet(dataset, JiraStatus.Resolved, dayAgreggator, day);
-         addDataSet(dataset, JiraStatus.Closed, dayAgreggator, day);
+         for (GroupingDTO<A> grouping : groupingDTOs) {
+            addDataSet(dataset, grouping.getValue(), dayAgreggator, day);
+         }
       }
       return dataset;
    }
 
    @Override
    public void setColors(StackedXYBarRenderer renderer) {
-      renderer.setSeriesPaint(0, SwingUtil.cellLightGrey);
-      renderer.setSeriesPaint(1, SwingUtil.cellRed);
-      renderer.setSeriesPaint(2, SwingUtil.cellLightYellow);
-      renderer.setSeriesPaint(3, SwingUtil.cellBlue);
-      renderer.setSeriesPaint(4, SwingUtil.cellGreen);
+      for (GroupingDTO<A> grouping : groupingDTOs) {
+         renderer.setSeriesPaint(grouping.getPriority(), grouping.getColor());
+      }
    }
 }
+
+
