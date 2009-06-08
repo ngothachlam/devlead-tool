@@ -57,24 +57,22 @@ public class DBDao implements Dao {
 
          return new ContentsDto(header, body);
       } catch (SQLException e) {
-         e.printStackTrace();
          throw new RuntimeException(e);
       } catch (ClassNotFoundException e) {
-         e.printStackTrace();
          throw new RuntimeException(e);
       } finally {
          if (rs != null) {
             try {
                rs.close();
             } catch (SQLException e) {
-               e.printStackTrace();
+               throw new RuntimeException(e);
             }
          }
          if (stmt != null) {
             try {
                stmt.close();
             } catch (SQLException e) {
-               e.printStackTrace();
+               throw new RuntimeException(e);
             }
          }
          
@@ -82,7 +80,7 @@ public class DBDao implements Dao {
             try {
                con.close();
             } catch (SQLException e) {
-               e.printStackTrace();
+               throw new RuntimeException(e);
             }
          }
       }
