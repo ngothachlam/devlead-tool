@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Vector;
 import javax.swing.JPanel;
 import org.apache.commons.httpclient.HttpException;
-import org.jfree.data.time.Day;
 import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
@@ -34,7 +33,8 @@ public class RequestDBStatChart extends ApplicationFrame {
       String yTitle = "Services/Requests";
 
       try {
-         Dao dao = new DBDao("SELECT TOP 10 created, * FROM copy_inventory..mlc_response_audit ORDER BY id DESC");
+         Dao dao = new DBDao("SELECT created FROM copy_inventory..mlc_response_audit ORDER BY id DESC");
+//         Dao dao = new DBDao("SELECT TOP 40000 check_dt FROM copy_avail..llu_line_check_response ORDER BY id DESC");
          ContentsDto fileContentsDto = dao.loadContents();
 
          DateRetriever<String> timeRetriever = null;

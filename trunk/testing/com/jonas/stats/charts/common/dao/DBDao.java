@@ -28,28 +28,33 @@ public class DBDao implements Dao {
 
    @Override
    public ContentsDto loadContents() throws IOException {
+      Connection con = null;
+      Statement stmt = null;
+      ResultSet rs = null;
       try {
          Class.forName("com.sybase.jdbc2.jdbc.SybDriver");
          String url = "jdbc:sybase:Tds:" + host + ":" + port;
-         Connection con = DriverManager.getConnection(url, user, password);
 
-         Statement stmt = con.createStatement();
-         ResultSet rs = stmt.executeQuery(sql);
+         con = DriverManager.getConnection(url, user, password);
+         stmt = con.createStatement();
+         rs = stmt.executeQuery(sql);
+         
          ResultSetMetaData md = rs.getMetaData();
          md.getColumnCount();
 
-         Vector<Object> header = new Vector<Object>(md.getColumnCount());;
+         Vector<Object> header = new Vector<Object>(md.getColumnCount());
          Vector<Vector<Object>> body = new Vector<Vector<Object>>();
 
          for (int colCounter = 1; colCounter <= md.getColumnCount(); colCounter++) {
             String colName = md.getColumnName(colCounter);
             header.add(colName);
          }
-         
+
          while (rs.next()) {
             Vector<Object> row = createRow(rs, md.getColumnCount());
             body.add(row);
          }
+
          return new ContentsDto(header, body);
       } catch (SQLException e) {
          e.printStackTrace();
@@ -57,6 +62,29 @@ public class DBDao implements Dao {
       } catch (ClassNotFoundException e) {
          e.printStackTrace();
          throw new RuntimeException(e);
+      } finally {
+         if (rs != null) {
+            try {
+               rs.close();
+            } catch (SQLException e) {
+               e.printStackTrace();
+            }
+         }
+         if (stmt != null) {
+            try {
+               stmt.close();
+            } catch (SQLException e) {
+               e.printStackTrace();
+            }
+         }
+         
+         if (con != null) {
+            try {
+               con.close();
+            } catch (SQLException e) {
+               e.printStackTrace();
+            }
+         }
       }
    }
 
