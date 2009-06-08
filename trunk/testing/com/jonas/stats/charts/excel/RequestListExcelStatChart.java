@@ -38,9 +38,8 @@ public class RequestListExcelStatChart extends ApplicationFrame {
       int columnInExcelFile = 1;
 
       try {
-         Dao dao = new ExcelDao();
-
-         ContentsDto fileContentsDto = dao.loadContents(excelFile, sheetName);
+         Dao dao = new ExcelDao(excelFile, sheetName);
+         ContentsDto fileContentsDto = dao.loadContents();
 
          DateRetriever<String> timeRetriever = null;
          switch (style) {

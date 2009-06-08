@@ -20,7 +20,16 @@ public class ExcelDao implements Dao {
 
    HSSFFormulaEvaluator formulaEvaluator;
 
-   public ContentsDto loadContents(File xlsFile, String excelSheet) throws IOException {
+   private File xlsFile;
+   public ExcelDao(File xlsFile, String excelSheet) {
+      super();
+      this.xlsFile = xlsFile;
+      this.excelSheet = excelSheet;
+   }
+
+   private String excelSheet;
+   
+   public ContentsDto loadContents() throws IOException {
       InputStream inp = null;
       try {
          Vector<String> readInHeader = new Vector<String>();
