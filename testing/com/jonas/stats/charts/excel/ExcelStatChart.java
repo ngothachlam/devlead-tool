@@ -29,7 +29,7 @@ public class ExcelStatChart extends ApplicationFrame {
       boolean aggregate = false;
       String chartTitle = "Avail MLC";
       String yTitle = "Number of Requests";
-      File excelFile = new File("C:\\Documents and Settings\\jonasjolofsson\\My Documents\\avail_mlc_requests.xls");
+      File excelFile = new File("C:\\Documents and Settings\\jonasjolofsson\\My Documents\\ims_mlc_requests.xls");
       String sheetName = "Results 1";
       int columnInExcelFile = 1;
 
@@ -47,7 +47,7 @@ public class ExcelStatChart extends ApplicationFrame {
             throw new RuntimeException("Need to implement another DateRetriever");
          }
 
-         PointsInTimeFacadeAbstract<StatChartCategory, RegularTimePeriod> data = getData(fileContentsDto.getBody(), timeRetriever, style,
+         PointsInTimeFacadeAbstract<String, RegularTimePeriod> data = getData(fileContentsDto.getBody(), timeRetriever, style,
                columnInExcelFile);
 
          JPanel chartPanel = createChartPanel(data, aggregate, chartTitle, yTitle);
@@ -63,23 +63,23 @@ public class ExcelStatChart extends ApplicationFrame {
       }
    }
 
-   private PointsInTimeFacadeAbstract<StatChartCategory, RegularTimePeriod> getData(Vector<Vector<Object>> data,
+   private PointsInTimeFacadeAbstract<String, RegularTimePeriod> getData(Vector<Vector<Object>> data,
          DateRetriever<String> dateRetriever, CommonTimeDenominatorStyle style, int columnInExcelFile) {
-      PointsInTimeFacade<StatChartCategory, RegularTimePeriod> dataSetAggregator = new PointsInTimeFacade<StatChartCategory, RegularTimePeriod>();
+      PointsInTimeFacade<String, RegularTimePeriod> dataSetAggregator = new PointsInTimeFacade<String, RegularTimePeriod>();
       for (Vector<Object> rowOfData : data) {
          String object = rowOfData.get(columnInExcelFile).toString();
          RegularTimePeriod timeRetriever = dateRetriever.retrieveTimeLinePointFromObject(object);
          LowestCommonDenominatorRegularTime denominator = new LowestCommonDenominatorRegularTime(timeRetriever, style);
-         dataSetAggregator.addPointInTimeWithValue(StatChartCategory.REQUESTS, denominator, 1);
+         dataSetAggregator.addPointInTimeWithValue("Requests", denominator, 1);
       }
       return dataSetAggregator;
    }
 
-   public JPanel createChartPanel(PointsInTimeFacadeAbstract<StatChartCategory, ? extends RegularTimePeriod> dataSetAggregator,
+   public JPanel createChartPanel(PointsInTimeFacadeAbstract<String, ? extends RegularTimePeriod> dataSetAggregator,
          boolean aggregate, String chartTitle, String yTitle) {
-      GroupingDTO<StatChartCategory>[] groupings = new GroupingDTO[] { new GroupingDTO<StatChartCategory>(StatChartCategory.REQUESTS, 0,
+      GroupingDTO<String>[] groupings = new GroupingDTO[] { new GroupingDTO<String>("Requests", 0,
             SwingUtil.cellBlue) };
-      GraphPanelBuilder<StatChartCategory> panelBuilder = new GraphPanelBuilder<StatChartCategory>(aggregate, dataSetAggregator, groupings);
+      GraphPanelBuilder<String> panelBuilder = new GraphPanelBuilder<String>(aggregate, dataSetAggregator, groupings);
       return panelBuilder.createDatasetAndChartFromTimeAggregator(chartTitle, yTitle);
    }
 
