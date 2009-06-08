@@ -143,7 +143,7 @@ public class HistoricalBoardDao {
       return sb.append("\n").toString();
    }
 
-   Vector<String> header = null;
+   Vector<Object> header = null;
 
    public ContentsDto loadContents(File file) throws IOException {
       Vector<Vector<Object>> body = null;
@@ -184,10 +184,10 @@ public class HistoricalBoardDao {
       return new HistoricalData(dto.getHeader(), dto.getBody());
    }
 
-   private Vector<String> readHeader(BufferedReader br) throws IOException {
+   private Vector<Object> readHeader(BufferedReader br) throws IOException {
       String header = br.readLine();
       String[] split = header.split(DELIMITER);
-      Vector<String> cols = new Vector<String>();
+      Vector<Object> cols = new Vector<Object>();
       for (int counter = 0; counter < split.length; counter++) {
          String headerValue = split[counter];
          if (log.isDebugEnabled()) {
@@ -211,7 +211,7 @@ public class HistoricalBoardDao {
       return cols;
    }
 
-   private Vector<Vector<Object>> readBody(BufferedReader br, Vector<String> cols) throws IOException {
+   private Vector<Vector<Object>> readBody(BufferedReader br, Vector<Object> cols) throws IOException {
       String body = br.readLine();
       Vector<Vector<Object>> data = new Vector<Vector<Object>>();
       while (body != null) {
@@ -222,7 +222,7 @@ public class HistoricalBoardDao {
          Vector<Object> dataRow = new Vector<Object>();
          int counter = 0;
          for (; counter < split.length; counter++) {
-            String columnTypeName = cols.get(counter);
+            String columnTypeName = cols.get(counter).toString();
             String bodyValue = split[counter];
 
             if (log.isDebugEnabled()) {

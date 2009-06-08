@@ -4,7 +4,7 @@ import java.util.Vector;
 
 public class ContentsDto {
 
-   public Vector<String> getHeader() {
+   public Vector<Object> getHeader() {
       return header;
    }
 
@@ -12,10 +12,10 @@ public class ContentsDto {
       return body;
    }
 
-   private final Vector<String> header;
+   private final Vector<Object> header;
    private final Vector<Vector<Object>> body;
 
-   public ContentsDto(Vector<String> header, Vector<Vector<Object>> body) {
+   public ContentsDto(Vector<Object> header, Vector<Vector<Object>> body) {
       this.header = header;
       this.body = body;
    }

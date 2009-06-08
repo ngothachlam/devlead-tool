@@ -30,7 +30,7 @@ public class BurnUpCalculator {
    }
 
    public BurnData getSortedDataUsingCriteria(ContentsDto historicalData, DataCriteria criteria, Sprint currentSprint) {
-      Vector<String> historicalHeader = historicalData.getHeader();
+      Vector<Object> historicalHeader = historicalData.getHeader();
       Vector<Vector<Object>> historicalBody = historicalData.getBody();
 
       Vector<String> dataColumns = new Vector();
@@ -112,12 +112,12 @@ public class BurnUpCalculator {
       burnData.add(category, dayInSprint, value);
    }
 
-   private MapDTO findTheColumnNamesAndTheirLocations(DataCriteria criteria, Vector<String> historicalHeader, Vector<String> dataColumns) {
+   private MapDTO findTheColumnNamesAndTheirLocations(DataCriteria criteria, Vector<Object> historicalHeader, Vector<String> dataColumns) {
       Map<String, Integer> columnNameAndItsLocationMap = new LinkedHashMap<String, Integer>();
       Vector<Integer> criteriaCols = new Vector<Integer>();
 
       for (int counter = 0; counter < historicalHeader.size(); counter++) {
-         String header = historicalHeader.get(counter);
+         String header = historicalHeader.get(counter).toString();
          if (header.equals(criteria.getHeader())) {
             criteriaCols.add(counter);
          }

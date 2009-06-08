@@ -15,7 +15,7 @@ public class HistoricalData extends ContentsDto {
 
    private Vector<Integer> daysInSprint = new Vector<Integer>();
 
-   public HistoricalData(Vector<String> header, Vector<Vector<Object>> body) {
+   public HistoricalData(Vector<Object> header, Vector<Vector<Object>> body) {
       super(header, body);
 
       log.debug("HistoricalData ");
@@ -44,8 +44,8 @@ public class HistoricalData extends ContentsDto {
 
    public String getHeaderAsCSV(String delimiter) {
       StringBuffer sb = new StringBuffer();
-      for (String column : getHeader()) {
-         sb.append(column).append(delimiter);
+      for (Object column : getHeader()) {
+         sb.append(column.toString()).append(delimiter);
       }
       return deleteLastCharAndReplaceWithNewline(sb).toString();
    }

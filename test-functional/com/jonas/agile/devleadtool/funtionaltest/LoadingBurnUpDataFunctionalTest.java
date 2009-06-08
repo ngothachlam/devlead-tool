@@ -178,10 +178,10 @@ public class LoadingBurnUpDataFunctionalTest {
    }
 
    private void assertHistoricalData(Vector<Vector<Object>> expectation, HistoricalData historicalData) {
-      Vector<String> header = historicalData.getHeader();
+      Vector<Object> header = historicalData.getHeader();
       for (int counter = 0; counter < header.size(); counter++) {
          Object eString = expectation.get(0).get(counter);
-         String hString = header.get(counter);
+         String hString = header.get(counter).toString();
          assertEquals("The header on col " + counter + " is not what is expected!", eString, hString);
       }
       assertEquals("Header column count is incorrect", expectation.get(0).size(), header.size());
