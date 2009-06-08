@@ -13,11 +13,11 @@ import com.jonas.agile.devleadtool.burndown.ContentsDto;
 import com.jonas.common.swing.SwingUtil;
 import com.jonas.stats.charts.common.CommonTimeDenominatorStyle;
 import com.jonas.stats.charts.common.DateRetriever;
+import com.jonas.stats.charts.common.GraphPanelBuilder;
+import com.jonas.stats.charts.common.GroupingDTO;
 import com.jonas.stats.charts.common.LowestCommonDenominatorRegularTime;
 import com.jonas.stats.charts.common.PointsInTimeFacade;
 import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
-import com.jonas.stats.charts.jira.GraphPanelBuilder;
-import com.jonas.stats.charts.jira.GroupingDTO;
 
 public class ExcelStatChart extends ApplicationFrame {
 

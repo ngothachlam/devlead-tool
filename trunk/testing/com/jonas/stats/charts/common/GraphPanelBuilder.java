@@ -1,4 +1,4 @@
-package com.jonas.stats.charts.jira;
+package com.jonas.stats.charts.common;
 
 import java.awt.Color;
 import java.util.Collections;
@@ -9,9 +9,6 @@ import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeTableXYDataset;
 import org.jfree.data.xy.XYDataset;
 
-import com.jonas.stats.charts.common.ChartStatPanelBuilder;
-import com.jonas.stats.charts.common.PointInTimeAgreggator;
-import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
 
 public class GraphPanelBuilder<A> extends ChartStatPanelBuilder<A> {
 

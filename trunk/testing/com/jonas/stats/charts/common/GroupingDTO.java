@@ -1,4 +1,4 @@
-package com.jonas.stats.charts.jira;
+package com.jonas.stats.charts.common;
 
 import java.awt.Color;
 
