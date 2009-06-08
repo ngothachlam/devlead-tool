@@ -109,11 +109,11 @@ public class JiraStatChartTester extends ApplicationFrame {
 
    public JPanel createChartPanel(PointsInTimeFacadeAbstract<JiraStatus, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate) {
       GroupingDTO<JiraStatus>[] groupings = new GroupingDTO[] {
-            new GroupingDTO<JiraStatus>(JiraStatus.Open, 0, SwingUtil.cellLightGrey),
-            new GroupingDTO<JiraStatus>(JiraStatus.ReOpened, 1, SwingUtil.cellRed),
-            new GroupingDTO<JiraStatus>(JiraStatus.InProgress, 2, SwingUtil.cellLightYellow),
-            new GroupingDTO<JiraStatus>(JiraStatus.Resolved, 3, SwingUtil.cellBlue),
-            new GroupingDTO<JiraStatus>(JiraStatus.Closed, 4, SwingUtil.cellGreen) };
+            new GroupingDTO<JiraStatus>(JiraStatus.Open, SwingUtil.cellLightGrey),
+            new GroupingDTO<JiraStatus>(JiraStatus.ReOpened, SwingUtil.cellRed),
+            new GroupingDTO<JiraStatus>(JiraStatus.InProgress, SwingUtil.cellLightYellow),
+            new GroupingDTO<JiraStatus>(JiraStatus.Resolved, SwingUtil.cellBlue),
+            new GroupingDTO<JiraStatus>(JiraStatus.Closed, SwingUtil.cellGreen) };
 
       // addDataSet(dataset, JiraStatus.Open, dayAgreggator, day);
       // addDataSet(dataset, JiraStatus.ReOpened, dayAgreggator, day);

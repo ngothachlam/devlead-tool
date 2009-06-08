@@ -1,9 +1,7 @@
 package com.jonas.stats.charts.common;
 
-import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
-
 import org.jfree.chart.renderer.xy.StackedXYBarRenderer;
 import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeTableXYDataset;
@@ -34,8 +32,9 @@ public class GraphPanelBuilder<A> extends ChartStatPanelBuilder<A> {
 
    @Override
    public void setColors(StackedXYBarRenderer renderer) {
+      int priority = 0;
       for (GroupingDTO<A> grouping : groupingDTOs) {
-         renderer.setSeriesPaint(grouping.getPriority(), grouping.getColor());
+         renderer.setSeriesPaint(priority++, grouping.getColor());
       }
    }
 }

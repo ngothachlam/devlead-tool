@@ -2,23 +2,23 @@ package com.jonas.stats.charts.excel;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-
 import com.jonas.agile.devleadtool.burndown.ContentsDto;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 
 public class ExcelDao {
+
+   private HSSFFormulaEvaluator formulaEvaluator;
 
    public ContentsDto loadContents(File xlsFile, String excelSheet) throws IOException {
       InputStream inp = null;
@@ -31,6 +31,8 @@ public class ExcelDao {
          HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
          HSSFSheet sheet = PlannerDAOExcelImpl.getSheet(excelSheet, wb, false);
 
+         formulaEvaluator = new HSSFFormulaEvaluator(wb);
+         
          // for each row in the sheet...
          int rowCount = 0;
          for (Iterator<HSSFRow> rowIterator = sheet.rowIterator(); rowIterator.hasNext();) {
@@ -64,6 +66,9 @@ public class ExcelDao {
                HSSFRichTextString cellValue = cell.getRichStringCellValue();
                cellContents = (cellValue == null ? "" : cellValue.getString());
                break;
+            case HSSFCell.CELL_TYPE_BLANK:
+               cellContents = "";
+               break;
             default:
                throw new RuntimeException("This is not handled! it is of type: " + cellType);
          }
@@ -83,17 +88,23 @@ public class ExcelDao {
                cellContents = String.valueOf(cell.getNumericCellValue());
                break;
             case HSSFCell.CELL_TYPE_FORMULA:
-               cellContents = String.valueOf(cell.getRichStringCellValue());
+               HSSFFormulaEvaluator.CellValue cellFormValue = formulaEvaluator.evaluate(cell);
+               cellContents = cellFormValue.formatAsString();
+//               cellContents = "";
                break;
             case HSSFCell.CELL_TYPE_STRING:
                HSSFRichTextString cellValue = cell.getRichStringCellValue();
                cellContents = (cellValue == null ? "" : cellValue.getString());
+               break;
+            case HSSFCell.CELL_TYPE_BLANK:
+               cellContents = "";
                break;
             default:
                throw new RuntimeException("This is not handled! it is of type: " + cellType);
          }
          readInRow.add(cellContents);
       }
+      System.out.println(" read in " + readInRow);
       System.out.println();
       return readInRow;
    }
