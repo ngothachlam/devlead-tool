@@ -38,22 +38,10 @@ public class DBDao implements Dao {
          con = DriverManager.getConnection(url, user, password);
          stmt = con.createStatement();
          rs = stmt.executeQuery(sql);
-         
          ResultSetMetaData md = rs.getMetaData();
-         md.getColumnCount();
 
-         Vector<Object> header = new Vector<Object>(md.getColumnCount());
-         Vector<Vector<Object>> body = new Vector<Vector<Object>>();
-
-         for (int colCounter = 1; colCounter <= md.getColumnCount(); colCounter++) {
-            String colName = md.getColumnName(colCounter);
-            header.add(colName);
-         }
-
-         while (rs.next()) {
-            Vector<Object> row = createRow(rs, md.getColumnCount());
-            body.add(row);
-         }
+         Vector<Object> header = getHeader(md);
+         Vector<Vector<Object>> body = getBody(rs, md);
 
          return new ContentsDto(header, body);
       } catch (Exception e) {
@@ -82,6 +70,24 @@ public class DBDao implements Dao {
             }
          }
       }
+   }
+
+   private Vector<Vector<Object>> getBody(ResultSet rs, ResultSetMetaData md) throws SQLException {
+      Vector<Vector<Object>> body = new Vector<Vector<Object>>();
+      while (rs.next()) {
+         Vector<Object> row = createRow(rs, md.getColumnCount());
+         body.add(row);
+      }
+      return body;
+   }
+
+   private Vector<Object> getHeader(ResultSetMetaData md) throws SQLException {
+      Vector<Object> header = new Vector<Object>(md.getColumnCount());
+      for (int colCounter = 1; colCounter <= md.getColumnCount(); colCounter++) {
+         String colName = md.getColumnName(colCounter);
+         header.add(colName);
+      }
+      return header;
    }
 
    public Vector<Object> createRow(ResultSet rs, int colCount) throws SQLException {
