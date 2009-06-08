@@ -29,14 +29,14 @@ public class ExcelStatChart extends ApplicationFrame {
 
       CommonTimeDenominatorStyle style = CommonTimeDenominatorStyle.hour;
       boolean aggregate = false;
-      String chartTitle = "Avail MLC";
+      String chartTitle = "IMS MLC";
       String yTitle = "Number of Requests";
       File excelFile = new File("C:\\Documents and Settings\\jonasjolofsson\\My Documents\\ims_mlc_requests.xls");
       String sheetName = "Results 1";
       int columnInExcelFile = 1;
 
       try {
-         ExcelDao dao = new ExcelDao();
+         Dao dao = new ExcelDao();
 
          ContentsDto fileContentsDto = dao.loadContents(excelFile, sheetName);
 

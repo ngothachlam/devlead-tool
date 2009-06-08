@@ -21,7 +21,7 @@ import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
 
 public class LLUServiceExcelStatChart extends ApplicationFrame {
 
-   // private static final String LiveServicesInInventory = "Live Services (IMS)";
+   private static final String LiveServicesInInventory = "Live Services (IMS)";
    private static final String Builds = "FENS Builds";
    private static final String Deletes = "FENS Deletes";
    private int dateCol = 1;
@@ -40,7 +40,7 @@ public class LLUServiceExcelStatChart extends ApplicationFrame {
       String sheetName = "Stats";
 
       try {
-         ExcelDao dao = new ExcelDao();
+         Dao dao = new ExcelDao();
 
          ContentsDto fileContentsDto = dao.loadContents(excelFile, sheetName);
 
@@ -91,19 +91,19 @@ public class LLUServiceExcelStatChart extends ApplicationFrame {
          String builds = rowOfData.get(4).toString();
          String deletes = rowOfData.get(5).toString();
 
-         // dataSetAggregator.addPointInTimeWithValue(LiveServicesInInventory, denominator, Double.parseDouble(services));
-         dataSetAggregator.addPointInTimeWithValue(Builds, denominator, Double.parseDouble(builds));
-         dataSetAggregator.addPointInTimeWithValue(Deletes, denominator, Double.parseDouble(deletes));
+         dataSetAggregator.addPointInTimeWithValue(LiveServicesInInventory, denominator, Double.parseDouble(services));
+         // dataSetAggregator.addPointInTimeWithValue(Builds, denominator, Double.parseDouble(builds));
+         // dataSetAggregator.addPointInTimeWithValue(Deletes, denominator, Double.parseDouble(deletes));
       }
       return dataSetAggregator;
    }
 
    public JPanel createChartPanel(PointsInTimeFacadeAbstract<String, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate,
          String chartTitle, String yTitle) {
-      GroupingDTO<String>[] groupings = new GroupingDTO[] {
-      // new GroupingDTO<String>(LiveServicesInInventory, 0, SwingUtil.cellBlue)
-            new GroupingDTO<String>(Builds, SwingUtil.cellGreen),
-            new GroupingDTO<String>(Deletes, SwingUtil.cellRed) };
+      GroupingDTO<String>[] groupings = new GroupingDTO[] { new GroupingDTO<String>(LiveServicesInInventory, SwingUtil.cellBlue)
+      // new GroupingDTO<String>(Builds, SwingUtil.cellGreen),
+      // new GroupingDTO<String>(Deletes, SwingUtil.cellRed)
+      };
       GraphPanelBuilder<String> panelBuilder = new GraphPanelBuilder<String>(aggregate, dataSetAggregator, groupings);
       return panelBuilder.createDatasetAndChartFromTimeAggregator(chartTitle, yTitle);
    }
@@ -120,6 +120,7 @@ public class LLUServiceExcelStatChart extends ApplicationFrame {
    }
 
 }
+
 
 class DayFromExcelDataRetriever implements DateRetriever<String> {
    @Override
