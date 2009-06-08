@@ -2,7 +2,6 @@ package com.jonas.stats.charts.common;
 
 import org.jfree.data.time.RegularTimePeriod;
 
-
 public class PointsInTimeFacade<T, A extends RegularTimePeriod> extends PointsInTimeFacadeAbstract<T, A> {
 
    public PointsInTimeFacade() {
@@ -20,5 +19,9 @@ public class PointsInTimeFacade<T, A extends RegularTimePeriod> extends PointsIn
 
       System.out.println("Adding point in time for " + barSeparator + " on " + date + " using timeDenominator " + timeDenominator.getClass());
       pointInTimeAgreggator.add(date, barSeparator, value);
+   }
+
+   public void addPointInTimeWithValue(T barSeparator, RegularTimeDenominator<A> timeDenominator, double parseDouble) {
+      addPointInTimeWithValue(barSeparator, timeDenominator, (int)parseDouble);
    }
 }
