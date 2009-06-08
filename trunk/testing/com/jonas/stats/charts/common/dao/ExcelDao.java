@@ -32,7 +32,7 @@ public class ExcelDao implements Dao {
    public ContentsDto loadContents() throws IOException {
       InputStream inp = null;
       try {
-         Vector<String> readInHeader = new Vector<String>();
+         Vector<Object> readInHeader = new Vector<Object>();
          Vector<Vector<Object>> readInData = new Vector<Vector<Object>>();
 
          inp = new FileInputStream(xlsFile);
@@ -64,9 +64,9 @@ public class ExcelDao implements Dao {
       }
    }
 
-   Vector<String> getHeaderRow(HSSFRow row) {
+   Vector<Object> getHeaderRow(HSSFRow row) {
       String cellContents = null;
-      Vector<String> readInRow = new Vector<String>();
+      Vector<Object> readInRow = new Vector<Object>();
       for (Iterator<HSSFCell> cellIterator = row.cellIterator(); cellIterator.hasNext();) {
          HSSFCell cell = cellIterator.next();
          int cellType = cell.getCellType();

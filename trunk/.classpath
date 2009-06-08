@@ -65,5 +65,6 @@
 			<attribute name="javadoc_location" value="http://poi.apache.org/apidocs/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/jconn2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
