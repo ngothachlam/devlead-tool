@@ -81,7 +81,6 @@ public class LLUServiceExcelStatChart extends ApplicationFrame {
          if (startRowToParse-- > 0) {
             continue;
          }
-         System.out.println("Col 0: " + rowOfData.get(0).toString());
          if (rowOfData.get(0).toString() == "") {
             continue;
          }
@@ -94,18 +93,18 @@ public class LLUServiceExcelStatChart extends ApplicationFrame {
          String deletes = rowOfData.get(5).toString();
 
          dataSetAggregator.addPointInTimeWithValue(LiveServicesInInventory, denominator, Double.parseDouble(services));
-         // dataSetAggregator.addPointInTimeWithValue(Builds, denominator, Double.parseDouble(builds));
-         // dataSetAggregator.addPointInTimeWithValue(Deletes, denominator, Double.parseDouble(deletes));
+         dataSetAggregator.addPointInTimeWithValue(Builds, denominator, Double.parseDouble(builds));
+         dataSetAggregator.addPointInTimeWithValue(Deletes, denominator, Double.parseDouble(deletes));
       }
       return dataSetAggregator;
    }
 
    public JPanel createChartPanel(PointsInTimeFacadeAbstract<String, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate,
          String chartTitle, String yTitle) {
-      GroupingDTO<String>[] groupings = new GroupingDTO[] { new GroupingDTO<String>(LiveServicesInInventory, SwingUtil.cellBlue)
-      // new GroupingDTO<String>(Builds, SwingUtil.cellGreen),
-      // new GroupingDTO<String>(Deletes, SwingUtil.cellRed)
-      };
+      GroupingDTO<String>[] groupings = new GroupingDTO[] {
+            new GroupingDTO<String>(LiveServicesInInventory, SwingUtil.cellBlue),
+            new GroupingDTO<String>(Builds, SwingUtil.cellGreen),
+            new GroupingDTO<String>(Deletes, SwingUtil.cellRed) };
       GraphPanelBuilder<String> panelBuilder = new GraphPanelBuilder<String>(aggregate, dataSetAggregator, groupings);
       return panelBuilder.createDatasetAndChartFromTimeAggregator(chartTitle, yTitle);
    }
