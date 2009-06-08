@@ -28,6 +28,8 @@ public class ExcelStatChart extends ApplicationFrame {
 
       CommonTimeDenominatorStyle style = CommonTimeDenominatorStyle.hour;
       boolean aggregate = false;
+      String chartTitle = "Avail MLC";
+      String yTitle = "Number of Requests";
       File excelFile = new File("C:\\Documents and Settings\\jonasjolofsson\\My Documents\\avail_mlc_requests.xls");
       String sheetName = "Results 1";
       int columnInExcelFile = 1;
@@ -48,7 +50,7 @@ public class ExcelStatChart extends ApplicationFrame {
 
          PointsInTimeFacadeAbstract<StatChartCategory, RegularTimePeriod> data = getData(fileContentsDto.getBody(), timeRetriever, style, columnInExcelFile);
 
-         JPanel chartPanel = createChartPanel(data, aggregate);
+         JPanel chartPanel = createChartPanel(data, aggregate, chartTitle, yTitle);
          chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 
          setContentPane(chartPanel);
@@ -72,9 +74,9 @@ public class ExcelStatChart extends ApplicationFrame {
       return dataSetAggregator;
    }
 
-   public JPanel createChartPanel(PointsInTimeFacadeAbstract<StatChartCategory, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate) {
+   public JPanel createChartPanel(PointsInTimeFacadeAbstract<StatChartCategory, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate, String chartTitle, String yTitle) {
       ChartStatPanelBuilder panelBuilder = new ExcelStatPanelBuilder(aggregate, dataSetAggregator);
-      return panelBuilder.createDatasetAndChartFromTimeAggregator();
+      return panelBuilder.createDatasetAndChartFromTimeAggregator(chartTitle, yTitle);
    }
 
    /**

@@ -109,7 +109,7 @@ public class JiraStatChartTester extends ApplicationFrame {
 
    public JPanel createChartPanel(PointsInTimeFacadeAbstract<JiraStatus, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate) {
       ChartStatPanelBuilder panelBuilder = new JiraStatPanelBuilder(aggregate, dataSetAggregator);
-      return panelBuilder.createDatasetAndChartFromTimeAggregator();
+      return panelBuilder.createDatasetAndChartFromTimeAggregator("Jira States compared against their Creation Date", "Number of Jiras");
    }
 
    /**
