@@ -3,26 +3,25 @@ package com.jonas.stats.charts.excel;
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
-
 import javax.swing.JPanel;
-
 import org.apache.commons.httpclient.HttpException;
 import org.jfree.data.time.Hour;
 import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
-
 import com.jonas.agile.devleadtool.burndown.ContentsDto;
-import com.jonas.stats.charts.common.ChartStatPanelBuilder;
+import com.jonas.common.swing.SwingUtil;
 import com.jonas.stats.charts.common.CommonTimeDenominatorStyle;
 import com.jonas.stats.charts.common.DateRetriever;
 import com.jonas.stats.charts.common.LowestCommonDenominatorRegularTime;
 import com.jonas.stats.charts.common.PointsInTimeFacade;
 import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
+import com.jonas.stats.charts.jira.GraphPanelBuilder;
+import com.jonas.stats.charts.jira.GroupingDTO;
 
 public class ExcelStatChart extends ApplicationFrame {
 
-   //excel formula = TEXT(A2,"yyyy-MM-dd hh")
+   // excel formula = TEXT(A2,"yyyy-MM-dd hh")
    public ExcelStatChart(String title) {
       super(title);
 
@@ -41,14 +40,15 @@ public class ExcelStatChart extends ApplicationFrame {
 
          DateRetriever<String> timeRetriever = null;
          switch (style) {
-            case hour:
-               timeRetriever = new DateFromExcelDataRetriever();
-               break;
-            default:
-               throw new RuntimeException("Need to implement another DateRetriever");
+         case hour:
+            timeRetriever = new DateFromExcelDataRetriever();
+            break;
+         default:
+            throw new RuntimeException("Need to implement another DateRetriever");
          }
 
-         PointsInTimeFacadeAbstract<StatChartCategory, RegularTimePeriod> data = getData(fileContentsDto.getBody(), timeRetriever, style, columnInExcelFile);
+         PointsInTimeFacadeAbstract<StatChartCategory, RegularTimePeriod> data = getData(fileContentsDto.getBody(), timeRetriever, style,
+               columnInExcelFile);
 
          JPanel chartPanel = createChartPanel(data, aggregate, chartTitle, yTitle);
          chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
@@ -63,7 +63,8 @@ public class ExcelStatChart extends ApplicationFrame {
       }
    }
 
-   private PointsInTimeFacadeAbstract<StatChartCategory, RegularTimePeriod> getData(Vector<Vector<Object>> data, DateRetriever<String> dateRetriever, CommonTimeDenominatorStyle style, int columnInExcelFile) {
+   private PointsInTimeFacadeAbstract<StatChartCategory, RegularTimePeriod> getData(Vector<Vector<Object>> data,
+         DateRetriever<String> dateRetriever, CommonTimeDenominatorStyle style, int columnInExcelFile) {
       PointsInTimeFacade<StatChartCategory, RegularTimePeriod> dataSetAggregator = new PointsInTimeFacade<StatChartCategory, RegularTimePeriod>();
       for (Vector<Object> rowOfData : data) {
          String object = rowOfData.get(columnInExcelFile).toString();
@@ -74,8 +75,11 @@ public class ExcelStatChart extends ApplicationFrame {
       return dataSetAggregator;
    }
 
-   public JPanel createChartPanel(PointsInTimeFacadeAbstract<StatChartCategory, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate, String chartTitle, String yTitle) {
-      ChartStatPanelBuilder panelBuilder = new ExcelStatPanelBuilder(aggregate, dataSetAggregator);
+   public JPanel createChartPanel(PointsInTimeFacadeAbstract<StatChartCategory, ? extends RegularTimePeriod> dataSetAggregator,
+         boolean aggregate, String chartTitle, String yTitle) {
+      GroupingDTO<StatChartCategory>[] groupings = new GroupingDTO[] { new GroupingDTO<StatChartCategory>(StatChartCategory.REQUESTS, 0,
+            SwingUtil.cellBlue) };
+      GraphPanelBuilder<StatChartCategory> panelBuilder = new GraphPanelBuilder<StatChartCategory>(aggregate, dataSetAggregator, groupings);
       return panelBuilder.createDatasetAndChartFromTimeAggregator(chartTitle, yTitle);
    }
 
@@ -91,6 +95,7 @@ public class ExcelStatChart extends ApplicationFrame {
    }
 
 }
+
 
 class DateFromExcelDataRetriever implements DateRetriever<String> {
    @Override

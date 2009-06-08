@@ -8,9 +8,7 @@
 package com.jonas.stats.charts.jira;
 
 import java.io.IOException;
-
 import javax.swing.JPanel;
-
 import org.apache.commons.httpclient.HttpException;
 import org.jdom.JDOMException;
 import org.jfree.data.time.Day;
@@ -18,7 +16,7 @@ import org.jfree.data.time.Hour;
 import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
-
+import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraStatus;
@@ -57,26 +55,25 @@ public class JiraStatChartTester extends ApplicationFrame {
 
          JiraProject project = JiraProject.TALK;
          jiraClient.cacheJiraVersionsForProject(project);
-//         JiraVersion fixVersion = project.getFixVersion("Talk v26.0");
-//         JiraCriteriaBuilder criteria = criteriabuilder.fixVersion(project, fixVersion);
+         // JiraVersion fixVersion = project.getFixVersion("Talk v26.0");
+         // JiraCriteriaBuilder criteria = criteriabuilder.fixVersion(project, fixVersion);
          JiraCriteriaBuilder criteria = criteriabuilder.createdBetween("-2w", "+1w").project(JiraProject.LLU);
 
          JiraIssue[] jiras = jiraClient.getJiras(criteria);
 
          DateRetriever timeRetriever = null;
          switch (style) {
-            case day:
-               timeRetriever = new CreationDayRetriever();
-               break;
-            case week:
-               timeRetriever = new CreationDayRetriever();
-               break;
-            case hour:
-               timeRetriever = new CreationHourRetriever();
-               break;
+         case day:
+            timeRetriever = new CreationDayRetriever();
+            break;
+         case week:
+            timeRetriever = new CreationDayRetriever();
+            break;
+         case hour:
+            timeRetriever = new CreationHourRetriever();
+            break;
          }
 
-         
          PointsInTimeFacadeAbstract<JiraStatus, RegularTimePeriod> data = getData(jiras, timeRetriever, style);
 
          JPanel chartPanel = createChartPanel(data, aggregate);
@@ -96,7 +93,8 @@ public class JiraStatChartTester extends ApplicationFrame {
       }
    }
 
-   private PointsInTimeFacadeAbstract<JiraStatus, RegularTimePeriod> getData(JiraIssue[] jiras, DateRetriever dateRetriever, CommonTimeDenominatorStyle style) {
+   private PointsInTimeFacadeAbstract<JiraStatus, RegularTimePeriod> getData(JiraIssue[] jiras, DateRetriever dateRetriever,
+         CommonTimeDenominatorStyle style) {
       PointsInTimeFacade<JiraStatus, RegularTimePeriod> dataSetAggregator = new PointsInTimeFacade<JiraStatus, RegularTimePeriod>();
       for (JiraIssue jiraIssue : jiras) {
          JiraStatus jiraStatus = JiraStatus.getJiraStatusByName(jiraIssue.getStatus());
@@ -108,7 +106,25 @@ public class JiraStatChartTester extends ApplicationFrame {
    }
 
    public JPanel createChartPanel(PointsInTimeFacadeAbstract<JiraStatus, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate) {
-      ChartStatPanelBuilder panelBuilder = new JiraStatPanelBuilder(aggregate, dataSetAggregator);
+      GroupingDTO<JiraStatus>[] groupings = new GroupingDTO[] {
+            new GroupingDTO<JiraStatus>(JiraStatus.Open, 0, SwingUtil.cellLightGrey),
+            new GroupingDTO<JiraStatus>(JiraStatus.ReOpened, 1, SwingUtil.cellRed),
+            new GroupingDTO<JiraStatus>(JiraStatus.InProgress, 2, SwingUtil.cellLightYellow),
+            new GroupingDTO<JiraStatus>(JiraStatus.Resolved, 3, SwingUtil.cellBlue),
+            new GroupingDTO<JiraStatus>(JiraStatus.Closed, 4, SwingUtil.cellGreen) };
+
+      // addDataSet(dataset, JiraStatus.Open, dayAgreggator, day);
+      // addDataSet(dataset, JiraStatus.ReOpened, dayAgreggator, day);
+      // addDataSet(dataset, JiraStatus.InProgress, dayAgreggator, day);
+      // addDataSet(dataset, JiraStatus.Resolved, dayAgreggator, day);
+      // addDataSet(dataset, JiraStatus.Closed, dayAgreggator, day);
+      // renderer.setSeriesPaint(0, SwingUtil.cellLightGrey);
+      // renderer.setSeriesPaint(1, SwingUtil.cellRed);
+      // renderer.setSeriesPaint(2, SwingUtil.cellLightYellow);
+      // renderer.setSeriesPaint(3, SwingUtil.cellBlue);
+      // renderer.setSeriesPaint(4, SwingUtil.cellGreen);
+
+      ChartStatPanelBuilder panelBuilder = new GraphPanelBuilder(aggregate, dataSetAggregator, groupings);
       return panelBuilder.createDatasetAndChartFromTimeAggregator("Jira States compared against their Creation Date", "Number of Jiras");
    }
 
@@ -125,12 +141,14 @@ public class JiraStatChartTester extends ApplicationFrame {
 
 }
 
-class CreationHourRetriever implements DateRetriever<JiraIssue>{
+
+class CreationHourRetriever implements DateRetriever<JiraIssue> {
    @Override
    public Hour retrieveTimeLinePointFromObject(JiraIssue jiraIssue) {
       return jiraIssue.getCreationHour();
    }
 }
+
 
 class DeliveryHourRetriever implements DateRetriever<JiraIssue> {
    @Override
@@ -139,12 +157,15 @@ class DeliveryHourRetriever implements DateRetriever<JiraIssue> {
       return deliveryDateAsDay;
    }
 }
-class CreationDayRetriever implements DateRetriever<JiraIssue>{
+
+
+class CreationDayRetriever implements DateRetriever<JiraIssue> {
    @Override
    public Day retrieveTimeLinePointFromObject(JiraIssue jiraIssue) {
       return jiraIssue.getCreationDay();
    }
 }
+
 
 class DeliveryDateRetriever implements DateRetriever<JiraIssue> {
    @Override
