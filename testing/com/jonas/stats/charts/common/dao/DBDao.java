@@ -56,9 +56,7 @@ public class DBDao implements Dao {
          }
 
          return new ContentsDto(header, body);
-      } catch (SQLException e) {
-         throw new RuntimeException(e);
-      } catch (ClassNotFoundException e) {
+      } catch (Exception e) {
          throw new RuntimeException(e);
       } finally {
          if (rs != null) {
