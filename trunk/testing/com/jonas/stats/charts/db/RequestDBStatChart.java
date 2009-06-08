@@ -34,7 +34,16 @@ public class RequestDBStatChart extends ApplicationFrame {
 
       try {
          Dao dao = new DBDao("SELECT created FROM copy_inventory..mlc_response_audit ORDER BY id DESC");
-//         Dao dao = new DBDao("SELECT TOP 40000 check_dt FROM copy_avail..llu_line_check_response ORDER BY id DESC");
+         // Dao dao = new DBDao("SELECT check_dt FROM copy_avail..llu_line_check_response WHERE id <= 9118267 and id >= 9028524"); // between 6th
+         // - 24th of April
+
+         // SELECT max(id) FROM copy_avail..llu_line_check_response
+         // where datepart(day, check_dt) = 24
+         // and
+         // datepart(year, check_dt) = 2009
+         // and
+         // datepart(month, check_dt) = 4
+
          ContentsDto fileContentsDto = dao.loadContents();
 
          DateRetriever<String> timeRetriever = null;
@@ -78,8 +87,7 @@ public class RequestDBStatChart extends ApplicationFrame {
 
    public JPanel createChartPanel(PointsInTimeFacadeAbstract<String, ? extends RegularTimePeriod> dataSetAggregator, boolean aggregate,
          String chartTitle, String yTitle) {
-      GroupingDTO<String>[] groupings = new GroupingDTO[] {
-            new GroupingDTO<String>("Request", SwingUtil.cellBlue)};
+      GroupingDTO<String>[] groupings = new GroupingDTO[] { new GroupingDTO<String>("Request", SwingUtil.cellBlue) };
       GraphPanelBuilder<String> panelBuilder = new GraphPanelBuilder<String>(aggregate, dataSetAggregator, groupings);
       return panelBuilder.createDatasetAndChartFromTimeAggregator(chartTitle, yTitle);
    }
