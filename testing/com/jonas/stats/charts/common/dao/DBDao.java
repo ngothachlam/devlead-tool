@@ -1,9 +1,8 @@
-package com.jonas.stats.charts.db;
+package com.jonas.stats.charts.common.dao;
 
 import java.io.File;
 import java.io.IOException;
 import com.jonas.agile.devleadtool.burndown.ContentsDto;
-import com.jonas.stats.charts.excel.Dao;
 
 public class DBDao implements Dao{
 

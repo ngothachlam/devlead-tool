@@ -18,6 +18,8 @@ import com.jonas.stats.charts.common.GroupingDTO;
 import com.jonas.stats.charts.common.LowestCommonDenominatorRegularTime;
 import com.jonas.stats.charts.common.PointsInTimeFacade;
 import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
+import com.jonas.stats.charts.common.dao.Dao;
+import com.jonas.stats.charts.common.dao.ExcelDao;
 
 public class LLUServiceExcelStatChart extends ApplicationFrame {
 
