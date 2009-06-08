@@ -26,6 +26,8 @@ import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
 import com.jonas.stats.charts.common.ChartStatPanelBuilder;
 import com.jonas.stats.charts.common.CommonTimeDenominatorStyle;
 import com.jonas.stats.charts.common.DateRetriever;
+import com.jonas.stats.charts.common.GraphPanelBuilder;
+import com.jonas.stats.charts.common.GroupingDTO;
 import com.jonas.stats.charts.common.LowestCommonDenominatorRegularTime;
 import com.jonas.stats.charts.common.PointsInTimeFacade;
 import com.jonas.stats.charts.common.PointsInTimeFacadeAbstract;
