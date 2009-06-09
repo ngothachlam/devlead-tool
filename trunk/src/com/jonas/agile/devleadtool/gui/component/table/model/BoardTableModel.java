@@ -5,9 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
-
 import org.apache.log4j.Logger;
-
 import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.agile.devleadtool.data.JiraStatistic;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
@@ -33,8 +31,27 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
    static {
       nonAcceptedJiraFields.add("TBD");
    }
-   private static final ColumnType[] columns = { ColumnType.Jira, ColumnType.Description, ColumnType.Type, ColumnType.Resolution, ColumnType.Release, ColumnType.Merge, ColumnType.BoardStatus, ColumnType.Old, ColumnType.DEst,
-         ColumnType.QEst, ColumnType.DRem, ColumnType.QRem, ColumnType.DAct, ColumnType.QAct, ColumnType.prio, ColumnType.Note, ColumnType.Sprint, ColumnType.Owner_M, ColumnType.Project_M, ColumnType.Environment_M};
+   private static final ColumnType[] columns = {
+         ColumnType.Jira,
+         ColumnType.Description,
+         ColumnType.Type,
+         ColumnType.Resolution,
+         ColumnType.Release,
+         ColumnType.Merge,
+         ColumnType.BoardStatus,
+         ColumnType.Old,
+         ColumnType.DEst,
+         ColumnType.QEst,
+         ColumnType.DRem,
+         ColumnType.QRem,
+         ColumnType.DAct,
+         ColumnType.QAct,
+         ColumnType.prio,
+         ColumnType.Note,
+         ColumnType.Sprint,
+         ColumnType.Owner_M,
+         ColumnType.Project_M,
+         ColumnType.Environment_M };
 
    private MyTableModel jiraModel;
    private EstimateValidator estimateValidator = EstimateValidator.getInstance();
@@ -55,165 +72,179 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
    }
 
    @Override
-   public Color getColor(Object value, int row, ColumnType column) {
+   public Color getColor(Object value, int row, ColumnType column, int colNo) {
       if (log.isDebugEnabled())
          log.debug("column: " + column + " value: \"" + value + "\" row: " + row);
 
       if (value == null) {
-         setToolTipText(row, getColumnIndex(column), "Is null!");
+         setToolTipText(row, colNo, "Is null!");
          return SwingUtil.cellRed;
       }
 
       String stringValue;
       switch (column) {
-         case Type:
-            if (value.equals(IssueType.TBD)) {
-               setToolTipText(row, getColumnIndex(column), "Cannot be TBD - define it!");
-               return SwingUtil.cellRed;
-            }
-            break;
-         case Release:
-            stringValue = value.toString();
-            if (isEmptyString(stringValue)) {
-               setToolTipText(row, getColumnIndex(column), "Is empty!");
-               return SwingUtil.cellRed;
-            }
-            break;
-         case Jira:
-            if (shouldNotRenderColors() || jiraModel == null)
-               return null;
-            if (jiraModel.isJiraPresent(value.toString())) {
-               setToolTipText(row, getColumnIndex(column), "Exists in the Jira Panel!");
-               return SwingUtil.cellGreen;
-            }
-            break;
-         case Resolution:
-            stringValue = value.toString();
-            if (!isEmptyString(stringValue)) {
-               BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(ColumnType.BoardStatus, row);
-               if (!BoardStatusValueToJiraStatusMap.isMappedOk(boardStatus, stringValue)) {
-                  setToolTipText(row, getColumnIndex(column), "Does not match with the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-                  return SwingUtil.cellRed;
-               }
-            }
-            break;
-         case Sprint:
-            if (getSprintCache() == null) {
-               String errorMessage = "Error! No sprint cache defined!!";
-               setToolTipText(row, getColumnIndex(column), errorMessage);
-               log.error(errorMessage);
-               return SwingUtil.cellRed;
-            }
-            Sprint sprint = getSprintCache().getSprintWithName(value.toString());
-            if (log.isDebugEnabled())
-               log.debug("Value: " + value + " sprint: " + sprint);
-            JiraStatistic jiraStat = getJiraStat(row);
-            if (jiraStat == null) {
-               setToolTipText(row, getColumnIndex(column), "BoardStatus is null so we can't calcualte jira stats!!");
-               return SwingUtil.cellRed;
-            }
-            SprintTime sprintTime = sprint.calculateTime();
-
-            if (sprint == SprintCache.EMPTYSPRINT) {
-               switch (jiraStat.devStatus()) {
-                  case jiraIsInDevelopmentAndOpen:
-                  case jiraIsInDevelopmentAndInProgress:
-                  case jiraIsInDevelopmentAndResolved:
-                     setToolTipText(row, getColumnIndex(column), "Sprint cannot be empty if jira is in Development!");
-                     return SwingUtil.cellRed;
-                  case jiraIsInPostDevelopment:
-                     setToolTipText(row, getColumnIndex(column), "Sprint cannot be empty if jira has been completed!");
-                     return SwingUtil.cellRed;
-               }
-            }
-
-            switch (sprintTime) {
-               case sprintIsInThePast:
-                  switch (jiraStat.devStatus()) {
-                     case jiraIsInPreDevelopment:
-                        setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is in pre-development (" + jiraStat.devStatus() + ") and the sprint is not in the future nor current (" + sprintTime
-                              + ")!");
-                        return SwingUtil.cellRed;
-                     case jiraIsInDevelopmentAndOpen:
-                     case jiraIsInDevelopmentAndInProgress:
-                        setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress (" + jiraStat.devStatus() + ") and the sprint is not current (" + sprintTime + ")!");
-                        return SwingUtil.cellRed;
-                  }
-                  setToolTipText(row, getColumnIndex(column), "Is before current sprint!");
-                  return SwingUtil.cellLightGreen;
-               case currentSprint:
-                  switch (jiraStat.devStatus()) {
-                     case jiraIsInPreDevelopment:
-                        break;
-                     case jiraIsInDevelopmentAndOpen:
-                     case jiraIsInDevelopmentAndInProgress:
-                        break;
-                     case jiraIsInPostDevelopment:
-                        break;
-                  }
-                  setToolTipText(row, getColumnIndex(column), "Is current sprint!");
-                  return SwingUtil.cellLightYellow;
-               case sprintIsInTheFuture:
-                  switch (jiraStat.devStatus()) {
-                     case jiraIsInPreDevelopment:
-                        break;
-                     case jiraIsInDevelopmentAndOpen:
-                     case jiraIsInDevelopmentAndInProgress:
-                        setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress (" + jiraStat.devStatus() + ") and this sprint is not current (" + sprintTime + ")!");
-                        return SwingUtil.cellRed;
-                     case jiraIsInPostDevelopment:
-                        setToolTipText(row, getColumnIndex(column), "The jira " + getValueAt(ColumnType.Jira, row) + " is closed (" + jiraStat.devStatus() + ") and this sprint is not current nor in the past (" + sprintTime + ")!");
-                        return SwingUtil.cellRed;
-                  }
-                  setToolTipText(row, getColumnIndex(column), "Is after current sprint!");
-                  return SwingUtil.cellLightRed;
-            }
+      case Type:
+         if (value.equals(IssueType.TBD)) {
+            setToolTipText(row, colNo, "Cannot be TBD - define it!");
+            return SwingUtil.cellRed;
+         }
+         break;
+      case Release:
+         stringValue = value.toString();
+         if (isEmptyString(stringValue)) {
+            setToolTipText(row, colNo, "Is empty!");
+            return SwingUtil.cellRed;
+         }
+         break;
+      case Jira:
+         if (shouldNotRenderColors() || jiraModel == null)
             return null;
-         case DEst:
-         case QEst:
-         case DRem:
-         case QRem:
-         case DAct:
-         case QAct:
-            Validator validator = estimateValidator.getValidator(column);
-            ValidatorResponse response = validatorManager.validate(validator, value, row, this);
-            if (response.getType() == ValidatorResponseType.FAIL) {
-               setToolTipText(row, getColumnIndex(column), response.getMessage());
+         if (jiraModel.isJiraPresent(value.toString())) {
+            setToolTipText(row, colNo, "Exists in the Jira Panel!");
+            return SwingUtil.cellGreen;
+         }
+         break;
+      case Resolution:
+         stringValue = value.toString();
+         if (!isEmptyString(stringValue)) {
+            BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(ColumnType.BoardStatus, row);
+            if (!BoardStatusValueToJiraStatusMap.isMappedOk(boardStatus, stringValue)) {
+               setToolTipText(row, colNo, "Does not match with the BoardStatus value (" + getObjectAsNonNull(boardStatus)
+                     + ")!");
                return SwingUtil.cellRed;
             }
-            return null;
-         case BoardStatus:
-            BoardStatusValue newValue = (BoardStatusValue) value;
+         }
+         break;
+      case Sprint:
+         if (getSprintCache() == null) {
+            String errorMessage = "Error! No sprint cache defined!!";
+            setToolTipText(row, colNo, errorMessage);
+            log.error(errorMessage);
+            return SwingUtil.cellRed;
+         }
+         Sprint sprint = getSprintCache().getSprintWithName(value.toString());
+         if (log.isDebugEnabled())
+            log.debug("Value: " + value + " sprint: " + sprint);
+         JiraStatistic jiraStat = getJiraStat(row);
+         if (jiraStat == null) {
+            setToolTipText(row, colNo, "BoardStatus is null so we can't calcualte jira stats!!");
+            return SwingUtil.cellRed;
+         }
+         SprintTime sprintTime = sprint.calculateTime();
+
+         if (sprint == SprintCache.EMPTYSPRINT) {
+            switch (jiraStat.devStatus()) {
+            case jiraIsInDevelopmentAndOpen:
+            case jiraIsInDevelopmentAndInProgress:
+            case jiraIsInDevelopmentAndResolved:
+               setToolTipText(row, colNo, "Sprint cannot be empty if jira is in Development!");
+               return SwingUtil.cellRed;
+            case jiraIsInPostDevelopment:
+               setToolTipText(row, colNo, "Sprint cannot be empty if jira has been completed!");
+               return SwingUtil.cellRed;
+            }
+         }
+
+         switch (sprintTime) {
+         case sprintIsInThePast:
+            switch (jiraStat.devStatus()) {
+            case jiraIsInPreDevelopment:
+               setToolTipText(row, colNo, "The jira " + getValueAt(ColumnType.Jira, row) + " is in pre-development ("
+                     + jiraStat.devStatus() + ") and the sprint is not in the future nor current (" + sprintTime + ")!");
+               return SwingUtil.cellRed;
+            case jiraIsInDevelopmentAndOpen:
+            case jiraIsInDevelopmentAndInProgress:
+               setToolTipText(row, colNo, "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress ("
+                     + jiraStat.devStatus() + ") and the sprint is not current (" + sprintTime + ")!");
+               return SwingUtil.cellRed;
+            }
+            setToolTipText(row, colNo, "Is before current sprint!");
+            return SwingUtil.cellLightGreen;
+         case currentSprint:
+            switch (jiraStat.devStatus()) {
+            case jiraIsInPreDevelopment:
+               break;
+            case jiraIsInDevelopmentAndOpen:
+            case jiraIsInDevelopmentAndInProgress:
+               break;
+            case jiraIsInPostDevelopment:
+               break;
+            }
+            setToolTipText(row, colNo, "Is current sprint!");
+            return SwingUtil.cellLightYellow;
+         case sprintIsInTheFuture:
+            switch (jiraStat.devStatus()) {
+            case jiraIsInPreDevelopment:
+               break;
+            case jiraIsInDevelopmentAndOpen:
+            case jiraIsInDevelopmentAndInProgress:
+               setToolTipText(row, colNo, "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress ("
+                     + jiraStat.devStatus() + ") and this sprint is not current (" + sprintTime + ")!");
+               return SwingUtil.cellRed;
+            case jiraIsInPostDevelopment:
+               setToolTipText(row, colNo, "The jira " + getValueAt(ColumnType.Jira, row) + " is closed ("
+                     + jiraStat.devStatus() + ") and this sprint is not current nor in the past (" + sprintTime + ")!");
+               return SwingUtil.cellRed;
+            }
+            setToolTipText(row, colNo, "Is after current sprint!");
+            return SwingUtil.cellLightRed;
+         }
+         return null;
+      case DEst:
+      case QEst:
+      case DRem:
+      case QRem:
+      case DAct:
+      case QAct:
+         Validator validator = estimateValidator.getValidator(column);
+         ValidatorResponse response = validatorManager.validate(validator, value, row, this);
+         if (response.getType() == ValidatorResponseType.FAIL) {
+            setToolTipText(row, colNo, response.getMessage());
+            return SwingUtil.cellRed;
+         }
+         return null;
+      case BoardStatus:
+         BoardStatusValue newValue = (BoardStatusValue) value;
+         if (log.isDebugEnabled()) {
+            log.debug("boardStatus is " + newValue);
+         }
+         switch (newValue) {
+         case UnKnown:
+            setToolTipText(row, colNo, "This is set to unKnown!");
+            return SwingUtil.cellRed;
+         case InProgress:
             if (log.isDebugEnabled()) {
-               log.debug("boardStatus is " + newValue);
+               log.debug("in progress");
             }
-            switch (newValue) {
-               case UnKnown:
-                  setToolTipText(row, getColumnIndex(column), "This is set to unKnown!");
-                  return SwingUtil.cellRed;
-               case InProgress:
-                  if (log.isDebugEnabled()) {
-                     log.debug("in progress");
-                  }
-                  setToolTipText(row, getColumnIndex(column), "This is in Progress!");
-                  return SwingUtil.cellLightYellow;
-               case Failed:
-                  setToolTipText(row, getColumnIndex(column), "This is a Bug!");
-                  return SwingUtil.cellLightRed;
-               case Resolved:
-                  setToolTipText(row, getColumnIndex(column), "This is Resolved!");
-                  return SwingUtil.cellLightBlue;
-               case Approved:
-                  setToolTipText(row, getColumnIndex(column), "This is Approved!");
-                  return SwingUtil.cellLightGreen;
-               case Complete:
-                  setToolTipText(row, getColumnIndex(column), "This is Complete!");
-                  return SwingUtil.cellLightGreen;
-               case ForShowCase:
-                  setToolTipText(row, getColumnIndex(column), "This is ForShowCase!");
-                  return SwingUtil.cellLightGreen;
-            }
-            break;
+            setToolTipText(row, colNo, "This is in Progress!");
+            return SwingUtil.cellLightYellow;
+         case Failed:
+            setToolTipText(row, colNo, "This is a Bug!");
+            return SwingUtil.cellLightRed;
+         case Resolved:
+            setToolTipText(row, colNo, "This is Resolved!");
+            return SwingUtil.cellLightBlue;
+         case Approved:
+            setToolTipText(row, colNo, "This is Approved!");
+            return SwingUtil.cellLightGreen;
+         case Complete:
+            setToolTipText(row, colNo, "This is Complete!");
+            return SwingUtil.cellLightGreen;
+         case ForShowCase:
+            setToolTipText(row, colNo, "This is ForShowCase!");
+            return SwingUtil.cellLightGreen;
+         }
+         break;
+      case Owner_M:
+         if(value.toString().trim().length() == 0){
+            setToolTipText(row, colNo, "This is ForShowCase!");
+            return SwingUtil.cellLightGreen;
+         }
+         break;
+      case Project_M:
+         break;
+      case Environment_M:
+         break;
       }
       return null;
    }
@@ -224,46 +255,46 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
 
    private ColorAndNullCheck preNullColor(Object value, int row, ColumnType column) {
       switch (column) {
-         case FixVersion:
-            Object bRel = this.getValueAt(ColumnType.Release, row);
-            if (!isFixVersionOk(bRel, value)) {
-               setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Release value (" + bRel + ")!");
-               return CHECKED_REDCOLOR;
-            }
-            return CHECKED_NOCOLOR;
-         case J_Sprint:
-            Object bSprint = this.getValueAt(ColumnType.Sprint, row);
-            if (!isSprintOk(bSprint, value)) {
-               setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Sprint value (" + bSprint + ")!");
-               return CHECKED_REDCOLOR;
-            }
-            return CHECKED_NOCOLOR;
-         case Project:
-            if (!isProjectOk(value)) {
-               setToolTipText(row, getColumnIndex(column), "Should not be empty!");
-               return CHECKED_REDCOLOR;
-            }
-            return CHECKED_NOCOLOR;
-         case J_DevEst:
-            Object dEst = this.getValueAt(ColumnType.DEst, row);
-            if (!isJiraNumberOk(dEst, value)) {
-               setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dEst + ")!");
-               return CHECKED_REDCOLOR;
-            }
-            return CHECKED_NOCOLOR;
-         case J_DevAct:
-            Object dAct = this.getValueAt(ColumnType.DAct, row);
-            if (!isJiraNumberOk(dAct, value)) {
-               setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dAct + ")!");
-               return CHECKED_REDCOLOR;
-            }
-            return CHECKED_NOCOLOR;
-         case Delivery:
-            if (false) {
-               setToolTipText(row, getColumnIndex(column), "Not implemented yet!!");
-               return CHECKED_REDCOLOR;
-            }
-            return CHECKED_NOCOLOR;
+      case FixVersion:
+         Object bRel = this.getValueAt(ColumnType.Release, row);
+         if (!isFixVersionOk(bRel, value)) {
+            setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Release value (" + bRel + ")!");
+            return CHECKED_REDCOLOR;
+         }
+         return CHECKED_NOCOLOR;
+      case J_Sprint:
+         Object bSprint = this.getValueAt(ColumnType.Sprint, row);
+         if (!isSprintOk(bSprint, value)) {
+            setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Sprint value (" + bSprint + ")!");
+            return CHECKED_REDCOLOR;
+         }
+         return CHECKED_NOCOLOR;
+      case Project:
+         if (!isProjectOk(value)) {
+            setToolTipText(row, getColumnIndex(column), "Should not be empty!");
+            return CHECKED_REDCOLOR;
+         }
+         return CHECKED_NOCOLOR;
+      case J_DevEst:
+         Object dEst = this.getValueAt(ColumnType.DEst, row);
+         if (!isJiraNumberOk(dEst, value)) {
+            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dEst + ")!");
+            return CHECKED_REDCOLOR;
+         }
+         return CHECKED_NOCOLOR;
+      case J_DevAct:
+         Object dAct = this.getValueAt(ColumnType.DAct, row);
+         if (!isJiraNumberOk(dAct, value)) {
+            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dAct + ")!");
+            return CHECKED_REDCOLOR;
+         }
+         return CHECKED_NOCOLOR;
+      case Delivery:
+         if (false) {
+            setToolTipText(row, getColumnIndex(column), "Not implemented yet!!");
+            return CHECKED_REDCOLOR;
+         }
+         return CHECKED_NOCOLOR;
       }
       return NOTCHECKED_THUSNOCOLOR;
    }
@@ -333,7 +364,8 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
 
    boolean isJiraNumberOk(Object boardValue, Object jiraValue) {
       if (log.isDebugEnabled())
-         log.debug("... We are trying to check if either the board or jira has numberical or string values (boardValue: " + boardValue + ", jiraValue: " + jiraValue + ")");
+         log.debug("... We are trying to check if either the board or jira has numberical or string values (boardValue: " + boardValue
+               + ", jiraValue: " + jiraValue + ")");
       String boardString = boardValue == null ? null : boardValue.toString().trim();
       String jiraString = jiraValue == null ? null : jiraValue.toString().trim();
 
@@ -389,6 +421,7 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
       return (IssueType) getValueAt(ColumnType.Type, row);
    }
 }
+
 
 class ColorAndNullCheck {
 

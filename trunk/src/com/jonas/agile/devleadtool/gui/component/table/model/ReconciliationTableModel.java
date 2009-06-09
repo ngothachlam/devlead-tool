@@ -21,7 +21,7 @@ public class ReconciliationTableModel extends MyTableModel {
 
    @Override
    // FIXME 1 - put this into a highlighter!
-   public Color getColor(Object value, int row, ColumnType column) {
+   public Color getColor(Object value, int row, ColumnType column, int colNo) {
       String jira;
       switch (column) {
          case Jira:
@@ -50,7 +50,7 @@ public class ReconciliationTableModel extends MyTableModel {
             if (isEqual(boardValue, value)) {
                return SwingUtil.cellGreen;
             }
-            setToolTipText(row, getColumnIndex(column), getStringForToolTip(value, boardValue));
+            setToolTipText(row, colNo, getStringForToolTip(value, boardValue));
             return SwingUtil.cellRed;
       }
       return null;

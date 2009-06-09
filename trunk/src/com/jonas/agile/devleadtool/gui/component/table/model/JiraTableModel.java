@@ -37,7 +37,7 @@ public class JiraTableModel extends MyTableModel {
    }
 
    @Override
-   public Color getColor(Object value, int row, ColumnType column) {
+   public Color getColor(Object value, int row, ColumnType column, int colNo) {
       if (shouldNotRenderColors()) {
          return null;
       }
@@ -45,10 +45,9 @@ public class JiraTableModel extends MyTableModel {
       if (boardModel == null) {
          return null;
       }
-
       if (log.isDebugEnabled())
          log.debug("The row getting color for is " + row + " (col: " + column + ") ");
-      if (getColumnIndex(column) == 0) {
+      if (colNo == 0) {
          String jira = getValueAt(ColumnType.Jira, row).toString();
          jiraRowInBoardModel = boardModel.getRowWithJira(jira);
          if (log.isDebugEnabled())
@@ -62,7 +61,7 @@ public class JiraTableModel extends MyTableModel {
          log.debug("... The Jira was found in the board. We now want to check the " + column + " as it's value is \"" + value + "\"");
       switch (column) {
          case Jira:
-            setToolTipText(row, getColumnIndex(column), "Exists in the board!");
+            setToolTipText(row, colNo, "Exists in the board!");
             return SwingUtil.cellGreen;
          case J_Type:
             Object type = boardModel.getValueAt(ColumnType.Type, jiraRowInBoardModel);
@@ -73,40 +72,40 @@ public class JiraTableModel extends MyTableModel {
          case FixVersion:
             Object bRel = boardModel.getValueAt(ColumnType.Release, jiraRowInBoardModel);
             if (!isFixVersionOk(bRel, value)) {
-               setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Release value (" + bRel + ")!");
+               setToolTipText(row, colNo, "This  incorrectly filled out based on the Board's Release value (" + bRel + ")!");
                return SwingUtil.cellRed;
             }
             break;
          case J_Sprint:
             Object bSprint = boardModel.getValueAt(ColumnType.Sprint, jiraRowInBoardModel);
             if (!isSprintOk(bSprint, value)) {
-               setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Sprint value (" + bSprint + ")!");
+               setToolTipText(row, colNo, "This  incorrectly filled out based on the Board's Sprint value (" + bSprint + ")!");
                return SwingUtil.cellRed;
             }
             break;
          case Project:
             if (!isProjectOk(value)) {
-               setToolTipText(row, getColumnIndex(column), "Should not be empty!");
+               setToolTipText(row, colNo, "Should not be empty!");
                return SwingUtil.cellRed;
             }
             break;
          case J_DevEst:
             Object dEst = boardModel.getValueAt(ColumnType.DEst, jiraRowInBoardModel);
             if (!isJiraNumberOk(dEst, value)) {
-               setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dEst + ")!");
+               setToolTipText(row, colNo, "Is incorrectly filled out based on the BoardStatus value (" + dEst + ")!");
                return SwingUtil.cellRed;
             }
             break;
          case J_DevAct:
             Object dAct = boardModel.getValueAt(ColumnType.DAct, jiraRowInBoardModel);
             if (!isJiraNumberOk(dAct, value)) {
-               setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dAct + ")!");
+               setToolTipText(row, colNo, "Is incorrectly filled out based on the BoardStatus value (" + dAct + ")!");
                return SwingUtil.cellRed;
             }
             break;
          case Delivery:
             if (false) {
-               setToolTipText(row, getColumnIndex(column), "Not implemented yet!!");
+               setToolTipText(row, colNo, "Not implemented yet!!");
                return SwingUtil.cellRed;
             }
             break;
