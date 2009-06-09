@@ -165,7 +165,7 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
    }
 
-   public abstract Color getColor(Object value, int row, ColumnType column);
+   public abstract Color getColor(Object value, int row, ColumnType column, int colNo);
 
    public ColorDTO getColor(Object value, int row, int column, boolean includeHSSFColor) {
       ColorDTO colorDto = getColor(value, row, column);
@@ -196,7 +196,7 @@ public abstract class MyTableModel extends DefaultTableModel {
 
    public ColorDTO getColor(Object value, int row, int column) {
       ColumnType columnType = getColumnType(column);
-      Color color = getColor(value, row, columnType);
+      Color color = getColor(value, row, columnType, column);
       return new ColorDTO(color, isMarked(row), isGreyed(columnType));
    }
 
