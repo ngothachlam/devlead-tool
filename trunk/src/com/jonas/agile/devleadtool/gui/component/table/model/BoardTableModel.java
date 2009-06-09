@@ -10,7 +10,9 @@ import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.agile.devleadtool.data.JiraStatistic;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.column.Environment;
 import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
+import com.jonas.agile.devleadtool.gui.component.table.column.Project;
 import com.jonas.agile.devleadtool.gui.component.table.model.color.EstimateValidator;
 import com.jonas.agile.devleadtool.gui.component.table.model.color.Validator;
 import com.jonas.agile.devleadtool.gui.component.table.model.color.ValidatorResponseType;
@@ -109,8 +111,7 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
          if (!isEmptyString(stringValue)) {
             BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(ColumnType.BoardStatus, row);
             if (!BoardStatusValueToJiraStatusMap.isMappedOk(boardStatus, stringValue)) {
-               setToolTipText(row, colNo, "Does not match with the BoardStatus value (" + getObjectAsNonNull(boardStatus)
-                     + ")!");
+               setToolTipText(row, colNo, "Does not match with the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
                return SwingUtil.cellRed;
             }
          }
@@ -149,13 +150,13 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
          case sprintIsInThePast:
             switch (jiraStat.devStatus()) {
             case jiraIsInPreDevelopment:
-               setToolTipText(row, colNo, "The jira " + getValueAt(ColumnType.Jira, row) + " is in pre-development ("
-                     + jiraStat.devStatus() + ") and the sprint is not in the future nor current (" + sprintTime + ")!");
+               setToolTipText(row, colNo, "The jira " + getValueAt(ColumnType.Jira, row) + " is in pre-development (" + jiraStat.devStatus()
+                     + ") and the sprint is not in the future nor current (" + sprintTime + ")!");
                return SwingUtil.cellRed;
             case jiraIsInDevelopmentAndOpen:
             case jiraIsInDevelopmentAndInProgress:
-               setToolTipText(row, colNo, "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress ("
-                     + jiraStat.devStatus() + ") and the sprint is not current (" + sprintTime + ")!");
+               setToolTipText(row, colNo, "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress (" + jiraStat.devStatus()
+                     + ") and the sprint is not current (" + sprintTime + ")!");
                return SwingUtil.cellRed;
             }
             setToolTipText(row, colNo, "Is before current sprint!");
@@ -178,12 +179,12 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
                break;
             case jiraIsInDevelopmentAndOpen:
             case jiraIsInDevelopmentAndInProgress:
-               setToolTipText(row, colNo, "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress ("
-                     + jiraStat.devStatus() + ") and this sprint is not current (" + sprintTime + ")!");
+               setToolTipText(row, colNo, "The jira " + getValueAt(ColumnType.Jira, row) + " is in-progress (" + jiraStat.devStatus()
+                     + ") and this sprint is not current (" + sprintTime + ")!");
                return SwingUtil.cellRed;
             case jiraIsInPostDevelopment:
-               setToolTipText(row, colNo, "The jira " + getValueAt(ColumnType.Jira, row) + " is closed ("
-                     + jiraStat.devStatus() + ") and this sprint is not current nor in the past (" + sprintTime + ")!");
+               setToolTipText(row, colNo, "The jira " + getValueAt(ColumnType.Jira, row) + " is closed (" + jiraStat.devStatus()
+                     + ") and this sprint is not current nor in the past (" + sprintTime + ")!");
                return SwingUtil.cellRed;
             }
             setToolTipText(row, colNo, "Is after current sprint!");
@@ -236,14 +237,22 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
          }
          break;
       case Owner_M:
-         if(value.toString().trim().length() == 0){
-            setToolTipText(row, colNo, "This is ForShowCase!");
+         if (value == null || value.toString().trim().length() == 0) {
+            setToolTipText(row, colNo, "Cannot be empty!");
             return SwingUtil.cellLightGreen;
          }
          break;
       case Project_M:
+         if (value.equals(Project.TBD)) {
+            setToolTipText(row, colNo, "Cannot be TBD - define it!");
+            return SwingUtil.cellRed;
+         }
          break;
       case Environment_M:
+         if (value.equals(Environment.TBD)) {
+            setToolTipText(row, colNo, "Cannot be TBD - define it!");
+            return SwingUtil.cellRed;
+         }
          break;
       }
       return null;
