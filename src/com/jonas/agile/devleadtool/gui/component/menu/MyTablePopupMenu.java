@@ -1,9 +1,7 @@
 package com.jonas.agile.devleadtool.gui.component.menu;
 
 import javax.swing.JFrame;
-
 import org.apache.log4j.Logger;
-
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Add;
 import com.jonas.agile.devleadtool.gui.component.menu.items.MenuItem_Copy;
@@ -36,8 +34,11 @@ public class MyTablePopupMenu extends MyPopupMenu {
       add(new MenuItem_UnSelect(parentFrame, "clear Selected Rows", source));
       add(new MenuItem_Print(parentFrame, "print Table", source));
       addSeparator();
-      add(new MenuItem_OnlyShowSpecificColumns(parentFrame, "Rearrange: Daily Update view", source, "Jira", "Description", "Type", "Resolution", "BoardStatus", "Sprint", "J_Sprint", "Release", "Project", "FixVersion", "Merge", "Owner", "Environment", "DEst", "J_DevEst", "QEst", "DRem", "QRem", "DAct", "J_DevAct", "QAct"));
-      add(new MenuItem_OnlyShowSpecificColumns(parentFrame, "Rearrange: Jira Reconcile view ", source, "Jira", "Type", "Resolution", "Sprint", "J_Sprint", "Release", "BoardStatus", "Project", "FixVersion", "Owner", "Environment", "DEst", "J_DevEst", "DAct", "J_DevAct"));
+      add(new MenuItem_OnlyShowSpecificColumns(parentFrame, "Rearrange: Daily Update view", source, "Jira", "Description", "Type", "J_Type",
+            "BoardStatus", "Resolution", "Sprint", "J_Sprint", "Release", "FixVersion", "Merge", "DEst", "J_DevEst", "QEst", "DRem", "QRem", "DAct",
+            "J_DevAct", "QAct", "Owner_M", "Owner", "Environment_M", "Environment", "Project_M", "Project"));
+      add(new MenuItem_OnlyShowSpecificColumns(parentFrame, "Rearrange: Jira Reconcile view ", source, "Jira", "Type", "Resolution", "Sprint",
+            "J_Sprint", "Release", "BoardStatus", "Project", "FixVersion", "Owner", "Environment", "DEst", "J_DevEst", "DAct", "J_DevAct"));
       add(new MenuItem_OnlyShowSpecificColumns(parentFrame, "Rearrange: DevSup View", source, "Jira", "Resolution", "Delivery", "prio", "Note"));
       add(new MenuItem_OnlyShowSpecificColumns(parentFrame, "Rearrange: None", source));
       add(new MenuItem_OnlyShowSpecificColumns(parentFrame, "Rearrange: Reset", source, true));
