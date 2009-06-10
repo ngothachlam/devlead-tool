@@ -2,8 +2,9 @@ package com.jonas.agile.devleadtool.gui.component.table.column;
 
 import java.util.HashSet;
 import java.util.Set;
+import com.jonas.agile.devleadtool.gui.component.table.TBDEnum;
 
-public enum Project {
+public enum Project implements TBDEnum<Project> {
 
    TBD("<TBD>"),
    PRODBUG("Bug in Prod"),
@@ -29,5 +30,11 @@ public enum Project {
       }
       return TBD;
    }
+   
+   @Override
+   public Project getTBD() {
+      return TBD;
+   }
+
 
 }

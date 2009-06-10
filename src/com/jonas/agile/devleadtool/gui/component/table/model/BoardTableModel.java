@@ -12,6 +12,7 @@ import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.column.Environment;
 import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
+import com.jonas.agile.devleadtool.gui.component.table.column.Owner;
 import com.jonas.agile.devleadtool.gui.component.table.column.Project;
 import com.jonas.agile.devleadtool.gui.component.table.model.color.EstimateValidator;
 import com.jonas.agile.devleadtool.gui.component.table.model.color.Validator;
@@ -223,20 +224,20 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
          }
          break;
       case Owner_M:
-         if (value == null || value.toString().trim().length() == 0) {
-            setToolTipText(row, colNo, "Cannot be empty!");
-            return SwingUtil.cellLightGreen;
+         if (value.equals(Owner.TBD) || value.toString().trim().length() == 0) {
+            setToolTipText(row, colNo, "Cannot be TBD or empty - define it!");
+            return SwingUtil.cellRed;
          }
          break;
       case Project_M:
-         if (value.equals(Project.TBD)) {
-            setToolTipText(row, colNo, "Cannot be TBD - define it!");
+         if (value.equals(Project.TBD) || value.toString().trim().length() == 0) {
+            setToolTipText(row, colNo, "Cannot be TBD or empty - define it!");
             return SwingUtil.cellRed;
          }
          break;
       case Environment_M:
-         if (value.equals(Environment.TBD)) {
-            setToolTipText(row, colNo, "Cannot be TBD - define it!");
+         if (value.equals(Environment.TBD) || value.toString().trim().length() == 0) {
+            setToolTipText(row, colNo, "Cannot be TBD or empty - define it!");
             return SwingUtil.cellRed;
          }
          break;
@@ -263,30 +264,6 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
          }
       }
       return contains;
-   }
-
-   boolean isProjectOk(Object value) {
-      if (value == null) {
-         return false;
-      }
-
-      if (nonAcceptedJiraFields.contains(value.toString())) {
-         return false;
-      }
-
-      return value.toString().trim().length() != 0;
-   }
-
-   boolean isSprintOk(Object boardSprint, Object value) {
-      if (value == null || boardSprint == null) {
-         return false;
-      }
-
-      if (nonAcceptedJiraFields.contains(value.toString())) {
-         return false;
-      }
-
-      return value.toString().trim().equalsIgnoreCase(boardSprint.toString());
    }
 
    boolean isFixVersionOk(Object boardValue, Object jiraValue) {
