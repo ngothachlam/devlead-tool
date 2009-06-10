@@ -8,10 +8,11 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import com.jonas.agile.devleadtool.gui.component.table.TBDEnum;
 import com.jonas.common.DateHelper;
 import com.jonas.common.logging.MyLogger;
 
-public class Sprint implements Comparable<Sprint> {
+public class Sprint implements Comparable<Sprint>, TBDEnum<Sprint> {
 
    private static final Logger log = MyLogger.getLogger(Sprint.class);
    private static final DateFormat format = new SimpleDateFormat("EEE dd-MMM-yy");
@@ -135,6 +136,11 @@ public class Sprint implements Comparable<Sprint> {
 
    public void setNote(String note) {
       this.note = note;
+   }
+
+   @Override
+   public Sprint getTBD() {
+      return SprintCache.EMPTYSPRINT;
    }
 
 }

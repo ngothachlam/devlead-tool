@@ -7,17 +7,17 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
+import com.jonas.agile.devleadtool.gui.component.table.TBDEnum;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
+import com.jonas.agile.devleadtool.gui.component.table.column.Environment;
+import com.jonas.agile.devleadtool.gui.component.table.column.Owner;
+import com.jonas.agile.devleadtool.gui.component.table.column.Project;
+import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.common.CalculatorHelper;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;
 
 public class JiraTableModel extends MyTableModel {
-
-   private final static Set<String> nonAcceptedJiraFields = new HashSet<String>();
-   static {
-      nonAcceptedJiraFields.add("TBD");
-   }
 
    private static final ColumnType[] columns = { ColumnType.Jira, ColumnType.Description, ColumnType.J_Type, ColumnType.J_Sprint, ColumnType.Project, ColumnType.FixVersion, ColumnType.Owner, ColumnType.Environment, ColumnType.Delivery,
          ColumnType.Resolution, ColumnType.BuildNo, ColumnType.J_DevEst, ColumnType.J_DevAct, ColumnType.prio };
@@ -90,15 +90,9 @@ public class JiraTableModel extends MyTableModel {
             }
             break;
          case J_Sprint:
-            Object bSprint = boardModel.getValueAt(ColumnType.Sprint, jiraRowInBoardModel);
-            if (!isSprintOk(bSprint, value)) {
+            Sprint bSprint = (Sprint) boardModel.getValueAt(ColumnType.Sprint, jiraRowInBoardModel);
+            if (!areDropDownValuesEqual(bSprint, value)) {
                setToolTipText(row, colNo, "Does not match with the Board value (" + bSprint + ")!");
-               return SwingUtil.cellRed;
-            }
-            break;
-         case Project:
-            if (!isProjectOk(value)) {
-               setToolTipText(row, colNo, "Should not be empty!");
                return SwingUtil.cellRed;
             }
             break;
@@ -116,49 +110,54 @@ public class JiraTableModel extends MyTableModel {
                return SwingUtil.cellRed;
             }
             break;
-         case Delivery:
-            if (false) {
-               setToolTipText(row, colNo, "Not implemented yet!!");
+         case Project:
+            Project bproject = (Project) boardModel.getValueAt(ColumnType.Project_M, jiraRowInBoardModel);
+            if (!areDropDownValuesEqual(bproject, value)) {
+               setToolTipText(row, colNo, "Does not match with the Board value (" + bproject + ")!");
                return SwingUtil.cellRed;
             }
+            break;
+         case Owner:
+            Owner bowner = (Owner) boardModel.getValueAt(ColumnType.Owner_M, jiraRowInBoardModel);
+            if (!areDropDownValuesEqual(bowner, value)) {
+               setToolTipText(row, colNo, "Does not match with the Board value (" + bowner + ")!");
+               return SwingUtil.cellRed;
+            }
+            break;
+         case Environment:
+            Environment benvironment = (Environment) boardModel.getValueAt(ColumnType.Environment_M, jiraRowInBoardModel);
+            if (!areDropDownValuesEqual(benvironment, value)) {
+               setToolTipText(row, colNo, "Does not match with the Board value (" + benvironment + ")!");
+               return SwingUtil.cellRed;
+            }
+            break;
+         case Delivery:
             break;
       }
       return null;
    }
 
-   boolean isProjectOk(Object value) {
-      if (value == null) {
+   boolean areDropDownValuesEqual(TBDEnum boardObject, Object jiraObject) {
+      if (jiraObject == null || boardObject == null) {
          return false;
       }
 
-      if (nonAcceptedJiraFields.contains(value.toString())) {
+      if (boardObject.getTBD().toString().equals(jiraObject.toString())) {
          return false;
       }
 
-      return value.toString().trim().length() != 0;
-   }
-
-   boolean isSprintOk(Object boardSprint, Object value) {
-      if (value == null || boardSprint == null) {
-         return false;
-      }
-
-      if (nonAcceptedJiraFields.contains(value.toString())) {
-         return false;
-      }
-
-      return value.toString().trim().equalsIgnoreCase(boardSprint.toString());
+      return jiraObject.toString().trim().equalsIgnoreCase(boardObject.toString().trim());
    }
 
    boolean isFixVersionOk(Object boardValue, Object jiraValue) {
-      return areValuesTheSame(boardValue, jiraValue);
+      return areValuesAsStringsEqual(boardValue, jiraValue);
    }
 
    private boolean isTypeOk(Object boardValue, Object jiraValue) {
-      return areValuesTheSame(boardValue, jiraValue);
+      return areValuesAsStringsEqual(boardValue, jiraValue);
    }
    
-   private boolean areValuesTheSame(Object boardValue, Object jiraValue) {
+   private boolean areValuesAsStringsEqual(Object boardValue, Object jiraValue) {
       if (log.isDebugEnabled())
          log.debug("Fix Version boardValue: \"" + boardValue + "\" jiraValue: " + jiraValue);
       if (jiraValue == null || jiraValue.toString().trim().length() == 0) {
@@ -170,9 +169,9 @@ public class JiraTableModel extends MyTableModel {
          return false;
       }
 
-      String jiraFixVersions = jiraValue.toString();
+      String jiraValueAsString = jiraValue.toString();
       String boardValueAsString = boardValue.toString();
-      return jiraFixVersions.equalsIgnoreCase(boardValueAsString);
+      return jiraValueAsString.equalsIgnoreCase(boardValueAsString);
    }
 
    boolean isJiraNumberOk(Object boardValue, Object jiraValue) {

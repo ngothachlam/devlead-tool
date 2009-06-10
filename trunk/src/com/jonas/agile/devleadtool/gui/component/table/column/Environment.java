@@ -2,8 +2,9 @@ package com.jonas.agile.devleadtool.gui.component.table.column;
 
 import java.util.HashSet;
 import java.util.Set;
+import com.jonas.agile.devleadtool.gui.component.table.TBDEnum;
 
-public enum Environment {
+public enum Environment implements TBDEnum<Environment> {
 
    TBD("<TBD>"),
    PROD("Production"),
@@ -28,6 +29,11 @@ public enum Environment {
          if (issueType.toString().equals(toString))
             return issueType;
       }
+      return TBD;
+   }
+
+   @Override
+   public Environment getTBD() {
       return TBD;
    }
 

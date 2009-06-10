@@ -110,14 +110,14 @@ public class JiraTableModelTest extends JonasTestCase {
    }
 
    public void testShouldHiglightIncorrectSprints() {
-      assertFalse(jiraModel.isSprintOk("", null));
-      assertFalse(jiraModel.isSprintOk("", "1"));
-      assertFalse(jiraModel.isSprintOk(null, ""));
+      assertFalse(jiraModel.areDropDownValuesEqual("", null));
+      assertFalse(jiraModel.areDropDownValuesEqual("", "1"));
+      assertFalse(jiraModel.areDropDownValuesEqual(null, ""));
       
-      assertTrue(jiraModel.isSprintOk("", " "));
-      assertTrue(jiraModel.isSprintOk("", ""));
-      assertTrue(jiraModel.isSprintOk("13-1", "13-1"));
-      assertTrue(jiraModel.isSprintOk("A", "A"));
+      assertTrue(jiraModel.areDropDownValuesEqual("", " "));
+      assertTrue(jiraModel.areDropDownValuesEqual("", ""));
+      assertTrue(jiraModel.areDropDownValuesEqual("13-1", "13-1"));
+      assertTrue(jiraModel.areDropDownValuesEqual("A", "A"));
    }
 
    public void testShouldHiglightIncorrectProjects() {

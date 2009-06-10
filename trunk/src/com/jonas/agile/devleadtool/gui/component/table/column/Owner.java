@@ -2,8 +2,9 @@ package com.jonas.agile.devleadtool.gui.component.table.column;
 
 import java.util.HashSet;
 import java.util.Set;
+import com.jonas.agile.devleadtool.gui.component.table.TBDEnum;
 
-public enum Owner {
+public enum Owner implements TBDEnum<Owner> {
 
    TBD("<TBD>"), BUSINESS("Business"), Technology("Technology");
 
@@ -24,6 +25,11 @@ public enum Owner {
          if (issueType.toString().equals(toString))
             return issueType;
       }
+      return TBD;
+   }
+
+   @Override
+   public Owner getTBD() {
       return TBD;
    }
 
