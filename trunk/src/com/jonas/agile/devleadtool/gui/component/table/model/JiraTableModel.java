@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 import org.apache.log4j.Logger;
+import com.jonas.agile.devleadtool.data.BoardStatusValueToJiraStatusMap;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
+import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.common.CalculatorHelper;
 import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;
@@ -63,6 +65,17 @@ public class JiraTableModel extends MyTableModel {
          case Jira:
             setToolTipText(row, colNo, "Exists in the board!");
             return SwingUtil.cellGreen;
+         case Resolution:
+            String stringValue = value.toString();
+            if (!isEmptyString(stringValue)) {
+               BoardStatusValue boardStatus = (BoardStatusValue) boardModel.getValueAt(ColumnType.BoardStatus, row);
+               if (!BoardStatusValueToJiraStatusMap.isMappedOk(boardStatus, stringValue)) {
+                  setToolTipText(row, colNo, "Does not match with the Board value (" + getObjectAsNonNull(boardStatus) + ")!");
+                  return SwingUtil.cellRed;
+               }
+            }
+            break;
+
          case J_Type:
             Object type = boardModel.getValueAt(ColumnType.Type, jiraRowInBoardModel);
             if (!isTypeOk(type, value)) {
@@ -72,14 +85,14 @@ public class JiraTableModel extends MyTableModel {
          case FixVersion:
             Object bRel = boardModel.getValueAt(ColumnType.Release, jiraRowInBoardModel);
             if (!isFixVersionOk(bRel, value)) {
-               setToolTipText(row, colNo, "This  incorrectly filled out based on the Board's Release value (" + bRel + ")!");
+               setToolTipText(row, colNo, "Does not match with the Board value (" + bRel + ")!");
                return SwingUtil.cellRed;
             }
             break;
          case J_Sprint:
             Object bSprint = boardModel.getValueAt(ColumnType.Sprint, jiraRowInBoardModel);
             if (!isSprintOk(bSprint, value)) {
-               setToolTipText(row, colNo, "This  incorrectly filled out based on the Board's Sprint value (" + bSprint + ")!");
+               setToolTipText(row, colNo, "Does not match with the Board value (" + bSprint + ")!");
                return SwingUtil.cellRed;
             }
             break;
@@ -92,14 +105,14 @@ public class JiraTableModel extends MyTableModel {
          case J_DevEst:
             Object dEst = boardModel.getValueAt(ColumnType.DEst, jiraRowInBoardModel);
             if (!isJiraNumberOk(dEst, value)) {
-               setToolTipText(row, colNo, "Is incorrectly filled out based on the BoardStatus value (" + dEst + ")!");
+               setToolTipText(row, colNo, "Does not match with the Board value (" + dEst + ")!");
                return SwingUtil.cellRed;
             }
             break;
          case J_DevAct:
             Object dAct = boardModel.getValueAt(ColumnType.DAct, jiraRowInBoardModel);
             if (!isJiraNumberOk(dAct, value)) {
-               setToolTipText(row, colNo, "Is incorrectly filled out based on the BoardStatus value (" + dAct + ")!");
+               setToolTipText(row, colNo, "Does not match with the Board value (" + dAct + ")!");
                return SwingUtil.cellRed;
             }
             break;

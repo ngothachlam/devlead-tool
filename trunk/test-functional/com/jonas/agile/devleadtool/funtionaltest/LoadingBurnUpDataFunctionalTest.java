@@ -25,7 +25,7 @@ import com.jonas.agile.devleadtool.data.PersistanceException;
 import com.jonas.agile.devleadtool.data.PlannerDAOExcelImpl;
 import com.jonas.agile.devleadtool.gui.component.dialog.CombinedModelDTO;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
-import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
+import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.sprint.ExcelSprintDao;
 import com.jonas.common.DateHelper;
 import com.jonas.jira.TestObjects;
@@ -204,7 +204,7 @@ public class LoadingBurnUpDataFunctionalTest {
 
    @Test
    public void shouldSaveHistoricalDataFromFromScratch() throws IOException, PersistanceException {
-      BoardTableModel boardModel = loadBoardModel(new File("test-data//Sprint Tracker - llu.xls"));
+      MyTableModel boardModel = loadBoardModel(new File("test-data//Sprint Tracker - llu.xls"));
 
       // Assert historical data saving
       assertFalse("File cannot exist as we are trying to save to it from afresh!", sprintTrackerHistorical_TestFile.exists());
@@ -215,7 +215,7 @@ public class LoadingBurnUpDataFunctionalTest {
 
    @Test
    public void shouldLoadBoardModelOkAndThenSaveAndLoadHistoricalOnDifferentDaysOkIfHistoricalFileAlreadyExists() throws IOException, PersistanceException {
-      BoardTableModel boardModel = loadBoardModel(new File("test-data//Sprint Tracker - llu.xls"));
+      MyTableModel boardModel = loadBoardModel(new File("test-data//Sprint Tracker - llu.xls"));
 
       // setup a file with old historical data...
       {
@@ -242,7 +242,7 @@ public class LoadingBurnUpDataFunctionalTest {
 
    @Test
    public void shouldLoadBoardModelOkAndThenSaveAndLoadHistoricalOnDifferentDaysOk() throws IOException, PersistanceException {
-      BoardTableModel boardModel = loadBoardModel(new File("test-data//Sprint Tracker - llu.xls"));
+      MyTableModel boardModel = loadBoardModel(new File("test-data//Sprint Tracker - llu.xls"));
 
       // Assert historical data saving
       assertFalse("File cannot exist as we are trying to save to it from afresh!", sprintTrackerHistorical_TestFile.exists());
@@ -266,7 +266,7 @@ public class LoadingBurnUpDataFunctionalTest {
       assertHistoricalData(expectation, historicalData);
    }
 
-   private BoardTableModel loadBoardModel(File sprinterXlsFile) throws IOException, PersistanceException {
+   private MyTableModel loadBoardModel(File sprinterXlsFile) throws IOException, PersistanceException {
       // Load BoardModel Data
       ExcelSprintDao excelSprintDao = new ExcelSprintDao();
       PlannerDAOExcelImpl plannerDao = new PlannerDAOExcelImpl(excelSprintDao);
@@ -274,7 +274,7 @@ public class LoadingBurnUpDataFunctionalTest {
       assertTrue("Cannot load the file if it doesn't exist!", sprinterXlsFile.exists());
       CombinedModelDTO loadedData = plannerDao.loadAllData(sprinterXlsFile);
 
-      BoardTableModel boardModel = loadedData.getBoardModel();
+      MyTableModel boardModel = loadedData.getBoardModel();
       assertEquals("We expect to have loaded 17 rows", 17, boardModel.getRowCount());
       return boardModel;
    }

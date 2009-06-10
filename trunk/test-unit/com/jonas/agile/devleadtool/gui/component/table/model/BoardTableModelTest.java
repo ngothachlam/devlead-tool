@@ -17,7 +17,7 @@ public class BoardTableModelTest extends JonasTestCase {
 
    String[] tableHeader;
    Object[][] tableContents;
-   BoardTableModel model;
+   MyTableModel model;
 
    @Override
    protected void setUp() throws Exception {

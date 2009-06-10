@@ -25,9 +25,6 @@ import com.jonas.common.swing.SwingUtil;
 
 public class BoardTableModel extends MyTableModel implements ValueGetter {
 
-   private static final ColorAndNullCheck NOTCHECKED_THUSNOCOLOR = new ColorAndNullCheck(null, false);
-   private static final ColorAndNullCheck CHECKED_NOCOLOR = new ColorAndNullCheck(null, true);
-   private static final ColorAndNullCheck CHECKED_REDCOLOR = new ColorAndNullCheck(SwingUtil.cellRed, true);
    private final static Logger log = MyLogger.getLogger(BoardTableModel.class);
    private final static Set<String> nonAcceptedJiraFields = new HashSet<String>();
    static {
@@ -37,7 +34,6 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
          ColumnType.Jira,
          ColumnType.Description,
          ColumnType.Type,
-         ColumnType.Resolution,
          ColumnType.Release,
          ColumnType.Merge,
          ColumnType.BoardStatus,
@@ -104,16 +100,6 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
          if (jiraModel.isJiraPresent(value.toString())) {
             setToolTipText(row, colNo, "Exists in the Jira Panel!");
             return SwingUtil.cellGreen;
-         }
-         break;
-      case Resolution:
-         stringValue = value.toString();
-         if (!isEmptyString(stringValue)) {
-            BoardStatusValue boardStatus = (BoardStatusValue) getValueAt(ColumnType.BoardStatus, row);
-            if (!BoardStatusValueToJiraStatusMap.isMappedOk(boardStatus, stringValue)) {
-               setToolTipText(row, colNo, "Does not match with the BoardStatus value (" + getObjectAsNonNull(boardStatus) + ")!");
-               return SwingUtil.cellRed;
-            }
          }
          break;
       case Sprint:
@@ -258,56 +244,6 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
       return null;
    }
 
-   private String getObjectAsNonNull(Object object) {
-      return object == null ? "<NULL>" : object.toString();
-   }
-
-   private ColorAndNullCheck preNullColor(Object value, int row, ColumnType column) {
-      switch (column) {
-      case FixVersion:
-         Object bRel = this.getValueAt(ColumnType.Release, row);
-         if (!isFixVersionOk(bRel, value)) {
-            setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Release value (" + bRel + ")!");
-            return CHECKED_REDCOLOR;
-         }
-         return CHECKED_NOCOLOR;
-      case J_Sprint:
-         Object bSprint = this.getValueAt(ColumnType.Sprint, row);
-         if (!isSprintOk(bSprint, value)) {
-            setToolTipText(row, getColumnIndex(column), "This  incorrectly filled out based on the Board's Sprint value (" + bSprint + ")!");
-            return CHECKED_REDCOLOR;
-         }
-         return CHECKED_NOCOLOR;
-      case Project:
-         if (!isProjectOk(value)) {
-            setToolTipText(row, getColumnIndex(column), "Should not be empty!");
-            return CHECKED_REDCOLOR;
-         }
-         return CHECKED_NOCOLOR;
-      case J_DevEst:
-         Object dEst = this.getValueAt(ColumnType.DEst, row);
-         if (!isJiraNumberOk(dEst, value)) {
-            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dEst + ")!");
-            return CHECKED_REDCOLOR;
-         }
-         return CHECKED_NOCOLOR;
-      case J_DevAct:
-         Object dAct = this.getValueAt(ColumnType.DAct, row);
-         if (!isJiraNumberOk(dAct, value)) {
-            setToolTipText(row, getColumnIndex(column), "Is incorrectly filled out based on the BoardStatus value (" + dAct + ")!");
-            return CHECKED_REDCOLOR;
-         }
-         return CHECKED_NOCOLOR;
-      case Delivery:
-         if (false) {
-            setToolTipText(row, getColumnIndex(column), "Not implemented yet!!");
-            return CHECKED_REDCOLOR;
-         }
-         return CHECKED_NOCOLOR;
-      }
-      return NOTCHECKED_THUSNOCOLOR;
-   }
-
    private JiraStatistic getJiraStat(int row) {
       Object valueAt = this.getValueAt(ColumnType.BoardStatus, row);
       if (log.isDebugEnabled())
@@ -315,10 +251,6 @@ public class BoardTableModel extends MyTableModel implements ValueGetter {
       if (valueAt == null)
          return null;
       return new JiraStatistic((BoardStatusValue) valueAt);
-   }
-
-   private boolean isEmptyString(String stringValue) {
-      return stringValue == null || stringValue.trim().length() <= 0;
    }
 
    boolean isBoardValueEither(int row, Set<BoardStatusValue> set, Object boardStatus) {
