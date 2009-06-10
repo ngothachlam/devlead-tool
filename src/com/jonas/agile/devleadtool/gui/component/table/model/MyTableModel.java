@@ -640,4 +640,12 @@ public abstract class MyTableModel extends DefaultTableModel {
       }
       return false;
    }
+
+   protected boolean isEmptyString(String stringValue) {
+      return stringValue == null || stringValue.trim().length() <= 0;
+   }
+
+   protected String getObjectAsNonNull(Object object) {
+      return object == null ? "<NULL>" : object.toString();
+   }
 }
