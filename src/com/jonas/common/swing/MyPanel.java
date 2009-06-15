@@ -21,6 +21,9 @@ public class MyPanel extends JPanel {
 
    private Font defaultFont;
 
+   public MyPanel() {
+   }
+   
    public MyPanel(LayoutManager layoutManager) {
       super(layoutManager);
    }

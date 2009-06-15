@@ -1,7 +1,9 @@
 package com.jonas.agile.devleadtool.component.panel;
 
 import javax.swing.JFrame;
-import com.jonas.agile.devleadtool.gui.component.panel.BoardPanel;
+import com.jonas.agile.devleadtool.PlannerHelper;
+import com.jonas.agile.devleadtool.gui.action.SprintManagerGuiAction;
+import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
 import com.jonas.agile.devleadtool.gui.component.panel.MyDataPanel;
 import com.jonas.agile.devleadtool.sprint.Sprint;
 import com.jonas.agile.devleadtool.sprint.SprintCache;
@@ -11,14 +13,11 @@ public class BoardPanelTestScreen {
 
    public static void main(String[] args) {
       JFrame frame = TryoutTester.getEmptyFrame();
-      SprintCache sprintCache = new SprintCache();
-      MyDataPanel panel = new BoardPanel(sprintCache);
-      frame.setContentPane(panel);
-      
-      setTestData(panel, sprintCache);
-      
-      frame.pack();
-      frame.setVisible(true);
+      PlannerHelper helper = new PlannerHelper(null, "planner helper");
+      MyInternalFrame internalFrame = new MyInternalFrame(null, null, null, null, null, null, null);
+      helper.setActiveInternalFrame(internalFrame);
+      SprintManagerGuiAction panel = new SprintManagerGuiAction(frame, helper, null);
+      panel.doActionPerformed(null);
    }
 
    private static void setTestData(MyDataPanel panel, SprintCache sprintCache) {

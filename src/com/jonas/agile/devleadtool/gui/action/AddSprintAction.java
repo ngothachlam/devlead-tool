@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import com.jonas.agile.devleadtool.sprint.Sprint;
+import com.jonas.agile.devleadtool.sprint.SprintCacheListener;
+import com.jonas.agile.devleadtool.sprint.SprintCacheNotification;
 import com.jonas.agile.devleadtool.sprint.SprintCreationSource;
 import com.jonas.agile.devleadtool.sprint.SprintCreationTarget;
 
@@ -66,16 +68,4 @@ public class AddSprintAction extends BasicAbstractGUIAction {
    public void removeListener(SprintCacheListener listener) {
       listeners.remove(listener);
    }
-}
-
-
-interface SprintCacheListener {
-
-   public void notify(SprintCacheNotification notification);
-
-}
-
-
-enum SprintCacheNotification {
-   ADDEDTOCACHE, ADDINGTOCACHE, REQUIREDFIELDMISSING
 }
