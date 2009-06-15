@@ -46,7 +46,7 @@ public class DnDTreePanel extends JPanel {
    }
 
    private Component getButtonPanel() {
-      JPanel panel = new JPanel(new GridLayout(2, 2, 5, 5));
+      JPanel panel = new JPanel(new GridLayout(3, 1, 5, 5));
 
       JButton uploadToJiraButton = new UploadToJiraButton("Upload to Jira", parentFrame, tree);
       JButton clearTreeButton = new ClearTreeButton("Clear Tree", this, tree);
