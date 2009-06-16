@@ -7,9 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.log4j.Logger;
-
 import com.jonas.common.logging.MyLogger;
 
 public class BurnData {
@@ -86,13 +84,15 @@ public class BurnData {
 
       private BurnDataColumn getBurnDataColumn(double x) {
          for (BurnDataColumn burnDataColumn : burnDataColumList) {
-            System.out.println("trying to find x value " + x + " for burnDataColumn " + burnDataColumn + " (which has x " + burnDataColumn.getX() + ")");
+            if (log.isDebugEnabled())
+               log.debug("trying to find x value " + x + " for burnDataColumn " + burnDataColumn + " (which has x " + burnDataColumn.getX() + ")");
             if (burnDataColumn.getX() == x) {
-               System.out.println("found it!!");
+               log.debug("found it!!");
                return burnDataColumn;
             }
          }
-         System.out.println("creating a new column for " + x + "!!");
+         if (log.isDebugEnabled())
+            log.debug("creating a new column for " + x + "!!");
          BurnDataColumn e = new BurnDataColumn(x, 0d);
          burnDataColumList.add(e);
          return e;
@@ -112,12 +112,12 @@ public class BurnData {
 
       Map<Category, BurnDataColumns> burnDataPerCategoryV2 = new LinkedHashMap<Category, BurnDataColumns>();
       for (Category category : mapValues) {
-         System.out.println("putting " + category.getName() + " in first spot!");
+         if (log.isDebugEnabled())
+            log.debug("putting " + category.getName() + " in first spot!");
          burnDataPerCategoryV2.put(category, burnDataPerCategory.get(category));
       }
 
       burnDataPerCategory = burnDataPerCategoryV2;
    }
-
 
 }

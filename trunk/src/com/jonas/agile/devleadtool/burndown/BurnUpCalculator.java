@@ -6,16 +6,19 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-
+import org.apache.log4j.Logger;
 import com.jonas.agile.devleadtool.data.JiraStatistic;
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
 import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
 import com.jonas.agile.devleadtool.sprint.Sprint;
+import com.jonas.common.logging.MyLogger;
 import com.jonas.common.swing.SwingUtil;
 
 public class BurnUpCalculator {
 
+   private static final Logger log = MyLogger.getLogger(BurnUpCalculator.class);
+   
    public BurnUpCalculator() {
    }
 
@@ -72,31 +75,33 @@ public class BurnUpCalculator {
             double value = 0d;
             Category category = null;
             switch (type) {
-               case BUG:
-               case PRODISSUE:
-               case DATAFIX:
-               case MERGE:
-                  String jiraString = bodyRow.get(jiraCol).toString();
-                  // for the following to work the bodyRows need to be sorted by progression! It currently (at time of writing) is!
-                  switch (jiraStat.devStatus()) {
-                     case jiraIsInDevelopmentAndInProgress:
-                     case jiraIsInDevelopmentAndResolved:
-                     case jiraIsInPostDevelopment:
-                        jirasAddedAsCount.add(jiraString);
-                        value += 1;
-                        break;
-                  }
-                  System.out.println("creating type category: " + type.toString() + " with value " + value + " as jiraDevstatus is " + jiraStat.devStatus() + " for " + jiraString);
-                  category = new Category(type.toString(), getColor(type), getPrintPrio(type), true);
+            case BUG:
+            case PRODISSUE:
+            case DATAFIX:
+            case MERGE:
+               String jiraString = bodyRow.get(jiraCol).toString();
+               // for the following to work the bodyRows need to be sorted by progression! It currently (at time of writing) is!
+               switch (jiraStat.devStatus()) {
+               case jiraIsInDevelopmentAndInProgress:
+               case jiraIsInDevelopmentAndResolved:
+               case jiraIsInPostDevelopment:
+                  jirasAddedAsCount.add(jiraString);
+                  value += 1;
                   break;
-               case DEV:
-               case TEST:
-               case STORY:
-               case TBD:
-                  value += getDouble(bodyRow.get(dEstCol.intValue()));
-                  value += getDouble(bodyRow.get(qEstCol.intValue()));
-                  category = new Category(boardstatus, getColor(boardstatus), getPrintPrio(boardstatus), false);
-                  break;
+               }
+               if (log.isDebugEnabled())
+                  log.debug("creating type category: " + type.toString() + " with value " + value + " as jiraDevstatus is " + jiraStat.devStatus() + " for "
+                        + jiraString);
+               category = new Category(type.toString(), getColor(type), getPrintPrio(type), true);
+               break;
+            case DEV:
+            case TEST:
+            case STORY:
+            case TBD:
+               value += getDouble(bodyRow.get(dEstCol.intValue()));
+               value += getDouble(bodyRow.get(qEstCol.intValue()));
+               category = new Category(boardstatus, getColor(boardstatus), getPrintPrio(boardstatus), false);
+               break;
             }
 
             addValueToData(burnData, bodyRow, dayInSprintCol, value, category);
@@ -131,14 +136,14 @@ public class BurnUpCalculator {
 
    private Color getColor(IssueType type) {
       switch (type) {
-         case BUG:
-            return SwingUtil.cellLightRed;
-         case DATAFIX:
-            return SwingUtil.cellYellow;
-         case MERGE:
-            return SwingUtil.cellGrey;
-         case PRODISSUE:
-            return SwingUtil.cellLightLightRed;
+      case BUG:
+         return SwingUtil.cellLightRed;
+      case DATAFIX:
+         return SwingUtil.cellYellow;
+      case MERGE:
+         return SwingUtil.cellGrey;
+      case PRODISSUE:
+         return SwingUtil.cellLightLightRed;
       }
       return null;
    }
@@ -146,20 +151,20 @@ public class BurnUpCalculator {
    private Color getColor(String boardstatus) {
       BoardStatusValue value = BoardStatusValue.get(boardstatus);
       switch (value) {
-         case Complete:
-            return SwingUtil.cellLightGreen;
-         case Failed:
-            return SwingUtil.cellRed;
-         case InProgress:
-            return SwingUtil.cellLightYellow;
-         case Open:
-            return SwingUtil.cellLightGrey;
-         case Resolved:
-            return SwingUtil.cellBlue;
-         case Approved:
-            return SwingUtil.cellLightBlue;
-         case ForShowCase:
-            return SwingUtil.cellGreen;
+      case Complete:
+         return SwingUtil.cellLightGreen;
+      case Failed:
+         return SwingUtil.cellRed;
+      case InProgress:
+         return SwingUtil.cellLightYellow;
+      case Open:
+         return SwingUtil.cellLightGrey;
+      case Resolved:
+         return SwingUtil.cellBlue;
+      case Approved:
+         return SwingUtil.cellLightBlue;
+      case ForShowCase:
+         return SwingUtil.cellGreen;
       }
       return null;
    }
@@ -167,35 +172,35 @@ public class BurnUpCalculator {
    private int getPrintPrio(String boardstatus) {
       BoardStatusValue value = BoardStatusValue.get(boardstatus);
       switch (value) {
-         case Complete:
-            return 0;
-         case Resolved:
-            return 1;
-         case InProgress:
-            return 2;
-         case Failed:
-            return 3;
-         case Open:
-            return 4;
-         case Approved:
-            return 5;
-         case ForShowCase:
-            return 6;
-         default:
-            return 7;
+      case Complete:
+         return 0;
+      case Resolved:
+         return 1;
+      case InProgress:
+         return 2;
+      case Failed:
+         return 3;
+      case Open:
+         return 4;
+      case Approved:
+         return 5;
+      case ForShowCase:
+         return 6;
+      default:
+         return 7;
       }
    }
 
    private int getPrintPrio(IssueType type) {
       switch (type) {
-         case BUG:
-            return 8;
-         case DATAFIX:
-            return 9;
-         case MERGE:
-            return 10;
-         default:
-            return 11;
+      case BUG:
+         return 8;
+      case DATAFIX:
+         return 9;
+      case MERGE:
+         return 10;
+      default:
+         return 11;
       }
    }
 

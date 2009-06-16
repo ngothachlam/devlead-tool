@@ -7,9 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
-
 import org.apache.log4j.Logger;
-
 import com.jonas.agile.devleadtool.gui.component.table.ColumnType;
 import com.jonas.agile.devleadtool.gui.component.table.model.MyTableModel;
 import com.jonas.agile.devleadtool.sprint.Sprint;
@@ -105,13 +103,15 @@ public class HistoricalBoardDao {
          dto = data.getBodyLinesThatAreNotForThisDayInSprint(sprint, dayOfSprint, colForJira, colForSprint, colForDayInSprint);
          Vector<Vector<Object>> oldDataToCopy = dto.getNewVector();
          // Vector<Vector<Object>> oldDataToCopy = data.getBodyLinesThatAreNotForThisDayInSprint(sprint, dayOfSprint);
-         System.out.println(sprint.toString());
+         if (log.isDebugEnabled())
+            log.debug(sprint.toString());
          for (Vector<Object> oldRow : oldDataToCopy) {
             StringBuffer sb = new StringBuffer(oldRow.get(0).toString());
             for (int counter = 1; counter < oldRow.size(); counter++) {
                sb.append(DELIMITER).append(oldRow.get(counter).toString());
             }
-            System.out.println("Old data to copy: " + sb.toString());
+            if (log.isDebugEnabled())
+               log.debug("Old data to copy: " + sb.toString());
             bw.append(sb.append("\n").toString());
          }
       }
