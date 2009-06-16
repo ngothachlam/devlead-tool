@@ -19,158 +19,167 @@ import javax.swing.border.Border;
 
 public class MyPanel extends JPanel {
 
-   private Font defaultFont;
+	private Font defaultFont;
 
-   public MyPanel() {
-   }
-   
-   public MyPanel(LayoutManager layoutManager) {
-      super(layoutManager);
-   }
+	public MyPanel() {
+	}
 
-   public final void addNorth(Component component) {
-      super.add(component, BorderLayout.NORTH);
-   }
+	public MyPanel(LayoutManager layoutManager) {
+		super(layoutManager);
+	}
 
-   public final void addEast(Component component) {
-      super.add(component, BorderLayout.EAST);
-   }
+	public final void addNorth(Component component) {
+		super.add(component, BorderLayout.NORTH);
+	}
 
-   public final void addSouth(Component component) {
-      super.add(component, BorderLayout.SOUTH);
-   }
+	public final void addEast(Component component) {
+		super.add(component, BorderLayout.EAST);
+	}
 
-   public final void addWest(Component component) {
-      super.add(component, BorderLayout.WEST);
-   }
+	public final void addSouth(Component component) {
+		super.add(component, BorderLayout.SOUTH);
+	}
 
-   public final void addCenter(Component component) {
-      super.add(component, BorderLayout.CENTER);
-   }
+	public final void addWest(Component component) {
+		super.add(component, BorderLayout.WEST);
+	}
 
-   public final MyPanel bordered() {
-      setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-      return this;
-   }
+	public final void addCenter(Component component) {
+		super.add(component, BorderLayout.CENTER);
+	}
 
-   public final MyPanel bordered(int top, int left, int bottom, int right) {
-      setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
-      return this;
-   }
+	public final MyPanel bordered() {
+		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		return this;
+	}
 
-   public final MyPanel borderedHighlightingThisPanels() {
-      setBorder(BorderFactory.createLineBorder(Color.GREEN));
-      return this;
-   }
+	public final MyPanel bordered(int top, int left, int bottom, int right) {
+		setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
+		return this;
+	}
 
-   public final MyPanel bordered(Border border) {
-      setBorder(border);
-      return this;
-   }
+	public final MyPanel borderedHighlightingThisPanels() {
+		setBorder(BorderFactory.createLineBorder(Color.GREEN));
+		return this;
+	}
 
-   public JButton addButton(JPanel buttonPanel, String string, ActionListener listener, Object constraints) {
-      JButton button = new JButton(string);
-      button.addActionListener(listener);
-      buttonPanel.add(button, constraints);
-      return button;
-   }
+	public final MyPanel bordered(Border border) {
+		setBorder(border);
+		return this;
+	}
 
-   public JButton addButton(JPanel buttonPanel, String string) {
-      JButton button = new JButton(string);
-      buttonPanel.add(button);
-      return button;
-   }
-   
-   public JButton addButton(JPanel buttonPanel, Action action) {
-      JButton button = new JButton(action);
-      buttonPanel.add(button);
-      return button;
-   }
-   
-   public JButton getButton(String string, ActionListener listener) {
-      JButton button = new JButton(string);
-      button.addActionListener(listener);
-      return button;
-   }
-   
-   public JButton addButton(JPanel buttonPanel, String string, ActionListener listener) {
-      JButton button = addButton(buttonPanel, string);
-      button.addActionListener(listener);
-      return button;
-   }
+	public JButton addButton(JPanel buttonPanel, String string, ActionListener listener, Object constraints) {
+		JButton button = new JButton(string);
+		button.addActionListener(listener);
+		buttonPanel.add(button, constraints);
+		return button;
+	}
 
-   public JLabel addLabel(JPanel panel, String labelText) {
-      JLabel label = new JLabel(labelText);
-      panel.add(label);
-      return label;
-   }
-   
-   public JLabel addLabel(JPanel panel, String labelText, Object constraints) {
-      JLabel label = new JLabel(labelText);
-      panel.add(label, constraints);
-      return label;
-   }
+	public JButton addButton(JPanel buttonPanel, String string) {
+		JButton button = new JButton(string);
+		buttonPanel.add(button);
+		return button;
+	}
 
-   public JTextField addTextField(JPanel buttons, int textFieldLength) {
-      JTextField jiraCommas = new JTextField(textFieldLength);
-      buttons.add(jiraCommas);
-      return jiraCommas;
-   }
+	public JButton addButton(JPanel buttonPanel, Action action) {
+		JButton button = new JButton(action);
+		buttonPanel.add(button);
+		return button;
+	}
 
-   public JTextField addTextField(JPanel buttons, int textFieldLength, Object constraint) {
-      JTextField textField = new JTextField(textFieldLength);
-      if (defaultFont == null)
-         setDefaultFont(textField.getFont());
-      buttons.add(textField, constraint);
-      return textField;
-   }
-   
-   public JTextField addTextField(JPanel buttons, int textFieldLength, Object constraint, JLabel label, char displayMnemonic) {
-      JTextField textField = addTextField(buttons, textFieldLength, constraint);
-//      textField.setRequestFocusEnabled(true);
-      label.setLabelFor(textField);
-      label.setDisplayedMnemonic(displayMnemonic);
-      return textField;
-   }
+	public JButton getButton(String string, ActionListener listener) {
+		JButton button = new JButton(string);
+		button.addActionListener(listener);
+		return button;
+	}
 
-   private void setDefaultFont(Font font) {
-      defaultFont = font;
-   }
+	public JButton addButton(JPanel buttonPanel, String string, ActionListener listener) {
+		JButton button = addButton(buttonPanel, string);
+		button.addActionListener(listener);
+		return button;
+	}
 
-   public JTextArea addTextArea(JPanel buttons, int rows, int cols, Object constraint, JLabel label, char displayMnemonic) {
-      JTextArea textArea = addTextArea(buttons, rows, cols, constraint);
-      label.setLabelFor(textArea);
-      label.setDisplayedMnemonic(displayMnemonic);
-      return textArea;
-      
-   }
-   public JTextArea addTextArea(JPanel buttons, int rows, int cols, Object constraint) {
-      JTextArea textArea = new JTextArea(rows, cols);
-      if (defaultFont == null){
-         setDefaultFont(new JTextField().getFont());
-      }
-      textArea.setFont(defaultFont);
-      buttons.add(new JScrollPane(textArea), constraint);
-      return textArea;
-   }
+	public JLabel addLabel(JPanel panel, String labelText) {
+		JLabel label = new JLabel(labelText);
+		panel.add(label);
+		return label;
+	}
 
-   public JComboBox addComboBox(JPanel buttons, Object[] array) {
-      JComboBox component = new JComboBox(array);
-      buttons.add(component);
-      return component;
-   }
-   
-   public JComboBox addComboBox(JPanel buttons, Object[] boardStatusValues, Object constraint) {
-      JComboBox component = new JComboBox(boardStatusValues);
-      buttons.add(component, constraint);
-      return component;
-   }
-   
-   public JComboBox addComboBox(JPanel buttons, Object[] boardStatusValues, Object constraint, JLabel label, char displayMnemonic) {
-      JComboBox component = this.addComboBox(buttons, boardStatusValues, constraint);
-      label.setLabelFor(component);
-      label.setDisplayedMnemonic(displayMnemonic);
-      return component;
-   }
+	public JLabel addLabel(JPanel panel, String labelText, Object constraints) {
+		JLabel label = new JLabel(labelText);
+		panel.add(label, constraints);
+		return label;
+	}
+
+	public JTextField addTextField(JPanel buttons, int textFieldLength) {
+		JTextField jiraCommas = new JTextField(textFieldLength);
+		buttons.add(jiraCommas);
+		return jiraCommas;
+	}
+
+	public JTextField addTextField(JPanel buttons, int textFieldLength, Object constraint) {
+		JTextField textField = new JTextField(textFieldLength);
+		if (defaultFont == null)
+			setDefaultFont(textField.getFont());
+		buttons.add(textField, constraint);
+		return textField;
+	}
+
+	public JTextField addTextField(JPanel buttons, int textFieldLength, Object constraint, JLabel label, char displayMnemonic) {
+		JTextField textField = addTextField(buttons, textFieldLength, constraint);
+		// textField.setRequestFocusEnabled(true);
+		label.setLabelFor(textField);
+		label.setDisplayedMnemonic(displayMnemonic);
+		return textField;
+	}
+
+	private void setDefaultFont(Font font) {
+		defaultFont = font;
+	}
+
+	public JTextArea addTextArea(JPanel buttons, int rows, int cols, Object constraint, JLabel label, char displayMnemonic) {
+		JTextArea textArea = addTextArea(buttons, rows, cols, constraint);
+		label.setLabelFor(textArea);
+		label.setDisplayedMnemonic(displayMnemonic);
+		return textArea;
+
+	}
+
+	public JTextArea addTextArea(JPanel buttons, int rows, int cols, Object constraint) {
+		JTextArea textArea = getTextArea(rows, cols);
+		if (constraint != null)
+			buttons.add(new JScrollPane(textArea), constraint);
+		else
+			buttons.add(new JScrollPane(textArea));
+		return textArea;
+	}
+
+	public JTextArea getTextArea(int rows, int cols) {
+		JTextArea textArea = new JTextArea(rows, cols);
+		if (defaultFont == null) {
+			setDefaultFont(new JTextField().getFont());
+		}
+		textArea.setFont(defaultFont);
+		return textArea;
+	}
+
+	public JComboBox addComboBox(JPanel buttons, Object[] array) {
+		JComboBox component = new JComboBox(array);
+		buttons.add(component);
+		return component;
+	}
+
+	public JComboBox addComboBox(JPanel buttons, Object[] boardStatusValues, Object constraint) {
+		JComboBox component = new JComboBox(boardStatusValues);
+		buttons.add(component, constraint);
+		return component;
+	}
+
+	public JComboBox addComboBox(JPanel buttons, Object[] boardStatusValues, Object constraint, JLabel label, char displayMnemonic) {
+		JComboBox component = this.addComboBox(buttons, boardStatusValues, constraint);
+		label.setLabelFor(component);
+		label.setDisplayedMnemonic(displayMnemonic);
+		return component;
+	}
 
 }
