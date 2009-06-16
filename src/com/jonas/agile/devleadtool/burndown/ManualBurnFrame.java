@@ -10,13 +10,11 @@ import java.awt.event.ActionEvent;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -32,7 +30,6 @@ import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
 import com.jonas.agile.devleadtool.gui.component.frame.AbstractBasicFrame;
 import com.jonas.common.DateHelper;
@@ -117,7 +114,8 @@ public class ManualBurnFrame extends AbstractBasicFrame {
       yAxis.setLabel(data.getYAxisName());
    }
 
-   public final void createNewSeriesAndAddToCollection(BurnType burnType, String categoryName, List<BurnDataColumn> burndownDays, Color color, boolean clearZeroSteps) {
+   public final void createNewSeriesAndAddToCollection(BurnType burnType, String categoryName, List<BurnDataColumn> burndownDays, Color color,
+         boolean clearZeroSteps) {
       XYSeries newSeries = new XYSeries(categoryName, true, false);
 
       for (BurnDataColumn burnDownDay : burndownDays) {
@@ -126,7 +124,8 @@ public class ManualBurnFrame extends AbstractBasicFrame {
 
          if (clearZeroSteps) {
             int xIndex = newSeries.indexOf(x - 1);
-            System.out.println("x: " + x + " x-1: " + (x - 1));
+            if (log.isDebugEnabled())
+               log.debug("x: " + x + " x-1: " + (x - 1));
 
             if (x > 0) {
                try {
@@ -138,18 +137,19 @@ public class ManualBurnFrame extends AbstractBasicFrame {
             }
          }
 
-         log.debug("adding to the new series for " + categoryName + " x, y: " + x + "," + burnDownDay.getY());
+         if (log.isDebugEnabled())
+            log.debug("adding to the new series for " + categoryName + " x, y: " + x + "," + burnDownDay.getY());
       }
 
       switch (burnType) {
-         case BurnDown:
-            seriesCollectionForBurnDown = getBurnDownAndinitialiseIfRequired(color);
-            seriesCollectionForBurnDown.addSeries(newSeries);
-            break;
-         case BurnUp:
-            seriesCollectionForBurnUp = getBurnUpAndInitialiseIfRequired(color);
-            seriesCollectionForBurnUp.addSeries(newSeries);
-            break;
+      case BurnDown:
+         seriesCollectionForBurnDown = getBurnDownAndinitialiseIfRequired(color);
+         seriesCollectionForBurnDown.addSeries(newSeries);
+         break;
+      case BurnUp:
+         seriesCollectionForBurnUp = getBurnUpAndInitialiseIfRequired(color);
+         seriesCollectionForBurnUp.addSeries(newSeries);
+         break;
       }
    }
 

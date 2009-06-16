@@ -1,13 +1,10 @@
 package com.jonas.agile.devleadtool.gui.component.dialog;
 
 import java.io.File;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
-
 import org.apache.log4j.Logger;
-
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.data.PlannerDAO;
 import com.jonas.agile.devleadtool.gui.component.MyInternalFrame;
@@ -36,15 +33,21 @@ public class SavePlannerDialog extends JFileChooser {
       if (isFileChoosable || file == null) {
          if (file != null) {
             setSelectedFile(file);
-            System.out.println("*file*" + file.getAbsolutePath());
+            if (log.isDebugEnabled()) {
+               log.debug("*file*" + file.getAbsolutePath());
+            }
          } else {
             setCurrentDirectory(helper.getSaveDirectory());
             setSelectedFiles(RESETFILES);
          }
-         System.out.println("current dir: " + getCurrentDirectory());
-         File[] selectedFiles = getSelectedFiles();
-         for (File file2 : selectedFiles) {
-            System.out.println("selected file: " + file2.getAbsolutePath());
+         if (log.isDebugEnabled()) {
+            log.debug("current dir: " + getCurrentDirectory());
+         }
+         if (log.isDebugEnabled()) {
+            File[] selectedFiles = getSelectedFiles();
+            for (File file2 : selectedFiles) {
+               System.out.println("selected file: " + file2.getAbsolutePath());
+            }
          }
 
          int result = showSaveDialog(parent);
@@ -61,7 +64,7 @@ public class SavePlannerDialog extends JFileChooser {
             AlertDialog.alertMessage(parent, "Can't save file choose another one!");
             return;
          }
-         
+
          file = addExtensionShouldNoneBeDefined(file, ".xls");
 
          internalFrame.saveModels(dao, file);

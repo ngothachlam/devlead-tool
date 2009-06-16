@@ -72,7 +72,7 @@ public class AlertDialog extends JDialog {
                try {
                   new AlertDialog(parentFrame, "Alert...", "Message:", e);
                } catch (Exception e) {
-                  System.out.println("Exception in initialization");
+                  e.printStackTrace();
                }
             }
          });
