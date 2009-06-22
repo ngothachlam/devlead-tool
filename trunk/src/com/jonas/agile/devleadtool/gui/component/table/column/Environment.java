@@ -8,6 +8,7 @@ public enum Environment implements TBDEnum<Environment> {
 
    TBD("<TBD>"),
    PROD("Production"),
+   DATA("Production Data (only)"),
    DEV("Development"),
    QA("QA"),
    NA("NA");
