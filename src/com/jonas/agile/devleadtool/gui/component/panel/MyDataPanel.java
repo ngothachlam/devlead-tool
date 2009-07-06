@@ -52,13 +52,6 @@ public abstract class MyDataPanel extends MyComponentPanel {
       RefreshFilterKeyListener listener = new RefreshFilterKeyListener(patternFilter, filterTextField);
       filterTextField.addKeyListener(listener);
       
-      gbc.gridx++;
-      gbc.fill = GridBagConstraints.NONE;
-      gbc.weightx = 0;
-      gbc.insets = new Insets(1, 1, 0, 0);
-      addButton(panel, "Clear", new ClearAction("Clear", listener), gbc);
-      
-
       return panel;
    }
 
@@ -73,25 +66,6 @@ public abstract class MyDataPanel extends MyComponentPanel {
    public void setEditable(boolean selected) {
       table.getMyModel().setEditable(selected);
    }
-}
-
-class ClearAction extends AbstractAction{
-
-   private final Resetter[] resetters;
-
-   public ClearAction(String name, Resetter... resetters) {
-      super(name);
-      this.resetters = resetters;
-      putValue(Action.SHORT_DESCRIPTION, name);
-   }
-
-   @Override
-   public void actionPerformed(ActionEvent e) {
-      for (Resetter resetter : resetters) {
-         resetter.resetPattern();
-      }
-   }
-   
 }
 
 class RefreshFilterKeyListener extends KeyAdapter implements Resetter{

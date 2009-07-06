@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
@@ -16,14 +15,8 @@ import javax.swing.event.CellEditorListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
-
-import com.jonas.agile.devleadtool.gui.component.table.column.BoardStatusValue;
-import com.jonas.agile.devleadtool.gui.component.table.column.Environment;
-import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
-import com.jonas.agile.devleadtool.gui.component.table.column.Project;
 import com.jonas.agile.devleadtool.gui.component.table.editor.CheckBoxTableCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.ComboCellEditor;
 import com.jonas.agile.devleadtool.gui.component.table.editor.JiraCellEditor;
