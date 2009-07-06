@@ -53,12 +53,6 @@
 	<classpathentry kind="lib" path="lib/xalan-2.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl-2.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis-1.0.b2.jar"/>
-	<classpathentry kind="lib" path="lib/swingx-0.9.7.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://swinglabs.org/hudson/job/Release%20Build/javadoc/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/swingx-beaninfo-0.9.7.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.6.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.2-FINAL-20081019.jar">
 		<attributes>
@@ -66,5 +60,15 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jconn2.jar"/>
+	<classpathentry kind="lib" path="lib/swingx-1.0.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://swinglabs.java.sun.com/hudson/job/SwingX%20Continuous%20Build/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/swingx-beaninfo-1.0.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://swinglabs.java.sun.com/hudson/job/SwingX%20Continuous%20Build/javadoc/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

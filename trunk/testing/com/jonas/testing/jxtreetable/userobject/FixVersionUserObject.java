@@ -2,19 +2,16 @@ package com.jonas.testing.jxtreetable.userobject;
 
 import java.awt.datatransfer.DataFlavor;
 
-public class FixVersionUserObject extends DefaultParentUserObject {
+public class FixVersionUserObject extends DefaultParentUserObject<FixVersionUserObject> {
 
-   public FixVersionUserObject() {
-   }
-   
    public FixVersionUserObject(String name) {
-      super(name);
+      super(name, "FixVersion");
    }
 
    @Override
-   public int compareTo(JiraUserObject o) {
+   public int compareTo(FixVersionUserObject o) {
       int res = 0;
-      res = o.getKey().compareTo(getName());
+      res = o.getName().compareTo(getName());
       return res;
    }
 
@@ -22,4 +19,5 @@ public class FixVersionUserObject extends DefaultParentUserObject {
    protected DataFlavor getDataFlavor() {
       return new DataFlavor(FixVersionUserObject.class, "FixVersion");
    }
+
 }

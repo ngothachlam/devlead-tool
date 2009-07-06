@@ -2,19 +2,16 @@ package com.jonas.testing.jxtreetable.userobject;
 
 import java.awt.datatransfer.DataFlavor;
 
-public class SprintUserObject extends DefaultParentUserObject {
+public class SprintUserObject extends DefaultParentUserObject<SprintUserObject> {
 
-   public SprintUserObject() {
-   }
-   
    public SprintUserObject(String name) {
-      super(name);
+      super(name, "Sprint");
    }
 
    @Override
-   public int compareTo(JiraUserObject o) {
+   public int compareTo(SprintUserObject o) {
       int res = 0;
-      res = o.getKey().compareTo(getName());
+      res = o.getName().compareTo(getName());
       return res;
    }
 
