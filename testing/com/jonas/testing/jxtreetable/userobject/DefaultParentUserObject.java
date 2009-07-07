@@ -1,20 +1,27 @@
 package com.jonas.testing.jxtreetable.userobject;
 
+import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import com.jonas.testing.jxtreetable.column.Column;
 
-public abstract class DefaultParentUserObject<T> extends DefaultUserObject<T> {
+public abstract class DefaultParentUserObject<T extends DefaultParentUserObject> extends DefaultUserObject<T> {
    private String uiName;
-
+   
    public final String getName() {
       return name;
    }
 
-   public DefaultParentUserObject(String name, String typeOfParent) {
-      super();
+   public DefaultParentUserObject(String name, String typeOfParent, DefaultParentUserObject<? extends DefaultParentUserObject<?>> parent) {
+      super(parent);
       this.name = name;
       this.uiName = typeOfParent + ": " + name;
    }
-
+      
+   public DefaultParentUserObject(String name, String typeOfParent, DefaultMutableTreeTableNode parent) {
+      super(parent);
+      this.name = name;
+      this.uiName = typeOfParent + ": " + name;
+   }
+   
    public final void setName(String name) {
       this.name = name;
    }

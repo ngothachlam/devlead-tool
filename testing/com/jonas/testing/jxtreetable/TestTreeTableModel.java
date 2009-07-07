@@ -41,7 +41,7 @@ public class TestTreeTableModel extends DefaultTreeTableModel implements Seriali
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
          Object userObject = defNode.getUserObject();
          if (userObject instanceof DefaultUserObject) {
-            DefaultUserObject defnode = (DefaultUserObject) userObject;
+            DefaultUserObject<?> defnode = (DefaultUserObject<?>) userObject;
             Column column = colIndexMapper.getColumn(columnIndex);
             return defnode.getValueForColumn(column);
          }
@@ -59,7 +59,7 @@ public class TestTreeTableModel extends DefaultTreeTableModel implements Seriali
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
          Object userObject = defNode.getUserObject();
          if (userObject instanceof DefaultUserObject) {
-            DefaultUserObject defnode = (DefaultUserObject) userObject;
+            DefaultUserObject<?> defnode = (DefaultUserObject<?>) userObject;
             Column column = colIndexMapper.getColumn(columnIndex);
             return defnode.isEditable(column);
          }
@@ -77,7 +77,7 @@ public class TestTreeTableModel extends DefaultTreeTableModel implements Seriali
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
          Object userObject = defNode.getUserObject();
          if (userObject instanceof DefaultUserObject) {
-            DefaultUserObject defnode = (DefaultUserObject) userObject;
+            DefaultUserObject<?> defnode = (DefaultUserObject<?>) userObject;
             return defnode.isLeaf();
          }
          if (!"root".equalsIgnoreCase(userObject.toString()))
@@ -97,7 +97,7 @@ public class TestTreeTableModel extends DefaultTreeTableModel implements Seriali
          DefaultMutableTreeTableNode defNode = (DefaultMutableTreeTableNode) node;
          Object userObject = defNode.getUserObject();
          if (userObject instanceof DefaultUserObject) {
-            DefaultUserObject defnode = (DefaultUserObject) userObject;
+            DefaultUserObject<?> defnode = (DefaultUserObject<?>) userObject;
             Column column = colIndexMapper.getColumn(columnIndex);
             defnode.setValue(column, value);
          } else {
@@ -108,4 +108,9 @@ public class TestTreeTableModel extends DefaultTreeTableModel implements Seriali
          log.warn("Node [" + node.toString() + "] is not of DefaultMutableTreeTableNode type");
       }
    }
+   
+   private interface NodeCommand<T>{
+      public T getReturnValue();
+   }
+   
 }

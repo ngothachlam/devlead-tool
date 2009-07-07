@@ -10,14 +10,14 @@ public class StoryUserObject extends DefaultUserObject<StoryUserObject> {
    private String fixVersion;
    private String sprint;
 
-   public StoryUserObject(String key) {
-      super();
+   public StoryUserObject(String key, DefaultParentUserObject<RequirementUserObject> parent) {
+      super(parent);
       this.key = key;
    }
 
-   public StoryUserObject(String key, String description) {
+   public StoryUserObject(String key, String description, DefaultParentUserObject<RequirementUserObject> parent) {
+      this(key, parent);
       this.description = description;
-      this.key = key;
    }
 
    @Override
