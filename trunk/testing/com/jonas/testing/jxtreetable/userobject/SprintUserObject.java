@@ -4,8 +4,8 @@ import java.awt.datatransfer.DataFlavor;
 
 public class SprintUserObject extends DefaultParentUserObject<SprintUserObject> {
 
-   public SprintUserObject(String name) {
-      super(name, "Sprint");
+   public SprintUserObject(String name, DefaultParentUserObject<FixVersionUserObject> parent) {
+      super(name, "Sprint", parent);
    }
 
    @Override

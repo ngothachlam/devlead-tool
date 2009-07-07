@@ -4,10 +4,10 @@ import java.awt.datatransfer.DataFlavor;
 
 public class RequirementUserObject extends DefaultParentUserObject<RequirementUserObject> {
 
-   public RequirementUserObject(String name) {
-      super(name, "Req");
+   public RequirementUserObject(String name, DefaultParentUserObject<SprintUserObject> parent) {
+      super(name, "Req", parent);
    }
-
+   
    @Override
    public int compareTo(RequirementUserObject o) {
       int res = 0;

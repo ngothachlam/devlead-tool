@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.io.IOException;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
+import org.apache.tools.ant.types.resources.First;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
@@ -65,45 +66,34 @@ public class TestTreeTable {
    }
 
    private DefaultMutableTreeTableNode createTestRoot() {
-      FixVersionUserObject fixVersion_11 = new FixVersionUserObject("LLU 11");
-      FixVersionUserObject fixVersion_12 = new FixVersionUserObject("LLU 12");
-      
-      SprintUserObject sprint_12_1 = new SprintUserObject("12-1");
-      SprintUserObject sprint_12_2 = new SprintUserObject("12-2");
-      
-      RequirementUserObject req1 = new RequirementUserObject("Requirement 1");
-      RequirementUserObject req2 = new RequirementUserObject("Requirement 2");
-      
-      StoryUserObject jira_llu1 = new StoryUserObject("llu-123", "Description for llu-1");
-      StoryUserObject jira_llu2 = new StoryUserObject("llu-23", "Description for llu-2");
-
       DefaultMutableTreeTableNode root = new DefaultMutableTreeTableNode("root");
       
-//      DefaultMutableTreeTableNode sprintOne = addChildToParent(root, sprint_12_1);
-//      DefaultMutableTreeTableNode sprintTwo = addChildToParent(root, sprint_12_2);
-//      
-//      DefaultMutableTreeTableNode fixVersionOne = addChildToParent(sprintOne, fixVersion_11);
-//      DefaultMutableTreeTableNode fixVersionTwo = addChildToParent(sprintOne, fixVersion_12);;
-//      DefaultMutableTreeTableNode fixVersionTwoDupe = addChildToParent(sprintTwo, fixVersion_12);;
-//      
-//      addChildToParent(fixVersionOne, jira_llu1);
-//      addChildToParent(fixVersionTwo, jira_llu2);
-//      addChildToParent(fixVersionTwoDupe, jira_llu2);
+      FixVersionUserObject fixVersion_11 = new FixVersionUserObject("LLU 11", root);
+      FixVersionUserObject fixVersion_12 = new FixVersionUserObject("LLU 12", root);
       
-      DefaultMutableTreeTableNode fixVersionOne = addChildToParent(root, fixVersion_11);
-      DefaultMutableTreeTableNode fixVersionTwo = addChildToParent(root, fixVersion_12);;
+      SprintUserObject sprint_12_1 = new SprintUserObject("12-1", fixVersion_11);
+      SprintUserObject sprint_12_2 = new SprintUserObject("12-2", fixVersion_12);
       
-      DefaultMutableTreeTableNode sprintOne = addChildToParent(fixVersionOne, sprint_12_1);
-      DefaultMutableTreeTableNode sprintTwo = addChildToParent(fixVersionTwo, sprint_12_2);
-      DefaultMutableTreeTableNode sprintTwoDupe = addChildToParent(fixVersionTwo, sprint_12_1);
+      RequirementUserObject req1 = new RequirementUserObject("Requirement 1", sprint_12_1);
+      RequirementUserObject req2 = new RequirementUserObject("Requirement 2", sprint_12_2);
+      
+      StoryUserObject jira_llu1 = new StoryUserObject("llu-123", "Description for llu-1", req1);
+      StoryUserObject jira_llu2 = new StoryUserObject("llu-23", "Description for llu-2", req2);
 
-      DefaultMutableTreeTableNode requirementOne = addChildToParent(sprintOne, req1);
-      DefaultMutableTreeTableNode requirementTwo = addChildToParent(sprintTwo, req2);
-      DefaultMutableTreeTableNode requirementTwoDupe = addChildToParent(sprintTwoDupe, req1);
-      
-      addChildToParent(requirementOne, jira_llu1);
-      addChildToParent(requirementTwo, jira_llu2);
-      addChildToParent(requirementTwoDupe, jira_llu1);
+//      DefaultMutableTreeTableNode fixVersionOne = addChildToParent(root, fixVersion_11);
+//      DefaultMutableTreeTableNode fixVersionTwo = addChildToParent(root, fixVersion_12);;
+//      
+//      DefaultMutableTreeTableNode sprintOne = addChildToParent(fixVersionOne, sprint_12_1);
+//      DefaultMutableTreeTableNode sprintTwo = addChildToParent(fixVersionTwo, sprint_12_2);
+//      DefaultMutableTreeTableNode sprintTwoDupe = addChildToParent(fixVersionTwo, sprint_12_1);
+//
+//      DefaultMutableTreeTableNode requirementOne = addChildToParent(sprintOne, req1);
+//      DefaultMutableTreeTableNode requirementTwo = addChildToParent(sprintTwo, req2);
+//      DefaultMutableTreeTableNode requirementTwoDupe = addChildToParent(sprintTwoDupe, req1);
+//      
+//      addChildToParent(requirementOne, jira_llu1);
+//      addChildToParent(requirementTwo, jira_llu2);
+//      addChildToParent(requirementTwoDupe, jira_llu1);
       
       return root;
    }
@@ -116,14 +106,14 @@ public class TestTreeTable {
       
 //      need to find a way to fireTableDataChanged when a userobject is being updated!
       
-      treeTable.getTreeTableModel()
+//      treeTable.getTreeTableModel()
       
       return treeTable;
    }
 
-   private DefaultMutableTreeTableNode addChildToParent(DefaultMutableTreeTableNode parentNode, DefaultUserObject child) {
-      DefaultMutableTreeTableNode childNode = new DefaultMutableTreeTableNode(child);
-      parentNode.add(childNode);
-      return childNode;
-   }
+//   private DefaultMutableTreeTableNode addChildToParent(DefaultMutableTreeTableNode parentNode, DefaultUserObject child) {
+//      DefaultMutableTreeTableNode childNode = new DefaultMutableTreeTableNode(child);
+//      parentNode.add(childNode);
+//      return childNode;
+//   }
 }

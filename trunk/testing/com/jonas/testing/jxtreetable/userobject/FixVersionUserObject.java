@@ -1,11 +1,12 @@
 package com.jonas.testing.jxtreetable.userobject;
 
 import java.awt.datatransfer.DataFlavor;
+import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 
 public class FixVersionUserObject extends DefaultParentUserObject<FixVersionUserObject> {
 
-   public FixVersionUserObject(String name) {
-      super(name, "FixVersion");
+   public FixVersionUserObject(String name, DefaultMutableTreeTableNode parent) {
+      super(name, "Version", parent);
    }
 
    @Override
@@ -17,7 +18,7 @@ public class FixVersionUserObject extends DefaultParentUserObject<FixVersionUser
 
    @Override
    protected DataFlavor getDataFlavor() {
-      return new DataFlavor(FixVersionUserObject.class, "FixVersion");
+      return new DataFlavor(FixVersionUserObject.class, "Version");
    }
 
 }
