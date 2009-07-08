@@ -3,47 +3,25 @@ package com.jonas.testing.jxtreetable.userobject;
 import java.awt.datatransfer.DataFlavor;
 import com.jonas.testing.jxtreetable.column.Column;
 
-public class StoryUserObject extends DefaultUserObject<StoryUserObject> {
+public class StoryUserObject extends DefaultParentUserObject<StoryUserObject> {
 
    private String description;
-   private String key;
-   private String fixVersion;
-   private String sprint;
 
-   public StoryUserObject(String key, DefaultParentUserObject<RequirementUserObject> parent) {
-      super(parent);
-      this.key = key;
-   }
+//   @Override
+//   public boolean isLeaf() {
+//      return !hasChildren();
+//   }
 
-   public StoryUserObject(String key, String description, DefaultParentUserObject<RequirementUserObject> parent) {
-      this(key, parent);
+   public StoryUserObject(String name, String description, SprintUserObject parent) {
+      super(name, "Story", parent);
       this.description = description;
    }
 
    @Override
    public int compareTo(StoryUserObject o) {
       int res = 0;
-      res = o.getKey().compareTo(getKey());
-      if (0 == res) {
-         res = o.getDescription().compareTo(getDescription());
-      }
+      res = o.getName().compareTo(getName());
       return res;
-   }
-
-   public String getDescription() {
-      return description;
-   }
-
-   public String getKey() {
-      return key;
-   }
-
-   public void setDescription(String description) {
-      this.description = description;
-   }
-
-   public void setKey(String key) {
-      this.key = key;
    }
 
    @Override
@@ -51,50 +29,14 @@ public class StoryUserObject extends DefaultUserObject<StoryUserObject> {
       return new DataFlavor(StoryUserObject.class, "Story");
    }
 
-   public String getFixVersion() {
-      return fixVersion;
-   }
-
-   public String getSprint() {
-      return sprint;
-   }
-
-   @Override
    public String getValueForColumn(Column column) {
       switch (column) {
       case REF:
-         return key;
+         return getUiName();
       case DESCRIPTION:
          return description;
       }
       return "";
    }
 
-   @Override
-   public void setValue(Column column, Object value) {
-      switch (column) {
-      case REF:
-         setKey(value.toString());
-         break;
-      case DESCRIPTION:
-         setDescription(value.toString());
-         break;
-      }
-   }
-
-   @Override
-   public boolean isLeaf() {
-      return true;
-   }
-
-   @Override
-   public boolean isEditable(Column column) {
-      switch (column) {
-      case REF:
-         return true;
-      case DESCRIPTION:
-         return false;
-      }
-      return false;
-   }
 }
