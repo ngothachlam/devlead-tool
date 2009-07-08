@@ -4,6 +4,10 @@ import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import com.jonas.testing.jxtreetable.column.Column;
 
 public abstract class DefaultParentUserObject<T extends DefaultParentUserObject> extends DefaultUserObject<T> {
+   public String getUiName() {
+      return uiName;
+   }
+
    private String uiName;
    
    public final String getName() {
@@ -29,7 +33,7 @@ public abstract class DefaultParentUserObject<T extends DefaultParentUserObject>
    private String name;
 
    @Override
-   public final String getValueForColumn(Column column) {
+   public String getValueForColumn(Column column) {
       switch (column) {
       case REF:
          return uiName;
@@ -42,7 +46,7 @@ public abstract class DefaultParentUserObject<T extends DefaultParentUserObject>
    }
 
    @Override
-   public final boolean isLeaf() {
+   public boolean isLeaf() {
       return false;
    }
 

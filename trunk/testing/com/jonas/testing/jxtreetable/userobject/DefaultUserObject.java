@@ -66,6 +66,12 @@ public abstract class DefaultUserObject<T extends DefaultUserObject> implements 
       public AbstractMutableTreeTableNode getNode() {
          return thisNode;
       }
+      public boolean hasChildren(){
+         return thisNode.getChildCount() > 0;
+      }
+   }
+   public boolean hasChildren(){
+      return nodeDelegate.hasChildren();
    }
 
    public AbstractMutableTreeTableNode getNode() {

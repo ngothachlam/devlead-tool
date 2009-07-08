@@ -4,17 +4,15 @@ import java.awt.Component;
 import java.io.IOException;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
-import org.apache.tools.ant.types.resources.First;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import com.jonas.testHelpers.TryoutTester;
 import com.jonas.testing.jxtreetable.column.BoardColumnMapperImpl;
-import com.jonas.testing.jxtreetable.userobject.DefaultUserObject;
-import com.jonas.testing.jxtreetable.userobject.FixVersionUserObject;
-import com.jonas.testing.jxtreetable.userobject.RequirementUserObject;
+import com.jonas.testing.jxtreetable.userobject.VersionUserObject;
 import com.jonas.testing.jxtreetable.userobject.SprintUserObject;
 import com.jonas.testing.jxtreetable.userobject.StoryUserObject;
+import com.jonas.testing.jxtreetable.userobject.TaskUserObject;
 
 public class TestTreeTable {
 
@@ -48,53 +46,38 @@ public class TestTreeTable {
       Component treeTable = getTreeTable(treeTableModel);
       TryoutTester.showInFrame(new JScrollPane(treeTable));
 
-//      TreeTableDaoImpl treeTableDao = new TreeTableDaoImpl();
-//      DaoTreeBuilder treeBuilder = new DaoTreeBuilder();
-//      treeTableDao.persist(new File("testTreeTableDao"), treeTableModel, treeBuilder);
-//
-//      DefaultMutableTreeTableNode root2 = treeTableDao.read(new File("testTreeTableDao"), treeBuilder);
-//      JiraTreeTableModel model = new JiraTreeTableModel(root2, BoardColumnMapperImpl.boardColumnMapping);
-//
-//      Component treeTable2 = getTreeTable(model);
-//
-//      TryoutTester.showInFrame(new JScrollPane(treeTable2));
+      // TreeTableDaoImpl treeTableDao = new TreeTableDaoImpl();
+      // DaoTreeBuilder treeBuilder = new DaoTreeBuilder();
+      // treeTableDao.persist(new File("testTreeTableDao"), treeTableModel, treeBuilder);
+      //
+      // DefaultMutableTreeTableNode root2 = treeTableDao.read(new File("testTreeTableDao"), treeBuilder);
+      // JiraTreeTableModel model = new JiraTreeTableModel(root2, BoardColumnMapperImpl.boardColumnMapping);
+      //
+      // Component treeTable2 = getTreeTable(model);
+      //
+      // TryoutTester.showInFrame(new JScrollPane(treeTable2));
       /*
-       * TODO versioning: Allow the loader to 1) See what version of the loaded xml 2) Apply (in sequence) all rollforwards to get the file into
-       * the latest state!
+       * TODO versioning: Allow the loader to 1) See what version of the loaded xml 2) Apply (in sequence) all rollforwards to get the file into the latest
+       * state!
        */
-
    }
 
    private DefaultMutableTreeTableNode createTestRoot() {
       DefaultMutableTreeTableNode root = new DefaultMutableTreeTableNode("root");
-      
-      FixVersionUserObject fixVersion_11 = new FixVersionUserObject("LLU 11", root);
-      FixVersionUserObject fixVersion_12 = new FixVersionUserObject("LLU 12", root);
-      
+
+      VersionUserObject fixVersion_11 = new VersionUserObject("LLU 11", root);
+      VersionUserObject fixVersion_12 = new VersionUserObject("LLU 12", root);
+
       SprintUserObject sprint_12_1 = new SprintUserObject("12-1", fixVersion_11);
       SprintUserObject sprint_12_2 = new SprintUserObject("12-2", fixVersion_12);
-      
-      RequirementUserObject req1 = new RequirementUserObject("Requirement 1", sprint_12_1);
-      RequirementUserObject req2 = new RequirementUserObject("Requirement 2", sprint_12_2);
-      
-      StoryUserObject jira_llu1 = new StoryUserObject("llu-123", "Description for llu-1", req1);
-      StoryUserObject jira_llu2 = new StoryUserObject("llu-23", "Description for llu-2", req2);
 
-//      DefaultMutableTreeTableNode fixVersionOne = addChildToParent(root, fixVersion_11);
-//      DefaultMutableTreeTableNode fixVersionTwo = addChildToParent(root, fixVersion_12);;
-//      
-//      DefaultMutableTreeTableNode sprintOne = addChildToParent(fixVersionOne, sprint_12_1);
-//      DefaultMutableTreeTableNode sprintTwo = addChildToParent(fixVersionTwo, sprint_12_2);
-//      DefaultMutableTreeTableNode sprintTwoDupe = addChildToParent(fixVersionTwo, sprint_12_1);
-//
-//      DefaultMutableTreeTableNode requirementOne = addChildToParent(sprintOne, req1);
-//      DefaultMutableTreeTableNode requirementTwo = addChildToParent(sprintTwo, req2);
-//      DefaultMutableTreeTableNode requirementTwoDupe = addChildToParent(sprintTwoDupe, req1);
-//      
-//      addChildToParent(requirementOne, jira_llu1);
-//      addChildToParent(requirementTwo, jira_llu2);
-//      addChildToParent(requirementTwoDupe, jira_llu1);
-      
+      StoryUserObject req1 = new StoryUserObject("llu-1", "Add a database table for blah blah", sprint_12_1);
+      StoryUserObject req2 = new StoryUserObject("llu-2", "New report for blah blah", sprint_12_2);
+      StoryUserObject req3 = new StoryUserObject("llu-3", "Spike test of Terracotta blah blah", sprint_12_2);
+
+      TaskUserObject jira_llu1 = new TaskUserObject("Dev", "Development for llu-1", req1);
+      TaskUserObject jira_llu2 = new TaskUserObject("QA", "QA for llu-2", req2);
+
       return root;
    }
 
@@ -103,17 +86,17 @@ public class TestTreeTable {
       treeTable.setFillsViewportHeight(true);
       treeTable.setColumnControlVisible(true);
       treeTable.setSortable(true);
-      
-//      need to find a way to fireTableDataChanged when a userobject is being updated!
-      
-//      treeTable.getTreeTableModel()
-      
+
+      // need to find a way to fireTableDataChanged when a userobject is being updated!
+
+      // treeTable.getTreeTableModel()
+
       return treeTable;
    }
 
-//   private DefaultMutableTreeTableNode addChildToParent(DefaultMutableTreeTableNode parentNode, DefaultUserObject child) {
-//      DefaultMutableTreeTableNode childNode = new DefaultMutableTreeTableNode(child);
-//      parentNode.add(childNode);
-//      return childNode;
-//   }
+   // private DefaultMutableTreeTableNode addChildToParent(DefaultMutableTreeTableNode parentNode, DefaultUserObject child) {
+   // DefaultMutableTreeTableNode childNode = new DefaultMutableTreeTableNode(child);
+   // parentNode.add(childNode);
+   // return childNode;
+   // }
 }
