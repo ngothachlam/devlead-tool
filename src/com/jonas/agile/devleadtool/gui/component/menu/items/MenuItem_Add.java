@@ -5,7 +5,7 @@ package com.jonas.agile.devleadtool.gui.component.menu.items;
 
 import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
-import com.jonas.agile.devleadtool.gui.component.dialog.AddManualDialog;
+import com.jonas.agile.devleadtool.gui.component.dialog.AddManualFrame;
 import com.jonas.agile.devleadtool.gui.component.menu.MyTablePopupMenu;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 
@@ -22,7 +22,7 @@ public class MenuItem_Add extends MyMenuItem {
 
    @Override
    public void myActionPerformed(ActionEvent e) {
-      AddManualDialog addManualDialog = new AddManualDialog(getParentFrame(), dtos);
+      AddManualFrame addManualDialog = new AddManualFrame(getParentFrame(), dtos);
       addManualDialog.setSourceTable(source);
       addManualDialog.focusPrefix();
    }

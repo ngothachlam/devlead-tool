@@ -27,11 +27,10 @@ import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.access.JiraClient;
 import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
-import com.jonas.jira.jirastat.criteria.JiraHttpCriteria;
 
-public class AddFilterDialog extends JFrame {
+public class AddFilterFrame extends JFrame {
 
-   public AddFilterDialog(Window frame, MyTable... tables) {
+   public AddFilterFrame(Window frame, MyTable... tables) {
       super();
       this.setContentPane(new AddFilterPanel(this, tables));
       this.pack();

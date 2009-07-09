@@ -2,7 +2,7 @@ package com.jonas.agile.devleadtool.component.dialog;
 
 import java.awt.GridLayout;
 import javax.swing.JFrame;
-import com.jonas.agile.devleadtool.gui.component.dialog.AddManualDialog;
+import com.jonas.agile.devleadtool.gui.component.dialog.AddManualFrame;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.agile.devleadtool.gui.component.table.model.BoardTableModel;
 import com.jonas.agile.devleadtool.gui.component.table.model.JiraTableModel;
@@ -21,6 +21,6 @@ public class AddManualDialogTestScreen {
       panel.add(tableB);
       frame.setContentPane(panel);
 
-      new AddManualDialog(frame, new MyTable[] { tableA, tableB });
+      new AddManualFrame(frame, new MyTable[] { tableA, tableB });
    }
 }

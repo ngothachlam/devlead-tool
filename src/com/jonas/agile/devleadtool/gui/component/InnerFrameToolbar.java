@@ -4,14 +4,12 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
-
 import com.jonas.agile.devleadtool.PlannerHelper;
 import com.jonas.agile.devleadtool.burndown.BurnCalculator;
 import com.jonas.agile.devleadtool.burndown.BurnData;
@@ -21,9 +19,9 @@ import com.jonas.agile.devleadtool.burndown.BurnDownProgressionCalculatorImpl;
 import com.jonas.agile.devleadtool.burndown.BurnType;
 import com.jonas.agile.devleadtool.burndown.BurnUpCalculator;
 import com.jonas.agile.devleadtool.burndown.Category;
+import com.jonas.agile.devleadtool.burndown.DataCriteria;
 import com.jonas.agile.devleadtool.burndown.HistoricalBoardDao;
 import com.jonas.agile.devleadtool.burndown.HistoricalData;
-import com.jonas.agile.devleadtool.burndown.DataCriteria;
 import com.jonas.agile.devleadtool.burndown.JiraStatsDataDTO;
 import com.jonas.agile.devleadtool.burndown.ManualBurnFrame;
 import com.jonas.agile.devleadtool.gui.action.BasicAbstractGUIAction;
@@ -31,10 +29,11 @@ import com.jonas.agile.devleadtool.gui.action.HighlightIssuesAction;
 import com.jonas.agile.devleadtool.gui.action.SaveDataAction;
 import com.jonas.agile.devleadtool.gui.action.SprintManagerGuiAction;
 import com.jonas.agile.devleadtool.gui.component.dialog.AddBoardReconcileFrame;
-import com.jonas.agile.devleadtool.gui.component.dialog.AddFilterDialog;
-import com.jonas.agile.devleadtool.gui.component.dialog.AddManualDialog;
-import com.jonas.agile.devleadtool.gui.component.dialog.AddVersionDialog;
+import com.jonas.agile.devleadtool.gui.component.dialog.AddFilterFrame;
+import com.jonas.agile.devleadtool.gui.component.dialog.AddManualFrame;
+import com.jonas.agile.devleadtool.gui.component.dialog.AddVersionFrame;
 import com.jonas.agile.devleadtool.gui.component.dialog.AlertDialog;
+import com.jonas.agile.devleadtool.gui.component.frame.AddJiraFromRegexFrame;
 import com.jonas.agile.devleadtool.gui.component.frame.BoardStatsFrame;
 import com.jonas.agile.devleadtool.gui.component.panel.DnDTreePanel;
 import com.jonas.agile.devleadtool.gui.component.panel.JiraPanel;
@@ -60,6 +59,7 @@ public class InnerFrameToolbar extends JToolBar {
       BasicAbstractGUIAction addManualAction = new AddManuallyAction(parentFrame, tables);
       BasicAbstractGUIAction addFilterAction = new AddFromJiraFilterAction(parentFrame, tables);
       BasicAbstractGUIAction addVersionAction = new AddFromJiraVersionAction(parentFrame, tables);
+      BasicAbstractGUIAction addRegexAction = new AddJiraFromRegexAction(parentFrame, tables);
 
       BasicAbstractGUIAction sprintManager = new SprintManagerGuiAction(parentFrame, helper, sprintDao);
       // BasicAbstractGUIAction boardStats = new BurndownAction("Calculate Burndown (old)", "Showing Board Statistics", parentFrame, boardTable, helper);
@@ -67,7 +67,7 @@ public class InnerFrameToolbar extends JToolBar {
       BasicAbstractGUIAction newBurnup = new NewBurnUpAction("Graph Burn-Up", "BurnUp Statistics", parentFrame, helper);
 
       JMenuBar comp = new JMenuBar();
-      comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, null, highlightAction, dupeAction, freezeAction));
+      comp.add(getDataModificationMenu("Data Management", reconcileAction, null, addManualAction, addVersionAction, addFilterAction, addRegexAction, null, highlightAction, dupeAction, freezeAction));
       comp.add(getDataModificationMenu("Sprint", sprintManager, newBurndown, newBurnup));
       HistoricalBoardDao dao = new HistoricalBoardDao(new DateHelper());
       comp.add(new JButton(new SaveDataAction("Save", "Save historical view for the future (BurnDowns, BurnUps, etc)", parentFrame, boardTable.getMyModel(), dao, helper)));
@@ -296,6 +296,19 @@ abstract class BasicAbstractGUIActionWithTables extends BasicAbstractGUIAction {
 
 }
 
+final class AddJiraFromRegexAction extends BasicAbstractGUIActionWithTables {
+   
+   public AddJiraFromRegexAction(Frame parentFrame, MyTable... tables) {
+      super("Add Regex", "Add jiras using regular expression and text source", parentFrame, tables);
+   }
+   
+   @Override
+   public void doActionPerformed(ActionEvent e) {
+      new AddJiraFromRegexFrame(getParentFrame(), getTables());
+   }
+   
+}
+
 final class AddManuallyAction extends BasicAbstractGUIActionWithTables {
 
    public AddManuallyAction(Frame parentFrame, MyTable... tables) {
@@ -304,7 +317,7 @@ final class AddManuallyAction extends BasicAbstractGUIActionWithTables {
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      new AddManualDialog(getParentFrame(), getTables());
+      new AddManualFrame(getParentFrame(), getTables());
    }
 
 }
@@ -316,7 +329,7 @@ final class AddFromJiraFilterAction extends BasicAbstractGUIActionWithTables {
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      new AddFilterDialog(getParentFrame(), getTables());
+      new AddFilterFrame(getParentFrame(), getTables());
    }
 }
 
@@ -327,6 +340,6 @@ final class AddFromJiraVersionAction extends BasicAbstractGUIActionWithTables {
 
    @Override
    public void doActionPerformed(ActionEvent e) {
-      new AddVersionDialog(getParentFrame(), getTables());
+      new AddVersionFrame(getParentFrame(), getTables());
    }
 }

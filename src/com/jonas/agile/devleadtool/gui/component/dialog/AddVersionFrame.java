@@ -37,9 +37,9 @@ import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
 
-public class AddVersionDialog extends JFrame {
+public class AddVersionFrame extends JFrame {
 
-   public AddVersionDialog(Window frame, MyTable[] tables) {
+   public AddVersionFrame(Window frame, MyTable[] tables) {
       super();
       this.setContentPane(new AddVersionPanel(this, tables));
       this.pack();
