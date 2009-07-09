@@ -7,11 +7,11 @@ import com.jonas.agile.devleadtool.gui.component.panel.AddManualPanel;
 import com.jonas.agile.devleadtool.gui.component.table.MyTable;
 import com.jonas.common.swing.SwingUtil;
 
-public class AddManualDialog extends JFrame {
+public class AddManualFrame extends JFrame {
 
    private AbstractAddPanel addManualPanel;
 
-   public AddManualDialog(Window frame, MyTable... tables) {
+   public AddManualFrame(Window frame, MyTable... tables) {
       super();
       addManualPanel = new AddManualPanel(this, tables);
       this.setContentPane(addManualPanel);

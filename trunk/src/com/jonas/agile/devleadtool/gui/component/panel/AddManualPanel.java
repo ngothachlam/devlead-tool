@@ -49,7 +49,6 @@ public class AddManualPanel extends AbstractAddPanel {
       });
       return buttonPanel;
    }
-
 }
 
 
