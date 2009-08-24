@@ -16,6 +16,9 @@ import org.jfree.data.time.Hour;
 import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
+import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
+import com.atlassian.jira.rpc.exception.RemoteException;
+import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
@@ -49,17 +52,17 @@ public class JiraStatChart extends ApplicationFrame {
    public JiraStatChart(String title) {
       super(title);
 
-      CommonTimeDenominatorStyle style = CommonTimeDenominatorStyle.hour;
-      boolean aggregate = false;
 
       try {
          jiraClient.login();
 
-         JiraProject project = JiraProject.TALK;
-         jiraClient.cacheJiraVersionsForProject(project);
-         // JiraVersion fixVersion = project.getFixVersion("Talk v26.0");
-         // JiraCriteriaBuilder criteria = criteriabuilder.fixVersion(project, fixVersion);
-         JiraCriteriaBuilder criteria = criteriabuilder.createdBetween("-2w", "+1w").project(JiraProject.LLU);
+         CommonTimeDenominatorStyle style = CommonTimeDenominatorStyle.hour;
+         boolean aggregate = true;
+         //JiraCriteriaBuilder criteria = getCriteria(JiraProject.TALK, "Talk v26.0");
+         //JiraCriteriaBuilder criteria = getCriteria(JiraProject.LLU, "LLU 16");
+         JiraCriteriaBuilder criteria = getCriteria(JiraProject.LLU, "LLU 17 - Trio Integration");
+         //JiraCriteriaBuilder criteria = criteriabuilder.fixVersion(project.getFixVersion("Talk v26.0"));
+         //JiraCriteriaBuilder criteria = criteriabuilder.createdBetween("-6w", "+1w").project(project);
 
          JiraIssue[] jiras = jiraClient.getJiras(criteria);
 
@@ -93,6 +96,12 @@ public class JiraStatChart extends ApplicationFrame {
       } catch (JDOMException e) {
          e.printStackTrace();
       }
+   }
+
+   private JiraCriteriaBuilder getCriteria(JiraProject project, String fixVersion) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
+      jiraClient.cacheJiraVersionsForProject(project);
+      JiraCriteriaBuilder criteria = criteriabuilder.fixVersion(project.getFixVersion(fixVersion));
+      return criteria;
    }
 
    private PointsInTimeFacadeAbstract<JiraStatus, RegularTimePeriod> getData(JiraIssue[] jiras, DateRetriever dateRetriever,

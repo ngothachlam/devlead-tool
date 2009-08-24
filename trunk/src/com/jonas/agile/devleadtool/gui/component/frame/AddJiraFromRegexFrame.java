@@ -125,7 +125,7 @@ class AddRegExButtonAction extends BasicAbstractGUIAction{
    private JTextArea textArea;
 
    public AddRegExButtonAction(String name, String description, JFrame parentFrame, JTextField regExTextField, JTextArea textArea) {
-      this(name, description, parentFrame);
+      super(name, description, parentFrame);
       this.regExTextField = regExTextField;
       this.textArea = textArea;
    }
