@@ -13,15 +13,23 @@ public enum IssueType {
    TEST("Test"),
    MERGE("Merge"),
    PRODISSUE("Issue"),
+   AUTOMATIC_BUILD_BREAK("Automatic Build Break", "45"),
    EXTERNAL("External");
 
    private Set<IssueType> statuses = new HashSet<IssueType>();
    private final String toString;
+   private final String id;
 
-   private IssueType(String toString) {
+   private IssueType(String toString, String id) {
       this.toString = toString;
+      this.id = id;
       statuses.add(this);
    }
+   
+   private IssueType(String toString) {
+      this(toString, null);
+   }
+
 
    public String toString() {
       return toString;
@@ -33,6 +41,10 @@ public enum IssueType {
             return issueType;
       }
       return TBD;
+   }
+   
+   public String getId(){
+      return id;
    }
 
 }

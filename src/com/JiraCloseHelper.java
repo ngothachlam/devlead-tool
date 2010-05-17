@@ -1,4 +1,4 @@
-package com.jonas.jira.access;
+package com;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,12 +16,16 @@ import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
 import com.atlassian.jira.rpc.soap.beans.RemoteIssue;
+import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
 import com.jonas.jira.JiraFilter;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
 import com.jonas.jira.JiraVersion;
+import com.jonas.jira.access.JiraClient;
+import com.jonas.jira.access.JiraException;
+import com.jonas.jira.access.JiraHttpClient;
+import com.jonas.jira.access.JiraSoapClient;
 import com.jonas.jira.jirastat.criteria.JiraCriteriaBuilder;
-import com.jonas.jira.jirastat.criteria.JiraHttpCriteria;
 
 public class JiraCloseHelper {
 
@@ -35,29 +39,51 @@ public class JiraCloseHelper {
       closeAllResolvedJirasInArchivedFixVersions(JiraProject.TALK);
    }
 
-   public static void main(String[] args) {
+   public static void main(String[] args) throws Throwable {
       JiraCloseHelper jiraCloser = new JiraCloseHelper();
-      try {
-         System.out.println("#################################");
-         System.out.println("######### Re Opening!!! #########");
-         System.out.println("#################################");
-         jiraCloser.reOpen(new File("test.txt"));
-      } catch (Throwable e) {
-         e.printStackTrace();
-      }
+      jiraCloser.closeJirasManually();
+      // try {
+      // System.out.println("#################################");
+      // System.out.println("######### Re Opening!!! #########");
+      // System.out.println("#################################");
+      // jiraCloser.reOpen(new File("test.txt"));
+      // } catch (Throwable e) {
+      // e.printStackTrace();
+      // }
 
-      try {
-         System.out.println("#################################");
-         System.out.println("######### Now Closing!! #########");
-         System.out.println("#################################");
-         jiraCloser.closeJiras(new File("test.txt"));
-      } catch (Throwable e) {
-         e.printStackTrace();
+      // try {
+      // System.out.println("#################################");
+      // System.out.println("######### Now Closing!! #########");
+      // System.out.println("#################################");
+      // jiraCloser.closeJiras(new File("test.txt"));
+      // } catch (Throwable e) {
+      // e.printStackTrace();
+      // }
+   }
+
+   private void closeJirasManually() throws HttpException, IOException, JDOMException, JiraException {
+      jiraHttpClient.loginToJira();
+      JiraCriteriaBuilder criteriaBuilder = new JiraCriteriaBuilder().project(JiraProject.LLU).statusOfNonClosed().issueType(IssueType.AUTOMATIC_BUILD_BREAK);
+
+      JiraIssue[] jirasToClose = jiraClient.getJiras(criteriaBuilder);
+      for (JiraIssue jiraToClose : jirasToClose) {
+         boolean httpClose = false;
+         try {
+            httpClose = calculateResolutionAndCloseJira(jiraToClose);
+         } catch (JiraException e) {
+         }
+         System.out.println(httpClose ? "Closed " : "Did not manage to close" + jiraToClose.getKey());
+         // System.out.println(jiraToClose.getKey());
       }
    }
 
    private void reOpen(File output) throws HttpException, IOException, JiraException, JDOMException {
       String storedInfoOfClosedJiras = performPreanalysisPreReopening(JiraFilter.LLU_10_CLOSED);
+      readFileAndReopen(output, storedInfoOfClosedJiras);
+
+   }
+
+   private void readFileAndReopen(File output, String storedInfoOfClosedJiras) throws IOException {
       FileWriter fw = null;
       BufferedWriter bw = null;
       if (output.exists()) {
@@ -91,7 +117,6 @@ public class JiraCloseHelper {
          if (fw != null)
             fw.close();
       }
-
    }
 
    private void closeJiras(File input) throws HttpException, IOException, JiraException {
@@ -117,13 +142,7 @@ public class JiraCloseHelper {
          fr = null;
 
          for (CloserDTO dto : closerDTOs) {
-            String jira = dto.getJira();
-            String id = dto.getId();
-            String resoId = dto.getResolutionId();
-
-            JiraProject project = JiraProject.getProjectByJira(jira);
-            // jiraHttpClient.closeJira(id, resoId, project);
-            System.out.println("closed jira:\"" + jira + "\" id:\"" + id + "\" resolution:\"" + resoId + "\" project:\"" + project + "\"");
+            closeJira(dto);
          }
       } catch (Exception e) {
          e.printStackTrace();
@@ -137,6 +156,16 @@ public class JiraCloseHelper {
       // jiraHttpClient.closeJira(remoteJira.getId(), remoteJira.getResolution(), jiraProject);
    }
 
+   private void closeJira(CloserDTO dto) throws HttpException, IOException, JiraException {
+      String jira = dto.getJira();
+      String id = dto.getId();
+      String resoId = dto.getResolutionId();
+
+      JiraProject project = JiraProject.getProjectByJira(jira);
+      jiraHttpClient.closeJira(id, resoId, project);
+      System.out.println("closed jira:\"" + jira + "\" id:\"" + id + "\" resolution:\"" + resoId + "\" project:\"" + project + "\"");
+   }
+
    private void closeAllResolvedJirasInArchivedFixVersions(JiraProject jiraProject) throws HttpException, IOException, JiraException, JDOMException {
       jiraHttpClient.loginToJira();
       List<JiraVersion> nonArchivedFixVersions = getNonArchivedFixVersions(jiraProject);
@@ -144,7 +173,8 @@ public class JiraCloseHelper {
 
    }
 
-   private List<JiraVersion> getNonArchivedFixVersions(JiraProject project) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
+   private List<JiraVersion> getNonArchivedFixVersions(JiraProject project) throws RemotePermissionException, RemoteAuthenticationException, RemoteException,
+         java.rmi.RemoteException {
       List<JiraVersion> archivedFixVersions = new ArrayList<JiraVersion>();
       JiraVersion[] fixVersions = jiraClient.getFixVersionsFromProject(project, true, false);
       for (JiraVersion jiraVersion : fixVersions) {
@@ -156,13 +186,13 @@ public class JiraCloseHelper {
    }
 
    private void closeAllResolvedJirasInFixVersions(List<JiraVersion> relevantFixVersions) throws HttpException, IOException, JDOMException, JiraException {
-      JiraCriteriaBuilder criteriaBuilder = new JiraCriteriaBuilder().nonClosed();
+      JiraCriteriaBuilder criteriaBuilder = new JiraCriteriaBuilder().statusOfNonClosed();
       criteriaBuilder.save();
       for (JiraVersion version : relevantFixVersions) {
          criteriaBuilder.reset(false);
          criteriaBuilder.fixVersion(version.getProject(), version);
-         
-         JiraIssue[] jirasToClose = jiraClient.getJiras( criteriaBuilder);
+
+         JiraIssue[] jirasToClose = jiraClient.getJiras(criteriaBuilder);
          for (JiraIssue jiraToClose : jirasToClose) {
             boolean httpClose = false;
             try {
@@ -177,7 +207,8 @@ public class JiraCloseHelper {
    private boolean calculateResolutionAndCloseJira(JiraIssue jira) throws HttpException, IOException, JiraException {
       RemoteIssue remoteJira = jiraSoapClient.getJira(jira.getKey());
       JiraProject jiraProject = JiraProject.getProjectByJira(jira.getKey());
-      jiraHttpClient.closeJira(remoteJira.getId(), remoteJira.getResolution(), jiraProject);
+      String resolution = remoteJira.getResolution() == null ? "6" : remoteJira.getResolution() ;
+      jiraHttpClient.closeJira(remoteJira.getId(), resolution, jiraProject);
       return true;
    }
 
@@ -206,15 +237,15 @@ public class JiraCloseHelper {
       for (int group = 0; group <= matcher.groupCount(); group++) {
          String match = matcher.group(group);
          switch (group) {
-            case 1:
-               closerDTO = new CloserDTO(match);
-               break;
-            case 2:
-               closerDTO.setId(match);
-               break;
-            case 3:
-               closerDTO.setResolutionId(match);
-               return closerDTO;
+         case 1:
+            closerDTO = new CloserDTO(match);
+            break;
+         case 2:
+            closerDTO.setId(match);
+            break;
+         case 3:
+            closerDTO.setResolutionId(match);
+            return closerDTO;
          }
       }
       return closerDTO;
@@ -237,6 +268,7 @@ public class JiraCloseHelper {
       return sb.toString();
    }
 }
+
 
 class CloserDTO {
 
