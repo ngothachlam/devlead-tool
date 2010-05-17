@@ -1,13 +1,20 @@
 package com.jonas.jira;
 
+import org.apache.log4j.Logger;
+import org.jfree.util.Log;
+import com.jonas.common.logging.MyLogger;
+import com.jonas.jira.access.JiraHttpClient;
+
 
 public enum JiraStatus {
-   Open("1", "Open"), InProgress("3", "In Progress"), ReOpened("4", "Reopened"), Resolved("5", "Resolved"), Closed("6", "Closed");
+   Open("1", "Open"), InProgress("3", "In Progress"), ReOpened("4", "Reopened"), Resolved("5", "Resolved"), Closed("6", "Closed"), Closable("10016", "Closable");
 
    // Use: http://jira.atlassian.com/secure/IssueNavigator.jspa?reset=true&status=7&tempMax=1 to try!!
 
    private final String title;
    private final String id;
+   
+   private static final Logger log = MyLogger.getLogger(JiraStatus.class);
 
    private JiraStatus(String id, String title) {
       this.id = id;
@@ -34,6 +41,7 @@ public enum JiraStatus {
             return jiraStatus;
          }
       }
+      log.error("could not find status " + name);
       return null;
    }
 

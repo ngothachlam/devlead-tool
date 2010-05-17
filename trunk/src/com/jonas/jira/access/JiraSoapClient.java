@@ -255,11 +255,11 @@ public class JiraSoapClient {
 
    public void renewToken() throws RemoteAuthenticationException, com.atlassian.jira.rpc.exception.RemoteException, RemoteException {
       synchronized (tokenLock) {
-         log.debug("Renewing Token");
+         log.debug("Renewing Token from " + token);
          clearToken();
          token = jiraSoapService.login(LOGIN_NAME, LOGIN_PASSWORD);
          // user = jiraSoapService.getUser(LOGIN_NAME, LOGIN_PASSWORD);
-         log.debug("Renewing Token Done!");
+         log.debug("Renewing Token Done! Became " + token);
       }
    }
 

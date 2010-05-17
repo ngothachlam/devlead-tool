@@ -158,6 +158,7 @@ public class JiraProject {
             return jiraVersion;
          }
       }
+      System.out.println(string + " not found!");
       return null;
    }
 

@@ -5,7 +5,7 @@
  *
  */
 
-package com.jonas.stats.charts.jira;
+package com;
 
 import java.io.IOException;
 import javax.swing.JPanel;
@@ -19,6 +19,7 @@ import org.jfree.ui.RefineryUtilities;
 import com.atlassian.jira.rpc.exception.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.exception.RemoteException;
 import com.atlassian.jira.rpc.exception.RemotePermissionException;
+import com.jonas.agile.devleadtool.gui.component.table.column.IssueType;
 import com.jonas.common.swing.SwingUtil;
 import com.jonas.jira.JiraIssue;
 import com.jonas.jira.JiraProject;
@@ -71,37 +72,21 @@ public class JiraStatChart extends ApplicationFrame {
 
          CommonTimeDenominatorStyle style = CommonTimeDenominatorStyle.hour;
          boolean aggregate = true;
+         IssueType[] buildBreak = {IssueType.AUTOMATIC_BUILD_BREAK};
          //JiraCriteriaBuilder criteria = getCriteria(JiraProject.TALK, "Talk v26.0");
          //JiraCriteriaBuilder criteria = getCriteria(JiraProject.LLU, "LLU 16");
 //         JiraCriteriaBuilder criteria = getCriteria(JiraProject.LLU, "Trio - LLU v17 - drop 1");
-         JiraCriteriaBuilder criteria = getCriteria(JiraProject.LLU, wrapperFixVersions);
+//         JiraCriteriaBuilder criteria = getCriteria(JiraProject.LLU, wrapperFixVersions);
+   
+         JiraCriteriaBuilder criteria = getCriteria(JiraProject.LLU, buildBreak);
+         criteria.statusOfNonClosed();
+   
+         
+         
          //JiraCriteriaBuilder criteria = criteriabuilder.fixVersion(project.getFixVersion("Talk v26.0"));
          //JiraCriteriaBuilder criteria = criteriabuilder.createdBetween("-6w", "+1w").project(project);
 
-         System.out.println("++++Getting jiras");
-         JiraIssue[] jiras = jiraClient.getJiras(criteria);
-
-         DateRetriever timeRetriever = null;
-         switch (style) {
-         case day:
-            timeRetriever = new CreationDayRetriever();
-            break;
-         case week:
-            timeRetriever = new CreationDayRetriever();
-            break;
-         case hour:
-            timeRetriever = new CreationHourRetriever();
-            break;
-         }
-
-         PointsInTimeFacadeAbstract<JiraStatus, RegularTimePeriod> data = getData(jiras, timeRetriever, style);
-
-         JPanel chartPanel = createChartPanel(data, aggregate);
-         chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
-
-         setContentPane(chartPanel);
-         pack();
-         RefineryUtilities.centerFrameOnScreen(this);
+         printChart(style, aggregate, criteria);
       } catch (HttpException e) {
          e.printStackTrace();
       } catch (IOException e) {
@@ -113,6 +98,34 @@ public class JiraStatChart extends ApplicationFrame {
       }
    }
 
+   private void printChart(CommonTimeDenominatorStyle style, boolean aggregate, JiraCriteriaBuilder criteria) throws HttpException, IOException, JDOMException,
+         JiraException {
+      System.out.println("++++Getting jiras");
+      JiraIssue[] jiras = jiraClient.getJiras(criteria);
+
+      DateRetriever timeRetriever = null;
+      switch (style) {
+      case day:
+         timeRetriever = new CreationDayRetriever();
+         break;
+      case week:
+         timeRetriever = new CreationDayRetriever();
+         break;
+      case hour:
+         timeRetriever = new CreationHourRetriever();
+         break;
+      }
+
+      PointsInTimeFacadeAbstract<JiraStatus, RegularTimePeriod> data = getData(jiras, timeRetriever, style);
+
+      JPanel chartPanel = createChartPanel(data, aggregate);
+      chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+
+      setContentPane(chartPanel);
+      pack();
+      RefineryUtilities.centerFrameOnScreen(this);
+   }
+
    private JiraCriteriaBuilder getCriteria(JiraProject project, String... fixVersions) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
       jiraClient.cacheJiraVersionsForProject(project);
       JiraCriteriaBuilder criteria = null;
@@ -122,6 +135,16 @@ public class JiraStatChart extends ApplicationFrame {
       return criteria;
    }
 
+   private JiraCriteriaBuilder getCriteria(JiraProject project, IssueType... issueTypes) throws RemotePermissionException, RemoteAuthenticationException, RemoteException, java.rmi.RemoteException {
+      jiraClient.cacheJiraVersionsForProject(project);
+      JiraCriteriaBuilder criteria = null;
+      for (IssueType issueType : issueTypes) {
+         criteria = criteriabuilder.issueType(issueType);
+      }
+      return criteria;
+   }
+
+   
 
    private PointsInTimeFacadeAbstract<JiraStatus, RegularTimePeriod> getData(JiraIssue[] jiras, DateRetriever dateRetriever,
          CommonTimeDenominatorStyle style) {

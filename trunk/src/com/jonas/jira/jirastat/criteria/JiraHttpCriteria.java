@@ -46,4 +46,9 @@ public class JiraHttpCriteria {
       this.subBaseUrl = subBaseUrl;
       return this;
    }
+
+   public JiraHttpCriteria appendFirst(String string) {
+      sb.append(sb.length()>0?"&":"").append(string);
+      return this;
+   }
 }

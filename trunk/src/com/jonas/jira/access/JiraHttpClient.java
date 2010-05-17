@@ -29,7 +29,7 @@ public class JiraHttpClient extends HttpClient {
    public static final JiraHttpClient ATLASSIN = new JiraHttpClient(ClientConstants.JIRA_URL_ATLASSIN);
 
    private static final Logger log = MyLogger.getLogger(JiraHttpClient.class);
-   private static final String MAX_RESULTS = "100000";
+   private static final String MAX_RESULTS = "10";
 
    private String baseUrl;
 
@@ -116,13 +116,17 @@ public class JiraHttpClient extends HttpClient {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("resolution", resolution);
       parameters.put("assignee", "");
-
+      parameters.put("action", actionId);
+      parameters.put("id", id);
+      parameters.put("fixVersions", "-1");
+      parameters.put("viewIssueKey", "viewIssueKey");
+      
       PostMethod method = getPostMethod(parameters);
-      addDefaultJiraWorkflowParams(method, id, actionId);
 
       log.debug("executing URI: " + method.getURI() + " with action " + actionId + " on project " + project);
       executeMethod(method);
       throwJiraExceptionIfRequired(method);
+      log.debug("response " + method.getResponseBodyAsString());
    }
 
    private List<JiraIssue> executeAndGetJiras(JonasXpathEvaluator jonasXpathEvaluator, JiraBuilder jiraBuilder, String url) throws IOException, HttpException, JiraException, JDOMException {
@@ -136,6 +140,9 @@ public class JiraHttpClient extends HttpClient {
       throwJiraExceptionIfRequired(method);
 
       String string = new String(responseAsBytes);
+      if (log.isDebugEnabled())
+         log.debug("responseAsBytes: " + string);
+
       List<JiraIssue> jiras = buildJirasFromXML(string, jiraBuilder, jonasXpathEvaluator);
 
       if (log.isDebugEnabled()) {
@@ -148,9 +155,14 @@ public class JiraHttpClient extends HttpClient {
    }
 
    private PostMethod getPostMethod(Map<String, String> parameters) {
-      PostMethod method = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa"); // form
+      String url = baseUrl + "/secure/CommentAssignIssue.jspa";
+      log.debug("creating new post method against " + url);
+      PostMethod method = new PostMethod(url); // form
       for (String parameter : parameters.keySet()) {
-         method.addParameter(parameter, parameters.get(parameter)); // name of
+         String parameterValue = parameters.get(parameter);
+         method.addParameter(parameter, parameterValue); // name of
+         log.debug("executing with parameters '" + parameter + "' and its value '" + parameterValue + "'");
+
       }
       return method;
    }
